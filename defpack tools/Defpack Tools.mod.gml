@@ -17,7 +17,6 @@ global.sprFireBulletHit = sprite_add("Fire Bullet Hit.png", 4, 8, 8)
 global.sprDarkBullet = sprite_add("Dark Bullet.png", 2, 8, 8)
 global.mskDarkBullet = sprite_add("Dark Bullet Mask.png", 0, 2.5, 4.5)
 global.sprDarkBulletHit = sprite_add("Dark Bullet Hit.png", 4, 8, 8)
-global.sprDarkSmallExplosion = sprite_add("Dark Small Explosion.png",7,12,12)
 global.sprLightBullet = sprite_add("Light Bullet.png", 2, 8, 8)
 global.sprLightBulletHit = sprite_add("Light Bullet Hit.png", 4, 8, 8)
 
@@ -28,7 +27,10 @@ global.sprGenShell = sprite_add("Generic Shell.png",0, 1.5, 2.5);
 
 global.stripes = sprite_add("BIGstripes.png",1,1,1)
 
-global.pi = 3.14159265359
+
+#define cleanup
+with instances_matching(CustomProjectile,"name","Psy Bullet","Psy Shell") instance_delete(self)
+
 #define bullet_hit
 projectile_hit(other, damage, force, direction);
 if instance_exists(creator) if recycle_amount != 0 && irandom(9) <= 5 && skill_get(16){
@@ -41,17 +43,22 @@ if instance_exists(creator) if recycle_amount != 0 && skill_get("recycleglandx10
 	if creator.ammo[1] > creator.typ_amax[1] {creator.ammo[1] = creator.typ_amax[1]}
 	sound_play_pitchvol(sndRecGlandProc, 1, 7)
 }
-if name = "Dark bullet"{sleep(80)}
 instance_destroy()
 
+#define bullet_anim
+image_index = 1
+image_speed = 0
+
+#define shell_hit
+projectile_hit(other, (current_frame < fallofftime? damage : (damage - falloff)), force, direction);
+
+
+//ill get to this later
 #define bullet_step
-if image_index = 1{
-	image_speed = 0
-}
 if pattern = "helix"
 {
-	if cycle < 359{cycle += 9}else{cycle = 0}
-	direction = dsin(cycle*global.pi)*(32-skill_get(19)*20)*dir+_direction
+	cycle = (cycle + 9) mod 360
+	direction = dsin(cycle*pi)*(32-skill_get(19)*20)*dir+_direction
 	image_angle = direction
 }
 if pattern = "tree"
@@ -87,6 +94,7 @@ if pattern = "cloud"
 	if speed > _spd{speed = _spd}
 	if irandom(79) = 0{parent = -99999}
 }
+
 #define bullet_draw
 draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, image_yscale, image_angle, image_blend, 1.0);
 draw_set_blend_mode(bm_add);
@@ -114,6 +122,7 @@ with (a) {
 	on_destroy = script_ref_create(psy_destroy)
 	on_hit = script_ref_create(bullet_hit)
 	on_draw = script_ref_create(bullet_draw)
+	on_anim = script_ref_create(bullet_anim)
 }
 return a;
 
@@ -124,28 +133,26 @@ if timer > 0{
 if timer = 0 && instance_exists(enemy){
 	var closeboy = instance_nearest(x,y,enemy)
 	if collision_line(x,y,closeboy.x,closeboy.y,Wall,0,0) < 0 && distance_to_object(closeboy) < 220{
-	var dir, spd, dmp, rot;
+		var dir, spd;
 
-	dir = point_direction(x, y, closeboy.x, closeboy.y);
-	spd = max(11, 0);
-	dmp = clamp(.3, 0, .8);
+		dir = point_direction(x, y, closeboy.x, closeboy.y);
+		spd = 11
 
-	direction -= clamp(angle_difference(image_angle, dir) * dmp, -spd, spd); //Smoothly rotate to aim position.
-image_angle = direction
+		direction -= clamp(angle_difference(image_angle, dir) * .3, -spd, spd); //Smoothly rotate to aim position.
+		image_angle = direction
 	}
 	if speed > maxspeed
 	{
 		speed = maxspeed
 	}
 }
-mod_script_call("mod","defpack tools","bullet_step")
 
 #define psy_destroy
 with instance_create(x,y,BulletHit){
 	sprite_index = global.sprPsyBulletHit
 	image_angle = other.direction + 180
 }
-if place_meeting(x + hspeed,y +vspeed,Wall){sound_play_pitchvol(sndHitWall,1,100/distance_to_object(creator))}
+if place_meeting(x + hspeed,y +vspeed,Wall){sound_play_hit(sndHitWall,.2)}
 
 
 #define create_psy_shell(_x,_y)
@@ -153,95 +160,56 @@ var b = instance_create(_x, _y, CustomProjectile)
 with (b){
 	name = "Psy Shell"
 	sprite_index = global.sprPsyPellet
+	friction = .6
 	image_angle = direction
 	mask_index = mskBullet2
-	fric2 = 1.5
-	fric = random_range(1.07,1.2)
 	wallbounce = skill_get(15) * 5 + (skill_get("shotgunshouldersx10")*50)
 	force = 4
 	recycle_amount = 0
 	image_speed = 1
 	damage = 4
+	falloff = 1
+	fallofftime = current_frame + 2
 	timer = 5 + irandom(4)
-	og_timer = timer
-	speedset = 0
-	maxspeed = 7
-	on_hit = script_ref_create(bullet_hit)
+	on_hit = script_ref_create(shell_hit)
 	on_draw = script_ref_create(psy_shell_draw)
 	on_step = script_ref_create(psy_shell_step)
+	on_wall = script_ref_create(psy_shell_wall)
 	on_destroy = script_ref_create(psy_shell_destroy)
+	on_anim = script_ref_create(bullet_anim)
 }
 return b;
 
 #define psy_shell_step
-if speedset = 0
-{
-	move_bounce_solid(false)
-	speed/= fric
-	if speed < 1.00005{speedset = 1}
+if timer > 0{
+	timer -= current_time_scale
 }
-else
-{
-	if instance_exists(enemy)
-	{
-		var closeboy = instance_nearest(x,y,enemy)
-		if instance_exists(enemy){
-			var closeboy = instance_nearest(x,y,enemy)
-			if collision_line(x,y,closeboy.x,closeboy.y,Wall,0,0) < 0 && distance_to_object(closeboy) < 200{
-				motion_add(point_direction(x,y,closeboy.x,closeboy.y),1.2 * (1 + skill_get(15)))
-				motion_add(direction,-.03  * (1 + skill_get(15)))
-			}
-		}
-		motion_add(direction,1.2* (1 + skill_get(15)))
-		speed -= fric2
-		if speed > maxspeed{speed = maxspeed}
+if timer = 0 && instance_exists(enemy){
+	var closeboy = instance_nearest(x,y,enemy)
+	if collision_line(x,y,closeboy.x,closeboy.y,Wall,0,0) < 0 && distance_to_object(closeboy) < 200{
+		motion_add(point_direction(x,y,closeboy.x,closeboy.y),current_time_scale * (1 + skill_get(15)))
+		motion_add(direction,-.03  * (1 + skill_get(15)))
+		image_angle = direction
 	}
-	else motion_add(direction,.5)
 }
-if image_index >= 1{image_speed = 0}
-image_angle = direction
-if place_meeting(x + hspeed, y, Wall){
-	hspeed /= -1.25
-	if speed + wallbounce >= 18{
-		speed = 18
-	}
-	else{
-		speed += wallbounce
-	}
-	wallbounce /= 1.05
-	instance_create(x,y,Dust)
-	sound_play_pitchvol(sndShotgunHitWall, 1, 50/distance_to_object(creator))
-	if speed < 1{
-}
-image_angle = direction
-if place_meeting(x, y + vspeed, Wall){
-	vspeed /= -1.25
-	if speed + wallbounce >= 18{
-		speed = 18
-	}
-	else{
-		speed += wallbounce
-	}
-	wallbounce /= 1.05
-	instance_create(x,y,Dust)
-	sound_play_pitchvol(sndShotgunHitWall, 1, 50/distance_to_object(creator))
-	image_angle = direction
-}
-if place_meeting(x + hspeed, y + vspeed, Wall){
-	direction += 180
-	speed /= 1.25
-	if speed + wallbounce >= 18{
-		speed = 18
-	}
-	else{
-		speed += wallbounce
-	}
-	wallbounce /= 1.05
-	instance_create(x,y,Dust)
-	sound_play_pitchvol(sndShotgunHitWall, 1, 50/distance_to_object(creator))
-}
+if speed < 3{
 	instance_destroy()
 }
+
+#define psy_shell_wall
+fallofftime = current_frame + 2
+move_bounce_solid(true)
+speed /= 1.25
+if speed + wallbounce >= 14{
+	speed = 14
+}
+else{
+	speed += wallbounce
+}
+wallbounce /= 1.05
+instance_create(x,y,Dust)
+sound_play_hit(sndShotgunHitWall,.2)
+image_angle = direction
 
 #define psy_shell_destroy
 with instance_create(x,y,BulletHit){
@@ -262,36 +230,66 @@ var c = instance_create(_x, _y, CustomProjectile)
 with (c){
 	name = "Split Shell"
 	sprite_index = global.sprMagPellet
-	friction = random_range(.50,.54)
+	friction = .475
 	image_angle = direction
 	mask_index = mskBullet2
-	wallbounce = skill_get(15) + (skill_get("shotgunshouldersx10")*50)
+	wallbounce = skill_get(15) * 4 + (skill_get("shotgunshouldersx10")*40)
 	force = 4
 	ammo = 2
-	lasthit = -99999
+	lasthit = -4
 	recycle_amount = 0
 	image_speed = 1
 	damage = 3
-	lifetime = room_speed*8 //since shotgun shoulders synergy is mad
+	falloff = 1
+	fallofftime = current_frame + 2
 	timer = 5 + irandom(4)
 	og_timer = timer
 	on_hit = script_ref_create(mag_hit)
 	on_draw = script_ref_create(mag_shell_draw)
 	on_step = script_ref_create(mag_shell_step)
 	on_destroy = script_ref_create(mag_shell_destroy)
+	on_anim = script_ref_create(bullet_anim)
+	on_wall = script_ref_create(split_wall)
 }
 return c;
 
+#define split_wall
+fallofftime = current_frame + 2
+move_bounce_solid(true)
+speed /= 1.5
+if speed + wallbounce >= 14{
+	speed = 14
+}
+else{
+	speed += wallbounce
+}
+wallbounce /= 1.05
+instance_create(x,y,Dust)
+sound_play_hit(sndShotgunHitWall,.2)
+image_angle = direction
+if ammo{
+	ammo--
+	image_xscale /= 1.2
+	with mod_script_call("mod","defpack tools","create_split_shell",x,y){
+		creator = other.creator
+		image_xscale = other.image_xscale
+		team = other.team
+		ammo = other.ammo
+		motion_add(other.direction + random_range(-40,40),random_range(12,14))
+		image_angle = direction
+	}
+}
 #define mag_hit
-speed /= 1.05
+speed /= 1 + (.5*current_time_scale)
 if lasthit != other.id
 {
-	projectile_hit(other, damage, force, direction);
+	shell_hit();
 	if ammo > 0
 	{
 		ammo -= 1
-		direction = random(359)
-		image_xscale /= 1.25
+		direction = point_direction(x,y,other.x,other.y)+180
+		image_angle = direction
+		image_xscale /= 1.2
 		with mod_script_call("mod","defpack tools","create_split_shell",x,y)
 		{
 			creator = other.creator
@@ -308,99 +306,7 @@ lasthit = other.id
 #define mag_shell_step
 if ammo >= 3{sprite_index = global.sprHeavyMagPellet}
 else{sprite_index = global.sprMagPellet}
-if lifetime > 0{lifetime--}else{instance_destroy();exit}
 image_yscale = image_xscale
-if timer > 0{
-	timer -= 1
-}
-if timer = (og_timer - 2){
-	damage -= 1
-}
-image_angle = direction
-if image_index >= 1{
-	image_speed = 0
-}
-if place_meeting(x + hspeed, y, Wall){
-	hspeed *= -1
-	if speed + wallbounce >= 14{
-		speed = 14
-	}
-	else{
-		speed += wallbounce
-	}
-	wallbounce /= .8
-	instance_create(x,y,Smoke)
-	sound_play_pitchvol(sndShotgunHitWall, 1, 50/distance_to_object(creator))
-	image_angle = direction
-	move_bounce_solid(false)
-	if ammo > 0
-	{
-		ammo -= 1
-		if sprite_index != global.sprHeavyMagPellet{image_xscale /= 1.25}
-		with mod_script_call("mod","defpack tools","create_split_shell",x,y){
-			creator = other.creator
-			image_xscale = other.image_xscale
-			team = other.team
-			ammo = other.ammo
-			motion_add(other.direction + random_range(-40,40)*creator.accuracy,random_range(12,14))
-			image_angle = direction
-		}
-	}
-}
-if place_meeting(x, y + vspeed, Wall){
-	vspeed *= -1
-	if speed + wallbounce >= 14{
-		speed = 14
-	}
-	else{
-		speed += wallbounce
-	}
-	wallbounce /= .8
-	instance_create(x,y,Smoke)
-	sound_play_pitchvol(sndShotgunHitWall, 1, 50/distance_to_object(creator))
-	image_angle = direction
-	move_bounce_solid(false)
-	if ammo > 0
-	{
-		ammo -= 1
-		if sprite_index != global.sprHeavyMagPellet{image_xscale /= 1.25}
-		with mod_script_call("mod","defpack tools","create_split_shell",x,y){
-			creator = other.creator
-			image_xscale = other.image_xscale
-			team = other.team
-			ammo = other.ammo
-			motion_add(other.direction + random_range(-40,40)*creator.accuracy,random_range(12,14))
-			image_angle = direction
-		}
-	}
-}
-if place_meeting(x + hspeed, y + vspeed, Wall){
-	direction += 180
-	if speed + wallbounce >= 14{
-		speed = 14
-	}
-	else{
-		speed += wallbounce
-	}
-	wallbounce /= .8
-	instance_create(x,y,Smoke)
-	sound_play_pitchvol(sndShotgunHitWall, 1, 50/distance_to_object(creator))
-	image_angle = direction
-	move_bounce_solid(false)
-	if ammo > 0
-	{
-		ammo -= 1
-		if sprite_index != global.sprHeavyMagPellet{image_xscale /= 1.25}
-		with mod_script_call("mod","defpack tools","create_split_shell",x,y){
-			creator = other.creator
-			image_xscale = other.image_xscale
-			team = other.team
-			ammo = other.ammo
-			motion_add(other.direction + random_range(-40,40)*other.creator.accuracy,random_range(12,14))
-			image_angle = direction
-		}
-	}
-}
 if speed < 2{instance_destroy()}
 
 #define mag_shell_destroy
@@ -437,11 +343,12 @@ with (c){
 	on_destroy = script_ref_create(lightning_destroy)
 	on_hit = script_ref_create(bullet_hit)
 	on_draw = script_ref_create(bullet_draw)
+	on_anim = script_ref_create(bullet_anim)
 }
 return c;
 
 #define lightning_step
-if irandom(17) = 1{
+if random(17) < 1*current_time_scale{
 	with instance_create(x,y,Lightning){
       	image_angle = random(360)
       	team = other.team
@@ -455,7 +362,6 @@ if irandom(17) = 1{
         }
     }
 }
-mod_script_call("mod","defpack tools","bullet_step")
 
 #define lightning_destroy
 with instance_create(x,y,Lightning){
@@ -469,7 +375,7 @@ with instance_create(x,y,Lightning){
 	{
 	   image_angle = other.image_angle
 	}
-	sound_play_pitchvol(sndHitWall,1,100/distance_to_object(creator))
+	sound_play_hit(sndHitWall,.2)
 }
 with instance_create(x,y,BulletHit){
 	direction = other.direction
@@ -489,10 +395,11 @@ with (d) {
 	recycle_amount = 2
 	image_speed = 1
 	image_angle = direction
-	on_step = script_ref_create(bullet_step)
+	//on_step = script_ref_create(bullet_step)
 	on_destroy = script_ref_create(toxic_destroy)
 	on_hit = script_ref_create(bullet_hit)
 	on_draw = script_ref_create(bullet_draw)
+	on_anim = script_ref_create(bullet_anim)
 }
 return d;
 
@@ -504,7 +411,7 @@ with instance_create(x,y,BulletHit){
 	sprite_index = global.sprToxicBulletHit
 	direction = other.direction
 }
-if place_meeting(x + hspeed,y +vspeed,Wall){sound_play_pitchvol(sndHitWall,1,100/distance_to_object(creator))}
+if place_meeting(x + hspeed,y +vspeed,Wall){sound_play_hit(sndHitWall,.2)}
 
 #define create_fire_bullet(_x,_y)
 var e = instance_create(_x, _y, CustomProjectile)
@@ -518,11 +425,11 @@ with (e){
 	damage = 3
 	recycle_amount = 2
 	image_speed = 1
-	image_angle = direction
 	on_step = script_ref_create(fire_step)
 	on_destroy = script_ref_create(fire_destroy)
 	on_hit = script_ref_create(bullet_hit)
 	on_draw = script_ref_create(bullet_draw)
+	on_anim = script_ref_create(bullet_anim)
 }
 return e;
 
@@ -533,7 +440,6 @@ if irandom(12) = 1{
 		creator = other.creator
 	}
 }
-mod_script_call("mod","defpack tools","bullet_step")
 
 #define fire_destroy
 repeat(3){
@@ -547,39 +453,44 @@ with instance_create(x,y,BulletHit){
 	sprite_index = global.sprFireBulletHit
 	direction = other.direction
 }
-if place_meeting(x + hspeed,y +vspeed,Wall){sound_play_pitchvol(sndHitWall,1,100/distance_to_object(creator))}
+if place_meeting(x + hspeed,y +vspeed,Wall){sound_play_hit(sndHitWall,.2)}
 
 #define create_dark_bullet(_x,_y)
-var f = instance_create(_x, _y, CustomProjectile)
+var f = instance_create(_x, _y, CustomSlash)
 with (f){
 	name = "Dark Bullet"
 	pattern = false
 	sprite_index = global.sprDarkBullet
 	typ = 2
 	mask_index =global.mskDarkBullet
-	damage = 15
+	damage = 8
 	force = 7
 	offset = random(359)
 	ringang = random(359)
 	recycle_amount = 1
 	image_speed = 1
 	image_angle = direction
-	on_step = script_ref_create(dark_step)
+	//on_step = script_ref_create(dark_step)
+	on_projectile = script_ref_create(dark_proj)
 	on_destroy = script_ref_create(dark_destroy)
+	on_wall = script_ref_create(dark_wall)
 	on_hit = script_ref_create(bullet_hit)
 	on_draw = script_ref_create(bullet_draw)
+	on_anim = script_ref_create(bullet_anim)
 }
 return f;
 
 #define dark_step
-mod_script_call("mod","defpack tools","bullet_step")
+
+#define dark_wall
+instance_destroy()
+
+#define dark_proj
 var t = team;
-with instances_matching_ne(projectile,"team",team) if distance_to_object(other) <= 0{
-	if "typ" in self && typ >= 1 && !instance_is(self,Grenade)
-	{
+with other{
+	if "typ" in self && typ >= 1 {
 		var ringang = random(359);
-		with create_sonic_explosion(x,y)
-		{
+		with create_sonic_explosion(x,y){
 			var scalefac = random_range(0.26,0.3);
 			image_xscale = scalefac
 			image_yscale = scalefac
@@ -590,10 +501,8 @@ with instances_matching_ne(projectile,"team",team) if distance_to_object(other) 
 			team = t
 			candeflect = 0
 		}
-		repeat(3)
-		{
-			with create_sonic_explosion(other.x+lengthdir_x(other.speed*1.3,other.offset+ringang),other.y+lengthdir_y(other.speed*1.3,other.offset+ringang))
-			{
+		repeat(3){
+			with create_sonic_explosion(other.x+lengthdir_x(other.speed*1.3,other.offset+ringang),other.y+lengthdir_y(other.speed*1.3,other.offset+ringang)){
 				var scalefac = random_range(0.15,0.2);
 				image_xscale = scalefac
 				image_yscale = scalefac
@@ -608,11 +517,6 @@ with instances_matching_ne(projectile,"team",team) if distance_to_object(other) 
 		}
 		instance_destroy()
 	}
-
-}
-if speed <= 0
-{
-	instance_destroy()
 }
 
 #define dark_destroy
@@ -631,7 +535,7 @@ with create_sonic_explosion(x,y){
 	image_speed = 0.8
 	image_blend = c_black
 }
-if place_meeting(x + hspeed,y +vspeed,Wall){sound_play_pitchvol(sndHitWall,1,100/distance_to_object(creator))}
+if place_meeting(x + hspeed,y +vspeed,Wall){sound_play_hit(sndHitWall,.2)}
 
 #define create_light_bullet(_x,_y)
 var g = instance_create(_x, _y, CustomProjectile)
@@ -647,10 +551,11 @@ with (g){
 	pierces = 6
 	image_speed = 1
 	image_angle = direction
-	on_step = script_ref_create(light_step)
+	//on_step = script_ref_create(light_step)
 	on_destroy = script_ref_create(light_destroy)
 	on_hit = script_ref_create(light_hit)
 	on_draw = script_ref_create(bullet_draw)
+	on_anim = script_ref_create(bullet_anim)
 }
 return g;
 
@@ -670,9 +575,6 @@ if !irandom(1) && skill_get("recycleglandx10"){
 	if creator.ammo[1] > creator.typ_amax[1] {creator.ammo[1] = creator.typ_amax[1]}
 	sound_play_pitchvol(sndRecGlandProc, 1, 7)
 }
-
-#define light_step
-mod_script_call("mod","defpack tools","bullet_step")
 if pierces = 0{
 	instance_destroy()
 }
@@ -681,12 +583,12 @@ if pierces = 0{
 with instance_create(x,y,BulletHit){
 	sprite_index = global.sprLightBulletHit
 }
-if place_meeting(x + hspeed,y +vspeed,Wall){sound_play_pitchvol(sndHitWall,1,100/distance_to_object(creator))}
+if place_meeting(x + hspeed,y +vspeed,Wall){sound_play_hit(sndHitWall,.2)}
 
 
 
 #define create_sonic_explosion(_x,_y)
-var a = instance_create(_x,_y,CustomProjectile)
+var a = instance_create(_x,_y,CustomSlash)
 with(a){
 	name = "Sonic Explosion"
 	sprite_index = global.sprSonicExplosion
@@ -699,33 +601,38 @@ with(a){
 	force = 20
 	shake = 10
 	hitid = [sprite_index,"Sonic Explosion"]
-	on_step = sonic_step
-	on_hit = sonic_hit
-	on_wall = nothing
+	on_step = script_ref_create(sonic_step)
+	on_projectile = script_ref_create(sonic_projectile)
+	on_grenade = script_ref_create(sonic_grenade)
+	on_hit = script_ref_create(sonic_hit)
+	on_wall = script_ref_create(nothing)
+	on_anim = script_ref_create(sonic_anim)
 }
 return a
 #define nothing
 
+#define sonic_anim
+instance_destroy()
+
 #define sonic_step
 if shake {view_shake_at(x,y,shake);shake = 0}
-if !(current_frame mod 2) with instances_matching_ne(projectile,"team",team) if distance_to_object(other)<=0{
-	if "typ" in self && !instance_is(self,Grenade){
-		if typ = 1 && other.candeflect{
-			team = other.team
-			direction = point_direction(other.x,other.y,x,y)
-			image_angle = direction
-		}
-		if typ = 2 || typ = 3 || (typ = 1 && !other.candeflect){
-			instance_destroy()
-		}
-	}
-	if instance_is(self,Grenade){
+
+#define sonic_projectile
+with other{
+	if typ = 1 && other.candeflect{
+		team = other.team
 		direction = point_direction(other.x,other.y,x,y)
 		image_angle = direction
 	}
+	if typ = 2 || typ = 3 || (typ = 1 && !other.candeflect){
+		instance_destroy()
+	}
 }
-if image_index >= 7{
-	instance_destroy()
+
+#define sonic_grenade
+with other{
+	direction = point_direction(other.x,other.y,x,y)
+	image_angle = direction
 }
 
 #define sonic_hit
@@ -819,7 +726,7 @@ with a{
 	//other things
 	wep = weapon
 	check = 0 //the button it checks, 0 is undecided, 1 is fire, 2 is specs, should only be 0 on creation, never step
-	btn = [button_check(index,"fire"),button_check(index,"spec")]
+	btn = [button_check(index,"fire"),button_check(index,"spec"),other.swapmove]
 	popped = 0
 	dropped = 0
 	type = weapon_get_type(wep)
@@ -847,22 +754,10 @@ switch creator.race{
 			check = 1
 		}
 		if we && be{
-			if btn[1] && !btn[0]{
+			if btn[2]{
 				check = 2
 			}
-			if btn[0] && !btn[1]{
-				check = 1
-			}
-			if btn[1] && btn[0]{
-				var slots = [0,0,0];
-				check = choose(1,2)
-				with instances_matching(CustomObject,"name","Abris Target") if creator = other.creator && id != other{
-					slots[check]++
-				}
-				if slots[check]{
-					check = (check = 1 ? 2:1)
-				}
-			}
+			else check = 1
 		}
 		break
 	case "venuz":
@@ -872,23 +767,22 @@ switch creator.race{
 		}
 		else {check = 1}
 		break
+	case "skeleton":
+		if btn[1]{
+			check = 2
+		}else{
+			check = 1
+		}
+		break
 	default:
 		check = 1
 		break
-		case "skeleton":
-		if btn[1]
-		{
-			creator.ammo[type] -= cost
-		}
 }
 
 #define abris_step
 if instance_exists(creator){
 	if check = 0{
 		abris_check()
-	}
-	if button_pressed(index,"swap") && creator.race = "steroids"{
-		check = (check = 1 ? 2:1)
 	}
 	if !dropped{
 		image_angle += rotspeed;
@@ -977,18 +871,18 @@ detail = argument[5];
 
 dist = point_distance(x1,y1,x2,y2);
 dist_ang = angle_difference(point_direction(x1,y1,x2,y2),start_angle);
-  inc = (1/detail);
+inc = (1/detail);
 
 draw_primitive_begin(pr_linestrip);
 for (i=0; i<1+inc; i+=inc) {
 	draw_x = x1 + (lengthdir_x(i * dist, i * dist_ang + start_angle));
-  draw_y = y1 + (lengthdir_y(i * dist, i * dist_ang + start_angle));
-  draw_vertex(draw_x,draw_y);
-  }
+	draw_y = y1 + (lengthdir_y(i * dist, i * dist_ang + start_angle));
+	draw_vertex(draw_x,draw_y);
+}
 draw_primitive_end();
 return 0;
 
-#define step
+#define draw
 with Player
 {
 	if wep = "psy sniper rifle"
@@ -1003,7 +897,7 @@ with Player
 					image_angle = other.gunangle
 					move_contact_solid(image_angle,game_width)
 				}
-				draw_line_width_colour(x,y,q.x,q.y,1,lasercolour2,lasercolour2)
+				//draw_line_width_colour(x,y,q.x,q.y,1,lasercolour2,lasercolour2)
 				with q instance_destroy()
 			}
 		}

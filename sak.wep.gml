@@ -1,10 +1,14 @@
 #define init
 global.box = sprite_add_weapon("assemblykit.png",2,3)
 global.guys = [0,0,0,0]
-with instances_matching(CustomDraw,"customshell",1){
+with instances_matching([CustomDraw,CustomStep],"customshell",1){
 	instance_destroy()
 }
 with script_bind_draw(makemycoolgun,-15){
+	persistent = 1
+	customshell = 1
+}
+with script_bind_step(birdspread, 0){
 	persistent = 1
 	customshell = 1
 }
@@ -14,10 +18,12 @@ global.slugbods = ["shotgun", "eraser", "flak cannon", "slugger", "shot cannon"]
 
 makethechoices()
 makethetexts()
+makethestats()
 
 #define cleanup
 ds_map_destroy(global.textmap)
 ds_map_destroy(global.choicemap)
+ds_map_destroy(global.stats)
 
 #define makethechoices()
 global.choicemap = ds_map_create()
@@ -42,7 +48,7 @@ a[? "split slug"] = sg
 a[? "shotgun"] = ["double", "sawed-off", "auto", "assault", "hyper", "none"]
 a[? "eraser"] = ["bird", "wave", "auto", "assault", "hyper", "none"]
 a[? "flak cannon"] = ["super", "auto", "hyper", "none"]
-a[? "pop gun"] = ["quad", "rifle", "hyper", "none"]
+a[? "pop gun"] = ["triple", "rifle", "hyper", "none"]
 a[? "slugger"] = ["super", "gatling", "assault", "hyper", "none"]
 a[? "shot cannon"] = ["super", "auto", "hyper", "none"]
 
@@ -58,8 +64,8 @@ a[? "assault"] = "shoot three times in a row"
 a[? "hyper"] = "instant travel with more damage"
 a[? "none"] = "no mod because i respect ammo"
 a[? "bird"] = "shoot in a forking pattern"
-a[? "wave"] = "shoot in a wave pattern"
-a[? "quad"] = "shoot four projectiles in a regular spread"
+a[? "wave"] = "shoot in a wave pattern" 
+a[? "triple"] = "shoot three projectiles in a regular spread"
 a[? "rifle"] = "shoot three times, for only two ammo"
 a[? "super"] = "five times the projectiles"
 a[? "gatling"] = a[? "auto"]
@@ -82,11 +88,66 @@ a[? "pop gun"] = "rapid fire single shot, uses bullets"
 a[? "slugger"] = "shoots a single shot"
 a[? "shot cannon"] = "shoot a projectile that disperses others"
 
- #define weapon_name(w)
+#define makethestats()
+global.stats = ds_map_create()
+var a = global.stats
+
+//[ammo, reload, sound, rads]
+//based off of firing a shotgun of said type (the cost of 7 projectiles)
+a[? "shell"] = [1, 1, sndShotgun, 0]
+a[? "slug"] = [7, 2, sndSlugger, 0]
+a[? "heavy slug"] = [13, 1.8, sndHeavySlugger, 0]
+a[? "flame shell"] = [1, 1.2, sndFireShotgun, 0]
+a[? "ultra shell"] = [3, .7, sndUltraShotgun, 9]
+a[? "psy shell"] = [2, 1.3, sndShotgun, 0]
+a[? "split shell"] = [2, 1.2, sndShotgun, 0]
+a[? "split slug"] = [4, 1.5, sndSlugger, 0]
+
+//[ammo, reload base, sound]
+a[? "shotgun"] = [1, 17, sndShotgun]
+a[? "eraser"] = [2, 20, sndEraser]
+a[? "flak cannon"] = [2, 26, sndFlakCannon]
+a[? "pop gun"] = [1, 2, sndPopgun]
+a[? "slugger"] = [1/6, 11, sndSlugger]
+a[? "shot cannon"] = [4, 25, sndFlakCannon]
+
+//[ammo, reload, sound]
+a[? "double"] = [2, 1.6, sndDoubleShotgun]
+a[? "sawed-off"] = [2, 1.6, sndSawedOffShotgun]
+a[? "auto"] = [1, .4, sndPopgun]
+a[? "assault"] = [3, 2, -1]
+a[? "hyper"] = [1, 1, sndHyperSlugger]
+a[? "none"] = [1, 1, -1]
+a[? "bird"] = [1, 1.2, -1]
+a[? "wave"] = [1, 1.2, sndWaveGun]
+a[? "triple"] = [3, 1, sndIncinerator]
+a[? "rifle"] = [2, 2, -1]
+a[? "super"] = [5, 2.3, sndSuperSlugger]
+a[? "gatling"] = [1, .3, -1]
+
+
+#define take_wave(w)
+w.sounds = [sndWaveGun]
+#define take_pop_gun(w)
+w.type = 1
+w.auto = 1
+#define take_assault(w)
+w.shots = 3
+w.time = 3
+#define take_rifle(w)
+w.shots = 3
+w.auto = 1
+w.time = 2
+#define take_auto(w)
+w.auto = 1
+#define take_gatling(w)
+w.auto = 1
+
+#define weapon_name(w)
 if is_object(w){
 	if w.done return w.name
 }
-return "SHOTGUN ASSEMBLY KIT"
+return `@(color:${make_color_rgb(255, 156, 0)})SHOTGUN ASSEMBLY KIT`
 
 #define weapon_type(w)
 if is_object(w){
@@ -100,6 +161,13 @@ if is_object(w){
 }
 return 0
 
+#define weapon_rads(w)
+if is_object(w){
+	if w.done return w.rads
+}
+return 0
+
+
 #define weapon_area
 return 10
 
@@ -112,7 +180,11 @@ return 1
 #define weapon_swap
 return sndSwapShotgun
 
-#define weapon_auto
+#define weapon_auto(w)
+if is_object(w){
+	if w.done return w.auto
+}
+
 return 0
 
 #define weapon_melee
@@ -126,46 +198,14 @@ if is_object(w){
 	if w.done{
 		if fork(){
 			repeat(w.shots){
-				var p = w.info[1];
-				var m = w.info[3];
-				switch w.info[2]{
-					case "shotgun":
-						repeat(7){
-							with proj(p){
-								set(20)
-								speed += random_range(-2,1)
-							}
-						}
-						break
-					case "slugger":
-						with proj(p){
-							set(5)
-						}
-						break
-					case "eraser":
-						switch w.info[3]{
-							case "bird":
-								break
-							case "wave":
-								break
-							default:
-								repeat(17){
-									with proj(p){
-										set(1)
-										speed += random_range(-2,2)
-									}
-								}
-								break
-						}
-						break
-					case "":
-						break
-					case "":
-						break
-
+				for (var i = 0; i<array_length_1d(w.sounds); i++){
+					sound_play(w.sounds[i])
 				}
+				weapon_post(w.ammo * 2,w.ammo,w.ammo)
+				mod_script_call("weapon",mod_current,string_replace(w.info[2]," ","_"),w.info[1],w.info[3])
 				if w.time wait(w.time)
 			}
+			exit
 		}
 	}
 }else{
@@ -174,12 +214,152 @@ if is_object(w){
 	wep = w
 }
 
+#define pop_gun(p,m)
+switch m{
+	case "triple":
+		for (var i = -1; i<= 1; i++){
+			with proj(p){
+				fset(23,3,i,1)
+				if "stockspeed" in self speed = stockspeed
+			}
+		}
+		break
+	default:
+		with proj(p){
+			set(4)
+			if "stockspeed" in self speed = stockspeed
+			if m = "hyper" hyper_travel()
+		}
+		break
+}
+
+#define eraser(p,m)
+switch m {
+	case "bird":
+		if fork(){
+			repeat(5){
+				for (var i = -1; i<= 1; i++){
+					with proj(p){
+						fset(13,2*abs(i) + 2,i,1);
+						if i != 0 {birdspeed = i* .5* other.accuracy}
+					}
+				}
+				wait(1)
+			}
+			exit
+		}
+		break
+	case "wave":
+		if fork(){
+			for (var i = -3/8; i<= 3; i+= 3/8){
+				with proj(p){
+					direction = other.gunangle + 15*sin(i) *other.accuracy;
+					image_angle = direction
+					creator = other
+					team = other.team
+					if "stockspeed" in self speed = stockspeed
+				}
+				with proj(p){
+					direction = other.gunangle - 15*sin(i) *other.accuracy;
+					image_angle = direction
+					creator = other
+					team = other.team
+					if "stockspeed" in self speed = stockspeed
+				}
+				wait(1)
+			}
+			exit
+		}
+		break
+	case "auto":
+		repeat(15){
+			with proj(p){
+				set(1)
+				speed += random_range(-2,2)
+			}
+		}
+		break
+	default:
+		repeat(17){
+			with proj(p){
+				set(1)
+				speed += random_range(-2,2)
+				if m = "hyper" hyper_travel()
+			}
+		}
+		break
+}
+
+#define slugger(p,m)
+switch m{
+	case "super":
+		for (var i = -2; i<= 2; i++){
+			with proj(p) {
+				fset(12,3,i,1)
+			}
+		}
+		break
+	default:
+		with proj(p){
+			set(5)
+			if m = "hyper" hyper_travel()
+		}
+		break
+}
+
+#define flak_cannon(p,m)
+switch m{
+	case "super":
+	default:
+		with flak(){
+			payload = p
+			set(3)
+			speed = random_range(11,13)
+			if m = "hyper"{
+				hyper = 1
+				hyper_travel()
+			}
+		}
+}
+
+
+
+#define shotgun(p,m)
+switch m{
+	case "double":
+		repeat(14){
+			with proj(p) {
+				set(30)
+				speed += random_range(-2,1)
+			}
+		}
+		break
+	case "sawed-off":
+		repeat(20){
+			with proj(p) {
+				set(45)
+				speed += random_range(-2,1)
+			}
+		}
+		break
+	default:
+		repeat(7){
+			with proj(p){
+				set(20)
+				if m = "hyper" hyper_travel()
+				speed += random_range(-2,1)
+			}
+		}
+		break
+}
+
 #define proj(thing)
 switch thing{
 	case "shell":
 		var a = instance_create(x,y,Bullet2)
 		with a{
 			speed = random_range(12,18)
+			stockspeed = 16
 		}
 		return a
 	case "slug":
@@ -188,12 +368,128 @@ switch thing{
 			speed = 16
 		}
 		return a
+	case "heavy slug":
+		with instance_create(x,y,HeavySlug){
+			speed = 13
+			return id
+		}
+	case "flame shell":
+		with instance_create(x,y,FlameShell){
+			speed = random_range(12,18)
+			stockspeed = 16
+			return id
+		}
+	case "ultra shell":
+		with instance_create(x,y,UltraShell){
+			speed = random_range(12,18)
+			stockspeed = 16
+			return id
+		}
+	case "psy shell":
+		with mod_script_call("mod", "defpack tools", "create_psy_shell",x,y){
+			speed = random_range(12,18)
+			stockspeed = 16
+			return id
+		}
+	case "split shell":
+		with mod_script_call("mod", "defpack tools", "create_split_shell",x,y){
+			speed = random_range(15,18)
+			stockspeed = 17
+			ammo = 2
+			return id
+		}
+	case "split slug":
+		with mod_script_call("mod", "defpack tools", "create_split_shell",x,y){
+			speed = random_range(17,20)
+			stockspeed = 19
+			ammo = 3
+			damage = 7
+			falloff = 2
+			return id
+		}
 }
+
+#define flak
+with instance_create(x,y,CustomProjectile){
+	sprite_index = sprFlakBullet
+	mask_index = mskFlakBullet
+	on_destroy = flakpop
+	on_step = flakstep
+	damage = 8
+	payload = "shell"
+	friction = .4
+	ammo = 14
+	hyper = 0
+	return id
+}
+
+#define flakstep
+if speed < .01{
+	instance_destroy()
+}
+
+#define flakpop
+sound_play_hit(sndFlakExplode,.1)
+if skill_get(mut_eagle_eyes){
+	for var i = 0; i< 360; i+=360/ammo{
+		with (proj(payload)){
+			direction = i
+			image_angle = i
+			creator = other.creator
+			team = other.team
+			if other.hyper hyper_travel()
+		}
+	}
+}
+else{
+	repeat(ammo){
+		with proj(payload){
+			direction = random(360)
+			image_angle = direction
+			creator = other.creator
+			team = other.team
+			if other.hyper hyper_travel()
+		}
+	}
+}
+
+#define hyper_travel
+x+=lengthdir_x(sprite_width-sprite_xoffset,direction)
+y+=lengthdir_y(sprite_width-sprite_xoffset,direction)
+damage = floor(damage*1.1)
+var move = 1;
+for(var i = 0;i<=100;i++){
+	var xx = x+lengthdir_x(8 * i,direction), yy = y+lengthdir_y(8 * i,direction);
+	var man = instance_place(xx,yy,hitme);
+	if (instance_exists(man) && man.team != team) || place_meeting(xx,yy,Wall){
+		var _x = x, _y = y;
+		x += lengthdir_x(8 * i, direction);
+		y += lengthdir_y(8 * i, direction);
+		move = 0
+		xprevious += lengthdir_x(8 * (i-1), direction);
+		yprevious += lengthdir_y(8 * (i-1), direction);
+		for(var o = 0;o <= i;o++){
+			if !random(1) instance_create(_x + lengthdir_x(8 * o,direction) + random_range(-4,4), _y + lengthdir_y(8 * o,direction) + random_range(-4,4), Dust);
+		}
+		break;
+	}
+}
+if move{
+	x = xx
+	y = yy
+}
+#define fset(range,subrange,n,acc)
+direction = other.gunangle + (range*n)*(acc ? other.accuracy : 1) + random_range(-subrange,subrange)*other.accuracy
+team = other.team
+creator = other
+image_angle = direction
 
 #define set(range)
 direction = other.gunangle + random_range(-range,range)*other.accuracy
 team = other.team
 creator = other
+image_angle = direction
+
 
 #define weapon_sprt(w)
 if is_object(w){
@@ -202,7 +498,13 @@ if is_object(w){
 return global.box
 
 #define weapon_text
-return choose("Gunlocker, eat your heart out", "essence of shell")
+return "Gunlocker, eat your heart out"
+
+#define birdspread
+with instances_matching_ne(projectile,"birdspeed",null){
+	direction+=birdspeed * current_time_scale * speed
+	image_angle = direction
+}
 
 #define step(q)
 if button_pressed(index,"horn")&&q{
@@ -215,6 +517,9 @@ if q && !is_object(wep){
 		type: 2,
 		load: 1,
 		shots: 1,
+		sounds: [],
+		rads: 0,
+		auto: 0,
 		time: 0,
 		info: [-1,0,0],
 		numbers: [0,0,0],
@@ -224,10 +529,21 @@ if q && !is_object(wep){
 	}
 }
 
+#define stats(w)
+var sts = global.stats;
+w.load = floor(sts[? w.info[2]][1] * sts[? w.info[1]][1] * sts[? w.info[3]][1])
+w.ammo = floor(sts[? w.info[2]][0] * sts[? w.info[1]][0] * sts[? w.info[3]][0])
+w.rads = sts[? w.info[1]][3]
+for (var i = 1; i<= 3; i++){
+	array_push(w.sounds,sts[? w.info[i]][2])
+	if mod_script_exists("weapon", mod_current, "take_"+string_replace(w.info[i]," ","_")) mod_script_call("weapon", mod_current, "take_"+string_replace(w.info[i]," ","_"),w)
+}
+
 //this thing is the distance between shit
 #macro gx 22
 
 #define makemycoolgun
+draw_set_halign(0)
 with Player if is_object(wep) && wep.wep = mod_current && !wep.done{
 	var w = wep;
 	var tex = global.textmap;
@@ -247,7 +563,8 @@ with Player if is_object(wep) && wep.wep = mod_current && !wep.done{
 		var x2 = _x+gx*(i+1) - 2;
 		var y2 = y1 + 18;
 		draw_sprite_ext(global.sprammo,i,x1,y1,1,1,0,c_gray,1)
-		if point_in_rectangle(mouse_x[index], mouse_y[index], x1, y1, x2, y2){
+		var push = button_pressed(index,"key"+string(i+1));
+		if point_in_rectangle(mouse_x[index], mouse_y[index], x1, y1, x2, y2) || push{
 			if !button_check(index, "fire"){
 				draw_sprite(global.sprammo,i,x1,y1)
 			}
@@ -255,39 +572,59 @@ with Player if is_object(wep) && wep.wep = mod_current && !wep.done{
 			var access = cho[? w.info[w.phase]][i]
 			draw_text(_x+1,y2+3,access)
 			draw_text_ext(_x+1,y2+9,tex[? access], 6, 22*width)
-			if button_released(index, "fire"){
+			if button_released(index, "fire") || push{
 				sound_play(sndClick)
-				var n = w.name;
-				switch w.phase{
-					case 0:
-						n = access
-						break
-					case 1:
-						n += " " + access
-						break
-					case 2:
-						n = access + " " + n
-						if access = "wave" || access = "bird"{
-							n = cho[? w.info[0]][w.numbers[0]] + " " + access
-							if access = "wave"{
-								n+=" gun"
-							}
-						}
-						n = string_replace_all(n, " shell", "")
-						n = string_replace_all(n, "none ", "")
-						if string_count("slugger",n) && string_count("slug", n){
-							n = string_replace(n, " slug", "")
-						}
-						break
-				}
-				w.name = n
 				w.info[++w.phase] = access
 				w.numbers[w.phase-1] = i
 				if w.phase = 3{
 					w.done = 1;
-
+					stats(w)
+					name(w)
 				}
 			}
 		}
 	}
 }
+draw_set_halign(1)
+
+
+#define make_gun_random
+var w = {
+		wep: mod_current,
+		ammo: 1,
+		type: 2,
+		load: 1,
+		shots: 1,
+		sounds: [],
+		rads: 0,
+		auto: 0,
+		time: 0,
+		info: [-1,0,0],
+		numbers: [0,0,0],
+		name: "Custom Shotgun!",
+		phase: 0,
+		done: 0
+	}
+var cho = global.choicemap;
+for (var i = 0; i< 3; i+=0){
+	var n = irandom(array_length_1d(cho[? w.info[i]]) -1);
+	w.numbers[i] = n
+	w.info[++i] = cho[? w.info[i-1]][n]
+}
+w.done = 1
+stats(w)
+name(w)
+return w
+
+#define name(w)
+w.name = `${w.info[3]} ${w.info[1]} ${w.info[2]}`
+if w.info[3] = "wave" || w.info[3] = "bird"{
+	w.name = `${w.info[1]} ${w.info[3]}`
+	if w.info[3] = "wave" w.name += " gun"
+}
+w.name = string_replace(w.name, "none ", "")
+w.name = string_replace(w.name, "shell ", "")
+if w.info[2] = "slugger" w.name = string_replace(w.name, "slug ", "")
+
+
+
