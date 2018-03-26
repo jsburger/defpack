@@ -1,0 +1,167 @@
+#define init
+global.sprVectorShotgun = sprite_add_weapon("sprVectorShotgun.png",4,5)
+global.sprVectorHead 	  = sprite_add("sprVectorHead.png",0,5,5)
+global.sprVector	      = sprite_add("sprVector.png",0,1,3)
+global.sprVectorImpact  = sprite_add("sprVectorImpact.png",7,16,16)
+return "VECTOR SHOTGUN"
+#define weapon_type
+return 5
+#define weapon_cost
+return 2
+#define weapon_area
+return 11
+#define weapon_load
+return 24
+#define weapon_swap
+return sndSwapEnergy
+#define weapon_auto
+return 0
+#define weapon_melee
+return 0
+#define weapon_laser_sight
+return 0
+#define weapon_fire
+motion_add(gunangle-180,4)
+repeat(3)instance_create(x,y,Smoke)
+weapon_post(11,2,2)
+if skill_get(17) = true
+{
+	var _pitch = random_range(.85,1.15)
+	sound_play_pitch(sndEnergyHammerUpg,random_range(.6,.8)*_pitch)
+	//sound_play_pitch(sndPlasmaMinigunUpg,random_range(.5,.6))
+	sound_play_pitch(sndEnergyScrewdriverUpg,random_range(.5,.7)*_pitch)
+	sound_play_pitch(sndPlasmaHit,random_range(1.4,1.6)*_pitch)
+}
+else
+{
+	var _pitch = random_range(.85,1.15)
+	sound_play_pitchvol(sndDevastator,3*_pitch,.6)
+	sound_play_pitch(sndEnergyHammerUpg,1.2*_pitch)
+	sound_play_pitch(sndEnergyScrewdriverUpg,1.5*_pitch)
+	sound_play_pitch(sndPlasmaHit,random_range(1.4,1.6)*_pitch)
+}
+repeat(3)
+{
+	with create_psy_laser(x+lengthdir_x(10,gunangle),y+lengthdir_y(10,gunangle)){
+		loss = .15-skill_get(17)*.04
+		pierce = 15
+		lspeed = random_range(7,9)
+		team = other.team
+		creator = other
+		_ang = (current_frame % 3)-1
+		image_angle = other.gunangle-30*_ang+random_range(-9,9)*creator.accuracy
+		image_xscale = lspeed/2
+	}
+	wait(1)
+}
+/*with create_psy_laser(x,y){
+	team = other.team
+	creator = other
+	image_angle = other.gunangle+(random_range(-6,6)+20)*creator.accuracy
+}
+with create_psy_laser(x,y){
+	team = other.team
+	creator = other
+	image_angle = other.gunangle+(random_range(-6,6)-20)*creator.accuracy
+}*/
+
+#define weapon_sprt
+return global.sprVectorShotgun
+#define weapon_text
+return "pointy"
+
+return a
+
+
+#define hyperwall
+done = 1
+
+#define create_psy_laser(_x,_y)
+var a = instance_create(_x,_y,CustomProjectile)
+with a{
+	loss = .07-skill_get(17)*.03
+	pierce = 1
+	damage = 4
+	lspeed = 10-skill_get(17)*4
+	sprite_index = global.sprVector
+	mask_index = mskLaser
+	on_step = script_ref_create(laserstep)
+	on_hit = script_ref_create(laserhit)
+	on_wall = script_ref_create(nothing)
+	on_draw = hyperdraw
+	image_yscale = 1.5
+	ammo = 1
+}
+return a
+
+#define nothing
+with instance_create(x+lengthdir_x(-12,image_angle),y+lengthdir_y(-12,image_angle),PlasmaImpact){
+		sound_play(sndPlasmaHit)
+		creator = other.creator
+		team = other.team
+		sprite_index = global.sprVectorImpact
+}
+repeat(irandom_range(6,8)){instance_create(x+lengthdir_x(random_range(1,5),image_angle-180),y,Smoke)}
+instance_destroy()
+
+#define laserstep
+if ammo > 0 {
+    ammo-=current_time_scale
+    if ammo<=0{
+        var ang = image_angle;
+        if instance_exists(enemy){
+            var near = instance_nearest(x,y,enemy);
+            //consider removing the distance cap, it wasnt in the original, but it helps with the projectile being aimable
+            if distance_to_object(near) < 120 && !collision_line(x,y,near.x,near.y,Wall,0,0){
+                var dir = angle_difference(ang,point_direction(x,y,near.x,near.y));
+                //i also changed this
+                var cap = lspeed;
+                ang -= clamp(dir,-cap,cap)
+            }
+        }
+        var _x = x+lengthdir_x(lspeed,ang), _y = y+lengthdir_y(lspeed,ang);
+        with create_psy_laser(_x,_y){
+					loss = other.loss
+            lspeed = other.lspeed
+            image_xscale = lspeed/2
+            pierce = other.pierce
+            creator = other.creator
+            team = other.team
+            image_angle = ang
+            if place_meeting(x,y,Wall) ammo = 0
+        }
+        pierce = 0
+    }
+}
+image_yscale-=loss*current_time_scale
+if image_yscale <= 0 instance_destroy()
+
+
+#define hyperdraw
+draw_self()
+draw_set_blend_mode(bm_add)
+draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, 2.5*image_yscale, image_angle, image_blend, 0.1+skill_get(17)*.025);
+draw_set_blend_mode(bm_normal)
+if ammo > 0
+{
+	draw_sprite_ext(global.sprVectorHead, 0, x, y, 2, 2, image_angle-45, image_blend, 1);
+	draw_set_blend_mode(bm_add)
+	draw_sprite_ext(global.sprVectorHead, 0, x, y, 3, 3, image_angle-45, image_blend, 0.1+skill_get(17)*.025);
+	draw_set_blend_mode(bm_normal)
+}
+
+#define laserhit
+pierce -= other.size
+if projectile_canhit_melee(other){
+    instance_create(other.x,other.y,Smoke)
+    projectile_hit(other,damage,lspeed/other.size,image_angle)
+}
+if pierce<=0 && ammo{
+    with instance_create(x,y,PlasmaImpact){
+        sound_play(sndPlasmaHit)
+        creator = other.creator
+        team = other.team
+        sprite_index = global.sprVectorImpact
+    }
+    instance_destroy()
+}
