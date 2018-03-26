@@ -1,0 +1,190 @@
+///BULLET WEAPONS///
+//FIRE BULLET
+/loadwep fire revolver
+/loadwep fire smg
+
+//PEST BULLET
+/loadwep pest pistol
+/loadwep pest machinegun
+
+//THUNDER BULLET
+/loadwep thunder pistol
+/loadwep thunder rifle
+
+//PSY BULLET
+/loadwep psy revolver
+/loadwep psy machinegun
+/loadwep psy smg
+/loadwep psy minigun
+
+//BULLAKS
+/loadwep bullak cannon
+/loadwep heavy bullak cannon
+/loadwep auto bullak cannon
+/loadwep fire bullak cannon
+/loadwep pest bullak cannon
+/loadwep psy bullak cannon
+/loadwep thunder bullak cannon
+
+//GUNHAMMER
+/loadwep gunhammer
+/loadwep heavy gunhammer
+/loadwep fire gunhammer
+/loadwep toxic gunhammer
+/loadwep lightning gunhammer
+/loadwep psy gunhammer
+/loadwep ultra gunhammer
+
+//SPAM
+/loadwep spam gun
+/loadwep fire spam gun
+/loadwep ultra spam gun
+
+//COMPLEMENTARY
+/loadwep undulator
+/loadwep perpetrator
+
+//CANNON
+/loadwep bullet cannon
+/loadwep bouncer cannon
+/loadwep ultra bullet cannon
+
+//OTHER BULLET
+/loadwep bouncer pistol
+/loadwep heavy minigun
+/loadwep heavy smart gun
+/loadwep lucky machinegun
+/loadwep bullet machinegun
+/loadwep signal beamer
+/loadwep prism
+/loadwep rainbow machinegun
+/loadwep defender
+/loadwep spy revolver
+
+///SHELL///
+//PSY SHELL
+/loadwep psy pop gun
+/loadwep psy shotgun
+/loadwep psy eraser
+/loadwep psybird
+
+//SHOT CANNON
+/loadwep shot cannon
+/loadwep hot shot cannon
+/loadwep ultra shot cannon
+/loadwep psy shot cannon
+
+//FLAK CANNON
+/loadwep flak shotgun
+/loadwep phlogenitator
+
+//OTHER SHELL
+/loadwep super heavy slugger
+/loadwep apergig tanat
+
+///BOLT///
+//BLOOD
+/loadwep blood crossbow
+/loadwep heavy blood crossbow
+
+//OTHER BOLT
+/loadwep auto splinter gun
+/loadwep hot crossbow
+/loadwep heavy toxic crossbow
+/loadwep hyper crossbow
+/loadwep bolt gun
+
+///EXPLOSIVE///
+//ABRIS
+/loadwep abris pistol
+/loadwep abris launcher
+/loadwep heavy abris launcher
+/loadwep auto abris launcher
+/loadwep super abris launcher
+/loadwep blood abris launcher
+/loadwep lightning abris launcher
+/loadwep plasma abris launcher
+/loadwep inquisitor
+
+//SONIC
+/loadwep sonic launcher
+/loadwep assault sonic launcher
+/loadwep supersonic launcher
+/loadwep screecher
+
+//HOT
+/loadwep hot flare gun
+/loadwep hot flamethrower
+/loadwep hot dragon
+
+//SMART
+/loadwep smart bazooka
+/loadwep gatling smart bazooka
+/loadwep smart nuke launcher
+
+//CLAYMORE
+/loadwep claymore
+/loadwep heavy claymore
+/loadwep ultra claymore
+
+//CANNON
+/loadwep toxic cannon
+/loadwep super toxic cannon
+/loadwep super flame cannon
+
+//OTHER EXPLOSIVE
+/loadwep auto grenade launcher
+/loadwep heavy nuke launcher
+/loadwep scorcher
+/loadwep andromeda launcher
+
+///ENERGY///
+//LASER
+/loadwep triple laser pistol
+/loadwep triple laser rifle
+
+//LASER FLAK
+/loadwep laser flak cannon
+/loadwep heavy laser flak cannon
+
+//OTHER ENERGY
+/loadwep energy gun
+/loadwep square gun
+
+///MELEE///
+/loadwep toothbrush
+/loadwep auto screwdriver
+/loadwep Chris knife
+
+///POPO///
+/loadmod idpd weapon chest/idpd weapon chest
+/loadwep idpd bazooka
+/loadwep idpd energy sword
+/loadwep idpd grenade launcher
+/loadwep idpd minigun
+/loadwep idpd plasma minigun
+/loadwep idpd shotgun
+/loadwep idpd slugger
+
+///GOLD///
+/loadwep golden abris pistol
+/loadwep golden bouncer pistol
+/loadwep golden bullak cannon
+/loadwep golden gunhammer
+
+///WIP SHIT///
+/loadwep test/sniper rifle
+/loadwep test/heavy sniper rifle
+/loadwep test/auto sniper rifle
+/loadwep test/splitter
+/loadwep test/double splitter
+/loadwep test/heavy splitter
+/loadwep test/auto heavy splitter
+/loadwep test/black prism
+/loadwep test/square rifle
+/loadwep test/square cannon
+/loadwep test/super square cannon
+
+///TOOLS///
+/loadmod defpack tools
+/loadmod defpack tools 2
