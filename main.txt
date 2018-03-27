@@ -139,9 +139,6 @@
 /loadwep andromeda launcher
 
 ///ENERGY///
-//LASER
-/loadwep triple laser pistol
-/loadwep triple laser rifle
 
 //LASER FLAK
 /loadwep laser flak cannon
@@ -188,3 +185,6 @@
 ///TOOLS///
 /loadmod defpack tools/defpack tools
 /loadmod defpack tools 2
+
+///OTHER///
+/loadtext IDPD Weapon Chest/IDPD Weapon Chest
