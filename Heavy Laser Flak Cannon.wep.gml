@@ -1,5 +1,5 @@
 #define init
-global.sprHeavyLaserFlakCannon = sprite_add_weapon("Heavy Laser Flak Cannon.png", 2, 4);
+global.sprHeavyLaserFlakCannon = sprite_add_weapon("sprites/Heavy Laser Flak Cannon.png", 2, 4);
 global.sprLaserFlakBullet = sprite_add_base64("iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAYAAAB3AH1ZAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAADDSURBVEhL7ZQxFsIwDENzNI7GzQO2okQ1MaavAwx8vSy1JHtqu93bfL3jtb4X55q5jC7XZe+kR2TwWL6Us8spy+wOmAvFa5rfIzuzKaIzKhZmXaqXI2Ko4uhFh6E9GWuODJifoQr1ugY8oAIeZABqxuAzNOMVY7mpYvksacxP/wN+4ABThXpdAx5RAQ8yDoNUxdGLDkN7MtYcGUeDqojOqEPRk6xLFTPf/xVbydkjzMtcBhfypbCIR7hZlqk418w1WnsAq2ceLVskifwAAAAASUVORK5CYII=",2, 7, 7);
 
 

@@ -1,7 +1,7 @@
 #define init
-global.sprPerpetrator = sprite_add_weapon("Perpetrator.png", 5, 2);
-global.sprGenShell = sprite_add("Generic Shell.png",0, 1.5, 2.5);
-global.sprDual = sprite_add("sprDual.png",9,4,4)
+global.sprPerpetrator = sprite_add_weapon("sprites/Perpetrator.png", 5, 2);
+global.sprGenShell = sprite_add("defpack tools/Generic Shell.png",0, 1.5, 2.5);
+global.sprDual = sprite_add("sprites/projectiles/sprDual.png",9,4,4)
 
 #define weapon_name
 return "PERPETRATOR";

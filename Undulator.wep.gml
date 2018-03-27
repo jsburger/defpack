@@ -1,6 +1,6 @@
 #define init
-global.sprUndulator = sprite_add_weapon("Undulator.png", 7, 3);
-global.sprDual = sprite_add("sprDual.png",9,4,4)
+global.sprUndulator = sprite_add_weapon("sprites/Undulator.png", 7, 3);
+global.sprDual = sprite_add("sprites/projectiles/sprDual.png",9,4,4)
 
 #define weapon_name
 return "UNDULATOR";

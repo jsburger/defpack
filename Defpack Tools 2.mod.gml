@@ -1,13 +1,13 @@
 #define init
-global.sprBullakRed = sprite_add("sprBullakRed.png", 2, 8, 8)
-global.sprBullakYellow = sprite_add("sprBullakYellow.png", 2, 8, 8)
-global.sprBullakGreen = sprite_add("sprBullakGreen.png", 2, 8, 8)
-global.sprBullakBlue = sprite_add("sprBullakBlue.png", 2, 8, 8)
-global.sprBullakPurple = sprite_add("sprBullakPurple.png", 2, 8, 8)
-global.sprFireFlak = sprite_add("Fire Flak.png", 2, 8, 8)
+global.sprBullakRed = sprite_add("sprites/projectiles/sprBullakRed.png", 2, 8, 8)
+global.sprBullakYellow = sprite_add("sprites/projectiles/sprBullakYellow.png", 2, 8, 8)
+global.sprBullakGreen = sprite_add("sprites/projectiles/sprBullakGreen.png", 2, 8, 8)
+global.sprBullakBlue = sprite_add("sprites/projectiles/sprBullakBlue.png", 2, 8, 8)
+global.sprBullakPurple = sprite_add("sprites/projectiles/sprBullakPurple.png", 2, 8, 8)
+global.sprFireFlak = sprite_add("sprites/projectiles/Fire Flak.png", 2, 8, 8)
 global.sprDarkFlak = sprFlakBullet
-global.sprIDPDFlak = sprite_add("IDPD Flak.png", 2, 8, 8)
-global.sprSplitFlak = sprite_add("IDPD Flak.png", 2, 8, 8)
+global.sprIDPDFlak = sprite_add("sprites/projectiles/IDPD Flak.png", 2, 8, 8)
+global.sprSplitFlak = sprite_add("sprites/projectiles/IDPD Flak.png", 2, 8, 8)
 global.flaks = ["recursive", "fire", "toxic", "lightning", "psy", "dark", "split"]
 
 #define flak_draw

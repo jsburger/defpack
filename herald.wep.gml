@@ -1,10 +1,10 @@
 #define init
-global.toot = sprite_add_weapon("sprHerald.png",-1,3)
-global.bigrune = sprite_add("sprHeraldRuneBig.png",1,12,24)
-global.smallrunes = sprite_add("sprHeraldRunesSmall.png",9,3,3)
-global.smallrunesbloom = sprite_add("sprHeraldRunesSmall.png",9,3,3)
-global.runes = sprite_add("sprHeraldRunes.png",9,4,4)
-global.runesbloom = sprite_add("sprHeraldRunesOutlined.png",9,5,5)
+global.toot = sprite_add_weapon("sprites/sprHerald.png",-1,3)
+global.bigrune = sprite_add("sprites/projectiles/sprHeraldRuneBig.png",1,12,24)
+global.smallrunes = sprite_add("sprites/projectiles/sprHeraldRunesSmall.png",9,3,3)
+global.smallrunesbloom = sprite_add("sprites/projectiles/sprHeraldRunesSmall.png",9,3,3)
+global.runes = sprite_add("sprites/projectiles/sprHeraldRunes.png",9,4,4)
+global.runesbloom = sprite_add("sprites/projectiles/sprHeraldRunesOutlined.png",9,5,5)
 with instances_matching(CustomDraw,"name",mod_current) instance_destroy()
 with script_bind_draw(vignette,-10){
 	global.drawer = id

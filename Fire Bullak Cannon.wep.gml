@@ -1,5 +1,5 @@
 #define init
-global.sprFireBulletFlakCannon = sprite_add_weapon("Fire Bullet Flak Cannon.png", 3, 3);
+global.sprFireBulletFlakCannon = sprite_add_weapon("sprites/Fire Bullet Flak Cannon.png", 3, 3);
 
 #define weapon_name
 return "FIRE BULLAK CANNON"

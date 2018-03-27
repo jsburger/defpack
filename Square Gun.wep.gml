@@ -1,7 +1,7 @@
 #define init
-global.sprSquareGun = sprite_add_weapon("Square Gun.png", 0, 2);
-global.sprSquare = sprite_add("Square.png", 0, 7, 7)
-global.mskSquare = sprite_add("Square mask.png",0,5,5)
+global.sprSquareGun = sprite_add_weapon("sprites/Square Gun.png", 0, 2);
+global.sprSquare = sprite_add("sprites/projectiles/Square.png", 0, 7, 7)
+global.mskSquare = sprite_add("sprites/projectiles/Square mask.png",0,5,5)
 //global.sprSquareTP = sprite_add("Square TP start.png", 5, 5, 5)
 
 #define weapon_name

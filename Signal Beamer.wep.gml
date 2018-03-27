@@ -1,5 +1,5 @@
 #define init
-global.sprSignalBeamer = sprite_add_weapon("Signal Beamer.png", 2, 2);
+global.sprSignalBeamer = sprite_add_weapon("sprites/Signal Beamer.png", 2, 2);
 
 #define weapon_name
 return "SIGNAL BEAMER"

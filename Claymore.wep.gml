@@ -1,5 +1,5 @@
 #define init
-global.sprClaymore = sprite_add_weapon("Claymore.png", 4, 4);
+global.sprClaymore = sprite_add_weapon("sprites/Claymore.png", 4, 4);
 //FUCC ALL Y'ALL WHO DONT LIKE THIS PART HE DESERVES IT
 trace("Thanks to Wonderis_ for putting a ton of time testing all this");
 trace("Also Jsburg did a bunch of work polishing the mod")

@@ -1,5 +1,5 @@
 #define init
-global.sprPhlogenitator = sprite_add_weapon("Phlogenitator.png", 4, 4);
+global.sprPhlogenitator = sprite_add_weapon("sprites/Phlogenitator.png", 4, 4);
 
 #define weapon_name
 return "PHLOGENITATOR"

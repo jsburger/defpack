@@ -1,6 +1,6 @@
 #define init
-global.sprToxicGunhammer = sprite_add_weapon("Toxic Gunhammer.png", 4, 8);
-global.slash = sprite_add("Heavy Toxic Slash.png",3,0,24);
+global.sprToxicGunhammer = sprite_add_weapon("sprites/Toxic Gunhammer.png", 4, 8);
+global.slash = sprite_add("sprites/projectiles/Heavy Toxic Slash.png",3,0,24);
 
 #define weapon_name
 return "TOXIC GUNHAMMER";

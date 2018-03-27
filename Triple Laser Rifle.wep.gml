@@ -1,5 +1,5 @@
 #define init
-global.sprTripleLaserRifle = sprite_add_weapon("Triple Laser Rifle.png", 3, 2);
+global.sprTripleLaserRifle = sprite_add_weapon("sprites/Triple Laser Rifle.png", 3, 2);
 
 #define weapon_name
 return "TRIPLE LASER RIFLE"

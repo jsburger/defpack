@@ -1,5 +1,5 @@
 #define init
-global.sprSTC = sprite_add_weapon("STC.png", 7, 4);
+global.sprSTC = sprite_add_weapon("sprites/STC.png", 7, 4);
 #define weapon_name
 return "SUPER TOXIC CANNON";
 

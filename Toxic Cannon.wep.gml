@@ -1,5 +1,5 @@
 #define init
-global.sprToxicCannon = sprite_add_weapon("Toxic Cannon.png", 4, 4);
+global.sprToxicCannon = sprite_add_weapon("sprites/Toxic Cannon.png", 4, 4);
 #define weapon_name
 return "TOXIC CANNON";
 

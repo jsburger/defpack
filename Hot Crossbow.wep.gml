@@ -1,5 +1,5 @@
 #define init
-global.sprFireCrossbow = sprite_add_weapon("Fire Crossbow.png", 2, 3);
+global.sprFireCrossbow = sprite_add_weapon("sprites/Fire Crossbow.png", 2, 3);
 global.sprFireBolt = sprite_add_base64("iVBORw0KGgoAAAANSUhEUgAAABUAAAAFCAYAAACqwacNAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABISURBVChTY3BoYKAIQ8F/KIaI/f8PZsMEycb/366FscHgvzcPExwf0mLAwH8sMPH/JfwIfBqKYQbTxKXoYUQqhgK4gQ4NDAwALrZ6eop9sYUAAAAASUVORK5CYIIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",0, -2, 3);
 
 #define weapon_name

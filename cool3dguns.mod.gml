@@ -1,5 +1,5 @@
 #define init
-global.stopwatch = sprite_add("modStopwatch.png",8,4,2)
+global.stopwatch = sprite_add("sprites/projectiles/modStopwatch.png",8,4,2)
 with instances_matching(CustomDraw,"name",mod_current) instance_destroy()
 with script_bind_draw(wepdraw, 0){
 	name = mod_current

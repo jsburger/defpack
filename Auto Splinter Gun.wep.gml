@@ -1,5 +1,5 @@
 #define init
-global.sprAutoSplinterGun = sprite_add_weapon("Auto Splinter Gun.png", 2, 3);
+global.sprAutoSplinterGun = sprite_add_weapon("sprites/Auto Splinter Gun.png", 2, 3);
 
 #define weapon_name
 return "AUTO SPLINTER GUN";

@@ -1,5 +1,5 @@
 #define init
-global.sprIDPDNader = sprite_add_weapon("IDPD Nader.png", 3, 3);
+global.sprIDPDNader = sprite_add_weapon("sprites/IDPD Nader.png", 3, 3);
 
 #define weapon_name
 return "I.D.P.D. GRENADE LAUNCHER";

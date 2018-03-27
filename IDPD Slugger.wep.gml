@@ -1,5 +1,5 @@
 #define init
-global.sprIDPDSlugger = sprite_add_weapon("IDPD Slugger.png", -2, 4);
+global.sprIDPDSlugger = sprite_add_weapon("sprites/IDPD Slugger.png", -2, 4);
 
 #define weapon_name
 return "I.D.P.D. SLUGGER";

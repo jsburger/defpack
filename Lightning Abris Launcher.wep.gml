@@ -1,6 +1,6 @@
 #define init
-global.sprLightningAbrisLauncher = sprite_add_weapon("Lightning Abris Launcher.png", 3, 5);
-global.stripes = sprite_add("BIGstripes.png",1,1,1)
+global.sprLightningAbrisLauncher = sprite_add_weapon("sprites/Lightning Abris Launcher.png", 3, 5);
+global.stripes = sprite_add("defpack tools/BIGstripes.png",1,1,1)
 
 #define weapon_name
 return "LIGHTNING ABRIS LAUNCHER"

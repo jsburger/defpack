@@ -1,5 +1,5 @@
 #define init
-global.sprSuperHeavySlugger = sprite_add_weapon("Super Heavy Slugger.png", 6, 4);
+global.sprSuperHeavySlugger = sprite_add_weapon("sprites/Super Heavy Slugger.png", 6, 4);
 
 #define weapon_name
 return "SUPER HEAVY SLUGGER";

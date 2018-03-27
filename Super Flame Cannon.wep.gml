@@ -1,5 +1,5 @@
 #define init
-global.sprSFC = sprite_add_weapon("SFC.png", 9, 8);
+global.sprSFC = sprite_add_weapon("sprites/SFC.png", 9, 8);
 
 #define weapon_name
 return "SUPER FLAME CANNON";

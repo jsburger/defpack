@@ -1,5 +1,5 @@
 #define init
-global.sprThunderRifle = sprite_add_weapon("Thunder Rifle.png", 4, 3);
+global.sprThunderRifle = sprite_add_weapon("sprites/Thunder Rifle.png", 4, 3);
 
 #define weapon_name
 return "THUNDER RIFLE"

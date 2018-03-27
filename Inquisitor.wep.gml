@@ -1,7 +1,7 @@
 #define init
-global.sprInquisitor = sprite_add_weapon("Inquisitor.png", 7, 4);
-global.stripes = sprite_add("BIGstripes.png",1,1,1)
-global.SnakeIndikator = sprite_add("Inquisitor Danger.png",0,3,11)
+global.sprInquisitor = sprite_add_weapon("sprites/Inquisitor.png", 7, 4);
+global.stripes = sprite_add("defpack tools/BIGstripes.png",1,1,1)
+global.SnakeIndikator = sprite_add("sprites/projectiles/Inquisitor Danger.png",0,3,11)
 #define weapon_name
 return "INQUISITOR"
 

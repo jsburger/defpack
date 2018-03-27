@@ -1,7 +1,7 @@
 #define init
-global.sprHyperCrossbow = sprite_add_weapon("Hyper Crossbow.png", 7, 3);
-global.sprHyperBolt = sprite_add("hyper bolt.png",2, 8, 8);
-global.sprHyperSplinter = sprite_add("hyper splinter.png",3, -6, 3);
+global.sprHyperCrossbow = sprite_add_weapon("sprites/Hyper Crossbow.png", 7, 3);
+global.sprHyperBolt = sprite_add("sprites/projectiles/hyper bolt.png",2, 8, 8);
+global.sprHyperSplinter = sprite_add("sprites/projectiles/hyper splinter.png",3, -6, 3);
 
 #define weapon_name
 return "HYPER CROSSBOW"
@@ -38,6 +38,7 @@ weapon_post(8,-20,4)
 with instance_create(x+lengthdir_x(10,gunangle),y+lengthdir_y(10,gunangle),Bolt)
 {
 	damage = 40
+	var dir = 0;
 	do
 	{
 		dir += 1 x += lengthdir_x(1,direction) y += lengthdir_y(1,direction)

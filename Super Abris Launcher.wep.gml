@@ -1,7 +1,7 @@
 #define init
-global.sprAbrisNukeLauncher = sprite_add_weapon("Abris Nuke Launcher.png", 1, 4);
-global.sprDanger = sprite_add("Danger.png",5,24,24);
-global.stripes = sprite_add("BIGstripes.png",1,1,1)
+global.sprAbrisNukeLauncher = sprite_add_weapon("sprites/Abris Nuke Launcher.png", 1, 4);
+global.sprDanger = sprite_add("sprites/projectiles/Danger.png",5,24,24);
+global.stripes = sprite_add("defpack tools/BIGstripes.png",1,1,1)
 
 #define weapon_name
 return "SUPER ABRIS LAUNCHER"

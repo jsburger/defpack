@@ -173,18 +173,18 @@
 /loadwep golden gunhammer
 
 ///WIP SHIT///
-/loadwep test/sniper rifle
-/loadwep test/heavy sniper rifle
-/loadwep test/auto sniper rifle
-/loadwep test/splitter
-/loadwep test/double splitter
-/loadwep test/heavy splitter
-/loadwep test/auto heavy splitter
-/loadwep test/black prism
-/loadwep test/square rifle
-/loadwep test/square cannon
-/loadwep test/super square cannon
+//loadwep test/sniper rifle
+//loadwep test/heavy sniper rifle
+//loadwep test/auto sniper rifle
+//loadwep test/splitter
+//loadwep test/double splitter
+//loadwep test/heavy splitter
+//loadwep test/auto heavy splitter
+//loadwep test/black prism
+//loadwep test/square rifle
+//loadwep test/square cannon
+//loadwep test/super square cannon
 
 ///TOOLS///
-/loadmod defpack tools
+/loadmod defpack tools/defpack tools
 /loadmod defpack tools 2

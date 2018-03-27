@@ -1,6 +1,6 @@
 #define init
-global.sprPlasmaAbrisLauncher = sprite_add_weapon("Plasma Abris Launcher.png", 0, 3);
-global.stripes = sprite_add("BIGstripes.png",1,1,1)
+global.sprPlasmaAbrisLauncher = sprite_add_weapon("sprites/Plasma Abris Launcher.png", 0, 3);
+global.stripes = sprite_add("defpack tools/BIGstripes.png",1,1,1)
 
 #define weapon_name
 return "PLASMA ABRIS LAUNCHER"

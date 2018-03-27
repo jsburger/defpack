@@ -1,6 +1,6 @@
 #define init
-global.sprAssaultAbrisSonicLauncher  = sprite_add_weapon("Assault Abris Sonic Launcher.png", 2, 2);
-global.stripes = sprite_add("BIGstripes.png",1,1,1)
+global.sprAssaultAbrisSonicLauncher  = sprite_add_weapon("sprites/Assault Abris Sonic Launcher.png", 2, 2);
+global.stripes = sprite_add("defpack tools/BIGstripes.png",1,1,1)
 global.scale = 50
 
 #define weapon_name

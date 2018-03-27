@@ -1,6 +1,6 @@
 #define init
-global.sprAutoAbrisLauncher = sprite_add_weapon("Auto Abris Launcher.png", 0, 3);
-global.stripes = sprite_add("BIGstripes.png",1,1,1)
+global.sprAutoAbrisLauncher = sprite_add_weapon("sprites/Auto Abris Launcher.png", 0, 3);
+global.stripes = sprite_add("defpack tools/BIGstripes.png",1,1,1)
 
 #define weapon_name
 return "AUTO ABRIS LAUNCHER"

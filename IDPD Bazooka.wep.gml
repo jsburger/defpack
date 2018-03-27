@@ -1,5 +1,5 @@
 #define init
-global.sprIDPDBazooka = sprite_add_weapon("Elite IDPD Rifle.png", 5, 4);
+global.sprIDPDBazooka = sprite_add_weapon("sprites/Elite IDPD Rifle.png", 5, 4);
 
 #define weapon_name
 return "I.D.P.D. BAZOOKA";

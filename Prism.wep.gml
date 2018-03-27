@@ -1,5 +1,5 @@
 #define init
-global.sprPrism = sprite_add_weapon("Prism.png", 0, 3);
+global.sprPrism = sprite_add_weapon("sprites/Prism.png", 0, 3);
 
 #define weapon_name
 return "PRISM"

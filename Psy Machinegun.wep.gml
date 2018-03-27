@@ -1,5 +1,5 @@
 #define init
-global.sprPsyMachinegun = sprite_add_weapon("Psy Machinegun.png", 1, 1);
+global.sprPsyMachinegun = sprite_add_weapon("sprites/Psy Machinegun.png", 1, 1);
 
 #define weapon_name
 return "PSY MACHINEGUN";

@@ -1,6 +1,6 @@
 #define init
-global.sprGSmallAbrisLauncher = sprite_add_weapon("Golden Small Abris Launcher.png", -1, 2);
-global.stripes = sprite_add("BIGstripes.png",1,1,1)
+global.sprGSmallAbrisLauncher = sprite_add_weapon("sprites/Golden Small Abris Launcher.png", -1, 2);
+global.stripes = sprite_add("defpack tools/BIGstripes.png",1,1,1)
 
 #define weapon_gold
 return 1;

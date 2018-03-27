@@ -1,5 +1,5 @@
 #define init
-global.brush = sprite_add_weapon("toothbrush.png",0,0)
+global.brush = sprite_add_weapon("sprites/toothbrush.png",0,0)
 #define weapon_name
 return "TOOTHBRUSH"
 #define weapon_type

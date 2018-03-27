@@ -1,8 +1,8 @@
 #define init
-global.sprSmartBazooka = sprite_add_weapon("Hot Bazooka.png", 8, 3);
-global.sprBlueExplosion = sprite_add("Blue Explosion_strip9.png",9,24,24)
-global.sprSmallBlueExplosion = sprite_add("Small Blue Explosion_strip7.png",7,12,12)
-global.sprSmartRocketFlame = sprite_add("smart rocket flame.png",3,24,6)
+global.sprSmartBazooka = sprite_add_weapon("sprites/Hot Bazooka.png", 8, 3);
+global.sprBlueExplosion = sprite_add("sprites/projectiles/Blue Explosion_strip9.png",9,24,24)
+global.sprSmallBlueExplosion = sprite_add("sprites/projectiles/Small Blue Explosion_strip7.png",7,12,12)
+global.sprSmartRocketFlame = sprite_add("sprites/projectiles/smart rocket flame.png",3,24,6)
 global.sprSmartRocket = sprite_add_base64("iVBORw0KGgoAAAANSUhEUgAAAAsAAAAGCAYAAAAVMmT4AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABHSURBVChTY4CC/1BMEIAV+nnHwjTgwwz/dbXN/kuJq/0X9F7zX77oP5yGYRAfQzG3YQFYAkbDMIgPVwzCxDoDBFA42AEDAwCBKEMDhOCIHwAAAABJRU5ErkJgggAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",0, -2, 3);
 #define weapon_name
 return "SMART BAZOOKA";

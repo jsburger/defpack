@@ -1,5 +1,5 @@
 #define init
-global.sprIDPDEnergySword = sprite_add_weapon("Elite IDPD Energy Sword.png", 0, 3);
+global.sprIDPDEnergySword = sprite_add_weapon("sprites/Elite IDPD Energy Sword.png", 0, 3);
 
 #define weapon_name
 return "I.D.P.D ENERGY BATON"

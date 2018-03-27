@@ -1,5 +1,5 @@
 #define init
-global.sprIDPDPlasmaMinigun = sprite_add_weapon("Elite IDPD Minigun.png", 6, 4);
+global.sprIDPDPlasmaMinigun = sprite_add_weapon("sprites/Elite IDPD Minigun.png", 6, 4);
 
 #define weapon_name
 return "I.D.P.D. PLASMA MINIGUN";

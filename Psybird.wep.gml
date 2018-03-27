@@ -1,5 +1,5 @@
 #define init//This weapon replaces Psy-V
-global.Psybird = sprite_add_weapon("Psybird.png", 4, 4);
+global.Psybird = sprite_add_weapon("sprites/Psybird.png", 4, 4);
 
 #define weapon_name
 return "PSYBIRD";

@@ -1,5 +1,5 @@
 #define init
-global.sprAutoBulletFlakCannon = sprite_add_weapon("Auto Bullet Flak Cannon.png", 3, 3);
+global.sprAutoBulletFlakCannon = sprite_add_weapon("sprites/Auto Bullet Flak Cannon.png", 3, 3);
 
 #define weapon_name
 return "AUTO BULLAK CANNON"
