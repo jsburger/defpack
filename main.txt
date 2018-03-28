@@ -58,7 +58,6 @@
 /loadwep signal beamer
 /loadwep prism
 /loadwep rainbow machinegun
-/loadwep defender
 /loadwep spy revolver
 
 ///SHELL///
@@ -84,11 +83,18 @@
 
 ///BOLT///
 //BLOOD
-/loadwep blood crossbow
-/loadwep heavy blood crossbow
+/loadwep finished stuff/blood crossbow
+/loadwep finished stuff/heavy blood crossbow
+
+//SPLINTER
+/loadwep auto splinter gun
+/loadwep finished stuff/splinter cannon
+
+//DISC
+/loadwep finished stuff/bouncer disc gun
+/loadwep finished stuff/sticky disc gun
 
 //OTHER BOLT
-/loadwep auto splinter gun
 /loadwep hot crossbow
 /loadwep heavy toxic crossbow
 /loadwep hyper crossbow
@@ -109,18 +115,18 @@
 //SONIC
 /loadwep sonic launcher
 /loadwep assault sonic launcher
-/loadwep supersonic launcher
+/loadwep finished stuff/supersonic launcher
 /loadwep screecher
 
 //HOT
-/loadwep hot flare gun
-/loadwep hot flamethrower
-/loadwep hot dragon
+/loadwep finished stuff/hot flare gun
+/loadwep finished stuff/hot flamethrower
+/loadwep finished stuff/hot dragon
 
 //SMART
 /loadwep smart bazooka
 /loadwep gatling smart bazooka
-/loadwep smart nuke launcher
+/loadwep finished stuff/smart nuke launcher
 
 //CLAYMORE
 /loadwep claymore
@@ -134,9 +140,11 @@
 
 //OTHER EXPLOSIVE
 /loadwep auto grenade launcher
-/loadwep heavy nuke launcher
+/loadwep finished stuff/heavy nuke launcher
 /loadwep scorcher
-/loadwep andromeda launcher
+/loadwep finished stuff/andromeda launcher
+/loadwep finished stuff/fire beamer
+/loadwep finished stuff/toxic carronader
 
 ///ENERGY///
 
@@ -144,9 +152,20 @@
 /loadwep laser flak cannon
 /loadwep heavy laser flak cannon
 
+//VECTOR
+/loadwep finished stuff/vector rifle
+/loadwep finished stuff/vector shotgun
+
+//PLASMITE
+loadwep finished stuff/plasmite rifle
+loadwep finished stuff/plasmite shotgun
+loadwep finished stuff/plasmite cannon
+
+//SQUARE
+/loadwep square gun
+
 //OTHER ENERGY
 /loadwep energy gun
-/loadwep square gun
 
 ///MELEE///
 /loadwep toothbrush
@@ -187,4 +206,5 @@
 /loadmod defpack tools 2
 
 ///OTHER///
-/loadtext IDPD Weapon Chest/IDPD Weapon Chest
+/loadwep finished stuff/defender
+/loadmod IDPD Weapon Chest/IDPD Weapon Chest

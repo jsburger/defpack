@@ -23,7 +23,7 @@ return 0
 #define weapon_fire
 motion_add(gunangle-180,4)
 repeat(3)instance_create(x,y,Smoke)
-weapon_post(11,2,2)
+weapon_post(11,0,17)
 if skill_get(17) = true
 {
 	var _pitch = random_range(.85,1.15)

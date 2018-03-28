@@ -24,7 +24,7 @@ return 0
 return "AHAHAHAHAHAHAHAHAHA";
 #define weapon_fire
 
-weapon_post(4,0,4)
+weapon_post(7,1,32+skill_get(17)*12)
 if !skill_get(17)
 {
 	sound_play_pitch(sndPlasmaHuge,2)
@@ -46,10 +46,12 @@ with instance_create(x,y,CustomProjectile)
 	sprite_index = global.sprPlasmiteBig
 	fric = random_range(1.01,1.012)
 	motion_set(other.gunangle+random_range(-6,6)*other.accuracy,3)
+	image_angle = direction
 	speedset = 0
 	on_step 	 = atom_step
 	on_wall 	 = mb_wall
 	on_destroy = atom_destroy
+	on_draw 	 = atom_draw
 	repeat(6)
 	{
 		with instance_create(x,y,CustomProjectile)
@@ -74,17 +76,29 @@ with instance_create(x,y,CustomProjectile)
 }
 
 #define atom_step
+image_angle = direction
+var _scl = random_range(.8,1.2);
+image_xscale = _scl
+image_yscale = _scl
 if irandom(9) = 1
 {
 	//sound_play_pitch(sndPlasmaHit,random_range(1.55,1.63))
 	with instance_create(x+random_range(-6,6),y+random_range(-6,6),PlasmaImpact){image_xscale=.5;depth=other.depth+1;image_yscale=.5;damage-=1;with Smoke if place_meeting(x,y,other) instance_destroy()}
 }
+if irandom(4-skill_get(17))=1{with instance_create(x+random_range(-12,12),y+random_range(-12,12),GunGun){image_index=2-skill_get(17)}}
 speed /= fric
 if instance_exists(enemy)if distance_to_object(instance_nearest(x,y,enemy))<48{var closeboy = instance_nearest(x,y,enemy);motion_add(point_direction(x,y,closeboy.x,closeboy.y),speed*.3)speed -= speed*.21}
 if speed < 1.00005{instance_destroy()}
 
+#define atom_draw
+
+draw_self()
+draw_set_blend_mode(bm_add)
+draw_sprite_ext(sprite_index, image_index, x, y,  (1.5+skill_get(17))*image_xscale, (1.5+skill_get(17))*image_yscale, image_angle, image_blend, 0.1+skill_get(17)*.025);
+draw_set_blend_mode(bm_normal)
+
 #define atom_destroy
-sound_play_pitch(sndPlasmaHit,random_range(.9,1.1))
+sound_play_pitch(sndPlasmaBigExplodeUpg,random_range(1.2,1.4))
 instance_create(x,y,PlasmaImpact)
 repeat(6)
 {

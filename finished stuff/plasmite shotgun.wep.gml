@@ -22,7 +22,7 @@ return 0
 #define weapon_text
 return "JOY BURST";
 #define weapon_fire
-weapon_post(4,0,4)
+weapon_post(6,0,18)
 if !skill_get(17)
 {
 	sound_play_pitch(sndPlasma,2)
