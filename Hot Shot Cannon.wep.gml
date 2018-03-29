@@ -52,7 +52,7 @@ with instance_create(x,y,CustomProjectile) {
 
 #define cannon_step
 image_angle+=6+speed*3
-var _scl = random_range(.8,1.2);
+var _scl = random_range(.9,1.1);
 image_xscale = _scl
 image_yscale = _scl
 if place_meeting(x + hspeed,y,Wall){
