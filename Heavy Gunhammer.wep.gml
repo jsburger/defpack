@@ -34,10 +34,9 @@ return 1;
 return "ADVANCED HAMMERING";
 
 #define weapon_fire
-view_shake[index](44)
 sound_play_pitch(sndHammer,random_range(.8,.92))
 sound_play_pitch(sndShovel,random_range(.9,1))
-weapon_post(8,7,12)
+weapon_post(8,7,44)
 with instance_create(x,y,Slash){
 	damage = 6
 	image_xscale *= 1.3
