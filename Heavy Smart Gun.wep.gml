@@ -30,18 +30,7 @@ return 13;
 return choose("PERFECTION","TRUE BEAUTY","A SIGHT TO BEHOLD","SMARTER THAN IT'S SIBLING");
 
 #define weapon_fire
-
-motion_add(gunangle-180,2)
-sound_play_pitchvol(sndHeavyMachinegun,.9,.7)
-sound_play_pitchvol(sndHeavyNader,1,.8)
-sound_play_pitch(sndSmartgun,random_range(0.8,0.9))
-weapon_post(7,-9,24)
-canaim = true
-with instance_create(x,y,Shell)
-{
-	motion_add(other.gunangle+other.right*100+random_range(-12,12),3+random(7))
-	sprite_index = sprHeavyShell
-}
+var ang = point_direction(x,y,mouse_x[index],mouse_y[index]);
 if instance_exists(enemy){
 	if "index" in self{
 		var mydude = instance_nearest(mouse_x[index],mouse_y[index],enemy);
@@ -52,15 +41,42 @@ if instance_exists(enemy){
 	{
 		ang = point_direction(x,y,mydude.x,mydude.y)
 	}
-	else{canaim = true;ang = point_direction(x,y,mouse_x[index],mouse_y[index])}
 }
-else{canaim = true;ang = point_direction(x,y,mouse_x[index],mouse_y[index])}
+gunangle = ang;
+aimDirection = ang;
+if fork(){
+    wait(0)
+    gunangle = ang;
+    aimDirection = ang;
+    exit
+}
+
+motion_add(ang+180,1)
+sound_play_pitchvol(sndHeavyMachinegun,.9,.7)
+sound_play_pitchvol(sndHeavyNader,1,.8)
+sound_play_pitch(sndSmartgun,random_range(0.8,0.9))
+weapon_post(7,-9,24)
+
+with instance_create(x,y,Shell)
+{
+	motion_add(other.gunangle+other.right*100+random_range(-12,12),3+random(7))
+	sprite_index = sprHeavyShell
+}
+
+if fork(){
+    var time = 8;
+    while time > 0 && instance_exists(self){
+        canaim = 0
+        time -= current_time_scale
+        wait(0)
+    }
+    if instance_exists(self) canaim = 1
+    exit
+}
 
 with instance_create(x,y,HeavyBullet){
-	creator = other
-	team = other.team
-	other.gunangle = other.ang+random_range(-3,3)*other.accuracy
-	motion_set(other.gunangle,16)
+	motion_set(ang,16)
+	projectile_init(other.team,other)
 	image_angle = direction
 	repeat(2) with instance_create(x+lengthdir_x(speed,direction),y+lengthdir_y(speed,direction),Dust)
 	{
