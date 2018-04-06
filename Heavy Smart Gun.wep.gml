@@ -27,7 +27,7 @@ return sndSwapMachinegun;
 return 13;
 
 #define weapon_text
-return choose("PERFECTION","TRUE BEAUTY","A SIGHT TO BEHOLD","SMARTER THAN IT'S SIBLING");
+return choose("PERFECTION","TRUE BEAUTY","A SIGHT TO BEHOLD","SMARTER THAN ITS SIBLING");
 
 #define weapon_fire
 var ang = point_direction(x,y,mouse_x[index],mouse_y[index]);
