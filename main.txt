@@ -14,8 +14,14 @@
 //PSY BULLET
 /loadwep psy revolver
 /loadwep psy machinegun
+/loadwep triple psy machinegun
+/loadwep quad psy machinegun
 /loadwep psy smg
+/loadwep assault psy rifle
+/loadwep hyper psy rifle
 /loadwep psy minigun
+/loadwep double psy minigun
+/loadwep psy bullet cannon
 
 //BULLAKS
 /loadwep bullak cannon
@@ -30,7 +36,7 @@
 /loadwep gunhammer
 /loadwep heavy gunhammer
 /loadwep fire gunhammer
-/loadwep toxic gunhammer
+/loadwep pest gunhammer
 /loadwep lightning gunhammer
 /loadwep psy gunhammer
 /loadwep ultra gunhammer

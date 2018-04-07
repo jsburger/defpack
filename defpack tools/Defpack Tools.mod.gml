@@ -32,6 +32,7 @@ global.stripes = sprite_add("BIGstripes.png",1,1,1)
 with instances_matching(CustomProjectile,"name","Psy Bullet","Psy Shell") instance_delete(self)
 
 #define bullet_hit
+if name = "Psy Bullet"{with other{motion_add(point_direction(x,y,other.x,other.y),5)}}
 projectile_hit(other, damage, force, direction);
 if instance_exists(creator) if recycle_amount != 0 && irandom(9) <= 5 && skill_get(16){
 	creator.ammo[1]+=recycle_amount
@@ -108,9 +109,9 @@ with (a) {
 	pattern = false
 	sprite_index = global.sprPsyBullet
 	typ = 2
-	damage = 6
+	damage = 5
 	recycle_amount = 2
-	force = 10
+	force = -10
 	image_speed = 1
 	image_angle = direction
 	mask_index = global.mskPsyBullet
@@ -722,7 +723,7 @@ with a{
 	accbase = startsize*creator.accuracy
 	acc = accbase
 	accmin = endsize
-	accspeed = [1.2,3.5]
+	accspeed = 1.2
 	//other things
 	wep = weapon
 	check = 0 //the button it checks, 0 is undecided, 1 is fire, 2 is specs, should only be 0 on creation, never step
@@ -800,7 +801,7 @@ if instance_exists(creator){
 		}else{
 			creator.breload = weapon_get_load(creator.bwep)
 		}
-		acc/=accspeed[skill_get(13)]
+		acc/=accspeed
 		if collision_line(x,y,mouse_x[index],mouse_y[index],Wall,0,0) >= 0{
 			if acc < accbase{acc += abs(creator.accuracy*3)}else{acc = accbase}
 		}

@@ -1,18 +1,19 @@
 #define init
-global.sprGSmallAbrisLauncher = sprite_add_weapon("sprites/Golden Small Abris Launcher.png", -1, 2);
-global.stripes = sprite_add("defpack tools/BIGstripes.png",1,1,1)
+global.sprGoldenAbrisPistolLoadout = sprite_add_weapon("sprites/sprGoldenAbrisPistolLoadout.png", 16, 16);
+global.sprGoldenAbrisPistol 			 = sprite_add_weapon("sprites/sprGoldenAbrisPistol.png", -1, 2);
+global.stripes 										 = sprite_add("defpack tools/BIGstripes.png",1,1,1)
 
 #define weapon_gold
 return 1;
 
 #define weapon_loadout
-return global.sprGSmallAbrisLauncherLoadout;
+return global.sprGoldenAbrisPistolLoadout;
 
 #define weapon_name
 return "GOLDEN ABRIS PISTOL"
 
 #define weapon_sprt
-return global.sprGSmallAbrisLauncher;
+return global.sprGoldenAbrisPistol;
 
 #define weapon_type
 return 4;
@@ -36,14 +37,17 @@ return 17;
 return "PROTECTED BY @yWEALTH";
 
 #define weapon_fire
-sound_play_pitch(sndSniperTarget,1.8)
+var _strtsize = 27-skill_get(13)*5;
+var _endsize  = 18;
 with mod_script_call("mod","defpack tools","create_abris",self,27,18,argument0){
-	accspeed = [1.45,3.5]
+	accspeed = 1.45
 	payload = script_ref_create(pop)
 }
+sound_play_pitch(sndSniperTarget,exp((_strtsize-_endsize)/room_speed/current_time_scale/accuracy*(1.2)))
+
 
 #define pop
-sound_play(sndGrenadeRifle)
+sound_play_pitch(sndGrenadeRifle,random_range(1.1,1.4))
 sound_play(sndExplosionS)
 sound_play(sndGoldShotgun)
 creator.wkick = 2

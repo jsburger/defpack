@@ -1,12 +1,12 @@
 #define init
-global.sprSmallAbrisLauncher = sprite_add_weapon("sprites/Small Abris Launcher.png", -1, 3);
+global.sprAbrisPistol = sprite_add_weapon("sprites/sprAbrisPistol.png", -1, 3);
 global.stripes = sprite_add("defpack tools/BIGstripes.png",1,1,1)
 
 #define weapon_name
 return "ABRIS PISTOL"
 
 #define weapon_sprt
-return global.sprSmallAbrisLauncher;
+return global.sprAbrisPistol;
 
 #define weapon_type
 return 4;
@@ -30,14 +30,16 @@ return 5;
 return "GET SOME COVER";
 
 #define weapon_fire
-sound_play_pitch(sndSniperTarget,1.8)
-with mod_script_call("mod","defpack tools","create_abris",self,27,18,argument0){
-	accspeed = [1.33,3.5]
+var _strtsize = 27-skill_get(13)*5;
+var _endsize  = 18;
+with mod_script_call("mod","defpack tools","create_abris",self,_strtsize,_endsize,argument0){
+	accspeed = 1.33
 	payload = script_ref_create(pop)
 }
+sound_play_pitch(sndSniperTarget,exp((_strtsize-_endsize)/room_speed/current_time_scale/accuracy*(1.33)))
 
 #define pop
-sound_play(sndGrenadeRifle)
+sound_play_pitch(sndGrenadeRifle,random_range(1.1,1.4))
 sound_play(sndExplosionS)
 creator.wkick = 2
 repeat(3)

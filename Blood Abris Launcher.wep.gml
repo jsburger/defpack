@@ -30,14 +30,15 @@ return 7;
 return "PROTECTION AT ALL COSTS";
 
 #define weapon_fire
-sound_play_pitch(sndSniperTarget,1.5)
+var _strtsize = 45-skill_get(13)*25
+var _endsize  = 30;
+sound_play_pitch(sndSniperTarget,exp((_strtsize-_endsize)/room_speed/current_time_scale/accuracy*(1.06)))
 if ammo[4] >= 2
 {
 	ammo[4] -= 2
-	sound_play_pitch(sndSniperTarget,1.8)
 	cost = 1
-	with mod_script_call("mod","defpack tools","create_abris",self,45,30,argument0){
-		accspeed = [1.33,3.5]
+	with mod_script_call("mod","defpack tools","create_abris",self,_strtsize,_endsize,argument0){
+		accspeed = 1.33
 		payload = script_ref_create(pop)
 	}
 }
@@ -53,9 +54,8 @@ else
 	sound_play(sndBloodLauncher)
 	sound_play(sndBloodLauncherExplo)
 	cost = 1
-	sound_play_pitch(sndSniperTarget,1.8)
-	with mod_script_call("mod","defpack tools","create_abris",self,27,18,argument0){
-		accspeed = [1.33,3.5]
+	with mod_script_call("mod","defpack tools","create_abris",self,_strtsize,_endsize,argument0){
+		accspeed = 1.33
 		payload = script_ref_create(pop)
 	}
 }

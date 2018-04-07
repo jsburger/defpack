@@ -1,12 +1,12 @@
 #define init
-global.sprToxicGunhammer = sprite_add_weapon("sprites/Toxic Gunhammer.png", 4, 8);
-global.slash = sprite_add("sprites/projectiles/Heavy Toxic Slash.png",3,0,24);
+global.sprPestGunhammer = sprite_add_weapon("sprites/sprPestGunhammer.png", 0, 10);
+global.slash = sprite_add("sprites/projectiles/sprHeavyPestSlash.png",3,0,24);
 
 #define weapon_name
-return "TOXIC GUNHAMMER";
+return "PEST GUNHAMMER";
 
 #define weapon_sprt
-return global.sprToxicGunhammer;
+return global.sprPestGunhammer;
 
 #define weapon_type
 return 1;
@@ -35,7 +35,7 @@ return 1
 #define weapon_fire
 
 sound_play_pitch(sndHammer,random_range(.97,1.03))
-weapon_post(8,8,4)
+weapon_post(8,8,8)//xd
 var shell = 0;
 with instance_create(x,y,Slash){
 	damage = 7

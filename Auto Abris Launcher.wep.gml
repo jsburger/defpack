@@ -1,6 +1,6 @@
 #define init
-global.sprAutoAbrisLauncher = sprite_add_weapon("sprites/Auto Abris Launcher.png", 0, 3);
-global.stripes = sprite_add("defpack tools/BIGstripes.png",1,1,1)
+global.sprAutoAbrisLauncher = sprite_add_weapon("sprites/sprAutoAbrisLauncher.png", 0, 1);
+global.stripes 							= sprite_add("defpack tools/BIGstripes.png",1,1,1)
 
 #define weapon_name
 return "AUTO ABRIS LAUNCHER"
@@ -30,11 +30,14 @@ return 10;
 return "RECOVERY FUEL";
 
 #define weapon_fire
+var _strtsize = 7	;
+var _endsize  = 1;
 sound_play_pitch(sndSniperTarget,3)
-with mod_script_call("mod","defpack tools","create_abris",self,55,1,argument0){
-	accspeed = [1.7,3]
+with mod_script_call("mod","defpack tools","create_abris",self,_strtsize,_endsize,argument0){
+	accspeed = 1.5
 	payload = script_ref_create(pop)
 }
+sound_play_pitch(sndSniperTarget,exp((_strtsize-_endsize)/room_speed/current_time_scale/accuracy*(1.7)))
 
 #define pop
 sound_play(sndGrenadeRifle)

@@ -17,7 +17,7 @@ return false;
 return 27;
 
 #define weapon_cost
-return 2;
+return 1;
 
 #define weapon_melee
 return 0;
@@ -37,6 +37,7 @@ sound_play_pitch(sndFlare,1.4)
 sound_play_pitch(sndFlareExplode,1.4)
 sound_play_pitch(sndFlamerStop,2)
 weapon_post(8,8,4)
+instance_create(x+lengthdir_x(26+speed,gunangle),y+lengthdir_y(26+speed,gunangle),SmallExplosion)
 repeat(6)
 {
 	repeat(2)with instance_create(x+lengthdir_x(2,direction)+random_range(-2,2),y+lengthdir_y(2,direction)+random_range(-2,2),Smoke)motion_set(other.gunangle + random_range(-8,8), 1+random(3))
