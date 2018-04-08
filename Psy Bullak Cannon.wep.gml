@@ -1,11 +1,11 @@
 #define init
-global.sprPsyBulletFlakCannon = sprite_add_weapon("sprites/Psy Bullet Flak Cannon.png", 0, 3);
+global.sprPsyBullakCannon = sprite_add_weapon("sprites/sprPsyBullakCannon.png", 0, 3);
 
 #define weapon_name
 return "PSY BULLAK CANNON"
 
 #define weapon_sprt
-return global.sprPsyBulletFlakCannon;
+return global.sprPsyBullakCannon;
 
 #define weapon_type
 return 1;
