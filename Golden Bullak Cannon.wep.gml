@@ -1,5 +1,5 @@
 #define init
-global.sprGBulletFlakCannon = sprite_add_weapon("sprites/Golden Bullet Flak Cannon.png", 3, 3);
+global.sprGoldenBullakCannon = sprite_add_weapon("sprites/sprGoldenBullakCannon.png", 3, 3);
 
 #define weapon_gold
 return 1;
@@ -8,7 +8,7 @@ return 1;
 return "GOLDEN BULLAK CANNON"
 
 #define weapon_sprt
-return global.sprGBulletFlakCannon;
+return global.sprGoldenBullakCannon;
 
 #define weapon_type
 return 1;
@@ -17,10 +17,10 @@ return 1;
 return false;
 
 #define weapon_load
-return 14;
+return 28;
 
 #define weapon_cost
-return 5;
+return 10;
 
 #define weapon_swap
 return sndSwapExplosive;
@@ -41,4 +41,4 @@ repeat(6){
 sound_play_pitch(sndGoldGrenade,random_range(1.1,1.3))
 sound_play_pitch(sndFlakCannon,random_range(1.1,1.3))
 weapon_post(6,4,5)
-mod_script_call("mod", "defpack tools 2","create_flak",0,20,13,0,Bullet1,16,id)
+mod_script_call("mod", "defpack tools 2","create_flak",0,9,13,0,Bullet1,10,id)

@@ -15,7 +15,7 @@ return 1;
 return true;
 
 #define weapon_load
-return 22;
+return 21;
 
 #define weapon_cost
 return 0;
@@ -34,7 +34,8 @@ return 1
 
 #define weapon_fire
 
-sound_play_pitch(sndHammer,random_range(.97,1.03))
+sound_play_pitchvol(sndHammer,random_range(.5,.6),.7)
+sound_play_pitch(sndShovel,random_range(1.4,1.5))
 weapon_post(8,8,8)//xd
 var shell = 0;
 with instance_create(x,y,Slash){
@@ -50,11 +51,12 @@ with instance_create(x,y,Slash){
 	creator = other
 	repeat(3){
 		if other.ammo[1] >=1 {
-			sound_play_pitch(sndPistol,random_range(1.2,1.6))
-			sound_play_pitch(sndToxicBoltGas,1.6)
+			sound_play_pitch(sndMinigun,random_range(1.2,1.6))
+			sound_play_pitch(sndToxicBoltGas,1.3)
 			sprite_index = global.slash
+			instance_create(x+lengthdir_x(sprite_width,direction),y+lengthdir_y(sprite_width,direction),Smoke)
 			with mod_script_call("mod","defpack tools","create_toxic_bullet",x,y){
-				motion_set(other.direction + random_range(-20,20)*other.creator.accuracy, 10)
+				motion_set(other.direction + random_range(-9,9)*other.creator.accuracy, 10)
 				image_angle = direction
 				creator = other.creator
 				team = other.team
@@ -64,6 +66,6 @@ with instance_create(x,y,Slash){
 		}
 	}
 }
-if shell repeat(shell) mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, random_range(3,5), c_lime)
+if shell repeat(shell) mod_script_call("mod","defpack tools", "shell_yeah", -180, 18, random_range(3,5), c_lime)
 wepangle = -wepangle
 motion_add(gunangle,4)

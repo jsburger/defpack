@@ -23,7 +23,7 @@ return 8;
 return sndSwapPistol;
 
 #define weapon_area
-return 6;
+return -1;
 
 #define weapon_text
 return "NOT EVEN A SHOTGUN ANYMORE";

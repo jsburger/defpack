@@ -1,5 +1,5 @@
 #define init
-global.sprHeavyGunhammer = sprite_add_weapon("sprites/Heavy Gunhammer.png", 2, 10.5);
+global.sprHeavyGunhammer = sprite_add_weapon("sprites/sprHeavyGunhammer.png", 2, 10.5);
 global.sprGunhammerSlash = sprite_add("sprites/projectiles/Gunhammer Slash.png",3,0,24)
 
 weapon_is_melee(1)
@@ -16,10 +16,10 @@ return 1;
 return false;
 
 #define weapon_load
-return 27;
+return 38;
 
 #define weapon_cost
-return 25;
+return 0;
 
 #define weapon_swap
 return sndSwapHammer;
@@ -56,7 +56,7 @@ with instance_create(x,y,Slash){
 	image_angle = direction
 	team = other.team
 	creator = other
-	repeat(4){
+	repeat(3){
 		if other.ammo[1] >=2 {
 			instance_create(x+lengthdir_x(sprite_width,direction),y+lengthdir_y(sprite_width,direction),Smoke)
 			sound_play_pitch(sndHeavyRevoler,random_range(0.8,1.2))

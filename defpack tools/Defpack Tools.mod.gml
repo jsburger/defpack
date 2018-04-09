@@ -905,3 +905,18 @@ with Player
 		else{draw_curve(x,y,instance_nearest(mouse_x[index],mouse_y[index],enemy).x,instance_nearest(mouse_x[index],mouse_y[index],enemy).y,gunangle,12)}
 	}
 }
+
+#define step
+//drop tables
+with Inspector{if my_health <= 0 {with instance_create(x,y,WepPickup){wep = "idpd slugger"}}}; 		 
+
+#define drop_inspector
+
+#define drop_shielder
+if irandom(97)=0{with instance_create(x,y,WepPickup){wep = "idpd minigun"}}
+#define drop_egrunt
+if irandom(97)=0{with instance_create(x,y,WepPickup){wep = "idpd bazooka"}}
+#define drop_eshielder
+if irandom(97)=0{with instance_create(x,y,WepPickup){wep = "idpd plasma minigun"}}
+#define drop_einspector
+if irandom(97)=0{with instance_create(x,y,WepPickup){wep = "idpd energy sword"}}

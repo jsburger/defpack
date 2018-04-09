@@ -1,12 +1,12 @@
 #define init
-global.sprLightningGunhammer = sprite_add_weapon("sprites/Lightning Gunhammer.png", 3,6);
-global.sprLightningGunhammerSlash = sprite_add("sprites/projectiles/Heavy Lightning Slash.png",3,0,24);
+global.sprThunderGunhammer = sprite_add_weapon("sprites/sprThunderGunhammer.png", 2,8);
+global.sprThunderGunhammerSlash = sprite_add("sprites/projectiles/sprThunderGunhammerSlash.png",3,0,24);
 
 #define weapon_name
-return "LIGHTNING GUNHAMMER";
+return "THUNDER GUNHAMMER";
 
 #define weapon_sprt
-return global.sprLightningGunhammer;
+return global.sprThunderGunhammer;
 
 #define weapon_type
 return 1;
@@ -15,7 +15,7 @@ return 1;
 return false;
 
 #define weapon_load
-return 19;
+return 32;
 
 #define weapon_cost
 return 0;
@@ -34,17 +34,17 @@ return 1;
 
 #define weapon_fire
 
-weapon_post(8,8,8)
+weapon_post(8,0,15)
 var shell = 0;
 with instance_create(x,y,Slash)
 {
 	creator = other
 	sprite_index = sprHeavySlash
-	if other.ammo[1] >=2
+	if other.ammo[1] >=3
 	{
 		sound_play_pitch(sndLightningHammer,random_range(.97,1.03))
 		sound_play_pitch(sndPistol,1.2)
-		sprite_index = global.sprLightningGunhammerSlash
+		sprite_index = global.sprThunderGunhammerSlash
 	}
 	else{sound_play_pitch(sndHammer,random_range(.97,1.03))}
 	direction = other.gunangle
@@ -57,7 +57,7 @@ with instance_create(x,y,Slash)
 	image_angle = direction
 	team = other.team
 	damage = 16
-	if other.ammo[1] >=4{
+	if other.ammo[1] >=3{
 		if other.infammo = 0 {other.ammo[1] -= 4}
 		with mod_script_call("mod", "defpack tools", "create_lightning_bullet",x+lengthdir_x(5,other.gunangle),y+lengthdir_y(5,other.gunangle)){
 				creator = other.creator

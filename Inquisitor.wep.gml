@@ -30,10 +30,11 @@ return 13;
 return "DEVASTATION++";
 
 #define weapon_fire
-sound_play_pitch(sndSniperTarget,.3)
+var _strtsize = 44-skill_get(13)*7;//never thought id have to nerf eagle eyes im so proud of you
+var _endsize  = 16;
 with mod_script_call("mod","defpack tools","create_abris",self,44,16,argument0)
 {
-	accspeed = [1.03,1.2]
+	accspeed = 1.03
 	payload = script_ref_create(pop)
 	lasercolour1 = $00FF00
 	lasercolour = lasercolour1
@@ -44,6 +45,7 @@ with mod_script_call("mod","defpack tools","create_abris",self,44,16,argument0)
 	snakemass = 3
 	on_draw = abris_draw_inquisitor
 }
+sound_play_pitch(sndSniperTarget,exp((room_speed/current_time_scale/accuracy*(.0003))))
 
 #define Plasmasnake_step
 if instance_exists(enemy){
@@ -90,9 +92,15 @@ if ammo = 0
 }
 
 #define pop
-sound_play(sndGrenadeRifle)
-sound_play(sndExplosionS)
-creator.wkick = 10
+
+sound_play_pitch(sndSewerPipeBreak,.2)
+sound_play_pitch(sndUltraLaser,.7)
+sound_play_pitch(sndHyperLauncher,.4)
+sound_play_pitch(sndPlasmaBig,.6)
+sound_play_pitch(sndPlasmaReload,1.4)
+sound_play_pitch(sndPlasmaBigUpg,.8)
+creator.wkick = 14
+instance_destroy();exit
 repeat(snakemass)
 {
 	with instance_create(mouse_x[index],mouse_y[index],CustomObject)

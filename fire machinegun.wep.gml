@@ -1,16 +1,16 @@
 #define init
-global.sprFireRevolver = sprite_add_weapon("sprites/sprFireRevolver.png", -2, 2);
+global.sprFireMachinegun = sprite_add_weapon("sprites/sprFireMachinegun.png", 2, 0);
 #define weapon_name
-return "FIRE REVOLVER";
+return "FIRE MACHINEGUN";
 
 #define weapon_sprt
-return global.sprFireRevolver;
+return global.sprFireMachinegun;
 
 #define weapon_type
 return 1;
 
 #define weapon_auto
-return false;
+return true;
 
 #define weapon_load
 return 4;
@@ -19,24 +19,25 @@ return 4;
 return 2;
 
 #define weapon_swap
-return sndSwapPistol;
+return sndSwapMachinegun;
 
 #define weapon_area
-return 4;
+return -1;
 
 #define weapon_text
-return "MAN ITS A HOT ONE";
+return "replace me please";
 
 #define weapon_fire
 
 weapon_post(2,-1,3)
-sound_play(sndPistol)
+sound_play(sndMachinegun)
 sound_play_pitchvol(sndSwapFlame,random_range(1.4,1.6),.7)
 sound_play_pitchvol(sndIncinerator,1,.2)
 mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, 2+random(3), c_red)
 with mod_script_call("mod", "defpack tools", "create_fire_bullet",x,y){
 	creator = other
 	team = other.team
-	motion_set(other.gunangle + random_range(-12,12) * other.accuracy,15)
+	move_contact_solid(other.gunangle,8)
+	motion_set(other.gunangle + random_range(-16,16) * other.accuracy,15)
 	image_angle = direction
 }

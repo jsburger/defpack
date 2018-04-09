@@ -1,5 +1,5 @@
 #define init
-global.sprPsyMinigun = sprite_add_weapon("sprites/Psy Minigun.png", 3, 4);
+global.sprPsyMinigun = sprite_add_weapon("sprites/sprPsyMinigun.png", 3, 4);
 
 #define weapon_name
 return "PSY MINIGUN";
@@ -30,7 +30,8 @@ return "IT WAS NICE KNOWING YOU";
 
 #define weapon_fire
 
-sound_play_pitch(sndCursedPickup,.4)
+sound_play_pitch(sndCursedReminder,.4)
+sound_play_pitch(sndMinigun,.8)
 weapon_post(3,-12,8)
 mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, random_range(2,4), c_purple)
 with mod_script_call("mod", "defpack tools", "create_psy_bullet",x,y){
