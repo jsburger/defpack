@@ -33,7 +33,7 @@ return "GO GO GO GO";
 weapon_post(12,-5,27)
 sound_play_pitch(sndSwapCursed,random_range(1.2,1.4))
 sound_play_pitch(sndQuadMachinegun,random_range(.6,.8))
-repeat(4)mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, random_range(3,5), c_purple)
+repeat(4)mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, random_range(3,6), c_purple)
 with mod_script_call("mod", "defpack tools", "create_psy_bullet",x,y){
 	creator = other
 	move_contact_solid(other.gunangle,14)

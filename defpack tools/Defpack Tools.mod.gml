@@ -109,7 +109,7 @@ with (a) {
 	pattern = false
 	sprite_index = global.sprPsyBullet
 	typ = 2
-	damage = 5
+	damage = 3
 	recycle_amount = 2
 	force = -10
 	image_speed = 1
@@ -908,7 +908,7 @@ with Player
 
 #define step
 //drop tables
-with Inspector{if my_health <= 0 {with instance_create(x,y,WepPickup){wep = "idpd slugger"}}}; 		 
+with Inspector{if my_health <= 0 {with instance_create(x,y,WepPickup){wep = "idpd slugger"}}};
 
 #define drop_inspector
 

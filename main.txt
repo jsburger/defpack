@@ -53,7 +53,7 @@
 /loadwep heavy gunhammer
 /loadwep fire gunhammer
 /loadwep pest gunhammer
-/loadwep lightning gunhammer
+/loadwep thunder gunhammer
 /loadwep psy gunhammer
 /loadwep ultra gunhammer
 
