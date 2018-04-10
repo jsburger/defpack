@@ -336,7 +336,7 @@ with (c){
 	typ = 2
 	mask_index = mskBullet1
 	force = 7
-	damage = 2
+	damage = 1
 	recycle_amount = 2
 	image_speed = 1
 	image_angle = direction
@@ -349,7 +349,7 @@ with (c){
 return c;
 
 #define lightning_step
-if random(17) < 1*current_time_scale{
+if random(21) < 1*current_time_scale{
 	with instance_create(x,y,Lightning){
       	image_angle = random(360)
       	team = other.team
@@ -369,7 +369,7 @@ with instance_create(x,y,Lightning){
 	image_angle = random(360)
 	creator = other.creator
 	team = other.team
-	ammo = 6
+	ammo = 4
 	alarm0 = 1
 	visible = 0
 	with instance_create(x,y,LightningSpawn)

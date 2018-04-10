@@ -14,34 +14,39 @@ return 1;
 return false;
 
 #define weapon_load
-return 20;
+return 21;
 
 #define weapon_cost
-return 4;
+return 9;
 
 #define weapon_swap
 return sndSwapMachinegun;
 
 #define weapon_area
-return 10;
+return -1;
 
 #define weapon_text
 return "FORKED LIGHTNING";
 
 #define weapon_fire
 
-repeat (4)
+repeat (3)
 {
-	sound_play(sndMachinegun)
+	sound_play_pitch(sndMachinegun,.9)
+	sound_play_pitchvol(sndGammaGutsKill,1.4,.3+skill_get(17)*.2)
 	if !skill_get(17)sound_play_pitch(sndLightningRifle,random_range(1.4,1.6))else sound_play_pitch(sndLightningRifleUpg,random_range(1.6,1.8))
 	if (!instance_exists(self)) break;
-	mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, 2+random(3), c_navy)
+	repeat(3)mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, 2+random(3), c_navy)
+	repeat(2)
+	{
 	with mod_script_call("mod", "defpack tools", "create_lightning_bullet",x,y){
 		motion_add(other.gunangle+random_range(-4,4)*other.accuracy,8)
 		image_angle = direction
 		team = other.team
 		creator = other
 	}
-	weapon_post(4, -10, 9);
 	wait 2;
+	}
+	weapon_post(4, -10, 9);
+	wait 1;
 }

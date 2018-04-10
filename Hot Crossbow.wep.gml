@@ -1,12 +1,12 @@
 #define init
-global.sprFireCrossbow = sprite_add_weapon("sprites/Fire Crossbow.png", 2, 3);
-global.sprFireBolt = sprite_add_base64("iVBORw0KGgoAAAANSUhEUgAAABUAAAAFCAYAAACqwacNAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABISURBVChTY3BoYKAIQ8F/KIaI/f8PZsMEycb/366FscHgvzcPExwf0mLAwH8sMPH/JfwIfBqKYQbTxKXoYUQqhgK4gQ4NDAwALrZ6eop9sYUAAAAASUVORK5CYIIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",0, -2, 3);
+global.sprHotCrossbow = sprite_add_weapon("sprites/sprHotCrossbow.png", 2, 3);
+global.sprHotBolt 	  = sprite_add("sprites/projectiles/sprHotBolt.png",0, 1, 5);
 
 #define weapon_name
 return "HOT CROSSBOW"
 
 #define weapon_sprt
-return global.sprFireCrossbow;
+return global.sprHotCrossbow;
 
 #define weapon_type
 return 3;
@@ -45,11 +45,11 @@ return "SUPER HOT";
 	}
 	with instance_create(x,y,Bolt)
 	{
-		sprite_index = global.sprFireBolt
+		sprite_index = global.sprHotBolt
 		team = other.team
 		check = 0
 		creator = other
-		motion_add(other.gunangle,19)
+		motion_add(other.gunangle,21)
 		damage = 12
 		image_angle = direction
 		if fork(){
@@ -74,10 +74,10 @@ return "SUPER HOT";
 					{
 						repeat(5)
 						{
-							with instance_create(x+lengthdir_x(random_range(0,10),direction-180),y+lengthdir_y(random_range(0,10),direction-180),Flame)
+							with instance_create(x+lengthdir_x(random_range(0,32),direction-180),y+lengthdir_y(random_range(0,32),direction-180),Flame)
 							{
 								team = other.team
-								image_xscale *=.8
+								image_xscale *=1.2
 								image_yscale *=.8
 							}
 						}

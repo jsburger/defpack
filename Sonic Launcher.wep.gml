@@ -1,5 +1,5 @@
 #define init
-global.sprSonicLauncher = sprite_add_weapon("sprites/Sonic Launcher.png", 2, 2);
+global.sprSonicLauncher = sprite_add_weapon("sprites/sprSonicLauncher.png", 2, 2);
 global.sprSonicNade = sprite_add("sprites/projectiles/Sonic Nade.png",1,2.5,2.5);
 #define weapon_name
 return "SONIC LAUNCHER"
@@ -50,8 +50,10 @@ with instance_create(x+lengthdir_x(3,gunangle),y+lengthdir_y(3,gunangle),CustomP
 	on_wall = nothing
 	on_destroy = script_ref_create(sonic_launcher_destroy)
 }
-sound_play(sndHyperLauncher)
-weapon_post(5,-6,1)
+sound_play_pitch(sndHyperLauncher,1.3+point_distance(_x,_y,x,y)/1000)
+sound_play_pitch(sndHeavyNader,1.8)
+sound_play_pitch(sndNothingFire,.7)
+weapon_post(6,-6,4)
 
 #define nothing
 
@@ -62,10 +64,12 @@ image_angle += anglefac * speed/1.5
 if place_meeting(x + hspeed,y,Wall){
 	hspeed *= -1
 	bounce -= 1
+	sound_play_pitch(sndBouncerBounce,random_range(1.6,1.8))
 }
 if place_meeting(x,y +vspeed,Wall){
 	vspeed *= -1
 	bounce -= 1
+	sound_play_pitch(sndBouncerBounce,random_range(1.6,1.8))
 }
 if speed <= 0 || place_meeting(x,y,hitme) || bounce <= 0
 {
@@ -79,7 +83,7 @@ with mod_script_call("mod","defpack tools","create_sonic_explosion",x,y)
 	image_xscale = scalefac
 	image_yscale = scalefac
 	damage = 15
-	image_speed = 0.7
+	image_speed = 0.75
 	team = other.team
 	creator = other.creator
 	sound_play(sndExplosion)
