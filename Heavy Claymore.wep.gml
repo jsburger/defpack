@@ -2,6 +2,7 @@
 global.sprHeavyClaymore = sprite_add_weapon("sprites/Heavy Claymore.png", 4, 4);
 global.sprSmallGreenExplosion = sprite_add("sprites/projectiles/Small Green Explosion_strip7.png",7,12,12)
 
+
 #define weapon_name
 return "HEAVY CLAYMORE";
 

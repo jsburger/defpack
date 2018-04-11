@@ -6,6 +6,7 @@ trace("Thanks to Wonderis_ for putting a ton of time testing all this");
 trace("Also Jsburg did a bunch of work polishing the mod")
 trace("Many thanks to Xefs and Yokin for code help, much appreciated lads :)")
 trace("karm sucks lol")
+
 #define weapon_name
 return "CLAYMORE";
 
