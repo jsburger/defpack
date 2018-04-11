@@ -9,6 +9,7 @@ global.sprMagPelletDisappear = sprite_add("Magnet Pellet Dissapear.png", 5, 8, 8
 global.sprHeavyMagPellet = sprite_add("Heavy Magnet Pellet.png", 2, 9, 9);
 global.sprHeavyMagPelletDisappear = sprite_add("Heavy Magnet Pellet Dissapear.png", 5, 9, 8);
 global.sprLightningBullet = sprite_add("Lightning Bullet.png", 2, 8, 8)
+global.sprLightningBulletUpg = sprite_add("sprThunderBulletUpg.png", 2, 8, 8)
 global.sprLightningBulletHit = sprite_add("Lightning Bullet Hit.png", 4, 8, 8)
 global.sprToxicBullet = sprite_add("Toxic Bullet.png", 2, 8, 8)
 global.sprToxicBulletHit = sprite_add("Toxic Bullet Hit.png", 4, 8, 8)
@@ -332,12 +333,12 @@ var c =instance_create(_x, _y, CustomProjectile)
 with (c){
 	name = "Lightning Bullet"
 	pattern = false
-	sprite_index = global.sprLightningBullet
+	if skill_get(17)=0{sprite_index = global.sprLightningBullet}else{sprite_index=global.sprLightningBulletUpg}
 	typ = 2
 	mask_index = mskBullet1
 	force = 7
 	damage = 1
-	recycle_amount = 2
+	recycle_amount = 1
 	image_speed = 1
 	image_angle = direction
 	on_step = script_ref_create(lightning_step)
@@ -350,20 +351,20 @@ return c;
 
 #define lightning_step
 if random(21) < 1*current_time_scale{
-	with instance_create(x,y,Lightning){
-      	image_angle = random(360)
-      	team = other.team
-		creator = other.creator
-      	ammo = choose(1,2)
-		alarm0 = 1
-		visible = 0
-      	with instance_create(x,y,LightningSpawn)
-        {
-      	   image_angle = other.image_angle
-        }
-    }
-}
-
+		with instance_create(x,y,Lightning){
+	      	image_angle = random(360)
+	      	team = other.team
+			creator = other.creator
+	      	ammo = choose(1,2)
+			alarm0 = 1
+			visible = 0
+	      	with instance_create(x,y,LightningSpawn)
+	        {
+	      	   image_angle = other.image_angle
+	        }
+	    }
+	}
+	
 #define lightning_destroy
 with instance_create(x,y,Lightning){
 	image_angle = random(360)
@@ -908,15 +909,40 @@ with Player
 
 #define step
 //drop tables
-with Inspector{if my_health <= 0 {with instance_create(x,y,WepPickup){wep = "idpd slugger"}}};
-
-#define drop_inspector
-
-#define drop_shielder
-if irandom(97)=0{with instance_create(x,y,WepPickup){wep = "idpd minigun"}}
-#define drop_egrunt
-if irandom(97)=0{with instance_create(x,y,WepPickup){wep = "idpd bazooka"}}
-#define drop_eshielder
-if irandom(97)=0{with instance_create(x,y,WepPickup){wep = "idpd plasma minigun"}}
-#define drop_einspector
-if irandom(97)=0{with instance_create(x,y,WepPickup){wep = "idpd energy sword"}}
+with Inspector			{if my_health <= 0 && irandom(97)=0{with instance_create(x,y,WepPickup){wep = choose("donut box","idpd slugger")}}};
+with Shielder 			{if my_health <= 0 && irandom(97)=0{with instance_create(x,y,WepPickup){wep = choose("donut box","idpd minigun")}}};
+with EliteGrunt 		{if my_health <= 0 && irandom(97)=0{with instance_create(x,y,WepPickup){wep = choose("donut box","idpd bazooka")}}};
+with EliteInspector {if my_health <= 0 && irandom(97)=0{with instance_create(x,y,WepPickup){wep = choose("donut box","idpd energy sword")}}};
+with EliteShielder  {if my_health <= 0 && irandom(97)=0{with instance_create(x,y,WepPickup){wep = choose("donut box","idpd plasma minigun")}}};
+with PopoFreak	    {if my_health <= 0 && irandom(97)=0{with instance_create(x,y,WepPickup){wep = choose("donut box","idpd grenade launcher")}}};
+with Van	    			{if my_health <= 0 && irandom(97)=0{with instance_create(x,y,WepPickup){wep = choose("donut box","idpd shotgun")}}};
+with SodaMachine{
+	if my_health <= 0 && irandom(98)=0
+	{
+		with instance_create(x,y,WepPickup)
+		{
+			if skill_get(14)
+			{
+				if irandom(99)=0
+				{
+					wep = "soda popper"
+				}
+				else
+				{
+					wep = choose("lightning blue lifting drink(tm)","extra double triple coffee","autoproductive expresso","saltshake","munitions mist","vinegar","guardian juice","sunset mayo")
+				}
+			}
+			else
+			{
+				if irandom(99)=0
+				{
+					wep = "soda popper"
+				}
+				else
+				{
+					wep = choose("lightning blue lifting drink(tm)","extra double triple coffee","autoproductive expresso","saltshake","munitions mist","vinegar","guardian juice")
+				}
+			}
+		}
+	}
+}

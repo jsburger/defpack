@@ -1,8 +1,6 @@
 #define init
 global.sprAndromedaLauncher = sprite_add_weapon("sprAndromedaLauncher.png", 0, 5);
 global.sprAndromedaBullet = sprite_add_base64("iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAYAAAB3AH1ZAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACLSURBVEhL3ZXRCcAgDESzRaEDdI6O1s1tgkmrcK1NFIQevK/gy+GH0rpsXewHXaRkPCXPyzNQ6qFe/jWDC/iWWwYViC23/KNAX6DU4EjHhGaGesKBUsGWt0qoJxwoFaYXEFrLBfWEA6Ue1BMOlHpgRUcJvl8k9TC9wPSnWCT+EoM/o7rEW5E8v88QnexX3Z4Uujk7AAAAAElFTkSuQmCCAAAAAAAAAAAAAA==",2, 8, 8);
-global.WhiteDebris = sprite_add("White Debris.png", 4, 4, 4);
-global.Spiralthing = sprite_add("spiral.png",1,50,50);
 global.space = sprite_add("spaceforeground.png",1,0,0);
 global.space2 = sprite_add("spacebackground.png",1,0,0);
 
@@ -43,7 +41,6 @@ return "TAKE IT IN YOUR HEART NOW, LOVER";
 
 #define weapon_fire
 with instance_create(x+lengthdir_x(14,gunangle),y+lengthdir_y(14,gunangle),CustomObject){
-	planetcheck = 0
 	creator = other
 	team = other.team
 	xgoal = mouse_x[other.index]
@@ -109,27 +106,6 @@ if mode = 1{
 			other.succ++
 			other.wallbreak = 1
 			instance_destroy()
-		}
-	}
-	//planets
-	if planetcheck = 0
-	{
-		planetcheck = 1
-		repeat(3)with instance_create(x,y,CustomProjectile)
-		{
-			mask_index = mskFreak
-			damage = 5
-			image_alpha = 0
-			force = 5
-			team = other.team
-			creator = other
-			size = irandom_range(2,6)
-			col = choose(c_lime,c_red,c_yellow,c_purple,c_blue)
-			motion_add(point_direction(creator.x,creator.y,x,y),12)
-			spd = random_range(2,6)
-			on_step = planet_step
-			on_hit = planet_hit
-			on_draw = planet_draw
 		}
 	}
 	with Player //Prism Interaction
@@ -221,15 +197,21 @@ if mode = 1{
 			if image_xscale <= 0{instance_destroy()}
 		}
 	}
-	with projectile if distance_to_object(other)<other.succ{
-		if team != other.team
+	with projectile
 		{
-			if "_spd" not in self{_spd = speed*.4; _speed = speed}
-			if speed > _spd{speed = _spd}
-			image_angle = direction
+			if distance_to_object(other)<other.succ {if "fall" not in self{fall = true}}
+			if "fall" in self
+			{
+				damage = 0
+				image_xscale -= .04
+				image_yscale -= .04
+				image_alpha -= .02
+				speed /= 1.01
+				image_angle += (1 - image_xscale)*3
+				image_blend = merge_colour(image_blend,c_black,.05)
+				if image_xscale <= 0{instance_delete(self)}
+			}
 		}
-	}
-	else if "_spd" in self{if speed < _speed{speed = _speed}}
 }
 with hitme if distance_to_object(other)<other.succ {
 	if team != other.team{
@@ -338,24 +320,6 @@ draw_set_color(c_white);
 draw_set_alpha(1);
 texture_set_repeat(false);
 
-#define planet_hit
-if other.sprite_index != other.spr_hurt{projectile_hit(other, damage, force, other.direction-180)}
-
-#define planet_step
-motion_add(point_direction(creator.x,creator.y,x,y)+90,spd)//probaböy make them being attracted by the core instead circling around them. also make the radius thing and also make it scale withth S U C C
-if !instance_exists(creator){instance_destroy();exit}
-if speed > 2{speed = 2}
-if image_alpha < 1{image_alpha+=.04}
-
-#define planet_draw
-draw_set_alpha(image_alpha*random_range(.2,.3))
-draw_circle_colour(x,y,size*2,col,col,false)
-draw_set_alpha(image_alpha*random_range(.8,1))
-draw_circle_colour(x,y,size*4/3,col,col,false)
-draw_circle_colour(x,y,random_range(size-size/12,size+size/12),c_white,c_white,false)
-draw_set_alpha(1-image_alpha)
-draw_circle_colour(x,y,size*4/3,c_black,c_black,false)
-draw_set_alpha(1)
 /*#define weapon_fire
 with instance_create(x,y,CustomObject){
 	on_step = medastep

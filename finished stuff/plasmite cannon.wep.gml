@@ -82,12 +82,11 @@ image_xscale = _scl
 image_yscale = _scl
 if irandom(9) = 1
 {
-	//sound_play_pitch(sndPlasmaHit,random_range(1.55,1.63))
-	with instance_create(x+random_range(-6,6),y+random_range(-6,6),PlasmaImpact){image_xscale=.5;depth=other.depth+1;image_yscale=.5;damage-=1;with Smoke if place_meeting(x,y,other) instance_destroy()}
+	with instance_create(x+random_range(-6,6),y+random_range(-6,6),PlasmaImpact){image_xscale=.5;depth=other.depth;image_yscale=.5;damage-=1;with Smoke if place_meeting(x,y,other) instance_destroy()}
 }
 if irandom(4-skill_get(17))=1{with instance_create(x+random_range(-12,12),y+random_range(-12,12),GunGun){image_index=2-skill_get(17)}}
 speed /= fric
-if instance_exists(enemy)if distance_to_object(instance_nearest(x,y,enemy))<48{var closeboy = instance_nearest(x,y,enemy);motion_add(point_direction(x,y,closeboy.x,closeboy.y),speed*.3)speed -= speed*.21}
+if instance_exists(enemy)if distance_to_object(instance_nearest(x,y,enemy))<66{var closeboy = instance_nearest(x,y,enemy);motion_add(point_direction(x,y,closeboy.x,closeboy.y),speed*.2)speed -= speed*.21}
 if speed < 1.00005{instance_destroy()}
 
 #define atom_draw

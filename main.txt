@@ -25,7 +25,15 @@
 
 //THUNDER BULLET
 /loadwep thunder pistol
-/loadwep thunder rifle
+/loadwep thunder machinegun
+/loadwep triple thunder machinegun
+/loadwep quad thunder machinegun
+/loadwep thunder smg
+/loadwep assault thunder rifle
+/loadwep hyper thunder rifle
+/loadwep thunder minigun
+/loadwep double thunder minigun
+/loadwep thunder bullet cannon
 
 //PSY BULLET
 /loadwep psy revolver
@@ -179,9 +187,9 @@
 /loadwep finished stuff/vector shotgun
 
 //PLASMITE
-loadwep finished stuff/plasmite rifle
-loadwep finished stuff/plasmite shotgun
-loadwep finished stuff/plasmite cannon
+/loadwep finished stuff/plasmite rifle
+/loadwep finished stuff/plasmite shotgun
+/loadwep finished stuff/plasmite cannon
 
 //SQUARE
 /loadwep square gun
@@ -211,7 +219,7 @@ loadwep finished stuff/plasmite cannon
 /loadwep golden gunhammer
 
 ///WIP SHIT///
-//loadwep test/sniper rifle
+//loadwep sniper rifle
 //loadwep test/heavy sniper rifle
 //loadwep test/auto sniper rifle
 //loadwep test/splitter
@@ -229,4 +237,16 @@ loadwep finished stuff/plasmite cannon
 
 ///OTHER///
 /loadwep finished stuff/defender
+/loadwep finished stuff/drinks/vinegar
+/loadwep finished stuff/drinks/munitions mist
+/loadwep finished stuff/drinks/sunset mayo
+/loadwep finished stuff/drinks/saltshake
+/loadwep finished stuff/drinks/autoproductive expresso
+/loadwep finished stuff/drinks/extra double triple coffee
+/loadwep finished stuff/drinks/lightning blue lifting drink(tm)
+/loadwep finished stuff/drinks/guardian juice
+/loadwep finished stuff/drinks/soda popper
+/loadwep finished stuff/drinks/donut box
+
+///NON WEAPONS//
 /loadmod IDPD Weapon Chest/IDPD Weapon Chest

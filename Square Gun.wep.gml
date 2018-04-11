@@ -50,6 +50,8 @@ with instance_create(x,y,CustomProjectile)
 	image_xscale = 1+skill_get(17)*.3
 	image_yscale = 1+skill_get(17)*.3
 	force = 6
+	timer = 1
+	can_laser = true
 	iframes = 0
 	team = other.team
 	anglefac = random_range(0.8,2.5)
@@ -148,29 +150,21 @@ if iframes <= 0
 else{iframes--}
 with instances_matching(Laser,"team",other.team)//Laser interaction
 {
-	if place_meeting(x,y,other)
+	if place_meeting(x,y,other) && other.can_laser = true
 	{
 		if "flag" not in self
 		{
 			x = other.x
 			y = other.y
-			flag = other
 			image_xscale = point_distance(x,y,xstart,ystart)/2
-		}
-		else
-		{
-				if flag != other
-				{
-					x = other.x
-					y = other.y
-					image_xscale = point_distance(x,y,xstart,ystart)/2
-					if irandom(2)=0{exit}
-				}
-				else{exit}
 		}
 		with other
 		{
+			if timer > 0{timer--}else{can_laser = true}
+			if can_laser = true
+			{
 				sound_play(sndLaser)
+				can_laser = false
 				with instance_create(x+lengthdir_x(speed,direction), y+lengthdir_y(speed,direction),Laser)
 				{
 					image_angle = (other.image_angle + random_range(-3,3) * other.creator.accuracy);
@@ -178,7 +172,7 @@ with instances_matching(Laser,"team",other.team)//Laser interaction
 					alarm0 = 1
 					team = other.team;
 					creator = other
-					flag = other
+					flag = true
 				}
 				with instance_create(x+lengthdir_x(speed,direction), y+lengthdir_y(speed,direction),Laser)
 				{
@@ -187,7 +181,7 @@ with instances_matching(Laser,"team",other.team)//Laser interaction
 					alarm0 = 1
 					team = other.team;
 					creator = other
-					flag = other
+					flag = true
 				}
 				with instance_create(x+lengthdir_x(speed,direction), y+lengthdir_y(speed,direction),Laser)
 				{
@@ -196,7 +190,7 @@ with instances_matching(Laser,"team",other.team)//Laser interaction
 					alarm0 = 1
 					team = other.team;
 					creator = other
-					flag = other
+					flag = true
 				}
 				with instance_create(x+lengthdir_x(speed,direction), y+lengthdir_y(speed,direction),Laser)
 				{
@@ -205,8 +199,11 @@ with instances_matching(Laser,"team",other.team)//Laser interaction
 					alarm0 = 1
 					team = other.team;
 					creator = other
-					flag = other
+					flag = true
 				}
+			}
+			wait(12)
+			can_laser = true
 		}
 	}
 }
