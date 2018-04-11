@@ -39,38 +39,52 @@ weapon_post(8,7,12)
 
 with instance_create(x,y,Slash)
 {
-	damage = 10
+	damage = 14
 	creator = other
 	motion_add(other.gunangle, 2 + (skill_get(13) * 3))
 	image_angle = direction
 	team = other.team
-	image_xscale *= 1.4
-	image_yscale *= 1.4
-	killdistance = -random_range(-5.5,-4.1)
+	image_xscale *= 1.2
+	image_yscale *= 1.3
 	if skill_get(13) {
 		x += 4 *hspeed;
 		y += 4 *vspeed
 	}
-	with instance_create(x+lengthdir_x(56-killdistance,direction),y+lengthdir_y(56-killdistance,direction),GreenExplosion){hitid = [sprite_index,"Green Explosion"]}
-	var _o = -30
-	repeat(2){
-		with instance_create(x+lengthdir_x(57,direction+ _o),y+lengthdir_y(57,direction +_o),GreenExplosion){
-			sprite_index = global.sprSmallGreenExplosion
-			hitid = [sprite_index,"Small Green
-			Explosion"]
+	var swang = sign(other.wepangle);
+	if fork(){
+		var dist = 40
+		wait(3)
+		with instance_create(x+lengthdir_x(dist,direction),y+lengthdir_y(dist,direction),GreenExplosion){hitid = [sprite_index,"Green Explosion"]}
+		sound_play(sndExplosion)
+		var _o = -30 *swang
+		wait(1)
+		dist -= 7
+		repeat(2){
+			with instance_create(x+lengthdir_x(dist,direction+ _o),y+lengthdir_y(dist,direction +_o),GreenExplosion){
+				sprite_index = global.sprSmallGreenExplosion
+				mask_index = mskSmallExplosion
+				hitid = [sprite_index,"Small Green
+				Explosion"]
+			}
+			_o *= -1
 		}
-		_o *= -1
-	}
-	_o = -50
-	repeat(2){
-		with instance_create(x+lengthdir_x(45,direction+ _o),y+lengthdir_y(45,direction +_o),GreenExplosion){
-			image_xscale /= 1.5
-			image_yscale /= 1.5
-			sprite_index = global.sprSmallGreenExplosion
-			hitid = [sprite_index,"Small Green
-			Explosion"]
+		sound_play(sndExplosionS)
+		dist += 5
+		_o = -50 * swang
+		wait(1)
+		repeat(2){
+			with instance_create(x+lengthdir_x(dist,direction+ _o),y+lengthdir_y(dist,direction +_o),GreenExplosion){
+				image_xscale /= 1.5
+				image_yscale /= 1.5
+				sprite_index = global.sprSmallGreenExplosion
+				mask_index = mskSmallExplosion
+				hitid = [sprite_index,"Small Green
+				Explosion"]
+			}
+			_o *= -1
 		}
-		_o *= -1
+		sound_play(sndExplosionS)
+		exit
 	}
 }
 wepangle = -wepangle
