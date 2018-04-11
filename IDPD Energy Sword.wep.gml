@@ -23,7 +23,7 @@ return 1;
 return sndSwapEnergy;
 
 #define weapon_area
-return 13;
+return -1;
 
 #define weapon_text
 return "THE END";

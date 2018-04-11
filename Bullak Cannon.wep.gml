@@ -30,7 +30,7 @@ return " 90/100";
 
 #define weapon_fire
 
-repeat(6)
+repeat(5)
 {
 	with instance_create(x,y,Shell)
 	{
@@ -41,4 +41,4 @@ sound_play_pitch(sndPistol,random_range(0.7,0.8))
 sound_play_pitch(sndGrenadeRifle,random_range(1.1,1.3))
 sound_play_pitch(sndFlakCannon,random_range(1.1,1.3))
 weapon_post(6,-4,5)
-mod_script_call("mod", "defpack tools 2","create_flak",0,8,13,0,Bullet1,10,id) //not gonna lie this shit spooks the fuck outta me, i swear somethings gonna go wrong
+mod_script_call("mod", "defpack tools 2","create_flak",0,22,13,0,Bullet1,10,id) //not gonna lie this shit spooks the fuck outta me, i swear somethings gonna go wrong

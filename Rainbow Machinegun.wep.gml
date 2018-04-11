@@ -1,6 +1,5 @@
 #define init
-global.sprRainbowMachinegun = sprite_add_weapon("sprites/Rainbow Machinegun.png", 0, 3);
-global.rainbow_cycle = 0
+global.sprRainbowMachinegun = sprite_add_weapon("sprites/sprRainbowMachinegun.png", 0, 3);
 
 #define weapon_name
 return "RAINBOW MACHINEGUN"
@@ -15,7 +14,7 @@ return 1;
 return true;
 
 #define weapon_load
-return 5;
+return 4;
 
 #define weapon_cost
 return 1;
@@ -30,6 +29,7 @@ return 8;
 return choose("/CANDELA","0/10 USES TOXIC");
 
 #define weapon_fire
+if "rainbow_cycle" not in self{rainbow_cycle = 0}
 /*fire
 bullet
 toxic
@@ -37,8 +37,10 @@ lightning
 psy*/
 
 sound_play(sndMachinegun)
-weapon_post(3,-5,3)
-switch global.rainbow_cycle {
+sound_play_pitch(sndTripleMachinegun,random_range(1.3,1.5))
+sound_play_pitch(sndCrossReload,random_range(1.7,1.8))
+weapon_post(5,-5,7)
+switch rainbow_cycle{
 	case 0:
 	sound_play_pitchvol(sndSwapFlame,random_range(1.4,1.6),.7)
 	sound_play_pitchvol(sndIncinerator,1,.2)
@@ -93,4 +95,4 @@ switch global.rainbow_cycle {
 		}
 		break
 }
-global.rainbow_cycle = ++global.rainbow_cycle mod 5
+rainbow_cycle = ++rainbow_cycle mod 5

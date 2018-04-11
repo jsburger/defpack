@@ -1,21 +1,51 @@
 ///BULLET WEAPONS///
 //FIRE BULLET
 /loadwep fire revolver
+/loadwep fire machinegun
+/loadwep triple fire machinegun
+/loadwep quad fire machinegun
 /loadwep fire smg
+/loadwep assault fire rifle
+/loadwep hyper fire rifle
+/loadwep fire minigun
+/loadwep double fire minigun
+/loadwep fire bullet cannon
 
 //PEST BULLET
 /loadwep pest pistol
 /loadwep pest machinegun
+/loadwep triple pest machinegun
+/loadwep quad pest machinegun
+/loadwep pest smg
+/loadwep assault pest rifle
+/loadwep hyper pest rifle
+/loadwep pest minigun
+/loadwep double pest minigun
+/loadwep pest bullet cannon
 
 //THUNDER BULLET
 /loadwep thunder pistol
-/loadwep thunder rifle
+/loadwep thunder machinegun
+/loadwep triple thunder machinegun
+/loadwep quad thunder machinegun
+/loadwep thunder smg
+/loadwep assault thunder rifle
+/loadwep hyper thunder rifle
+/loadwep thunder minigun
+/loadwep double thunder minigun
+/loadwep thunder bullet cannon
 
 //PSY BULLET
 /loadwep psy revolver
 /loadwep psy machinegun
+/loadwep triple psy machinegun
+/loadwep quad psy machinegun
 /loadwep psy smg
+/loadwep assault psy rifle
+/loadwep hyper psy rifle
 /loadwep psy minigun
+/loadwep double psy minigun
+/loadwep psy bullet cannon
 
 //BULLAKS
 /loadwep bullak cannon
@@ -30,8 +60,8 @@
 /loadwep gunhammer
 /loadwep heavy gunhammer
 /loadwep fire gunhammer
-/loadwep toxic gunhammer
-/loadwep lightning gunhammer
+/loadwep pest gunhammer
+/loadwep thunder gunhammer
 /loadwep psy gunhammer
 /loadwep ultra gunhammer
 
@@ -157,9 +187,9 @@
 /loadwep finished stuff/vector shotgun
 
 //PLASMITE
-loadwep finished stuff/plasmite rifle
-loadwep finished stuff/plasmite shotgun
-loadwep finished stuff/plasmite cannon
+/loadwep finished stuff/plasmite rifle
+/loadwep finished stuff/plasmite shotgun
+/loadwep finished stuff/plasmite cannon
 
 //SQUARE
 /loadwep square gun
@@ -189,7 +219,7 @@ loadwep finished stuff/plasmite cannon
 /loadwep golden gunhammer
 
 ///WIP SHIT///
-//loadwep test/sniper rifle
+//loadwep sniper rifle
 //loadwep test/heavy sniper rifle
 //loadwep test/auto sniper rifle
 //loadwep test/splitter
@@ -207,4 +237,16 @@ loadwep finished stuff/plasmite cannon
 
 ///OTHER///
 /loadwep finished stuff/defender
+/loadwep finished stuff/drinks/vinegar
+/loadwep finished stuff/drinks/munitions mist
+/loadwep finished stuff/drinks/sunset mayo
+/loadwep finished stuff/drinks/saltshake
+/loadwep finished stuff/drinks/autoproductive expresso
+/loadwep finished stuff/drinks/extra double triple coffee
+/loadwep finished stuff/drinks/lightning blue lifting drink(tm)
+/loadwep finished stuff/drinks/guardian juice
+/loadwep finished stuff/drinks/soda popper
+/loadwep finished stuff/drinks/donut box
+
+///NON WEAPONS//
 /loadmod IDPD Weapon Chest/IDPD Weapon Chest

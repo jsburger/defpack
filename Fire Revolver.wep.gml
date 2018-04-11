@@ -1,5 +1,5 @@
 #define init
-global.sprFireRevolver = sprite_add_weapon("sprites/Fire Revolver.png", -2, 2);
+global.sprFireRevolver = sprite_add_weapon("sprites/sprFireRevolver.png", -2, 2);
 #define weapon_name
 return "FIRE REVOLVER";
 
@@ -13,10 +13,10 @@ return 1;
 return false;
 
 #define weapon_load
-return 7;
+return 4;
 
 #define weapon_cost
-return 1;
+return 2;
 
 #define weapon_swap
 return sndSwapPistol;
@@ -37,6 +37,6 @@ mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, 2+random(3), c_red
 with mod_script_call("mod", "defpack tools", "create_fire_bullet",x,y){
 	creator = other
 	team = other.team
-	motion_set(other.gunangle + random_range(-6,6) * other.accuracy,15)
+	motion_set(other.gunangle + random_range(-12,12) * other.accuracy,15)
 	image_angle = direction
 }

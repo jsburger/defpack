@@ -1,5 +1,5 @@
 #define init
-global.sprGGunhammer = sprite_add_weapon("sprites/Golden Gunhammer.png", 0, 2);
+global.sprGoldenGunhammer = sprite_add_weapon("sprites/sprGoldenGunhammer.png", 0, 8);
 global.sprGunhammerSlash = sprite_add("sprites/projectiles/Gunhammer Slash.png",3,0,24)
 
 #define weapon_gold
@@ -9,7 +9,7 @@ return 1;
 return "GOLDEN GUNHAMMER";
 
 #define weapon_sprt
-return global.sprGGunhammer;
+return global.sprGoldenGunhammer;
 
 #define weapon_type
 return 1;
@@ -18,7 +18,7 @@ return 1;
 return false;
 
 #define weapon_load
-return 24;
+return 21;
 
 #define weapon_cost
 return 0;
@@ -37,6 +37,7 @@ return 1;
 
 #define weapon_fire
 
+sound_play_pitch(sndShovel,random_range(1.2,1.23))
 sound_play_pitch(sndGoldWrench,random_range(.97,1.03))
 sound_play_pitch(sndHammer,random_range(.97,1.03))
 weapon_post(8,10,4)
@@ -57,10 +58,10 @@ with instance_create(x,y,Slash){
 	image_angle = direction
 	team = other.team
 	creator = other
-	repeat(5){
+	repeat(4){
 		if other.ammo[1] >=1 {
 			with instance_create(x,y,Bullet1){
-				sound_play_pitch(sndPistol,1.2)
+				sound_play_pitch(sndMachinegun,1.2)
 				motion_set(other.direction + random_range(-10,10)*other.creator.accuracy, 20)
 				image_angle = direction
 				creator = other.creator

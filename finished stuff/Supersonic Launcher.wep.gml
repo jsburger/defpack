@@ -1,6 +1,5 @@
 #define init
 global.sprSuperSonicLauncher   = sprite_add_weapon("sprSuperSonicLauncher.png", 1, 3);
-global.sprSonicNuke			  		 = sprite_add("sprSonicNuke.png",1,7.5,4);
 #define weapon_name
 return "SUPERSONIC LAUNCHER"
 
@@ -32,8 +31,8 @@ return choose("A TRUE BOOMBURST","SHIFT SOME SMOKE","CLOSE COMBAT INFUSION");
 sleep(12)
 //sound_play_pitch(sndDiscgun,1.6) good pest sound
 //sound_play_pitch(sndPortalAppear,3) ancient gunnery
-//sound_play_pitch(sndGammaGutsKill,1.6) revolvo
 sound_play_pitch(sndUltraShotgun,1.7)
+sound_play_pitch(sndHyperLauncher,random_range(.5,.7))
 weapon_post(12,-16,23)
 motion_add(gunangle -180,6)
 with instance_create(x+lengthdir_x(10,gunangle),y+lengthdir_y(10,gunangle),CustomProjectile)
@@ -41,7 +40,7 @@ with instance_create(x+lengthdir_x(10,gunangle),y+lengthdir_y(10,gunangle),Custo
 		//sound_play(sndRocketFly)
 		sleep(55)
 		sprite_index = mskNone
-		mask_index = global.sprSonicNuke
+		mask_index = sprNuke
 		index = other.index
 		team  = other.team
 		damage = 70

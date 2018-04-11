@@ -1,5 +1,5 @@
 #define init
-
+global.sprSmarterGun = sprite_add_weapon("sprites/sprSmarterGun.png",4,7)
 #define weapon_name
 return "SMARTER GUN"
 #define weapon_type
@@ -57,12 +57,12 @@ if !w && race != "steroids"{
 				if infammo = 0 ammo[1]--
 				breload = weapon_load()
 			}
-		}	
+		}
 	}
 }
 
 
 #define weapon_sprt
-return sprSmartGun
+return global.sprSmarterGun
 #define weapon_text
 return "massive brain"

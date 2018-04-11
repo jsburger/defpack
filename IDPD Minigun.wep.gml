@@ -23,7 +23,7 @@ return 1;
 return sndMinigun;
 
 #define weapon_area
-return 8;
+return -1;
 
 #define weapon_text
 return "@bBLUE @sBULLETS";

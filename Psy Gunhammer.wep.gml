@@ -1,5 +1,5 @@
 #define init
-global.sprPsyGunhammer = sprite_add_weapon("sprites/Psy Gunhammer.png", 4, 6);
+global.sprPsyGunhammer = sprite_add_weapon("sprites/sprPsyGunhammer.png", 2, 11);
 global.slash = sprite_add("sprites/projectiles/Heavy Psy Slash.png",3,0,24);
 
 #define weapon_name
@@ -15,7 +15,7 @@ return 1;
 return false;
 
 #define weapon_load
-return 42;
+return 32;
 
 #define weapon_cost
 return 0;
@@ -33,6 +33,8 @@ return "I BANISH THEE";
 return 1
 
 #define weapon_fire
+
+sound_play_pitch(sndShovel,random_range(1.2,1.23))
 sound_play_pitch(sndHammer,random_range(.97,1.03))
 weapon_post(8,8,4)
 var shell = 0;
@@ -47,11 +49,11 @@ with instance_create(x,y,Slash){
 	image_angle = direction
 	team = other.team
 	creator = other
-	repeat(4){
+	repeat(3){
 		if other.ammo[1] >=2 {
 			sound_play_pitch(sndAssassinPretend,random_range(.5,.55))
 			sound_play_pitch(sndSwapCursed,.4)
-			sound_play_pitch(sndPistol,1.2)
+			sound_play_pitch(sndMachinegun,1.2)
 			sprite_index = global.slash
 			with mod_script_call("mod","defpack tools","create_psy_bullet",x,y){
 				motion_set(other.direction + random_range(-20,20)*other.creator.accuracy, 5)

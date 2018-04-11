@@ -1,13 +1,13 @@
 #define init
-global.sprAbrisNukeLauncher = sprite_add_weapon("sprites/Abris Nuke Launcher.png", 1, 4);
-global.sprDanger = sprite_add("sprites/projectiles/Danger.png",5,24,24);
-global.stripes = sprite_add("defpack tools/BIGstripes.png",1,1,1)
+global.sprSuperAbrisLauncher = sprite_add_weapon("sprites/sprSuperAbrisLauncher.png", 1, 4);
+global.sprDanger 						 = sprite_add("sprites/projectiles/Danger.png",5,24,24);
+global.stripes 							 = sprite_add("defpack tools/BIGstripes.png",1,1,1)
 
 #define weapon_name
 return "SUPER ABRIS LAUNCHER"
 
 #define weapon_sprt
-return global.sprAbrisNukeLauncher;
+return global.sprSuperAbrisLauncher;
 
 #define weapon_type
 return 4;
@@ -31,18 +31,21 @@ return 15;
 return "BLESS WALLS";
 
 #define weapon_fire
-sound_play_pitch(sndSniperTarget,.3)
+var _strtsize = 100-skill_get(13)*15;
+var _endsize  = 72;
 with mod_script_call("mod","defpack tools","create_abris",self,100,72,argument0){
-accspeed = [1.07,1.8]
+accspeed = 1.04
 payload = script_ref_create(pop)
 on_draw = abris_draw_super
 image_speed = .55
 }
-
+//nonono this isnt working no no no
+sound_play_pitch(sndSniperTarget,exp((_strtsize-_endsize)/room_speed/current_time_scale/accuracy*(1.07))/12)
 #define pop
-sound_play(sndGrenadeRifle)
-sound_play(sndNukeExplosion)
-creator.wkick = 12
+sound_play_pitch(sndGrenadeRifle,.4)
+sound_play_pitch(sndNukeExplosion,.8)
+creator.wkick = 15
+with creator{motion_add(gunangle,-5)}
 repeat(8)
 {
 	with instance_create(mouse_x[index]+lengthdir_x(acc+48,offset),mouse_y[index]+lengthdir_y(acc+48,offset),Explosion){hitid = [sprite_index,"explosion"]}
@@ -52,6 +55,7 @@ repeat(8)
 
 #define abris_draw_super
 if instance_exists(creator) && check{
+	//if current_frame % 50 = 0{sound_play_pitch(sndCrystalRicochet,.6);sound_play_pitch(sndX,.1)}
 	x = creator.x
 	y = creator.y
 	if button_check(creator.index, (check = 1? "fire":"spec")){

@@ -29,13 +29,15 @@ return 10;
 return choose("DOING NOBODY A FAVOUR","STALE");
 
 #define weapon_fire
-sound_play(sndPistol)
+sound_play_pitch(sndSwapExplosive,random_range(1.5,1.9))
+sound_play_pitch(sndFlyFire,random_range(.6,.8))
+sound_play_pitch(sndFrogExplode,random_range(.6,.8))
 weapon_post(0,0,5)
 with instance_create(x,y,Shell){
-	motion_add(random(359),2+random(2))
+	motion_add(other.gunangle-180+random_range(-180,180)*other.accuracy,2+random(2))
 }
 with instance_create(x, y ,Bullet1){
-	motion_add(random(359),4 + random(2))
+	motion_add(other.gunangle+random_range(-180,180)*other.accuracy,4 + random(2))
 	damage = 4
 	creator = other
 	image_angle = direction

@@ -1,5 +1,5 @@
 #define init
-global.sprLightningAbrisLauncher = sprite_add_weapon("sprites/Lightning Abris Launcher.png", 3, 5);
+global.sprLightningAbrisLauncher = sprite_add_weapon("sprites/sprLightningAbrisLauncher.png", 3, 5);
 global.stripes = sprite_add("defpack tools/BIGstripes.png",1,1,1)
 
 #define weapon_name
@@ -30,15 +30,17 @@ return 14;
 return "WHAT A BRIS";
 
 #define weapon_fire
-sound_play_pitch(sndSniperTarget,.55)
-with mod_script_call("mod","defpack tools","create_abris",self,110,26,argument0){
-	accspeed = [1.06,2.3]
+var _strtsize = 110-skill_get(13)*25
+var _endsize  = 26;
+with mod_script_call("mod","defpack tools","create_abris",self,_strtsize,_endsize,argument0){
+	accspeed = 1.06
 	payload = script_ref_create(pop)
 	lasercolour1 = c_blue
 	lasercolour = lasercolour1
 	lasercolour2 = c_navy
 	on_draw = abris_draw_lightning
 }
+sound_play_pitch(sndSniperTarget,exp((_strtsize-_endsize)/room_speed/current_time_scale/accuracy*(1.06)))
 
 #define pop
 sound_play(sndGrenadeRifle)

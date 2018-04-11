@@ -1,11 +1,11 @@
 #define init
-global.sprPestBulletFlakCannon = sprite_add_weapon("sprites/Pest Bullet Flak Cannon.png", 4, 3);
+global.sprPestBullakCannon = sprite_add_weapon("sprites/sprPestBullakCannon.png", 4, 3);
 
 #define weapon_name
 return "PEST BULLAK CANNON"
 
 #define weapon_sprt
-return global.sprPestBulletFlakCannon;
+return global.sprPestBullakCannon;
 
 #define weapon_type
 return 1;
@@ -14,7 +14,7 @@ return 1;
 return true;
 
 #define weapon_load
-return 24;
+return 28;
 
 #define weapon_cost
 return 10;
@@ -35,7 +35,7 @@ sound_play_pitch(sndPistol,random_range(0.7,0.8))
 sound_play_pitch(sndGrenadeRifle,random_range(1.1,1.3))
 sound_play_pitch(sndFlakCannon,random_range(1.1,1.3))
 sound_play_pitch(sndToxicBoltGas,random_range(.8,.85))
-weapon_post(4,-8,6)
-with mod_script_call("mod", "defpack tools 2","create_flak",0,20,13,0,2,10,id){
+weapon_post(7,-8,6)
+with mod_script_call("mod", "defpack tools 2","create_flak",0,12,13,0,2,8,id){
 	speed += 2
 }

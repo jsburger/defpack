@@ -1,5 +1,5 @@
 #define init
-global.sprPestPistol = sprite_add_weapon("sprites/Pest Pistol.png", 1, 0.5);
+global.sprPestPistol = sprite_add_weapon("sprites/sprPestPistol.png", 1, 0.5);
 
 #define weapon_name
 return "PEST PISTOL";
@@ -14,7 +14,7 @@ return 1;
 return true;
 
 #define weapon_load
-return 8;
+return 6;
 
 #define weapon_cost
 return 1;
@@ -31,7 +31,8 @@ return "PEST BULLETS CREATE TOXIN WHEN CONNECTING";
 #define weapon_fire
 
 weapon_post(2,-3,2)
-sound_play(sndPistol)
+sound_play_pitch(sndMinigun,random_range(1.2,1.5))
+sound_play_pitch(sndPistol,random_range(.6,.8))
 sound_play_pitch(sndToxicBoltGas,random_range(3,3.8))
 mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, random_range(3,5), c_green)
 with mod_script_call("mod", "defpack tools", "create_toxic_bullet",x+lengthdir_x(8,gunangle),y+lengthdir_y(8,gunangle)){

@@ -1,11 +1,11 @@
 #define init
-global.sprFireBulletFlakCannon = sprite_add_weapon("sprites/Fire Bullet Flak Cannon.png", 3, 3);
+global.sprFireBullakCannon = sprite_add_weapon("sprites/sprFireBullakCannon.png", 3, 3);
 
 #define weapon_name
 return "FIRE BULLAK CANNON"
 
 #define weapon_sprt
-return global.sprFireBulletFlakCannon;
+return global.sprFireBullakCannon;
 
 #define weapon_type
 return 1;
@@ -14,10 +14,10 @@ return 1;
 return false;
 
 #define weapon_load
-return 32;
+return 14;
 
 #define weapon_cost
-return 6;
+return 20;
 
 #define weapon_swap
 return sndSwapExplosive;
@@ -30,7 +30,7 @@ return choose("HOTTEST SCORE","LIKE SEVEN INCHES#FROM THE MIDDAY SUN");
 
 #define weapon_fire
 weapon_post(4,-6,7)
-repeat(6)
+repeat(10)
 {
 	mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, 2+random(3), c_red)
 }
@@ -40,4 +40,4 @@ sound_play_pitch(sndFlakCannon,random_range(1.1,1.3))
 sound_play_pitchvol(sndSwapFlame,random_range(1.4,1.6),.7)
 sound_play_pitchvol(sndIncinerator,1,.2)
 sound_play_pitchvol(sndFlameCannon,random_range(1.8,2.2),.8)
-mod_script_call("mod", "defpack tools 2","create_flak",0,20,13,0,1,20,id)
+mod_script_call("mod", "defpack tools 2","create_flak",0,52,13,0,1,8,id)

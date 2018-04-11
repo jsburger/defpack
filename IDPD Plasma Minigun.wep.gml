@@ -23,7 +23,7 @@ return 2;
 return sndSwapEnergy;
 
 #define weapon_area
-return 12;
+return -1;
 
 #define weapon_text
 return "JOKER SPOTTED";

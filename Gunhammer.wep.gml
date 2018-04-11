@@ -1,5 +1,5 @@
 #define init
-global.sprGunhammer = sprite_add_weapon("sprites/Gunhammer.png", 0, 8);
+global.sprGunhammer = sprite_add_weapon("sprites/sprGunhammer.png", 0, 8);
 global.sprGunhammerSlash = sprite_add("sprites/projectiles/Gunhammer Slash.png",3,0,24)
 
 #define weapon_name
@@ -54,14 +54,14 @@ with instance_create(x,y,Slash){
 	image_angle = direction
 	team = other.team
 	creator = other
-	repeat(4){
+	repeat(3){
 		if other.ammo[1] >=1 {
 			//sound_play_pitch(sndLilHunterSniper,.3) nice energy sound
 			//sound_play_pitch(sndFlakExplode,2) nice sharp swing
 			//sound_play_pitch(sndFlakExplode,.6) also cool
 			//sound_play_pitch(sndSuperFlakCannon,2) good shovel like swing
 			//sound_play_pitch(sndDevastator,3) lazor
-			sound_play_pitchvol(sndPistol,random_range(.9,1.1),1.3)
+			sound_play_pitch(sndMachinegun,1)
 			instance_create(x+lengthdir_x(sprite_width,direction),y+lengthdir_y(sprite_width,direction),Smoke)
 			with instance_create(x,y,Bullet1){
 				motion_set(other.direction + random_range(-20,20)*other.creator.accuracy, 20)

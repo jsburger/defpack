@@ -1,5 +1,5 @@
 #define init
-global.sprAbrisLauncher = sprite_add_weapon("sprites/Abris Launcher.png", 0, 3);
+global.sprAbrisLauncher = sprite_add_weapon("sprites/sprAbrisLauncher.png", 0, 3);
 global.stripes = sprite_add("defpack tools/BIGstripes.png",1,1,1)
 
 #define weapon_name
@@ -30,14 +30,16 @@ return 8;
 return "HIDE AND KILL";
 
 #define weapon_fire
-sound_play_pitch(sndSniperTarget,1.5)
-with mod_script_call("mod","defpack tools","create_abris",self,45,30,argument0){
-	accspeed = [1.2,2.8]
+var _strtsize = 45-skill_get(13)*7;//never thought id have to nerf eagle eyes im so proud of you
+var _endsize  = 30;
+with mod_script_call("mod","defpack tools","create_abris",self,_strtsize,_endsize,argument0){
+	accspeed = 1.2
 	payload = script_ref_create(pop)
 }
+sound_play_pitch(sndSniperTarget,exp((_strtsize-_endsize)/room_speed/current_time_scale/accuracy*(1.2)))
 
 #define pop
-sound_play(sndGrenadeRifle)
+sound_play_pitch(sndGrenadeRifle,.8)
 sound_play(sndExplosion)
 creator.wkick = 5
 repeat(3)

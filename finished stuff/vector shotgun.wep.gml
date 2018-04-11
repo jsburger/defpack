@@ -7,7 +7,7 @@ return "VECTOR SHOTGUN"
 #define weapon_type
 return 5
 #define weapon_cost
-return 2
+return 3
 #define weapon_area
 return 11
 #define weapon_load
