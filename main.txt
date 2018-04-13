@@ -1,4 +1,24 @@
 ///BULLET WEAPONS///
+
+//GUNHAMMER
+/loadwep gunhammer
+/loadwep heavy gunhammer
+/loadwep ultra gunhammer
+
+//BULLAKS
+/loadwep bullak cannon
+/loadwep heavy bullak cannon
+/loadwep auto bullak cannon
+
+//CANNON
+/loadwep bullet cannon
+/loadwep bouncer cannon
+/loadwep ultra bullet cannon
+
+//SNIPER RIFLES
+/loadwep sniper rifle
+/loadwep bouncer sniper rifle
+
 //FIRE BULLET
 /loadwep fire revolver
 /loadwep fire machinegun
@@ -10,6 +30,10 @@
 /loadwep fire minigun
 /loadwep double fire minigun
 /loadwep fire bullet cannon
+/loadwep fire gunhammer
+/loadwep fire bullet cannon
+/loadwep fire bullak cannon
+/loadwep sniper fire rifle
 
 //PEST BULLET
 /loadwep pest pistol
@@ -22,6 +46,10 @@
 /loadwep pest minigun
 /loadwep double pest minigun
 /loadwep pest bullet cannon
+/loadwep pest gunhammer
+/loadwep pest bullet cannon
+/loadwep pest bullak cannon
+/loadwep sniper pest rifle
 
 //THUNDER BULLET
 /loadwep thunder pistol
@@ -34,6 +62,10 @@
 /loadwep thunder minigun
 /loadwep double thunder minigun
 /loadwep thunder bullet cannon
+/loadwep thunder gunhammer
+/loadwep thunder bullet cannon
+/loadwep thunder bullak cannon
+/loadwep sniper thunder rifle
 
 //PSY BULLET
 /loadwep psy revolver
@@ -46,24 +78,10 @@
 /loadwep psy minigun
 /loadwep double psy minigun
 /loadwep psy bullet cannon
-
-//BULLAKS
-/loadwep bullak cannon
-/loadwep heavy bullak cannon
-/loadwep auto bullak cannon
-/loadwep fire bullak cannon
-/loadwep pest bullak cannon
-/loadwep psy bullak cannon
-/loadwep thunder bullak cannon
-
-//GUNHAMMER
-/loadwep gunhammer
-/loadwep heavy gunhammer
-/loadwep fire gunhammer
-/loadwep pest gunhammer
-/loadwep thunder gunhammer
 /loadwep psy gunhammer
-/loadwep ultra gunhammer
+/loadwep psy bullet cannon
+/loadwep psy bullak cannon
+/loadwep sniper psy rifle
 
 //SPAM
 /loadwep spam gun
@@ -73,11 +91,6 @@
 //COMPLEMENTARY
 /loadwep undulator
 /loadwep perpetrator
-
-//CANNON
-/loadwep bullet cannon
-/loadwep bouncer cannon
-/loadwep ultra bullet cannon
 
 //OTHER BULLET
 /loadwep bouncer pistol
@@ -138,7 +151,7 @@
 /loadwep auto abris launcher
 /loadwep super abris launcher
 /loadwep blood abris launcher
-/loadwep lightning abris launcher
+/loadwep rainmaker
 /loadwep plasma abris launcher
 /loadwep inquisitor
 
@@ -218,19 +231,6 @@
 /loadwep golden bullak cannon
 /loadwep golden gunhammer
 
-///WIP SHIT///
-//loadwep sniper rifle
-//loadwep test/heavy sniper rifle
-//loadwep test/auto sniper rifle
-//loadwep test/splitter
-//loadwep test/double splitter
-//loadwep test/heavy splitter
-//loadwep test/auto heavy splitter
-//loadwep test/black prism
-//loadwep test/square rifle
-//loadwep test/square cannon
-//loadwep test/super square cannon
-
 ///TOOLS///
 /loadmod defpack tools/defpack tools
 /loadmod defpack tools 2
@@ -248,5 +248,5 @@
 /loadwep finished stuff/drinks/soda popper
 /loadwep finished stuff/drinks/donut box
 
-///NON WEAPONS//
+///NON-WEAPONS///
 /loadmod IDPD Weapon Chest/IDPD Weapon Chest

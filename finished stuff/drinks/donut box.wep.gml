@@ -1,5 +1,6 @@
 #define init
-global.sprDonutBox = sprite_add_weapon("sprDonutBox.png",0,4)
+global.sprDonutBox      = sprite_add_weapon("sprDonutBox.png",0,4)
+global.sprDonutBoxEmpty = sprite_add_weapon("sprDonutBoxEmpty.png",0,4)
 #define weapon_name(w)
 if is_object(w) && w.wep = mod_current{
     return "DONUT BOX (" + string(w.ammo) + ")"
@@ -10,7 +11,7 @@ return 0
 #define weapon_cost
 return 0
 #define weapon_area
-return choose(-1,6)
+return -1
 #define weapon_load
 return 5
 #define weapon_swap
@@ -26,8 +27,20 @@ if is_object(w){
     if w.wep = mod_current{
         if w.ammo > 0{
             if my_health < maxhealth  {my_health+=1;w.ammo--;with instance_create(x,y,PopupText){target = other.index;text = "+1 HEALTH"}}else{with instance_create(x,y,PopupText){target = other.index;text = "MAX HEALTH"}}
-        }else{
-            wep = 0
+        }else
+        {
+            with instance_create(x,y,ThrownWep)
+            {
+              sprite_index = global.sprDonutBoxEmpty
+              speed = 3
+              wep = other.wep
+              creator = other
+              team = other.team
+              pet = other.index
+              direction = other.gunangle
+              other.wep = other.bwep
+              other.bwep = 0
+            }
         }
     }
 }
@@ -45,6 +58,9 @@ if instance_is(self,WepPickup) && !is_object(w){
         ammo: 12
     }
 }
-return global.sprDonutBox
+if is_object(w){if w.ammo > 0{return global.sprDonutBox}else{return global.sprDonutBoxEmpty}}else{return global.sprDonutBox}
 #define weapon_text
 return "delicious...."
+
+#define step
+with instances_matching(WepPickup,"wep",0){instance_destroy()}

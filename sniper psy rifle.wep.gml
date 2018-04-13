@@ -65,6 +65,7 @@ with mod_script_call("mod", "defpack tools", "create_psy_bullet",x+lengthdir_x(8
 		image_yscale /= 2
 		sprite_index = mskNothing
 		mask_index = mskBullet1
+		accset = false
 		force = 7
 		ordamage = 10
 		damage = ordamage
@@ -85,11 +86,11 @@ with mod_script_call("mod", "defpack tools", "create_psy_bullet",x+lengthdir_x(8
 			if instance_exists(enemy) && dir > 30
 			{
 				var closeboy = instance_nearest(x,y,enemy)
-				if collision_line(x,y,closeboy.x,closeboy.y,Wall,0,0) < 0 && distance_to_object(closeboy) < 220 && projectile_canhit_melee(closeboy){
+				if collision_line(x,y,closeboy.x,closeboy.y,Wall,0,0) < 0 && distance_to_object(closeboy) < 220 && projectile_canhit_melee(closeboy)=true{
 					var _dir, spd;
 
 					_dir = point_direction(x, y, closeboy.x, closeboy.y);
-					spd = distance_to_object(closeboy)/10-2
+					spd = 12
 					direction -= clamp(angle_difference(image_angle, _dir) * .3, -spd, spd)
 					image_angle = direction
 				}

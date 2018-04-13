@@ -341,15 +341,15 @@ with (c){
 	recycle_amount = 1
 	image_speed = 1
 	image_angle = direction
-	on_step = script_ref_create(lightning_step)
-	on_destroy = script_ref_create(lightning_destroy)
+	on_step = script_ref_create(thunder_step)
+	on_destroy = script_ref_create(thunder_destroy)
 	on_hit = script_ref_create(bullet_hit)
 	on_draw = script_ref_create(bullet_draw)
 	on_anim = script_ref_create(bullet_anim)
 }
 return c;
 
-#define lightning_step
+#define thunder_step
 if random(21) < 1*current_time_scale{
 		with instance_create(x,y,Lightning){
 	      	image_angle = random(360)
@@ -364,8 +364,8 @@ if random(21) < 1*current_time_scale{
 	        }
 	    }
 	}
-	
-#define lightning_destroy
+
+#define thunder_destroy
 with instance_create(x,y,Lightning){
 	image_angle = random(360)
 	creator = other.creator
@@ -725,6 +725,7 @@ with a{
 	acc = accbase
 	accmin = endsize
 	accspeed = 1.2
+	accset = false
 	//other things
 	wep = weapon
 	check = 0 //the button it checks, 0 is undecided, 1 is fire, 2 is specs, should only be 0 on creation, never step
@@ -804,7 +805,7 @@ if instance_exists(creator){
 		}
 		acc/=accspeed
 		if collision_line(x,y,mouse_x[index],mouse_y[index],Wall,0,0) >= 0{
-			if acc < accbase{acc += abs(creator.accuracy*3)}else{acc = accbase}
+			if acc < accbase{acc += abs(creator.accuracy*3)}else{acc = accbase;lasercolour=c_white}
 		}
 	}
 	if !button_check(creator.index,(check = 1?"fire":"spec")) || (auto && acc<=accmin){
@@ -917,32 +918,116 @@ with EliteShielder  {if my_health <= 0 && irandom(97)=0{with instance_create(x,y
 with PopoFreak	    {if my_health <= 0 && irandom(97)=0{with instance_create(x,y,WepPickup){wep = choose("donut box","idpd grenade launcher")}}};
 with Van	    			{if my_health <= 0 && irandom(97)=0{with instance_create(x,y,WepPickup){wep = choose("donut box","idpd shotgun")}}};
 with SodaMachine{
-	if my_health <= 0 && irandom(98)=0
+	if my_health <= 0 && irandom(0)=0
 	{
 		with instance_create(x,y,WepPickup)
 		{
-			if skill_get(14)
+			if skill_get(14)=1
 			{
-				if irandom(99)=0
-				{
-					wep = "soda popper"
-				}
-				else
-				{
-					wep = choose("lightning blue lifting drink(tm)","extra double triple coffee","autoproductive expresso","saltshake","munitions mist","vinegar","guardian juice","sunset mayo")
-				}
+				if irandom(99)=0{wep = "soda popper"}
+				else{wep = choose("lightning blue lifting drink(tm)","extra double triple coffee","autoproductive expresso","saltshake","munitions mist","vinegar","guardian juice","sunset mayo")}
 			}
 			else
 			{
-				if irandom(99)=0
-				{
-					wep = "soda popper"
-				}
+				if irandom(99)=0{wep = "soda popper"}
 				else
-				{
-					wep = choose("lightning blue lifting drink(tm)","extra double triple coffee","autoproductive expresso","saltshake","munitions mist","vinegar","guardian juice")
-				}
+				{wep = choose("lightning blue lifting drink(tm)","extra double triple coffee","autoproductive expresso","saltshake","munitions mist","vinegar","guardian juice")}
 			}
 		}
 	}
 }
+
+#define create_lightning(_x,_y)
+with instance_create(_x,_y,CustomProjectile){
+	lightning_refresh()
+	name = "Lightning Bolt"
+	time = 8
+	sound_play_pitch(sndExplosion,2)
+	sound_play_pitch(sndExplosionS,.7)
+	sound_play_pitchvol(sndExplosionL,.5,.6)
+	sound_set_track_position(sndExplosionL,.3)
+	damage = 18
+	repeat(30){
+		with instance_create(x,y,Dust){
+			motion_set(random(360),3+random(10))
+		}
+	}
+	instance_create(x,y,Scorchmark)
+	force = 40
+	on_wall = lightning_wall
+	on_draw = lightning_draw
+	on_destroy = lightning_destroy
+	on_step = lightning_step
+	on_hit = lightning_hit
+	mask_index = mskScorpion
+	depth = -13
+	return id
+}
+
+#define draw_dark()
+with instances_matching(CustomProjectile,"name","Lightning Bolt"){
+	draw_circle_color(x,y,550 + random(10), c_gray,c_gray,0)
+	draw_circle_color(x,y,250 + random(10), c_black,c_black,0)
+}
+
+#define lightning_wall
+with other{
+	instance_create(x,y,FloorExplo)
+	instance_destroy()
+}
+
+#define lightning_draw
+if !irandom(1/current_time_scale) lightning_refresh()
+for (var i = 1; i < array_length_1d(ypoints); i++){
+	if !irandom(4) draw_sprite(sprLightningHit,1+irandom(2),xpoints[i],ypoints[i])
+	draw_line_width(xpoints[i],ypoints[i],xpoints[i-1],ypoints[i-1],i/10)
+}
+var yy = ypoints[array_length_1d(ypoints)-1];
+draw_set_blend_mode(bm_max)
+draw_triangle_color(xmax,yy,xmin,yy,x,y,c_white,c_white,c_black,0)
+draw_set_blend_mode(bm_normal)
+
+#define lightning_hit
+if projectile_canhit(other){
+	projectile_hit_push(other,damage,force)
+}
+
+#define lightning_refresh
+ypoints = [y]
+xpoints = [x]
+var mmax = 100;
+var mmin = -100;
+var xx = x;
+var yy = y;
+while ypoints[array_length_1d(ypoints)-1] > y - 2*game_height{
+	xx += random_range(-6,6)
+	yy -= random_range(-2,8)
+	array_push(xpoints,xx)
+	array_push(ypoints,yy)
+	var m = slope(x,xx,y,yy)
+	if m < 0.01 && abs(m) < abs(mmin) {mmin = m}
+	if  m > 0.01 && m < mmax {mmax = m}
+}
+var y1 = y - 2*game_height;
+xmax = x+(y1 - y)/mmin
+xmin = x+(y1 - y)/mmax
+
+#define slope(x1,x2,y1,y2)
+return((y2-y1)/(x2-x1))
+
+#define lightning_destroy
+for (var i = 1; i < array_length_1d(ypoints); i++){
+	if !irandom(4) with instance_create(xpoints[i],ypoints[i],FireFly){
+		depth = other.depth
+		image_speed/=1.5
+		sprite_index = sprLightning
+		hspeed += random_range(-.5,.5)
+		vspeed += random_range(-.5,.5)
+	}
+}
+sound_set_track_position(sndExplosionL,0)
+
+#define lightning_step
+view_shake_max_at(x,y,10)
+time -= current_time_scale
+if time <= 0 instance_destroy()

@@ -1,12 +1,12 @@
 #define init
-global.sprLightningAbrisLauncher = sprite_add_weapon("sprites/sprLightningAbrisLauncher.png", 3, 5);
+global.sprRainmaker = sprite_add_weapon("sprites/sprRainmaker.png", 3, 5);
 global.stripes = sprite_add("defpack tools/BIGstripes.png",1,1,1)
 
 #define weapon_name
-return "LIGHTNING ABRIS LAUNCHER"
+return "RAINMAKER"
 
 #define weapon_sprt
-return global.sprLightningAbrisLauncher;
+return global.sprRainmaker;
 
 #define weapon_type
 return 5;
@@ -18,7 +18,7 @@ return false;
 return 80;
 
 #define weapon_cost
-return 18;
+return 8;
 
 #define weapon_swap
 return sndSwapExplosive;
@@ -43,13 +43,22 @@ with mod_script_call("mod","defpack tools","create_abris",self,_strtsize,_endsiz
 sound_play_pitch(sndSniperTarget,exp((_strtsize-_endsize)/room_speed/current_time_scale/accuracy*(1.06)))
 
 #define pop
+with instance_create(x,y,CustomObject)
+{
+	timer  = room_speed*current_time_scale
+	timer2 = room_speed*current_time_scale*4
+	with instances_matching(CustomObject,"name","RainMakerRain"){other.timer=0;other.timer2+=timer2;instance_destroy()}
+	name = "RainMakerRain"
+	on_step = rain_step
+}
 sound_play(sndGrenadeRifle)
 sound_play(sndExplosionS)
 creator.wkick = 9
-with instance_create(mouse_x[index],mouse_y[index],LightningBall){team = other.team}
+with mod_script_call("mod","defpack tools","create_lightning",mouse_x[index],mouse_y[index]){team = other.team}
+instance_create(mouse_x[index],mouse_y[index],RainSplash)
 repeat(4)
 {
-	with instance_create(mouse_x[index]+lengthdir_x(acc+10,offset+image_angle),mouse_y[index]+lengthdir_y(acc+10,offset+image_angle),LightningBall){team = other.team}
+	with mod_script_call("mod","defpack tools","create_lightning",mouse_x[index]+lengthdir_x(acc+10,offset+image_angle),mouse_y[index]+lengthdir_y(acc+10,offset+image_angle)){team = other.team}
 	offset += 90
 }
 
@@ -79,6 +88,25 @@ if instance_exists(creator) && check{
 		if popped {comp = wep}
 		if wep != comp {instance_destroy()}
 	}
+}
+
+#define rain_step
+if timer > 0{timer--}
+else
+{
+	if timer2 > 0{
+		timer2--
+		if timer2 > room_speed*current_time_scale*3{var _rainfac = 42}else{var _rainfac = 17}
+		if timer2 < room_speed*current_time_scale{var _rainfac = 42}
+		with Floor
+		{
+			if irandom(_rainfac) = 0
+			{
+				instance_create(x+random_range(-16,16),y+random_range(-16,16),RainDrop)
+			}
+		}
+	}
+	else{instance_destroy()}
 }
 /*#define weapon_fire
 with instance_create(x,y,CustomObject)

@@ -32,11 +32,12 @@ return "HIDE AND KILL";
 #define weapon_fire
 var _strtsize = 45-skill_get(13)*7;//never thought id have to nerf eagle eyes im so proud of you
 var _endsize  = 30;
+var _accspeed = 1.2;
 with mod_script_call("mod","defpack tools","create_abris",self,_strtsize,_endsize,argument0){
 	accspeed = 1.2
 	payload = script_ref_create(pop)
 }
-sound_play_pitch(sndSniperTarget,exp((_strtsize-_endsize)/room_speed/current_time_scale/accuracy*(1.2)))
+sound_play_pitch(sndSniperTarget,(_endsize)/(_accspeed+abs(accuracy*3)))
 
 #define pop
 sound_play_pitch(sndGrenadeRifle,.8)

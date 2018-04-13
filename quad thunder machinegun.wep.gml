@@ -38,14 +38,7 @@ repeat(2)
 	repeat(4)mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, 2+random(4), c_navy)
 	with mod_script_call("mod", "defpack tools", "create_lightning_bullet",x,y){
 		move_contact_solid(other.gunangle,6)
-		motion_add(other.gunangle+random_range(-6,6)*other.accuracy,8)
-		image_angle = direction
-		team = other.team
-		creator = other
-	}
-	with mod_script_call("mod", "defpack tools", "create_lightning_bullet",x,y){
-		move_contact_solid(other.gunangle,6)
-		motion_add(other.gunangle-10+random_range(-6,6)*other.accuracy,8)
+		motion_add(other.gunangle-8+random_range(-6,6)*other.accuracy,8)
 		image_angle = direction
 		team = other.team
 		creator = other
@@ -59,7 +52,7 @@ repeat(2)
 	}
 	with mod_script_call("mod", "defpack tools", "create_lightning_bullet",x,y){
 		move_contact_solid(other.gunangle,6)
-		motion_add(other.gunangle+10+random_range(-6,6)*other.accuracy,8)
+		motion_add(other.gunangle+8+random_range(-6,6)*other.accuracy,8)
 		image_angle = direction
 		team = other.team
 		creator = other

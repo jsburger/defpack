@@ -30,7 +30,7 @@ return 5;
 return "GET SOME COVER";
 
 #define weapon_fire
-var _strtsize = 27-skill_get(13)*5;
+var _strtsize = 27;
 var _endsize  = 18;
 with mod_script_call("mod","defpack tools","create_abris",self,_strtsize,_endsize,argument0){
 	accspeed = 1.33

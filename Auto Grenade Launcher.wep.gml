@@ -36,7 +36,7 @@ weapon_post(5,-4,4)
 with instance_create(x,y,Grenade)
 {
 	sprite_index = global.sprAutoGrenade
-	motion_add(other.gunangle+random_range(-13,13)*other.accuracy,random_range(9,10))
+	motion_add(other.gunangle+random_range(-13,13)*other.accuracy,10)
 	sticky = 0
 	image_angle = direction
 	team = other.team

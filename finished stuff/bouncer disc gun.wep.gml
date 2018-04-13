@@ -71,7 +71,7 @@ image_angle = direction
 sound_play_pitch(sndDiscBounce,random_range(.9,1.1)+((speed/4)-1)*.2)
 sound_play_pitch(sndBouncerBounce,random_range(1,1))
 if dist > 250{instance_destroy();exit}
-if speed < 8{speed+=.1}
+if speed < 8{speed+=.13}
 
 #define bouncerdisc_destroy
 with instance_create(x,y,DiscTrail){sprite_index=sprDiscDisappear}

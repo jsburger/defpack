@@ -1,7 +1,7 @@
 #define init
 global.sprSmartNukeLauncher = sprite_add_weapon("sprSmartNukeLauncher.png", 7, 8);
 global.sprSmartNuke 				= sprite_add("sprSmartNuke.png",0, 7, 5);
-global.sprBlueExplosion 		= sprite_add("sprSmartExplosionS.png",9,24,24)
+global.sprBlueExplosion 		= sprite_add("sprSmartExplosionS.png",7,12,12)
 global.sprSmartNukeFlame 		= sprite_add("sprSmartNukeFlame.png",3,32,12)
 global.sprSmartAim 					= sprite_add("sprSmartAim.png",0,9,9)
 #define weapon_name
@@ -107,8 +107,6 @@ with instance_create(x,y,Explosion){
 repeat(4){
 	with instance_create(x+lengthdir_x(22,ang),y+lengthdir_y(22,ang),SmallExplosion){
 		sprite_index = global.sprBlueExplosion
-		image_xscale = 0.5
-		image_yscale = 0.5
 		hitid = [sprite_index, "Small
 		Blue Explosion"]
 		repeat(20){
