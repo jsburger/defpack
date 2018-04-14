@@ -35,13 +35,15 @@ with instance_create(x+lengthdir_x(3,gunangle),y+lengthdir_y(3,gunangle),CustomP
 	team = other.team
 	creator = other
 	friction = 0.5
+	damage = 5
+	force = 5
 	bounce = 2
 	typ = 1
 	anglefac = choose(1,-1)
 	dt = 4
 	if other.object_index = Player{
-		var _x = mouse_x[other.index]+random_range(-16,16);
-		var _y = mouse_y[other.index]+random_range(-16,16);
+		var _x = mouse_x[other.index]+random_range(-16,16)*other.accuracy;
+		var _y = mouse_y[other.index]+random_range(-16,16)*other.accuracy;
 		motion_add(point_direction(x,y,_x,_y),sqrt(point_distance(_x,_y,x,y)))
 	}else{
 		motion_add(other.gunangle,10)
@@ -71,7 +73,7 @@ if place_meeting(x,y +vspeed,Wall){
 	bounce -= 1
 	sound_play_pitch(sndBouncerBounce,random_range(1.6,1.8))
 }
-if speed <= 0 || place_meeting(x,y,hitme) || bounce <= 0
+if speed <= 0 || bounce <= 0
 {
 	instance_destroy()
 }
@@ -82,7 +84,7 @@ with mod_script_call("mod","defpack tools","create_sonic_explosion",x,y)
 	var scalefac = random_range(0.6,0.75);
 	image_xscale = scalefac
 	image_yscale = scalefac
-	damage = 15
+	damage = 11
 	image_speed = 0.75
 	team = other.team
 	creator = other.creator

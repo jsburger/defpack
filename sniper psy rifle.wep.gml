@@ -17,7 +17,7 @@ return false;
 return 54;
 
 #define weapon_cost
-return 20;
+return 40;
 
 #define weapon_swap
 return sndSwapMachinegun;
@@ -29,7 +29,7 @@ return true;
 with mod_script_call("mod","defpack tools", "shell_yeah", 100, 8, 3+random(2),c_purple)
 sound_play_pitchvol(sndSwapPistol,2,.4)
 sound_play_pitchvol(sndRecGlandProc,1.4,1)
-weapon_post(-2,0,3)
+weapon_post(-2,-4,5)
 return -1;
 
 #define weapon_area
@@ -41,8 +41,9 @@ return choose("replace me please");
 #define weapon_fire
 sound_play_pitch(sndHeavyRevoler,1.4)
 sound_play_pitch(sndCursedPickup,.6)
+sound_play_pitch(sndHeavySlugger,1.4)
 sound_play_pitch(sndSniperFire,random_range(.6,.8))
-weapon_post(12,-16,53)
+weapon_post(12,2,218)
 motion_add(gunangle -180,1)
 with instance_create(x,y,CustomObject)
 {
@@ -67,8 +68,8 @@ with mod_script_call("mod", "defpack tools", "create_psy_bullet",x+lengthdir_x(8
 		mask_index = mskBullet1
 		accset = false
 		force = 7
-		ordamage = 10
-		damage = ordamage
+		dd = 0
+		damage = 20
 		dir = 0
 		recycleset=0
 		image_angle = other.gunangle
@@ -105,16 +106,17 @@ with mod_script_call("mod", "defpack tools", "create_psy_bullet",x+lengthdir_x(8
 				{
 					if projectile_canhit_melee(other) = false
 					{
+						if my_health > 0{other.dd += my_health}
 						projectile_hit(self,other.damage,other.force,other.direction)
 						with other
 						{
 							if skill_get(16) = true{if recycleset=0{recycleset=1;instance_create(creator.x,creator.y,RecycleGland);sound_play(sndRecGlandProc);if irandom(2)!=0{if creator.ammo[1]+10 <= creator.typ_amax[1]{creator.ammo[1]+=20}else{creator.ammo[1] = creator.typ_amax[1]}}}}
-							damage-= other.my_health
-							if damage <= 0{instance_destroy();exit}
+							continue;
 						}
 					}
 				}
 			}
+			if damage < dd{instance_destroy();exit}
 			if place_meeting(x,y,Wall){instance_destroy();exit}
 		}
 		while instance_exists(self) and dir < 1000

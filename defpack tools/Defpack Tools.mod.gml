@@ -602,6 +602,7 @@ with(a){
 	image_speed = .7
 	force = 20
 	shake = 10
+	if GameCont.area = 101{synstep = 0}else{synstep = 1} //oasis synergy
 	hitid = [sprite_index,"Sonic Explosion"]
 	on_step = script_ref_create(sonic_step)
 	on_projectile = script_ref_create(sonic_projectile)
@@ -617,6 +618,13 @@ return a
 instance_destroy()
 
 #define sonic_step
+if synstep = 0
+{
+	synstep = 1
+		image_xscale *= 1.25
+		image_yscale *= 1.25
+		image_speed  *= .8
+}
 if shake {view_shake_at(x,y,shake);shake = 0}
 
 #define sonic_projectile

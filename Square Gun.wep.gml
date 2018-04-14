@@ -56,11 +56,11 @@ with instance_create(x,y,CustomProjectile)
 	team = other.team
 	anglefac = random_range(0.8,2.5)
 	fac = choose(1,-1)
-	mask_index = global.mskSquare
+	sprite_index = global.sprSquare
+	mask_index 	 = global.mskSquare
 	istp = false
 	hitframes = 0
 	lifetime = room_speed * 6
-	sprite_index = global.sprSquare
 	on_step = square_step
 	on_hit = square_hit
 	on_wall = actually_nothing

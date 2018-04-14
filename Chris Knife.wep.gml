@@ -31,7 +31,8 @@ return choose("IS IT STATTRACK","A NICER DICER","CRITICAL");
 
 #define weapon_fire
 wepangle = -wepangle
-weapon_post(4,5,3)
+weapon_post(4,0,42)
+sleep(70)
 motion_add(gunangle,7)
 with instance_create(x+lengthdir_x(12,gunangle),y+lengthdir_y(12,gunangle),CustomSlash){
     sound_play(sndScrewdriver)

@@ -55,7 +55,7 @@ repeat(8)
 
 #define abris_draw_super
 if instance_exists(creator) && check{
-	//if current_frame % 50 = 0{sound_play_pitch(sndCrystalRicochet,.6);sound_play_pitch(sndX,.1)}
+	if current_frame % 30 = 0{sound_play_pitch(sndVanWarning,.55);sound_set_track_position(sndVanWarning,1.2)}
 	x = creator.x
 	y = creator.y
 	if button_check(creator.index, (check = 1? "fire":"spec")){

@@ -369,26 +369,40 @@ sound_play(sndMachinegun)
 sound_play(sndFlakExplode)
 view_shake_at(x,y,8)
 if skill_get(19) = false{
-	repeat(ammo){
-	with mod_script_call("mod","defpack tools","create_lightning_bullet",x,y){
-		team = other.team
-		creator = other.creator
-		motion_set(random(359),5)
-		image_angle = direction
+	if fork()
+	{
+		repeat(2)
+		{
+			repeat(ammo){
+			with mod_script_call("mod","defpack tools","create_lightning_bullet",x,y){
+				team = other.team
+				creator = other.creator
+				motion_set(random(359),5)
+				image_angle = direction
+				}
+			}
 		}
+		wait(2)
 	}
 }
 else
 {
-	var offset = random(359);
-	repeat(ammo){
-	with mod_script_call("mod","defpack tools","create_lightning_bullet",x,y){
-		team = other.team
-		creator = other.creator
-		motion_set(offset,5)
-		image_angle = direction
+	if fork()
+	{
+		repeat(2)
+		{
+			var offset = random(359);
+			repeat(ammo){
+			with mod_script_call("mod","defpack tools","create_lightning_bullet",x,y){
+				team = other.team
+				creator = other.creator
+				motion_set(offset,5)
+				image_angle = direction
+				}
+			offset += 360/ammo
+			}
 		}
-	offset += 360/ammo
+		wait(2)
 	}
 }
 

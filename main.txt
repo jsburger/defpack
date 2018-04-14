@@ -13,11 +13,10 @@
 //CANNON
 /loadwep bullet cannon
 /loadwep bouncer cannon
-/loadwep ultra bullet cannon
 
 //SNIPER RIFLES
 /loadwep sniper rifle
-/loadwep bouncer sniper rifle
+/loadwep sniper bouncer rifle
 
 //FIRE BULLET
 /loadwep fire revolver
@@ -102,6 +101,7 @@
 /loadwep prism
 /loadwep rainbow machinegun
 /loadwep spy revolver
+/loadwep anitprism
 
 ///SHELL///
 //PSY SHELL

@@ -16,7 +16,7 @@ return true;
 return 43;
 
 #define weapon_cost
-return 10;
+return 25;
 
 #define weapon_swap
 return sndSwapMachinegun;
@@ -53,8 +53,8 @@ with instance_create(x+lengthdir_x(10,gunangle),y+lengthdir_y(10,gunangle),Custo
 		sprite_index = mskNothing
 		mask_index = mskBullet1
 		force = 7
-		ordamage = 20
-		damage = ordamage
+		damage = 40
+		dd = 0
 		dir = 0
 		xdir = 1
 		ydir = 1
@@ -96,8 +96,8 @@ do
 		if bounce > 0
 		{
 			xdir *= -1
-			sleep(4)
 			bounce--;
+			continue;
 		}
 		else{instance_destroy();exit}
 	}
@@ -106,8 +106,8 @@ do
 		if bounce > 0
 		{
 			ydir *= -1
-			sleep(4)
 			bounce--;
+			continue;
 		}
 		else{instance_destroy();exit}
 	}
@@ -122,16 +122,18 @@ do
 		{
 			if projectile_canhit_melee(other) = false
 			{
+				if my_health > 0{other.dd += my_health}
 				projectile_hit(self,other.damage,other.force,other.direction)
 				with other
 				{
 					if skill_get(16) = true{if recycleset=0{recycleset=1;instance_create(creator.x,creator.y,RecycleGland);sound_play(sndRecGlandProc);if irandom(2)!=0{if creator.ammo[1]+10 <= creator.typ_amax[1]{creator.ammo[1]+=10}else{creator.ammo[1] = creator.typ_amax[1]}}}}
-					damage-= other.my_health
-					if damage <= 0{instance_destroy();exit}
+					continue;
 				}
 			}
 		}
 	}
+		if damage < dd{instance_destroy();exit}
+		if place_meeting(x,y,Wall){instance_destroy();exit}
 }
 while instance_exists(self) and dir < 10000
 instance_destroy()

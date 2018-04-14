@@ -14,10 +14,10 @@ return 1;
 return false;
 
 #define weapon_load
-return 48;
+return 35;
 
 #define weapon_cost
-return 16;
+return 25;
 
 #define weapon_swap
 return sndSwapExplosive;
@@ -30,7 +30,7 @@ return "BALL LIGHTNING";
 
 #define weapon_fire
 
-repeat(16){
+repeat(25){
 	mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, 2+random(3), c_navy)
 }
 sound_play_pitch(sndPistol,random_range(0.7,0.8))

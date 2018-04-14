@@ -15,11 +15,16 @@ return 24
 #define weapon_swap
 return sndSwapEnergy
 #define weapon_auto
-return 0
+return 1
 #define weapon_melee
 return 0
-#define weapon_laser_sight
-return 0
+#define weapon_reloaded
+if !button_check(index,"fire")
+{
+	sound_play_pitchvol(sndIDPDNadeAlmost,.5,.2)
+	sound_play_pitchvol(sndPlasmaReload,1.4,.4)
+}
+return -1
 #define weapon_fire
 motion_add(gunangle-180,4)
 repeat(3)instance_create(x,y,Smoke)

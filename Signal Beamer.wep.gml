@@ -1,11 +1,28 @@
 #define init
-global.sprSignalBeamer = sprite_add_weapon("sprites/Signal Beamer.png", 2, 2);
+global.sprSignalBeamer = sprite_add_weapon("sprites/sprSignalBeamer.png", 2, 2);
+global.sprSignalBeamerG = sprite_add_weapon("sprites/sprSignalBeamerG.png", 2, 2);
+global.sprSignalBeamerY = sprite_add_weapon("sprites/sprSignalBeamerY.png", 2, 2);
+global.sprSignalBeamerR = sprite_add_weapon("sprites/sprSignalBeamerR.png", 2, 2);
+global.sprSignalBeamerE = sprite_add_weapon("sprites/sprSignalBeamerE.png", 2, 2);
 
 #define weapon_name
 return "SIGNAL BEAMER"
 
 #define weapon_sprt
-return global.sprSignalBeamer;
+if "ammo" in self
+{
+	if ammo[1]/typ_amax[1] >= (2/3){return global.sprSignalBeamerG}
+	else
+	{
+		if ammo[1]/typ_amax[1] >= (1/3){return global.sprSignalBeamerY}
+		else
+		{
+			if ammo[1]>=3{return global.sprSignalBeamerR}
+			else{return global.sprSignalBeamerE}
+		}
+	}
+}
+else{return global.sprSignalBeamer}
 
 #define weapon_type
 return 1;
@@ -14,10 +31,10 @@ return 1;
 return false;
 
 #define weapon_load
-return 8;
+return 9;
 
 #define weapon_cost
-return 2;
+return 3;
 
 #define weapon_swap
 return sndSwapMachinegun;
@@ -29,64 +46,48 @@ return 12;
 return choose("GUMMY BEEEEAAARS","BEWARE OF @gGREEN","PREPARE FOR @yYELLOW","@rRED")
 
 #define weapon_fire
-motion_add(gunangle+180,3)
-with instance_create(x,y,CustomObject)
+motion_add(gunangle+180,1)
+repeat(3)
 {
-	creator = other.id
-	ammo = 3
-	timer = 1
-	accuracy = creator.accuracy
-	team = creator.team
-	gunangle = creator.gunangle
-	on_step = SignalBeamer_step
-  //instance_create(x+lengthdir_x(16,gunangle),y+lengthdir_y(16,gunangle),MeatExplosion)
+	sound_play_pitch(sndMachinegun,.8)
+	sound_play_pitch(sndFlareExplode,2)
+	sound_play_pitchvol(sndBloodLauncherExplo,1,.12)
+	weapon_post(6,-4,2)
+	if ammo[1]/typ_amax[1] >= (2/3)
+	{
+		sound_play_pitch(sndUltraEmpty,.6)
+		with mod_script_call("mod", "defpack tools", "create_toxic_bullet",x,y)
+		{
+			move_contact_solid(other.gunangle,4)
+			team = other.team
+			motion_set(other.gunangle + random_range(-3,3) * other.accuracy,14)
+			image_angle = direction
+		}
+	}
+	else
+	{
+		sound_play_pitch(sndUltraEmpty,.5)
+		if ammo[1]/typ_amax[1] >= (1/3)
+		{
+			with instance_create(x,y,Bullet1)
+			{
+				move_contact_solid(other.gunangle,4)
+				motion_set(other.gunangle + random_range(-3,3), 14)
+				image_angle = direction
+				team = other.team
+			}
+		}
+		else
+		{
+			sound_play_pitch(sndUltraEmpty,.4)
+			with mod_script_call("mod", "defpack tools", "create_fire_bullet",x,y)
+			{
+				move_contact_solid(other.gunangle,4)
+				team = other.team
+				motion_set(other.gunangle + random_range(-3,3) * other.accuracy,14)
+				image_angle = direction
+			}
+		}
+	}
+	wait(2)
 }
-
-#define SignalBeamer_step
-if instance_exists(creator)
-{
-  x = creator.x+lengthdir_x(-4,gunangle)
-  y = creator.y+lengthdir_y(-4,gunangle)
-  timer -= 1
-  if timer = 0
-  {
-    timer = 2
-    with creator weapon_post(6,-4,2)
-    if ammo = 3
-    {
-			sound_play(sndMachinegun)
-			sound_play_pitch(sndToxicBoltGas,random_range(3,3.8))
-      with mod_script_call("mod", "defpack tools", "create_toxic_bullet",x+lengthdir_x(8,creator.gunangle),y+lengthdir_y(8,creator.gunangle)){
-          creator = other.creator
-          team = other.team
-          motion_set(other.gunangle + random_range(-3,3) * other.accuracy,17)
-		  image_angle = direction
-      }
-    }
-    if ammo = 2
-    {
-			sound_play(sndMachinegun)
-      with instance_create(x,y,Bullet1){
-      	motion_set(other.gunangle + random_range(-3,3), 17)
-      	image_angle = direction
-      	creator = other.creator
-      	team = other.team
-      }
-    }
-    if ammo = 1
-    {
-			sound_play(sndMachinegun)
-			sound_play_pitchvol(sndSwapFlame,random_range(1.4,1.6),.7)
-			sound_play_pitchvol(sndIncinerator,1,.2)
-      with mod_script_call("mod", "defpack tools", "create_fire_bullet",x+lengthdir_x(5,creator.gunangle),y+lengthdir_y(5,creator.gunangle)){
-          creator = other.creator
-          team = other.team
-          motion_set(other.gunangle + choose(random_range(2,6),-random_range(2,6)) * other.accuracy,17)
-		  image_angle = direction
-      }
-    }
-    ammo -= 1
-  }
-  if ammo = 0{instance_destroy()}
-}
-else{instance_destroy()}

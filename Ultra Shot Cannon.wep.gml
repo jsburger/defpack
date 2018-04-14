@@ -46,7 +46,7 @@ with instance_create(x,y,CustomProjectile) {
 	creator = other
 	sprite_index = sprUltraShell
 	image_speed = 0
-	timer = 60
+	timer = 30
 	ftimer = 2
 	dirfac = random(359)
 	dirfac2 = dirfac
@@ -88,14 +88,14 @@ if (current_frame % ftimer) = 0{
 			with instance_create(x, y, UltraShell){
 				team = other.team
 				creator = other.creator
-				motion_set(ang, 18)
+				motion_set(ang, 12)
 				ang += 180
 				image_angle = direction
 			}
 			with instance_create(x, y, UltraShell){
 				team = other.team
 				creator = other.creator
-				motion_set(ang2, 11)
+				motion_set(ang2, 8)
 				ang2 += 180
 				image_angle = direction
 			}

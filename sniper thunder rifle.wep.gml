@@ -30,11 +30,11 @@ repeat(2)with mod_script_call("mod","defpack tools", "shell_yeah", 100, 8, 3+ran
 sound_play_pitchvol(sndSwapPistol,2,.4)
 sound_play_pitchvol(sndRecGlandProc,1.4,1)
 sound_play_pitchvol(sndLightningReload,1,.5)
-weapon_post(-2,0,3)
+weapon_post(-2,-4,5)
 return -1;
 
 #define weapon_area
-return 9;
+return -1;
 
 #define weapon_text
 return choose("replace me please");
@@ -44,11 +44,13 @@ repeat(2)
 {
 	if fork()
 	{
-	sound_play_pitch(sndHeavyMachinegun,1.7)
+	var _ptch = random_range(-.5,.5)
+	sound_play_pitch(sndHeavyMachinegun,1.7+_ptch)
 	sound_play_pitch(sndLightningRifleUpg,random_range(1.8,2.1))
 	sound_play_pitchvol(sndGammaGutsKill,random_range(1.8,2.1),1*skill_get(17))
 	sound_play_pitch(sndSniperFire,random_range(.6,.8))
-	weapon_post(12,-4,66)
+	sound_play_pitchvol(sndHeavySlugger,1.3+_ptch/2,.3)
+	weapon_post(12,2,158)
 	motion_add(gunangle -180,1)
 	with instance_create(x,y,CustomObject)
 	{
@@ -72,8 +74,9 @@ repeat(2)
 			sprite_index = mskNothing
 			mask_index = mskBullet1
 			force = 7
-			damage = 8
+			damage = 15
 			dir = 0
+			dd = 0
 			recycleset=0
 			image_angle = other.gunangle
 			direction = other.gunangle+random_range(-3,3)*other.accuracy
@@ -111,15 +114,17 @@ repeat(2)
 					{
 						if projectile_canhit_melee(other) = false
 						{
+							if my_health > 0{other.dd += my_health}
 							projectile_hit(self,other.damage,other.force,other.direction)
 							with other
 							{
-								if skill_get(16) = true{if recycleset=0{recycleset=1;instance_create(creator.x,creator.y,RecycleGland);sound_play(sndRecGlandProc);if irandom(2)!=0{if creator.ammo[1]+10 <= creator.typ_amax[1]{creator.ammo[1]+=15}else{creator.ammo[1] = creator.typ_amax[1]}}}}
-								instance_destroy();exit
+								if skill_get(16) = true{if recycleset=0{recycleset=1;instance_create(creator.x,creator.y,RecycleGland);sound_play(sndRecGlandProc);if irandom(2)!=0{if creator.ammo[1]+15 <= creator.typ_amax[1]{creator.ammo[1]+=15}else{creator.ammo[1] = creator.typ_amax[1]}}}}
+								continue;
 							}
 						}
 					}
 				}
+				if damage < dd{instance_destroy();exit}
 				if place_meeting(x,y,Wall){instance_destroy();exit}
 			}
 			while instance_exists(self) and dir < 1000

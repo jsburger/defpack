@@ -51,8 +51,7 @@ with instance_create(x,y,CustomObject)
 	name = "RainMakerRain"
 	on_step = rain_step
 }
-sound_play(sndGrenadeRifle)
-sound_play(sndExplosionS)
+sound_play_pitch(sndGrenadeRifle,.3)
 creator.wkick = 9
 with mod_script_call("mod","defpack tools","create_lightning",mouse_x[index],mouse_y[index]){team = other.team}
 instance_create(mouse_x[index],mouse_y[index],RainSplash)
@@ -106,7 +105,7 @@ else
 			}
 		}
 	}
-	else{instance_destroy()}
+	else{instance_destroy()}//sndHorrorLoop is good sound but unusable since horror exists
 }
 /*#define weapon_fire
 with instance_create(x,y,CustomObject)

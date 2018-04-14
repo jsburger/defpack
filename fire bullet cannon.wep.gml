@@ -14,10 +14,10 @@ return 1;
 return true;
 
 #define weapon_load
-return 40;
+return 23;
 
 #define weapon_cost
-return 80;
+return 16;
 
 #define weapon_swap
 return sndSwapPistol;
@@ -30,76 +30,21 @@ return "replace me please";
 
 #define weapon_fire
 
-weapon_post(8,-6,22)
-sound_play_pitch(sndGrenade,.7)
-sound_play_pitch(sndFlamerStop,.7)
-sound_play_pitch(sndIncinerator,.7)
-with instance_create(x,y,CustomProjectile)
+weapon_post(9,-6,72)
+var _ptch = random_range(-.4,.4);
+sound_play_pitch(sndHeavySlugger,2+_ptch)
+sound_play_pitch(sndDoubleFireShotgun,2)
+sound_play_pitch(sndSawedOffShotgun,1.8)
+sound_play_pitch(sndFlamerStop,.4)
+repeat(8)
 {
-	team = other.team
+mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, 2+random(3), c_red)
+with mod_script_call("mod", "defpack tools", "create_fire_bullet",x+lengthdir_x(random_range(-7,7)*accuracy,gunangle+90),y+lengthdir_y(random_range(-7,7)*accuracy,gunangle+90)){
 	creator = other
-	speed = 28
-	image_xscale *= 1.5
-	image_yscale *= 1.5
-	dir = random(359)
-	timer = room_speed
-	dirfac = random(359)
-	sprite_index = global.sprFireBullet
-	direction = other.gunangle+random_range(-12,12)*other.accuracy
-	image_speed = 0
-	on_step = script_ref_create(bullet_cannon)
-	on_hit = script_ref_create(actually_nothing)
-	on_wall = script_ref_create(actually_nothing)
-	on_draw = script_ref_create(bullet_draw)
+	team = other.team
+	team = other.team
+	move_contact_solid(other.gunangle,5)
+	motion_add(other.gunangle+random_range(-18,18)*other.accuracy,18+random_range(-9,7)*other.accuracy)
+	image_angle = direction
 }
-
-#define actually_nothing
-
-#define bullet_cannon
-if place_meeting(x + hspeed,y,Wall){
-	hspeed *= -1
-	sound_play_pitchvol(sndBouncerBounce,.5,1)
 }
-if place_meeting(x,y +vspeed,Wall){
-	vspeed *= -1
-	sound_play_pitchvol(sndBouncerBounce,.5,1)
-}
-if (current_frame % 2) = 0{
-	scale = random_range(0.9,1.1)
-	image_xscale = 1.5*scale
-	image_yscale = 1.5*scale
-	image_speed = 0
-	dirfac += irandom_range(8,43)
-	if speed >= 1{
-		speed /= 1.5
-	}
-	else{
-		speed = 0
-	};
-	if speed = 0 {
-		var ang = dirfac
-		sound_play_pitch(sndMinigun,.8)
-		sound_play_pitch(sndFiretrap,.8)
-		sound_play_pitchvol(sndIncinerator,1,.7)
-		repeat (5){
-			with mod_script_call("mod", "defpack tools", "create_fire_bullet",x,y){
-			    creator = other
-			    team = other.team
-					motion_set(ang, 16)
-					ang += 360/5
-				image_angle = direction
-			}
-		}
-		timer -= 1;
-		if timer <= 0
-		{
-			instance_destroy()
-		}
-	}
-}
-
-#define bullet_draw
-draw_sprite_ext(sprite_index, image_index, x, y, .8*image_xscale, .8*image_yscale, image_angle, image_blend, 1.0);
-draw_set_blend_mode(bm_add);
-draw_sprite_ext(sprite_index, image_index, x, y, 1.5*image_xscale, 1.5*image_yscale, image_angle, image_blend, 0.25);
-draw_set_blend_mode(bm_normal);
