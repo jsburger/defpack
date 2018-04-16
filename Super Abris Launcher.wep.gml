@@ -1,6 +1,6 @@
 #define init
 global.sprSuperAbrisLauncher = sprite_add_weapon("sprites/sprSuperAbrisLauncher.png", 1, 4);
-global.sprDanger 						 = sprite_add("sprites/projectiles/Danger.png",5,24,24);
+global.sprDanger 						 = sprite_add("sprites/projectiles/Danger.png",0,1,29);
 global.stripes 							 = sprite_add("defpack tools/BIGstripes.png",1,1,1)
 
 #define weapon_name
@@ -25,7 +25,7 @@ return 4;
 return sndSwapExplosive;
 
 #define weapon_area
-return 15;
+return 12;
 
 #define weapon_text
 return "BLESS WALLS";
@@ -44,7 +44,8 @@ sound_play_pitch(sndSniperTarget,exp((_strtsize-_endsize)/room_speed/current_tim
 #define pop
 sound_play_pitch(sndGrenadeRifle,.4)
 sound_play_pitch(sndNukeExplosion,.8)
-creator.wkick = 15
+with creator{weapon_post(12,0,244)}
+sleep(200)
 with creator{motion_add(gunangle,-5)}
 repeat(8)
 {
@@ -64,7 +65,9 @@ if instance_exists(creator) && check{
 			mod_script_call("mod", "defpack tools","draw_polygon_striped", 16, radi, 45, mouse_x[index]+1, mouse_y[index]+1, global.stripes, lasercolour1, 0.1+(accbase-acc)/(accbase*5),(current_frame mod 16)*.004);
 			mod_script_call("mod", "defpack tools","draw_circle_width_colour",16,radi,1,acc+image_angle,mouse_x[index],mouse_y[index],lasercolour1,1*(accbase-acc))
 			mod_script_call("mod", "defpack tools","draw_circle_width_colour",16, accmin,1,acc+image_angle,mouse_x[index],mouse_y[index],lasercolour1,.2)
-			draw_sprite_ext(global.sprDanger,image_index,mouse_x[index],mouse_y[index],2,2,0,c_red,1*(accbase-acc))
+			draw_sprite_ext(global.sprDanger,image_index,mouse_x[index],mouse_y[index],radi/80,radi/80,60-image_angle,c_red,1*(accbase-acc))
+			draw_sprite_ext(global.sprDanger,image_index,mouse_x[index],mouse_y[index],radi/80,radi/80,180-image_angle,c_red,1*(accbase-acc))
+			draw_sprite_ext(global.sprDanger,image_index,mouse_x[index],mouse_y[index],radi/80,radi/80,300-image_angle,c_red,1*(accbase-acc))
 			draw_line_width_colour(x,y,mouse_x[index],mouse_y[index],1,lasercolour1,lasercolour1);
 		}
 		else{

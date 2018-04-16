@@ -84,12 +84,6 @@ wait(3)
 #define psy_shell_lcurve_step
 motion_add(direction+90,speed/10-0.36-skill_get(19)/2.5)
 image_angle = direction
-if timer > 0{
-	timer -= 1
-}
-if timer = (og_timer - 2){
-	damage -= 1
-}
 if timer = 0 && instance_exists(enemy){
 	var closeboy = instance_nearest(x,y,enemy)
 	if collision_line(x,y,closeboy.x,closeboy.y,Wall,0,0) < 0 && distance_to_object(closeboy) < 200{
@@ -148,12 +142,6 @@ if speed < 3{
 #define psy_shell_rcurve_step
 motion_add(direction-90,speed/10-0.36-skill_get(19)/2.5)
 image_angle = direction
-if timer > 0{
-	timer -= 1
-}
-if timer = (og_timer - 2){
-	damage -= 1
-}
 if timer = 0 && instance_exists(enemy){
 	var closeboy = instance_nearest(x,y,enemy)
 	if collision_line(x,y,closeboy.x,closeboy.y,Wall,0,0) < 0 && distance_to_object(closeboy) < 200{

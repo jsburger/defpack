@@ -24,7 +24,7 @@ return 3;
 return sndSwapExplosive;
 
 #define weapon_area
-return 13;
+return 11;
 
 #define weapon_text
 return "THEY WON'T SEE THAT ONE COMIN'";

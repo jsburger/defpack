@@ -7,7 +7,7 @@ return 0
 #define weapon_cost
 return 0
 #define weapon_area
-if !irandom(1) return 1;
+if !irandom(2) return 1;
 else return -1;
 #define weapon_load
 return 10

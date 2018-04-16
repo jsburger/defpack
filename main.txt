@@ -101,7 +101,7 @@
 /loadwep prism
 /loadwep rainbow machinegun
 /loadwep spy revolver
-/loadwep anitprism
+/loadwep antiprism
 
 ///SHELL///
 //PSY SHELL
@@ -168,7 +168,6 @@
 
 //SMART
 /loadwep smart bazooka
-/loadwep gatling smart bazooka
 /loadwep finished stuff/smart nuke launcher
 
 //CLAYMORE
@@ -188,6 +187,7 @@
 /loadwep finished stuff/andromeda launcher
 /loadwep finished stuff/fire beamer
 /loadwep finished stuff/toxic carronader
+/loadwep puncher
 
 ///ENERGY///
 

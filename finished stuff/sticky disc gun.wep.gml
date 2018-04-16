@@ -1,6 +1,6 @@
 #define init
 global.sprStickyDiscGun = sprite_add_weapon("sprStickyDiscGun.png",-3,3)
-global.sprStickyDisc = sprite_add("sprStickyDisc.png",2,6,6)
+global.sprStickyDisc = sprite_add("sprStickyDisc.png",2,12,12)
 return "STICKY DISC GUN"
 #define weapon_type
 return 3
@@ -31,9 +31,10 @@ with instance_create(x,y,CustomProjectile)
   dist = 0
   damage = 6
   team = -10
-  image_speed = .5
+  image_speed = .45
   name = "Sticky Disc"
   sprite_index = global.sprStickyDisc
+  mask_index = mskDisc
   move_contact_solid(other.gunangle,16)
   soundcheck = 0
   motion_add(other.gunangle+random_range(-8,8)*other.accuracy,5)
@@ -45,7 +46,7 @@ with instance_create(x,y,CustomProjectile)
 }
 
 #define stickydisc_step
-if speed > 0{instance_create(x,y,DiscTrail)}
+if speed > 0{with instance_create(x,y,DiscTrail){image_xscale = 2;image_yscale = 2}}
 dist += 1
 if instance_exists(Player) and instance_exists(enemy)
 {dir = instance_nearest(x,y,enemy)
@@ -60,7 +61,7 @@ if dist > 200{instance_destroy()}
 if other.my_health-damage>0&&soundcheck=0
 {
   speed = 0
-  instance_create(other.x,other.y,Dust);repeat(5){if depth!=-3{with instance_create(x,y,Smoke){depth = -4}}}
+  instance_create(other.x,other.y,Dust);repeat(12){if depth!=-3{with instance_create(x,y,Smoke){depth = -4}}}
   x=other.x
   y=other.y
   depth = -3
@@ -71,6 +72,6 @@ if other.sprite_index != other.spr_hurt{projectile_hit(other, damage, 5, other.d
 if soundcheck = 0{soundcheck = 1;speed = 0;sound_play(sndGrenadeStickWall);instance_create(x,y,Dust);repeat(5){with instance_create(x,y,Smoke){depth = -3}}}
 
 #define stickydisc_destroy
-with instance_create(x,y,DiscTrail){sprite_index=sprDiscDisappear}
+with instance_create(x,y,DiscTrail){sprite_index=sprDiscDisappear;image_xscale = 2}
 sound_play_hit(sndDiscDie, 0.2)
 with instance_create(x,y,Smoke){depth = -3}

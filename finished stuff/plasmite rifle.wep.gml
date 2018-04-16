@@ -10,7 +10,7 @@ return 5
 #define weapon_cost
 return 1
 #define weapon_area
-return 5
+return 6
 #define weapon_load
 return 7
 #define weapon_swap
@@ -79,4 +79,4 @@ instance_destroy()
 
 #define mb_destroy
 sound_play_pitch(sndPlasmaHit,random_range(1.55,1.63))
-with instance_create(x,y,PlasmaImpact){image_xscale=.5;image_yscale=.5;damage-=1}
+with instance_create(x,y,PlasmaImpact){image_xscale=.5;image_yscale=.5;damage = round(damage/2)}

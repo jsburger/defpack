@@ -24,13 +24,13 @@ return 12;
 return sndSwapEnergy;
 
 #define weapon_area
-return 13;
+return 15;
 
 #define weapon_text
 return "DEVASTATION++";
 
 #define weapon_fire
-var _strtsize = 44-skill_get(13)*7;//never thought id have to nerf eagle eyes im so proud of you
+var _strtsize = 44;
 var _endsize  = 16;
 with mod_script_call("mod","defpack tools","create_abris",self,44,16,argument0)
 {

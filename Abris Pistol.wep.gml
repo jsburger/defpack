@@ -18,13 +18,13 @@ return false;
 return 13;
 
 #define weapon_cost
-return 1;
+return 2;
 
 #define weapon_swap
 return sndSwapExplosive;
 
 #define weapon_area
-return 5;
+return 3;
 
 #define weapon_text
 return "GET SOME COVER";

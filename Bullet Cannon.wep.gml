@@ -20,7 +20,9 @@ return 8;
 
 #define weapon_swap
 return sndSwapPistol;
-return 11;
+
+#define weapon_area
+return 6;
 
 #define weapon_text
 return "GLASSY CANNON";

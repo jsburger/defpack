@@ -23,7 +23,7 @@ return 16;
 return sndSwapExplosive;
 
 #define weapon_area
-return 16;
+return 15;
 
 #define weapon_text
 return "OH @rYEAH";

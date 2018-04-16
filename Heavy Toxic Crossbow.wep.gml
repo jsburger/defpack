@@ -24,7 +24,7 @@ return 3;
 return sndSwapBow;
 
 #define weapon_area
-return 13;
+return 10;
 
 #define weapon_text
 return choose("FILL THE AIR WITH CHLORINE GOODNESS","PROBABLY NOT A GOOD IDEA");

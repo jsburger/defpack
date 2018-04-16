@@ -30,7 +30,7 @@ return 8;
 return "HIDE AND KILL";
 
 #define weapon_fire
-var _strtsize = 45-skill_get(13)*7;//never thought id have to nerf eagle eyes im so proud of you
+var _strtsize = 45;//never thought id have to nerf eagle eyes im so proud of you
 var _endsize  = 30;
 var _accspeed = 1.2;
 with mod_script_call("mod","defpack tools","create_abris",self,_strtsize,_endsize,argument0){

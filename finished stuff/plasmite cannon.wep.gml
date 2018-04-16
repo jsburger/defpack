@@ -86,7 +86,6 @@ if irandom(9) = 1
 }
 if irandom(4-skill_get(17))=1{with instance_create(x+random_range(-12,12),y+random_range(-12,12),GunGun){image_index=2-skill_get(17)}}
 speed /= fric
-if instance_exists(enemy)if distance_to_object(instance_nearest(x,y,enemy))<66{var closeboy = instance_nearest(x,y,enemy);motion_add(point_direction(x,y,closeboy.x,closeboy.y),speed*.2)speed -= speed*.21}
 if speed < 1.00005{instance_destroy()}
 
 #define atom_draw
@@ -124,7 +123,7 @@ instance_destroy()
 
 #define mb_destroy
 sound_play_pitch(sndPlasmaHit,random_range(1.55,1.63))
-with instance_create(x,y,PlasmaImpact){image_xscale=.5;image_yscale=.5;damage-=1}
+with instance_create(x,y,PlasmaImpact){image_xscale=.5;image_yscale=.5;damage = round(damage/2)}
 
 #define mb_step
 image_angle = direction

@@ -23,7 +23,7 @@ return 3;
 return sndSwapExplosive;
 
 #define weapon_area
-return 13;
+return 9;
 
 #define weapon_text
 return "340 KM/H";

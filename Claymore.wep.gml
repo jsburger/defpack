@@ -34,7 +34,7 @@ return 1;
 return sndSwapHammer;
 
 #define weapon_area
-return 7;
+return 8;
 
 #define weapon_melee
 return 1

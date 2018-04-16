@@ -77,4 +77,4 @@ instance_destroy()
 
 #define mb_destroy
 sound_play_pitch(sndPlasmaHit,random_range(1.55,1.63))
-with instance_create(x,y,PlasmaImpact){image_xscale=.5;image_yscale=.5;damage-=1}
+with instance_create(x,y,PlasmaImpact){image_xscale=.5;image_yscale=.5;damage = round(damage/2)}

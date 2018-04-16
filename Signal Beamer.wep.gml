@@ -11,6 +11,7 @@ return "SIGNAL BEAMER"
 #define weapon_sprt
 if "ammo" in self
 {
+	if !is_array(ammo){return global.sprSignalBeamer;exit}
 	if ammo[1]/typ_amax[1] >= (2/3){return global.sprSignalBeamerG}
 	else
 	{
@@ -43,18 +44,29 @@ return sndSwapMachinegun;
 return 12;
 
 #define weapon_text
-return choose("GUMMY BEEEEAAARS","BEWARE OF @gGREEN","PREPARE FOR @yYELLOW","@rRED")
+if irandom(4)<3
+{
+	if ammo[1]/typ_amax[1] >= (2/3){return "BEWARE OF @gGREEN"}
+	else
+	{
+		if ammo[1]/typ_amax[1] >= (2/3){return "PREPARE FOR @yYELLOW"}
+		else{return "@rRED"}
+	}
+}
+else return "GUMMY BEEEEAAARS";
 
 #define weapon_fire
 motion_add(gunangle+180,1)
 repeat(3)
 {
+	if !instance_exists(self){exit}
 	sound_play_pitch(sndMachinegun,.8)
 	sound_play_pitch(sndFlareExplode,2)
 	sound_play_pitchvol(sndBloodLauncherExplo,1,.12)
-	weapon_post(6,-4,2)
+	weapon_post(6,-4,16)
 	if ammo[1]/typ_amax[1] >= (2/3)
 	{
+		mod_script_call("mod","defpack tools", "shell_yeah", 100, 35, random_range(3,5), c_green)
 		sound_play_pitch(sndUltraEmpty,.6)
 		with mod_script_call("mod", "defpack tools", "create_toxic_bullet",x,y)
 		{
@@ -69,16 +81,18 @@ repeat(3)
 		sound_play_pitch(sndUltraEmpty,.5)
 		if ammo[1]/typ_amax[1] >= (1/3)
 		{
+			mod_script_call("mod","defpack tools", "shell_yeah", 100, 35, random_range(3,5), c_yellow)
 			with instance_create(x,y,Bullet1)
 			{
 				move_contact_solid(other.gunangle,4)
-				motion_set(other.gunangle + random_range(-3,3), 14)
+				motion_set(other.gunangle + random_range(-3,3) * other.accuracy, 14)
 				image_angle = direction
 				team = other.team
 			}
 		}
 		else
 		{
+			mod_script_call("mod","defpack tools", "shell_yeah", 100, 35, random_range(3,5), c_red)
 			sound_play_pitch(sndUltraEmpty,.4)
 			with mod_script_call("mod", "defpack tools", "create_fire_bullet",x,y)
 			{

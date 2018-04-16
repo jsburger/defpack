@@ -1,9 +1,9 @@
 #define init
-global.sprHeavyNuke = sprite_add("sprHeavyNuke.png",0, 8, 6);
-global.sprHeavyNukeLauncher = sprite_add_weapon("sprHeavyNukeLauncher.png", 9, 7);
+global.sprHeavyNuke 				  = sprite_add("sprHeavyNuke.png",0, 8, 6);
+global.sprHeavyNukeLauncher   = sprite_add_weapon("sprHeavyNukeLauncher.png", 9, 7);
 global.sprSmallGreenExplosion = sprite_add("GreenExplosionS.png",7,12,12)
-global.sprHeavyNukeFlame = sprite_add("sprHeavyNukeFlame.png",3,36,12)
-global.sprUltraFire = sprite_add("sprUltraFire.png",7,8,8);
+global.sprHeavyNukeFlame 			= sprite_add("sprHeavyNukeFlame.png",3,36,12)
+global.sprUltraFire 					= sprite_add("sprUltraFire.png",7,8,8);
 #define weapon_name
 return "HEAVY NUKE LAUNCHER";
 
@@ -26,7 +26,7 @@ return 6;
 return sndSwapExplosive;
 
 #define weapon_area
-return 15;
+return 11;
 
 #define weapon_text
 return choose("THIS IS WHAT WILL END IT ALL","STANDING, ON THE EDGE","WHAT A MESS WE MADE","A HEART OF BROKEN GLASS");

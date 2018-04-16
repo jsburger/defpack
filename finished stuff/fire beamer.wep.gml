@@ -26,7 +26,7 @@ return 0;
 return sndSwapExplosive;
 
 #define weapon_area
-return 9;
+return 4;
 
 #define weapon_text
 return "HEAT WAVES";

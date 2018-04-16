@@ -24,7 +24,7 @@ return 2;
 return sndSwapMachinegun;
 
 #define weapon_area
-return 11;
+return 7;
 
 #define weapon_text
 return choose("7...7....","THE RICH GET RICHER");
