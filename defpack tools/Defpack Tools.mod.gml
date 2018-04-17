@@ -948,19 +948,17 @@ with SodaMachine{
 #define create_lightning(_x,_y)
 with instance_create(_x,_y,CustomProjectile){
 	lightning_refresh()
+	hitid = [sprLightning,"Lightning Bolt"]
 	name = "Lightning Bolt"
-	time = 8
-	sound_play_pitch(sndExplosion,2)
-	sound_play_pitch(sndExplosionS,.7)
-	sound_play_pitchvol(sndExplosionL,.5,.6)
-	sound_set_track_position(sndExplosionL,.3)
+	time = 8+skill_get(17)*4
 	damage = 18
 	repeat(30){
 		with instance_create(x,y,Dust){
 			motion_set(random(360),3+random(10))
 		}
 	}
-	instance_create(x,y,Scorchmark)
+	var closeboy = instance_nearest(x,y,Floor);
+	if point_in_rectangle(x,y,closeboy.x-16,closeboy.y-16,closeboy.x+16,closeboy.y+16){instance_create(x,y,Scorchmark)}
 	force = 40
 	on_wall = lightning_wall
 	on_draw = lightning_draw
@@ -1029,6 +1027,7 @@ for (var i = 1; i < array_length_1d(ypoints); i++){
 		depth = other.depth
 		image_speed/=1.5
 		sprite_index = sprLightning
+		mask_index = sprFloor1
 		hspeed += random_range(-.5,.5)
 		vspeed += random_range(-.5,.5)
 	}
@@ -1036,6 +1035,6 @@ for (var i = 1; i < array_length_1d(ypoints); i++){
 sound_set_track_position(sndExplosionL,0)
 
 #define lightning_step
-view_shake_max_at(x,y,10)
+view_shake_max_at(x,y,30)
 time -= current_time_scale
 if time <= 0 instance_destroy()

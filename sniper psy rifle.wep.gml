@@ -110,7 +110,7 @@ with mod_script_call("mod", "defpack tools", "create_psy_bullet",x+lengthdir_x(8
 						projectile_hit(self,other.damage,other.force,other.direction)
 						with other
 						{
-							if skill_get(16) = true{if recycleset=0{recycleset=1;instance_create(creator.x,creator.y,RecycleGland);sound_play(sndRecGlandProc);if irandom(2)!=0{if creator.ammo[1]+10 <= creator.typ_amax[1]{creator.ammo[1]+=20}else{creator.ammo[1] = creator.typ_amax[1]}}}}
+							if skill_get(16) = true{if recycleset=0{recycleset=1;instance_create(creator.x,creator.y,RecycleGland);sound_play(sndRecGlandProc);if irandom(2)!=0{if creator.ammo[1]+40 <= creator.typ_amax[1]{creator.ammo[1]+=40}else{creator.ammo[1] = creator.typ_amax[1]}}}}
 							continue;
 						}
 					}

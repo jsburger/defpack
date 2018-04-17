@@ -1,5 +1,5 @@
 #define init
-global.sprPuncher 			= sprite_add_weapon("sprites/sprPuncher.png",11,2)
+global.sprPuncher 			= sprite_add_weapon("sprites/sprPuncher.png",11,3)
 global.sprPuncherRocket = sprite_add("sprites/projectiles/sprPuncherRocket.png",0,6,4)
 #define weapon_name
 return "PUNCHER"
@@ -25,6 +25,7 @@ return 0
 if fork(){
 	for (var i = 0;i < 3; i++){
 		if instance_exists(self){
+			sleep(12)
 			sound_play_pitch(sndRocket,random_range(.9,1.1))
 			sound_play_pitchvol(sndNukeFire,1.2,.7)
 			sound_play_pitchvol(sndGrenadeHitWall,random_range(.7,.8),.7)
@@ -36,6 +37,7 @@ if fork(){
 				sprite_index = global.sprPuncherRocket
 				team = other.team
 				creator = other
+				damage = 15
 				extradir = random_range(-.3,.3)*creator.accuracy*i
 				motion_set(other.gunangle + random_range(-5,5)*i,1)
 				repeat(2){with instance_create(x,y,Smoke){speed = random_range(3,5);direction = other.direction+random_range(-5,5)}}

@@ -1,5 +1,5 @@
 #define init
-global.sprRainmaker = sprite_add_weapon("sprites/sprRainmaker.png", 3, 5);
+global.sprRainmaker = sprite_add_weapon("sprites/sprRainmaker.png", 10, 5);
 global.stripes = sprite_add("defpack tools/BIGstripes.png",1,1,1)
 
 #define weapon_name
@@ -15,10 +15,10 @@ return 5;
 return false;
 
 #define weapon_load
-return 80;
+return 40;
 
 #define weapon_cost
-return 8;
+return 6;
 
 #define weapon_swap
 return sndSwapExplosive;
@@ -27,10 +27,10 @@ return sndSwapExplosive;
 return 14;
 
 #define weapon_text
-return "WHAT A BRIS";
+return choose("WHAT A BRIS","A STORM IS COMING");
 
 #define weapon_fire
-var _strtsize = 110-skill_get(13)*25
+var _strtsize = 110;
 var _endsize  = 26;
 with mod_script_call("mod","defpack tools","create_abris",self,_strtsize,_endsize,argument0){
 	accspeed = 1.06
@@ -46,19 +46,34 @@ sound_play_pitch(sndSniperTarget,exp((_strtsize-_endsize)/room_speed/current_tim
 with instance_create(x,y,CustomObject)
 {
 	timer  = room_speed*current_time_scale
-	timer2 = room_speed*current_time_scale*4
+	timer2 = room_speed*current_time_scale*7
 	with instances_matching(CustomObject,"name","RainMakerRain"){other.timer=0;other.timer2+=timer2;instance_destroy()}
+	spr_shadow = shd24
 	name = "RainMakerRain"
 	on_step = rain_step
 }
 sound_play_pitch(sndGrenadeRifle,.3)
-creator.wkick = 9
-with mod_script_call("mod","defpack tools","create_lightning",mouse_x[index],mouse_y[index]){team = other.team}
-instance_create(mouse_x[index],mouse_y[index],RainSplash)
-repeat(4)
+sound_play_pitch(sndExplosion,2)
+sound_play_pitch(sndExplosionS,.7)
+sound_play_pitchvol(sndExplosionL,.5,.6)
+sound_set_track_position(sndExplosionL,.3)
+if skill_get(17)=true
 {
-	with mod_script_call("mod","defpack tools","create_lightning",mouse_x[index]+lengthdir_x(acc+10,offset+image_angle),mouse_y[index]+lengthdir_y(acc+10,offset+image_angle)){team = other.team}
-	offset += 90
+	sound_play_pitchvol(sndLightningCannonEnd,.8,.7)
+	sound_play_pitchvol(sndLightningRifleUpg,.7,.6)
+}
+else
+{
+	sound_play_pitchvol(sndLightningRifle,.7,.6)
+}
+with creator{weapon_post(9,0,159)}
+sleep(300)
+with instance_create(mouse_x[index],mouse_y[index],CustomObject)
+{
+	acc = other.acc
+	m = 0
+	timer = irandom_range(1,4)
+	on_step = lit_step
 }
 
 #define abris_draw_lightning
@@ -106,6 +121,33 @@ else
 		}
 	}
 	else{instance_destroy()}//sndHorrorLoop is good sound but unusable since horror exists
+}
+
+#define lit_step
+if timer>0{timer-=current_time_scale}
+else
+{
+	timer = 13
+	m++
+	if instance_exists(enemy)
+	{
+		var closeboy = instance_nearest(x,y,enemy)
+		if distance_to_object(closeboy)<acc{mod_script_call("mod","defpack tools","create_lightning",closeboy.x,closeboy.y)}
+		else{mod_script_call("mod","defpack tools","create_lightning",x+lengthdir_x(acc,random(360)),y+lengthdir_y(acc,random(360)))}
+	}
+	else{mod_script_call("mod","defpack tools","create_lightning",x+lengthdir_x(acc,random(360)),y+lengthdir_y(acc,random(360)))}
+}
+if m > 3{instance_destroy()}
+
+#define draw_shadows
+with CustomObject
+{
+	trace("c")
+	if("name" in self && name = "RainMakerRain")
+	{
+			trace("g")
+			draw_sprite_ext(shd96, 0, x, y, 10000, 10000, 0, c_black,1)
+	}
 }
 /*#define weapon_fire
 with instance_create(x,y,CustomObject)
