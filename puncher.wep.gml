@@ -28,8 +28,7 @@ if fork(){
 			sleep(12)
 			sound_play_pitch(sndRocket,random_range(.9,1.1))
 			sound_play_pitchvol(sndNukeFire,1.2,.7)
-			sound_play_pitchvol(sndGrenadeHitWall,random_range(.7,.8),.7)
-			sound_play_pitchvol(sndHitMetal,random_range(.7,.8),.7)
+			sound_play_pitchvol(sndHitMetal,random_range(.7,.8),.8)
 			weapon_post(6,2,16)
 			with instance_create(x,y,CustomProjectile){
 				move_contact_solid(other.gunangle,8)

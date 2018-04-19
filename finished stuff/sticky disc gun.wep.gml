@@ -9,7 +9,7 @@ return 2
 #define weapon_area
 return -1
 #define weapon_load
-return 17
+return 14
 #define weapon_swap
 return sndSwapBow
 #define weapon_auto
@@ -29,47 +29,45 @@ with instance_create(x,y,CustomProjectile)
 {
   typ = 1
   dist = 0
-  damage = 6
+  damage = 8
   team = -10
   image_speed = .45
   name = "Sticky Disc"
   sprite_index = global.sprStickyDisc
-  mask_index = mskDisc
-  move_contact_solid(other.gunangle,16)
+  move_contact_solid(other.gunangle,50)
   soundcheck = 0
-  motion_add(other.gunangle+random_range(-8,8)*other.accuracy,5)
+  motion_add(other.gunangle+random_range(-8,8)*other.accuracy,4)
+  orspeed = speed
   image_angle = direction
-  on_step = stickydisc_step
-  on_hit = stickydisc_hit
-  on_wall = stickydisc_wall
+  on_step    = stickydisc_step
+  on_hit     = stickydisc_hit
   on_destroy = stickydisc_destroy
+  on_wall    = stickydisc_wall
 }
 
 #define stickydisc_step
 if speed > 0{with instance_create(x,y,DiscTrail){image_xscale = 2;image_yscale = 2}}
 dist += 1
-if instance_exists(Player) and instance_exists(enemy)
-{dir = instance_nearest(x,y,enemy)
-if speed > 0 and skill_get(21) = 1 and point_distance(x,y,dir.x,dir.y) < 32
+if dist > 200{instance_destroy();exit}
+if place_meeting(x,y,enemy)
 {
-x += lengthdir_x(1,point_direction(x,y,dir.x,dir.y))
-y += lengthdir_y(1,point_direction(x,y,dir.x,dir.y))}
+  if other.my_health-damage>0 && soundcheck=0
+  {
+    soundcheck = 1
+    sound_play(sndGrenadeStickWall)
+    speed = 0
+    instance_create(other.x,other.y,Dust);repeat(12){if depth!=-3{with instance_create(x,y,Smoke){depth = -4}}}
+    x=other.x
+    y=other.y
+    depth = -3
+  }
 }
-if dist > 200{instance_destroy()}
 
 #define stickydisc_hit
-if other.my_health-damage>0&&soundcheck=0
-{
-  speed = 0
-  instance_create(other.x,other.y,Dust);repeat(12){if depth!=-3{with instance_create(x,y,Smoke){depth = -4}}}
-  x=other.x
-  y=other.y
-  depth = -3
-}
-if other.sprite_index != other.spr_hurt{projectile_hit(other, damage, 5, other.direction-180)}
+if projectile_canhit_melee(other){projectile_hit(other, damage, 5, direction)}
 
 #define stickydisc_wall
-if soundcheck = 0{soundcheck = 1;speed = 0;sound_play(sndGrenadeStickWall);instance_create(x,y,Dust);repeat(5){with instance_create(x,y,Smoke){depth = -3}}}
+move_bounce_solid(false)
 
 #define stickydisc_destroy
 with instance_create(x,y,DiscTrail){sprite_index=sprDiscDisappear;image_xscale = 2}

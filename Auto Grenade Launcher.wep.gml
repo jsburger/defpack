@@ -26,6 +26,9 @@ return sndSwapExplosive;
 #define weapon_area
 return 10;
 
+#define weapon_reloaded
+sound_play(sndNadeReload)
+
 #define weapon_text
 return "GOES WELL WITH STRESS";
 

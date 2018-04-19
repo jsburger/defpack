@@ -57,6 +57,7 @@ sound_play_pitch(sndExplosion,2)
 sound_play_pitch(sndExplosionS,.7)
 sound_play_pitchvol(sndExplosionL,.5,.6)
 sound_set_track_position(sndExplosionL,.3)
+sound_play_pitch(sndSuperBazooka,.5)
 if skill_get(17)=true
 {
 	sound_play_pitchvol(sndLightningCannonEnd,.8,.7)
@@ -105,6 +106,7 @@ if instance_exists(creator) && check{
 }
 
 #define rain_step
+sound_pitch(sndSewerDrip,random_range(1.2,1.4))
 if timer > 0{timer--}
 else
 {
@@ -127,6 +129,21 @@ else
 if timer>0{timer-=current_time_scale}
 else
 {
+	sound_play_pitch(sndGrenadeRifle,.3)
+	sound_play_pitch(sndExplosion,2)
+	sound_play_pitch(sndExplosionS,.7)
+	sound_play_pitchvol(sndExplosionL,.5,.6)
+	sound_set_track_position(sndExplosionL,.3)
+	sound_play_pitch(sndSuperBazooka,.5)
+	if skill_get(17)=true
+	{
+		sound_play_pitchvol(sndLightningCannonEnd,.8,.7)
+		sound_play_pitchvol(sndLightningRifleUpg,.7,.6)
+	}
+	else
+	{
+		sound_play_pitchvol(sndLightningRifle,.7,.6)
+	}
 	timer = 13
 	m++
 	if instance_exists(enemy)
