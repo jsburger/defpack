@@ -948,9 +948,9 @@ with SodaMachine{
 #define create_lightning(_x,_y)
 with instance_create(_x,_y,CustomProjectile){
 	lightning_refresh()
-	hitid = [sprLightning,"Lightning Bolt"]
+	hitid = [sprLightningDeath,"Lightning Bolt"]
 	name = "Lightning Bolt"
-	time = 8+skill_get(17)*4
+	time = skill_get(17)+4
 	damage = 18
 	repeat(30){
 		with instance_create(x,y,Dust){
@@ -962,6 +962,7 @@ with instance_create(_x,_y,CustomProjectile){
 	force = 40
 	on_wall = lightning_wall
 	on_draw = lightning_draw
+	mask_index = sprFloor1
 	on_destroy = lightning_destroy
 	on_step = lightning_step
 	on_hit = lightning_hit
@@ -1027,7 +1028,6 @@ for (var i = 1; i < array_length_1d(ypoints); i++){
 		depth = other.depth
 		image_speed/=1.5
 		sprite_index = sprLightning
-		mask_index = sprFloor1
 		hspeed += random_range(-.5,.5)
 		vspeed += random_range(-.5,.5)
 	}

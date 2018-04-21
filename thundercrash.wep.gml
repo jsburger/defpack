@@ -1,12 +1,12 @@
 #define init
-global.sprRainmaker = sprite_add_weapon("sprites/sprRainmaker.png", 10, 5);
-global.stripes = sprite_add("defpack tools/BIGstripes.png",1,1,1)
+global.sprThundercrash = sprite_add_weapon("sprites/sprThundercrash.png", 10, 5);
+global.sprUmbrella  = sprite_add("sprites/projectiles/sprRainDisk.png",0,14,5);
 
 #define weapon_name
-return "RAINMAKER"
+return "THUNDERCRASH"
 
 #define weapon_sprt
-return global.sprRainmaker;
+return global.sprThundercrash;
 
 #define weapon_type
 return 5;
@@ -30,20 +30,29 @@ return 14;
 return choose("WHAT A BRIS","A STORM IS COMING");
 
 #define weapon_fire
-var _strtsize = 110;
-var _endsize  = 26;
-with mod_script_call("mod","defpack tools","create_abris",self,_strtsize,_endsize,argument0){
-	accspeed = 1.06
-	payload = script_ref_create(pop)
-	lasercolour1 = c_blue
-	lasercolour = lasercolour1
-	lasercolour2 = c_navy
-	on_draw = abris_draw_lightning
+sound_play_pitch(sndDevastatorUpg,1.4)
+if skill_get(17)=true{sound_play_pitch(sndLightningPistolUpg,.8)}else{sound_play_pitch(sndLightningPistol,.8)}
+weapon_post(16,0,85)
+sleep(15)
+motion_add(gunangle-180,5+abs(speed))
+with instance_create(x,y,LightningSpawn){move_contact_solid(other.gunangle,20);image_speed = .45}
+with instance_create(x,y,LightningHit){move_contact_solid(other.gunangle,14);image_speed = .45}
+with instance_create(x,y,CustomProjectile)
+{
+	creator = other
+	team = other.team
+	typ  = 1
+	name = "lightning cluster grenade"
+	motion_add(other.gunangle+random_range(-7,7)*other.accuracy,26)
+	sprite_index = global.sprUmbrella
+	image_speed = .45
+	image_angle = direction
+	damage  = 20
+	friction = 0
+	on_draw 	 = bloom_draw
+	on_destroy = lightningcluster_destroy
 }
-sound_play_pitch(sndSniperTarget,exp((_strtsize-_endsize)/room_speed/current_time_scale/accuracy*(1.06)))
-
-#define pop
-with instance_create(x,y,CustomObject)
+/*with instance_create(x,y,CustomObject)
 {
 	timer  = room_speed*current_time_scale
 	timer2 = room_speed*current_time_scale*7
@@ -51,8 +60,20 @@ with instance_create(x,y,CustomObject)
 	spr_shadow = shd24
 	name = "RainMakerRain"
 	on_step = rain_step
+}*/
+
+#define fric_step
+if name = "lightning grenade"
+{
+	var _scale = random_range(.4,.6);image_xscale = orscale*_scale;image_yscale = orscale*_scale
+	direction += random_range(-25,25)
 }
-sound_play_pitch(sndGrenadeRifle,.3)
+if speed <= 0{instance_destroy()}
+
+#define bounce_wall
+move_bounce_solid(false)
+
+#define lightningcluster_destroy
 sound_play_pitch(sndExplosion,2)
 sound_play_pitch(sndExplosionS,.7)
 sound_play_pitchvol(sndExplosionL,.5,.6)
@@ -67,6 +88,55 @@ else
 {
 	sound_play_pitchvol(sndLightningRifle,.7,.6)
 }
+mod_script_call("mod","defpack tools","create_lightning",x+lengthdir_x(sprite_width,direction),y+lengthdir_y(sprite_width,direction))
+var i = 0;
+repeat(3)
+{
+	with instance_create(x+lengthdir_x(sprite_width,direction),y+lengthdir_y(sprite_width,direction),CustomProjectile)
+	{
+		creator = other.creator
+		team = other.team
+		name = "lightning grenade"
+		orscale = random_range(.8,1.2)
+		damage = 8
+		friction = .025
+		sprite_index = sprPopoPlasma
+		image_speed = 0
+		mask_index = mskDebris
+		motion_add(random(360),1+i/6)
+		image_angle = direction
+		on_step  	 = fric_step
+		on_wall 	 = bounce_wall
+		on_draw 	 = bloom_draw
+		on_destroy = lightningnade_destroy
+	}
+	i++
+}
+
+#define lightningnade_destroy
+mod_script_call("mod","defpack tools","create_lightning",x,y)
+sound_play_pitch(sndExplosion,2)
+sound_play_pitch(sndExplosionS,.7)
+sound_play_pitchvol(sndExplosionL,.5,.6)
+sound_set_track_position(sndExplosionL,.3)
+sound_play_pitch(sndSuperBazooka,.5)
+if skill_get(17)=true
+{
+	sound_play_pitchvol(sndLightningCannonEnd,.8,.7)
+	sound_play_pitchvol(sndLightningRifleUpg,.7,.6)
+}
+else
+{
+	sound_play_pitchvol(sndLightningRifle,.7,.6)
+}
+
+#define bloom_draw
+draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, image_yscale, image_angle, image_blend, 1.0);
+draw_set_blend_mode(bm_add);
+draw_sprite_ext(sprite_index, image_index, x, y, 2*image_xscale, 2*image_yscale, image_angle, image_blend, 0.2);
+draw_set_blend_mode(bm_normal);
+/*
+#define pop
 with creator{weapon_post(9,0,159)}
 sleep(300)
 with instance_create(mouse_x[index],mouse_y[index],CustomObject)

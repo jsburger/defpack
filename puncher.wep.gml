@@ -26,9 +26,9 @@ if fork(){
 	for (var i = 0;i < 3; i++){
 		if instance_exists(self){
 			sleep(12)
-			sound_play_pitch(sndRocket,random_range(.9,1.1))
-			sound_play_pitchvol(sndNukeFire,1.2,.7)
-			sound_play_pitchvol(sndHitMetal,random_range(.7,.8),.8)
+			sound_play_pitchvol(sndHeavySlugger,random_range(.7,.8),1)
+			sound_play_pitchvol(sndSuperSlugger,random_range(.7,.8),1)
+			sound_play_pitchvol(sndNukeFire,.8,1)
 			weapon_post(6,2,16)
 			with instance_create(x,y,CustomProjectile){
 				move_contact_solid(other.gunangle,8)

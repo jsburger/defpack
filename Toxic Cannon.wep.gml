@@ -1,5 +1,5 @@
 #define init
-global.sprToxicCannon = sprite_add_weapon("sprites/Toxic Cannon.png", 4, 4);
+global.sprToxicCannon = sprite_add_weapon("sprites/sprToxicCannon.png", 4, 4);
 #define weapon_name
 return "TOXIC CANNON";
 
@@ -13,10 +13,10 @@ return 4;
 return false;
 
 #define weapon_load
-return 95;
+return 34;
 
 #define weapon_cost
-return 8;
+return 3;
 
 #define weapon_swap
 return sndSwapExplosive;
@@ -30,10 +30,13 @@ return "HOW LONG CAN YOU HOLD YOUR BREATH?";
 #define weapon_fire
 
 weapon_post(6,-8,15)
-sound_play(sndGrenade)
-with instance_create(x+lengthdir_x(19,gunangle),y+lengthdir_y(19,gunangle),FrogQueenBall)
+sound_play_pitch(sndToxicBarrelGas,.8)
+sound_play_pitch(sndToxicLauncher,.6)
+sound_play_pitch(sndHeavyCrossbow,.6)
+with instance_create(x,y,FrogQueenBall)
 {
-	motion_set(other.gunangle,2)
+	move_contact_solid(other.gunangle,18)
+	motion_set(other.gunangle,3)
 	creator = other
 	team = other.team
 }

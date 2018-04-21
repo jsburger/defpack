@@ -151,7 +151,6 @@
 /loadwep auto abris launcher
 /loadwep super abris launcher
 /loadwep blood abris launcher
-/loadwep rainmaker
 /loadwep plasma abris launcher
 /loadwep inquisitor
 
@@ -206,6 +205,9 @@
 
 //SQUARE
 /loadwep square gun
+
+//LIGHTNING
+/loadwep thundercrash
 
 //OTHER ENERGY
 /loadwep energy gun

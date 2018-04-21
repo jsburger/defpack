@@ -50,9 +50,6 @@ with instance_create(x,y,CustomProjectile) {
 
 #define cannon_step
 image_angle+=6+speed*3
-var _scl = random_range(.95,1.05);
-image_xscale = _scl
-image_yscale = _scl
 if place_meeting(x + hspeed,y,Wall){
 	hspeed *= -1
 }

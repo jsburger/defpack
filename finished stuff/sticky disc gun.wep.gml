@@ -1,5 +1,5 @@
 #define init
-global.sprStickyDiscGun = sprite_add_weapon("sprStickyDiscGun.png",-3,3)
+global.sprStickyDiscGun = sprite_add_weapon("sprStickyDiscGun.png",1,3)
 global.sprStickyDisc = sprite_add("sprStickyDisc.png",2,12,12)
 return "STICKY DISC GUN"
 #define weapon_type
@@ -34,7 +34,7 @@ with instance_create(x,y,CustomProjectile)
   image_speed = .45
   name = "Sticky Disc"
   sprite_index = global.sprStickyDisc
-  move_contact_solid(other.gunangle,50)
+  move_contact_solid(other.gunangle,20)
   soundcheck = 0
   motion_add(other.gunangle+random_range(-8,8)*other.accuracy,4)
   orspeed = speed

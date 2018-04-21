@@ -31,7 +31,8 @@ return "SUPER HOT";
 
 #define weapon_fire
 
-	sound_play(sndCrossbow)
+	sound_play_pitch(sndCrossbow,1.2)
+	sound_play_pitch(sndSwapFlame,.7)
 	weapon_post(7,-13,5)
 	repeat(8)
 	{
@@ -39,8 +40,6 @@ return "SUPER HOT";
 		{
 			motion_add(other.gunangle+random_range(-80,80),random_range(1,1.7))
 			team = other.team
-			image_xscale *=.8
-			image_yscale *=.8
 		}
 	}
 	with instance_create(x,y,Bolt)
@@ -77,8 +76,6 @@ return "SUPER HOT";
 							with instance_create(x+lengthdir_x(random_range(0,32),direction-180),y+lengthdir_y(random_range(0,32),direction-180),Flame)
 							{
 								team = other.team
-								image_xscale *=1.2
-								image_yscale *=.8
 							}
 						}
 					}

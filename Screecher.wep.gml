@@ -1,5 +1,5 @@
 #define init
-global.sprScreecher = sprite_add_weapon("sprites/Screecher.png", 0, 2);
+global.sprScreecher = sprite_add_weapon("sprites/sprScreecher.png", 9, 5);
 
 #define weapon_name
 return "SCREECHER"
@@ -14,10 +14,10 @@ return 4;
 return true;
 
 #define weapon_load
-return 47;
+return 16;
 
 #define weapon_cost
-return 3;
+return 5;
 
 #define weapon_swap
 return sndSwapExplosive;
@@ -25,56 +25,106 @@ return sndSwapExplosive;
 #define weapon_area
 return 14;
 
+#define weapon_melee
+return 0;
+
 #define weapon_text
 return "AAAAAAAAAAHHHHHHHH";
 
 #define weapon_fire
-sound_play(sndDevastator)
-sound_play(sndVenuz)
-weapon_post(3,-13,0)
-with instance_create(x+lengthdir_x(18,gunangle),y+lengthdir_y(18,gunangle),CustomObject)
+sound_play_pitch(sndScorpionFireStart,1.5)
+sound_play_pitch(sndToxicBoltGas,1.7)
+sound_play_pitch(sndUltraGrenade,1.6)
+sound_play_pitch(sndUltraShotgun,.6)
+sound_play_pitch(sndHyperLauncher,random_range(.1,.2))
+weapon_post(6,0,1)
+repeat(8){with instance_create(x,y,Dust){motion_add(other.gunangle+random_range(-4,4),random_range(4,10));flag = "true";team = other.team;mask_index = mskBullet1}}
+with instance_create(x,y,CustomObject)
 {
-	mask_index = sprGrenade
 	team = other.team
-	image_xscale = 0.5
-	image_yscale = 0.5
-	bounce = 2
-	motion_add(other.gunangle+random_range(-5,5)*other.accuracy,12)
-	on_step = script_ref_create(sonic_launcher_step)
+	move_contact_solid(other.gunangle,16)
+	motion_add(other.gunangle+random_range(-8,8)*other.accuracy,9)
+	mask_index = sprGrenade
+	sprite_index = sprTrapFire
+	image_speed = 0
+	image_xscale = 2
+	image_yscale = 2
+	bounce = 6
+	timer = 4
+	on_step = bounce_step
 }
 
-#define sonic_launcher_step
-repeat(irandom(1))
-with mod_script_call("mod","defpack tools","create_sonic_explosion",x+random_range(-32,32),y+random_range(-32,32)){
-	var scalefac = random_range(0.2,0.3);
-	image_xscale = scalefac
-	image_yscale = scalefac
-	damage = 3
-	shake = 2
-	image_speed = random_range(0.6,0.72)
-	team = other.team
-	repeat(round(scalefac*10)){ with instance_create(x,y,Dust) {motion_add(random(360),3)}}
-}
-repeat(irandom(2))
-with mod_script_call("mod","defpack tools","create_sonic_explosion",x+random_range(-10,10),y+random_range(-10,10)){
-	var scalefac = random_range(0.3,0.36);
-	image_xscale = scalefac
-	image_yscale = scalefac
-	damage = 6
-	shake = 4
-	image_speed = random_range(0.34,0.4)
-	team = other.team
-	repeat(round(scalefac*10)){ with instance_create(x,y,Dust) {motion_add(random(360),3)}}
-}
-if place_meeting(x + hspeed,y,Wall){
-	hspeed *= -1
-	bounce -= 1
-}
-if place_meeting(x,y +vspeed,Wall){
-	vspeed *= -1
-	bounce -= 1
-}
-if speed <= 0 || bounce <= 0
+#define bounce_step
+image_angle += 7
+if bounce <= 0{instance_destroy();exit}
+with instance_create(x,y,BoltTrail)
 {
-	instance_destroy()
+	image_blend = c_white
+	image_angle = other.direction
+	image_yscale = 2
+	image_xscale = other.speed
+}
+timer -= current_time_scale
+if timer <= 0
+{
+	timer = 4
+	with mod_script_call("mod","defpack tools","create_sonic_explosion",x,y)
+	{
+		damage = 8
+		image_speed = 0.4
+		image_xscale = .2
+		image_yscale = .2
+		team = other.team
+		repeat(10){ with instance_create(x,y,Dust) {motion_add(random(360),7)}}
+	}
+}
+if place_meeting(x+hspeed,y,Wall)
+{
+	bounce--
+	hspeed*=-1
+	with mod_script_call("mod","defpack tools","create_sonic_explosion",x,y)
+	{
+		damage = 8
+		image_speed = 0.4
+		image_xscale = .4
+		image_yscale = .4
+		team = other.team
+		repeat(10){ with instance_create(x,y,Dust) {motion_add(random(360),7)}}
+		sound_play_pitch(sndPlasmaBigExplodeUpg,.6)
+	}
+}
+if place_meeting(x,y+vspeed,Wall)
+{
+	bounce--
+	vspeed*=-1
+	with mod_script_call("mod","defpack tools","create_sonic_explosion",x,y)
+	{
+		damage = 8
+		image_speed = 0.4
+		image_xscale = .4
+		image_yscale = .4
+		team = other.team
+		repeat(10){ with instance_create(x,y,Dust) {motion_add(random(360),7)}}
+		sound_play_pitch(sndPlasmaBigExplodeUpg,.6)
+	}
+}
+with enemy
+{
+	if point_in_circle(x,y,other.x,other.y,16)
+	{
+		if projectile_canhit_melee(self)
+		with other
+		{
+			with mod_script_call("mod","defpack tools","create_sonic_explosion",x,y)
+			{
+				damage = 8
+				image_speed = 0.4
+				image_xscale = .4
+				image_yscale = .4
+				team = other.team
+				repeat(10){ with instance_create(x,y,Dust) {motion_add(random(360),7)}}
+				sound_play_pitch(sndPlasmaBigExplodeUpg,.6)
+			}
+		}
+	}
 }

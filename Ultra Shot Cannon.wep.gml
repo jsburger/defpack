@@ -1,6 +1,7 @@
 #define init
 global.sprUltraShotCannon = sprite_add_weapon("sprites/Ultra Shot Cannon.png", 4, 2);
 global.sprUltraShotCannonOff = sprite_add_weapon("sprites/Ultra Shot Cannon Off.png", 4, 2);
+global.sprUltraShotBullet = sprite_add("sprites/projectiles/UltraShot.png",2,8,8)
 
 #define weapon_name
 return "ULTRA SHOT CANNON";
@@ -44,8 +45,8 @@ with instance_create(x,y,CustomProjectile) {
 	motion_set(other.gunangle, 18 + random(2))
 	team = other.team
 	creator = other
-	sprite_index = sprUltraShell
-	image_speed = 0
+	sprite_index = global.sprUltraShotBullet
+	image_speed = .45
 	timer = 30
 	ftimer = 2
 	dirfac = random(359)
@@ -68,9 +69,6 @@ if place_meeting(x,y +vspeed,Wall){
 }
 if timer < 6{ftimer = 3}
 if (current_frame % ftimer) = 0{
-	scale = random_range(0.9,1.1)
-	image_xscale = 1.2*scale
-	image_yscale = 1.2*scale
 	dirfac += 10
 	dirfac2 -= 20
 	if speed >= 1{
@@ -109,9 +107,9 @@ if (current_frame % ftimer) = 0{
 }
 
 #define cannon_draw
-draw_sprite_ext(sprite_index, image_index, x, y, .8*image_xscale, .8*image_yscale, image_angle, image_blend, 1.0);
+draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, image_yscale, image_angle, image_blend, 1.0);
 draw_set_blend_mode(bm_add);
-draw_sprite_ext(sprite_index, image_index, x, y, 1.25*image_xscale, 1.25*image_yscale, image_angle, image_blend, 0.1);
+draw_sprite_ext(sprite_index, image_index, x, y, 2*image_xscale, 2*image_yscale, image_angle, image_blend, 0.2);
 draw_set_blend_mode(bm_normal);
 /*
 #define weapon_fire
