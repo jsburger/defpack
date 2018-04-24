@@ -23,7 +23,7 @@ return 2;
 return sndSwapPistol;
 
 #define weapon_area
-return 3;
+return -1;
 
 #define weapon_text
 return choose("BEGONE","PSY BULLETS HOME INTO ENEMIES");

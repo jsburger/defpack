@@ -23,7 +23,7 @@ return 10;
 return sndSwapExplosive;
 
 #define weapon_area
-return 6;
+return -1;
 
 #define weapon_text
 return "@gCABBAGE @sLAUNCHER";

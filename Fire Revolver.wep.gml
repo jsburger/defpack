@@ -22,7 +22,7 @@ return 2;
 return sndSwapPistol;
 
 #define weapon_area
-return 4;
+return -1;
 
 #define weapon_text
 return "MAN ITS A HOT ONE";

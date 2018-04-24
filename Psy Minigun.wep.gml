@@ -23,7 +23,7 @@ return 2;
 return sndSwapPistol;
 
 #define weapon_area
-return 15;
+return -1;
 
 #define weapon_text
 return "IT WAS NICE KNOWING YOU";

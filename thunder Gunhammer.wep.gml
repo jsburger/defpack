@@ -24,7 +24,7 @@ return 0;
 return sndSwapHammer;
 
 #define weapon_area
-return 10;
+return -1;
 
 #define weapon_text
 return "THUNDERWAVE";

@@ -1,5 +1,5 @@
 #define init
-global.sword = sprite_add_weapon("bigsword.png",5,6)
+global.sword = sprite_add_weapon("bigsword.png",4,10)
 global.slash = sprite_add("bigslash.png",4,36,36)
 #define weapon_name
 return "BIG SWORD"

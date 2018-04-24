@@ -23,7 +23,7 @@ return 25;
 return sndSwapExplosive;
 
 #define weapon_area
-return 10;
+return -1;
 
 #define weapon_text
 return "BALL LIGHTNING";
