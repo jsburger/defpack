@@ -925,7 +925,7 @@ with instances_matching([Explosion,SmallExplosion,GreenExplosion,PopoExplosion],
     hitid = [sprite_index,string_replace(string_upper(object_get_name(object_index)),"EXPLOSION"," EXPLOSION")]
 }
 
-
+if button_pressed(0,"horn") create_lightning(mouse_x,mouse_y)
 //drop tables
 with Inspector			{if my_health <= 0 && irandom(97)=0{with instance_create(x,y,WepPickup){wep = choose("donut box","idpd slugger")}}};
 with Shielder 			{if my_health <= 0 && irandom(97)=0{with instance_create(x,y,WepPickup){wep = choose("donut box","idpd minigun")}}};
@@ -962,6 +962,8 @@ with instance_create(_x,_y,CustomProjectile){
 	hitid = [sprLightningHit,"Lightning Bolt"]
 	name = "Lightning Bolt"
 	time = skill_get(17)+4
+	create_frame = current_frame
+	colors = [c_black,c_white,c_white,merge_color(c_blue,c_white,.3),c_white]
 	damage = 18
 	repeat(30){
 		with instance_create(x,y,Dust){
@@ -970,7 +972,28 @@ with instance_create(_x,_y,CustomProjectile){
 	}
 	if instance_exists(Floor){
 	    var closeboy = instance_nearest(x,y,Floor);
-    	if point_in_rectangle(x,y,closeboy.x-16,closeboy.y-16,closeboy.x+16,closeboy.y+16){instance_create(x,y,Scorchmark)}
+    	if point_in_rectangle(x,y,closeboy.x-16,closeboy.y-16,closeboy.x+16,closeboy.y+16){
+    	    with instance_create(x,y,Scorchmark){
+    	        time = 0;
+    	        if fork(){
+    	            while instance_exists(self) && time < 45{
+    	                time += current_time_scale
+    	                image_alpha -= current_time_scale/45
+    	                if random(100) <= (45-time)*current_time_scale{
+    	                    with instance_create(x,y,Smoke){
+    	                        motion_add(90,random_range(1,2))
+    	                        image_xscale = (1-(other.time/45)) * random_range(.5,1)
+    	                        image_yscale = image_xscale
+    	                        gravity = -friction
+    	                    }
+    	                }
+    	                wait(0)
+    	            }
+    	            if instance_exists(self) instance_destroy()
+    	            exit
+    	        }
+    	    }
+    	}
 	}
 	force = 40
 	on_wall = lightning_wall
@@ -998,12 +1021,14 @@ with other{
 }
 
 #define lightning_draw
-if random(100) < current_time_scale lightning_refresh()
+if random(100) <= 50*current_time_scale lightning_refresh()
+draw_set_color(colors[min((current_frame - create_frame),array_length_1d(colors)-1)])
 for (var i = 1; i < array_length_1d(ypoints); i++){
 	if !irandom(4) draw_sprite(sprLightningHit,1+irandom(2),xpoints[i],ypoints[i])
 	draw_line_width(xpoints[i],ypoints[i],xpoints[i-1],ypoints[i-1],i/10)
 }
 var yy = ypoints[array_length_1d(ypoints)-1];
+draw_set_color(c_white)
 draw_set_blend_mode(bm_max)
 draw_triangle_color(xmax,yy,xmin,yy,x,y,c_white,c_white,c_black,0)
 draw_set_blend_mode(bm_normal)
