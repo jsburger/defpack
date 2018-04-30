@@ -60,6 +60,7 @@ with instance_create(x,y,CustomProjectile) {
 #define actually_nothing
 
 #define cannon_step
+image_angle+=8+speed*3
 if instance_exists(enemy){with enemy{motion_add(point_direction(x,y,other.x,other.y),0.3)}}
 if place_meeting(x + hspeed,y,Wall){
 	hspeed *= -1

@@ -1,5 +1,5 @@
 #define init
-global.sprPhlogenitator = sprite_add_weapon("sprites/Phlogenitator.png", 4, 4);
+global.sprPhlogenitator = sprite_add_weapon("sprites/sprPhlogenitator.png", 4, 4);
 
 #define weapon_name
 return "PHLOGENITATOR"
@@ -30,12 +30,12 @@ return "OH @rYEAH";
 
 #define weapon_fire
 
-sound_play(sndMachinegun)
-sound_play(sndCrossbow)
-sound_play(sndShotgun)
-sound_play(sndSuperFlakCannon)
-sound_play(sndIncinerator)
-sound_play(sndFlameCannonEnd)
+sound_play_pitch(sndMachinegun,1)
+sound_play_pitch(sndCrossbow,1)
+sound_play_pitch(sndShotgun,1)
+sound_play_pitch(sndSuperFlakCannon,.7)
+sound_play_pitch(sndIncinerator,.8)
+sound_play_pitch(sndFlameCannonEnd,.6)
 weapon_post(10,-30,25)
 repeat(6)
 {

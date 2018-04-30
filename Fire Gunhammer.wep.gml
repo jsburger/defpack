@@ -27,7 +27,7 @@ return 1
 return sndSwapHammer;
 
 #define weapon_area
-return 6;
+return -1;
 
 #define weapon_text
 return "BUT YOU STAY SO COOL";

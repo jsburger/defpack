@@ -1,5 +1,5 @@
 #define init
-global.sprFlakShotgun = sprite_add_weapon("sprites/Flak Shotgun.png", 4, 4);
+global.sprFlakShotgun = sprite_add_weapon("sprites/sprFlakShotgun.png", 4, 4);
 
 #define weapon_name
 return "FLAK SHOTGUN"
@@ -32,8 +32,9 @@ return "540/600";
 
 sound_play(sndMachinegun)
 sound_play(sndCrossbow)
-sound_play(sndShotgun)
-sound_play(sndSuperFlakCannon)
+sound_play_pitch(sndShotgun,.7)
+sound_play_pitch(sndFlakCannon,1.2)
+sound_play_pitch(sndSuperFlakCannon,.7)
 weapon_post(8,-20,20)
 repeat(5){
 	with instance_create(x+lengthdir_x(10,gunangle),y+lengthdir_y(10,gunangle),FlakBullet){

@@ -23,7 +23,7 @@ return 20;
 return sndSwapExplosive;
 
 #define weapon_area
-return 7;
+return -1;
 
 #define weapon_text
 return choose("HOTTEST SCORE","LIKE SEVEN INCHES#FROM THE MIDDAY SUN");

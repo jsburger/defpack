@@ -1,5 +1,5 @@
 #define init
-global.sprScreecher = sprite_add_weapon("sprites/sprScreecher.png", 9, 5);
+global.sprScreecher = sprite_add_weapon("sprites/sprScreecher.png", 2, 4);
 
 #define weapon_name
 return "SCREECHER"

@@ -4,7 +4,7 @@ global.sprSniperBouncerRifle = sprite_add_weapon("sprites/sprSniperBouncerRifle.
 return "SNIPER BOUNCER RIFLE"
 
 #define weapon_sprt
-return global.sprSniperBouncerRifle ;
+return global.sprSniperBouncerRifle;
 
 #define weapon_type
 return 1;
@@ -60,8 +60,8 @@ with instance_create(x+lengthdir_x(10,gunangle),y+lengthdir_y(10,gunangle),Custo
 		ydir = 1
 		recycleset=0
 		bounce = 2
+		direction   = other.gunangle
 		image_angle = other.gunangle
-		direction = other.gunangle
 		on_step 	 = sniper_step
 		on_destroy = sniper_destroy
 		on_hit 		 = void
@@ -89,7 +89,7 @@ do
     image_yscale = 2
     image_xscale = 1
   }
-	if direction > 0 && direction < 180 {var _dirfac = -1;}else{var _dirfac = 1;}
+	if direction > 90 && direction < 270 {var _dirfac = -1;}else{var _dirfac = 1;}
 	//sad
 	if place_meeting(x+xdir*_dirfac,y,Wall)
 	{
@@ -101,7 +101,7 @@ do
 		}
 		else{instance_destroy();exit}
 	}
-	if place_meeting(x,y+(ydir)*_dirfac,Wall)
+	if place_meeting(x,y+ydir*_dirfac,Wall)
 	{
 		if bounce > 0
 		{
@@ -132,8 +132,8 @@ do
 			}
 		}
 	}
-		if damage < dd{instance_destroy();exit}
-		if place_meeting(x,y,Wall){instance_destroy();exit}
+	if damage < dd{instance_destroy();exit}
+	//if place_meeting(x,y,Wall){instance_destroy();exit}
 }
 while instance_exists(self) and dir < 10000
 instance_destroy()

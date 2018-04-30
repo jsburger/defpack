@@ -5,7 +5,7 @@ global.sprBullakGreen = sprite_add("sprites/projectiles/sprBullakGreen.png", 2, 
 global.sprBullakBlue = sprite_add("sprites/projectiles/sprBullakBlue.png", 2, 8, 8)
 global.sprBullakPurple = sprite_add("sprites/projectiles/sprBullakPurple.png", 2, 8, 8)
 global.sprFireFlak = sprite_add("sprites/projectiles/Fire Flak.png", 2, 8, 8)
-global.sprDarkFlak = sprFlakBullet
+global.sprDarkFlak = sprFlakBullet //rip
 global.sprIDPDFlak = sprite_add("sprites/projectiles/IDPD Flak.png", 2, 8, 8)
 global.sprSplitFlak = sprite_add("sprites/projectiles/IDPD Flak.png", 2, 8, 8)
 global.flaks = ["recursive", "fire", "toxic", "lightning", "psy", "dark", "split"]
@@ -601,6 +601,16 @@ with(a){
 return a;
 
 #define woa_step
+/*if irandom(7) = 0
+{
+	with instance_create(x,y,Bullet1)
+	{
+		team = other.team
+		creator = other.creator
+		motion_add(other.direction-180+random_range(-60,60),16)
+		image_angle = direction
+	}
+}*/
 if !irandom(2) {instance_create(x,y,Dust)}
 if speed < .1 {instance_destroy()}
 image_angle = direction
@@ -645,7 +655,7 @@ with(a){
 	friction = random_range(.8,1.2)
 	damage = 32
 	mask_index = mskFlakBullet
-	friction = 0
+	friction = random_range(.3,.7)
 	on_draw = flak_draw
 	on_destroy = flameshell_pop
 	on_step = flameshell_step
@@ -661,7 +671,7 @@ if skill_get(19) = false{
 	with instance_create(x,y,FlameShell){
 		team = other.team
 		creator = other.creator
-		motion_set(random(359),15)
+		motion_set(random(359),random_range(11,13))
 		image_angle = direction
 		}
 	}
@@ -673,7 +683,7 @@ else
 	with instance_create(x,y,FlameShell){
 		team = other.team
 		creator = other.creator
-		motion_set(offset,15)
+		motion_set(offset,13)
 		image_angle = direction
 		}
 	offset += 360/ammo
@@ -687,8 +697,8 @@ if !irandom(1){
 		motion_add(random(359),random(3))
 	}
 }
-if speed < .1 {instance_destroy()}
 image_angle = direction
+if speed < .1 {instance_destroy()}
 
 //THESE ARE A HORRIBLE IDEA NEVER USE THEM
 #define create_recursive_flak(_x,_y)

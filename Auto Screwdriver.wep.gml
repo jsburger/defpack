@@ -60,9 +60,11 @@ with instance_create(x,y,Shank)
 	team = other.team
 	image_xscale *= 1.1
 	image_yscale *= 1.3
-	if skill_get(13) {
+	name = "autoslash"
+	if skill_get(13)
+	{
 		x += 4 *hspeed;
-		y += 4 *vspeed
+		y += 4 *vspeed;
 	}
 	with instance_create(x,y,CustomObject)
 	{
@@ -82,6 +84,14 @@ with instance_create(x,y,Shank)
 		}
 		timer -= current_time_scale
 		name = "autoscrewtimer"
+		with instances_matching(Shank,"name","autoslash")
+		{
+			if other.creator = creator
+			{
+				direction += random_range(-other.count,other.count)*creator.accuracy
+				image_angle = direction
+			}
+		}
 	}
 }
 

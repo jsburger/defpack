@@ -23,7 +23,7 @@ return 1;
 return sndSwapPistol;
 
 #define weapon_area
-return 4;
+return -1;
 
 #define weapon_text
 return "PEST BULLETS CREATE TOXIN WHEN CONNECTING";
