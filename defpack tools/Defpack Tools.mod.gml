@@ -750,9 +750,13 @@ with a{
 	lasercolour = c_red
 	lasercolour2 = c_maroon
 	offset = random(359)
+	//god bless YAL
+	check = other.specfiring ? 2 : 1;
+	if check = 2 && (other.race = "venuz" || other.race = "skeleton") popped = 1;
 }
 return a
 
+//hahahahah fuck this
 #define abris_check()
 switch creator.race{
 	case "steroids":
@@ -917,6 +921,11 @@ with Player
 }
 
 #define step
+with instances_matching([Explosion,SmallExplosion,GreenExplosion,PopoExplosion],"hitid",-1){
+    hitid = [sprite_index,string_replace(string_upper(object_get_name(object_index)),"EXPLOSION"," EXPLOSION")]
+}
+
+
 //drop tables
 with Inspector			{if my_health <= 0 && irandom(97)=0{with instance_create(x,y,WepPickup){wep = choose("donut box","idpd slugger")}}};
 with Shielder 			{if my_health <= 0 && irandom(97)=0{with instance_create(x,y,WepPickup){wep = choose("donut box","idpd minigun")}}};
@@ -925,6 +934,7 @@ with EliteInspector {if my_health <= 0 && irandom(97)=0{with instance_create(x,y
 with EliteShielder  {if my_health <= 0 && irandom(97)=0{with instance_create(x,y,WepPickup){wep = choose("donut box","idpd plasma minigun")}}};
 with PopoFreak	    {if my_health <= 0 && irandom(97)=0{with instance_create(x,y,WepPickup){wep = choose("donut box","idpd grenade launcher")}}};
 with Van	    			{if my_health <= 0 && irandom(97)=0{with instance_create(x,y,WepPickup){wep = choose("donut box","idpd shotgun")}}};
+
 with SodaMachine{
 	if my_health <= 0 && irandom(0)=0
 	{
@@ -945,10 +955,11 @@ with SodaMachine{
 	}
 }
 
+
 #define create_lightning(_x,_y)
 with instance_create(_x,_y,CustomProjectile){
 	lightning_refresh()
-	hitid = [sprLightningDeath,"Lightning Bolt"]
+	hitid = [sprLightningHit,"Lightning Bolt"]
 	name = "Lightning Bolt"
 	time = skill_get(17)+4
 	damage = 18
@@ -957,17 +968,20 @@ with instance_create(_x,_y,CustomProjectile){
 			motion_set(random(360),3+random(10))
 		}
 	}
-	var closeboy = instance_nearest(x,y,Floor);
-	if point_in_rectangle(x,y,closeboy.x-16,closeboy.y-16,closeboy.x+16,closeboy.y+16){instance_create(x,y,Scorchmark)}
+	if instance_exists(Floor){
+	    var closeboy = instance_nearest(x,y,Floor);
+    	if point_in_rectangle(x,y,closeboy.x-16,closeboy.y-16,closeboy.x+16,closeboy.y+16){instance_create(x,y,Scorchmark)}
+	}
 	force = 40
 	on_wall = lightning_wall
 	on_draw = lightning_draw
-	mask_index = sprFloor1
-	on_destroy = lightning_destroy
+	mask_index = sprGammaBlast
+	image_xscale = .5
+	image_yscale = .5
+    on_destroy = lightning_destroy
 	on_step = lightning_step
 	on_hit = lightning_hit
-	mask_index = mskScorpion
-	depth = -13
+	depth = -8
 	return id
 }
 
@@ -984,7 +998,7 @@ with other{
 }
 
 #define lightning_draw
-if !irandom(1/current_time_scale) lightning_refresh()
+if random(100) < current_time_scale lightning_refresh()
 for (var i = 1; i < array_length_1d(ypoints); i++){
 	if !irandom(4) draw_sprite(sprLightningHit,1+irandom(2),xpoints[i],ypoints[i])
 	draw_line_width(xpoints[i],ypoints[i],xpoints[i-1],ypoints[i-1],i/10)

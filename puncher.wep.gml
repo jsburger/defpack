@@ -68,6 +68,13 @@ with instance_create(x-lengthdir_x(16+speed,other.direction),y-lengthdir_y(16+sp
 	image_angle = other.direction
 	image_yscale = 1.4
 	image_xscale = 12+other.speed
+	if fork(){
+	    while instance_exists(self){
+	        image_blend = merge_color(image_blend,c_red,.1*current_time_scale)
+	        wait(0)
+	    }
+	    exit
+	}
 }
 direction += extradir*current_time_scale
 if !random(2) instance_create(x,y,Smoke)
@@ -77,10 +84,11 @@ image_angle = direction
 #define puncherdie
 sound_play(sndExplosion)
 instance_create(x,y,Explosion)
-/*for (var i = 1;i < 3; i++){
+for (var i = 1;i < 3; i++){
 	instance_create(x+lengthdir_x(16*i,direction),y+lengthdir_y(16*i,direction),SmallExplosion)
-}*/
-instance_create(x+lengthdir_x(16,direction),y+lengthdir_y(16,direction),SmallExplosion)
+}
+/*instance_create(x+lengthdir_x(16,direction),y+lengthdir_y(16,direction),SmallExplosion)
 instance_create(x+lengthdir_x(-16,direction),y+lengthdir_y(16,direction),SmallExplosion)
 instance_create(x+lengthdir_x(16,direction),y+lengthdir_y(-16,direction),SmallExplosion)
 instance_create(x+lengthdir_x(-16,direction),y+lengthdir_y(-16,direction),SmallExplosion)
+*/
