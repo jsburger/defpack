@@ -974,7 +974,7 @@ with instance_create(_x,_y,CustomProjectile){
 	}
 	force = 40
 	on_wall = lightning_wall
-	on_draw = lightning_draw
+	on_draw = lightning_draw;
 	mask_index = sprGammaBlast
 	image_xscale = .5
 	image_yscale = .5

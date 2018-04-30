@@ -55,7 +55,7 @@ with instance_create(x,y,CustomProjectile)
 	motion_add(other.gunangle+random_range(-7,7)*other.accuracy,26)
 	projectile_init(other.team,other)
 	sprite_index = global.sprUmbrella
-	image_speed = .45
+	image_speed = .45;
 	image_angle = direction
 	damage  = 20
 	friction = 0

@@ -25,7 +25,7 @@ return 0
 if fork(){
 	for (var i = 0;i < 3; i++){
 		if instance_exists(self){
-			sleep(12)
+			sleep(12);
 			sound_play_pitchvol(sndHeavySlugger,random_range(.7,.8),1)
 			sound_play_pitchvol(sndSuperSlugger,random_range(.7,.8),1)
 			sound_play_pitchvol(sndNukeFire,.8,1)
