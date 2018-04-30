@@ -30,12 +30,14 @@ return 7;
 return "VORTEX-SHAPED DESTRUCTION";
 
 #define weapon_fire
-weapon_post(6,-8,9)
+weapon_post(7,-8,16)
 sound_play_pitch(sndFlakCannon,.8)
-with instance_create(x+lengthdir_x(12,gunangle),y+lengthdir_y(12,gunangle),CustomProjectile) {
+with instance_create(x-lengthdir_x(12,gunangle),y-lengthdir_y(12,gunangle),CustomProjectile) {
 	motion_set(other.gunangle, 15 + random(2))
+	move_contact_solid(other.gunangle,12)
     projectile_init(other.team,other)
 	sprite_index = global.sprShotBullet
+	mask_index = mskFlakBullet
 	damage = 6
 	force = 6
 	image_speed = .5
@@ -53,6 +55,13 @@ with instance_create(x+lengthdir_x(12,gunangle),y+lengthdir_y(12,gunangle),Custo
 #define cannon_wall
 move_bounce_solid(1)
 speed *= .7
+	repeat(irandom(1)+2){
+	with instance_create(x, y, Bullet2){
+		motion_set(random(360), random_range(8, 12))
+		projectile_init(other.team,other.creator)
+		image_angle = direction
+	}
+}
 
 #define cannon_hit
 if projectile_canhit_melee(other){
@@ -83,8 +92,9 @@ time -= current_time_scale
 
 image_xscale = clamp(image_xscale + (random_range(-.05,.05)*current_time_scale),1.2,1.4)
 image_yscale = image_xscale
+if timer = 4 ftimer = 3
 speed /= 1 + (.1*current_time_scale)
-if speed <= .2 canshoot = 1
+if speed <= 1 {canshoot = 1; speed = 0}
 
 while time <= 0{
     time += ftimer

@@ -17,7 +17,7 @@ return false;
 return 27;
 
 #define weapon_cost
-return 1;
+return 2;
 
 #define weapon_melee
 return 0;
@@ -37,9 +37,9 @@ sound_play_pitch(sndFlare,1.4)
 sound_play_pitch(sndFlareExplode,.7)
 sound_play_pitch(sndFlamerStop,2)
 weapon_post(8,8,4)
-instance_create(x+lengthdir_x(31,gunangle),y+lengthdir_y(31,gunangle),SmallExplosion)
+with instance_create(x+lengthdir_x(26,gunangle),y+lengthdir_y(26,gunangle),SmallExplosion){damage = round(damage/2);team = other.team}
 repeat(6)
 {
 	repeat(2)with instance_create(x+lengthdir_x(2,direction)+random_range(-2,2),y+lengthdir_y(2,direction)+random_range(-2,2),Smoke)motion_set(other.gunangle + random_range(-8,8), 1+random(3))
-	repeat(4)with instance_create(x+lengthdir_x(2,direction)+random_range(-2,2),y+lengthdir_y(2,direction)+random_range(-2,2),Flame){team = other.team;motion_add(other.gunangle+random_range(-14,14)*(1-skill_get(19)),4+random(8))}
+	repeat(4)with instance_create(x,y,Flame){move_contact_solid(other.gunangle,2)team = other.team;motion_add(other.gunangle+random_range(-14,14)*(1-skill_get(19)),3+random(6))}
 }

@@ -507,7 +507,7 @@ with(a){
 	typ = 1
 	damage = 32
 	mask_index = mskFlakBullet
-	friction = 0
+	friction = random_range(.8,1.2)
 	on_draw = flak_draw
 	on_destroy = cop_pop
 	on_step = cop_step
@@ -530,6 +530,7 @@ repeat(ammo){
 		image_angle = direction
 	}
 }
+if speed < 0.1{instance_destroy()}
 
 #define create_heavy_flak(_x,_y)
 var a = instance_create(_x,_y,CustomProjectile);
@@ -711,7 +712,7 @@ with(a){
 	typ = 1
 	damage = 32
 	mask_index = mskFlakBullet
-	friction = 0
+	friction = 0.6
 	on_draw = flak_draw
 	on_destroy = loop_pop
 	on_step = loop_step
@@ -730,12 +731,12 @@ with create_recursive_flak(x,y){
 	team = other.team
 	image_angle = direction
 }
-with choose(create_dark_flak(x,y),create_fire_flak(x,y),create_heavy_flak(x,y),create_idpd_flak(x,y),create_lightning_flak(x,y),create_psy_flak(x,y),create_toxic_flak(x,y)){
+/*with choose(create_dark_flak(x,y),create_fire_flak(x,y),create_heavy_flak(x,y),create_idpd_flak(x,y),create_lightning_flak(x,y),create_psy_flak(x,y),create_toxic_flak(x,y)){
 	motion_set(random(359),12+random(2))
 	creator = other.creator
 	team = other.team
 	image_angle = direction
-}
+}*/
 
 //function that converts vintage code to new code so i dont have to rewrite the flak guns
 #define create_flak(accuracymode,accuracy,offset,Friction,bullet,bulletmass,Creator)
@@ -752,6 +753,9 @@ if bullet = HeavyBullet{
 }
 if bullet = "split"{
 	b = create_split_flak(x1,y1)
+}
+if bullet = "recursive"{
+	b = create_recursive_flak(x1,y1)
 }
 if bullet = IDPDBullet{
 	b = create_idpd_flak(x1,y1)

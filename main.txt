@@ -215,7 +215,9 @@
 ///MELEE///
 /loadwep toothbrush
 /loadwep auto screwdriver
-/loadwep Chris knife
+/loadwep chris knife
+/loadwep comboweps/rapier
+/loadwep comboweps/bigsword
 
 ///POPO///
 /loadmod idpd weapon chest/idpd weapon chest

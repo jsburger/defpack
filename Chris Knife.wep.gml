@@ -63,7 +63,7 @@ if team != other.team
 #define knifeshank_hit
 if projectile_canhit_melee(other)
 {
-  if irandom(20-(skill_get(6)*5)) = 0 && can_crit = 1
+  if irandom(19-(skill_get(6)*5)) = 0 && can_crit = 1
   {
     view_shake_max_at(x,y,200)
     sleep(150)
@@ -81,7 +81,7 @@ if projectile_canhit_melee(other)
       image_xscale = random_range(1.3,1.5)
       image_yscale = image_xscale
       on_step = Killslash_step
-      with instance_create(other.x,other.y,CustomObject)
+      with instance_create(x,y,CustomObject)
       {
         image_angle = other.image_angle - 90 + random_range(-8,8)
         depth = other.depth
