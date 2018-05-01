@@ -7,6 +7,9 @@ global.gunindex = [0,0,0,0]
 #define weapon_name
 return "FLAK SHOTGUN"
 
+#define weapon_sprt_hud
+return global.sprFlakShotgun
+
 #define weapon_sprt
 if instance_is(self,Player){
     if global.gunindex[index] > 0{
