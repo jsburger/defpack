@@ -2,6 +2,7 @@
 global.sprFlakShotgun = sprite_add_weapon("sprites/sprFlakShotgun.png", 4, 4);
 global.sprFlakShotgunAnim = sprite_add("sprites/sprFlakShotgunAnim.png", 11, 4, 4);
 global.sprFatty = sprite_add("sprites/sprFatShell.png",1,3,5)
+global.sprSuperFatty = sprite_add("sprites/sprFatShellUpg.png",1,3,5)
 global.gunindex = [0,0,0,0]
 
 #define weapon_name
@@ -51,7 +52,7 @@ if fork(){
             repeat(interfacepop) with instance_create(x,y,Shell){
                 move_contact_solid(other.gunangle,6)
                 motion_set(other.gunangle+random_range(-15,15) + 90*other.right,random_range(3,5))
-                sprite_index = global.sprFatty
+                if !skill_get(15){sprite_index = global.sprFatty}else{sprite_index = global.sprSuperFatty}
             }
             load = 1;
         }
@@ -80,9 +81,10 @@ sound_play_pitch(sndFlakCannon,1.2)
 sound_play_pitch(sndSuperFlakCannon,.7)
 weapon_post(8,-20,20)
 repeat(5){
-	with instance_create(x+lengthdir_x(10,gunangle),y+lengthdir_y(10,gunangle),FlakBullet){
+	with instance_create(x,y,FlakBullet){
 		team = other.team
 		creator = other
+    move_contact_solid(other.gunangle,10)
 		motion_add(other.gunangle+(random(80)-45)*other.accuracy,random_range(9,12))
 		image_angle = direction
 	}

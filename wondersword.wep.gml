@@ -125,32 +125,24 @@ if w {
 				image_angle = direction
 				team = other.team
 				creator = other
-				if fork()
-				{
-					if !instance_exists(other){exit}
-					wait(3)
 					repeat(7) with instance_create(x,y,Flame)
 					{
 						team = other.team
 						move_contact_solid(point_direction(other.x,other.y,other.x+lengthdir_x(60,other.direction-20),other.y+lengthdir_y(60,other.direction-20)),60)
 						motion_add(point_direction(other.x,other.y,x,y)+random_range(-34,34),4)
 					}
-					wait(1)
 					repeat(7) with instance_create(x,y,Flame)
 					{
 						move_contact_solid(point_direction(other.x,other.y,other.x+lengthdir_x(65,other.direction),other.y+lengthdir_y(65,other.direction)),65)
 						team = other.team
 						motion_add(point_direction(other.x,other.y,x,y)+random_range(-34,34),4)
 					}
-					wait(1)
 					repeat(7) with instance_create(x,y,Flame)
 					{
 							move_contact_solid(point_direction(other.x,other.y,other.x+lengthdir_x(60,other.direction+20),other.y+lengthdir_y(60,other.direction+20)),60)
 						team = other.team
 						motion_add(point_direction(other.x,other.y,x,y)+random_range(-34,34),4)
 					}
-					exit
-				}
 			}
 		}
 		else if tier = 4
