@@ -8,6 +8,9 @@ global.gunindex = [0,0,0,0]
 #define weapon_name
 return "PHLOGENITATOR"
 
+#define weapon_sprt_hud
+return global.sprPhlogenitator
+
 #define weapon_sprt
 if instance_is(self,Player){
     if global.gunindex[index] > 0{
@@ -37,6 +40,9 @@ return sndSwapExplosive;
 return 15;
 
 #define weapon_reloaded
+sound_play(sndShotReload)
+wkick = -1
+
 
 #define weapon_text
 return "OH @rYEAH";
@@ -57,9 +63,9 @@ if fork(){
         }
         wait(0)
     }
-    sound_play(sndShotReload)
+    sound_play_pitch(sndCrossReload,.6)
     global.gunindex[ind] = .01
-    wkick = -2
+    if instance_exists(self) wkick = -2
     exit
 }
 

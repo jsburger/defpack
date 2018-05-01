@@ -43,7 +43,8 @@ return 11;
 return "540/600";
 
 #define weapon_reloaded
-
+sound_play(sndShotReload)
+wkick = -1
 
 #define weapon_fire
 
@@ -61,9 +62,9 @@ if fork(){
         }
         wait(0)
     }
-    sound_play(sndShotReload)
+    sound_play_pitch(sndCrossReload,.6)
     global.gunindex[ind] = .01
-    wkick = -2
+    if instance_exists(self) wkick = -2
     exit
 }
 
@@ -72,8 +73,8 @@ if fork(){
     repeat(4){
         if instance_exists(self){
             motion_set(ang,4)
-            wait(1)
         }
+        wait(1)
     }
     exit
 }
