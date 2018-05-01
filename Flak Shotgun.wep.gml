@@ -1,10 +1,20 @@
 #define init
 global.sprFlakShotgun = sprite_add_weapon("sprites/sprFlakShotgun.png", 4, 4);
+global.sprFlakShotgunAnim = sprite_add("sprites/sprFlakShotgunAnim.png", 11, 4, 4);
+global.sprFatty = sprite_add("sprites/sprFatShell.png",1,3,5)
+global.gunindex = [0,0,0,0]
 
 #define weapon_name
 return "FLAK SHOTGUN"
 
 #define weapon_sprt
+if instance_is(self,Player){
+    if global.gunindex[index] > 0{
+        gunshine = global.gunindex[index]
+        if global.gunindex[index] = .01 global.gunindex[index] = 0
+        return global.sprFlakShotgunAnim
+    }
+}
 return global.sprFlakShotgun;
 
 #define weapon_type
@@ -28,8 +38,41 @@ return 11;
 #define weapon_text
 return "540/600";
 
+#define weapon_reloaded
+
+
 #define weapon_fire
 
+if fork(){
+    var ind = index, load = 0;
+    while global.gunindex[ind] <= 10{
+        global.gunindex[ind] += current_time_scale*.4
+        if instance_exists(self) && floor(global.gunindex[ind]) = 4 && !load{
+            repeat(interfacepop) with instance_create(x,y,Shell){
+                move_contact_solid(other.gunangle,6)
+                motion_set(other.gunangle+random_range(-15,15) + 90*other.right,random_range(3,5))
+                sprite_index = global.sprFatty
+            }
+            load = 1;
+        }
+        wait(0)
+    }
+    sound_play(sndShotReload)
+    global.gunindex[ind] = .01
+    wkick = -2
+    exit
+}
+
+if fork(){
+    var ang = gunangle + 180;
+    repeat(4){
+        if instance_exists(self){
+            motion_set(ang,4)
+            wait(1)
+        }
+    }
+    exit
+}
 sound_play(sndMachinegun)
 sound_play(sndCrossbow)
 sound_play_pitch(sndShotgun,.7)
