@@ -34,6 +34,7 @@ return "BLESS WALLS";
 var _strtsize = 100-skill_get(13)*15;
 var _endsize  = 72;
 with mod_script_call("mod","defpack tools","create_abris",self,100,72,argument0){
+sound_set_track_position(sndVanWarning,1.2)
 accspeed = 1.04
 payload = script_ref_create(pop)
 on_draw = abris_draw_super
@@ -41,7 +42,9 @@ image_speed = .55
 }
 //nonono this isnt working no no no
 sound_play_pitch(sndSniperTarget,exp((_strtsize-_endsize)/room_speed/current_time_scale/accuracy*(1.07))/12)
+
 #define pop
+sound_set_track_position(sndVanWarning,0)
 sound_play_pitch(sndGrenadeRifle,.4)
 sound_play_pitch(sndNukeExplosion,.8)
 with creator{weapon_post(12,0,244)}
@@ -78,11 +81,11 @@ if instance_exists(creator) && check{
 				move_contact_solid(image_angle,game_width)
 			}
 			draw_line_width_colour(x,y,q.x,q.y,1,lasercolour2,lasercolour2)
-			with q instance_destroy()
+			with q {instance_destroy()}
 		}
 		var comp = (check = 1 ? creator.wep : creator.bwep);
 		if popped {comp = wep}
-		if wep != comp {instance_destroy()}
+		if wep != comp {sound_set_track_position(sndVanWarning,0);instance_destroy()}
 	}
 }
 /*

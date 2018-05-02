@@ -23,7 +23,8 @@ return global.sprSplinterCannon
 #define weapon_text
 return "CONSIDER IT HYPER"
 #define weapon_fire
-weapon_post(13,22,0)
+weapon_post(13,-72,30)
+sleep(15)
 motion_add(gunangle-180,3)
 sound_play_pitch(sndHeavyCrossbow,.8)
 sound_play_pitch(sndSuperSplinterGun,.7)
@@ -72,7 +73,7 @@ with instance_create(x,y,HeavyBolt)
       else
       {
         splinterfac = irandom_range(3,5)
-        view_shake_max_at(x,y,20)
+        view_shake_max_at(x,y,30)
         repeat(splinterfac)
         {
           with instance_create(x,y,Splinter)

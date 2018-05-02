@@ -33,12 +33,12 @@ return choose("WHAT A BRIS","A STORM IS COMING");
 sound_play_pitch(sndDevastatorUpg,1.4)
 if skill_get(17){
         sound_play_pitch(sndLightningPistolUpg,.8)
-    
+
 }else{
     sound_play_pitch(sndLightningPistol,.8)
 }
-weapon_post(16,0,85)
-sleep(15)
+weapon_post(16,-90,125)
+sleep(35)
 motion_add(gunangle-180,5+abs(speed))
 with instance_create(x,y,LightningSpawn){
     move_contact_solid(other.gunangle,20);

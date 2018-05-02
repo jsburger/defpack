@@ -85,7 +85,7 @@ sound_play_pitch(sndShotgun,1)
 sound_play_pitch(sndSuperFlakCannon,.7)
 sound_play_pitch(sndIncinerator,.8)
 sound_play_pitch(sndFlameCannonEnd,.6)
-weapon_post(10,-30,25)
+weapon_post(8,-90,76)
 repeat(6)
 {
 	mod_script_call("mod", "defpack tools 2","create_flak",0,80,13,random_range(0.4,0.85),FlameShell,25,id)

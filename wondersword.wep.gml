@@ -50,6 +50,7 @@ if "_reload" not in self{_reload = 0}
 if w {
 	if _reload > 0{_reload -= current_time_scale;reload = _reload;exit}
 	if button_check(index,"fire") && wondershit[1]<5{
+		view_shake_max_at(x,y,wondershit[1]*2)
 		if wondershit[1] = 0{wondershit[0] = 43}
 		wondershit[0]+= current_time_scale*2.6
 		if wondershit[1] < 4{wepangle += .75*sign(wepangle)}
@@ -82,6 +83,11 @@ if w {
 	}
 	else if wondershit[1] >= 1
 	{
+		weapon_post(12,0,12)
+		sleep(4)
+		sound_play_gun(sndBlackSword,.5,0)
+		sound_play_gun(sndGoldWrench,.6,0)
+		sound_play_pitch(sndGoldScrewdriver,.6)
 		_reload += 12
 		var tier = wondershit[1]
 		var _x = x+lengthdir_x(20*skill_get(13),gunangle);
@@ -102,6 +108,12 @@ if w {
 		}
 		else if tier = 2
 		{
+			weapon_post(12,0,21)
+			sleep(10)
+			sound_play_gun(sndBlackSword,.5,0)
+			sound_play_pitchvol(sndGoldDiscgun,.8,.4)
+			sound_play_gun(sndGoldWrench,.6,0)
+			sound_play_pitch(sndGoldScrewdriver,.6)
 			sound_play_pitch(sndEnemySlash,1.4)
 			_reload += 26
 			with instance_create(_x,_y,Slash){
@@ -116,6 +128,14 @@ if w {
 		}
 		else if tier = 3
 		{
+			weapon_post(12,0,40)
+			sleep(20)
+			sound_play_gun(sndBlackSword,.5,0)
+			sound_play_pitchvol(sndGoldDiscgun,.8,.4)
+			sound_play_gun(sndGoldWrench,.6,0)
+			sound_play_pitch(sndGoldScrewdriver,.6)
+			sound_play_pitch(sndEnemySlash,1.4)
+			sound_play_pitch(sndIncinerator,.8)
 			_reload += 12
 			with instance_create(_x,_y,Slash){
 				damage = 34
@@ -147,6 +167,16 @@ if w {
 		}
 		else if tier = 4
 		{
+			weapon_post(12,0,74)
+			sound_play_gun(sndBlackSword,.5,0)
+			sound_play_pitchvol(sndGoldDiscgun,.8,.4)
+			sound_play_gun(sndGoldWrench,.6,0)
+			sound_play_pitch(sndGoldScrewdriver,.6)
+			sound_play_pitch(sndEnemySlash,1.4)
+			sound_play_pitch(sndIncinerator,.8)
+			sound_play_pitch(sndFireShotgun,random_range(.6,.8))
+			sleep(70)
+			sound_play_pitchvol(sndFlameCannonEnd,.7,.5)
 			_reload += 32
 			with instance_create(_x,_y,Slash){
 				damage = 40
@@ -178,7 +208,6 @@ if w {
 		}*/
 		wondershit = [0,0]
 		wepangle = -90 * sign(wepangle)
-		sound_play_gun(sndBlackSword,.2,0)
 		wkick = 9
 		motion_add(gunangle,4)
 	}

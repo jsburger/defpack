@@ -40,10 +40,11 @@ if infammo <= 0{
 	else
 	{
 		ammo[3] -= 2
-		sound_play(sndHeavyCrossbow)
+		sound_play_pitch(sndHeavyCrossbow,.8)
+		sound_play_pitch(sndBloodLauncher,.8)
 	}
 }
-weapon_post(10,60,6)
+weapon_post(10,-70,12)
 with instance_create(x,y,HeavyBolt)
 {
 	team = other.team

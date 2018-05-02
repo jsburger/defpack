@@ -51,7 +51,7 @@
 /loadwep sniper pest rifle
 
 //THUNDER BULLET
-/loadwep thunder pistol
+/loadwep thunder revolver
 /loadwep thunder machinegun
 /loadwep triple thunder machinegun
 /loadwep quad thunder machinegun
@@ -95,6 +95,7 @@
 /loadwep bouncer pistol
 /loadwep heavy minigun
 /loadwep heavy smart gun
+/loadwep smarter gun
 /loadwep lucky machinegun
 /loadwep bullet machinegun
 /loadwep signal beamer
@@ -218,6 +219,7 @@
 /loadwep chris knife
 /loadwep comboweps/rapier
 /loadwep comboweps/bigsword
+/loadwep wondersword
 
 ///POPO///
 /loadmod idpd weapon chest/idpd weapon chest

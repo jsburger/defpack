@@ -83,7 +83,7 @@ sound_play(sndCrossbow)
 sound_play_pitch(sndShotgun,.7)
 sound_play_pitch(sndFlakCannon,1.2)
 sound_play_pitch(sndSuperFlakCannon,.7)
-weapon_post(8,-20,20)
+weapon_post(8,-90,46)
 repeat(5){
 	with instance_create(x,y,FlakBullet){
 		team = other.team

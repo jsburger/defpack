@@ -1,5 +1,5 @@
 #define init
-global.sprSmartNukeLauncher = sprite_add_weapon("sprSmartNukeLauncher.png", 7, 8);
+global.sprSmartNukeLauncher = sprite_add_weapon("sprSmartNukeLauncher.png", 5, 5);
 global.sprSmartNuke 				= sprite_add("sprSmartNuke.png",0, 7, 5);
 global.sprBlueExplosion 		= sprite_add("sprSmartExplosionS.png",7,12,12)
 global.sprSmartNukeFlame 		= sprite_add("sprSmartNukeFlame.png",3,32,12)
@@ -20,7 +20,7 @@ return true;
 return 28;
 
 #define weapon_cost
-return 2;
+return 3;
 
 #define weapon_swap
 return sndSwapExplosive;
@@ -32,10 +32,11 @@ return 9;
 return "AT HIS MERCY";
 
 #define weapon_fire
-sound_play_pitchvol(sndRocket,1,.8)
-sound_play_pitch(sndSmartgun,.6)
-weapon_post(10,-16,15)
+sound_play_pitch(sndNukeFire,random_range(1.1,1.3))
+sound_play_pitch(sndSmartgun,random_range(.5,.7))
+weapon_post(10,-56,46)
 with instance_create(x,y,CustomProjectile){
+	move_contact_solid(other.gunangle,8)
 	motion_set(other.gunangle, 2)
 	team = other.team
 	creator = other

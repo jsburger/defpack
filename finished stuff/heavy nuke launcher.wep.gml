@@ -34,7 +34,8 @@ return choose("THIS IS WHAT WILL END IT ALL","STANDING, ON THE EDGE","WHAT A MES
 #define weapon_fire
 sound_play(sndRocket)
 sound_play_pitch(sndHeavyNader,1)
-weapon_post(15,-16,32)
+weapon_post(15,-146,82)
+sleep(40)
 motion_add(gunangle,-5)
 with instance_create(x,y,CustomProjectile){
 	friction = .18
@@ -80,7 +81,7 @@ if timer <= 0
 	if !soundcheck
 	{
 		soundcheck = 1
-		view_shake_at(x,y,22)
+		view_shake_at(x,y,32)
 		sound_play(sndNukeFire)
 		repeat(22)
 		with instance_create(x- hspeed*2, y - vspeed*2, Flame)
@@ -104,8 +105,8 @@ if place_meeting(x, y, Explosion){
 }
 
 #define nuke_pop
-sleep(160)
-view_shake_max_at(x,y,600)
+sleep(180)
+view_shake_max_at(x,y,900)
 repeat(13){
 	with instance_create(x + random_range(-40,40), y + random_range(-40,40), GreenExplosion)
 	{
@@ -123,7 +124,7 @@ repeat(7){
 sound_play(sndNukeExplosion)
 sound_play_pitch(sndExplosionL,.7)
 sound_play_pitch(sndExplosionXL,.9)
-sound_play_pitch(sndHitMetal,.03)
+sound_play_pitch(sndStatueXP,.08) //sound_play_pitch(sndStatueCharge,.2) for the gunsoleum, statue sound in general
 #define nuke_draw
 if timer <= 0{draw_sprite_ext(global.sprHeavyNukeFlame,fimage_index,x,y,.75,.75,direction,c_white,1)}
 draw_self()

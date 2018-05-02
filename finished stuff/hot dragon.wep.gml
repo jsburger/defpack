@@ -1,5 +1,5 @@
 #define init
-global.sprHotDragon = sprite_add_weapon("sprHotDragon.png", 8, 8);
+global.sprHotDragon = sprite_add_weapon("sprHotDragon.png", 8, 6);
 
 #define weapon_name
 return "HOT DRAGON";
