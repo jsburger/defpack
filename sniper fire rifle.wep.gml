@@ -1,6 +1,8 @@
 #define init
 global.sprSniperFireRifle = sprite_add_weapon("sprites/sprSniperFireRifle.png", 5, 3);
-global.sprFireBullet = sprite_add("defpack tools/Fire Bullet.png", 2, 8, 8)
+global.sprFireBullet 			= sprite_add("defpack tools/Fire Bullet.png", 2, 8, 8);
+global.sprFireBulletHit   = sprite_add("defpack tools/Fire Bullet Hit.png", 4, 8, 8);
+
 #define weapon_name
 return "SNIPER FIRE RIFLE"
 
@@ -75,16 +77,10 @@ with mod_script_call("mod", "defpack tools", "create_fire_bullet",x+lengthdir_x(
 		recycleset=0
 		image_angle = other.gunangle
 		direction = other.gunangle+random_range(-7,7)*other.accuracy
+		on_destroy = bolttrail_destroy
 		do
 		{
 			dir += 1 x += lengthdir_x(1,direction) y += lengthdir_y(1,direction)
-			with instance_create(x,y,BoltTrail)
-			{
-				image_blend = c_white
-				image_angle = other.direction
-				image_yscale = 1.3
-				image_xscale = 1
-			}
 			if random(9) < 1*current_time_scale {with instance_create(x,y,Flame){team = other.team;creator = other.creator;motion_add(random(359),random_range(0,2))}}
 			with instances_matching_ne(CrystalShield, "team", other.team){if place_meeting(x,y,other){other.team = team;other.direction = point_direction(x,y,other.x,other.y);other.image_angle = other.direction;with instance_create(other.x,other.y,Deflect){image_angle = other.direction;sound_play_pitch(sndCrystalRicochet,random_range(.9,1.1))}}}
 			with instances_matching_ne(PopoShield, "team", other.team){if place_meeting(x,y,other){other.team = team;other.direction = point_direction(x,y,other.x,other.y);other.image_angle = other.direction;with instance_create(other.x,other.y,Deflect){image_angle = other.direction;sound_play_pitch(sndShielderDeflect,random_range(.9,1.1))}}}
@@ -115,6 +111,26 @@ with mod_script_call("mod", "defpack tools", "create_fire_bullet",x+lengthdir_x(
 
 #define muzzle_step
 if image_index > 1{instance_destroy()}
+
+#define bolttrail_destroy
+with instance_create(x,y,BoltTrail)
+{
+	image_blend = c_white
+	image_yscale = 1.3
+	image_xscale = point_distance(x,y,x-lengthdir_x(other.dir,other.direction),y-lengthdir_y(other.dir,other.direction))
+	image_angle  = point_direction(x,y,x-lengthdir_x(other.dir,other.direction),y-lengthdir_y(other.dir,other.direction))
+}
+repeat(12){
+	with instance_create(x,y,Flame){
+		team = other.team
+		creator = other.creator
+		motion_set(random(360),random_range(2,3))
+	}
+}
+with instance_create(x,y,BulletHit){
+	sprite_index = global.sprFireBulletHit
+	direction = other.direction
+}
 
 #define muzzle_draw
 draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, image_yscale, image_angle, image_blend, 1.0);

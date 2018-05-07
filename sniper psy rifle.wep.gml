@@ -1,6 +1,7 @@
 #define init
 global.sprSniperPsyRifle = sprite_add_weapon("sprites/sprSniperPsyRifle.png", 5, 3);
-global.sprPsyBullet = sprite_add("defpack tools/Psy Bullet.png", 2, 8, 8)
+global.sprPsyBullet 		 = sprite_add("defpack tools/Psy Bullet.png", 2, 8, 8);
+global.sprPsyBulletHit   = sprite_add("defpack tools/Psy Bullet Hit.png", 4, 8, 8);
 #define weapon_name
 return "SNIPER PSY RIFLE"
 
@@ -74,22 +75,22 @@ with mod_script_call("mod", "defpack tools", "create_psy_bullet",x+lengthdir_x(8
 		recycleset=0
 		image_angle = other.gunangle
 		direction = other.gunangle+random_range(-2,2)*other.accuracy
+		on_destroy = bolttrail_destroy
 		do
 		{
 			dir += 1 x += lengthdir_x(1,direction) y += lengthdir_y(1,direction)
-			with instance_create(x,y,BoltTrail)
-			{
-				image_blend = c_fuchsia
-				image_angle = other.direction
-				image_yscale = 1.4
-				image_xscale = 1
-			}
 			if instance_exists(enemy) && dir > 30
 			{
 				var closeboy = instance_nearest(x,y,enemy)
 				if collision_line(x,y,closeboy.x,closeboy.y,Wall,0,0) < 0 && distance_to_object(closeboy) < 220 && projectile_canhit_melee(closeboy)=true{
 					var _dir, spd;
-
+					with instance_create(x,y,BoltTrail)
+					{
+						image_blend = c_fuchsia
+						image_yscale = 1.4
+						image_xscale = point_distance(x,y,x-lengthdir_x(1,other.direction),y-lengthdir_y(1,other.direction))
+						image_angle  = point_direction(x,y,x-lengthdir_x(1,other.direction),y-lengthdir_y(1,other.direction))
+					}
 					_dir = point_direction(x, y, closeboy.x, closeboy.y);
 					spd = 12
 					direction -= clamp(angle_difference(image_angle, _dir) * .3, -spd, spd)
@@ -125,6 +126,20 @@ with mod_script_call("mod", "defpack tools", "create_psy_bullet",x+lengthdir_x(8
 
 #define muzzle_step
 if image_index > 1{instance_destroy()}
+
+#define bolttrail_destroy
+with instance_create(x,y,BoltTrail)
+{
+	image_blend = c_fuchsia
+	image_yscale = 1.4
+	image_xscale = point_distance(x,y,x-lengthdir_x(x-other.xprevious,other.direction),y-lengthdir_y(y-other.yprevious,other.direction))
+	image_angle  = point_direction(x,y,x-lengthdir_x(other.dir,other.direction),y-lengthdir_y(other.dir,other.direction))
+}
+with instance_create(x,y,BulletHit){
+	sprite_index = global.sprPsyBulletHit
+	image_angle = other.direction + 180
+}
+if place_meeting(x + hspeed,y +vspeed,Wall){sound_play_hit(sndHitWall,.2)}
 
 #define muzzle_draw
 draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, image_yscale, image_angle, image_blend, 1.0);

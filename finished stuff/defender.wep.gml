@@ -1,6 +1,7 @@
 #define init
-global.sprDefender = sprite_add_weapon("sprDefender.png", 9, 4);
-global.sprDefenderOff = sprite_add_weapon("sprDefenderOff.png", 9, 4);
+global.sprDefender 	   = sprite_add_weapon("sprDefender.png", 9, 4);
+global.sprDefenderOff  = sprite_add_weapon("sprDefenderOff.png", 9, 4);
+global.sprShieldBullet = sprite_add("sprShieldBullet.png",2,10,8);
 
 #define weapon_name
 return "DEFENDER"
@@ -18,13 +19,13 @@ return false;
 return 0;
 
 #define weapon_rads
-return  6;
+return 12;
 
 #define weapon_auto
-return true;
+return false;
 
 #define weapon_load
-return 9;
+return 21;
 
 #define weapon_cost
 return 0;
@@ -39,37 +40,71 @@ return 15;
 return "KEEP YOUR DISTANCE";
 
 #define weapon_fire
-
-
-with instance_create(x,y,GuardianDeflect)
-{
-	creator = other
-	damage = 5
-	team = other.team
-	image_index = 0
-	iamge_speed = .75
-	on_step = def_step
-}
+sound_play_pitch(sndEliteShielderShield,random_range(1.4,1.8))
+sound_play_pitch(sndUltraShotgun,random_range(1.2,1.5))
+sound_play_pitch(sndDogGuardianLand,random_range(.3,.5))
+sound_play_pitch(sndGuardianFire,random_range(.6,.8))
+weapon_post(8,-5,18)
+var i = 1;
+var j = 1;
 repeat(3)
 {
-	sound_play_pitch(sndDogGuardianLand,random_range(.3,.5))
-	sound_play_pitch(sndGuardianFire,random_range(.6,.7))
-	weapon_post(6,-5,3)
-	with instance_create(x,y,HorrorBullet)
+	repeat(clamp(i,1,2))
 	{
-		if instance_exists(other){creator = other}else{instance_destroy();exit}
-		dir = choose(-1,1)
-		timer = room_speed * 4
-		team = other.team
-		image_index = 0
-		damage *= 2
-		speed = random_range(15,17)
-		direction = (other.gunangle+(random_range(-10,10)* other.accuracy))
-		image_angle = direction
+		with instance_create(x,y,CustomSlash)
+		{
+			move_contact_solid(other.gunangle,2)
+			team     = other.team
+			typ 		 = 1
+			force    = 5
+			damage   = 6
+			friction = 2+1.1*(i-1)
+			pierce   = 3 + GameCont.loops
+			sprite_index = global.sprShieldBullet
+			motion_add(other.gunangle+(random_range(-1,1)* other.accuracy+13*j*(i-1)),28)
+			image_angle = direction
+			on_projectile = def_projectile
+			on_destroy 		= def_destroy
+			on_step 			= def_step
+			on_draw 			= def_draw
+			on_wall 			= def_wall
+			on_hit 			  = def_hit
+		}
+		j *= -1
 	}
-wait(3)
+	i++
 }
 
 #define def_step
-if !instance_exists(creator){instance_destroy();exit}
-if image_index >= 6{instance_destroy()}
+if image_index = 1{image_speed = 0}
+if speed <= friction{instance_destroy()}
+
+#define def_wall
+instance_destroy()
+
+#define def_destroy
+with instance_create(x,y,BulletHit)
+{
+	sprite_index = sprGuardianBulletHit
+	image_angle = other.direction + 180
+}
+if place_meeting(x + hspeed,y +vspeed,Wall){sound_play_hit(sndHitWall,.2)}
+
+#define def_projectile
+if !instance_exists(self){instance_destroy();exit}
+if team != other.team
+{
+	with other{instance_destroy()}
+	pierce--
+	if pierce < 0{instance_destroy()}
+}
+
+#define def_hit
+projectile_hit(other, damage, force, direction)
+instance_destroy()
+
+#define def_draw
+draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, image_yscale, image_angle, image_blend, 1.0);
+draw_set_blend_mode(bm_add);
+draw_sprite_ext(sprite_index, image_index, x, y, 2*image_xscale+(1-image_index)*.5, 2*image_yscale, image_angle+(1-image_index)*.5, image_blend, 0.1+(1-image_index)*1.6);
+draw_set_blend_mode(bm_normal);

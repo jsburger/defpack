@@ -1,6 +1,6 @@
 #define init
-global.sprInquisitor = sprite_add_weapon("sprites/Inquisitor.png", 7, 4);
-global.stripes = sprite_add("defpack tools/BIGstripes.png",1,1,1)
+global.sprInquisitor  = sprite_add_weapon("sprites/Inquisitor.png", 7, 4);
+global.stripes 				= sprite_add("defpack tools/BIGstripes.png",1,1,1)
 global.SnakeIndikator = sprite_add("sprites/projectiles/Inquisitor Danger.png",0,3,11)
 #define weapon_name
 return "INQUISITOR"
@@ -15,7 +15,7 @@ return 5;
 return false;
 
 #define weapon_load
-return 67;
+return 43;
 
 #define weapon_cost
 return 12;
@@ -30,6 +30,99 @@ return 15;
 return "DEVASTATION++";
 
 #define weapon_fire
+sound_play_pitch(sndSewerPipeBreak,.2)
+sound_play_pitch(sndUltraLaser,.7)
+sound_play_pitch(sndHyperLauncher,.4)
+sound_play_pitch(sndPlasmaBig,.6)
+sound_play_pitch(sndPlasmaReload,1.4)
+sound_play_pitch(sndPlasmaBigUpg,.8)
+if skill_get(17)=1{sound_play_pitch(sndLaserCannon,.4)}
+sound_play_pitch(sndLaserCannonUpg,1.6)
+motion_add(gunangle,-9)
+weapon_post(18,12,400)
+with instance_create(x,y,CustomProjectile)
+{
+	move_contact_solid(other.gunangle,12)
+	accuracy = other.accuracy
+	sprite_index = sprPlasmaBallBig
+	mask_index = mskPlasma
+	image_speed = 0.0002
+	ammo = 4
+	typ = 1
+	damage = 7
+	team = other.team
+	friction = 1.2
+	image_xscale = .3 + ammo/3
+	image_yscale = .3 + ammo/3
+	motion_add(other.gunangle,ammo * 6)
+	image_angle = direction
+	on_hit 		 = mitosis_hit
+	on_step    = mitosis_step
+	on_draw		 = mitosis_draw
+	on_destroy = mitosis_destroy
+}
+
+#define mitosis_hit
+if projectile_canhit_melee(other)
+{
+	projectile_hit(other,damage,ammo * 2,direction)
+	if other.my_health >= damage{instance_destroy()}
+}
+
+#define mitosis_step
+if image_speed > 0 {image_speed -= 0.0001*current_time_scale}else{image_speed = 0}
+image_index = 0
+if irandom(ammo)*current_time_scale != 0{instance_create(x+random_range(-sprite_get_width(sprite_index)/2,sprite_get_width(sprite_index)/2),y+random_range(-sprite_get_width(sprite_index)/2,sprite_get_width(sprite_index)/2),PlasmaTrail)}
+if speed < friction{instance_destroy()}
+
+#define mitosis_destroy
+if ammo > 1
+{
+	if skill_get(17) = false sound_play_pitch(sndPlasmaBigExplode,ammo/2) else sound_play_pitch(sndPlasmaBigExplodeUpg,ammo/2)
+	var i = direction + 90;
+	var j = random(360);
+	repeat(ammo)
+	{
+		with instance_create(x,y,CustomProjectile)
+		{
+			accuracy = other.accuracy
+			sprite_index = sprPlasmaBallBig
+			mask_index = mskPlasma
+			image_speed = 0.0002
+			typ = 1
+			ammo = other.ammo - 1
+			damage = 7
+			team = other.team
+			friction = random_range(.6,1)
+			image_xscale = .3 + ammo/3
+			image_yscale = .3 + ammo/3
+			motion_add(other.direction+i+j+ random_range(-8,8)*accuracy,9+ammo)
+			image_angle = direction
+			on_hit 		 = mitosis_hit
+			on_step    = mitosis_step
+			on_draw		 = mitosis_draw
+			on_destroy = mitosis_destroy
+		}
+		i += 360/ammo
+	}
+}
+else
+{
+	sound_play_pitch(sndPlasmaHit,random_range(.8,1.2))
+	with instance_create(x,y,PlasmaImpact)
+	{
+		team = other.team
+	}
+}
+
+#define mitosis_draw
+if image_speed > 0 {var k = 2}else{var k = 1}
+draw_sprite_ext(sprite_index, image_index, x, y, image_xscale+sin(current_frame)/clamp(speed,.5,50)*k, image_yscale+sin(current_frame)/clamp(speed,.5,50)*k, image_angle, image_blend, 1.0);
+draw_set_blend_mode(bm_add);
+draw_sprite_ext(sprite_index, image_index, x, y, 2*image_xscale+sin(current_frame)/clamp(speed,.5,50)*k, 2*image_yscale+sin(current_frame)/clamp(speed,.5,50)*k, image_angle, image_blend, 0.1+skill_get(17)*.1+(k-1)*.3);
+draw_set_blend_mode(bm_normal);
+
+/*
 var _strtsize = 44;
 var _endsize  = 16;
 with mod_script_call("mod","defpack tools","create_abris",self,44,16,argument0)
