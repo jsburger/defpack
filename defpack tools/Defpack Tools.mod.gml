@@ -20,6 +20,7 @@ global.mskDarkBullet = sprite_add("Dark Bullet Mask.png", 0, 2.5, 4.5)
 global.sprDarkBulletHit = sprite_add("Dark Bullet Hit.png", 4, 8, 8)
 global.sprLightBullet = sprite_add("Light Bullet.png", 2, 8, 8)
 global.sprLightBulletHit = sprite_add("Light Bullet Hit.png", 4, 8, 8)
+global.sprPlasmite = sprite_add("sprPlasmite.png",0,3,3)
 
 global.sprSonicExplosion = sprite_add("Soundwave_strip8.png",8,61,59);
 global.mskSonicExplosion = sprite_add("mskSonicExplosion_strip9.png",9,32,32);
@@ -1077,3 +1078,47 @@ sound_set_track_position(sndExplosionL,0)
 view_shake_max_at(x,y,30)
 time -= current_time_scale
 if time <= 0 instance_destroy()
+
+#define create_plasmite(_x,_y)
+a = instance_create(x,y,CustomProjectile);
+with a
+{
+	image_speed = 0
+	image_index = 0
+	damage = 2+skill_get(17)
+	sprite_index = global.sprPlasmite
+	fric = random_range(1.2,1.3)
+	speedset = 0
+	maxspeed = 7
+	on_step 	 = plasmite_step
+	on_wall 	 = plasmite_wall
+	on_destroy = plasmite_destroy
+}
+return a;
+
+#define plasmite_step
+image_angle = direction
+if irandom(12-skill_get(17)*5) = 1{instance_create(x,y,PlasmaTrail)}
+if speedset = 0
+{
+	speed/= fric
+	if speed < 1.00005{speedset = 1}
+}
+else
+{
+	if instance_exists(enemy)
+	{
+		var closeboy = instance_nearest(x,y,enemy)
+		motion_add(point_direction(x,y,closeboy.x,closeboy.y),.5+skill_get(17)*.3)
+	}
+	if speed > maxspeed{speed = maxspeed}
+	maxspeed /= fric
+	if maxspeed <= fric instance_destroy()
+}
+
+#define plasmite_wall
+instance_destroy()
+
+#define plasmite_destroy
+sound_play_pitch(sndPlasmaHit,random_range(1.55,1.63))
+with instance_create(x,y,PlasmaImpact){image_xscale=.5;image_yscale=.5;damage = round(damage/2)}

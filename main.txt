@@ -126,6 +126,7 @@
 /loadwep phlogenitator
 
 //OTHER SHELL
+/loadwep popper
 /loadwep super heavy slugger
 /loadwep apergig tanat
 
@@ -204,6 +205,7 @@
 /loadwep finished stuff/vector shotgun
 
 //PLASMITE
+/loadwep finished stuff/plasmite pistol
 /loadwep finished stuff/plasmite rifle
 /loadwep finished stuff/plasmite shotgun
 /loadwep finished stuff/plasmite cannon
