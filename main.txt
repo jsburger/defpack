@@ -160,6 +160,14 @@
 /loadwep plasma abris launcher
 /loadwep inquisitor
 
+//ROCKLET
+/loadwep rocklet pistol
+/loadwep rocklet rifle
+/loadwep assault rocklet rifle
+/loadwep rocklet shotgun
+/loadwep rocklet minigun
+/loadwep rocklet cannon
+
 //SONIC
 /loadwep sonic launcher
 /loadwep assault sonic launcher

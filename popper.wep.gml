@@ -42,7 +42,7 @@ with instance_create(x,y,Bullet2)
 	motion_add(other.gunangle + random_range(-10,10)*other.accuracy,14)
 	damage += 4
 	image_angle = direction
-	on_destroy = pop_destroy
+	on_destroy = script_ref_create(pop_destroy)
 }
 
 #define pop_destroy
