@@ -53,6 +53,6 @@ sound_play(sndGoldShotgun)
 creator.wkick = 2
 repeat(3)
 {
-	with instance_create(mouse_x[index]+lengthdir_x(acc+12,offset),mouse_y[index]+lengthdir_y(acc+12,offset),SmallExplosion){hitid = [sprite_index,"small explosion"]}
+	with instance_create(explo_x+lengthdir_x(acc+12,offset),explo_y+lengthdir_y(acc+12,offset),SmallExplosion){hitid = [sprite_index,"small explosion"]}
 	offset += 120
 }

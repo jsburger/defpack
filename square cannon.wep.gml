@@ -1,11 +1,11 @@
 #define init
-global.sprSquareGun = sprite_add_weapon("sprites/sprSquareGun.png", 0, 2);
+global.sprSquareCannon = sprite_add_weapon("sprites/sprSquareCannon.png", 0, 2);
 
 #define weapon_name
-return "SQUARE GUN"
+return "SQUARE CANNON"
 
 #define weapon_sprt
-return global.sprSquareGun;
+return global.sprSquareCannon;
 
 #define weapon_type
 return 5;
@@ -14,10 +14,10 @@ return 5;
 return false;
 
 #define weapon_load
-return 28;
+return 43;
 
 #define weapon_cost
-return 4;
+return 16;
 
 #define weapon_swap
 return sndSwapEnergy;
@@ -26,16 +26,16 @@ return sndSwapEnergy;
 return 12;
 
 #define weapon_text
-return choose("NO HIDING NOW","LOOK AT THIS NERD");
+return choose("THE CUBE","IT HUNTS");
 
 #define weapon_fire
 if skill_get(17){sound_play(sndPlasmaUpg)}else{sound_play(sndPlasma)}
 weapon_post(4,-5,7)
-with mod_script_call("mod","defpack tools","create_square",x,y)
+with mod_script_call("mod","defpack tools","create_supersquare",x,y)
 {
-	move_contact_solid(other.gunangle,8)
+	move_contact_solid(other.gunangle,16)
 	creator = other
 	team    = other.team
-	size    = 1
-	motion_add(other.gunangle+random_range(-6,6)*creator.accuracy,6)
+	size    = 4
+	motion_add(other.gunangle+random_range(-6,6)*creator.accuracy,12)
 }

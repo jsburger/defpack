@@ -153,7 +153,7 @@
 //ABRIS
 /loadwep abris pistol
 /loadwep abris launcher
-/loadwep heavy abris launcher
+/loadwep abris rifle
 /loadwep auto abris launcher
 /loadwep super abris launcher
 /loadwep blood abris launcher
@@ -167,6 +167,7 @@
 /loadwep rocklet shotgun
 /loadwep rocklet minigun
 /loadwep rocklet cannon
+/loadwep super rocklet cannon
 
 //SONIC
 /loadwep sonic launcher

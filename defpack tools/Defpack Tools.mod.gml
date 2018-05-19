@@ -29,6 +29,10 @@ global.sprGenShell = sprite_add("Generic Shell.png",0, 1.5, 2.5);
 
 global.stripes = sprite_add("BIGstripes.png",1,1,1)
 
+global.sprSquare = sprite_add("sprSquare.png", 0, 7, 7)
+global.mskSquare = sprite_add("mskSquare.png",0,5,5)
+global.sprSuperSquare = sprite_add("sprSuperSquare.png", 0, 14, 14)
+global.mskSuperSquare = sprite_add("mskSuperSquare.png",0,10,10)
 
 #define cleanup
 with instances_matching(CustomProjectile,"name","Psy Bullet","Psy Shell") instance_delete(self)
@@ -822,20 +826,23 @@ if instance_exists(creator){
 		}
 	}
 	if !button_check(creator.index,(check = 1?"fire":"spec")) || (auto && acc<=accmin){
-		if !collision_line(x,y,mouse_x[index],mouse_y[index],Wall,0,0) &&!dropped{
+		if instance_exists(self){
 			dropped = 1
-			explo_x = mouse_x[index]
-			explo_y = mouse_y[index]
+			var _wall = collision_line_first(x,y,mouse_x[index],mouse_y[index],Wall,0,0);
+			if _wall > -4
+			{
+				explo_x = x + lengthdir_x(point_distance(x,y,_wall.x,_wall.y)-accmin,creator.gunangle);
+				explo_y = y + lengthdir_y(point_distance(x,y,_wall.x,_wall.y)-accmin,creator.gunangle);
+			}
+			else
+			{
+				explo_x = mouse_x[index]
+				explo_y = mouse_y[index]
+			}
 			if fork(){
 				on_destroy = payload
 				instance_destroy()
 				exit
-			}
-		}
-		else if instance_exists(self){
-			if !dropped{
-				if creator.infammo = 0{creator.ammo[type] += cost}
-				instance_destroy()
 			}
 		};
 	}
@@ -846,28 +853,70 @@ else{instance_destroy()}
 if instance_exists(creator) && check{
 	x = creator.x
 	y = creator.y
+	if collision_line_first(x,y,mouse_x[index],mouse_y[index],Wall,0,0) > -4
+	{
+		var _wall = collision_line_first(x,y,mouse_x[index],mouse_y[index],Wall,0,0);
+		var _tarx = x + lengthdir_x(point_distance(x,y,_wall.x,_wall.y),creator.gunangle);
+		var _tary = y + lengthdir_y(point_distance(x,y,_wall.x,_wall.y),creator.gunangle);
+	}
+	else
+	{
+		var _tarx = mouse_x[index];
+		var _tary = mouse_y[index];
+	}
 	if button_check(creator.index, (check = 1? "fire":"spec")){
-		if !collision_line(x,y,mouse_x[index],mouse_y[index],Wall,0,0){
 			var radi = acc+accmin;
-			mod_script_call("mod", "defpack tools","draw_polygon_striped", 16, radi, 45, mouse_x[index]+1, mouse_y[index]+1, global.stripes, lasercolour1, 0.1+(accbase-acc)/(accbase*5),(current_frame mod 16)*.004);
-			mod_script_call("mod", "defpack tools","draw_circle_width_colour",16,radi,1,acc+image_angle,mouse_x[index],mouse_y[index],lasercolour1,1*(accbase-acc))
-			mod_script_call("mod", "defpack tools","draw_circle_width_colour",16, accmin,1,acc+image_angle,mouse_x[index],mouse_y[index],lasercolour1,.2)
-			draw_line_width_colour(x,y,mouse_x[index],mouse_y[index],1,lasercolour1,lasercolour1);
-		}
-		else{
-			var q = instance_create(x,y,CustomObject);
-			with q{
-				mask_index = sprBulletShell
-				image_angle = other.creator.gunangle
-				move_contact_solid(image_angle,game_width)
-			}
-			draw_line_width_colour(x,y,q.x,q.y,1,lasercolour2,lasercolour2)
-			with q instance_destroy()
-		}
+			mod_script_call("mod", "defpack tools","draw_polygon_striped", 16, radi, 45, _tarx+1, _tary+1, global.stripes, lasercolour1, 0.1+(accbase-acc)/(accbase*5),(current_frame mod 16)*.004);
+			mod_script_call("mod", "defpack tools","draw_circle_width_colour",16,radi,1,acc+image_angle,_tarx,_tary,lasercolour1,1*(accbase-acc))
+			mod_script_call("mod", "defpack tools","draw_circle_width_colour",16, accmin,1,acc+image_angle,_tarx,_tary,lasercolour1,.2)
+			draw_line_width_colour(x,y,_tarx,_tary,1,lasercolour1,lasercolour1);
 		var comp = (check = 1 ? creator.wep : creator.bwep);
 		if popped {comp = wep}
 		if wep != comp {instance_destroy()}
 	}
+}
+#define collision_line_first(x1,y1,x2,y2,object,prec,notme)
+/// collision_line_first(x1,y1,x2,y2,object,prec,notme)
+//
+//  Returns the instance id of an object colliding with a given line and
+//  closest to the first point, or noone if no instance found.
+//  The solution is found in log2(range) collision checks.
+//
+//      x1,y2       first point on collision line, real
+//      x2,y2       second point on collision line, real
+//      object      which objects to look for (or all), real
+//      prec        if true, use precise collision checking, bool
+//      notme       if true, ignore the calling instance, bool
+//
+/// GMLscripts.com/license
+{
+    var ox,oy,dx,dy,object,prec,notme,sx,sy,inst,i;
+    ox = argument0;
+    oy = argument1;
+    dx = argument2;
+    dy = argument3;
+    object = argument4;
+    prec = argument5;
+    notme = argument6;
+    sx = dx - ox;
+    sy = dy - oy;
+    inst = collision_line(ox,oy,dx,dy,object,prec,notme);
+    if (inst != noone) {
+        while ((abs(sx) >= 1) || (abs(sy) >= 1)) {
+            sx /= 2;
+            sy /= 2;
+            i = collision_line(ox,oy,dx,dy,object,prec,notme);
+            if (i) {
+                dx -= sx;
+                dy -= sy;
+                inst = i;
+            }else{
+                dx += sx;
+                dy += sy;
+            }
+        }
+    }
+    return inst;
 }
 
 #define draw_curve(x1,y1,x2,y2,direction,detail)
@@ -1122,3 +1171,177 @@ instance_destroy()
 #define plasmite_destroy
 sound_play_pitch(sndPlasmaHit,random_range(1.55,1.63))
 with instance_create(x,y,PlasmaImpact){image_xscale=.5;image_yscale=.5;damage = round(damage/2)}
+
+#define create_supersquare(_x,_y)
+var a = instance_create(_x,_y,CustomProjectile);
+with a
+{
+	typ = 1
+	name = "square"
+	size = 4
+	friction = .3
+	bounce = 5+skill_get(17)*2
+	damage = 3
+	image_xscale = 1+skill_get(17)*.3
+	image_yscale = 1+skill_get(17)*.3
+	force = 12
+	iframes = 0
+	minspeed = 2
+	anglefac = random_range(0.6,2)
+	fac = choose(1,-1)
+	sprite_index = global.sprSuperSquare
+	mask_index 	 = global.mskSuperSquare
+	hitframes = 0
+	lifetime = room_speed * 7
+	on_step    = square_step
+	on_hit     = square_hit
+	on_wall    = actually_nothing
+	on_draw    = square_draw
+	on_destroy = square_destroy
+}
+return a;
+
+#define create_square(_x,_y)
+var a = instance_create(_x,_y,CustomProjectile);
+with a
+{
+	typ = 1
+	name = "square"
+	size = 1
+	friction = .3
+	bounce = 7+skill_get(17)*3
+	damage = 2
+	minspeed = 2
+	image_xscale = 1+skill_get(17)*.3
+	image_yscale = 1+skill_get(17)*.3
+	force = 6
+	iframes = 0
+	anglefac = random_range(0.8,2.5)
+	fac = choose(1,-1)
+	sprite_index = global.sprSquare
+	mask_index 	 = global.mskSquare
+	hitframes = 0
+	lifetime = room_speed * 6
+	on_step    = square_step
+	on_hit     = square_hit
+	on_wall    = actually_nothing
+	on_draw    = square_draw
+	on_destroy = square_destroy
+}
+return a;
+
+#define square_destroy
+if size > 1
+{
+		var i = random(360);
+		repeat(4)
+		{
+			with create_square(x,y)
+			{
+				creator = other.creator
+				team    = other.team
+				size    = 1
+				motion_add(i+random_range(-6,6),6)
+			}
+			i += 360/size
+		}
+}
+sound_play_pitch(sndPlasmaHit,random_range(.9,1.1))
+with instance_create(x,y,PlasmaImpact){team = other.team;image_xscale=1.5;image_yscale=1.5}
+
+#define square_hit
+if team != other.team
+{
+	with other motion_add(point_direction(other.x,other.y,x,y),other.size)
+	if speed > minspeed && projectile_canhit_melee(other) = true{projectile_hit(other, round(5*damage), force, direction)}else{hitframes += 1;projectile_hit(other, damage, force, direction)};
+}
+
+#define square_draw
+draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, image_yscale, image_angle, image_blend, 1.0);
+draw_set_blend_mode(bm_add);
+draw_sprite_ext(sprite_index, image_index, x, y, 2*image_xscale, 2*image_yscale, image_angle, image_blend, 0.1);
+draw_set_blend_mode(bm_normal);
+
+#define actually_nothing
+
+#define square_step
+if speed > 2
+{
+	with instance_create(x+random_range(-8,8),y+random_range(-8,8),PlasmaImpact)
+	{
+		image_index = 1
+		image_speed = 0.3-skill_get(17)*0.05
+		image_xscale = .25
+		image_yscale = .25
+		with Smoke if place_meeting(x,y,other) instance_destroy()
+	}
+}
+with instance_create(x+random_range(-8,8)+lengthdir_x(sprite_width/2,direction-180),y+random_range(-8,8)+lengthdir_y(sprite_width/2,direction-180),PlasmaTrail)
+{
+	image_speed = 0.35-skill_get(17)*0.05
+	image_xscale += skill_get(17)/2
+	image_yscale = image_xscale
+}
+if iframes <= 0
+{
+	with EnergyShank
+	{
+		if place_meeting(x,y,other)
+		{
+				with instance_create(other.x,other.y,GunGun){image_index=2}
+				if other.speed <20{with other{direction=other.direction;speed=9}}
+				sound_play_pitch(sndPlasmaBigExplode,1.4)
+				sound_play_pitch(sndPlasmaHit,2.2)
+				if skill_get(17){sound_play_pitch(sndPlasmaBigExplodeUpg,2.2)}
+				other.iframes += 10*image_speed
+		}
+	}
+	with EnergySlash
+	{
+		if place_meeting(x,y,other)
+		{
+				with instance_create(other.x,other.y,GunGun){image_index=2}
+				with other{direction=other.direction;speed=12}
+				sound_play_pitch(sndPlasmaBigExplode,1.4)
+				sound_play_pitch(sndPlasmaHit,2.2)
+				if skill_get(17){sound_play_pitch(sndPlasmaBigExplodeUpg,2.2)}
+				other.iframes += 10*image_speed
+		}
+	}
+	with EnergyHammerSlash
+	{
+		if place_meeting(x,y,other)
+		{
+				with instance_create(other.x,other.y,GunGun){image_index=2}
+				with other{direction=other.direction;speed=17}
+				sound_play_pitch(sndPlasmaBigExplode,1.4)
+				sound_play_pitch(sndPlasmaHit,2.2)
+				if skill_get(17){sound_play_pitch(sndPlasmaBigExplodeUpg,2.2)}
+				other.iframes += 10*image_speed
+		}
+	}
+}
+else{iframes--}
+if speed < minspeed speed = minspeed
+if speed > 16 speed = 16
+image_angle += speed * anglefac * fac
+if place_meeting(x+hspeed,y,Wall)
+{
+	if speed = minspeed bounce--;
+	hspeed *= -1
+}
+if place_meeting(x,y+vspeed,Wall)
+{
+	if speed = minspeed bounce--;
+	vspeed *= -1
+}
+if bounce <= 0 instance_destroy()
+with instances_matching(CustomProjectile,"name","square")
+{
+	if place_meeting(x,y,other)
+	{
+		motion_add(point_direction(other.x,other.y,x,y),7*(other.size/size))
+		sound_play_pitch(sndPlasmaHit,random_range(.9,1.1))
+		with instance_create(x,y,PlasmaImpact){team = other.team}
+	}
+}

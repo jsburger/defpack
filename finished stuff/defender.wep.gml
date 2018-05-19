@@ -44,6 +44,7 @@ sound_play_pitch(sndEliteShielderShield,random_range(1.4,1.8))
 sound_play_pitch(sndUltraShotgun,random_range(1.2,1.5))
 sound_play_pitch(sndDogGuardianLand,random_range(.3,.5))
 sound_play_pitch(sndGuardianFire,random_range(.6,.8))
+sound_play_pitch(sndBasicUltra,random_range(1.6,1.7))
 weapon_post(8,-5,18)
 var i = 1;
 var j = 1;

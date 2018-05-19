@@ -1,20 +1,20 @@
 #define init
-global.sprSquareGun = sprite_add_weapon("sprites/sprSquareGun.png", 0, 2);
+global.sprSquareRifle = sprite_add_weapon("sprites/sprSquareRifle.png", 0, 2);
 
 #define weapon_name
-return "SQUARE GUN"
+return "SQUARE RIFLE"
 
 #define weapon_sprt
-return global.sprSquareGun;
+return global.sprSquareRifle;
 
 #define weapon_type
 return 5;
 
 #define weapon_auto
-return false;
+return true;
 
 #define weapon_load
-return 28;
+return 16;
 
 #define weapon_cost
 return 4;
@@ -26,7 +26,7 @@ return sndSwapEnergy;
 return 12;
 
 #define weapon_text
-return choose("NO HIDING NOW","LOOK AT THIS NERD");
+return choose("PLAY TETRIS");
 
 #define weapon_fire
 if skill_get(17){sound_play(sndPlasmaUpg)}else{sound_play(sndPlasma)}
