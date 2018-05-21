@@ -1,5 +1,5 @@
 #define init
-global.sprAssaultRockletRifle = sprite_add_weapon("sprites/sprAssaultRockletRifle.png", 2, 1);
+global.sprAssaultRockletRifle = sprite_add_weapon("sprites/sprAssaultRockletRifle.png", 5, 1);
 global.sprRocklet = sprite_add("sprites/projectiles/sprRocklet.png",0,0,3)
 
 #define weapon_name
@@ -15,7 +15,7 @@ return 12;
 return false;
 
 #define weapon_load
-return 12;
+return 15;
 
 #define weapon_cost
 return 2;
@@ -32,9 +32,11 @@ return "replace me please";
 #define weapon_fire
 repeat(3)
 {
-  weapon_post(4,-3,2)
-  sound_play_pitch(sndSlugger,2)
-  sound_play_pitch(sndRocket,random_range(1.2,1.4))
+  weapon_post(4,-3,8)
+    sound_play_pitch(sndSlugger,2)
+    sound_play_pitch(sndRocketFly,random_range(2.6,3.2))
+    sound_play_pitch(sndGrenadeRifle,random_range(.3,.4))
+    sound_play_pitch(sndMachinegun,random_range(.7,.8))
   with instance_create(x,y,CustomProjectile)
   {
     sprite_index = global.sprRocklet
@@ -56,7 +58,7 @@ repeat(3)
     on_step = rocket_step
     on_destroy = rocket_destroy
   }
-  wait(2)
+  wait(3)
 }
 
 #define rocket_step

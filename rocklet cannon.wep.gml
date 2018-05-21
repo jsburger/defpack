@@ -1,5 +1,5 @@
 #define init
-global.sprRockletCannon = sprite_add_weapon("sprites/sprRockletCannon.png", -1, 1);
+global.sprRockletCannon = sprite_add_weapon("sprites/sprRockletCannon.png", 5, 3);
 global.sprRocklet       = sprite_add("sprites/projectiles/sprRocklet.png",0,0,3)
 global.sprPuncherRocket = sprite_add("sprites/projectiles/sprPuncherRocket.png",0,6,4)
 
@@ -31,9 +31,11 @@ return 3;
 return "replace me please";
 
 #define weapon_fire
-weapon_post(6,-3,18)
-sound_play(sndRocket)
-sound_play(sndRocketFly)
+weapon_post(7,-3,20)
+sound_play_pitch(sndSlugger,1.3)
+sound_play_pitch(sndRocketFly,random_range(2,2.6))
+sound_play_pitch(sndGrenadeRifle,random_range(.2,.3))
+sound_play_pitch(sndHeavyNader,random_range(.7,.8))
 with instance_create(x,y,CustomProjectile)
 {
   creator = other
@@ -72,7 +74,9 @@ var i = random(360);
 if fork(){
     repeat(ammo){
         sound_play_pitch(sndSlugger,2)
-        sound_play_pitch(sndRocket,random_range(1.2,1.4))
+        sound_play_pitch(sndRocketFly,random_range(2.6,3.2))
+        sound_play_pitch(sndGrenadeRifle,random_range(.3,.4))
+        sound_play_pitch(sndMachinegun,random_range(.7,.8))
         with instance_create(x,y,CustomProjectile)
         {
           sprite_index = global.sprRocklet

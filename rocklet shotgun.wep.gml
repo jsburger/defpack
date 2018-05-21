@@ -1,5 +1,5 @@
 #define init
-global.sprRockletShotgun = sprite_add_weapon("sprites/sprRockletShotgun.png", -1, 1);
+global.sprRockletShotgun = sprite_add_weapon("sprites/sprRockletShotgun.png", 4, 2);
 global.sprRocklet = sprite_add("sprites/projectiles/sprRocklet.png",0,0,3)
 
 #define weapon_name
@@ -32,9 +32,13 @@ return "replace me please";
 #define weapon_fire
 if fork(){
     repeat(5){
-      weapon_post(4,-3,2)
+      weapon_post(7,-3,17)
         sound_play_pitch(sndSlugger,2)
-        sound_play_pitch(sndRocket,random_range(1.2,1.4))
+        sound_play_pitch(sndDoubleShotgun,.8)
+        sound_play_pitch(sndShotgun,1.2)
+        sound_play_pitch(sndRocketFly,random_range(2.6,3.2))
+        sound_play_pitch(sndGrenadeRifle,random_range(.3,.4))
+        sound_play_pitch(sndMachinegun,random_range(.7,.8))
         with instance_create(x,y,CustomProjectile)
         {
           sprite_index = global.sprRocklet
@@ -42,7 +46,7 @@ if fork(){
           damage = 3
           team = creator.team
           move_contact_solid(other.gunangle,8)
-          motion_add(other.gunangle+random_range(-42,42)*creator.accuracy,2)
+          motion_add(other.gunangle+random_range(-17,17)*creator.accuracy,2)
           maxspeed = random_range(10,14)
           timer = 7
           typ = 1

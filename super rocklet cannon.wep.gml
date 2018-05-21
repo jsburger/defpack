@@ -1,5 +1,5 @@
 #define init
-global.sprSuperRockletCannon = sprite_add_weapon("sprites/sprSuperRockletCannon.png", -1, 1);
+global.sprSuperRockletCannon = sprite_add_weapon("sprites/sprSuperRockletCannon.png", 6, 6);
 global.sprRocklet            = sprite_add("sprites/projectiles/sprRocklet.png",0,0,3)
 global.sprPuncherRocket      = sprite_add("sprites/projectiles/sprPuncherRocket.png",0,6,4)
 global.sprSuperRocklet       = sprite_add("sprites/projectiles/sprSuperRocklet.png",0,0,6)
@@ -17,7 +17,7 @@ return 4;
 return false;
 
 #define weapon_load
-return 32;
+return 76;
 
 #define weapon_cost
 return 12;
@@ -32,10 +32,14 @@ return 3;
 return "replace me please";
 
 #define weapon_fire
-weapon_post(6,-3,18)
-sound_play(sndNukeFire)
-sound_play(sndRocketFly)
-
+weapon_post(10,-7,54)
+motion_add(gunangle-180,5)
+sound_play_pitch(sndHeavySlugger,1.3)
+sound_play_pitch(sndNukeFire,random_range(1.3,1.5))
+sound_play_pitch(sndRocketFly,random_range(1.8,2.2))
+sound_play_pitch(sndGrenadeRifle,random_range(.2,.3))
+sound_play_pitch(sndHeavyNader,random_range(.7,.8))
+sound_play_pitch(sndHeavyMachinegun,random_range(.6,.7))
 with instance_create(x,y,CustomProjectile)
 {
   creator = other
@@ -73,8 +77,10 @@ if speed > maxspeed{speed = maxspeed}
 var i = random(360);
 if fork(){
     repeat(ammo){
-        sound_play_pitch(sndSlugger,2)
-        sound_play_pitch(sndRocket,random_range(1.2,1.4))
+        sound_play_pitch(sndSlugger,1.3)
+        sound_play_pitch(sndRocketFly,random_range(2,2.6))
+        sound_play_pitch(sndGrenadeRifle,random_range(.2,.3))
+        sound_play_pitch(sndHeavyNader,random_range(.7,.8))
         with instance_create(x,y,CustomProjectile)
         {
           creator = other
@@ -119,7 +125,9 @@ var i = random(360);
 if fork(){
     repeat(ammo){
         sound_play_pitch(sndSlugger,2)
-        sound_play_pitch(sndRocket,random_range(1.2,1.4))
+        sound_play_pitch(sndRocketFly,random_range(2.6,3.2))
+        sound_play_pitch(sndGrenadeRifle,random_range(.3,.4))
+        sound_play_pitch(sndMinigun,random_range(.7,.8))
         with instance_create(x,y,CustomProjectile)
         {
           sprite_index = global.sprRocklet

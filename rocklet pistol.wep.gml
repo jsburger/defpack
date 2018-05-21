@@ -32,9 +32,11 @@ return "replace me please";
 #define weapon_fire
 if fork(){
     repeat(1){
-      weapon_post(4,-3,2)
+      weapon_post(4,-3,6)
         sound_play_pitch(sndSlugger,2)
-        sound_play_pitch(sndRocket,random_range(1.2,1.4))
+        sound_play_pitch(sndRocketFly,random_range(2.6,3.2))
+        sound_play_pitch(sndGrenadeRifle,random_range(.3,.4))
+        sound_play_pitch(sndMachinegun,random_range(.7,.8))
         with instance_create(x,y,CustomProjectile)
         {
           sprite_index = global.sprRocklet
