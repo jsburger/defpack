@@ -1,6 +1,8 @@
 #define init
 global.sprSniperThunderRifle = sprite_add_weapon("sprites/sprSniperThunderRifle.png", 5, 3);
-global.sprLightningBullet = sprite_add("defpack tools/Lightning Bullet.png", 2, 8, 8)
+global.sprLightningBullet 	 = sprite_add("defpack tools/Lightning Bullet.png", 2, 8, 8)
+global.sprLightningBulletHit = sprite_add("defpack tools/Lightning Bullet Hit.png", 4, 8, 8)
+
 #define weapon_name
 return "SNIPER THUNDER RIFLE"
 
@@ -79,17 +81,11 @@ repeat(2)
 			dd = 0
 			recycleset=0
 			image_angle = other.gunangle
+			on_destroy = bolttrail_destroy
 			direction = other.gunangle+random_range(-3,3)*other.accuracy
 			do
 			{
 				dir += 1 x += lengthdir_x(1,direction) y += lengthdir_y(1,direction)
-				with instance_create(x,y,BoltTrail)
-				{
-					image_blend = c_blue
-					image_angle = other.direction
-					image_yscale = 1.2+skill_get(17)*.2
-					image_xscale = 1
-				}
 				if random(21) < 1*current_time_scale
 				{
 					with instance_create(x,y,Lightning)
@@ -136,6 +132,32 @@ repeat(2)
 
 #define muzzle_step
 if image_index > 1{instance_destroy()}
+
+#define bolttrail_destroy
+with instance_create(x,y,BoltTrail)
+{
+	image_blend = c_blue
+	image_yscale = 1.2+skill_get(17)*.2
+	image_xscale = point_distance(x,y,x-lengthdir_x(other.dir,other.direction),y-lengthdir_y(other.dir,other.direction))
+	image_angle = point_direction(x,y,x-lengthdir_x(other.dir,other.direction),y-lengthdir_y(other.dir,other.direction))
+}
+with instance_create(x,y,Lightning){
+	image_angle = random(360)
+	creator = other.creator
+	team = other.team
+	ammo = 6
+	alarm0 = 1
+	visible = 0
+	with instance_create(x,y,LightningSpawn)
+	{
+	   image_angle = other.image_angle
+	}
+	sound_play_hit(sndHitWall,.2)
+}
+with instance_create(x,y,BulletHit){
+	direction = other.direction
+	sprite_index = global.sprLightningBulletHit
+}
 
 #define muzzle_draw
 draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, image_yscale, image_angle, image_blend, 1.0);

@@ -30,12 +30,13 @@ return 6;
 return "HUMORON";
 
 #define weapon_fire
-var _strtsize = 44-skill_get(13)*15;
-var _endsize  = 22;
-with mod_script_call("mod","defpack tools","create_abris",self,44,22,argument0)
+var _strtsize = 12;
+var _endsize  = 12;
+with mod_script_call("mod","defpack tools","create_abris",self,_strtsize,_endsize,argument0)
 {
 	circlemass = 8 + skill_get(17)*6
-	accspeed = 1.14
+	accspeed = .9
+	maxradius = 70
 	payload = script_ref_create(pop)
 	lasercolour1 = $00FF00
 	lasercolour = lasercolour1
@@ -52,7 +53,7 @@ if !skill_get(17){sound_play_pitch(sndPlasmaBigExplode,1.2)}
 creator.wkick = 4
 repeat(circlemass)
 {
-	with instance_create(mouse_x[index]+lengthdir_x(acc+16+6,offset2),mouse_y[index]+lengthdir_y(acc+16+6,offset2),PlasmaImpact)
+	with instance_create(explo_x+lengthdir_x(acc+16+6,offset2),explo_y+lengthdir_y(acc+16+6,offset2),PlasmaImpact)
 	{
 		image_xscale = .5
 		image_yscale = .5
@@ -66,27 +67,26 @@ repeat(circlemass)
 if instance_exists(creator) && check{
 	x = creator.x
 	y = creator.y
+	if mod_script_call("mod","defpack tools","collision_line_first",x,y,mouse_x[index],mouse_y[index],Wall,0,0) > -4
+	{
+		var _wall = mod_script_call("mod","defpack tools","collision_line_first",x,y,mouse_x[index],mouse_y[index],Wall,0,0);
+		var _tarx = x + lengthdir_x(point_distance(x,y,_wall.x,_wall.y),creator.gunangle);
+		var _tary = y + lengthdir_y(point_distance(x,y,_wall.x,_wall.y),creator.gunangle);
+	}
+	else
+	{
+		var _tarx = mouse_x[index];
+		var _tary = mouse_y[index];
+	}
 	if button_check(creator.index, (check = 1? "fire":"spec")){
-		if !collision_line(x,y,mouse_x[index],mouse_y[index],Wall,0,0){
 			var radi = acc+accmin;
-			mod_script_call("mod", "defpack tools","draw_polygon_striped", 16, radi, 45, mouse_x[index]+1, mouse_y[index]+1, global.stripes, lasercolour1, 0.1+(accbase-acc)/(accbase*5),(current_frame mod 16)*.004);
-			mod_script_call("mod", "defpack tools","draw_circle_width_colour",16,radi+6,1,acc+(image_angle*-1),mouse_x[index],mouse_y[index],lasercolour1,.8)
-			mod_script_call("mod", "defpack tools","draw_circle_width_colour",16,radi,1,acc+image_angle,mouse_x[index],mouse_y[index],lasercolour1,1*(accbase-acc))
-			mod_script_call("mod", "defpack tools","draw_circle_width_colour",16, accmin,1,acc+image_angle,mouse_x[index],mouse_y[index],lasercolour1,.2)
-			draw_line_width_colour(x,y,mouse_x[index],mouse_y[index],1,lasercolour1,lasercolour1);
+			mod_script_call("mod", "defpack tools","draw_polygon_striped", 16, radi, 45, _tarx+1, _tary+1, global.stripes, lasercolour1,1-(accbase-acc)/(accbase*5),(current_frame mod 16)*.004);
+			mod_script_call("mod", "defpack tools","draw_circle_width_colour",16,radi+6,1,acc+(image_angle*-1),_tarx,_tary,lasercolour1,.8)
+			mod_script_call("mod", "defpack tools","draw_circle_width_colour",16,radi,1,acc+image_angle,_tarx,_tary,lasercolour1,1-1*(accbase-acc))
+			mod_script_call("mod", "defpack tools","draw_circle_width_colour",16, accmin,1,acc+image_angle,_tarx,_tary,lasercolour1,.2)
+			draw_line_width_colour(x,y,_tarx,_tary,1,lasercolour1,lasercolour1);
 		}
-		else{
-			var q = instance_create(x,y,CustomObject);
-			with q{
-				mask_index = sprBulletShell
-				image_angle = other.creator.gunangle
-				move_contact_solid(image_angle,game_width)
-			}
-			draw_line_width_colour(x,y,q.x,q.y,1,lasercolour2,lasercolour2)
-			with q instance_destroy()
 		}
 		var comp = (check = 1 ? creator.wep : creator.bwep);
 		if popped {comp = wep}
 		if wep != comp {instance_destroy()}
-	}
-}

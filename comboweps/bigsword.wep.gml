@@ -31,7 +31,7 @@ wepflip *= -1
 if "bigsword" not in self{
 	bigsword = 1
 }
-bigsword = ++bigsword mod (30 *(1+(skill_get(mut_long_arms)*1)))
+bigsword += bigsword mod (30 *(1+(skill_get(mut_long_arms)*1))) * current_time_scale
 nexthurt = current_frame + 2
 sound_play_pitch(sndHammer,1 + bigsword*.008)
 with instance_create(x,y,CustomSlash){

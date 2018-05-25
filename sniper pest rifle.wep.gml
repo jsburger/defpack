@@ -1,6 +1,7 @@
 #define init
 global.sprSniperPestRifle = sprite_add_weapon("sprites/sprSniperPestRifle.png", 5, 3);
-global.sprToxicBullet = sprite_add("defpack tools/Toxic Bullet.png", 2, 8, 8)
+global.sprToxicBullet 		= sprite_add("defpack tools/Toxic Bullet.png", 2, 8, 8)
+global.sprToxicBulletHit  = sprite_add("defpack tools/Toxic Bullet Hit.png", 4, 8, 8)
 #define weapon_name
 return "SNIPER PEST RIFLE"
 
@@ -75,16 +76,10 @@ with mod_script_call("mod", "defpack tools", "create_toxic_bullet",x+lengthdir_x
 		recycleset=0
 		image_angle = other.gunangle
 		direction = other.gunangle
+		on_destroy = bolttrail_destroy
 		do
 		{
 			dir += 1 x += lengthdir_x(1,direction) y += lengthdir_y(1,direction)
-			with instance_create(x,y,BoltTrail)
-			{
-				image_blend = c_lime
-				image_angle = other.direction
-				image_yscale = 1.2
-				image_xscale = 1
-			}
 			if random(14) < 1*current_time_scale && dir > 24{instance_create(x,y,ToxicGas)}
 			with instances_matching_ne(CrystalShield, "team", other.team){if place_meeting(x,y,other){other.team = team;other.direction = point_direction(x,y,other.x,other.y);other.image_angle = other.direction;with instance_create(other.x,other.y,Deflect){image_angle = other.direction;sound_play_pitch(sndCrystalRicochet,random_range(.9,1.1))}}}
 			with instances_matching_ne(PopoShield, "team", other.team){if place_meeting(x,y,other){other.team = team;other.direction = point_direction(x,y,other.x,other.y);other.image_angle = other.direction;with instance_create(other.x,other.y,Deflect){image_angle = other.direction;sound_play_pitch(sndShielderDeflect,random_range(.9,1.1))}}}
@@ -112,6 +107,22 @@ with mod_script_call("mod", "defpack tools", "create_toxic_bullet",x+lengthdir_x
 		while instance_exists(self) and dir < 1000
 		instance_destroy()
 	}
+
+#define bolttrail_destroy
+with instance_create(x,y,BoltTrail)
+{
+	image_blend = c_lime
+	image_yscale = 1.2
+	image_xscale = point_distance(x,y,x-lengthdir_x(other.dir,other.direction),y-lengthdir_y(other.dir,other.direction))
+	image_angle  = point_direction(x,y,x-lengthdir_x(other.dir,other.direction),y-lengthdir_y(other.dir,other.direction))
+}
+repeat(5){instance_create(x,y,ToxicGas)}
+with instance_create(x,y,BulletHit)
+{
+	sprite_index = global.sprToxicBulletHit
+	direction		 = other.direction
+}
+if place_meeting(x + hspeed,y +vspeed,Wall){sound_play_hit(sndHitWall,.2)}
 
 #define muzzle_step
 if image_index > 1{instance_destroy()}

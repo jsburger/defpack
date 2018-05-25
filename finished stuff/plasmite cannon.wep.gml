@@ -1,7 +1,7 @@
 #define init
 global.sprPlasmiteCannon = sprite_add_weapon("sprPlasmiteCannon.png",0,1)
-global.sprMagnetBomb = sprite_add("sprMagnetBomb.png",0,3,3)
 global.sprPlasmiteBig = sprite_add("sprPlasmiteBig.png",0,9,9)
+
 #define weapon_name
 return "PLASMITE CANNON"
 #define weapon_sprt
@@ -48,6 +48,7 @@ with instance_create(x,y,CustomProjectile)
 	motion_set(other.gunangle+random_range(-6,6)*other.accuracy,3)
 	image_angle = direction
 	speedset = 0
+	ammo = 8
 	on_step 	 = atom_step
 	on_wall 	 = mb_wall
 	on_destroy = atom_destroy
@@ -61,7 +62,7 @@ with instance_create(x,y,CustomProjectile)
 			image_speed = 0
 			image_index = 0
 			damage = 2+skill_get(17)
-			sprite_index = global.sprMagnetBomb
+			sprite_index = sprPlasmaTrail
 			fric = random_range(1.25,1.37)
 			motion_set(other.creator.gunangle+random_range(-30,30),random_range(12,19))
 			speedset = 1
@@ -98,24 +99,18 @@ draw_set_blend_mode(bm_normal)
 #define atom_destroy
 sound_play_pitch(sndPlasmaBigExplodeUpg,random_range(1.2,1.4))
 instance_create(x,y,PlasmaImpact)
-repeat(6)
+var i = random(360);
+repeat(ammo)
 {
-	with instance_create(x,y,CustomProjectile)
+	with mod_script_call("mod","defpack tools","create_plasmite",x,y)
 	{
-		creator = other
+		creator = other.creator
 		team = other.team
-		image_speed = 0
-		image_index = 0
-		damage = 2+skill_get(17)
-		sprite_index = global.sprMagnetBomb
-		fric = random_range(1.06,1.11)
-		motion_set(random(359),random_range(6,8))
-		speedset = 0
-		maxspeed = 6
-		on_step 	 = mb_step
-		on_wall 	 = mb_wall
-		on_destroy = mb_destroy
+		speedset = 1
+		fric = random_range(1.06,1.08)
+		motion_set(i+random_range(-12,21)*creator.accuracy,14)
 	}
+	i += 360/ammo
 }
 
 #define mb_wall
@@ -130,20 +125,20 @@ image_angle = direction
 if irandom(12-skill_get(17)*5) = 1{instance_create(x,y,PlasmaTrail)}
 if speedset = 0
 {
-	move_bounce_solid(false)
 	speed/= fric
 	if speed < 1.00005{speedset = 1}
-	direction += random_range(7,12)
 }
 else
 {
 	if instance_exists(enemy)
 	{
 		var closeboy = instance_nearest(x,y,enemy)
+		if distance_to_object(closeboy) < 70
 		motion_add(point_direction(x,y,closeboy.x,closeboy.y),.5+skill_get(17)*.3)
-		if speed > maxspeed{speed = maxspeed}
 	}
-	else motion_add(direction,.5)
+	if speed > maxspeed{speed = maxspeed}
+	maxspeed /= fric
+	if maxspeed <= fric instance_destroy()
 }
 
 

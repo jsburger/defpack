@@ -11,7 +11,7 @@ return "SPY REVOLVER";
 return 1;
 
 #define weapon_cost
-return 2;
+return 4;
 
 #define weapon_area
 //50% reduced chance to spawn, i think
@@ -19,7 +19,8 @@ if !irandom(1) return 11;
 else return -1;
 
 #define weapon_load
-return 24; //.8s which is the swing period of the TF2 spy knife
+return round(.58 * room_speed * current_time_scale) //this however is the revolver RoF
+//return 24; //.8s which is the swing period of the TF2 spy knife
 
 #define weapon_swap
 return sndSwapPistol
@@ -28,9 +29,14 @@ return sndSwapPistol
 return 0;
 
 #define weapon_fire
-weapon_post(2,-3,3)
-sound_play(sndPistol);
-mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, 2+random(3), c_blue)
+weapon_post(4,-3,15)
+//sound_play_pitch(sndServerBreak,.6); uwu
+//sound_play_pitch(sndMinigun,.6);
+sound_play_pitch(sndFlakCannon,.6);
+sound_play_pitch(sndPistol,1.1);
+sound_play_pitchvol(sndLightningRifleUpg,.9,.6);
+sound_set_track_position(sndLightningRifleUpg,.3)
+mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, 2+random(3), c_yellow)
 with instance_create(x + lengthdir_x(6,gunangle),y + lengthdir_y(6,gunangle),CustomProjectile){
 	motion_set(other.gunangle,3)
 	mask_index = mskBullet1
@@ -79,6 +85,11 @@ with instance_nearest(x,y,enemy) if distance_to_object(other) <= 64{
 			canstab = 0
 			stabsremaining -=1
 			with other if "my_health" in self{
+				view_shake_max_at(x,y,200)
+		    sleep(30)
+		    sound_play_pitchvol(sndHammerHeadEnd,random_range(1.23,1.33),20)
+		    sound_play_pitchvol(sndBasicUltra,random_range(0.9,1.1),20)
+		    sound_play_pitch(sndCoopUltraA,random_range(3.8,4.05))
 				projectile_hit(self, my_health);
 			}
 		}

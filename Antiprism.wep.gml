@@ -105,7 +105,7 @@ if PrismText = false
 }
 
 #define gui_step
-if !instance_exists(owner) || !button_check(owner.index,"horn") || !button_check(owner.index,"fire") || (owner.wep != "antiprism" && owner.bwep != "antiprism"){owner.PrismText = false;instance_destroy();exit}
+if !instance_exists(owner) || !button_check(owner.index,"horn") || button_pressed(owner.index,"fire") || (owner.wep != "antiprism" && owner.bwep != "antiprism"){owner.PrismText = false;instance_destroy();exit}
 x = owner.x
 y = owner.y
 
@@ -345,38 +345,3 @@ if place_meeting(x,y,Wall){instance_destroy()}
 #define lt_step
 if collision_circle(x,y,16,Wall,false,true)
 {repeat(4)with instance_nearest(x,y,Wall){if distance_to_object(other)<= 32{instance_create(x,y,FloorExplo);instance_destroy()}}instance_destroy()}
-/*
-else
-{
-	pspreadamount = choose(3,4,6)
-	pspread = -10*pspreadamount
-	repeat(pspreadamount)
-	{
-		with mod_script_call("mod","defpack tools","create_"+"dark"+"_bullet",x,y){
-			motion_add(other.gunangle,12)
-			direction += other.pspread
-			//pattern = "pspread"
-			image_angle = direction
-			team = other.team
-			creator = other
-		}
-		pspread += 10*(pspreadamount/10)*pspreadamount
-	}
-}
-/*
-if current_frame % 2 = 0
-with mod_script_call("mod","defpack tools","create_light_bullet",x,y){
-	motion_add(other.gunangle+random_range(-2,2)*other.accuracy,22)
-	image_angle = direction
-	team = other.team
-	maxspeed = 7
-	creator = other
-}
-else
-with mod_script_call("mod","defpack tools","create_dark_bullet",x,y){
-	motion_add(other.gunangle+random_range(-2,2)*other.accuracy,22)
-	image_angle = direction
-	team = other.team
-	maxspeed = 7
-	creator = other
-}

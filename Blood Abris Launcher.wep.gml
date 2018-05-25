@@ -66,12 +66,12 @@ sound_play(sndBloodLauncher)
 sound_play(sndBloodLauncherExplo)
 creator.wkick = 2
 repeat(4){
-instance_create(mouse_x[index]+lengthdir_x(acc+12,offset),mouse_y[index]+lengthdir_y(acc+12,offset),MeatExplosion);
-with instance_create(mouse_x[index]+lengthdir_x(acc+12,offset+90),mouse_y[index]+lengthdir_y(acc+12,offset+90),BloodStreak)
+instance_create(explo_x+lengthdir_x(acc+12,offset),explo_y+lengthdir_y(acc+12,offset),MeatExplosion);
+with instance_create(explo_x+lengthdir_x(acc+12,offset+90),explo_y+lengthdir_y(acc+12,offset+90),BloodStreak)
 {
 	image_angle = point_direction(x,y,mouse_x[other.index],mouse_y[other.index])
 }
-with instance_create(mouse_x[index]+lengthdir_x(acc+22,offset+45),mouse_y[index]+lengthdir_y(acc+22,offset+45),BloodStreak)
+with instance_create(explo_x+lengthdir_x(acc+22,offset+45),explo_y+lengthdir_y(acc+22,offset+45),BloodStreak)
 {
 	image_angle = point_direction(x,y,mouse_x[other.index],mouse_y[other.index])
 }
@@ -103,7 +103,7 @@ if instance_exists(creator)
 	x = creator.x
 	y = creator.y
 	offset = random(359)
-	if collision_line(x,y,mouse_x[index],mouse_y[index],Wall,0,0) >= 0
+	if collision_line(x,y,explo_x,explo_y,Wall,0,0) >= 0
 	{
 		if acc < accbase{acc += abs(creator.accuracy*3)}else{acc = accbase}
 	}
@@ -112,13 +112,13 @@ if instance_exists(creator)
 		if creator.ammo[4] >= 1
 		{
 			if creator.infammo <= 0{creator.ammo[4] -= 1}
-			if collision_line(x,y,mouse_x[index],mouse_y[index],Wall,0,0) < 0
+			if collision_line(x,y,explo_x,explo_y,Wall,0,0) < 0
 			{
 				sound_play(sndBloodLauncher)
 				sound_play(sndBloodLauncherExplo)
 				creator.wkick = 5
         repeat(3){
-        instance_create(mouse_x[index]+random_range(-20,20),mouse_y[index]+random_range(-20,20),MeatExplosion);
+        instance_create(explo_x+random_range(-20,20),explo_y+random_range(-20,20),MeatExplosion);
         }
 			}
 			else
@@ -128,7 +128,7 @@ if instance_exists(creator)
 		}
     else
     {
-        if collision_line(x,y,mouse_x[index],mouse_y[index],Wall,0,0) = noone
+        if collision_line(x,y,explo_x,explo_y,Wall,0,0) = noone
   			{
 					with creator
 					{
@@ -142,7 +142,7 @@ if instance_exists(creator)
 					}
   				creator.wkick = 5
           repeat(3){
-          instance_create(mouse_x[index]+random_range(-20,20),mouse_y[index]+random_range(-20,20),MeatExplosion);
+          instance_create(explo_x+random_range(-20,20),explo_y+random_range(-20,20),MeatExplosion);
           }
   			}
       else
@@ -160,27 +160,27 @@ if creator.ammo[4] < 0{instance_destroy()}
 else
 if instance_exists(creator)
 {
-	if collision_line(x,y,mouse_x[index],mouse_y[index],Wall,0,0) < 0
+	if collision_line(x,y,explo_x,explo_y,Wall,0,0) < 0
 	{
 		lasercolour = merge_colour(lasercolour1,lasercolour,.11)
-		draw_line_width_colour(x,y,mouse_x[index],mouse_y[index],1,lasercolour,lasercolour);
-		mod_script_call("mod", "defpack tools","draw_circle_width_colour",16,acc+30,1,acc+image_angle,mouse_x[index],mouse_y[index],lasercolour1,1*(accbase-acc))
-		mod_script_call("mod", "defpack tools","draw_circle_width_colour",16,30,1,acc+image_angle,mouse_x[index],mouse_y[index],lasercolour1,.2)
-		mod_script_call("mod", "defpack tools","draw_polygon_striped", 16, acc+30, 45, mouse_x[index]+1, mouse_y[index]+1, global.stripes, lasercolour, 0.1+(accbase-acc)/(accbase*6));
+		draw_line_width_colour(x,y,explo_x,explo_y,1,lasercolour,lasercolour);
+		mod_script_call("mod", "defpack tools","draw_circle_width_colour",16,acc+30,1,acc+image_angle,explo_x,explo_y,lasercolour1,1*(accbase-acc))
+		mod_script_call("mod", "defpack tools","draw_circle_width_colour",16,30,1,acc+image_angle,explo_x,explo_y,lasercolour1,.2)
+		mod_script_call("mod", "defpack tools","draw_polygon_striped", 16, acc+30, 45, explo_x+1, explo_y+1, global.stripes, lasercolour, 0.1+(accbase-acc)/(accbase*6));
 	}
 	else
 	{
-		var hitwall = collision_line(x,y,mouse_x[index],mouse_y[index],Wall,0,0)//there is currently a bug where this chooses the furthest wall if you aim through multiple walls pls fix
+		var hitwall = collision_line(x,y,explo_x,explo_y,Wall,0,0)//there is currently a bug where this chooses the furthest wall if you aim through multiple walls pls fix
 	}
 	lasercolour = merge_colour(lasercolour,lasercolour2,.33)
 	draw_line_width_colour(x,y,x+lengthdir_x(point_distance(x,y,hitwall.x,hitwall.y),creator.gunangle),y+lengthdir_y(point_distance(x,y,hitwall.x,hitwall.y),creator.gunangle),1,lasercolour,lasercolour)
 	if weapon_get_name(creator.wep) != "BLOOD ABRIS LAUNCHER"{instance_destroy()}
 }/*
 
-if (place_meeting(mouse_x[index],mouse_y[index],Floor) && collision_line(x,y,mouse_x[index],mouse_y[index],Wall,0,0) < 0) || instance_exists(Nothing2)
+if (place_meeting(explo_x,explo_y,Floor) && collision_line(x,y,explo_x,explo_y,Wall,0,0) < 0) || instance_exists(Nothing2)
 {
 repeat(3){
-instance_create(mouse_x[index]+random_range(-20,20),mouse_y[index]+random_range(-20,20),MeatExplosion);
+instance_create(explo_x+random_range(-20,20),explo_y+random_range(-20,20),MeatExplosion);
 }
 sound_play(sndBloodLauncher);
 sound_play(sndBloodLauncherExplo);

@@ -28,6 +28,7 @@
 /loadwep hyper fire rifle
 /loadwep fire minigun
 /loadwep double fire minigun
+/loadwep smart fire gun
 /loadwep fire bullet cannon
 /loadwep fire gunhammer
 /loadwep fire bullet cannon
@@ -44,6 +45,7 @@
 /loadwep hyper pest rifle
 /loadwep pest minigun
 /loadwep double pest minigun
+/loadwep smart pest gun
 /loadwep pest bullet cannon
 /loadwep pest gunhammer
 /loadwep pest bullet cannon
@@ -60,6 +62,7 @@
 /loadwep hyper thunder rifle
 /loadwep thunder minigun
 /loadwep double thunder minigun
+/loadwep smart thunder gun
 /loadwep thunder bullet cannon
 /loadwep thunder gunhammer
 /loadwep thunder bullet cannon
@@ -76,6 +79,7 @@
 /loadwep hyper psy rifle
 /loadwep psy minigun
 /loadwep double psy minigun
+/loadwep smart psy gun
 /loadwep psy bullet cannon
 /loadwep psy gunhammer
 /loadwep psy bullet cannon
@@ -122,6 +126,7 @@
 /loadwep phlogenitator
 
 //OTHER SHELL
+/loadwep popper
 /loadwep super heavy slugger
 /loadwep apergig tanat
 
@@ -148,12 +153,21 @@
 //ABRIS
 /loadwep abris pistol
 /loadwep abris launcher
-/loadwep heavy abris launcher
+/loadwep abris rifle
 /loadwep auto abris launcher
 /loadwep super abris launcher
 /loadwep blood abris launcher
 /loadwep plasma abris launcher
 /loadwep inquisitor
+
+//ROCKLET
+/loadwep rocklet pistol
+/loadwep rocklet rifle
+/loadwep assault rocklet rifle
+/loadwep rocklet shotgun
+/loadwep rocklet minigun
+/loadwep rocklet cannon
+/loadwep super rocklet cannon
 
 //SONIC
 /loadwep sonic launcher
@@ -200,12 +214,15 @@
 /loadwep finished stuff/vector shotgun
 
 //PLASMITE
+/loadwep finished stuff/plasmite pistol
 /loadwep finished stuff/plasmite rifle
 /loadwep finished stuff/plasmite shotgun
 /loadwep finished stuff/plasmite cannon
 
 //SQUARE
 /loadwep square gun
+/loadwep square rifle
+/loadwep square cannon
 
 //LIGHTNING
 /loadwep thundercrash

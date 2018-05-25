@@ -82,13 +82,6 @@ with instance_create(x,y,CustomObject)
 do
 {
 	dir += 1 x += lengthdir_x(1,direction) y += lengthdir_y(1,direction)
-	with instance_create(x,y,BoltTrail)
-  {
-    image_blend = c_yellow
-    image_angle = other.direction
-    image_yscale = 1.2
-    image_xscale = 1
-  }
 	//redoing reflection code since the collision event of the reflecters doesnt work in substeps (still needs slash reflection)
 	with instances_matching_ne(CrystalShield, "team", other.team){if place_meeting(x,y,other){other.team = team;other.direction = point_direction(x,y,other.x,other.y);other.image_angle = other.direction;with instance_create(other.x,other.y,Deflect){image_angle = other.direction;sound_play_pitch(sndCrystalRicochet,random_range(.9,1.1))}}}
 	with instances_matching_ne(PopoShield, "team", other.team){if place_meeting(x,y,other){other.team = team;other.direction = point_direction(x,y,other.x,other.y);other.image_angle = other.direction;with instance_create(other.x,other.y,Deflect){image_angle = other.direction;sound_play_pitch(sndShielderDeflect,random_range(.9,1.1))}}}
@@ -117,6 +110,13 @@ while instance_exists(self) and dir < 1000
 instance_destroy()
 
 #define sniper_destroy
+with instance_create(x,y,BoltTrail)
+{
+	image_blend = c_yellow
+	image_yscale = 1.4
+	image_xscale = point_distance(x,y,x-lengthdir_x(other.dir,other.direction),y-lengthdir_y(other.dir,other.direction))
+	image_angle = point_direction(x,y,x-lengthdir_x(other.dir,other.direction),y-lengthdir_y(other.dir,other.direction))
+}
 instance_create(x,y,BulletHit)
 
 #define muzzle_step
