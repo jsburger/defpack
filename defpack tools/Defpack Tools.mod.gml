@@ -925,7 +925,6 @@ with instances_matching([Explosion,SmallExplosion,GreenExplosion,PopoExplosion],
     hitid = [sprite_index,string_replace(string_upper(object_get_name(object_index)),"EXPLOSION"," EXPLOSION")]
 }
 
-if button_pressed(0,"horn") create_lightning(mouse_x,mouse_y)
 //drop tables
 with Inspector			{if my_health <= 0 && irandom(97)=0{with instance_create(x,y,WepPickup){wep = choose("donut box","idpd slugger")}}};
 with Shielder 			{if my_health <= 0 && irandom(97)=0{with instance_create(x,y,WepPickup){wep = choose("donut box","idpd minigun")}}};
