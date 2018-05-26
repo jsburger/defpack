@@ -16,7 +16,7 @@ return true;
 return 6;
 
 #define weapon_cost
-return 2;
+return 3;
 
 #define weapon_swap
 return sndSwapPistol;
@@ -38,23 +38,56 @@ with instance_create(x,y,Bullet2)
 	team = other.team
 	image_xscale = 4/3
 	image_yscale = 4/3
+	accuracy = other.accuracy
 	move_contact_solid(other.gunangle,6)
 	motion_add(other.gunangle + random_range(-10,10)*other.accuracy,14)
-	damage += 4
+	damage += 2
 	image_angle = direction
-	on_destroy = script_ref_create(pop_destroy)
-}
-
-#define pop_destroy
-i = random(360);
-repeat(2)
-{
-	with instance_create(x,y,Bullet2)
+	if fork()
 	{
-		creator = other.creator
-		team = other.team
-		motion_add(i+random_range(-180,180)*creator.accuracy,16)
-		image_angle = direction
+			  var _team = team;
+				var _acc  = accuracy;
+				var _crtr = creator;
+        while instance_exists(self) && sprite_index != sprBullet2Disappear{var _x = x;var _y = y;wait(0)}
+        sound_play_pitchvol(sndFlakExplode,1.25,.2)
+				sound_play_pitch(sndHitWall,random_range(.8,1.2))
+				var i = random(360);
+				repeat(3)
+				{
+					with instance_create(_x,_y,Bullet2)
+					{
+						creator = _crtr
+						team    = _team
+						motion_add(i+random_range(-30,30)*_acc,10)
+						image_angle = direction
+					}
+					i += 360/3
+				}
+				if instance_exists(self) instance_destroy()
+    }
 	}
-	i += 360/2
+		/*
+	do
+	{
+		if speed < friction || (place_meeting(x,y,hitme) && other.team != team)
+		{
+			sound_play_pitch(sndHitWall,random_range(.8,1.2))
+			var i = random(360);
+			repeat(3)
+			{
+				with instance_create(x,y,Bullet2)
+				{
+					creator = other.creator
+					team = other.team
+					motion_add(i+random_range(-40,40)*creator.accuracy,10)
+					image_angle = direction
+				}
+				i += 360/3
+			}
+			instance_destroy()
+		}
+	wait(1)
+	}
+	while instance_exists(self)
+
 }
