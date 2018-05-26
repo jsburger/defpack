@@ -52,7 +52,7 @@ if fork(){
     var ind = index, load = 0;
     while global.gunindex[ind] <= 10{
         global.gunindex[ind] += current_time_scale*.4
-        if instance_exists(self) && floor(global.gunindex[ind]) = 4 && !load{
+        if instance_exists(self) && (floor(global.gunindex[ind]) = 4 && !load){
             repeat(interfacepop) with instance_create(x,y,Shell){
                 move_contact_solid(other.gunangle,6)
                 motion_set(other.gunangle+random_range(-15,15) + 90*other.right,random_range(3,5))
@@ -88,8 +88,8 @@ repeat(5){
 	with instance_create(x,y,FlakBullet){
 		team = other.team
 		creator = other
-    move_contact_solid(other.gunangle,10)
-		motion_add(other.gunangle+(random(80)-45)*other.accuracy,random_range(9,12))
+        move_contact_solid(other.gunangle,10)
+		motion_add(other.gunangle+(random_range(-40,40))*other.accuracy,random_range(9,12))
 		image_angle = direction
 	}
 }

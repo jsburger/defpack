@@ -21,6 +21,7 @@ global.sprDarkBulletHit = sprite_add("Dark Bullet Hit.png", 4, 8, 8)
 global.sprLightBullet = sprite_add("Light Bullet.png", 2, 8, 8)
 global.sprLightBulletHit = sprite_add("Light Bullet Hit.png", 4, 8, 8)
 global.sprPlasmite = sprite_add("sprPlasmite.png",0,3,3)
+global.sprRocklet = sprite_add("sprRocklet.png",0,0,3)
 
 global.sprSonicExplosion = sprite_add("Soundwave_strip8.png",8,61,59);
 global.mskSonicExplosion = sprite_add("mskSonicExplosion_strip9.png",9,32,32);
@@ -975,7 +976,6 @@ with instances_matching([Explosion,SmallExplosion,GreenExplosion,PopoExplosion],
     hitid = [sprite_index,string_replace(string_upper(object_get_name(object_index)),"EXPLOSION"," EXPLOSION")]
 }
 
-if button_pressed(0,"horn") create_lightning(mouse_x,mouse_y)
 //drop tables
 with Inspector			{if my_health <= 0 && irandom(97)=0{with instance_create(x,y,WepPickup){wep = choose("donut box","idpd slugger")}}};
 with Shielder 			{if my_health <= 0 && irandom(97)=0{with instance_create(x,y,WepPickup){wep = choose("donut box","idpd minigun")}}};
@@ -1345,3 +1345,52 @@ with instances_matching(CustomProjectile,"name","square")
 		with instance_create(x,y,PlasmaImpact){team = other.team}
 	}
 }
+
+
+#define create_rocklet(_x,_y)
+with instance_create(_x,_y,CustomProjectile){
+    sprite_index = global.sprRocklet
+    damage = 3
+    maxspeed = 12
+    timer = 7
+    typ = 1
+    friction = -.6
+    t = 0;
+    turn = choose(-1,1)
+    increment = random_range(32,36);
+    amplitude = random_range(1,7);
+    on_step = rocket_step
+    on_destroy = rocket_destroy
+    return id
+}
+
+#define rocket_step
+with instance_create(x,y,BoltTrail)
+{
+	image_blend = c_yellow
+	image_angle = other.direction
+	image_yscale = 1.2
+	image_xscale = 4+other.speed
+	if fork(){
+	    while instance_exists(self){
+	        image_blend = merge_color(image_blend,c_red,.11*current_time_scale)
+	        wait(0)
+	    }
+	    exit
+	}
+}
+timer -= current_time_scale;
+if timer <= 0
+{
+  t = (t + increment*current_time_scale) mod 360;
+  shift = amplitude * dsin(t);
+  direction += ((shift/2) * turn / 3)*current_time_scale
+}
+if speed > maxspeed{speed = maxspeed}
+image_angle = direction
+
+
+#define rocket_destroy
+sound_play(sndExplosionS)
+with instance_create(x+lengthdir_x(speed,direction),y+lengthdir_y(speed,direction),SmallExplosion){damage -= 2}
+
