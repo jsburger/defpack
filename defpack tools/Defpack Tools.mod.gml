@@ -21,7 +21,7 @@ global.sprDarkBulletHit = sprite_add("Dark Bullet Hit.png", 4, 8, 8)
 global.sprLightBullet = sprite_add("Light Bullet.png", 2, 8, 8)
 global.sprLightBulletHit = sprite_add("Light Bullet Hit.png", 4, 8, 8)
 global.sprPlasmite = sprite_add("sprPlasmite.png",0,3,3)
-global.sprRocklet = sprite_add("sprRocklet.png",0,0,3)
+global.sprRocklet = sprite_add("sprRocklet.png",2,2,6)
 
 global.sprSonicExplosion = sprite_add("Soundwave_strip8.png",8,61,59);
 global.mskSonicExplosion = sprite_add("mskSonicExplosion_strip9.png",9,32,32);
@@ -1351,46 +1351,46 @@ with instances_matching(CustomProjectile,"name","square")
 with instance_create(_x,_y,CustomProjectile){
     sprite_index = global.sprRocklet
     damage = 3
-    maxspeed = 12
-    timer = 7
+    maxspeed = 14
     typ = 1
+    direction_goal = 0
     friction = -.6
-    t = 0;
-    turn = choose(-1,1)
-    increment = random_range(32,36);
-    amplitude = random_range(1,7);
     on_step = rocket_step
     on_destroy = rocket_destroy
+    on_anim = bullet_anim
+    on_draw = rocket_draw
     return id
 }
 
 #define rocket_step
+direction -= (angle_difference(direction,direction_goal)*current_time_scale)/8
 with instance_create(x,y,BoltTrail)
 {
-	image_blend = c_yellow
+    image_blend = c_white
 	image_angle = other.direction
-	image_yscale = 1.2
-	image_xscale = 4+other.speed
+	image_yscale = .8
+	image_xscale = other.speed_raw - other.friction*current_time_scale
 	if fork(){
 	    while instance_exists(self){
-	        image_blend = merge_color(image_blend,c_red,.11*current_time_scale)
+	        image_yscale+=.02 * current_time_scale
+	        image_blend = merge_color(image_blend,c_black,.05*current_time_scale)
 	        wait(0)
 	    }
 	    exit
 	}
 }
-timer -= current_time_scale;
-if timer <= 0
-{
-  t = (t + increment*current_time_scale) mod 360;
-  shift = amplitude * dsin(t);
-  direction += ((shift/2) * turn / 3)*current_time_scale
-}
+
 if speed > maxspeed{speed = maxspeed}
 image_angle = direction
 
 
 #define rocket_destroy
-sound_play(sndExplosionS)
-with instance_create(x+lengthdir_x(speed,direction),y+lengthdir_y(speed,direction),SmallExplosion){damage -= 2}
+sound_play_pitch(sndExplosionS,1.5)
+with instance_create(x,y,SmallExplosion){damage -= 2}
 
+#define rocket_draw
+draw_self()
+draw_sprite_ext(sprRocketFlame,-1,x,y,speed/(2*maxspeed),image_yscale/2,image_angle,c_white,image_alpha)
+/*draw_set_blend_mode(bm_add)
+draw_sprite_ext(sprRocketFlame,-1,x,y,speed/maxspeed,image_yscale,image_angle,c_white,.2)
+draw_set_blend_mode(bm_normal)*/
