@@ -1,6 +1,5 @@
 #define init
 global.sprRockletCannon = sprite_add_weapon("sprites/sprRockletCannon.png", 5, 3);
-global.sprRocklet       = sprite_add("sprites/projectiles/sprRocklet.png",0,0,3)
 global.sprPuncherRocket = sprite_add("sprites/projectiles/sprPuncherRocket.png",0,6,4)
 
 #define weapon_name
@@ -77,25 +76,14 @@ if fork(){
         sound_play_pitch(sndRocketFly,random_range(2.6,3.2))
         sound_play_pitch(sndGrenadeRifle,random_range(.3,.4))
         sound_play_pitch(sndMachinegun,random_range(.7,.8))
-        with instance_create(x,y,CustomProjectile)
+        with mod_script_call("mod","defpack tools", "create_rocklet",x,y)
         {
-          sprite_index = global.sprRocklet
-          creator = other.creator
-          damage = 3
-          team = other.team
-          motion_add(i+random_range(-3,3),2)
-          maxspeed = 12
-          timer = 7
-          typ = 1
-          friction = -.6
-          t = 0;
-          image_angle = direction
-          turn = choose(-1,1)
-          increment = random_range(32,36);
-          amplitude = random_range(1,7);
-          instance_create(x,y,Smoke)
-          on_step = rocket_step
-          on_destroy = rocket_destroy
+            creator = other
+            team = creator.team
+            motion_add(i+random_range(-3,3),2)
+            move_contact_solid(direction,10)
+            direction_goal = direction
+            image_angle = direction
         }
         sound_play(sndExplosionS)
         instance_create(x+lengthdir_x(16,i),y+lengthdir_y(16,i),SmallExplosion)

@@ -13,7 +13,7 @@ return 1;
 return true;
 
 #define weapon_load
-return 6;
+return 4;
 
 #define weapon_cost
 return 3;
@@ -40,6 +40,7 @@ with instance_create(x,y,Bullet2)
 	image_yscale = 4/3
 	accuracy = other.accuracy
 	move_contact_solid(other.gunangle,6)
+<<<<<<< HEAD
 	motion_add(other.gunangle + random_range(-10,10)*other.accuracy,14)
 	damage += 2
 	image_angle = direction
@@ -90,4 +91,35 @@ with instance_create(x,y,Bullet2)
 	}
 	while instance_exists(self)
 
+=======
+	motion_add(other.gunangle + random_range(-10,10)*other.accuracy,20)
+	friction+=1.2
+	damage += 4
+	image_angle = direction
+	if fork(){
+	    var _x,_y,_d,_t,_c;
+	    _t = team
+	    _c = creator
+	    while instance_exists(self) && sprite_index != sprBullet2Disappear{
+	        _x = x
+	        _y = y
+	        _d = direction
+	        wait(0)
+	    }
+	    var ang = _d + 30;
+	    sound_play_pitch(sndFlakExplode,1.25)
+	    repeat(2){
+        	with instance_create(_x,_y,Bullet2)
+        	{
+        		creator = _c
+        		team = _t
+        		motion_add(ang,12)
+        		image_angle = direction
+        	}
+        	ang -= 60
+        }
+	    exit
+	}
+>>>>>>> abb0f4958ba80460b93fa826a359fb7a8aa476ed
 }
+
