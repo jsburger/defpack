@@ -26,7 +26,7 @@ return sndSwapExplosive;
 return 3;
 
 #define weapon_text
-return "";
+return "DRIZZLE";
 
 #define weapon_fire
 if fork(){

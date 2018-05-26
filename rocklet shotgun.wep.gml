@@ -63,39 +63,3 @@ if fork(){
     }
 }
 
-#define rocket_step
-with instance_create(x,y,BoltTrail)
-{
-	image_blend = c_yellow
-	image_angle = other.direction
-	image_yscale = 1.2
-	image_xscale = 4+other.speed
-	if fork(){
-	    while instance_exists(self){
-	        image_blend = merge_color(image_blend,c_red,.1*current_time_scale)
-	        wait(0)
-	    }
-	    exit
-	}
-}
-timer -= 1;
-if timer <= 0
-{
-  t = (t + increment) mod 360;
-  shift = amplitude * dsin(t);
-  direction += (shift/2) * turn / 3
-  /*if instance_exists(enemy)
-  {
-    var closeboy = instance_nearest(x,y,enemy)
-    if point_distance(x,y,closeboy.x,closeboy.y) <= 32
-    {
-      motion_add(point_direction(x,y,closeboy.x,closeboy.y),1.2)
-    }
-  }*/
-}
-if speed > maxspeed{speed = maxspeed}
-image_angle = direction
-
-#define rocket_destroy
-sound_play(sndExplosionS)
-with instance_create(x+lengthdir_x(speed,direction),y+lengthdir_y(speed,direction),SmallExplosion){damage -= 2}
