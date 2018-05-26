@@ -13,7 +13,7 @@ return 1;
 return true;
 
 #define weapon_load
-return 6;
+return 4;
 
 #define weapon_cost
 return 2;
@@ -39,22 +39,33 @@ with instance_create(x,y,Bullet2)
 	image_xscale = 4/3
 	image_yscale = 4/3
 	move_contact_solid(other.gunangle,6)
-	motion_add(other.gunangle + random_range(-10,10)*other.accuracy,14)
+	motion_add(other.gunangle + random_range(-10,10)*other.accuracy,20)
+	friction+=1.2
 	damage += 4
 	image_angle = direction
-	on_destroy = script_ref_create(pop_destroy)
+	if fork(){
+	    var _x,_y,_d,_t,_c;
+	    _t = team
+	    _c = creator
+	    while instance_exists(self) && sprite_index != sprBullet2Disappear{
+	        _x = x
+	        _y = y
+	        _d = direction
+	        wait(0)
+	    }
+	    var ang = _d + 30;
+	    sound_play_pitch(sndFlakExplode,1.25)
+	    repeat(2){
+        	with instance_create(_x,_y,Bullet2)
+        	{
+        		creator = _c
+        		team = _t
+        		motion_add(ang,12)
+        		image_angle = direction
+        	}
+        	ang -= 60
+        }
+	    exit
+	}
 }
 
-#define pop_destroy
-i = random(360);
-repeat(2)
-{
-	with instance_create(x,y,Bullet2)
-	{
-		creator = other.creator
-		team = other.team
-		motion_add(i+random_range(-180,180)*creator.accuracy,16)
-		image_angle = direction
-	}
-	i += 360/2
-}
