@@ -40,6 +40,7 @@ sound_play_pitch(sndRocketFly,random_range(1.8,2.2))
 sound_play_pitch(sndGrenadeRifle,random_range(.2,.3))
 sound_play_pitch(sndHeavyNader,random_range(.7,.8))
 sound_play_pitch(sndHeavyMachinegun,random_range(.6,.7))
+sound_play_pitch(sndSeekerShotgun,random_range(.5,.6))
 with instance_create(x,y,CustomProjectile)
 {
   creator = other

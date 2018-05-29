@@ -30,11 +30,13 @@ return "DRIZZLE";
 
 #define weapon_fire
 if fork(){
-    sound_play_pitch(sndToxicBoltGas,.85)
+    sound_play_pitch(sndToxicBoltGas,1.2)
     repeat(3) if instance_exists(self){
-        weapon_post(4,-7,4)
-        sound_play_pitch(sndPistol,2)
-        sound_play_pitch(sndSeekerShotgun,1.2)
+        weapon_post(4,-7,6)
+        sound_play_pitch(sndSlugger,2)
+        sound_play_pitch(sndServerBreak,random_range(.6,.8))
+        sound_play_pitch(sndRocketFly,4)
+        sound_play_pitch(sndSodaMachineBreak,3)
         repeat(3)with instance_create(x+lengthdir_x(10,gunangle),y+lengthdir_y(10,gunangle),Dust){
             motion_set(other.gunangle+choose(0,60,-60,0,0)+random_range(-15,15),sqr(1.4+random(1)))
         }
