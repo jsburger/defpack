@@ -163,7 +163,6 @@
 //ROCKLET
 /loadwep rocklet pistol
 /loadwep rocklet rifle
-/loadwep assault rocklet rifle
 /loadwep rocklet shotgun
 /loadwep rocklet minigun
 /loadwep rocklet cannon
@@ -207,7 +206,7 @@
 
 //LASER FLAK
 /loadwep laser flak cannon
-/loadwep heavy laser flak cannon
+/loadwep laser flak minigun
 
 //VECTOR
 /loadwep finished stuff/vector rifle

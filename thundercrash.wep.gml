@@ -1,6 +1,7 @@
 #define init
 global.sprThundercrash = sprite_add_weapon("sprites/sprThundercrash.png", 10, 5);
-global.sprUmbrella  = sprite_add("sprites/projectiles/sprRainDisk.png",0,14,5);
+global.sprUmbrella  = sprite_add("defpack tools/sprRainDisk.png",2,14,14);
+global.mskUmbrella  = sprite_add("defpack tools/mskRainDisk.png",0,14,14);
 
 #define weapon_name
 return "THUNDERCRASH"
@@ -55,13 +56,19 @@ with instance_create(x,y,CustomProjectile)
 	motion_add(other.gunangle+random_range(-7,7)*other.accuracy,26)
 	projectile_init(other.team,other)
 	sprite_index = global.sprUmbrella
+  mask_index   = global.mskUmbrella
 	image_speed = .45;
 	image_angle = direction
 	damage  = 20
 	friction = 0
+  image_speed = .5
 	on_draw = bloom_draw
+  on_step = stop_anim
 	on_destroy = lightningcluster_destroy
 }
+
+#define stop_anim
+if image_index = 1 image_speed = 0
 
 #define fric_step
 var _scale = random_range(.4,.6);
@@ -93,7 +100,7 @@ for var i = 0; i< 3; i++{
 		image_angle = direction
 		on_step = fric_step
 		on_wall = bounce_wall
-		on_draw = bloom_draw
+		on_draw = bloom_draw_nade
 		on_destroy = lightningnade_destroy
 	}
 }
@@ -121,6 +128,12 @@ else{
 
 
 #define bloom_draw
+draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, image_yscale, image_angle, image_blend, 1.0);
+draw_set_blend_mode(bm_add);
+draw_sprite_ext(sprite_index, image_index, x, y, 2*image_xscale+(1-image_index)*2, 2*image_yscale+(1-image_index)*2, image_angle, image_blend, 0.2+(1-image_index)*.4);
+draw_set_blend_mode(bm_normal);
+
+#define bloom_draw_nade
 draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, image_yscale, image_angle, image_blend, 1.0);
 draw_set_blend_mode(bm_add);
 draw_sprite_ext(sprite_index, image_index, x, y, 2*image_xscale, 2*image_yscale, image_angle, image_blend, 0.2);
