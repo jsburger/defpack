@@ -33,8 +33,9 @@ if fork(){
     sound_play_pitch(sndToxicBoltGas,1.2)
     repeat(3) if instance_exists(self){
         weapon_post(4,-7,6)
-        sound_play_pitch(sndSlugger,2)
+        sound_play_pitch(sndSlugger,2.2)
         sound_play_pitch(sndServerBreak,random_range(.6,.8))
+        sound_play_pitch(sndComputerBreak,random_range(.8,.9))
         sound_play_pitch(sndRocketFly,4)
         sound_play_pitch(sndSodaMachineBreak,3)
         repeat(3)with instance_create(x+lengthdir_x(10,gunangle),y+lengthdir_y(10,gunangle),Dust){

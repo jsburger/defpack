@@ -50,12 +50,45 @@ surface_reset_target()
 with instances_matching(CustomProjectile,"name","Psy Bullet","Psy Shell") instance_delete(self)
 with global.traildrawer instance_destroy()
 
-#define draw_dark()
-with instances_matching(CustomProjectile,"name","Lightning Bolt"){
-	draw_circle_color(x,y,550 + random(10), c_gray,c_gray,0)
-	draw_circle_color(x,y,250 + random(10), c_black,c_black,0)
+#define draw_shadows()
+with(CustomProjectile)
+{
+	if "name" in self
+	{
+		if name = "volley arrow"
+		{
+			draw_sprite_ext(shd16,0,x,y,clamp(1/z*10,0,1),clamp(1/z*10,0,1),0,c_white,1)
+		}
+	}
 }
 
+#define draw_dark()
+if fork()
+{
+	with instances_matching(CustomProjectile,"name","Lightning Bolt"){
+		draw_circle_color(x,y,550 + random(10), c_gray,c_gray,0)
+		draw_circle_color(x,y,250 + random(10), c_black,c_black,0)
+	}
+	with instances_matching(Bolt,"name","marker bolt")
+	{
+		draw_circle_color(x+lengthdir_x(sprite_width/2+2,direction),y+lengthdir_y(sprite_width/2+2,direction),35 + random(3), c_gray,c_gray,0)
+		draw_circle_color(x+lengthdir_x(sprite_width/2+2,direction),y+lengthdir_y(sprite_width/2+2,direction),20 + random(3), c_black,c_black,0)
+	}
+	with instances_matching(BoltStick,"name","marker bolt")
+	{
+		draw_circle_color(x+lengthdir_x(sprite_width/2+2,direction),y+lengthdir_y(sprite_width/2+2,direction),35 + random(3), c_gray,c_gray,0)
+		draw_circle_color(x+lengthdir_x(sprite_width/2+2,direction),y+lengthdir_y(sprite_width/2+2,direction),20 + random(3), c_black,c_black,0)
+	}
+	with instances_matching(CustomProjectile,"name","volley arrow")
+	{
+		draw_circle_color(x,y-z,20 + random(3), c_black,c_black,0)
+	}
+	with instances_matching(CustomProjectile,"name","Fire Bullet")
+	{
+		//draw_circle_color(x,y,30 + random(3),c_gray,c_gray,0)
+		draw_circle_color(x,y,20 + random(3),c_black,c_black,0)
+	}
+}
 
 #define draw
 with Player

@@ -40,6 +40,8 @@ return choose("replace me please");
 #define weapon_fire
 sound_play_pitch(sndHeavyRevoler,1.7)
 sound_play_pitch(sndSniperFire,random_range(.6,.8))
+sound_play_pitch(sndHeavyNader,random_range(.6,.8))
+sound_play_pitch(sndBouncerShotgun,random_range(.9,1.2))
 weapon_post(12,-16,53)
 with instance_create(x+lengthdir_x(10,gunangle),y+lengthdir_y(10,gunangle),CustomProjectile)
 {
@@ -49,7 +51,6 @@ with instance_create(x+lengthdir_x(10,gunangle),y+lengthdir_y(10,gunangle),Custo
 		creator = other
 		index = other.index
 		team  = other.team
-		image_yscale /= 2
 		sprite_index = mskNothing
 		mask_index = mskBullet1
 		force = 7
@@ -89,9 +90,9 @@ do
     image_yscale = 2
     image_xscale = 1
   }
-	if direction > 90 && direction < 270 {var _dirfac = -1;}else{var _dirfac = 1;}
+	if direction > 90 && direction < 270 {var _dirfac = -1}else{var _dirfac = 1}
 	//sad
-	if place_meeting(x+xdir*_dirfac,y,Wall)
+	if place_meeting(x+(xdir)*_dirfac,y,Wall)
 	{
 		if bounce > 0
 		{
@@ -101,7 +102,7 @@ do
 		}
 		else{instance_destroy();exit}
 	}
-	if place_meeting(x,y+ydir*_dirfac,Wall)
+	if place_meeting(x,y+(ydir)*_dirfac,Wall)
 	{
 		if bounce > 0
 		{

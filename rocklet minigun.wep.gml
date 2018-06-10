@@ -38,6 +38,7 @@ if fork(){
         sound_play_pitch(sndServerBreak,random_range(.4,.5))
         sound_play_pitch(sndRocketFly,4)
         sound_play_pitch(sndSodaMachineBreak,3)
+        sound_play_pitch(sndComputerBreak,random_range(.5,.6))
         sound_play_pitch(sndSuperSplinterGun,2)
         sound_play_pitch(sndSeekerShotgun,.2)
         repeat(3)with instance_create(x+lengthdir_x(10,gunangle),y+lengthdir_y(10,gunangle),Dust){

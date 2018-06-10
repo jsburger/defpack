@@ -30,7 +30,8 @@ return 13;
 return "OH JOY HAS COME";
 
 #define weapon_fire
-weapon_post(12,-13,83)
+weapon_post(15,-13,113)
+motion_add(gunangle-180,5)
 if !skill_get(17)
 {
 	sound_play_pitch(sndFlakCannon,random_range(.6,.8))

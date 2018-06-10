@@ -35,6 +35,7 @@ if fork(){
         weapon_post(5,-7,4)
         sound_play_pitch(sndHeavySlugger,1.5)
         sound_play_pitch(sndServerBreak,random_range(.5,.8))
+        sound_play_pitch(sndComputerBreak,random_range(.8,.9))
         sound_play_pitch(sndRocketFly,4)
         sound_play_pitch(sndSodaMachineBreak,3)
         sound_play_pitch(sndSuperSplinterGun,2)

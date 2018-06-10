@@ -28,7 +28,7 @@ return sndSwapExplosive;
 return 14;
 
 #define weapon_text
-return choose("WHAT A BRIS","A STORM IS COMING");
+return choose("MACBETH");
 
 #define weapon_fire
 sound_play_pitch(sndDevastatorUpg,1.4)

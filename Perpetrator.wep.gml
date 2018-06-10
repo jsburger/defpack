@@ -16,7 +16,7 @@ return 1;
 return true;
 
 #define weapon_load
-if wep = "undulator" && bwep = "perpetrator" || bwep = "undulator" && wep = "perpetrator"{return 7}else{return 9};
+return 9;
 
 #define weapon_cost
 return 5;
@@ -36,7 +36,6 @@ repeat(2)
 	sound_play_pitch(sndHyperLauncher,500)
 	sound_play_pitch(sndHyperSlugger,random_range(.7,.8))
 	sound_play_pitch(sndHeavySlugger,.8)
-	if wep = "undulator" && bwep = "perpetrator" || bwep = "undulator" && wep = "perpetrator"{sound_play_pitch(sndExploGuardianFire,.6)};
 	with instance_create(x,y,Shell)
 	{
 		sprite_index = global.sprGenShell
@@ -51,14 +50,8 @@ repeat(2)
 		image_angle = direction
 	}
 	weapon_post(5,-8,24)
-	if wep = "undulator" && bwep = "perpetrator" || bwep = "undulator" && wep = "perpetrator"{wait(2)}else{wait(3)}
+	wait(3)
 	if (!instance_exists(self)) break;
 }
 wait(3)
 sound_play_pitch(sndHyperLauncher,random_range(.2,.28))
-
-#define step
-if wep = "perpetrator" && bwep != "undulator"
-{
-	if !irandom(1){with instance_create(x,y,Curse){sprite_index = global.sprDual;image_blend = c_black}}
-}

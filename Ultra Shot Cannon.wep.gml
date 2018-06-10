@@ -1,8 +1,8 @@
 #define init
 global.sprUltraShotCannon = sprite_add_weapon("sprites/Ultra Shot Cannon.png", 4, 2);
 global.sprUltraShotCannonOff = sprite_add_weapon("sprites/Ultra Shot Cannon Off.png", 4, 2);
-global.sprUltraShotBullet = sprite_add("sprites/projectiles/UltraShot.png",2,8,8)
-
+global.sprUltraShotBullet = sprite_add("sprites/projectiles/UltraShot.png",3,8,8)
+sprite_collision_mask(global.sprUltraShotBullet,1,1,0,0,0,0,0,0)
 #define weapon_name
 return "ULTRA SHOT CANNON";
 
@@ -20,10 +20,10 @@ return 2;
 return false;
 
 #define weapon_load
-return 20;
+return 25;
 
 #define weapon_cost
-return 10;
+return 6;
 
 #define weapon_swap
 return sndSwapShotgun;
@@ -38,8 +38,11 @@ return 130
 return "GREEN GALAXY OF TORMENT";
 
 #define weapon_fire
-weapon_post(6,-20,7)
-sound_play_pitch(sndFlakCannon,.8)
+weapon_post(7,-43,33)
+sound_play_pitch(sndFlakCannon,1.2)
+sound_play_pitch(sndSuperFlakExplode,1.4)
+sound_play_pitchvol(sndFlakExplode,random_range(.4,.7),.8)
+sound_play_pitch(sndDoubleShotgun,1.2)
 sound_play_pitch(sndUltraGrenade,1.2)
 with instance_create(x,y,CustomProjectile) {
 	motion_set(other.gunangle, 18 + random(2))
@@ -47,27 +50,58 @@ with instance_create(x,y,CustomProjectile) {
 	creator = other
 	sprite_index = global.sprUltraShotBullet
 	image_speed = .45
-	timer = 30
+	timer = 16
 	ftimer = 2
 	dirfac = random(359)
 	dirfac2 = dirfac
-	on_hit = script_ref_create(actually_nothing)
-	on_wall = script_ref_create(actually_nothing)
+	on_hit = script_ref_create(cannon_hit)
+	on_wall = script_ref_create(cannon_wall)
 	on_step = script_ref_create(cannon_step)
 	on_draw = script_ref_create(cannon_draw)
 }
 
-#define actually_nothing
+#define cannon_hit
+if projectile_canhit_melee(other){
+    projectile_hit_push(other,damage,force)
+    dirfac += 12
+	var ang = dirfac;
+	sound_play_hit(sndShotgun,.4)
+	view_shake_at(x,y,12)
+	repeat (5){
+		sleep(50)
+		with instance_create(x, y,UltraShell){
+			motion_set(ang, 11)
+			projectile_init(other.team,other.creator)
+			ang += 72
+			image_angle = direction
+		}
+	}
+	timer -= 1;
+	if timer <= 0
+	{
+		instance_destroy()
+	}
+}
+
+#define cannon_wall
+view_shake_at(x,y,32)
+sleep(30)
+sound_play_pitch(sndShotgunHitWall,.8)
+if skill_get(15){speed ++;image_index = 0}
+move_bounce_solid(1)
+speed *= .8
+	repeat(irandom(1)+2){
+	with instance_create(x, y, UltraShell){
+		motion_set(random(360), random_range(12, 14))
+		projectile_init(other.team,other.creator)
+		image_angle = direction
+	}
+}
 
 #define cannon_step
 image_angle+=8+speed*3
+if image_index >= 2.5{image_index = 1}
 if instance_exists(enemy){with enemy{motion_add(point_direction(x,y,other.x,other.y),0.3)}}
-if place_meeting(x + hspeed,y,Wall){
-	hspeed *= -1
-}
-if place_meeting(x,y +vspeed,Wall){
-	vspeed *= -1
-}
 if timer < 6{ftimer = 3}
 if (current_frame % ftimer) = 0{
 	dirfac += 10
@@ -108,10 +142,12 @@ if (current_frame % ftimer) = 0{
 }
 
 #define cannon_draw
-draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, image_yscale, image_angle, image_blend, 1.0);
+if image_index = 0{var i = .5}else{var i = .1}
+draw_sprite_ext(sprite_index, image_index, x, y, .7*image_xscale+i, .7*image_yscale+i, image_angle, image_blend, 1.0);
 draw_set_blend_mode(bm_add);
-draw_sprite_ext(sprite_index, image_index, x, y, 2*image_xscale, 2*image_yscale, image_angle, image_blend, 0.2);
+draw_sprite_ext(sprite_index, image_index, x, y, 1.25*image_xscale+i*2, 1.25*image_yscale+i*2, image_angle, image_blend, i);
 draw_set_blend_mode(bm_normal);
+
 /*
 #define weapon_fire
 

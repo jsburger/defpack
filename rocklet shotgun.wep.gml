@@ -24,7 +24,7 @@ return 4;
 return sndSwapExplosive;
 
 #define weapon_area
-return 3;
+return -1;
 
 #define weapon_text
 return "replace me please";
@@ -38,6 +38,7 @@ if fork(){
         sound_play_pitch(sndShotgun,1.2)
         sound_play_pitch(sndRocketFly,random_range(2.6,3.2))
         sound_play_pitch(sndGrenadeRifle,random_range(.3,.4))
+        sound_play_pitch(sndComputerBreak,random_range(.4,.5))
         sound_play_pitch(sndMachinegun,random_range(.7,.8))
         with instance_create(x,y,CustomProjectile)
         {
@@ -62,4 +63,3 @@ if fork(){
         }
     }
 }
-

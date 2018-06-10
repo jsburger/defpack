@@ -39,7 +39,7 @@ if instance_exists(self){
 		team = other.team
 		creator = other
 		friction = 0.5
-		damage = 5
+		damage = 6
 		force = 5
 		bounce = 3
 		typ = 1
@@ -89,7 +89,7 @@ with mod_script_call("mod","defpack tools","create_sonic_explosion",x,y)
 	scalefac = random_range(0.6,0.75)
 	image_xscale = scalefac
 	image_yscale = scalefac
-	damage = 12
+	damage = 10
 	image_speed = 0.75
 	team = other.team
 	creator = other.creator
@@ -104,7 +104,7 @@ repeat(3)
 		scalefac = random_range(0.24,0.4)
 		image_xscale = scalefac
 		image_yscale = scalefac
-		damage = 12
+		damage = 10
 		image_speed = 0.82
 		team = other.team
 		creator = other.creator
