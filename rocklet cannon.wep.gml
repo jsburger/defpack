@@ -24,17 +24,19 @@ return 4;
 return sndSwapExplosive;
 
 #define weapon_area
-return 3;
+return 7;
 
 #define weapon_text
 return "replace me please";
 
 #define weapon_fire
 weapon_post(7,-3,20)
-sound_play_pitch(sndSlugger,1.3)
+sound_play_pitch(sndSlugger,.6)
 sound_play_pitch(sndRocketFly,random_range(2,2.6))
 sound_play_pitch(sndGrenadeRifle,random_range(.2,.3))
+sound_play_pitch(sndComputerBreak,random_range(.6,.7))
 sound_play_pitch(sndHeavyNader,random_range(.7,.8))
+sound_play_pitch(sndSeekerShotgun,random_range(.7,.8))
 with instance_create(x,y,CustomProjectile)
 {
   creator = other

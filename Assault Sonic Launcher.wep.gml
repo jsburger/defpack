@@ -39,7 +39,7 @@ if instance_exists(self){
 		team = other.team
 		creator = other
 		friction = 0.5
-		damage = 5
+		damage = 6
 		force = 5
 		bounce = 3
 		typ = 1
@@ -48,7 +48,7 @@ if instance_exists(self){
 		if other.object_index = Player{
 			var _x = mouse_x[other.index]+random_range(-22,22)*other.accuracy;
 			var _y = mouse_y[other.index]+random_range(-22,22)*other.accuracy;
-			motion_add(point_direction(x,y,_x,_y),sqrt(point_distance(_x,_y,x,y)))
+			motion_add(point_direction(x,y,_x,_y),max(sqrt(point_distance(_x,_y,x,y)),10,sqrt(point_distance(_x,_y,x,y))))
 		}else{
 			motion_add(other.gunangle,10)
 		}
@@ -89,7 +89,7 @@ with mod_script_call("mod","defpack tools","create_sonic_explosion",x,y)
 	scalefac = random_range(0.6,0.75)
 	image_xscale = scalefac
 	image_yscale = scalefac
-	damage = 12
+	damage = 10
 	image_speed = 0.75
 	team = other.team
 	creator = other.creator
@@ -104,7 +104,7 @@ repeat(3)
 		scalefac = random_range(0.24,0.4)
 		image_xscale = scalefac
 		image_yscale = scalefac
-		damage = 12
+		damage = 10
 		image_speed = 0.82
 		team = other.team
 		creator = other.creator

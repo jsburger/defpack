@@ -13,10 +13,10 @@ return 1;
 return true;
 
 #define weapon_load
-return 4;
+return 6;
 
 #define weapon_cost
-return 3;
+return 4;
 
 #define weapon_swap
 return sndSwapPistol;
@@ -40,9 +40,8 @@ with instance_create(x,y,Bullet2)
 	image_yscale = 4/3
 	accuracy = other.accuracy
 	move_contact_solid(other.gunangle,6)
-<<<<<<< HEAD
 	motion_add(other.gunangle + random_range(-10,10)*other.accuracy,14)
-	damage += 2
+	damage += 3
 	image_angle = direction
 	if fork()
 	{
@@ -50,7 +49,6 @@ with instance_create(x,y,Bullet2)
 				var _acc  = accuracy;
 				var _crtr = creator;
         while instance_exists(self) && sprite_index != sprBullet2Disappear{var _x = x;var _y = y;wait(0)}
-        sound_play_pitchvol(sndFlakExplode,1.25,.2)
 				sound_play_pitch(sndHitWall,random_range(.8,1.2))
 				var i = random(360);
 				repeat(3)
@@ -122,4 +120,3 @@ with instance_create(x,y,Bullet2)
 	}
 >>>>>>> abb0f4958ba80460b93fa826a359fb7a8aa476ed
 }
-

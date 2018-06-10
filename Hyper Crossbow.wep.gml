@@ -32,9 +32,9 @@ return choose("BOLT STREAMER","A CONTINOUS STATE OF HYPE","HYPER HYPER");
 #define weapon_fire
 repeat(5)
 {
-	sound_play_pitchvol(sndHeavyCrossbow,1.2,.5)
-	sound_play_pitch(sndHyperLauncher,7)
-	sound_play_pitch(sndHyperRifle,.9)
+	sound_play_pitchvol(sndHeavyCrossbow,random_range(.8,1.5),.5)
+	sound_play_pitch(sndHyperLauncher,random_range(6,8))
+	sound_play_pitch(sndHyperRifle,random_range(.7,.9))
 	weapon_post(4,-20,4)
 	with instance_create(x+lengthdir_x(10,gunangle),y+lengthdir_y(10,gunangle),Bolt)
 	{
@@ -45,4 +45,5 @@ repeat(5)
 		image_angle = direction
 	}
 	wait(3);
+	if !instance_exists(self) exit
 }

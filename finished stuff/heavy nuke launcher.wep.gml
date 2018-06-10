@@ -44,6 +44,7 @@ with instance_create(x,y,CustomProjectile){
 	creator = other
 	sprite_index = global.sprHeavyNuke
 	index = other.index
+	accuracy = other.accuracy
 	typ = 2
 	timer = 25
 	damage = 100
@@ -105,21 +106,27 @@ if place_meeting(x, y, Explosion){
 }
 
 #define nuke_pop
-sleep(180)
+sleep(300)
 view_shake_max_at(x,y,900)
-repeat(13){
-	with instance_create(x + random_range(-40,40), y + random_range(-40,40), GreenExplosion)
-	{
-		hitid = [sprite_index,"green#Explosion"]
-	}
+var i = random(360);
+//with instance_create(x + random_range(-10,10) * accuracy, y + random_range(-10,10) * accuracy, GreenExplosion){hitid = [sprite_index,"green#Explosion"]}
+repeat(8)
+{
+	repeat(22) with instance_create(x,y,Smoke){motion_add(i+random_range(-5,5),random_range(4,	12))}
+	with instance_create(x + lengthdir_x(17,i) + random_range(-10,10) * accuracy, y  + lengthdir_y(17,i) + random_range(-10,10) * accuracy, GreenExplosion){hitid = [sprite_index,"green#Explosion"]}
+	i += 360/8
 }
-repeat(7){
-	with instance_create(x + random_range(-40,40), y + random_range(-40,40), SmallExplosion){
+repeat(16)
+{
+	repeat(16) with instance_create(x,y,Smoke){motion_add(i+random_range(-16,16),random_range(4,																																																																																																																																																																																																																																																																																																																																																													7))}
+	with instance_create(x + lengthdir_x(80,i) + random_range(-40,40), y + lengthdir_y(80,i) + random_range(-10,10) * accuracy, SmallExplosion)
+	{
 		damage = 12
 		image_speed = .3
 		sprite_index = global.sprSmallGreenExplosion
 		hitid = [sprite_index,"Small green#Explosion"]
 	}
+	i += 360/16
 }
 sound_play(sndNukeExplosion)
 sound_play_pitch(sndExplosionL,.7)

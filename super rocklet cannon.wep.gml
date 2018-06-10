@@ -20,13 +20,13 @@ return false;
 return 76;
 
 #define weapon_cost
-return 12;
+return 8;
 
 #define weapon_swap
 return sndSwapExplosive;
 
 #define weapon_area
-return 3;
+return 12;
 
 #define weapon_text
 return "replace me please";
@@ -34,12 +34,13 @@ return "replace me please";
 #define weapon_fire
 weapon_post(10,-7,54)
 motion_add(gunangle-180,5)
-sound_play_pitch(sndHeavySlugger,1.3)
+sound_play_pitch(sndSlugger,.6)
 sound_play_pitch(sndNukeFire,random_range(1.3,1.5))
 sound_play_pitch(sndRocketFly,random_range(1.8,2.2))
 sound_play_pitch(sndGrenadeRifle,random_range(.2,.3))
 sound_play_pitch(sndHeavyNader,random_range(.7,.8))
 sound_play_pitch(sndHeavyMachinegun,random_range(.6,.7))
+sound_play_pitch(sndSeekerShotgun,random_range(.5,.6))
 with instance_create(x,y,CustomProjectile)
 {
   creator = other

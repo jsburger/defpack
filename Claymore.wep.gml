@@ -55,6 +55,7 @@ weapon_post(8,10,5)
 
 with instance_create(x,y,Slash)
 {
+	sprite_index = sprHeavySlash
 	damage = 12
 	creator = other
 	motion_add(other.gunangle, 2 + (skill_get(13) * 3))

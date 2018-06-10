@@ -72,7 +72,7 @@ if projectile_canhit_melee(other)
     sound_play_pitchvol(sndHammerHeadEnd,random_range(1.23,1.33),20)
     sound_play_pitchvol(sndBasicUltra,random_range(0.9,1.1),20)
     sound_play_pitch(sndCoopUltraA,random_range(3.8,4.05))
-    with instance_create(other.x,other.y,CustomObject)
+    with instance_create(x+lengthdir_x(sprite_get_width(sprite_index),image_angle),y+lengthdir_y(sprite_get_width(sprite_index),image_angle),CustomObject)
     {
       image_angle = random(359)
       depth = other.depth -1

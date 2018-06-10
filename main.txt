@@ -136,14 +136,17 @@
 /loadwep finished stuff/heavy blood crossbow
 
 //SPLINTER
+/loadwep nail gun
 /loadwep auto splinter gun
 /loadwep finished stuff/splinter cannon
+/loadwep millimata
 
 //DISC
 /loadwep finished stuff/bouncer disc gun
 /loadwep finished stuff/sticky disc gun
 
 //OTHER BOLT
+/loadwep marker
 /loadwep hot crossbow
 /loadwep heavy toxic crossbow
 /loadwep hyper crossbow
@@ -163,7 +166,6 @@
 //ROCKLET
 /loadwep rocklet pistol
 /loadwep rocklet rifle
-/loadwep assault rocklet rifle
 /loadwep rocklet shotgun
 /loadwep rocklet minigun
 /loadwep rocklet cannon
@@ -202,6 +204,7 @@
 /loadwep finished stuff/fire beamer
 /loadwep finished stuff/toxic carronader
 /loadwep puncher
+/loadwep herald
 
 ///ENERGY///
 
@@ -229,9 +232,11 @@
 
 //OTHER ENERGY
 /loadwep energy gun
+/loadwep stopwatch
 
 ///MELEE///
 /loadwep toothbrush
+/loadwep bone
 /loadwep auto screwdriver
 /loadwep chris knife
 /loadwep comboweps/rapier
@@ -270,6 +275,6 @@
 /loadwep finished stuff/drinks/guardian juice
 /loadwep finished stuff/drinks/soda popper
 /loadwep finished stuff/drinks/donut box
-
+/loadwep infinipistol
 ///NON-WEAPONS///
 /loadmod IDPD Weapon Chest/IDPD Weapon Chest

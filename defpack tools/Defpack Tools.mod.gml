@@ -35,6 +35,8 @@ global.mskSquare = sprite_add("mskSquare.png",0,5,5)
 global.sprSuperSquare = sprite_add("sprSuperSquare.png", 0, 14, 14)
 global.mskSuperSquare = sprite_add("mskSuperSquare.png",0,10,10)
 
+global.sprLaserFlakBullet = sprite_add("sprLaserFlak.png",2, 7, 7);
+
 global.traildrawer = -4
 global.trailsf = surface_create(4000,4000)
 global.sfx = 7500
@@ -54,6 +56,45 @@ with instances_matching(CustomProjectile,"name","Lightning Bolt"){
 	draw_circle_color(x,y,250 + random(10), c_black,c_black,0)
 }
 
+#define draw_shadows()
+with(CustomProjectile)
+{
+	if "name" in self
+	{
+		if name = "volley arrow"
+		{
+			draw_sprite_ext(shd16,0,x,y,clamp(1/z*10,0,1),clamp(1/z*10,0,1),0,c_white,1)
+		}
+	}
+}
+
+#define draw_dark()
+if fork()
+{
+	with instances_matching(CustomProjectile,"name","Lightning Bolt"){
+		draw_circle_color(x,y,550 + random(10), c_gray,c_gray,0)
+		draw_circle_color(x,y,250 + random(10), c_black,c_black,0)
+	}
+	with instances_matching(Bolt,"name","marker bolt")
+	{
+		draw_circle_color(x+lengthdir_x(sprite_width/2+2,direction),y+lengthdir_y(sprite_width/2+2,direction),35 + random(3), c_gray,c_gray,0)
+		draw_circle_color(x+lengthdir_x(sprite_width/2+2,direction),y+lengthdir_y(sprite_width/2+2,direction),20 + random(3), c_black,c_black,0)
+	}
+	with instances_matching(BoltStick,"name","marker bolt")
+	{
+		draw_circle_color(x+lengthdir_x(sprite_width/2+2,direction),y+lengthdir_y(sprite_width/2+2,direction),35 + random(3), c_gray,c_gray,0)
+		draw_circle_color(x+lengthdir_x(sprite_width/2+2,direction),y+lengthdir_y(sprite_width/2+2,direction),20 + random(3), c_black,c_black,0)
+	}
+	with instances_matching(CustomProjectile,"name","volley arrow")
+	{
+		draw_circle_color(x,y-z,20 + random(3), c_black,c_black,0)
+	}
+	with instances_matching(CustomProjectile,"name","Fire Bullet")
+	{
+		//draw_circle_color(x,y,30 + random(3),c_gray,c_gray,0)
+		draw_circle_color(x,y,20 + random(3),c_black,c_black,0)
+	}
+}
 
 #define draw
 with Player
@@ -1426,3 +1467,109 @@ if point_seen(xprevious,yprevious,-1){
     //draw_line_width(x-global.sfx,y-global.sfy,x-global.sfx - lengthdir_x(speed,direction), y-global.sfy - lengthdir_y(speed,direction), 1.6)
     surface_reset_target()
 }
+
+#define laserflak_hit
+if projectile_canhit_melee(other) = true
+{
+	var k = other.my_health;
+	projectile_hit(other,damage,ammo,direction)
+	repeat(3) with instance_create(x,y,PlasmaTrail)
+	{
+		view_shake_at(x,y,8)
+		motion_add(random(180),random_range(7,8))
+	}
+	sleep(damage*2)
+	damage -= floor(k/size)
+	if damage <= 0 instance_destroy()
+}
+
+//LASER FLAK
+#define create_laser_flak(_x,_y)
+var a = instance_create(_x,_y,CustomProjectile);
+with a
+{
+	image_speed = 1
+	damage = 8 + skill_get(17)*3
+	friction = .5
+	ammo = 10
+	typ = 1
+	size = 1
+	sprite_index = global.sprLaserFlakBullet
+	mask_index = mskFlakBullet
+	on_hit      = laserflak_hit
+	on_draw     = laserflak_draw
+	on_step     = laserflak_step
+	on_destroy  = laserflak_destroy
+}
+return a;
+
+#define laserflak_destroy
+view_shake_at(x,y,32)
+var i = random(360);
+sound_play_pitch(sndPlasmaBigExplodeUpg,random_range(.6,.8))
+sound_play_pitch(sndPlasmaHit,random_range(.6,.8))
+if !skill_get(17)sound_play_pitch(sndLaser,random_range(.5,.6)) else sound_play_pitch(sndLaserUpg,random_range(.4,.5))
+sound_play_pitch(sndExplosionS,random_range(1.2,1.5))
+repeat(ammo)
+{
+	sleep(10)
+	repeat(2) with instance_create(x,y,PlasmaTrail)
+	{
+		motion_add(random(360),random_range(5,12))
+	}
+	if size > 1
+	{
+		with instance_create(x,y,PlasmaImpact)
+		{
+			creator = other.creator
+			team = other.team
+			var _scale = random_range(.2,.3);
+			motion_add(random(360),12)
+			friction = random_range(.3,1.2)
+			image_xscale = _scale
+			image_yscale = _scale
+		}
+	}
+	with instance_create(x,y,Laser)
+	{
+		image_angle = i+random_range(-32,32)*other.accuracy
+		team = other.team
+		event_perform(ev_alarm,0)
+	}
+	i += 360/ammo
+}
+
+#define laserflak_step
+if irandom(2) != 0
+{
+	with instance_create(x+random_range(-8,8),y+random_range(-8,8),PlasmaTrail)
+	{
+		image_xscale += skill_get(17)/3
+		image_yscale = image_xscale
+	}
+	if size > 1
+	{
+		with instance_create(x+random_range(-12,12),y+random_range(-12,12),PlasmaImpact)
+		{
+			creator = other.creator
+			team = other.team
+			var _scale = random_range(.2,.3);
+			with Smoke if place_meeting(x,y,other) instance_destroy()
+			depth = other.depth+1
+			image_xscale = _scale
+			image_yscale = _scale
+		}
+	}
+}
+/*if irandom(1) = 1
+{
+	instance_create(x+random_range(-4,4),y+random_range(-4,4),Smoke)
+}
+*/
+if speed < friction instance_destroy()
+
+#define laserflak_draw
+draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, image_yscale, image_angle, image_blend, 1.0);
+draw_set_blend_mode(bm_add);
+draw_sprite_ext(sprite_index, image_index, x, y, 1.75*image_xscale, 1.75*image_yscale, image_angle, image_blend, 0.25);
+draw_set_blend_mode(bm_normal);
