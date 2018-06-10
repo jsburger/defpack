@@ -50,23 +50,9 @@ surface_reset_target()
 with instances_matching(CustomProjectile,"name","Psy Bullet","Psy Shell") instance_delete(self)
 with global.traildrawer instance_destroy()
 
-#define draw_dark()
-with instances_matching(CustomProjectile,"name","Lightning Bolt"){
-	draw_circle_color(x,y,550 + random(10), c_gray,c_gray,0)
-	draw_circle_color(x,y,250 + random(10), c_black,c_black,0)
-}
-
 #define draw_shadows()
-with(CustomProjectile)
-{
-	if "name" in self
-	{
-		if name = "volley arrow"
-		{
-			draw_sprite_ext(shd16,0,x,y,clamp(1/z*10,0,1),clamp(1/z*10,0,1),0,c_white,1)
-		}
-	}
-}
+with instances_matching(CustomProjectile,"name","volley arrow")
+    draw_sprite_ext(shd16,0,x,y,clamp(1/z*10,0,1),clamp(1/z*10,0,1),0,c_white,1)
 
 #define draw_dark()
 if fork()
