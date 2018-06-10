@@ -31,7 +31,7 @@ return "STORM";
 #define weapon_fire
 if fork(){
     sound_play_pitch(sndToxicBoltGas,.85)
-    repeat(5) if instance_exists(self){
+    repeat(4) if instance_exists(self){
         weapon_post(5,-7,4)
         sound_play_pitch(sndMachinegun,2)
         sound_play_pitch(sndSeekerShotgun,1.2)

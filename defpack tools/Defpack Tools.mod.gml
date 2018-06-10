@@ -35,8 +35,114 @@ global.mskSquare = sprite_add("mskSquare.png",0,5,5)
 global.sprSuperSquare = sprite_add("sprSuperSquare.png", 0, 14, 14)
 global.mskSuperSquare = sprite_add("mskSuperSquare.png",0,10,10)
 
+global.traildrawer = -4
+global.trailsf = surface_create(4000,4000)
+global.sfx = 7500
+global.sfy = 7500
+surface_set_target(global.trailsf)
+draw_clear_alpha(c_white,0)
+surface_reset_target()
+
+
 #define cleanup
 with instances_matching(CustomProjectile,"name","Psy Bullet","Psy Shell") instance_delete(self)
+with global.traildrawer instance_destroy()
+
+#define draw_dark()
+with instances_matching(CustomProjectile,"name","Lightning Bolt"){
+	draw_circle_color(x,y,550 + random(10), c_gray,c_gray,0)
+	draw_circle_color(x,y,250 + random(10), c_black,c_black,0)
+}
+
+
+#define draw
+with Player
+{
+	if wep = "psy sniper rifle"
+	{
+		if !instance_exists(enemy)
+		{
+			if collision_line(x,y,mouse_x[index],mouse_y[index],Wall,0,0)
+			{
+				var q = instance_create(x,y,CustomObject);
+				with q{
+					mask_index = sprBulletShell
+					image_angle = other.gunangle
+					move_contact_solid(image_angle,game_width)
+				}
+				//draw_line_width_colour(x,y,q.x,q.y,1,lasercolour2,lasercolour2)
+				with q instance_destroy()
+			}
+		}
+		else{draw_curve(x,y,instance_nearest(mouse_x[index],mouse_y[index],enemy).x,instance_nearest(mouse_x[index],mouse_y[index],enemy).y,gunangle,12)}
+	}
+}
+
+#define draw_trails
+surface_set_target(global.trailsf)
+draw_set_blend_mode(bm_subtract)
+draw_set_alpha(.2)
+draw_set_color(merge_color(c_black,c_white,.1))
+draw_rectangle(0,0,surface_get_width(global.trailsf),surface_get_height(global.trailsf),0)
+draw_set_alpha(1)
+surface_reset_target()
+draw_set_blend_mode(bm_normal)
+draw_set_color(c_white)
+d3d_set_fog(1,c_white,1,1)
+for var i = 0; i < instance_number(Player) + instance_number(Revive); i++{
+    draw_set_visible_all(0)
+    draw_set_visible(i,1)
+    draw_surface_part(global.trailsf,view_xview[i]-global.sfx,view_yview[i] - global.sfy, game_width, game_height, view_xview[i], view_yview[i])
+}
+d3d_set_fog(0,0,0,0)
+draw_set_visible_all(1)
+
+#define step
+if !surface_exists(global.trailsf){
+    global.trailsf = surface_create(7000,7000)
+    surface_set_target(global.trailsf)
+    draw_clear_alpha(c_black,0)
+    surface_reset_target()
+}
+if !instance_exists(global.traildrawer){
+    with script_bind_draw(draw_trails,0){
+        global.traildrawer = id
+        persistent = 1
+    }
+}
+
+with instances_matching([Explosion,SmallExplosion,GreenExplosion,PopoExplosion],"hitid",-1){
+    hitid = [sprite_index,string_replace(string_upper(object_get_name(object_index)),"EXPLOSION"," EXPLOSION")]
+}
+
+//drop tables
+with Inspector			{if my_health <= 0 && irandom(97)=0{with instance_create(x,y,WepPickup){wep = choose("donut box","idpd slugger")}}};
+with Shielder 			{if my_health <= 0 && irandom(97)=0{with instance_create(x,y,WepPickup){wep = choose("donut box","idpd minigun")}}};
+with EliteGrunt 		{if my_health <= 0 && irandom(97)=0{with instance_create(x,y,WepPickup){wep = choose("donut box","idpd bazooka")}}};
+with EliteInspector     {if my_health <= 0 && irandom(97)=0{with instance_create(x,y,WepPickup){wep = choose("donut box","idpd energy sword")}}};
+with EliteShielder      {if my_health <= 0 && irandom(97)=0{with instance_create(x,y,WepPickup){wep = choose("donut box","idpd plasma minigun")}}};
+with PopoFreak	        {if my_health <= 0 && irandom(97)=0{with instance_create(x,y,WepPickup){wep = choose("donut box","idpd grenade launcher")}}};
+with Van	            {if my_health <= 0 && irandom(97)=0{with instance_create(x,y,WepPickup){wep = choose("donut box","idpd shotgun")}}};
+
+with SodaMachine{
+	if my_health <= 0 && irandom(0)=0
+	{
+		with instance_create(x,y,WepPickup)
+		{
+			if skill_get(14)=1
+			{
+				if irandom(99)=0{wep = "soda popper"}
+				else{wep = choose("lightning blue lifting drink(tm)","extra double triple coffee","autoproductive expresso","saltshake","munitions mist","vinegar","guardian juice","sunset mayo")}
+			}
+			else
+			{
+				if irandom(99)=0{wep = "soda popper"}
+				else
+				{wep = choose("lightning blue lifting drink(tm)","extra double triple coffee","autoproductive expresso","saltshake","munitions mist","vinegar","guardian juice")}
+			}
+		}
+	}
+}
 
 #define bullet_hit
 if name = "Psy Bullet"{with other{motion_add(point_direction(x,y,other.x,other.y),5)}}
@@ -948,63 +1054,6 @@ for (i=0; i<1+inc; i+=inc) {
 draw_primitive_end();
 return 0;
 
-#define draw
-with Player
-{
-	if wep = "psy sniper rifle"
-	{
-		if !instance_exists(enemy)
-		{
-			if collision_line(x,y,mouse_x[index],mouse_y[index],Wall,0,0)
-			{
-				var q = instance_create(x,y,CustomObject);
-				with q{
-					mask_index = sprBulletShell
-					image_angle = other.gunangle
-					move_contact_solid(image_angle,game_width)
-				}
-				//draw_line_width_colour(x,y,q.x,q.y,1,lasercolour2,lasercolour2)
-				with q instance_destroy()
-			}
-		}
-		else{draw_curve(x,y,instance_nearest(mouse_x[index],mouse_y[index],enemy).x,instance_nearest(mouse_x[index],mouse_y[index],enemy).y,gunangle,12)}
-	}
-}
-
-#define step
-with instances_matching([Explosion,SmallExplosion,GreenExplosion,PopoExplosion],"hitid",-1){
-    hitid = [sprite_index,string_replace(string_upper(object_get_name(object_index)),"EXPLOSION"," EXPLOSION")]
-}
-
-//drop tables
-with Inspector			{if my_health <= 0 && irandom(97)=0{with instance_create(x,y,WepPickup){wep = choose("donut box","idpd slugger")}}};
-with Shielder 			{if my_health <= 0 && irandom(97)=0{with instance_create(x,y,WepPickup){wep = choose("donut box","idpd minigun")}}};
-with EliteGrunt 		{if my_health <= 0 && irandom(97)=0{with instance_create(x,y,WepPickup){wep = choose("donut box","idpd bazooka")}}};
-with EliteInspector {if my_health <= 0 && irandom(97)=0{with instance_create(x,y,WepPickup){wep = choose("donut box","idpd energy sword")}}};
-with EliteShielder  {if my_health <= 0 && irandom(97)=0{with instance_create(x,y,WepPickup){wep = choose("donut box","idpd plasma minigun")}}};
-with PopoFreak	    {if my_health <= 0 && irandom(97)=0{with instance_create(x,y,WepPickup){wep = choose("donut box","idpd grenade launcher")}}};
-with Van	    			{if my_health <= 0 && irandom(97)=0{with instance_create(x,y,WepPickup){wep = choose("donut box","idpd shotgun")}}};
-
-with SodaMachine{
-	if my_health <= 0 && irandom(0)=0
-	{
-		with instance_create(x,y,WepPickup)
-		{
-			if skill_get(14)=1
-			{
-				if irandom(99)=0{wep = "soda popper"}
-				else{wep = choose("lightning blue lifting drink(tm)","extra double triple coffee","autoproductive expresso","saltshake","munitions mist","vinegar","guardian juice","sunset mayo")}
-			}
-			else
-			{
-				if irandom(99)=0{wep = "soda popper"}
-				else
-				{wep = choose("lightning blue lifting drink(tm)","extra double triple coffee","autoproductive expresso","saltshake","munitions mist","vinegar","guardian juice")}
-			}
-		}
-	}
-}
-
 
 #define create_lightning(_x,_y)
 with instance_create(_x,_y,CustomProjectile){
@@ -1056,12 +1105,6 @@ with instance_create(_x,_y,CustomProjectile){
 	on_hit = lightning_hit
 	depth = -8
 	return id
-}
-
-#define draw_dark()
-with instances_matching(CustomProjectile,"name","Lightning Bolt"){
-	draw_circle_color(x,y,550 + random(10), c_gray,c_gray,0)
-	draw_circle_color(x,y,250 + random(10), c_black,c_black,0)
 }
 
 #define lightning_wall
@@ -1351,8 +1394,10 @@ with instances_matching(CustomProjectile,"name","square")
 with instance_create(_x,_y,CustomProjectile){
     sprite_index = global.sprRocklet
     damage = 3
+    name = "Rocklet"
     maxspeed = 14
     typ = 1
+    depth = -1
     direction_goal = 0
     friction = -.6
     on_step = rocket_step
@@ -1364,22 +1409,6 @@ with instance_create(_x,_y,CustomProjectile){
 
 #define rocket_step
 direction -= (angle_difference(direction,direction_goal)*current_time_scale)/8
-with instance_create(x,y,BoltTrail)
-{
-    image_blend = c_white
-	image_angle = other.direction
-	image_yscale = .8
-	image_xscale = other.speed_raw - other.friction*current_time_scale
-	if fork(){
-	    while instance_exists(self){
-	        image_yscale+=.02 * current_time_scale
-	        image_blend = merge_color(image_blend,c_black,.05*current_time_scale)
-	        wait(0)
-	    }
-	    exit
-	}
-}
-
 if speed > maxspeed{speed = maxspeed}
 image_angle = direction
 
@@ -1391,6 +1420,9 @@ with instance_create(x,y,SmallExplosion){damage -= 2}
 #define rocket_draw
 draw_self()
 draw_sprite_ext(sprRocketFlame,-1,x,y,speed/(2*maxspeed),image_yscale/2,image_angle,c_white,image_alpha)
-/*draw_set_blend_mode(bm_add)
-draw_sprite_ext(sprRocketFlame,-1,x,y,speed/maxspeed,image_yscale,image_angle,c_white,.2)
-draw_set_blend_mode(bm_normal)*/
+if point_seen(xprevious,yprevious,-1){
+    surface_set_target(global.trailsf)
+    draw_sprite_ext(sprDust,irandom(3),x-global.sfx,y-global.sfy,2,random(speed)/(maxspeed*2),direction,c_white,1)
+    //draw_line_width(x-global.sfx,y-global.sfy,x-global.sfx - lengthdir_x(speed,direction), y-global.sfy - lengthdir_y(speed,direction), 1.6)
+    surface_reset_target()
+}

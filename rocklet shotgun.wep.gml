@@ -27,7 +27,7 @@ return sndSwapExplosive;
 return 3;
 
 #define weapon_text
-return "replace me please";
+return "SPRAY";
 
 #define weapon_fire
 if fork(){
@@ -39,26 +39,14 @@ if fork(){
         sound_play_pitch(sndRocketFly,random_range(2.6,3.2))
         sound_play_pitch(sndGrenadeRifle,random_range(.3,.4))
         sound_play_pitch(sndMachinegun,random_range(.7,.8))
-        with instance_create(x,y,CustomProjectile)
+       with mod_script_call("mod","defpack tools", "create_rocklet",x,y)
         {
-          sprite_index = global.sprRocklet
-          creator = other
-          damage = 3
-          team = creator.team
-          move_contact_solid(other.gunangle,8)
-          motion_add(other.gunangle+random_range(-17,17)*creator.accuracy,2)
-          maxspeed = random_range(10,14)
-          timer = 7
-          typ = 1
-          friction = random_range(-.7,-.5)
-          t = 0;
-          image_angle = direction
-          turn = choose(-1,1)
-          increment = random_range(32,36);
-          amplitude = random_range(1,7);
-          instance_create(x,y,Smoke)
-          on_step = rocket_step
-          on_destroy = rocket_destroy
+            creator = other
+            team = creator.team
+            move_contact_solid(other.gunangle,10)
+            direction_goal = other.gunangle
+            motion_add(other.gunangle+random_range(-25,25)*creator.accuracy,3)
+            image_angle = direction
         }
     }
 }
