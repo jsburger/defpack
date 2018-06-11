@@ -112,8 +112,15 @@ draw_set_alpha(.2)
 draw_set_color(merge_color(c_black,c_white,.1))
 draw_rectangle(0,0,surface_get_width(global.trailsf),surface_get_height(global.trailsf),0)
 draw_set_alpha(1)
-surface_reset_target()
 draw_set_blend_mode(bm_normal)
+
+with instances_matching(CustomProjectile,"name","big rocklet","huge rocklet"){
+    if point_seen(xprevious,yprevious,-1){
+        draw_sprite_ext(sprDust,irandom(3),xprevious-global.sfx,yprevious-global.sfy,2,(random(speed)/(maxspeed))+.1,direction,c_white,1)
+    }
+}
+
+surface_reset_target()
 draw_set_color(c_white)
 d3d_set_fog(1,c_white,1,1)
 for var i = 0; i < instance_number(Player) + instance_number(Revive); i++{

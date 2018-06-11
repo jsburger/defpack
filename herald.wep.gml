@@ -12,6 +12,7 @@ with script_bind_draw(vignette,-10){
 	name = mod_current
 }
 
+global.sounds = [sndExplosion,sndExplosionL,sndExplosionXL]
 
 
 global.pink = make_color_rgb(252,59,82)
@@ -37,11 +38,14 @@ return 0
 return 0
 #define weapon_fire
 if instance_is(self,Player){
+    player_set_show_cursor(index,index,0)
+    view_pan_factor[index] = 2
 	with create_abris(id,80,70,mod_current){
 		accspeed = [0,0]
 		alpha = 0
 		runealpha = 0
 		depth = -11
+		meteortime = 0
         runecolor = c_black
         runebloom = c_red
         beamcolor = c_red
@@ -68,6 +72,7 @@ return "this is what ends it"
 #define step
 #define pop
 player_set_show_cursor(index,index,1)
+view_pan_factor[index] = undefined
 
 
 #define create_abris(Creator,startsize,endsize,weapon)
@@ -163,6 +168,55 @@ switch creator.race{
 		break
 }
 
+#define meteor()
+meteortime = 0
+var ang = random(360)
+with instance_create(mouse_x[index]+lengthdir_x(random(accbase),ang), mouse_y[index]+lengthdir_y(random(accbase),ang),CustomObject){
+    z = game_height+100+random(40)
+    zstart = z
+    depth = -12
+    zspeed = choose(16,22,18,30)
+    motion_set(random(360),random(1))
+    size = irandom_range(2,4)
+    snd_dead = global.sounds[size-2]
+    on_draw = meteor_draw
+    on_step = meteor_step
+    on_destroy = meteor_destroy
+}
+
+#define meteor_draw
+draw_triangle(x+lengthdir_x(size*10,direction+90),y-z+lengthdir_y(size*10,direction+90),x+lengthdir_x(size*10,direction-90),y-z+lengthdir_y(size*10,direction+90),xstart,ystart-zstart,0)
+
+#define meteor_step
+z = max(z - zspeed*current_time_scale,0)
+if z = 0 instance_destroy()
+
+#define meteor_destroy
+sound_play_hit(snd_dead,.1)
+if size = 2{
+    repeat(1){
+        with instance_create(x+lengthdir_x(random_range(12,32),random(360)),y+lengthdir_y(random_range(12,32),random(360)),Explosion) depth = -12
+    }
+    repeat(6){
+        with instance_create(x+lengthdir_x(random_range(20,40),random(360)),y+lengthdir_y(random_range(20,40),random(360)),SmallExplosion) depth = -12
+    }
+}else if size = 3{
+    repeat(4){
+        with instance_create(x+lengthdir_x(random_range(12,32),random(360)),y+lengthdir_y(random_range(12,32),random(360)),Explosion) depth = -12
+    }
+    repeat(10){
+        with instance_create(x+lengthdir_x(random_range(20,40),random(360)),y+lengthdir_y(random_range(20,40),random(360)),SmallExplosion) depth = -12
+    }
+}else if size = 4{
+    repeat(7){
+        with instance_create(x+lengthdir_x(random_range(12,64),random(360)),y+lengthdir_y(random_range(12,64),random(360)),Explosion) depth = -12
+    }
+    repeat(16){
+        with instance_create(x+lengthdir_x(random_range(20,60),random(360)),y+lengthdir_y(random_range(20,60),random(360)),SmallExplosion) depth = -12
+    }
+}
+
+
 #define abris_step
 if instance_exists(creator){
 	if !dropped{
@@ -176,15 +230,17 @@ if instance_exists(creator){
 		image_angle += rotspeed * current_time_scale;
 		subangle -= rotspeed * current_time_scale;
         if phase < 1{
-            phase += .0025*current_time_scale
+            phase += .003*current_time_scale
             vigncol1 = merge_color(c_white,c_black,other.alpha/2)
 	        vigncol2 = merge_color(c_white,c_red,other.alpha)
         }
         if phase >= 1 and phase < 2{
-            phase += .01*current_time_scale
-            vigncol2 = merge_color(vigncol2,c_silver,.03*current_time_scale)
-            vigncol1 = merge_color(vigncol1,c_black,.03*current_time_scale)
+            phase += .02*current_time_scale
+            vigncol2 = merge_color(vigncol2,c_silver,.06*current_time_scale)
+            vigncol1 = merge_color(vigncol1,c_black,.06*current_time_scale)
         }
+        meteortime+=current_time_scale
+        if phase >= 2 && meteortime >= 4 meteor()
         if phase < 1 rotspeed+=phase*current_time_scale*.025
 		if check = 1 || popped{
 			if popped{
@@ -280,7 +336,8 @@ for (var i = 0; i< sides; i++){
     var ang = image_angle + i * 360/sides, ang2 = image_angle + (i + 1) * 360/sides;
 	var x1 = _x + lengthdir_x(accbase,ang), y1 = _y + lengthdir_y(accbase, ang), x2 = _x + lengthdir_x(accbase, ang2), y2 = _y + lengthdir_y(accbase,ang2);
 	runeline(x1,y1,x2,y2,runes[i],1,bloom)
-	if phase > 1 rune_beam(_x,_y,x1,y1+5,x2,y2+5,c_white,(phase-1)*alpha,2)
+	var ydiff = phase > 2 ? 3: 5
+	if phase > 1 rune_beam(_x,_y,x1,y1+ydiff,x2,y2+ydiff,c_white,(phase-1)*alpha,2)
     //if !(i mod 2) array_push(points,[x1,y1])
 }
 
@@ -298,7 +355,8 @@ for (var i = 0; i< subsides; i++){
 	var n = 1.3;
 	var x1 = _x + lengthdir_x(accbase/n,ang), y1 = _y + lengthdir_y(accbase/n,ang), x2 = _x + lengthdir_x(accbase/n,ang2), y2 = _y + lengthdir_y(accbase/n,ang2);
 	runeline(x1,y1,x2,y2,subrunes[i],0,bloom)
-	if phase > 1 rune_beam(_x,_y,x1,y1+3,x2,y2+3,c_white,(phase-1)*alpha,1)
+	var ydiff = phase > 2 ? 2: 3
+	if phase > 1 rune_beam(_x,_y,x1,y1+ydiff,x2,y2+ydiff,c_white,(phase-1)*alpha,1)
 
 }
 
@@ -332,9 +390,13 @@ repeat(4){
     draw_sprite_ext(global.bigrune,0,_x,_y,1+random_range(-.2,.2),1+random_range(-.2,.2),0,bigrunecolor,runealpha)
 }
 
-if phase > 1{
+if phase > 1 and phase < 2{
     draw_circle_color(_x,_y,accbase*1.2,merge_color(c_white,c_black,1/min(power(phase,10),accbase*1.5)),c_black,0)
     coolline(_x,_y+20,_x,_y-game_height,min(power(phase,10),accbase*1.5),c_white,c_black)
+}
+if phase > 2{
+    draw_circle_color(_x,_y,accbase*1.2,merge_color(c_white,c_black,1/min(power(phase,10),accbase*1.5)),c_black,0)
+    coolline(_x,_y+20,_x,_y-game_height,clamp(power(phase,10) - power(phase,12),0,accbase*1.5),c_white,c_black)
 }
 draw_set_blend_mode(bm_normal)
 
