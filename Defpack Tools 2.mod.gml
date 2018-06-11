@@ -3,6 +3,7 @@ global.sprBullakRed = sprite_add("sprites/projectiles/sprBullakRed.png", 2, 8, 8
 global.sprBullakYellow = sprite_add("sprites/projectiles/sprBullakYellow.png", 2, 8, 8)
 global.sprBullakGreen = sprite_add("sprites/projectiles/sprBullakGreen.png", 2, 8, 8)
 global.sprBullakBlue = sprite_add("sprites/projectiles/sprBullakBlue.png", 2, 8, 8)
+global.sprBullakBlueUpg = sprite_add("sprites/projectiles/sprBullakBlueUpg.png", 2, 8, 8)
 global.sprBullakPurple = sprite_add("sprites/projectiles/sprBullakPurple.png", 2, 8, 8)
 global.sprFireFlak = sprite_add("sprites/projectiles/Fire Flak.png", 2, 8, 8)
 global.sprDarkFlak = sprFlakBullet //rip
@@ -226,20 +227,46 @@ var a = instance_create(_x,_y,CustomProjectile);
 with(a){
 	name = "Psy Bullet Flak"
 	sprite_index = global.sprBullakPurple
-	image_speed = .7
-	ammo = 22
+	image_speed = 1
+	ammo = 16
+	force = 8
 	typ = 1
-	force = 10
-	damage = 32
+	damage = 16
 	mask_index = mskFlakBullet
 	friction = 0 //frick you sani, im gonna use GML's friction and you cant stop me
 	on_draw = flak_draw
 	on_destroy = psy_pop
 	on_step = psy_step
+	on_hit  = psy_hit
 }
 return a;
 
+#define psy_hit
+if other.team != team
+{
+		if projectile_canhit_melee(other) = true
+		{
+			var _hp = other.my_health;
+			sleep(40)
+			projectile_hit(other,damage,force,direction-180)
+			damage = round(damage-_hp)
+			instance_create(x,y,Smoke)
+			if ammo > 0
+			{
+				ammo--
+				with mod_script_call("mod","defpack tools","create_psy_bullet",x,y){
+					team = other.team
+					creator = other.creator
+					motion_set(random(359),18)
+					image_angle = direction
+					}
+			}
+			if damage <= 0 instance_destroy()
+		}
+}
+
 #define psy_step
+if image_index = 1 image_speed = 0
 if instance_exists(enemy){
 	var closeboy = instance_nearest(x,y,enemy)
 	if collision_line(x,y,closeboy.x,closeboy.y,Wall,0,0) < 0 && distance_to_object(closeboy) < 200{
@@ -284,9 +311,9 @@ var a = instance_create(_x,_y,CustomProjectile);
 with(a){
 	name = "Fire Bullet Flak"
 	sprite_index = global.sprBullakRed
-	image_speed = .7
-	ammo = 22
-	force = 5
+	image_speed = 1
+	ammo = 16
+	force = 12
 	typ = 1
 	damage = 32
 	mask_index = mskFlakBullet
@@ -294,8 +321,33 @@ with(a){
 	on_draw = flak_draw
 	on_destroy = flame_pop
 	on_step = flame_step
+	on_hit  = flame_hit
 }
 return a;
+
+#define flame_hit
+if other.team != team
+{
+		if projectile_canhit_melee(other) = true
+		{
+			var _hp = other.my_health;
+			sleep(40)
+			projectile_hit(other,damage,force,direction)
+			damage = round(damage-_hp)
+			instance_create(x,y,Smoke)
+			if ammo > 0
+			{
+				ammo--
+				with mod_script_call("mod","defpack tools","create_fire_bullet",x,y){
+					team = other.team
+					creator = other.creator
+					motion_set(random(359),18)
+					image_angle = direction
+					}
+			}
+			if damage <= 0 instance_destroy()
+		}
+}
 
 #define flame_pop
 sound_play(sndMachinegun)
@@ -325,6 +377,7 @@ else
 	}
 }
 #define flame_step
+if image_index = 1 image_speed = 0
 if !irandom(1){
 	with instance_create(x,y,Flame){
 		team = other.team
@@ -339,21 +392,46 @@ image_angle = direction
 var a = instance_create(_x,_y,CustomProjectile);
 with(a){
 	name = "Lightning Bullet Flak"
-	sprite_index = global.sprBullakBlue
-	image_speed = .7
-	ammo = 22
-	force = 5
+	if skill_get(17)=true sprite_index = global.sprBullakBlueUpg else sprite_index = global.sprBullakBlueUpg
+	image_speed = 1
+	ammo = 16
+	force = 8
 	typ = 1
-	damage = 32
+	damage = 16
 	mask_index = mskFlakBullet
 	friction = 0
 	on_draw = flak_draw
 	on_destroy = zap_pop
 	on_step = zap_step
+	on_hit = zap_hit
 }
 return a;
 
+#define zap_hit
+if other.team != team
+{
+		if projectile_canhit_melee(other) = true
+		{
+			var _hp = other.my_health;
+			projectile_hit(other,damage,force,direction)
+			damage = round(damage-_hp)
+			instance_create(x,y,Smoke)
+			if ammo > 0
+			{
+				ammo--
+				with mod_script_call("mod","defpack tools","create_lightning_bullet",x,y){
+					team = other.team
+					creator = other.creator
+					motion_set(random(359),18)
+					image_angle = direction
+					}
+			}
+			if damage <= 0 instance_destroy()
+		}
+}
+
 #define zap_step
+if image_index = 1 image_speed = 0
 if !irandom(3) with instance_create(x,y,Lightning){
 	team = other.team
 	creator = other.creator
@@ -411,20 +489,45 @@ var a = instance_create(_x,_y,CustomProjectile);
 with(a){
 	name = "Toxic Bullet Flak"
 	sprite_index = global.sprBullakGreen
-	image_speed = .7
-	ammo = 22
-	force = 5
+	image_speed = 1
+	ammo = 16
+	force = 8
 	typ = 1
-	damage = 32
+	damage = 16
 	mask_index = mskFlakBullet
 	friction = 0
+	image_angle = direction
 	on_draw = flak_draw
 	on_destroy = gas_pop
 	on_step = gas_step
 }
 return a;
 
+#define gas_hit
+if other.team != team
+{
+		if projectile_canhit_melee(other) = true
+		{
+			var _hp = other.my_health;
+			projectile_hit(other,damage,force,direction)
+			damage = round(damage-_hp)
+			instance_create(x,y,Smoke)
+			if ammo > 0
+			{
+				ammo--
+				with mod_script_call("mod","defpack tools","create_toxic_bullet",x,y){
+					team = other.team
+					creator = other.creator
+					motion_set(random(359),18)
+					image_angle = direction
+					}
+			}
+			if damage <= 0 instance_destroy()
+		}
+}
+
 #define gas_step
+if image_index = 1 image_speed = 0
 if !irandom(1) && distance_to_object(creator) > 20 with instance_create(x,y,ToxicGas){
 	creator = other.creator
 	image_angle = random(359)
@@ -588,18 +691,42 @@ var a = instance_create(_x,_y,CustomProjectile);
 with(a){
 	name = "Bullet Flak"
 	sprite_index = global.sprBullakYellow
-	image_speed = .7
-	ammo = 22
+	image_speed = 1
+	ammo = 16
 	force = 8
 	typ = 1
-	damage = 32
+	damage = 16
 	mask_index = mskFlakBullet
 	friction = 0
-	on_draw = flak_draw
+	on_draw    = flak_draw
 	on_destroy = woa_pop
-	on_step = woa_step
+	on_step    = woa_step
+	on_hit     = woa_hit
 }
 return a;
+
+#define woa_hit
+if other.team != team
+{
+		if projectile_canhit_melee(other) = true
+		{
+			var _hp = other.my_health;
+			projectile_hit(other,damage,force,direction)
+			damage = round(damage-_hp)
+			instance_create(x,y,Smoke)
+			if ammo > 0
+			{
+				ammo--
+				with instance_create(x,y,Bullet1){
+					team = other.team
+					creator = other.creator
+					motion_set(random(359),18)
+					image_angle = direction
+					}
+			}
+			if damage <= 0 instance_destroy()
+		}
+}
 
 #define woa_step
 /*if irandom(7) = 0
@@ -612,6 +739,7 @@ return a;
 		image_angle = direction
 	}
 }*/
+if image_index = 1 image_speed = 0
 if !irandom(2) {instance_create(x,y,Dust)}
 if speed < .1 {instance_destroy()}
 image_angle = direction
@@ -649,7 +777,7 @@ var a = instance_create(_x,_y,CustomProjectile);
 with(a){
 	name = "Flame Flak"
 	sprite_index = global.sprFireFlak
-	image_speed = .7
+	image_speed = 1
 	ammo = 22
 	force = 5
 	typ = 1
@@ -773,7 +901,7 @@ if bullet < 5{
 
 if b = "stop this" {trace(b)}
 else with(b){
-	motion_set(other.gunangle+acc*other.accuracy,12)
+	motion_set(other.gunangle+acc*other.accuracy,16)
 	if bullet = 2{speed/=1.5}
 	ammo = bulletmass
 	offset = random(360)

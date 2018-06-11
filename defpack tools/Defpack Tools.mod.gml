@@ -26,8 +26,8 @@ global.sprRocklet = sprite_add("sprRocklet.png",2,2,6)
 global.sprSonicExplosion = sprite_add("Soundwave_strip8.png",8,61,59);
 global.mskSonicExplosion = sprite_add("mskSonicExplosion_strip9.png",9,32,32);
 
-global.sprGenShell = sprite_add("Generic Shell.png",0, 1.5, 2.5);
-
+global.sprGenShell    = sprite_add("Generic Shell.png",0, 1.5, 2.5);
+global.sprGenShellBig = sprite_add("sprGenShellBig.png",0, 3, 5);
 global.stripes = sprite_add("BIGstripes.png",1,1,1)
 
 global.sprSquare = sprite_add("sprSquare.png", 0, 7, 7)
@@ -51,8 +51,16 @@ with instances_matching(CustomProjectile,"name","Psy Bullet","Psy Shell") instan
 with global.traildrawer instance_destroy()
 
 #define draw_shadows()
-with instances_matching(CustomProjectile,"name","volley arrow")
-    draw_sprite_ext(shd16,0,x,y,clamp(1/z*10,0,1),clamp(1/z*10,0,1),0,c_white,1)
+with(CustomProjectile)
+{
+	if "name" in self
+	{
+		if name = "volley arrow"
+		{
+			draw_sprite_ext(shd16,0,x,y,clamp(1/z*10,0,1),clamp(1/z*10,0,1),0,c_white,1)
+		}
+	}
+}
 
 #define draw_dark()
 if fork()
@@ -112,23 +120,14 @@ draw_set_alpha(.2)
 draw_set_color(merge_color(c_black,c_white,.1))
 draw_rectangle(0,0,surface_get_width(global.trailsf),surface_get_height(global.trailsf),0)
 draw_set_alpha(1)
-draw_set_blend_mode(bm_normal)
-
-with instances_matching(CustomProjectile,"name","big rocklet","huge rocklet"){
-    if point_seen(xprevious,yprevious,-1){
-        draw_sprite_ext(sprDust,irandom(3),xprevious-global.sfx,yprevious-global.sfy,2,(random(speed)/(maxspeed))+.1,direction,c_white,1)
-    }
-}
-
 surface_reset_target()
+draw_set_blend_mode(bm_normal)
 draw_set_color(c_white)
-d3d_set_fog(1,c_white,1,1)
 for var i = 0; i < instance_number(Player) + instance_number(Revive); i++{
     draw_set_visible_all(0)
     draw_set_visible(i,1)
     draw_surface_part(global.trailsf,view_xview[i]-global.sfx,view_yview[i] - global.sfy, game_width, game_height, view_xview[i], view_yview[i])
 }
-d3d_set_fog(0,0,0,0)
 draw_set_visible_all(1)
 
 #define step
@@ -804,7 +803,13 @@ with instance_create(x, y, Shell){
 	image_blend = _color
 }
 
-
+//im not feeling like rewriting every weapon using shell_yeah
+#define shell_yeah_big(_angle, _spread, _speed, _color)
+with instance_create(x, y, Shell){
+	motion_add(other.gunangle + (other.right * _angle) + random_range(-_spread, _spread), _speed);
+	sprite_index = global.sprGenShellBig
+	image_blend = _color
+}
 
 //old function that i changed the name of because i didnt want to comment it out for some reason, used the american spelling so karm wouldnt accidentally use it
 #define draw_circle_width_color(precision,radius,width,offset,xcenter,ycenter,col,alpha)
@@ -1428,10 +1433,8 @@ with instances_matching(CustomProjectile,"name","square")
 with instance_create(_x,_y,CustomProjectile){
     sprite_index = global.sprRocklet
     damage = 3
-    name = "Rocklet"
     maxspeed = 14
     typ = 1
-    depth = -1
     direction_goal = 0
     friction = -.6
     on_step = rocket_step
@@ -1456,8 +1459,7 @@ draw_self()
 draw_sprite_ext(sprRocketFlame,-1,x,y,speed/(2*maxspeed),image_yscale/2,image_angle,c_white,image_alpha)
 if point_seen(xprevious,yprevious,-1){
     surface_set_target(global.trailsf)
-    draw_sprite_ext(sprDust,irandom(3),x-global.sfx,y-global.sfy,2,random(speed)/(maxspeed*2),direction,c_white,1)
-    //draw_line_width(x-global.sfx,y-global.sfy,x-global.sfx - lengthdir_x(speed,direction), y-global.sfy - lengthdir_y(speed,direction), 1.6)
+    draw_line_width(x-global.sfx,y-global.sfy,x-global.sfx - lengthdir_x(speed,direction), y-global.sfy - lengthdir_y(speed,direction), 1.6)
     surface_reset_target()
 }
 

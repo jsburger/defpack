@@ -43,7 +43,7 @@ sleep(35)
 motion_add(gunangle-180,5+abs(speed))
 with instance_create(x,y,LightningSpawn){
     move_contact_solid(other.gunangle,20);
-    image_speed = .45
+    image_speed = 1
 }
 with instance_create(x,y,LightningHit){
     move_contact_solid(other.gunangle,14);
