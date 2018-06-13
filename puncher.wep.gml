@@ -1,6 +1,6 @@
 #define init
 global.sprPuncher 			= sprite_add_weapon("sprites/sprPuncher.png",11,3)
-global.sprPuncherRocket = sprite_add("sprites/projectiles/sprPuncherRocket.png",0,6,4)
+global.sprPuncherRocket = sprite_add("sprites/projectiles/sprPuncherRocket.png",0,6,6)
 #define weapon_name
 return "PUNCHER"
 #define weapon_type

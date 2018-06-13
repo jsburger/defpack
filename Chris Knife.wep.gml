@@ -63,7 +63,7 @@ if team != other.team
 #define knifeshank_hit
 if projectile_canhit_melee(other)
 {
-  if irandom(19-(skill_get(6)*5)) = 0 && can_crit = 1
+  if 0 = 0//irandom(19-(skill_get(6)*5)) = 0 && can_crit = 1
   {
     view_shake_max_at(x,y,200)
     sleep(150)
@@ -72,6 +72,7 @@ if projectile_canhit_melee(other)
     sound_play_pitchvol(sndHammerHeadEnd,random_range(1.23,1.33),20)
     sound_play_pitchvol(sndBasicUltra,random_range(0.9,1.1),20)
     sound_play_pitch(sndCoopUltraA,random_range(3.8,4.05))
+    sound_play_pitch(sndBasicUltra,random_range(.6,.8))
     with instance_create(x+lengthdir_x(sprite_get_width(sprite_index),image_angle),y+lengthdir_y(sprite_get_width(sprite_index),image_angle),CustomObject)
     {
       image_angle = random(359)
@@ -96,5 +97,7 @@ if projectile_canhit_melee(other)
   }
   projectile_hit(other,damage,force,direction)
 }
+
 #define Killslash_step
+if image_index = 1.2 sleep(200)
 if image_index >= 7 instance_destroy();
