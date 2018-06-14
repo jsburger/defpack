@@ -110,29 +110,37 @@ with Player
 #define draw_trails
 surface_set_target(global.trailsf)
 draw_set_blend_mode(bm_subtract)
-draw_set_alpha(.2)
-draw_set_color(merge_color(c_black,c_white,.1))
+draw_set_alpha(.15)
+draw_set_color_write_enable(0,0,0,1)
 draw_rectangle(0,0,surface_get_width(global.trailsf),surface_get_height(global.trailsf),0)
-draw_set_alpha(1)
 draw_set_blend_mode(bm_normal)
+draw_set_alpha(1)
+draw_set_color_write_enable(1,1,1,1)
+
+d3d_set_fog(1,c_white,1,1)
 
 with instances_matching(CustomProjectile,"name","big rocklet","huge rocklet"){
     if point_seen(xprevious,yprevious,-1){
         draw_sprite_ext(sprDust,irandom(3),xprevious-global.sfx,yprevious-global.sfy,2,(random(speed)/(maxspeed))+.1,direction,c_white,1)
     }
 }
+with instances_matching(CustomProjectile,"name","Rocklet"){
+    if point_seen(xprevious,yprevious,-1){
+        draw_sprite_ext(sprDust,irandom(3),x-global.sfx,y-global.sfy,2,random(speed)/(maxspeed*2),direction,c_white,1)
+    }
+}
+d3d_set_fog(0,0,0,0)
 
+draw_set_alpha_test_ref_value(10)
 surface_reset_target()
-
-draw_set_color(c_white)
-d3d_set_fog(1,c_white,1,1)
-for var i = 0; i < instance_number(Player) + instance_number(Revive); i++{
+for var i = 0; player_is_active(i); i++{
     draw_set_visible_all(0)
     draw_set_visible(i,1)
     draw_surface_part(global.trailsf,view_xview[i]-global.sfx,view_yview[i] - global.sfy, game_width, game_height, view_xview[i], view_yview[i])
 }
-d3d_set_fog(0,0,0,0)
+draw_set_alpha_test_ref_value(0)
 draw_set_visible_all(1)
+
 
 #define step
 if !surface_exists(global.trailsf){
@@ -142,7 +150,7 @@ if !surface_exists(global.trailsf){
     surface_reset_target()
 }
 if !instance_exists(global.traildrawer){
-    with script_bind_draw(draw_trails,0){
+    with script_bind_draw(draw_trails,1){
         global.traildrawer = id
         persistent = 1
     }
@@ -203,6 +211,8 @@ image_speed = 0
 #define shell_hit
 projectile_hit(other, (current_frame < fallofftime? damage : (damage - falloff)), force, direction);
 
+#define chance(percentage)
+return random(100) <= percentage*current_time_scale
 
 //ill get to this later
 #define bullet_step
@@ -279,7 +289,7 @@ return a;
 
 #define psy_step
 if timer > 0{
-	timer -= 1
+	timer -= current_time_scale
 }
 if timer = 0 && instance_exists(enemy){
 	var closeboy = instance_nearest(x,y,enemy)
@@ -289,7 +299,7 @@ if timer = 0 && instance_exists(enemy){
 		dir = point_direction(x, y, closeboy.x, closeboy.y);
 		spd = 11
 
-		direction -= clamp(angle_difference(image_angle, dir) * .3, -spd, spd); //Smoothly rotate to aim position.
+		direction -= clamp(angle_difference(image_angle, dir) * .3 * current_time_scale, -spd, spd); //Smoothly rotate to aim position.
 		image_angle = direction
 	}
 	if speed > maxspeed
@@ -322,7 +332,7 @@ with (b){
 	falloff = 1
 	fallofftime = current_frame + 2
 	timer = 5 + irandom(4)
-	on_hit = script_ref_create(shell_hit)
+	on_hit = script_ref_create(psy_shell_hit)
 	on_draw = script_ref_create(psy_shell_draw)
 	on_step = script_ref_create(psy_shell_step)
 	on_wall = script_ref_create(psy_shell_wall)
@@ -330,6 +340,10 @@ with (b){
 	on_anim = script_ref_create(bullet_anim)
 }
 return b;
+
+#define psy_shell_hit
+shell_hit()
+instance_destroy()
 
 #define psy_shell_step
 if timer > 0{
@@ -351,12 +365,7 @@ if speed < 3{
 fallofftime = current_frame + 2
 move_bounce_solid(true)
 speed /= 1.25
-if speed + wallbounce >= 14{
-	speed = 14
-}
-else{
-	speed += wallbounce
-}
+speed = min(speed+wallbounce,14)
 wallbounce /= 1.05
 instance_create(x,y,Dust)
 sound_play_hit(sndShotgunHitWall,.2)
@@ -408,12 +417,7 @@ return c;
 fallofftime = current_frame + 2
 move_bounce_solid(true)
 speed /= 1.5
-if speed + wallbounce >= 14{
-	speed = 14
-}
-else{
-	speed += wallbounce
-}
+speed = min(speed+wallbounce,14)
 wallbounce /= 1.05
 instance_create(x,y,Dust)
 sound_play_hit(sndShotgunHitWall,.2)
@@ -499,20 +503,20 @@ with (c){
 return c;
 
 #define thunder_step
-if random(21) < 1*current_time_scale{
-		with instance_create(x,y,Lightning){
-	      	image_angle = random(360)
-	      	team = other.team
-			creator = other.creator
-	      	ammo = choose(1,2)
-			alarm0 = 1
-			visible = 0
-	      	with instance_create(x,y,LightningSpawn)
-	        {
-	      	   image_angle = other.image_angle
-	        }
-	    }
-	}
+if chance(5){
+	with instance_create(x,y,Lightning){
+      	image_angle = random(360)
+      	team = other.team
+		creator = other.creator
+      	ammo = choose(1,2)
+		alarm0 = 1
+		visible = 0
+      	with instance_create(x,y,LightningSpawn)
+        {
+      	   image_angle = other.image_angle
+        }
+    }
+}
 
 #define thunder_destroy
 with instance_create(x,y,Lightning){
@@ -585,7 +589,7 @@ with (e){
 return e;
 
 #define fire_step
-if irandom(12) = 1{
+if chance(8){
 	with instance_create(x,y,Flame){
 		team = other.team
 		creator = other.creator
@@ -639,7 +643,7 @@ instance_destroy()
 #define dark_proj
 var t = team;
 with other{
-	if "typ" in self && typ >= 1 {
+	if typ >= 1 {
 		var ringang = random(359);
 		with create_sonic_explosion(x,y){
 			var scalefac = random_range(0.26,0.3);
@@ -714,22 +718,20 @@ return g;
 if (projectile_canhit_melee(other)){
 	projectile_hit(other, damage, force, direction);
 	pierces -= 1
+	if irandom(5) = 5 && skill_get(16){
+    	creator.ammo[1]+=recycle_amount
+    	if creator.ammo[1] > creator.typ_amax[1] {creator.ammo[1] = creator.typ_amax[1]}
+    	sound_play_pitchvol(sndRecGlandProc, 1, 7)
+    }
+    if !irandom(1) && skill_get("recycleglandx10"){
+    	creator.ammo[1]+=10*recycle_amount
+    	if creator.ammo[1] > creator.typ_amax[1] {creator.ammo[1] = creator.typ_amax[1]}
+    	sound_play_pitchvol(sndRecGlandProc, 1, 7)
+    }
+    if pierces = 0{
+    	instance_destroy()
+    }
 }
-//apparently this being wrong is being balanced around, so ill leave it be i suppose
-if irandom(5) = 5 && skill_get(16){
-	creator.ammo[1]+=recycle_amount
-	if creator.ammo[1] > creator.typ_amax[1] {creator.ammo[1] = creator.typ_amax[1]}
-	sound_play_pitchvol(sndRecGlandProc, 1, 7)
-}
-if !irandom(1) && skill_get("recycleglandx10"){
-	creator.ammo[1]+=10*recycle_amount
-	if creator.ammo[1] > creator.typ_amax[1] {creator.ammo[1] = creator.typ_amax[1]}
-	sound_play_pitchvol(sndRecGlandProc, 1, 7)
-}
-if pierces = 0{
-	instance_destroy()
-}
-
 #define light_destroy
 with instance_create(x,y,BulletHit){
 	sprite_index = global.sprLightBulletHit
@@ -955,8 +957,8 @@ if instance_exists(creator){
 		abris_check()
 	}
 	if !dropped{
-		image_angle += rotspeed;
-		offset += offspeed;
+		image_angle += rotspeed*current_time_scale;
+		offset += offspeed*current_time_scale;
 		if check = 1 || popped{
 			if popped{
 				var pops = 1;
@@ -970,7 +972,7 @@ if instance_exists(creator){
 		}else{
 			creator.breload = weapon_get_load(creator.bwep)
 		}
-		acc/=accspeed
+		acc/= 1+((accspeed - 1)*current_time_scale)
 		if collision_line(x,y,mouse_x[index],mouse_y[index],Wall,0,0) >= 0{
 			if acc < accbase{acc += abs(creator.accuracy*3)}else{acc = accbase;lasercolour=c_white}
 		}
@@ -1003,9 +1005,10 @@ else{instance_destroy()}
 if instance_exists(creator) && check{
 	x = creator.x
 	y = creator.y
-	if collision_line_first(x,y,mouse_x[index],mouse_y[index],Wall,0,0) > -4
+	var w = collision_line_first(x,y,mouse_x[index],mouse_y[index],Wall,0,0);
+	if w > -4
 	{
-		var _wall = collision_line_first(x,y,mouse_x[index],mouse_y[index],Wall,0,0);
+		var _wall = w;
 		var _tarx = x + lengthdir_x(point_distance(x,y,_wall.x,_wall.y),creator.gunangle);
 		var _tary = y + lengthdir_y(point_distance(x,y,_wall.x,_wall.y),creator.gunangle);
 	}
@@ -1218,25 +1221,26 @@ if time <= 0 instance_destroy()
 a = instance_create(x,y,CustomProjectile);
 with a
 {
+    name = "Plasmite"
 	image_speed = 0
 	image_index = 0
 	damage = 2+skill_get(17)
 	sprite_index = global.sprPlasmite
-	fric = random_range(1.2,1.3)
+	fric = random_range(.2,.3)
 	speedset = 0
 	maxspeed = 7
 	on_step 	 = plasmite_step
 	on_wall 	 = plasmite_wall
-	on_destroy = plasmite_destroy
+	on_destroy   = plasmite_destroy
 }
 return a;
 
 #define plasmite_step
 image_angle = direction
-if irandom(12-skill_get(17)*5) = 1{instance_create(x,y,PlasmaTrail)}
+if chance(8 + 6*skill_get(17)) instance_create(x,y,PlasmaTrail)
 if speedset = 0
 {
-	speed/= fric
+	speed/= 1+(fric*current_time_scale)
 	if speed < 1.00005{speedset = 1}
 }
 else
@@ -1244,11 +1248,11 @@ else
 	if instance_exists(enemy)
 	{
 		var closeboy = instance_nearest(x,y,enemy)
-		motion_add(point_direction(x,y,closeboy.x,closeboy.y),.5+skill_get(17)*.3)
+		motion_add(point_direction(x,y,closeboy.x,closeboy.y),.5+skill_get(17)*.3*current_time_scale)
 	}
 	if speed > maxspeed{speed = maxspeed}
-	maxspeed /= fric
-	if maxspeed <= fric instance_destroy()
+	maxspeed /= 1+(fric*current_time_scale)
+	if maxspeed <= 1+fric instance_destroy()
 }
 
 #define plasmite_wall
@@ -1310,7 +1314,7 @@ with a
 	lifetime = room_speed * 6
 	on_step    = square_step
 	on_hit     = square_hit
-	on_wall    = actually_nothing
+	on_wall    = square_wall
 	on_draw    = square_draw
 	on_destroy = square_destroy
 }
@@ -1327,7 +1331,7 @@ if size > 1
 				creator = other.creator
 				team    = other.team
 				size    = 1
-				motion_add(i+random_range(-6,6),6)
+				motion_add(i+random_range(-6,6),6*current_time_scale)
 			}
 			i += 360/size
 		}
@@ -1336,11 +1340,8 @@ sound_play_pitch(sndPlasmaHit,random_range(.9,1.1))
 with instance_create(x,y,PlasmaImpact){team = other.team;image_xscale=1.5;image_yscale=1.5}
 
 #define square_hit
-if team != other.team
-{
-	with other motion_add(point_direction(other.x,other.y,x,y),other.size)
-	if speed > minspeed && projectile_canhit_melee(other) = true{projectile_hit(other, round(5*damage), force, direction)}else{hitframes += 1;projectile_hit(other, damage, force, direction)};
-}
+with other motion_add(point_direction(other.x,other.y,x,y),other.size)
+if speed > minspeed && projectile_canhit_melee(other) = true{projectile_hit(other, round(5*damage), force, direction)}else{hitframes += 1;projectile_hit(other, damage, force, direction)};
 
 #define square_draw
 draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, image_yscale, image_angle, image_blend, 1.0);
@@ -1348,12 +1349,14 @@ draw_set_blend_mode(bm_add);
 draw_sprite_ext(sprite_index, image_index, x, y, 2*image_xscale, 2*image_yscale, image_angle, image_blend, 0.1);
 draw_set_blend_mode(bm_normal);
 
-#define actually_nothing
+#define square_wall
+move_bounce_solid(1)
+if speed = minspeed bounces--
 
 #define square_step
 if speed > 2
 {
-	with instance_create(x+random_range(-8,8),y+random_range(-8,8),PlasmaImpact)
+	if current_frame_active with instance_create(x+random_range(-8,8),y+random_range(-8,8),PlasmaImpact)
 	{
 		image_index = 1
 		image_speed = 0.3-skill_get(17)*0.05
@@ -1407,21 +1410,10 @@ if iframes <= 0
 		}
 	}
 }
-else{iframes--}
+else{iframes-=current_time_scale}
 if speed < minspeed speed = minspeed
 if speed > 16 speed = 16
-image_angle += speed * anglefac * fac
-if place_meeting(x+hspeed,y,Wall)
-{
-	if speed = minspeed bounce--;
-	hspeed *= -1
-}
-if place_meeting(x,y+vspeed,Wall)
-{
-	if speed = minspeed bounce--;
-	vspeed *= -1
-}
-if bounce <= 0 instance_destroy()
+image_angle += speed * anglefac * fac * current_time_scale
 with instances_matching(CustomProjectile,"name","square")
 {
 	if place_meeting(x,y,other)
@@ -1431,6 +1423,7 @@ with instances_matching(CustomProjectile,"name","square")
 		with instance_create(x,y,PlasmaImpact){team = other.team}
 	}
 }
+if bounce <= 0 instance_destroy()
 
 
 #define create_rocklet(_x,_y)
@@ -1463,11 +1456,6 @@ with instance_create(x,y,SmallExplosion){damage -= 2}
 #define rocket_draw
 draw_self()
 draw_sprite_ext(sprRocketFlame,-1,x,y,speed/(2*maxspeed),image_yscale/2,image_angle,c_white,image_alpha)
-if point_seen(xprevious,yprevious,-1){
-    surface_set_target(global.trailsf)
-    draw_sprite_ext(sprDust,irandom(3),x-global.sfx,y-global.sfy,2,random(speed)/(maxspeed*2),direction,c_white,1)
-    surface_reset_target()
-}
 
 #define laserflak_hit
 if projectile_canhit_melee(other) = true
@@ -1489,6 +1477,7 @@ if projectile_canhit_melee(other) = true
 var a = instance_create(_x,_y,CustomProjectile);
 with a
 {
+    name = "Laser Flak"
 	image_speed = 1
 	damage = 8 + skill_get(17)*3
 	friction = .5
@@ -1533,6 +1522,7 @@ repeat(ammo)
 	}
 	with instance_create(x,y,Laser)
 	{
+	    creator = other.creator
 		image_angle = i+random_range(-32,32)*other.accuracy
 		team = other.team
 		event_perform(ev_alarm,0)
@@ -1541,7 +1531,7 @@ repeat(ammo)
 }
 
 #define laserflak_step
-if irandom(2) != 0
+if chance(66)
 {
 	with instance_create(x+random_range(-8,8),y+random_range(-8,8),PlasmaTrail)
 	{
