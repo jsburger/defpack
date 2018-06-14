@@ -32,8 +32,9 @@ return 11;
 return choose("THIS IS WHAT WILL END IT ALL","STANDING, ON THE EDGE","WHAT A MESS WE MADE","A HEART OF BROKEN GLASS");
 
 #define weapon_fire
-sound_play(sndRocket)
+sound_play_pitch(sndRocket,.8)
 sound_play_pitch(sndHeavyNader,1)
+sound_play_pitch(sndHeavySlugger,.6)
 weapon_post(15,-146,82)
 sleep(40)
 motion_add(gunangle,-5)

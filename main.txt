@@ -7,8 +7,7 @@
 
 //BULLAKS
 /loadwep bullak cannon
-/loadwep heavy bullak cannon
-/loadwep auto bullak cannon
+/loadwep bullak machinegun
 
 //CANNON
 /loadwep bullet cannon

@@ -112,6 +112,17 @@ do
 		}
 		else{instance_destroy();exit}
 	}
+	if place_meeting(x+(xdir)*_dirfac,y+(ydir)*_dirfac,Wall)
+	{
+		if bounce > 0
+		{
+			ydir *= -1
+			xdir *= -1
+			bounce--;
+			continue;
+		}
+		else{instance_destroy();exit}
+	}
 	//redoing reflection code since the collision event on the reflecters doesnt work in substeps (still needs slash reflection)
 	with instances_matching_ne(CrystalShield, "team", other.team){if place_meeting(x,y,other){other.team = team;other.direction = point_direction(x,y,other.x,other.y);other.image_angle = other.direction;with instance_create(other.x,other.y,Deflect){image_angle = other.direction;sound_play_pitch(sndCrystalRicochet,random_range(.9,1.1))}}}
 	with instances_matching_ne(PopoShield, "team", other.team){if place_meeting(x,y,other){other.team = team;other.direction = point_direction(x,y,other.x,other.y);other.image_angle = other.direction;with instance_create(other.x,other.y,Deflect){image_angle = other.direction;sound_play_pitch(sndShielderDeflect,random_range(.9,1.1))}}}
