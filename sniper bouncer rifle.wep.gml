@@ -25,7 +25,7 @@ return sndSwapMachinegun;
 return true;
 
 #define weapon_reloaded
-with mod_script_call("mod","defpack tools", "shell_yeah", 100, 8, 3+random(2), c_yellow)
+with mod_script_call("mod","defpack tools", "shell_yeah_long", 100, 8, 3+random(2), c_yellow)
 sound_play_pitchvol(sndSwapPistol,2,.4)
 sound_play_pitchvol(sndRecGlandProc,1.4,1)
 weapon_post(-3,0,3)

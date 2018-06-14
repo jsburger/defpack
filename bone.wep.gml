@@ -33,7 +33,7 @@ with instance_create(x+lengthdir_x(12+(20*skill_get(13)),gunangle),y+lengthdir_y
 	team = other.team
 	image_angle = other.gunangle
 	direction = image_angle
-	can_fix = false
+	canfix = false
 	with instance_create(x,y,BloodStreak)
 	{
 		image_angle = other.image_angle

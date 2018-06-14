@@ -26,8 +26,9 @@ global.sprRocklet = sprite_add("sprRocklet.png",2,2,6)
 global.sprSonicExplosion = sprite_add("Soundwave_strip8.png",8,61,59);
 global.mskSonicExplosion = sprite_add("mskSonicExplosion_strip9.png",9,32,32);
 
-global.sprGenShell    = sprite_add("Generic Shell.png",0, 1.5, 2.5);
-global.sprGenShellBig = sprite_add("sprGenShellBig.png",0, 3, 5);
+global.sprGenShell     = sprite_add("sprGenShell.png",7, 2, 2);
+global.sprGenShellLong  = sprite_add("sprGenShellL.png",7, 2, 3);
+global.sprGenShellBig   = sprite_add("sprGenShellXL.png",7, 3, 3);
 global.stripes = sprite_add("BIGstripes.png",1,1,1)
 
 global.sprSquare = sprite_add("sprSquare.png", 0, 7, 7)
@@ -798,19 +799,55 @@ if projectile_canhit_melee(other){
 //ok i guess im stealing stuff from gunlocker too but its a good idea alright
 #define shell_yeah(_angle, _spread, _speed, _color)
 with instance_create(x, y, Shell){
+	image_speed = 0
 	motion_add(other.gunangle + (other.right * _angle) + random_range(-_spread, _spread), _speed);
 	sprite_index = global.sprGenShell
-	image_blend = _color
+	switch _color
+	{
+		case c_yellow: image_index = 0;break
+		case c_red   : image_index = 1;break
+		case c_purple: image_index = 2;break
+		case c_green : image_index = 3;break
+		case c_navy  : image_index = 4;break
+		case c_white : image_index = 5;break
+		case c_black : image_index = 6;break
+	}
 }
 
 //im not feeling like rewriting every weapon using shell_yeah
 #define shell_yeah_big(_angle, _spread, _speed, _color)
 with instance_create(x, y, Shell){
+	image_speed = 0
 	motion_add(other.gunangle + (other.right * _angle) + random_range(-_spread, _spread), _speed);
 	sprite_index = global.sprGenShellBig
-	image_blend = _color
+	switch _color
+	{
+		case c_yellow: image_index = 0;break
+		case c_red   : image_index = 1;break
+		case c_purple: image_index = 2;break
+		case c_green : image_index = 3;break
+		case c_navy  : image_index = 4;break
+		case c_white : image_index = 5;break
+		case c_black : image_index = 6;break
+	}
 }
 
+#define shell_yeah_long(_angle, _spread, _speed, _color)
+with instance_create(x, y, Shell){
+	image_speed = 0
+	motion_add(other.gunangle + (other.right * _angle) + random_range(-_spread, _spread), _speed);
+	sprite_index = global.sprGenShellLong
+	switch _color
+	{
+		case c_yellow: image_index = 0;break
+		case c_red   : image_index = 1;break
+		case c_purple: image_index = 2;break
+		case c_green : image_index = 3;break
+		case c_navy  : image_index = 4;break
+		case c_white : image_index = 5;break
+		case c_black : image_index = 6;break
+	}
+}
 //old function that i changed the name of because i didnt want to comment it out for some reason, used the american spelling so karm wouldnt accidentally use it
 #define draw_circle_width_color(precision,radius,width,offset,xcenter,ycenter,col,alpha)
 //offset = angle btw

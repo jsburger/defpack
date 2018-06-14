@@ -48,11 +48,11 @@ with instance_create(x+lengthdir_x(3,gunangle),y+lengthdir_y(3,gunangle),CustomP
 	}else{
 		motion_add(other.gunangle,10)
 	}
+	sound_play_pitch(sndHyperLauncher,1.3+(speed-10)/20)
 	on_step = script_ref_create(sonic_launcher_step)
 	on_wall = nothing
 	on_destroy = script_ref_create(sonic_launcher_destroy)
 }
-sound_play_pitch(sndHyperLauncher,1.3+point_distance(_x,_y,x,y)/1000)
 sound_play_pitch(sndHeavyNader,1.8)
 sound_play_pitch(sndNothingFire,.7)
 weapon_post(6,-6,4)
@@ -64,12 +64,21 @@ if dt > -1 dt--
 if dt = 0 repeat(4)with instance_create(x,y,Dust){motion_add(random(359),random_range(0,2))}
 image_angle += anglefac * speed/1.5
 if place_meeting(x + hspeed,y,Wall){
+	instance_create(x,y,Dust)
 	hspeed *= -1
 	bounce -= 1
 	sound_play_pitch(sndBouncerBounce,random_range(1.6,1.8))
 }
 if place_meeting(x,y +vspeed,Wall){
+	instance_create(x,y,Dust)
 	vspeed *= -1
+	bounce -= 1
+	sound_play_pitch(sndBouncerBounce,random_range(1.6,1.8))
+}
+if place_meeting(x +hspeed,y +vspeed,Wall){
+	instance_create(x,y,Dust)
+	vspeed *= -1
+	hspeed *= -1
 	bounce -= 1
 	sound_play_pitch(sndBouncerBounce,random_range(1.6,1.8))
 }

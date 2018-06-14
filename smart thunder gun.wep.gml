@@ -49,7 +49,7 @@ repeat(2)
 	sound_play_pitchvol(sndGammaGutsKill,1.6,.3+skill_get(17)*.2)
 	if !skill_get(17)sound_play_pitch(sndLightningRifle,random_range(1.4,1.6))else sound_play_pitch(sndLightningRifleUpg,random_range(1.6,1.8))
 	weapon_post(5,-2,6)
-	mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, random_range(3,5), c_blue)
+	mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, random_range(3,5), c_navy)
 	if fork(){
 	    var time = 8;
 	    while time > 0 && instance_exists(self){

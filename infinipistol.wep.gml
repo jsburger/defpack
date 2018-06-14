@@ -42,17 +42,46 @@ with instance_create(x,y,CustomProjectile)
   typ = 1
   sprite_index = global.sprPellet
   recycle_amount = 0
-  damage = 2 if irandom(999999) = 0 damage = 999999999999999999999999
+  damage = 1 if irandom(999999) = 0 damage = 999999999999999999999999
   team = other.team
   force = 5
+  bounce = 2
   image_speed = 1
   creator = other
   move_contact_solid(other.gunangle,6)
-  motion_add(other.gunangle+random_range(-2,2)*other.accuracy,20)
+  motion_add(other.gunangle+random_range(-2,2)*other.accuracy,18)
   image_angle = direction
   on_destroy = pellet_destroy
+  on_wall    = pellet_wall
   on_step    = pellet_step
   on_draw    = pellet_draw
+}
+
+#define pellet_wall
+if place_meeting(x+hspeed,y,Wall)
+{
+  instance_create(x,y,Dust)
+  sound_play_pitch(sndHitWall,random_range(.8,1.2))
+  hspeed *= -1
+  bounce--
+  image_angle = direction
+}
+if place_meeting(x,y+vspeed,Wall)
+{
+  instance_create(x,y,Dust)
+  sound_play_pitch(sndHitWall,random_range(.8,1.2))
+  vspeed *= -1
+  bounce--
+  image_angle = direction
+}
+if place_meeting(x+hspeed,y+vspeed,Wall)
+{
+  instance_create(x,y,Dust)
+  sound_play_pitch(sndHitWall,random_range(.8,1.2))
+  vspeed *= -1
+  hspeed *= -1
+  bounce--
+  image_angle = direction
 }
 
 #define pellet_destroy
@@ -60,6 +89,7 @@ with instance_create(x,y,BulletHit){sprite_index = global.sprPelletHit}
 
 #define pellet_step
 if image_index = 1 image_speed = 0
+if bounce < 0 {instance_destroy();exit}
 
 #define pellet_draw
 draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, image_yscale, image_angle, image_blend, 1.0);

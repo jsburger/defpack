@@ -84,6 +84,6 @@ with instance_create(x,y,Slash)
 	}
 }
 if shell repeat(4){
-	mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, random(7), c_blue)
+	mod_script_call("mod","defpack tools", "shell_yeah", -180, 35, random_range(3,5), c_navy)
 }
 wepangle = -wepangle

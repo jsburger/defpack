@@ -64,7 +64,7 @@ with instance_create(x,y,CustomProjectile)
 			damage = 2+skill_get(17)
 			sprite_index = sprPlasmaTrail
 			fric = random_range(1.25,1.37)
-			motion_set(other.creator.gunangle+random_range(-30,30),random_range(12,19))
+			motion_set(other.direction+random_range(-30,30),random_range(12,19))
 			speedset = 1
 			maxspeed = 7
 			radius = random_range(.6,1)

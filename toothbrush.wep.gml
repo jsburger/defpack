@@ -24,6 +24,7 @@ sound_play(sndScrewdriver)
 weapon_post(-6 - (20*skill_get(13)),6,0)
 with instance_create(x+lengthdir_x(6+(20*skill_get(13)),gunangle),y+lengthdir_y(6+(20*skill_get(13)),gunangle),Shank){
 	sprite_index = mskNone
+	canfix = false
 	mask_index = global.brush
 	creator = other
 	team = other.team

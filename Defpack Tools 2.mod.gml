@@ -392,7 +392,7 @@ image_angle = direction
 var a = instance_create(_x,_y,CustomProjectile);
 with(a){
 	name = "Lightning Bullet Flak"
-	if skill_get(17)=true sprite_index = global.sprBullakBlueUpg else sprite_index = global.sprBullakBlueUpg
+	if skill_get(17) = 0 sprite_index = global.sprBullakBlue else sprite_index = global.sprBullakBlueUpg
 	image_speed = 1
 	ammo = 16
 	force = 8

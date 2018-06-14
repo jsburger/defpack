@@ -63,7 +63,7 @@ if team != other.team
 #define knifeshank_hit
 if projectile_canhit_melee(other)
 {
-  if 0 = 0//irandom(19-(skill_get(6)*5)) = 0 && can_crit = 1
+  if irandom(19-(skill_get(6)*5)) = 0 && can_crit = 1
   {
     view_shake_max_at(x,y,200)
     sleep(150)

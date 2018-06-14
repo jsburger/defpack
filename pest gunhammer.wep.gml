@@ -66,6 +66,6 @@ with instance_create(x,y,Slash){
 		}
 	}
 }
-if shell repeat(shell) mod_script_call("mod","defpack tools", "shell_yeah", -180, 18, random_range(3,5), c_lime)
+if shell repeat(shell) mod_script_call("mod","defpack tools", "shell_yeah", -180, 18, random_range(3,5), c_green)
 wepangle = -wepangle
 motion_add(gunangle,4)

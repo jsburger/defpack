@@ -36,7 +36,7 @@ return choose("@wWAVE @sOF DESTRUCTION","NO BOB, ONLY WEAVE");
 motion_add(gunangle+180,1.7)
 repeat(5)
 {
-	mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, 2+random(3), c_ltgray)
+	mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, 2+random(3), c_white)
 }
 with instance_create(x,y,CustomObject)
 {

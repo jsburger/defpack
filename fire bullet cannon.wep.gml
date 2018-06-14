@@ -11,13 +11,13 @@ return global.sprFireBulletCannon;
 return 1;
 
 #define weapon_auto
-return true;
+return false;
 
 #define weapon_load
 return 23;
 
 #define weapon_cost
-return 16;
+return 14;
 
 #define weapon_swap
 return sndSwapPistol;
