@@ -1,5 +1,5 @@
 #define init
-global.sprPulser = sprite_add_weapon("sprites/sprAbrisPistol.png", -1, 3);
+global.sprPulser = sprite_add_weapon("sprites/sprPulser.png", 5, 3);
 global.stripes 	 = sprite_add("defpack tools/BIGstripes.png",1,1,1)
 
 #define weapon_name
@@ -30,12 +30,18 @@ return 12;
 return "replace me please";
 
 #define weapon_fire
+weapon_post(9,14,20)
+motion_add(gunangle -180,5)
+sound_play_pitch(sndSuperFlakCannon,.7)
+sound_play_pitch(sndHeavyNader,.7)
+sound_play_pitch(sndSuperSlugger,.7)
+sleep(50)
 with instance_create(x,y,CustomProjectile)
 {
 	creator = other
 	team = other.team
 	acc = other.accuracy
-	move_contact_solid(other.gunangle,8)
+	move_contact_solid(other.gunangle,24)
 	sprite_index = sprPlasmaBall
 	image_speed = 0
 	radiusmin = 28

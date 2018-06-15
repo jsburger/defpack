@@ -1,6 +1,5 @@
 #define init
-global.sprMegaRevolver = sprite_add_weapon("sprites/sprGummyPistol.png", 1, 3);
-
+global.sprMegaRevolver = sprite_add_weapon("sprites/sprMegaRevolver.png", -1, 3);
 global.sprMegaBullet   = sprite_add("sprites/projectiles/sprMegaBullet.png",2,18,18)
 #define weapon_name
 return "MEGA REVOLVER";
@@ -33,7 +32,8 @@ return 6;
 return "replace me please"
 
 #define weapon_fire
-weapon_post(6,0,28)
+weapon_post(7,0,28)
+motion_add(gunangle-180,3)
 sound_play_pitch(sndSawedOffShotgun,random_range(.6,.7))
 sound_play_pitch(sndHeavySlugger,random_range(.7,.9))
 with instance_create(x,y,CustomProjectile)
@@ -73,7 +73,7 @@ instance_destroy()
 
 #define mega_destroy
 repeat(3) instance_create(x+random_range(-8,8),y+random_range(-8,8),Smoke)
-
+with instance_create(x,y,BulletHit){sprite_index = sprHeavyBulletHit}
 #define mega_step
 if image_index = 1 image_speed = 0
 
