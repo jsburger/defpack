@@ -913,7 +913,7 @@ draw_set_alpha(1)
 
 //abris time
 #define create_abris(Creator,startsize,endsize,weapon)
-var a  = instance_create(0,0,CustomObject)
+var a  = instance_create(0,0,CustomObject);
 with a{
 	//generic variables
 	creator = Creator;
@@ -921,7 +921,7 @@ with a{
 	team = -1
 	on_step = abris_step
 	on_draw = abris_draw
-	index = creator.index
+	with creator if "index" in self{other.index = index}else{other.index = id}
 	//accuarcy things
 	accbase = startsize*creator.accuracy
 	acc = accbase
@@ -945,13 +945,17 @@ with a{
 	lasercolour2 = c_maroon
 	offset = random(359)
 	//god bless YAL
-	check = other.specfiring ? 2 : 1;
-	if check = 2 && (other.race = "venuz" || other.race = "skeleton") popped = 1;
+	if index <= 3
+	{
+		check = other.specfiring ? 2 : 1;
+		if check = 2 && (other.race = "venuz" || other.race = "skeleton") popped = 1;
+	}
 }
-return a
+return a;
 
 //hahahahah fuck this
 #define abris_check()
+if index > 3 return 1;
 switch creator.race{
 	case "steroids":
 		if creator.wep = wep var we = 1;
@@ -1010,14 +1014,15 @@ if instance_exists(creator){
 			creator.breload = weapon_get_load(creator.bwep)
 		}
 		acc/= 1+((accspeed - 1)*current_time_scale)
-		if collision_line(x,y,mouse_x[index],mouse_y[index],Wall,0,0) >= 0{
+		if index <= 3{var _xx = mouse_x[index];var _yy = mouse_y[index]}else{var _xx = index.x;var _yy = index.y}
+		if collision_line(x,y,_xx,_yy,Wall,0,0) >= 0{
 			if acc < accbase{acc += abs(creator.accuracy*3)}else{acc = accbase;lasercolour=c_white}
 		}
 	}
 	if !button_check(creator.index,(check = 1?"fire":"spec")) || (auto && acc<=accmin){
 		if instance_exists(self){
 			dropped = 1
-			var _wall = collision_line_first(x,y,mouse_x[index],mouse_y[index],Wall,0,0);
+			var _wall = collision_line_first(x,y,_xx,_yy,Wall,0,0);
 			if _wall > -4
 			{
 				explo_x = x + lengthdir_x(point_distance(x,y,_wall.x,_wall.y)-accmin,creator.gunangle);
@@ -1025,8 +1030,8 @@ if instance_exists(creator){
 			}
 			else
 			{
-				explo_x = mouse_x[index]
-				explo_y = mouse_y[index]
+				explo_x = _xx
+				explo_y = _yy
 			}
 			if fork(){
 				on_destroy = payload

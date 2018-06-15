@@ -49,7 +49,7 @@ with instance_create(x,y,CustomProjectile)
   image_speed = 1
   creator = other
   move_contact_solid(other.gunangle,6)
-  motion_add(other.gunangle+random_range(-2,2)*other.accuracy,18)
+  motion_add(other.gunangle+random_range(-7,7)*other.accuracy,18)
   image_angle = direction
   on_destroy = pellet_destroy
   on_wall    = pellet_wall
