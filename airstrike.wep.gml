@@ -18,7 +18,7 @@ return false;
 return 40;
 
 #define weapon_cost
-return 6;
+return 4;
 
 #define weapon_swap
 return sndSwapExplosive;
@@ -30,6 +30,9 @@ return 12;
 return "replace me please";
 
 #define weapon_fire
+sound_play(snd_lowa)
+sound_play_pitch(sndFreakPopoDead,1.3)
+sound_play_pitch(sndFreakPopoReviveArea,1.3)
 with instance_create(x,y,CustomObject)
 {
 	mask_index = sprBullet1
@@ -48,7 +51,7 @@ j+= current_time_scale * 12
 if j % 48 = 0
 {
 	ammo--
-	with instance_create(x + random_range(-12,12) * accuracy,y + random_range(-12,12) * accuracy,CustomProjectile)
+	with instance_create(x + random_range(-8,8) * accuracy,y + random_range(-8,8) * accuracy,CustomProjectile)
 	{
 		creator = other.creator
 		team    = other.team
@@ -74,13 +77,13 @@ view_shake_at(x,y,30)
 repeat(ammo)
 {
 	sound_play_pitch(sndExplosionS,.7)
-	instance_create(x+lengthdir_x(radiusmax,i),y+lengthdir_y(radiusmax,i),SmallExplosion)
+	instance_create(x+lengthdir_x(radius,i),y+lengthdir_y(radius,i),SmallExplosion)
 	i += 360/ammo
 }
 
 #define fakeabris_step
 image_angle += 7 * current_time_scale * radiusmin/radius
-if radiusmin < radius{radius /= (1 + .04/acc) * current_time_scale}
+if radiusmin < radius{radius /= (1 + .06/acc) * current_time_scale}
 else{instance_destroy()}
 #define fakeabris_hit
 
