@@ -6,11 +6,11 @@ return "SMARTER GUN"
 #define weapon_type
 return 1
 #define weapon_cost
-return 1
+return 0
 #define weapon_area
 return 12
 #define weapon_load
-return 22
+return 8
 #define weapon_swap
 return sndSwapMachinegun
 #define weapon_auto
@@ -20,173 +20,87 @@ return 0
 #define weapon_laser_sight
 return 0
 #define weapon_fire
-if reload > 0{exit}
+reload -= weapon_load()
+
+#define shoot(_x,_y,angle)
+weapon_post(0,0,5)
+sound_play_gun(sndSmartgun,.1,.7)
+sound_play_gun(sndHitMetal,1.7,.1)
+sound_play_pitch(sndGruntFire,random_range(1.2,1.4))
+with instance_create(_x,_y,Bullet1)
+{
+	sprite_index = sprIDPDBullet
+	creator = other
+	team = other.team
+	motion_set(angle,16)
+	image_angle = direction
+}
+if infammo = 0 ammo[1]--
 
 #define step(w)
-if wep = "smarter gun"
-{
-	if "_reload" not in self _reload = 22
-	if _reload <= 0 && ammo[1]
+if w && reload <= 0 && (ammo[1] || infammo != 0){
+    var _truex = x+sprite_get_width(sprite_index)/2-wkick*right;
+	var _truey = y-8+sin(current_frame/10)*5;
+	var _canshoot = button_check(index,"fire");
+	var ang = gunangle;
+    if instance_exists(enemy){
+		var target = instance_nearest(_truex,_truey,enemy);
+		if !collision_line(_truex,_truey,target.x,target.y,Wall,0,0){
+		    _canshoot = 1
+		    ang = point_direction(_truex,_truey,target.x+target.hspeed,target.y+target.vspeed);
+		}
+    }
+    if _canshoot {
+        wkick = 1
+        reload = weapon_load()
+        shoot(_truex,_truey,ang)
+    }
+}
+if !w && breload <= 0 && (ammo[1] || infammo != 0){
+    var _truex = x-sprite_get_width(sprite_index)/2-bwkick*right;
+	var _truey = y-8-sin(current_frame/10)*5;
+	var _canshoot = 0;
+	if race = "steroids" _canshoot = button_check(index,"spec")
+	var ang = gunangle;
+    if instance_exists(enemy){
+		var target = instance_nearest(_truex,_truey,enemy);
+		if !collision_line(_truex,_truey,target.x,target.y,Wall,0,0){
+		    _canshoot = 1
+		    ang = point_direction(_truex,_truey,target.x+target.hspeed,target.y+target.vspeed);
+		}
+    }
+    if _canshoot {
+        bwkick = 1
+        breload = weapon_load()
+        shoot(_truex,_truey,ang)
+    }
+}
+
+if !w && race != "steroids" && breload > 0{
+	breload -= current_time_scale * reloadspeed
+	if skill_get(mut_stress) breload -= (1 - my_health/maxhealth) * current_time_scale
+	if race = "venuz"
 	{
-		var _canshoot = true;
-		if instance_exists(enemy)
-		{
-			var _truex = x+sprite_get_width(sprite_index)/2-wkick*wepflip
-			var _truey = y-8+sin(current_frame*current_time_scale/10)*5
-			var target = instance_nearest(_truex,_truey,enemy);
-			if !collision_line(_truex,_truey,target.x,target.y,Wall,0,0)
-			{
-				_reload = 22
-				reload = _reload
-				_canshoot = false
-				var ang = point_direction(_truex,_truey,target.x+target.hspeed_raw,target.y+target.vspeed_raw);
-				sound_play_gun(sndSmartgun,.1,.7)
-				sound_play_gun(sndHitMetal,1.7,.1)
-				sound_play_pitch(sndGruntFire,random_range(1.2,1.4))
-				wkick += 2
-				with instance_create(_truex,_truey,Bullet1)
-				{
-					sprite_index = sprIDPDBullet
-					creator = other
-					team = other.team
-					motion_set(ang,16)
-					image_angle = direction
-				}
-				if infammo = 0 ammo[1]--
-			}
-		}
-		if _canshoot = true
-		{
-			if button_check(index,"fire")
-			{
-				weapon_post(2,0,12)
-				sound_play_gun(sndSmartgun,.1,.1)
-				sound_play_gun(sndHitMetal,1.7,.1)
-				sound_play_pitch(sndGruntFire,random_range(1.2,1.4))
-				_reload = 22
-				reload = _reload
-			  var _truex = x+sprite_get_width(sprite_index)/2-wkick*wepflip
-			  var _truey = y-8+sin(current_frame*current_time_scale/10)*5
-				if instance_exists(enemy)
-				{
-					var target = instance_nearest(mouse_x[index],mouse_y[index],enemy);
-					if !collision_line(_truex,_truey,target.x,target.y,Wall,0,0){ang = point_direction(_truex,_truey,target.x+target.hspeed_raw,target.y+target.vspeed_raw)}else{ang = gunangle}
-				}
-				else{ang = gunangle}
-				with instance_create(_truex,_truey,Bullet1)
-				{
-					sprite_index = sprIDPDBullet
-					creator = other
-					team = other.team
-					motion_set(ang,16)
-					image_angle = direction
-				}
-			}
-		}
-	}
-	if _reload > 0
-	{
-		_reload--
-		if skill_get(mut_stress) _reload -= 1 - my_health/maxhealth
-		if race = "venuz"
-		{
-			_reload -= .2
-			if ultra_get(race,1) _reload -= .4
-		}
+		breload -= .2 * current_time_scale
+		if ultra_get(race,1) breload -= .4 * current_time_scale
 	}
 }
 
-//hatred of roids
-if bwep = "smarter gun"
-{
-	if bwkick-- > 0 && race != "steroids"{bwkick-= current_time_scale/10}else{bwkick = 0}
-	if "_breload" not in self _breload = 22
-	if _breload <= 0 && ammo[1]
-	{
-		var _canbshoot = true;
-		if instance_exists(enemy)
-		{
-			var _truebx = x-sprite_get_width(sprite_index)/2-wkick*wepflip
-			var _trueby = y+8+sin(current_frame*current_time_scale/10)*5
-			var target = instance_nearest(_truebx,_trueby,enemy);
-			if !collision_line(_truebx,_trueby,target.x,target.y,Wall,0,0)
-			{
-				_breload = 22
-				breload = _breload
-				_canbshoot = false
-				var bang = point_direction(_truebx,_trueby,target.x+target.hspeed_raw,target.y+target.vspeed_raw);
-				sound_play_gun(sndSmartgun,.1,.7)
-				sound_play_gun(sndHitMetal,1.7,.1)
-				sound_play_pitch(sndGruntFire,random_range(1.5,1.8))
-				bwkick += 2
-				with instance_create(_truebx,_trueby,Bullet1)
-				{
-					sprite_index = sprIDPDBullet
-					creator = other
-					team = other.team
-					motion_set(bang,16)
-					image_angle = direction
-				}
-				if infammo = 0 ammo[1]--
-			}
-		}
-		if _canbshoot = true
-		{
-			if race = "steroids" && button_check(index,"spec")
-			{
-				weapon_post(0,0,9)
-				bwkick += 2
-				sound_play_gun(sndSmartgun,.1,.7)
-				sound_play_gun(sndHitMetal,1.7,.1)
-				sound_play_pitch(sndGruntFire,random_range(1.5,1.8))
-				_breload = 22
-				breload = _breload
-			  var _truebx = x-sprite_get_width(sprite_index)/2-bwkick*wepflip
-			  var _trueby = y-8+sin(current_frame*current_time_scale/-10)*5
-				if instance_exists(enemy)
-				{
-					var target = instance_nearest(mouse_x[index],mouse_y[index],enemy);
-					if !collision_line(_truebx,_trueby,target.x,target.y,Wall,0,0){ang = point_direction(_truebx,_trueby,target.x+target.hspeed_raw,target.y+target.vspeed_raw)}else{ang = gunangle}
-				}
-				else{ang = gunangle}
-				with instance_create(_truebx,_trueby,Bullet1)
-				{
-					sprite_index = sprIDPDBullet
-					creator = other
-					team = other.team
-					motion_set(ang,16)
-					image_angle = direction
-				}
-			}
-		}
-	}
-	if _breload > 0
-	{
-		_breload--
-		if skill_get(mut_stress) _breload -= 1 - my_health/maxhealth
-		if race = "venuz"
-		{
-			_breload -= .2
-			if ultra_get(race,1) _breload -= .4
-		}
-	}
-}
+
 
 
 #define weapon_sprt_hud
 return global.sprSmarterGunHUD
 
 #define weapon_sprt
-if "my_health" in self
+if instance_is(self,Player)
 {
-	if wep = "smarter gun"{
-		if "target" in self{if target.x > x{wepflip = -1}else{wepflip = 1}}else{wepflip = right}
-		draw_sprite_ext(global.sprSmarterGun,0,x+sprite_get_width(sprite_index)/2-wkick*wepflip,y-8+sin(current_frame*current_time_scale/10)*5,wepflip,1,0,c_white,1)
+	if wep = mod_current{
+		draw_sprite_ext(global.sprSmarterGun,0,x+sprite_get_width(sprite_index)/2-wkick*right,y-8+sin(current_frame/10)*5,right,1,0,c_white,1)
 	}
-	if bwep = "smarter gun"
+	if bwep = mod_current
 	{
-		if "target" in self{if target.x > x{bwepflip = -1}else{bwepflip = 1}}else{bwepflip = right}
-		draw_sprite_ext(global.sprSmarterGun,0,x-sprite_get_width(sprite_index)/2-bwkick*bwepflip,y-8+sin(current_frame*current_time_scale/-10)*5,bwepflip,1,0,c_white,1)
+		draw_sprite_ext(global.sprSmarterGun,0,x-sprite_get_width(sprite_index)/2-bwkick*right,y-8+sin(current_frame/-10)*5,right,1,0,c_white,1)
 	}
 	return mskNothing
 }

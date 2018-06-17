@@ -132,14 +132,12 @@ with instances_matching(CustomProjectile,"name","Rocklet"){
 }
 d3d_set_fog(0,0,0,0)
 
-draw_set_alpha_test_ref_value(10)
 surface_reset_target()
 for var i = 0; player_is_active(i); i++{
     draw_set_visible_all(0)
     draw_set_visible(i,1)
     draw_surface_part(global.trailsf,view_xview[i]-global.sfx,view_yview[i] - global.sfy, game_width, game_height, view_xview[i], view_yview[i])
 }
-draw_set_alpha_test_ref_value(0)
 draw_set_visible_all(1)
 
 
@@ -155,6 +153,11 @@ if !instance_exists(global.traildrawer){
         global.traildrawer = id
         persistent = 1
     }
+}
+if instance_exists(GenCont){
+    surface_set_target(global.trailsf)
+    draw_clear_alpha(c_black,0)
+    surface_reset_target()
 }
 
 with instances_matching([Explosion,SmallExplosion,GreenExplosion,PopoExplosion],"hitid",-1){
@@ -1327,7 +1330,7 @@ with a
 	lifetime = room_speed * 7
 	on_step    = square_step
 	on_hit     = square_hit
-	on_wall    = actually_nothing
+	on_wall    = square_wall
 	on_draw    = square_draw
 	on_destroy = square_destroy
 }
@@ -1393,7 +1396,7 @@ draw_set_blend_mode(bm_normal);
 
 #define square_wall
 move_bounce_solid(1)
-if speed = minspeed bounces--
+if speed <= minspeed bounce--
 
 #define square_step
 if speed > 2
