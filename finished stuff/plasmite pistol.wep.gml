@@ -37,7 +37,7 @@ repeat(2)
 		creator = other
 		team = other.team
 		speedset = 1
-		fric = random_range(1.06,1.08)
+		fric = random_range(.06,.08)
 		motion_set(other.gunangle+random_range(-14,14)*other.accuracy,24)
 	}
 	wait(2)
