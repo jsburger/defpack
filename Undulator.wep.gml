@@ -68,14 +68,14 @@ if time = 0
 	with mod_script_call("mod", "defpack tools", "create_light_bullet",x+lengthdir_x(-10,gunangle),y+lengthdir_y(-10,gunangle)){
 	    creator = other.creator
 	    team = other.team
-	    motion_set(other.gunangle-4*(other.ammo_origin-other.ammo)+random_range(-2,2)*other.accuracy,15-other.ammo)
+	    motion_set(other.gunangle-4*(other.ammo_origin-other.ammo)+random_range(-2,2)*other.accuracy,13+other.ammo)
 		image_angle = direction
 		damage = 12
 	}
 	with mod_script_call("mod", "defpack tools", "create_light_bullet",x+lengthdir_x(-10,gunangle),y+lengthdir_y(-10,gunangle)){
 	    creator = other.creator
 	    team = other.team
-	    motion_set(other.gunangle+4*(other.ammo_origin-other.ammo)+random_range(-2,2)*other.accuracy,15-other.ammo)
+	    motion_set(other.gunangle+4*(other.ammo_origin-other.ammo)+random_range(-2,2)*other.accuracy,13+other.ammo)
 		image_angle = direction
 		damage = 12
 	}

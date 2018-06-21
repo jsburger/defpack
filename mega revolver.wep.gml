@@ -26,7 +26,7 @@ return sndSwapPistol
 return 0;
 
 #define weapon_area
-return 6;
+return 14;
 
 #define weapon_text
 return "replace me please"

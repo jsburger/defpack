@@ -104,6 +104,7 @@
 /loadwep signal beamer
 /loadwep prism
 /loadwep rainbow machinegun
+/loadwep mega revolver
 /loadwep spy revolver
 /loadwep antiprism
 
@@ -203,6 +204,8 @@
 /loadwep finished stuff/fire beamer
 /loadwep finished stuff/toxic carronader
 /loadwep puncher
+/loadwep pulser
+/loadwep airstrike
 /loadwep herald
 
 ///ENERGY///
@@ -275,5 +278,6 @@
 /loadwep finished stuff/drinks/soda popper
 /loadwep finished stuff/drinks/donut box
 /loadwep infinipistol
+
 ///NON-WEAPONS///
 /loadmod IDPD Weapon Chest/IDPD Weapon Chest

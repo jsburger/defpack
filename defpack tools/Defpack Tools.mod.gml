@@ -21,7 +21,7 @@ global.sprDarkBulletHit = sprite_add("Dark Bullet Hit.png", 4, 8, 8)
 global.sprLightBullet = sprite_add("Light Bullet.png", 2, 8, 8)
 global.sprLightBulletHit = sprite_add("Light Bullet Hit.png", 4, 8, 8)
 global.sprPlasmite = sprite_add("sprPlasmite.png",0,3,3)
-global.sprRocklet = sprite_add("sprRocklet.png",2,2,6)
+global.sprRocklet = sprite_add("sprRocklet.png",2,1,6)
 
 global.sprSonicExplosion = sprite_add("Soundwave_strip8.png",8,61,59);
 global.mskSonicExplosion = sprite_add("mskSonicExplosion_strip9.png",9,32,32);
@@ -127,7 +127,7 @@ with instances_matching(CustomProjectile,"name","big rocklet","huge rocklet"){
 }
 with instances_matching(CustomProjectile,"name","Rocklet"){
     if point_seen(xprevious,yprevious,-1){
-        draw_sprite_ext(sprDust,irandom(3),x-global.sfx,y-global.sfy,2,random(speed)/(maxspeed*2),direction,c_white,1)
+        draw_sprite_ext(sprDust,irandom(3),xprevious-global.sfx,yprevious-global.sfy,2,random(speed)/(maxspeed*2),direction,c_white,1)
     }
 }
 d3d_set_fog(0,0,0,0)

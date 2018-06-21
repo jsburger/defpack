@@ -45,8 +45,9 @@ if instance_exists(creator)
 	accuracy = creator.accuracy
 	x = creator.x+lengthdir_x(1,gunangle)
 	y = creator.y+lengthdir_y(1,gunangle)
-	with creator weapon_post(4,-5,8)
-	sound_play(sndShotgun)
+	with creator weapon_post(6,-5,25)
+	sound_play_pitch(sndDoubleShotgun,random_range(.6,.8))
+	sound_play_pitch(sndWaveGun,random_range(.6,.8))
 time -= 1
 if time = 0
 {
