@@ -63,7 +63,7 @@ with instance_create(x,y,CustomProjectile)
 			image_index = 0
 			damage = 2+skill_get(17)
 			sprite_index = sprPlasmaTrail
-			fric = random_range(1.25,1.37)
+			fric = random_range(.1,.2)
 			motion_set(other.direction+random_range(-30,30),random_range(12,19))
 			speedset = 1
 			maxspeed = 7
@@ -107,7 +107,7 @@ repeat(ammo)
 		creator = other.creator
 		team = other.team
 		speedset = 1
-		fric = random_range(1.06,1.08)
+		fric = random_range(.06,.08)
 		motion_set(i+random_range(-12,21)*creator.accuracy,14)
 	}
 	i += 360/ammo

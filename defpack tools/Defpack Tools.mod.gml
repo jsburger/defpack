@@ -20,13 +20,16 @@ global.mskDarkBullet = sprite_add("Dark Bullet Mask.png", 0, 2.5, 4.5)
 global.sprDarkBulletHit = sprite_add("Dark Bullet Hit.png", 4, 8, 8)
 global.sprLightBullet = sprite_add("Light Bullet.png", 2, 8, 8)
 global.sprLightBulletHit = sprite_add("Light Bullet Hit.png", 4, 8, 8)
-global.sprPlasmite = sprite_add("sprPlasmite.png",0,3,3)
+
+global.sprPlasmite    = sprite_add("sprPlasmite.png",0,3,3)
+global.sprPlasmiteUpg = sprite_add("sprPlasmiteUpg.png",0,3,3)
+
 global.sprRocklet = sprite_add("sprRocklet.png",2,1,6)
 
 global.sprSonicExplosion = sprite_add("Soundwave_strip8.png",8,61,59);
 global.mskSonicExplosion = sprite_add("mskSonicExplosion_strip9.png",9,32,32);
 
-global.sprGenShell     = sprite_add("sprGenShell.png",7, 2, 2);
+global.sprGenShell      = sprite_add("sprGenShell.png",7, 2, 2);
 global.sprGenShellLong  = sprite_add("sprGenShellL.png",7, 2, 3);
 global.sprGenShellBig   = sprite_add("sprGenShellXL.png",7, 3, 3);
 global.stripes = sprite_add("BIGstripes.png",1,1,1)
@@ -1270,8 +1273,8 @@ with a
 	image_speed = 0
 	image_index = 0
 	damage = 2+skill_get(17)
-	sprite_index = global.sprPlasmite
-	fric = random_range(.2,.3)
+	if skill_get(17) = false sprite_index = global.sprPlasmite else sprite_index = global.sprPlasmiteUpg
+ 	fric = random_range(.2,.3)
 	speedset = 0
 	maxspeed = 7
 	on_step 	 = plasmite_step
