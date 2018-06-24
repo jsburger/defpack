@@ -1,10 +1,11 @@
 #define init
 global.sprSniperRifle = sprite_add_weapon("sprites/sprSniperRifle.png", 5, 3);
+
 #define weapon_name
 return "SNIPER RIFLE"
 
 #define weapon_sprt
-return global.sprSniperRifle ;
+return global.sprSniperRifle;
 
 #define weapon_type
 return 1;
@@ -46,6 +47,7 @@ with instance_create(x,y,CustomObject)
 	charge  = 0
 	acc     = other.accuracy
 	charged = 1
+	depth = TopCont.depth
 	undef = view_pan_factor[creator.index]
 	view_pan_factor[creator.index] = 2.5
 	on_step 	 = snipercharge_step
@@ -55,8 +57,6 @@ with instance_create(x,y,CustomObject)
 #define snipercharge_step
 if !instance_exists(creator){instance_destroy();exit}
 if button_check(creator.index,"swap"){instance_destroy();exit}
-x = creator.x
-y = creator.y
 creator.reload = weapon_get_load(creator.wep)
 charge += current_time_scale * 2 / acc
 if charge > 100
@@ -68,9 +68,9 @@ if charge > 100
 	}
 	charged = 0
 }
-if charged = 0 with creator
+if charged = 0
 {
-	with instance_create(x,y,Dust)
+	with creator with instance_create(x,y,Dust)
 	{
 		motion_add(random(360),random_range(2,3))
 	}
@@ -78,6 +78,9 @@ if charged = 0 with creator
 view_pan_factor[creator.index] = 2.1+charged/10
 sound_play_pitchvol(sndCursedPickup,.2+charge/100,.4)
 sound_play_gun(sndFootOrgSand4,999999999999999999999999999999999999999999999999,.00001)
+x = mouse_x[creator.index]
+y = mouse_y[creator.index]
+for (var i=0; i<maxp; i++){player_set_show_cursor(creator.index,i,0)}
 if button_check(creator.index,"fire") = false
 {
 	sound_play_gun(sndFootOrgSand4,999999999999999999999999999999999999999999999999,1)
@@ -106,7 +109,8 @@ if button_check(creator.index,"fire") = false
 				sprite_index = mskNothing
 				mask_index = mskBullet2
 				force = 7
-				damage = 15 + round(_c/10)
+				damage = 12 + round(28*(_c/100))
+				lasthit = -4
 				dir = 0
 				dd = 0
 				recycleset = 0
@@ -128,8 +132,11 @@ if button_check(creator.index,"fire") = false
 		}
 	}
 	sleep(charge*3)
+	//stealing from burg like a cool kid B)
+	for (var i=0; i<maxp; i++){player_set_show_cursor(creator.index,i,1)}
 	instance_destroy()
 }
+
 #define snipercharge_destroy
 view_pan_factor[creator.index] = undef
 
@@ -157,11 +164,12 @@ do
 	{
 		if place_meeting(x,y,other)
 		{
-			if projectile_canhit_melee(other) = false
+			if projectile_canhit_melee(self) = false && other.lasthit != self
 			{
 				projectile_hit(self,other.damage,other.force,other.direction)
 				with other
 				{
+					lasthit = other
 					dd += 20
 					view_shake_at(x,y,12)
 					sleep(20)
@@ -171,6 +179,7 @@ do
 			}
 		}
 	}
+	if lasthit > -4{if !place_meeting(x,y,lasthit){lasthit = -4}}
 	if place_meeting(x,y,Wall){instance_destroy()}
 }
 while instance_exists(self) and dir < 1000

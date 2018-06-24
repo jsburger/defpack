@@ -41,6 +41,9 @@ global.mskSuperSquare = sprite_add("mskSuperSquare.png",0,10,10)
 
 global.sprLaserFlakBullet = sprite_add("sprLaserFlak.png",2, 7, 7);
 
+global.sprAim          = sprite_add("sprAim.png",0,9,9);
+global.sprCursorCentre = sprite_add("sprCursorCentre.png",0,1,1);
+
 global.traildrawer = -4
 global.trailsf = surface_create(4000,4000)
 global.sfx = 7500
@@ -88,27 +91,21 @@ if fork()
 	}
 }
 
-#define draw
-with Player
+#define draw_gui
+with TopCont with instances_matching(CustomObject,"name","sniper charge")
 {
-	if wep = "psy sniper rifle"
-	{
-		if !instance_exists(enemy)
-		{
-			if collision_line(x,y,mouse_x[index],mouse_y[index],Wall,0,0)
-			{
-				var q = instance_create(x,y,CustomObject);
-				with q{
-					mask_index = sprBulletShell
-					image_angle = other.gunangle
-					move_contact_solid(image_angle,game_width)
-				}
-				//draw_line_width_colour(x,y,q.x,q.y,1,lasercolour2,lasercolour2)
-				with q instance_destroy()
-			}
-		}
-		else{draw_curve(x,y,instance_nearest(mouse_x[index],mouse_y[index],enemy).x,instance_nearest(mouse_x[index],mouse_y[index],enemy).y,gunangle,12)}
-	}
+	if !instance_exists(creator){instance_destroy();exit}
+	var _pc     = player_get_color(creator.index);
+  if charged = 0{if current_frame % 5 = 0 _pc = c_white}
+	var _offset = charge;
+	var _vpf    = view_pan_factor[creator.index];
+	var _mx     = x - view_xview[creator.index];
+	var _my     = y - view_yview[creator.index];
+	draw_sprite_ext(global.sprAim,0,_mx-_vpf+_offset-100,_my-_vpf+_offset-100,1,1,0  ,_pc,.1+.9*(charge/100))
+	draw_sprite_ext(global.sprAim,0,_mx-_vpf+_offset-100,_my+_vpf-_offset+100,1,1,90 ,_pc,.1+.9*(charge/100))
+	draw_sprite_ext(global.sprAim,0,_mx+_vpf-_offset+100,_my+_vpf-_offset+100,1,1,180,_pc,.1+.9*(charge/100))
+	draw_sprite_ext(global.sprAim,0,_mx+_vpf-_offset+100,_my-_vpf+_offset-100,1,1,270,_pc,.1+.9*(charge/100))
+  draw_sprite_ext(global.sprCursorCentre,0,_mx,_my,1,1,0,_pc,1)
 }
 
 #define draw_trails
