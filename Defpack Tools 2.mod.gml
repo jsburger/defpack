@@ -257,7 +257,7 @@ if other.team != team
 				with mod_script_call("mod","defpack tools","create_psy_bullet",x,y){
 					team = other.team
 					creator = other.creator
-					motion_set(random(359),18)
+					motion_set(random(359),12)
 					image_angle = direction
 					}
 			}
@@ -266,6 +266,7 @@ if other.team != team
 }
 
 #define psy_step
+if speed > 12 speed = 12
 if image_index = 1 image_speed = 0
 if instance_exists(enemy){
 	var closeboy = instance_nearest(x,y,enemy)
