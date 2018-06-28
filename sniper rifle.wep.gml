@@ -17,7 +17,7 @@ return false;
 return 43;
 
 #define weapon_cost
-return 15;
+return 12;
 
 #define weapon_swap
 return sndSwapMachinegun;
@@ -58,7 +58,7 @@ with instance_create(x,y,CustomObject)
 if !instance_exists(creator){instance_destroy();exit}
 if button_check(creator.index,"swap"){instance_destroy();exit}
 creator.reload = weapon_get_load(creator.wep)
-charge += current_time_scale * 2 / acc
+charge += current_time_scale * 3.2 / acc
 if charge > 100
 {
 	charge = 100
@@ -76,7 +76,7 @@ if charged = 0
 	}
 }
 view_pan_factor[creator.index] = 2.1+charged/10
-sound_play_pitchvol(sndCursedPickup,.2+charge/100,.4)
+sound_play_pitchvol(sndCursedReminder,.2+charge/100,.4+random_range(-.002,.002))
 sound_play_gun(sndFootOrgSand4,999999999999999999999999999999999999999999999999,.00001)
 x = mouse_x[creator.index]
 y = mouse_y[creator.index]
@@ -133,13 +133,13 @@ if button_check(creator.index,"fire") = false
 		}
 	}
 	sleep(charge*3)
-	//stealing from burg like a cool kid B)
-	for (var i=0; i<maxp; i++){player_set_show_cursor(creator.index,i,1)}
 	instance_destroy()
 }
 
 #define snipercharge_destroy
 view_pan_factor[creator.index] = undef
+//stealing from burg like a cool kid B)
+for (var i=0; i<maxp; i++){player_set_show_cursor(creator.index,i,1)}
 
 #define void
 
@@ -151,19 +151,19 @@ do
   {
     image_blend = c_yellow
     image_angle = other.direction
-    image_yscale = other.trailscale
     image_xscale = other.hyperspeed
+    image_yscale = other.trailscale * .8
   }
 	//redoing reflection code since the collision event of the reflecters doesnt work in substeps (still needs slash reflection)
 	with instances_matching_ne(CrystalShield, "team", other.team){if place_meeting(x,y,other){other.team = team;other.direction = point_direction(x,y,other.x,other.y);other.image_angle = other.direction;with instance_create(other.x,other.y,Deflect){image_angle = other.direction;sound_play_pitch(sndCrystalRicochet,random_range(.9,1.1))}}}
 	with instances_matching_ne(PopoShield, "team", other.team){if place_meeting(x,y,other){other.team = team;other.direction = point_direction(x,y,other.x,other.y);other.image_angle = other.direction;with instance_create(other.x,other.y,Deflect){image_angle = other.direction;sound_play_pitch(sndShielderDeflect,random_range(.9,1.1))}}}
 	with instances_matching_ne(Slash, "team", other.team){if place_meeting(x,y,other){other.team = team;other.direction = point_direction(x,y,other.x,other.y);other.image_angle = other.direction}}
 	with instances_matching_ne(Slash, "team", other.team){if place_meeting(x,y,other){with other{instance_destroy()}}}
-	if dd > 0 dd -= current_time_scale
+	if dd > 0 dd -= hyperspeed
 	if dd <= 0
 	with instances_matching_ne(hitme, "team", other.team)
 	{
-		if place_meeting(x,y,other)
+		if distance_to_object(other) <= other.trailscale * 3
 		{
 			if projectile_canhit_melee(self) = false && other.lasthit != self
 			{

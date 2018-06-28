@@ -41,7 +41,7 @@ global.mskSuperSquare = sprite_add("mskSuperSquare.png",0,10,10)
 
 global.sprLaserFlakBullet = sprite_add("sprLaserFlak.png",2, 7, 7);
 
-global.sprAim          = sprite_add("sprAim.png",0,9,9);
+global.sprAim          = sprite_add("sprAim.png",0,10,10);
 global.sprCursorCentre = sprite_add("sprCursorCentre.png",0,1,1);
 
 global.traildrawer = -4
@@ -96,7 +96,7 @@ with TopCont with instances_matching(CustomObject,"name","sniper charge")
 {
 	if !instance_exists(creator){instance_destroy();exit}
 	var _pc     = player_get_color(creator.index);
-  if charged = 0{if current_frame % 5 = 0 _pc = c_white}
+  if charged = 0{if current_frame % 5 = 0 {if _pc != c_white {_pc = c_white}else{player_get_color(creator.index)}}}
 	var _offset = charge;
 	var _vpf    = view_pan_factor[creator.index];
 	var _mx     = x - view_xview[creator.index];
