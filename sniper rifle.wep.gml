@@ -23,11 +23,11 @@ return 15;
 return sndSwapMachinegun;
 
 #define weapon_laser_sight
-with instances_matching(CustomObject,"creator",self){return true}
+with instances_matching(instances_matching(CustomObject, "name", "sniper charge"),"creator",self){return true}
 return false;
 
 #define weapon_reloaded
-with mod_script_call("mod","defpack tools", "shell_yeah_long", 100, 8, 3+random(2), c_yellow)
+mod_script_call("mod","defpack tools", "shell_yeah_long", 100, 8, 3+random(2), c_yellow)
 sound_play_pitchvol(sndSwapPistol,2,.4)
 sound_play_pitchvol(sndRecGlandProc,1.4,1)
 weapon_post(-2,-4,5)
@@ -106,6 +106,7 @@ if button_check(creator.index,"fire") = false
 				image_yscale = .5
 				image_scale = 1.5
 				trailscale = 1 + (_c/110)
+				hyperspeed = 4
 				sprite_index = mskNothing
 				mask_index = mskBullet2
 				force = 7
@@ -145,13 +146,13 @@ view_pan_factor[creator.index] = undef
 #define sniper_step
 do
 {
-	dir += 1 x += lengthdir_x(1,direction) y += lengthdir_y(1,direction)
+	dir += hyperspeed x += lengthdir_x(hyperspeed,direction) y += lengthdir_y(hyperspeed,direction)
 	with instance_create(x,y,BoltTrail)
   {
     image_blend = c_yellow
     image_angle = other.direction
     image_yscale = other.trailscale
-    image_xscale = 1
+    image_xscale = other.hyperspeed
   }
 	//redoing reflection code since the collision event of the reflecters doesnt work in substeps (still needs slash reflection)
 	with instances_matching_ne(CrystalShield, "team", other.team){if place_meeting(x,y,other){other.team = team;other.direction = point_direction(x,y,other.x,other.y);other.image_angle = other.direction;with instance_create(other.x,other.y,Deflect){image_angle = other.direction;sound_play_pitch(sndCrystalRicochet,random_range(.9,1.1))}}}
