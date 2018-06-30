@@ -2,15 +2,26 @@
 global.watch = sprite_add_weapon("sprites/sprStopwatch.png",0,3)
 global.time = current_time_scale
 global.slowed = 0
-global.users = [0,0,0,0]
+global.user = -1
 global.clock = 1
 
 while 1 {
 	if global.slowed{
 		var t = ((30 / room_speed) - current_time_scale);
-		with(Player) if(visible){
+		with instances_matching(Player,"team",player_find(global.user).team){
+		    var ts = current_time_scale;
+		    current_time_scale = t
+		    event_perform(ev_step,ev_step_begin)
+		    event_perform(ev_step,ev_step_normal)
+		    if button_pressed(index,"swap") scrSwap()
+		    clicked = 0
+		    speed -= min(friction * t, speed);
+		    x += hspeed * t;
+			y += vspeed * t;
 			image_index += image_speed * t;
-			if reload > 0{
+		    event_perform(ev_step,ev_step_end)
+		    current_time_scale = ts
+			/*if reload > 0{
 				reload -= t
 				if skill_get(mut_stress) reload -= (1 - my_health/maxhealth) * t
 				if race = "venuz" {
@@ -19,9 +30,6 @@ while 1 {
 				}
 			}
 			if race = "steroids" && breload > 0 breload -= t
-			speed -= min(friction * t, speed);
-			x += hspeed * t;
-			y += vspeed * t;
 			var _moveKeys = ["east", "nort", "west", "sout"];
 				for(var i = 0; i < array_length(_moveKeys); i++){
 					if(button_check(index, _moveKeys[i])){
@@ -33,12 +41,13 @@ while 1 {
 			if roll{
 				angle += 40*t
 			}
+			if infammo > 0 infammo -= t
+			*/
 			with script_bind_draw(vignette,-13){
 				index = other.index
 				x = other.x
 				y = other.y
 			}
-			if infammo > 0 infammo -= t
 			var ang = gunangle;
 			gunangle = point_direction(view_xview[index], view_yview[index], x-game_width/2, y-game_height/2)
 			weapon_post(0,floor(point_distance(view_xview[index], view_yview[index], x-game_width/2, y-game_height/2)/10),0)
@@ -64,6 +73,37 @@ while 1 {
 				on_step = blur_step;
 				on_draw = blur_draw;
 			}
+		}
+		with instances_matching(Ally,"team",player_find(global.user).team){
+		    var ts = current_time_scale;
+		    current_time_scale = t
+		    event_perform(ev_step,ev_step_begin)
+		    event_perform(ev_step,ev_step_normal)
+		    speed -= min(friction * t, speed);
+		    x += hspeed * t;
+			y += vspeed * t;
+			alarm1-=t
+			alarm2-=t
+			if alarm1 < 0 event_perform(ev_alarm,1)
+			if alarm2 < 0 event_perform(ev_alarm,2)
+			if !instance_exists(self) {current_time_scale = ts;continue}
+			image_index += image_speed * t;
+			if image_index >= image_number && sprite_index = sprAllyAppear {spr_idle = sprAllyIdle; image_index = 0}
+		    event_perform(ev_step,ev_step_end)
+		    current_time_scale = ts
+		}
+		with PopupText {
+		    var ts = current_time_scale;
+		    current_time_scale = t
+		    event_perform(ev_step,ev_step_begin)
+		    event_perform(ev_step,ev_step_normal)
+		    speed -= min(friction * t, speed);
+		    x += hspeed * t;
+			y += vspeed * t;
+			alarm1-=t
+			if alarm1 < 0 event_perform(ev_alarm,1)
+		    if instance_exists(self) event_perform(ev_step,ev_step_end)
+		    current_time_scale = ts
 		}
 		with instances_matching([WepSwap,CrystalShield,CrystalShieldDisappear],"visible",1){
 			image_index += image_speed * t;
@@ -93,6 +133,21 @@ while 1 {
 	wait(0)
 }
 
+//big thankie yokin
+#define scrSwap()
+	var _swap = ["wep", "curse", "reload", "wkick", "wepflip", "wepangle", "can_shoot"];
+	for(var i = 0; i < array_length(_swap); i++){
+		var	s = _swap[i],
+			_temp = [variable_instance_get(id, "b" + s), variable_instance_get(id, s)];
+
+		for(var j = 0; j < array_length(_temp); j++) variable_instance_set(id, chr(98 * j) + s, _temp[j]);
+	}
+
+	wepangle = (weapon_is_melee(wep) ? choose(120, -120) : 0);
+	can_shoot = (reload <= 0);
+	clicked = 0;
+
+
 #define vignette
 draw_set_visible_all(0)
 draw_set_visible(index,1)
@@ -111,7 +166,7 @@ return !global.slowed
 #define weapon_area
 return 18
 #define weapon_load
-return 0
+return 5
 #define weapon_swap
 return sndSwapGold
 #define weapon_auto
@@ -144,7 +199,7 @@ with script_bind_draw(circle,depth,global.slowed){
 #define weapon_sprt
 return global.watch
 #define weapon_text
-return "TIME HAS A PRICE"
+return "TIME HAS ITS PRICE"
 
 #define circle
 with creator{

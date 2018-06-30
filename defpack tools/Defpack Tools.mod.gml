@@ -96,7 +96,7 @@ with TopCont with instances_matching(CustomObject,"name","sniper charge")
 {
 	if !instance_exists(creator){instance_destroy();exit}
 	var _pc     = player_get_color(creator.index);
-  if charged = 0{if current_frame % 5 = 0 {if _pc != c_white {_pc = c_white}else{player_get_color(creator.index)}}}
+  if charged = 0{if current_frame % 5 <= current_time_scale {if _pc != c_white {_pc = c_white}else{player_get_color(creator.index)}}}
 	var _offset = charge;
 	var _vpf    = view_pan_factor[creator.index];
 	var _mx     = x - view_xview[creator.index];

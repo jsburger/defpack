@@ -40,6 +40,7 @@ return 9;
 return choose("replace me please");
 
 #define weapon_fire
+
 with instance_create(x,y,CustomObject)
 {
 	name    = "sniper charge"
@@ -49,15 +50,16 @@ with instance_create(x,y,CustomObject)
 	charged = 1
 	depth = TopCont.depth
 	undef = view_pan_factor[creator.index]
-	view_pan_factor[creator.index] = 2.5
 	on_step 	 = snipercharge_step
 	on_destroy = snipercharge_destroy
+	btn = other.specfiring ? "spec" : "fire"
 }
 
 #define snipercharge_step
 if !instance_exists(creator){instance_destroy();exit}
-if button_check(creator.index,"swap"){instance_destroy();exit}
-creator.reload = weapon_get_load(creator.wep)
+if button_check(creator.index,"swap"){creator.ammo[1] = min(creator.ammo[1] + weapon_cost(), creator.typ_amax[1]);instance_destroy();exit}
+if btn = "fire" creator.reload = weapon_get_load(creator.wep)
+if btn = "spec" creator.breload = weapon_get_load(creator.bwep) * array_length_1d(instances_matching(instances_matching(CustomObject, "name", "sniper charge"),"creator",creator))
 charge += current_time_scale * 3.2 / acc
 if charge > 100
 {
@@ -76,13 +78,14 @@ if charged = 0
 	}
 }
 view_pan_factor[creator.index] = 2.1+charged/10
-sound_play_pitchvol(sndCursedReminder,.2+charge/100,.4+random_range(-.002,.002))
+sound_play_pitchvol(sndFlameCannonLoop,10-charge/10,1)
 sound_play_gun(sndFootOrgSand4,999999999999999999999999999999999999999999999999,.00001)
 x = mouse_x[creator.index]
 y = mouse_y[creator.index]
 for (var i=0; i<maxp; i++){player_set_show_cursor(creator.index,i,0)}
-if button_check(creator.index,"fire") = false
+if button_check(creator.index, btn) = false
 {
+    sound_stop(sndFlameCannonLoop)
 	sound_play_gun(sndFootOrgSand4,999999999999999999999999999999999999999999999999,1)
 	sound_pitch(sndNoSelect,1)
 	var _ptch = random_range(-.5,.5)
@@ -104,7 +107,6 @@ if button_check(creator.index,"fire") = false
 				index = other.index
 				team  = other.team
 				image_yscale = .5
-				image_scale = 1.5
 				trailscale = 1 + (_c/110)
 				hyperspeed = 4
 				sprite_index = mskNothing
@@ -115,7 +117,7 @@ if button_check(creator.index,"fire") = false
 				dir = 0
 				dd = 0
 				recycleset = 0
-				if irandom(2)!=0 canrecycle = true else canrecycle = false
+				if irandom(2)=0 recycleset = 1 
 				image_angle = other.gunangle
 				direction = other.gunangle
 				on_step 	 = sniper_step
@@ -146,26 +148,21 @@ for (var i=0; i<maxp; i++){player_set_show_cursor(creator.index,i,1)}
 #define sniper_step
 do
 {
-	dir += hyperspeed x += lengthdir_x(hyperspeed,direction) y += lengthdir_y(hyperspeed,direction)
-	with instance_create(x,y,BoltTrail)
-  {
-    image_blend = c_yellow
-    image_angle = other.direction
-    image_xscale = other.hyperspeed
-    image_yscale = other.trailscale * .8
-  }
+	dir += hyperspeed
+	x += lengthdir_x(hyperspeed,direction)
+	y += lengthdir_y(hyperspeed,direction)
 	//redoing reflection code since the collision event of the reflecters doesnt work in substeps (still needs slash reflection)
-	with instances_matching_ne(CrystalShield, "team", other.team){if place_meeting(x,y,other){other.team = team;other.direction = point_direction(x,y,other.x,other.y);other.image_angle = other.direction;with instance_create(other.x,other.y,Deflect){image_angle = other.direction;sound_play_pitch(sndCrystalRicochet,random_range(.9,1.1))}}}
-	with instances_matching_ne(PopoShield, "team", other.team){if place_meeting(x,y,other){other.team = team;other.direction = point_direction(x,y,other.x,other.y);other.image_angle = other.direction;with instance_create(other.x,other.y,Deflect){image_angle = other.direction;sound_play_pitch(sndShielderDeflect,random_range(.9,1.1))}}}
-	with instances_matching_ne(Slash, "team", other.team){if place_meeting(x,y,other){other.team = team;other.direction = point_direction(x,y,other.x,other.y);other.image_angle = other.direction}}
-	with instances_matching_ne(Slash, "team", other.team){if place_meeting(x,y,other){with other{instance_destroy()}}}
+	with instances_matching_ne([CrystalShield,PopoShield], "team", team){if place_meeting(x,y,other){with other{line()};other.team = team;other.direction = point_direction(x,y,other.x,other.y);other.image_angle = other.direction;with instance_create(other.x,other.y,Deflect){image_angle = other.direction;sound_play_pitch(sndCrystalRicochet,random_range(.9,1.1))}}}
+	with instances_matching_ne([EnergySlash,Slash,EnemySlash,EnergyHammerSlash,BloodSlash,GuitarSlash], "team", team){if place_meeting(x,y,other){with other{line()};other.team = team;other.direction = direction ;other.image_angle = other.direction}}
+	with instances_matching_ne([Shank,EnergyShank], "team", team){if place_meeting(x,y,other){with other{instance_destroy();exit}}}
+	with instances_matching_ne(CustomSlash, "team", team){if place_meeting(x,y,other){mod_script_call(on_projectile[0],on_projectile[1],on_projectile[2]);with other{line()};}}
 	if dd > 0 dd -= hyperspeed
 	if dd <= 0
-	with instances_matching_ne(hitme, "team", other.team)
+	with instances_matching_ne(hitme, "team", team)
 	{
 		if distance_to_object(other) <= other.trailscale * 3
 		{
-			if projectile_canhit_melee(self) = false && other.lasthit != self
+			if other.lasthit != self
 			{
 				projectile_hit(self,other.damage,other.force,other.direction)
 				with other
@@ -174,20 +171,47 @@ do
 					dd += 20
 					view_shake_at(x,y,12)
 					sleep(20)
-					if skill_get(16) = true{if canrecycle =  true{if recycleset=0{recycleset=1;instance_create(creator.x,creator.y,RecycleGland);sound_play(sndRecGlandProc);if creator.ammo[1]+15 <= creator.typ_amax[1]{creator.ammo[1]+=15}else{creator.ammo[1] = creator.typ_amax[1]}}}}
-					continue;
+					if skill_get(16) = true && recycleset = 0{
+					    recycleset = 1;
+					    instance_create(creator.x,creator.y,RecycleGland);
+					    sound_play(sndRecGlandProc);
+					    creator.ammo[1] = min(creator.ammo[1] + weapon_cost(), creator.typ_amax[1])
+				    }
 				}
 			}
 		}
 	}
-	if lasthit > -4{if !place_meeting(x,y,lasthit){lasthit = -4}}
 	if place_meeting(x,y,Wall){instance_destroy()}
 }
 while instance_exists(self) and dir < 1000
 instance_destroy()
 
+#define line()
+var dis = point_distance(x,y,xstart,ystart) + 1;
+var num = 20;
+for var i = 0; i <= num; i++{
+    with instance_create(xstart+lengthdir_x(dis/num * i,direction),ystart + lengthdir_y(dis/num * i,direction),BoltTrail){
+        image_blend = c_yellow
+        image_angle = other.direction
+        image_yscale = other.trailscale * (i/num)
+        image_xscale = dis/num
+    }
+}
+xstart = x
+ystart = y
+
 #define sniper_destroy
 instance_create(x,y,BulletHit)
+var dis = point_distance(x,y,xstart,ystart) + 1;
+var num = 20;
+for var i = 0; i <= num; i++{
+    with instance_create(xstart+lengthdir_x(dis/num * i,direction),ystart + lengthdir_y(dis/num * i,direction),BoltTrail){
+        image_blend = c_yellow
+        image_angle = other.direction
+        image_yscale = other.trailscale * (i/num)
+        image_xscale = dis/num
+    }
+}
 
 #define muzzle_step
 if image_index > 1{instance_destroy()}
