@@ -66,6 +66,37 @@ with instances_matching(CustomProjectile,"name","volley arrow")
 #define draw_dark()
 if fork()
 {
+  with Player
+  {
+    if "CrystalTorchCharge" in self
+    if wep = "crystal torch" || bwep = "crystal torch"
+    {
+      var lv = 0;
+      if CrystalTorchCharge <= 10{lv = 1}
+    	if CrystalTorchCharge <= 20{lv = 2}
+    	if CrystalTorchCharge <= 30{lv = 3}
+    	if CrystalTorchCharge <= 40{lv = 4}
+    	if CrystalTorchCharge <= 60{lv = 5}
+      draw_circle_color(x,y,180 + 20*lv + random(5), c_gray,c_gray,0)
+  		draw_circle_color(x,y,70  + 20*lv + random(5), c_black,c_black,0)
+    }
+  }
+  with WepPickup
+  {
+    if wep = "crystal torch"
+    {
+      draw_circle_color(x,y,40 + random(2), c_gray,c_gray,0)
+  		draw_circle_color(x,y,20 + random(2), c_black,c_black,0)
+    }
+  }
+  with ThrownWep
+  {
+    if wep = "crystal torch"
+    {
+      draw_circle_color(x,y,40 + random(2), c_gray,c_gray,0)
+  		draw_circle_color(x,y,20 + random(2), c_black,c_black,0)
+    }
+  }
 	with instances_matching(CustomProjectile,"name","Lightning Bolt"){
 		draw_circle_color(x,y,550 + random(10), c_gray,c_gray,0)
 		draw_circle_color(x,y,250 + random(10), c_black,c_black,0)
