@@ -105,7 +105,7 @@ with TopCont with instances_matching(CustomObject,"name","sniper charge")
 	draw_sprite_ext(global.sprAim,0,_mx-_vpf+_offset-100,_my+_vpf-_offset+100,1,1,90 ,_pc,.1+.9*(charge/100))
 	draw_sprite_ext(global.sprAim,0,_mx+_vpf-_offset+100,_my+_vpf-_offset+100,1,1,180,_pc,.1+.9*(charge/100))
 	draw_sprite_ext(global.sprAim,0,_mx+_vpf-_offset+100,_my-_vpf+_offset-100,1,1,270,_pc,.1+.9*(charge/100))
-  draw_sprite_ext(global.sprCursorCentre,0,_mx,_my,1,1,0,_pc,1)
+    draw_sprite_ext(global.sprCursorCentre,0,_mx,_my,1,1,0,_pc,1)
 }
 
 #define draw_trails
