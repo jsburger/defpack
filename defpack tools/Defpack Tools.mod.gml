@@ -127,16 +127,16 @@ with TopCont with instances_matching(CustomObject,"name","sniper charge")
 {
 	if !instance_exists(creator){instance_destroy();exit}
 	var _pc     = player_get_color(creator.index);
-  if charged = 0{if current_frame % 5 <= current_time_scale {if _pc != c_white {_pc = c_white}else{player_get_color(creator.index)}}}
+    if charged = 0{if (current_frame mod 5) <= current_time_scale {if _pc != c_white {_pc = c_white}else{_pc = player_get_color(creator.index)}}}
 	var _offset = charge;
-	var _vpf    = view_pan_factor[creator.index];
+	var _vpf    = 3;
 	var _mx     = x - view_xview[creator.index];
 	var _my     = y - view_yview[creator.index];
 	draw_sprite_ext(global.sprAim,0,_mx-_vpf+_offset-100,_my-_vpf+_offset-100,1,1,0  ,_pc,.1+.9*(charge/100))
 	draw_sprite_ext(global.sprAim,0,_mx-_vpf+_offset-100,_my+_vpf-_offset+100,1,1,90 ,_pc,.1+.9*(charge/100))
 	draw_sprite_ext(global.sprAim,0,_mx+_vpf-_offset+100,_my+_vpf-_offset+100,1,1,180,_pc,.1+.9*(charge/100))
 	draw_sprite_ext(global.sprAim,0,_mx+_vpf-_offset+100,_my-_vpf+_offset-100,1,1,270,_pc,.1+.9*(charge/100))
-  draw_sprite_ext(global.sprCursorCentre,0,_mx,_my,1,1,0,_pc,1)
+    draw_sprite_ext(global.sprCursorCentre,0,_mx,_my,1,1,0,_pc,1)
 }
 
 #define draw_trails
