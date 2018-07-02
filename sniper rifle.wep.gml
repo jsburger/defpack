@@ -117,7 +117,7 @@ if button_check(creator.index, btn) = false
 				dir = 0
 				dd = 0
 				recycleset = 0
-				if irandom(2)=0 recycleset = 1 
+				if irandom(2)=0 recycleset = 1
 				image_angle = other.gunangle
 				direction = other.gunangle
 				on_step 	 = sniper_step
@@ -139,7 +139,7 @@ if button_check(creator.index, btn) = false
 }
 
 #define snipercharge_destroy
-view_pan_factor[creator.index] = undef
+view_pan_factor[creator.index] = undefined
 //stealing from burg like a cool kid B)
 for (var i=0; i<maxp; i++){player_set_show_cursor(creator.index,i,1)}
 
