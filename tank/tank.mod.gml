@@ -28,6 +28,11 @@ with tank{
 	hurt = 0
 	length = 10
 	turnspeed = 0
+	ammotype = 1
+	ammocost = 2
+	sub_fire = script_ref_create(machinegun_sub)
+	sub_gun = wep_machinegun
+	main_gun = "tank cannon"
 	sf = surface_create(100,100)
 }
 return tank
@@ -49,8 +54,8 @@ other.driver = noone
 #define mount
 tankthings = [mask_index,image_alpha,maxspeed,spr_shadow,my_health,wep,bwep]
 image_alpha = 0
-wep = "tank cannon"
-bwep = wep_machinegun
+wep = other.main_gun
+bwep = other.sub_gun
 spr_shadow = mskNone
 maxspeed = 10000
 driving = 1
@@ -102,21 +107,21 @@ if instance_exists(driver) && instance_is(driver,Player){
 		sound_play_pitchvol(sndExplosion,.1,.4)
 		breload = max(breload - current_time_scale, 0)
 		reload = max(reload - current_time_scale, 0)
-		//gunangle += clamp(angle_difference(driver.gunangle,gunangle)*current_time_scale,-10,10)
+		//gunangle += clamp(angle_difference(driver.gunangle,gunangle)*current_time_scale,-10*current_time_scale,10*current_time_scale)
 		gunangle = driver.gunangle
 	}
 	//MOVEMENT
 	if button_check(driver.index,"west"){
-		motion_add(180,1)
+		motion_add(180,current_time_scale)
 	}
 	if button_check(driver.index,"sout"){
-		motion_add(270,1)
+		motion_add(270,current_time_scale)
 	}
 	if button_check(driver.index,"nort"){
-		motion_add(90,1)
+		motion_add(90,current_time_scale)
 	}
 	if button_check(driver.index,"east"){
-		motion_add(0,1)
+		motion_add(0,current_time_scale)
 	}
 	image_angle = direction + 180
 	if speed > maxspeed {speed = maxspeed}
@@ -150,7 +155,7 @@ if instance_exists(driver) && instance_is(driver,Player){
 	if portalmode && !instance_exists(GenCont)&& !instance_exists(Portal) && !instance_exists(mutbutton){
 		portalmode = 0
 	}
-	//tank PREVENTS TAKING DAMAGE BUT NOT DEATH FOR SOME REASON
+	//tank prevents damage but not death
 	driver.my_health = driver.maxhealth
 	driver.nexthurt = current_frame + 2
 	//LEAVING THE tank AND RESETTING STATS
@@ -162,13 +167,13 @@ if instance_exists(driver) && instance_is(driver,Player){
 		driver = noone
 	}
 }else{
-	//STUFF THAT NEEDS TO HAPPEN IF THERES NO DRIVER
+	//i dont know why i needed this
 	image_angle = direction + 180
 	persistent = 0
 }
 
 if place_meeting(x+hspeed_raw,y+vspeed_raw,Wall){
-	//KILL WALLS
+	//kill walls
 	with instance_nearest(x + hspeed_raw,y+vspeed_raw,Wall){
 		with instance_create(x,y,FloorExplo){
 			with Debris if place_meeting(x,y,other){
@@ -181,7 +186,7 @@ if place_meeting(x+hspeed_raw,y+vspeed_raw,Wall){
 }
 
 if my_health/maxhealth < 3/4{
-	//SMOKE INDICATES DAMAGE
+	//smoke indicates damage
 	if random(2) > (my_health/maxhealth){
 		with instance_create(x-lengthdir_x(10,direction),y - lengthdir_y(10,direction),Smoke){
 			motion_set(random_range(60,120),2+random(2))
@@ -206,25 +211,13 @@ if floor(speed) > 0{
 }
 if !portalmode && instance_exists(driver){
     //machineguns
-    if button_check(driver.index,"spec") && (driver.ammo[1] >= 2 || driver.infammo != 0) && breload <= 0{
-    	sound_play(sndHeavyMachinegun)
-    	sound_play_pitch(sndShotgun,1+random(.1))
-    	breload = 3
-    	if driver.infammo != 0 driver.ammo[1]-=2
-    	var angle = gunangle;
-    	for (var i = -1; i<= 1; i+=2){
-    	    with create_bullet(x + hspeed_raw + lengthdir_x(4,angle+(90*i)) + lengthdir_x(10,angle), y + vspeed_raw + lengthdir_y(4,angle+(90*i)) + lengthdir_y(10,angle) - 5){
-    	        direction = angle;
-    	        image_angle = angle;
-    	        creator = other.driver
-    	        team = other.driver.team
-    	        hyperspeed = 8
-    	    }
-    	}
+    if button_check(driver.index,"spec") && (driver.ammo[ammotype] >= ammocost || driver.infammo != 0) && breload <= 0{
+    	if driver.infammo = 0 driver.ammo[ammotype]-=ammocost
+    	mod_script_call(sub_fire[0],sub_fire[1],sub_fire[2])
     }
 }
 
-//OOF OUCH
+//tank takes damage
 #define tankhit(damage, kb_vel, kb_dir)
 my_health -= damage;
 hurt = 1
@@ -249,6 +242,7 @@ draw_clear_alpha(0,0)
 for (i = 0; i < 7; i++){
 	draw_sprite_ext(global.tank, i , 50, 50 + yoff - i,image_xscale, image_yscale, image_angle, image_blend, 1);
 }
+if my_health/maxhealth < .1 draw_sprite(sprGroundFlame,current_frame*.4,50+lengthdir_x(8,image_angle),50+lengthdir_y(8,image_angle)-yoff)
 var ang = image_angle
 for (i = i; i<11; i++){
 	draw_sprite_ext(global.tank, i , 50, 50 + yoff - i,image_xscale, image_yscale, gunangle+180, image_blend, 1);
@@ -263,6 +257,22 @@ draw_surface(sf,x-50,y-50)
 hurt = max(hurt-current_time_scale,0)
 
 
+
+
+#define machinegun_sub
+sound_play(sndHeavyMachinegun)
+sound_play_pitch(sndShotgun,1+random(.1))
+breload = 3
+var angle = gunangle;
+for (var i = -1; i<= 1; i+=2){
+    with create_bullet(x + hspeed_raw + lengthdir_x(4,angle+(90*i)) + lengthdir_x(10,angle), y + vspeed_raw + lengthdir_y(4,angle+(90*i)) + lengthdir_y(10,angle) - 5){
+        direction = angle;
+        image_angle = angle;
+        creator = other.driver
+        team = other.driver.team
+        hyperspeed = 8
+    }
+}
 
 #define create_bullet(_x,_y)
 with instance_create(_x,_y,CustomProjectile){
@@ -308,6 +318,11 @@ if !effected with instance_create(x,y,CustomObject)
 	image_angle = other.direction
 	other.effected = 1
 }
+while !collision_line(x,y,x+lengthdir_x(100,direction),y+lengthdir_y(100,direction),Wall,1,1) && !collision_line(x,y,x+lengthdir_x(100,direction),y+lengthdir_y(100,direction),hitme,0,1) && dir <500{
+    x+=lengthdir_x(100,direction)
+    y+=lengthdir_y(100,direction)
+    dir+=100
+}
 
 do
 {
@@ -319,13 +334,13 @@ do
 	with instances_matching_ne([EnergySlash,Slash,EnemySlash,EnergyHammerSlash,BloodSlash,GuitarSlash], "team", team){if place_meeting(x,y,other){with other{line()};other.team = team;other.direction = direction ;other.image_angle = other.direction}}
 	with instances_matching_ne([Shank,EnergyShank], "team", team){if place_meeting(x,y,other){with other{instance_destroy();exit}}}
 	with instances_matching_ne(CustomSlash, "team", team){if place_meeting(x,y,other){mod_script_call(on_projectile[0],on_projectile[1],on_projectile[2]);with other{line()};}}
-	var q = collision_point(x,y,hitme,1,1);
-	if instance_exists(q) && q.team != team
+	var q = collision_point(x,y,hitme,0,1);
+	if instance_exists(q) && projectile_canhit_np(q)
 	{
-		projectile_hit(q,other.damage,other.force,other.direction)
+		projectile_hit(q,damage,force,direction)
 		if skill_get(16) = true && recycleset = 0{
 		    recycleset = 1;
-		    instance_create(creator.x,creator.y,RecycleGland);
+		    instance_create(xstart,ystart,RecycleGland);
 		    sound_play(sndRecGlandProc);
 		    creator.ammo[1] = min(creator.ammo[1] + 1, creator.typ_amax[1])
 	    }
