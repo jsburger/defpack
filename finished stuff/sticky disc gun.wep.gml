@@ -1,6 +1,8 @@
 #define init
 global.sprStickyDiscGun = sprite_add_weapon("sprStickyDiscGun.png",1,3)
 global.sprStickyDisc = sprite_add("sprStickyDisc.png",2,12,12)
+#macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)
+#define weapon_name
 return "STICKY DISC GUN"
 #define weapon_type
 return 3
@@ -27,47 +29,74 @@ weapon_post(3,4,0)
 sound_play_gun(sndDiscgun, 0.2, 0.3);
 with instance_create(x,y,CustomProjectile)
 {
-  typ = 1
-  dist = 0
-  damage = 8
-  team = -10
-  image_speed = .45
-  name = "Sticky Disc"
-  sprite_index = global.sprStickyDisc
-  move_contact_solid(other.gunangle,20)
-  soundcheck = 0
-  motion_add(other.gunangle+random_range(-8,8)*other.accuracy,4)
-  orspeed = speed
-  image_angle = direction
-  on_step    = stickydisc_step
-  on_hit     = stickydisc_hit
-  on_destroy = stickydisc_destroy
-  on_wall    = stickydisc_wall
+    typ = 1
+    dist = 0
+    damage = 8
+    team = other.team
+    image_speed = .4
+    name = "Sticky Disc"
+    sprite_index = global.sprStickyDisc
+    motion_add(other.gunangle+random_range(-8,8)*other.accuracy,4)
+    stuckto = -4
+    teamswap = 1
+    creator = other
+    orspeed = speed
+    hitid = [sprite_index,name]
+    depth = -3
+    image_angle = direction
+    on_step    = stickydisc_step
+    on_hit     = stickydisc_hit
+    on_destroy = stickydisc_destroy
+    on_wall    = stickydisc_wall
 }
 
 #define stickydisc_step
-if speed > 0{with instance_create(x,y,DiscTrail){image_xscale = 2;image_yscale = 2}}
-dist += 1
+if speed > 0 && current_frame_active {with instance_create(x,y,DiscTrail){image_xscale = 2;image_yscale = 2}}
+dist += current_time_scale
 if dist > 200{instance_destroy();exit}
-if place_meeting(x,y,enemy)
-{
-  if other.my_health-damage>0 && soundcheck=0
-  {
-    soundcheck = 1
-    sound_play(sndGrenadeStickWall)
-    speed = 0
-    instance_create(other.x,other.y,Dust);repeat(12){if depth!=-3{with instance_create(x,y,Smoke){depth = -4}}}
-    x=other.x
-    y=other.y
-    depth = -3
-  }
+if instance_exists(creator) && teamswap && !place_meeting(x,y,creator){
+    teamswap = 0
+    team = -1
 }
 
+if instance_exists(stuckto){
+    x = stuckto.x
+    y = stuckto.y
+    xprevious = x
+    yprevious = y
+    instance_create(x,y,Dust)
+}
+else if skill_get(mut_bolt_marrow){
+    if instance_exists(enemy){
+        var q = instance_nearest(x,y,enemy)
+        if distance_to_object(q) < 30
+            motion_add(point_direction(x,y,q.x,q.y),.25*current_time_scale)
+    }
+}
+
+
+
 #define stickydisc_hit
-if projectile_canhit_melee(other){projectile_hit(other, damage, 5, direction)}
+if projectile_canhit_melee(other){
+    sound_play_hit(sndDiscHit,.2)
+    projectile_hit(other, damage, 5, direction)
+    nexthurt = current_frame + 3
+    if other.my_health > 0{
+        if stuckto != other{
+            stuckto = other
+            sound_play(sndGrenadeStickWall)
+            repeat(12){with instance_create(x,y,Smoke){depth = -4}}
+        }
+    }
+    else {
+        speed = orspeed
+        stuckto = -4
+    }
+}
 
 #define stickydisc_wall
-move_bounce_solid(false)
+if !instance_exists(stuckto) sound_play_hit(sndDiscBounce,.2)
+move_bounce_solid(true)
 
 #define stickydisc_destroy
 with instance_create(x,y,DiscTrail){sprite_index=sprDiscDisappear;image_xscale = 2}

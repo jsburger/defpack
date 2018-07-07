@@ -86,17 +86,17 @@ with instance_nearest(x,y,enemy) if distance_to_object(other) <= 64{
 			stabsremaining -=1
 			with other if "my_health" in self{
 				view_shake_max_at(x,y,200)
-		    sleep(30)
-		    sound_play_pitchvol(sndHammerHeadEnd,random_range(1.23,1.33),20)
-		    sound_play_pitchvol(sndBasicUltra,random_range(0.9,1.1),20)
-		    sound_play_pitch(sndCoopUltraA,random_range(3.8,4.05))
+    		    sleep(30)
+    		    sound_play_pitchvol(sndHammerHeadEnd,random_range(1.23,1.33),20)
+    		    sound_play_pitchvol(sndBasicUltra,random_range(0.9,1.1),20)
+    		    sound_play_pitch(sndCoopUltraA,random_range(3.8,4.05))
 				projectile_hit(self, my_health);
 			}
 		}
 	}
 }
 if handscale > 0 {
-	handscale -= 1/5* handscale
+	handscale -= 1/5* handscale * current_time_scale
 	if handscale < 5 {
 		handscale = 0
 		canstab = 1

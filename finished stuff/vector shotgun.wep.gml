@@ -45,7 +45,7 @@ else
 	sound_play_pitch(sndEnergyScrewdriverUpg,1.5*_pitch)
 	sound_play_pitch(sndPlasmaHit,random_range(1.4,1.6)*_pitch)
 }
-repeat(3)
+for var i = -1; i <= 1; i++
 {
 	with create_psy_laser(x+lengthdir_x(10,gunangle),y+lengthdir_y(10,gunangle)){
 		loss = .15-skill_get(17)*.04
@@ -53,8 +53,7 @@ repeat(3)
 		lspeed = random_range(7,9)
 		team = other.team
 		creator = other
-		_ang = (current_frame % 3)-1
-		image_angle = other.gunangle+30-30*_ang+random_range(-9,9)*creator.accuracy
+		image_angle = other.gunangle-30*i+random_range(-9,9)*creator.accuracy
 		image_xscale = lspeed/2
 	}
 	wait(1)
