@@ -30,14 +30,12 @@ return "WATCH OUT FOR THE RICOCHET";
 
 #define weapon_fire
 sound_play_pitch(sndSuperSlugger,1.6)
-with create_bullet(x+lengthdir_x(24,gunangle),y+ lengthdir_y(24,gunangle) - 5){
+with create_bullet(x+lengthdir_x(24,gunangle),y+ lengthdir_y(24,gunangle)){
     on_destroy = shell_destroy
-    direction = other.gunangle;
-    image_angle = other.gunangle;
+    direction = other.gunangle + random_range(-5,5)*other.accuracy;
+    image_angle = direction;
     creator = other
     team = other.team
-    xhyperspeed = 8
-    yhyperspeed = 8
 }
 
 
@@ -47,9 +45,8 @@ with instance_create(_x,_y,CustomProjectile){
 	creator = other
 	team  = other.team
 	image_yscale = .5
-	trailscale = .8
-	xhyperspeed = 4
-  yhyperspeed = 4
+	trailscale = 2
+	hyperspeed = 8
 	sprite_index = mskNothing
 	mask_index = mskBullet2
 	force = 2
@@ -63,8 +60,8 @@ with instance_create(_x,_y,CustomProjectile){
 
 
 #define shell_destroy
-x += lengthdir_x(xhyperspeed,direction)
-y += lengthdir_y(yhyperspeed,direction)
+x += lengthdir_x(hyperspeed,direction)
+y += lengthdir_y(hyperspeed,direction)
 instance_create(x,y,BulletHit)
 line()
 
@@ -80,11 +77,17 @@ with instance_create(x,y,CustomObject)
 	image_angle = other.direction
 }
 
+while !collision_line(x,y,x+lengthdir_x(100,direction),y+lengthdir_y(100,direction),Wall,1,1) && !collision_line(x,y,x+lengthdir_x(100,direction),y+lengthdir_y(100,direction),hitme,0,1) && dir <1000{
+    x+=lengthdir_x(100,direction)
+    y+=lengthdir_y(100,direction)
+    dir+=100
+}
+
 do
 {
-	dir += 8
-	x += lengthdir_x(xhyperspeed,direction)
-	y += lengthdir_y(yhyperspeed,direction)
+	dir += hyperspeed
+	x += lengthdir_x(hyperspeed,direction)
+	y += lengthdir_y(hyperspeed,direction)
 	//redoing reflection code since the collision event of the reflecters doesnt work in substeps (still needs slash reflection)
 	with instances_matching_ne([CrystalShield,PopoShield], "team", team){if place_meeting(x,y,other){with other{line()};other.team = team;other.direction = point_direction(x,y,other.x,other.y);other.image_angle = other.direction;with instance_create(other.x,other.y,Deflect){image_angle = other.direction;sound_play_pitch(sndCrystalRicochet,random_range(.9,1.1))}}}
 	with instances_matching_ne([EnergySlash,Slash,EnemySlash,EnergyHammerSlash,BloodSlash,GuitarSlash], "team", team){if place_meeting(x,y,other){with other{line()};other.team = team;other.direction = direction ;other.image_angle = other.direction}}
@@ -102,7 +105,7 @@ do
 			}
 		}
 	}
-  if place_meeting(x+lengthdir_x(xhyperspeed,direction),y+lengthdir_y(yhyperspeed,direction),Wall)
+  if place_meeting(x+lengthdir_x(hyperspeed,direction),y+lengthdir_y(hyperspeed,direction),Wall)
   {
     sleep(5)
     instance_destroy()
@@ -118,12 +121,11 @@ instance_destroy()
 var dis = point_distance(x,y,xstart,ystart) + 1;
 var num = 20;
 for var i = 0; i <= num; i++{
-    if !irandom(1){
-        with instance_create(xstart+lengthdir_x(dis/num * i,direction),ystart + lengthdir_y(dis/num * i,direction),BoltTrail){
-            image_angle = other.direction
-            image_yscale = other.trailscale * (i/num)
-            image_xscale = dis/num
-        }
+    with instance_create(xstart+lengthdir_x(dis/num * i,direction),ystart + lengthdir_y(dis/num * i,direction),BoltTrail){
+        image_angle = other.direction
+        image_yscale = other.trailscale * (i/num)
+        image_xscale = dis/num
+        image_alpha = .5
     }
 }
 xstart = x

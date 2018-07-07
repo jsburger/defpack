@@ -5,7 +5,7 @@ global.spr = sprite_add_weapon("tankcannon.png",4,2)
 return "TANK CANNON";
 
 #define weapon_sprt
-if array_length_1d(instances_matching(CustomHitme,"driver",id)) return mskNone
+if instance_is(self,Player) if array_length_1d(instances_matching(CustomHitme,"driver",id)) return mskNone
 return global.spr;
 
 #define weapon_sprt_hud

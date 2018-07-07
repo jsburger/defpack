@@ -1283,8 +1283,6 @@ with instance_create(_x,_y,CustomProjectile){
 	on_wall = lightning_wall
 	on_draw = lightning_draw;
 	mask_index = sprGammaBlast
-	image_xscale = 2
-	image_yscale = 2
     on_destroy = lightning_destroy
 	on_step = lightning_step
 	on_hit = lightning_hit
