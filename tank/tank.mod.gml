@@ -258,7 +258,6 @@ hurt = max(hurt-current_time_scale,0)
 
 
 
-
 #define machinegun_sub
 sound_play(sndHeavyMachinegun)
 sound_play_pitch(sndShotgun,1+random(.1))
