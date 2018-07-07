@@ -31,11 +31,12 @@ with instance_create(x,y,CustomProjectile)
 {
     typ = 1
     dist = 0
-    damage = 8
+    damage = 6
     team = other.team
     image_speed = .4
     name = "Sticky Disc"
-    sprite_index = global.sprStickyDisc
+    sprite_index = sprDisc
+    mask_index = mskDisc
     motion_add(other.gunangle+random_range(-8,8)*other.accuracy,4)
     stuckto = -4
     teamswap = 1
@@ -51,7 +52,7 @@ with instance_create(x,y,CustomProjectile)
 }
 
 #define stickydisc_step
-if speed > 0 && current_frame_active {with instance_create(x,y,DiscTrail){image_xscale = 2;image_yscale = 2}}
+if speed > 0 && current_frame_active instance_create(x,y,DiscTrail)
 dist += current_time_scale
 if dist > 200{instance_destroy();exit}
 if instance_exists(creator) && teamswap && !place_meeting(x,y,creator){
@@ -60,8 +61,8 @@ if instance_exists(creator) && teamswap && !place_meeting(x,y,creator){
 }
 
 if instance_exists(stuckto){
-    x = stuckto.x
-    y = stuckto.y
+    x = stuckto.x - xoff + stuckto.hspeed_raw
+    y = stuckto.y - yoff + stuckto.vspeed_raw
     xprevious = x
     yprevious = y
     instance_create(x,y,Dust)
@@ -80,10 +81,11 @@ else if skill_get(mut_bolt_marrow){
 if projectile_canhit_melee(other){
     sound_play_hit(sndDiscHit,.2)
     projectile_hit(other, damage, 5, direction)
-    nexthurt = current_frame + 3
     if other.my_health > 0{
         if stuckto != other{
             stuckto = other
+            xoff = (other.x - x)/2
+            yoff = (other.y - y)/2
             sound_play(sndGrenadeStickWall)
             repeat(12){with instance_create(x,y,Smoke){depth = -4}}
         }
