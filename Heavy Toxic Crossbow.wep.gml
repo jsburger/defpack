@@ -12,7 +12,7 @@ return global.sprHeavyToxicCrossbow;
 return 3;
 
 #define weapon_auto
-return true;
+return false;
 
 #define weapon_load
 return 42;

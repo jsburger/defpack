@@ -16,10 +16,10 @@ return 4;
 return false;
 
 #define weapon_load
-return 76;
+return 150;
 
 #define weapon_cost
-return 8;
+return 20;
 
 #define weapon_swap
 return sndSwapExplosive;
@@ -52,8 +52,9 @@ with instance_create(x,y,CustomProjectile)
     maxspeed = 24
     timer = 0
     flip = 1
+    anginc = 0
     image_angle = direction
-    ammo = 5
+    ammo = 6
     on_draw    = cannon_draw
     on_step    = scannon_step
     on_destroy = scannon_destroy
@@ -61,18 +62,23 @@ with instance_create(x,y,CustomProjectile)
 
 #define scannon_step
 timer += current_time_scale
-if timer >= 6 && ammo{
+anginc = 0
+if timer >= 4 && ammo repeat(2){
     timer = 0
     ammo--
     flip *= -1
+    anginc+= pi/3
+    var n = 90*sin(anginc);
     with create_big_rocklet(x,y){
         creator = other.creator
-        motion_set(other.direction+(50*other.flip),4)
-        direction_goal = direction + 150*other.flip
+        motion_set(other.direction-n*other.flip,12)
+        direction_goal = other.direction+n*other.flip
         image_angle = direction
         timer = 2
     }
+    n *= -1
 }
+anginc = 0
 
 
 if speed > maxspeed{speed = maxspeed}

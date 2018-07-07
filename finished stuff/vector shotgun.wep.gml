@@ -7,7 +7,7 @@ return "VECTOR SHOTGUN"
 #define weapon_type
 return 5
 #define weapon_cost
-return 3
+return 4
 #define weapon_area
 return 11
 #define weapon_load
@@ -54,7 +54,7 @@ repeat(3)
 		team = other.team
 		creator = other
 		_ang = (current_frame % 3)-1
-		image_angle = other.gunangle-30*_ang+random_range(-9,9)*creator.accuracy
+		image_angle = other.gunangle+30-30*_ang+random_range(-9,9)*creator.accuracy
 		image_xscale = lspeed/2
 	}
 	wait(1)
