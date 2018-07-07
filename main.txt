@@ -126,6 +126,7 @@
 /loadwep phlogenitator
 
 //OTHER SHELL
+/loadwep big iron
 /loadwep popper
 /loadwep super heavy slugger
 /loadwep apergig tanat
@@ -161,7 +162,6 @@
 /loadwep super abris launcher
 /loadwep blood abris launcher
 /loadwep plasma abris launcher
-/loadwep inquisitor
 
 //ROCKLET
 /loadwep rocklet pistol
@@ -235,6 +235,7 @@
 //OTHER ENERGY
 /loadwep energy gun
 /loadwep stopwatch
+/loadwep inquisitor
 
 ///MELEE///
 /loadwep toothbrush
@@ -257,7 +258,6 @@
 
 ///GOLD///
 /loadwep golden abris pistol
-/loadwep golden bouncer pistol
 /loadwep golden bullak cannon
 /loadwep golden gunhammer
 
@@ -281,3 +281,41 @@
 
 ///NON-WEAPONS///
 /loadmod IDPD Weapon Chest/IDPD Weapon Chest
+
+///TODO///
+/loadwep comboweps/bigsword
+/loadwep comboweps/rapier
+/loadwep sniper bouncer rifle
+/loadwep sniper psy rifle
+/loadwep ultra bullet cannon
+/loadwep ultra flare gun
+/loadwep ultra claymore
+/loadwep tempest blade
+/loadwep heavy claymore
+/loadwep screecher
+/loadwep finished stuff/hot flamethrower
+/loadwep finished stuff/hot flare gun
+/loadwep finished stuff/hot dragon
+/loadwep airstrike
+/loadwep pulser
+/loadwep sticky disc gun
+/loadwep marker
+/loadwep idpd shotgun
+/loadwep inquisitor
+/loadwep split shotgun
+/loadwep big iron
+/loadwep double split shotgun
+/loadwep heavy split shotgun
+/loadwep gatling heavy split shotgun
+/loadwep steel diver
+/loadwep antiprism
+/loadwep sak
+/loadwep polygun
+/loadwep stopwatch
+/loadwep herald
+/loadwep finished stuff/andromeda launcher
+/loadwep bolt gun
+/loadwep bullet machinegun
+/loadwep energy gun
+/loadwep flare cannon
+/loadwep chainsaw

@@ -97,6 +97,7 @@ draw_sprite_ext(sprite_index, image_index, x, y,  (1.5+skill_get(17))*image_xsca
 draw_set_blend_mode(bm_normal)
 
 #define atom_destroy
+sleep(50)
 sound_play_pitch(sndPlasmaBigExplodeUpg,random_range(1.2,1.4))
 instance_create(x,y,PlasmaImpact)
 var i = random(360);

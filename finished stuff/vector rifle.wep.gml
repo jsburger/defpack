@@ -8,7 +8,7 @@ return "VECTOR RIFLE"
 #define weapon_type
 return 5
 #define weapon_cost
-return 5
+return 4
 #define weapon_area
 return 11
 #define weapon_load

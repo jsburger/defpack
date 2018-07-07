@@ -1,7 +1,8 @@
 #define init
 global.sprThundercrash = sprite_add_weapon("sprites/sprThundercrash.png", 10, 5);
-global.sprUmbrella  = sprite_add("defpack tools/sprRainDisk.png",2,14,14);
-global.mskUmbrella  = sprite_add("defpack tools/mskRainDisk.png",0,14,14);
+global.sprUmbrella     = sprite_add("defpack tools/sprRainDisk.png",2,14,14);
+global.mskUmbrella     = sprite_add("defpack tools/mskRainDisk.png",0,14,14);
+global.sprUmbrellaOrb  = sprite_add("sprites/projectiles/sprRainOrb.png",2,9,9);
 
 #define weapon_name
 return "THUNDERCRASH"
@@ -16,10 +17,10 @@ return 5;
 return false;
 
 #define weapon_load
-return 40;
+return 50;
 
 #define weapon_cost
-return 6;
+return 8;
 
 #define weapon_swap
 return sndSwapExplosive;
@@ -52,7 +53,7 @@ with instance_create(x,y,LightningHit){
 with instance_create(x,y,CustomProjectile)
 {
 	typ  = 1
-	name = "lightning cluster grenade"
+	name = "mega lightning bullet"
 	motion_add(other.gunangle+random_range(-7,7)*other.accuracy,26)
 	projectile_init(other.team,other)
 	sprite_index = global.sprUmbrella
@@ -61,56 +62,76 @@ with instance_create(x,y,CustomProjectile)
 	image_angle = direction
 	damage  = 20
 	friction = 0
-  image_speed = .5
+  force = 30
+  image_speed = 1
 	on_draw = bloom_draw
   on_step = stop_anim
+  on_wall = lightningcluster_wall
+  on_hit  = lightningcluster_hit
 	on_destroy = lightningcluster_destroy
 }
+
+#define lightningcluster_wall
+create_lightningorb()
+instance_destroy()
 
 #define stop_anim
 if image_index = 1 image_speed = 0
 
+#define lightningcluster_hit
+if projectile_canhit(other) = true
+{
+  sleep(20)
+  var _dmg = other.my_health
+  projectile_hit(other,damage,force,direction)
+  if _dmg > damage {sleep(80);instance_destroy()}
+}
+
 #define fric_step
-var _scale = random_range(.4,.6);
-image_xscale = orscale*_scale;
-image_yscale = orscale*_scale
 direction += random_range(-25,25)
-if speed <= 0{instance_destroy()}
+if speed <= 0
+{
+  instance_destroy()
+}
 
 #define bounce_wall
 move_bounce_solid(false)
 
 #define lightningcluster_destroy
+sleep(20)
 play_sound_lightning()
 with mod_script_call("mod","defpack tools","create_lightning",x+lengthdir_x(sprite_width,direction),y+lengthdir_y(sprite_width,direction)){
     projectile_init(other.team,other)
-}
-var ang = random(360);
-for var i = 0; i< 3; i++{
-	with instance_create(x+lengthdir_x(sprite_width,direction),y+lengthdir_y(sprite_width,direction),CustomProjectile){
-		name = "lightning grenade"
-		orscale = random_range(.8,1.2)
-		damage = 8
-		friction = .075
-		sprite_index = sprPopoPlasma
-		image_speed = 0
-		mask_index = mskDebris
-		motion_add(ang + 120*i,2+i)
-		projectile_init(other.team,other.creator)
-		image_angle = direction
-		on_step = fric_step
-		on_wall = bounce_wall
-		on_draw = bloom_draw_nade
-		on_destroy = lightningnade_destroy
-	}
 }
 
 #define lightningnade_destroy
 with mod_script_call("mod","defpack tools","create_lightning",x,y){
     projectile_init(other.team,other)
+    sleep(30)
 }
 play_sound_lightning()
 
+#define create_lightningorb()
+var ang = random(360);
+for var i = 0; i< 3; i++
+{
+  with instance_create(x+lengthdir_x(sprite_width,direction),y+lengthdir_y(sprite_width,direction),CustomProjectile)
+  {
+    name = "lightning orb"
+    damage = 8
+    friction = .075
+    sprite_index = global.sprUmbrellaOrb
+    image_speed = .5
+    mask_index = mskDebris
+    motion_add(ang + 120*i,2+i)
+    projectile_init(other.team,other.creator)
+    image_angle = direction
+    on_step = fric_step
+    on_wall = bounce_wall
+    on_draw = bloom_draw_nade
+    on_destroy = lightningnade_destroy
+  }
+}
 
 #define play_sound_lightning()
 sound_play_pitch(sndExplosion,2)

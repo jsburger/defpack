@@ -170,6 +170,36 @@ with TopCont
   	draw_sprite_ext(global.sprAim,0,_mx+_vpf-_offset+100,_my-_vpf+_offset-100,1,1,270,_pc,.1+.9*(charge/100))
     draw_sprite_ext(global.sprCursorCentre,0,_mx,_my,1,1,0,_pc,1)
   }
+  with instances_matching(CustomObject,"name","sniper thunder charge")
+  {
+  	if !instance_exists(creator){instance_destroy();exit}
+  	var _pc     = player_get_color(creator.index);
+      if charged = 0{if (current_frame mod 5) <= current_time_scale {if _pc != c_white {_pc = c_white}else{_pc = player_get_color(creator.index)}}}
+  	var _offset = charge;
+  	var _vpf    = 3;
+  	var _mx     = x - view_xview[creator.index];
+  	var _my     = y - view_yview[creator.index];
+  	draw_sprite_ext(global.sprAim,0,_mx-_vpf+_offset-100,_my-_vpf+_offset-100,1,1,0  ,_pc,.1+.9*(charge/100))
+  	draw_sprite_ext(global.sprAim,0,_mx-_vpf+_offset-100,_my+_vpf-_offset+100,1,1,90 ,_pc,.1+.9*(charge/100))
+  	draw_sprite_ext(global.sprAim,0,_mx+_vpf-_offset+100,_my+_vpf-_offset+100,1,1,180,_pc,.1+.9*(charge/100))
+  	draw_sprite_ext(global.sprAim,0,_mx+_vpf-_offset+100,_my-_vpf+_offset-100,1,1,270,_pc,.1+.9*(charge/100))
+    draw_sprite_ext(global.sprCursorCentre,0,_mx,_my,1,1,0,_pc,1)
+  }
+  with instances_matching(CustomObject,"name","sniper psy charge")
+  {
+  	if !instance_exists(creator){instance_destroy();exit}
+  	var _pc     = player_get_color(creator.index);
+      if charged = 0{if (current_frame mod 5) <= current_time_scale {if _pc != c_white {_pc = c_white}else{_pc = player_get_color(creator.index)}}}
+  	var _offset = charge;
+  	var _vpf    = 3;
+  	var _mx     = x - view_xview[creator.index];
+  	var _my     = y - view_yview[creator.index];
+  	draw_sprite_ext(global.sprAim,0,_mx-_vpf+_offset-100,_my-_vpf+_offset-100,1,1,0  ,_pc,.1+.9*(charge/100))
+  	draw_sprite_ext(global.sprAim,0,_mx-_vpf+_offset-100,_my+_vpf-_offset+100,1,1,90 ,_pc,.1+.9*(charge/100))
+  	draw_sprite_ext(global.sprAim,0,_mx+_vpf-_offset+100,_my+_vpf-_offset+100,1,1,180,_pc,.1+.9*(charge/100))
+  	draw_sprite_ext(global.sprAim,0,_mx+_vpf-_offset+100,_my-_vpf+_offset-100,1,1,270,_pc,.1+.9*(charge/100))
+    draw_sprite_ext(global.sprCursorCentre,0,_mx,_my,1,1,0,_pc,1)
+  }
 }
 
 #define draw_trails
@@ -1218,7 +1248,7 @@ with instance_create(_x,_y,CustomProjectile){
 	time = skill_get(17)+4
 	create_frame = current_frame
 	colors = [c_black,c_white,c_white,merge_color(c_blue,c_white,.3),c_white]
-	damage = 18
+	damage = 9
 	repeat(30){
 		with instance_create(x,y,Dust){
 			motion_set(random(360),3+random(10))
@@ -1253,8 +1283,8 @@ with instance_create(_x,_y,CustomProjectile){
 	on_wall = lightning_wall
 	on_draw = lightning_draw;
 	mask_index = sprGammaBlast
-	image_xscale = .5
-	image_yscale = .5
+	image_xscale = 2
+	image_yscale = 2
     on_destroy = lightning_destroy
 	on_step = lightning_step
 	on_hit = lightning_hit
@@ -1282,7 +1312,7 @@ draw_triangle_color(xmax,yy,xmin,yy,x,y,c_white,c_white,c_black,0)
 draw_set_blend_mode(bm_normal)
 
 #define lightning_hit
-if projectile_canhit(other){
+if projectile_canhit(other) && current_frame_active{
 	projectile_hit_push(other,damage,force)
 }
 
@@ -1330,7 +1360,7 @@ if time <= 0 instance_destroy()
 a = instance_create(x,y,CustomProjectile);
 with a
 {
-    name = "Plasmite"
+  name = "Plasmite"
 	image_speed = 0
 	image_index = 0
 	damage = 2+skill_get(17)
@@ -1354,21 +1384,24 @@ if speedset = 0
 }
 else
 {
-	if instance_exists(enemy)
+	/*if instance_exists(enemy)
 	{
 		var closeboy = instance_nearest(x,y,enemy)
 		motion_add(point_direction(x,y,closeboy.x,closeboy.y),.5+skill_get(17)*.3*current_time_scale)
-	}
+	}*/
 	if speed > maxspeed{speed = maxspeed}
 	maxspeed /= 1+(fric*current_time_scale)
 	if maxspeed <= 1+fric instance_destroy()
 }
 
 #define plasmite_wall
-instance_destroy()
+move_bounce_solid(false)
+sound_play_pitchvol(sndPlasmaHit,random_range(3,6),.3)
+with instance_create(x,y,PlasmaTrail){image_xscale = 2;image_yscale = 2}
+//instance_destroy()
 
 #define plasmite_destroy
-sound_play_pitch(sndPlasmaHit,random_range(1.55,1.63))
+sound_play_pitch(sndPlasmaHit,random_range(1.45,1.83))
 with instance_create(x,y,PlasmaImpact){image_xscale=.5;image_yscale=.5;damage = round(damage/2)}
 
 #define create_supersquare(_x,_y)
