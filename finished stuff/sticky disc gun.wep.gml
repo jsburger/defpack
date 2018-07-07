@@ -1,6 +1,6 @@
 #define init
 global.sprStickyDiscGun = sprite_add_weapon("sprStickyDiscGun.png",1,3)
-global.sprStickyDisc = sprite_add("sprStickyDisc.png",2,12,12)
+global.sprStickyDisc = sprite_add("sprStickyDisc.png",2,6,6)
 #macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)
 #define weapon_name
 return "STICKY DISC GUN"
@@ -51,7 +51,7 @@ with instance_create(x,y,CustomProjectile)
 }
 
 #define stickydisc_step
-if speed > 0 && current_frame_active {with instance_create(x,y,DiscTrail){image_xscale = 2;image_yscale = 2}}
+if speed > 0 && current_frame_active {instance_create(x,y,DiscTrail)}
 dist += current_time_scale
 if dist > 200{instance_destroy();exit}
 if instance_exists(creator) && teamswap && !place_meeting(x,y,creator){

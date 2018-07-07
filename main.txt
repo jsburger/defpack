@@ -106,6 +106,7 @@
 /loadwep rainbow machinegun
 /loadwep mega revolver
 /loadwep spy revolver
+/loadwep big iron
 /loadwep antiprism
 
 ///SHELL///
@@ -126,7 +127,6 @@
 /loadwep phlogenitator
 
 //OTHER SHELL
-/loadwep big iron
 /loadwep popper
 /loadwep super heavy slugger
 /loadwep apergig tanat
@@ -303,7 +303,6 @@
 /loadwep idpd shotgun
 /loadwep inquisitor
 /loadwep split shotgun
-/loadwep big iron
 /loadwep double split shotgun
 /loadwep heavy split shotgun
 /loadwep gatling heavy split shotgun

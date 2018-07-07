@@ -1,5 +1,5 @@
 #define init
-global.sprBigIron = sprite_add_weapon("sprites/sprBigIron.png", 3, 4);
+global.sprBigIron = sprite_add_weapon("sprites/sprBigIron.png", 3, 2);
 
 #define weapon_name
 return "BIG IRON"
@@ -8,36 +8,43 @@ return "BIG IRON"
 return global.sprBigIron;
 
 #define weapon_type
-return 2;
+return 1;
 
 #define weapon_auto
-return true;
+return false;
 
 #define weapon_load
-return 2;
+return 15;
 
 #define weapon_cost
-return 2;
+return 15;
 
 #define weapon_swap
-return sndSwapShotgun;
+return sndSwapPistol;
 
 #define weapon_area
-return 5;
+return 13;
 
 #define weapon_text
-return "WATCH OUT FOR THE RICOCHET";
+return "BIG SNEEZE";
 
 #define weapon_fire
-sound_play_pitch(sndSuperSlugger,1.6)
-with create_bullet(x+lengthdir_x(24,gunangle),y+ lengthdir_y(24,gunangle)){
-    on_destroy = shell_destroy
-    direction = other.gunangle + random_range(-5,5)*other.accuracy;
-    image_angle = direction;
-    creator = other
-    team = other.team
+weapon_post(5,0,42)
+sleep(12)
+sound_play_pitch(sndSlugger,random_range(1.3,1.6))
+sound_play_pitch(sndShotgun,random_range(.8,.9))
+sound_play_pitch(sndHeavyNader,random_range(1.3,1.4))
+sound_play_pitch(sndMachinegun,random_range(.6,.7))
+repeat(6)
+{
+  with create_bullet(x+lengthdir_x(24,gunangle),y+ lengthdir_y(24,gunangle)){
+      on_destroy = shell_destroy
+      direction = other.gunangle + random_range(-14,14)*other.accuracy;
+      image_angle = direction;
+      creator = other
+      team = other.team
+  }
 }
-
 
 #define create_bullet(_x,_y)
 with instance_create(_x,_y,CustomProjectile){
@@ -50,7 +57,7 @@ with instance_create(_x,_y,CustomProjectile){
 	sprite_index = mskNothing
 	mask_index = mskBullet2
 	force = 2
-	damage = 12
+	damage = 4
 	lasthit = -4
 	dir = 0
 	on_step 	 = sniper_step
@@ -97,11 +104,24 @@ do
 	{
 		if distance_to_object(other) <= 4
 		{
+      var _hp = my_health;
 			projectile_hit(self,other.damage,other.force,other.direction)
 			with other
 			{
+        if _hp >= damage
+        {
 			    instance_destroy()
 			    exit
+        }
+        else
+        {
+          damage--
+          if damage <= 0
+          {
+            instance_destroy()
+            exit
+          }
+        }
 			}
 		}
 	}
