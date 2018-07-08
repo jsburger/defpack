@@ -108,7 +108,7 @@ do
 			projectile_hit(self,other.damage,other.force,other.direction)
 			with other
 			{
-        if _hp >= damage
+        if _hp >= damage*3
         {
 			    instance_destroy()
 			    exit

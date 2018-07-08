@@ -285,7 +285,6 @@
 ///TODO///
 /loadwep comboweps/bigsword
 /loadwep comboweps/rapier
-/loadwep sniper bouncer rifle
 /loadwep sniper psy rifle
 /loadwep ultra bullet cannon
 /loadwep ultra flare gun
