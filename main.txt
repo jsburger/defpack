@@ -197,6 +197,7 @@
 /loadwep super flame cannon
 
 //OTHER EXPLOSIVE
+/loadwep chainsaw
 /loadwep auto grenade launcher
 /loadwep finished stuff/heavy nuke launcher
 /loadwep scorcher
@@ -316,4 +317,3 @@
 /loadwep bullet machinegun
 /loadwep energy gun
 /loadwep flare cannon
-/loadwep chainsaw

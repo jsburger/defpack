@@ -1,7 +1,6 @@
 #define init
 global.sprInquisitor  = sprite_add_weapon("sprites/Inquisitor.png", 7, 4);
-global.stripes 				= sprite_add("defpack tools/BIGstripes.png",1,1,1)
-global.SnakeIndikator = sprite_add("sprites/projectiles/Inquisitor Danger.png",0,3,11)
+
 #define weapon_name
 return "INQUISITOR"
 
@@ -40,6 +39,73 @@ if skill_get(17)=1{sound_play_pitch(sndLaserCannon,.4)}
 sound_play_pitch(sndLaserCannonUpg,1.6)
 motion_add(gunangle,-9)
 weapon_post(18,12,400)
+
+with instance_create(x,y,CustomObject)
+{
+	mask_index = sprGrenade
+	creator   = other
+	team    	= other.team
+	accuracy  = other.accuracy
+	direction = other.gunangle +random_range(-6,6)*other.accuracy
+	ammo = 20+skill_get(17)*8
+	do
+	{
+		ammo--
+		if ammo % 4 = 0 var _fork = irandom(4)+1 else var _fork = 1;
+		if fork()
+		{
+			repeat(_fork)
+			{
+				with instance_create(x,y,Laser)
+				{
+					ammo = 6+irandom(18)
+					creator = other.creator
+					image_angle = other.direction
+					team = other.team
+					//copypasted alarm0 code
+					var dir;
+					dir = 0
+					do {x += lengthdir_x(2,image_angle) y += lengthdir_y(2,image_angle) dir += 1 ammo--}
+					until place_meeting(x,y,Wall) or dir > 160 or ammo <= 0
+					image_xscale = point_distance(x,y,xstart,ystart)/2
+					instance_create(x,y,Smoke)
+					//copypaste end
+					with instance_create(x,y,PlasmaImpact)
+					{
+							team = other.team
+							creator = other.creator
+							image_xscale = .5
+							image_yscale = .5
+					}
+					other.x = x
+					other.y = y
+					if place_meeting(x,y,Wall)
+					{
+						with other
+						{
+							//direction += 180
+							var _wall = instance_nearest(other.x,other.y,Wall)
+							direction = point_direction(_wall.x,_wall.y,x,y)+ random_range(-12,12)*accuracy
+							var _floor = instance_nearest(x,y,Floor);
+							x = _floor.x
+							y = _floor.y
+						}
+					}
+					else{with other direction += random_range(-28,28)*accuracy}
+				}
+			}
+		}
+	}
+	while instance_exists(self) and ammo > 0
+	//instance_destroy()
+}
+
+
+
+
+
+
+/*
 with instance_create(x,y,CustomProjectile)
 {
 	move_contact_solid(other.gunangle,12)
