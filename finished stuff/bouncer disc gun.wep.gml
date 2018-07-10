@@ -30,7 +30,7 @@ with instance_create(x+lengthdir_x(4,gunangle),y+lengthdir_y(4,gunangle),CustomP
 {
   typ = 1
   dist = 0
-  damage = 11
+  damage = 2
   team = -10
   image_speed = .5
   name = "Bouncer Disc"
@@ -57,8 +57,8 @@ y += lengthdir_y(1,point_direction(x,y,dir.x,dir.y))}
 
 #define bouncerdisc_hit
 if other.my_health-damage>0{motion_set(point_direction(other.x,other.y,x,y),speed)}else{motion_set(random(359),speed)}
-if other.sprite_index != other.spr_hurt{projectile_hit(other, damage, 5, other.direction-180)}
-if speed < 8{speed+=.1}
+if other.sprite_index != other.spr_hurt{projectile_hit(other, damage+round(speed), 5, other.direction-180)}
+if speed < 12{speed+=.6}
 
 sound_play_pitch(sndDiscBounce,random_range(.8,1.2))
 sound_play_pitch(sndBouncerBounce,random_range(1,1))
@@ -71,7 +71,7 @@ image_angle = direction
 sound_play_pitch(sndDiscBounce,random_range(.9,1.1)+((speed/4)-1)*.2)
 sound_play_pitch(sndBouncerBounce,random_range(1,1))
 if dist > 250{instance_destroy();exit}
-if speed < 8{speed+=.13}
+if speed < 12{speed+=.6}
 
 #define bouncerdisc_destroy
 with instance_create(x,y,DiscTrail){sprite_index=sprDiscDisappear}

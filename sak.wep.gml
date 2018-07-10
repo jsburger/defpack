@@ -1,5 +1,5 @@
 #define init
-global.box = sprite_add_weapon("assemblykit.png",2,3)
+global.box = sprite_add_weapon("sprites/sprSAK.png",2,3)
 global.guys = [0,0,0,0]
 with instances_matching([CustomDraw,CustomStep],"customshell",1){
 	instance_destroy()
@@ -12,7 +12,9 @@ with script_bind_step(birdspread, 0){
 	persistent = 1
 	customshell = 1
 }
-global.sprammo = sprite_add("ammoicons.png",8,0,0)
+global.sprammo = sprite_add("sprites/sprSAKammo.png",8,0,0)
+global.sprbody = sprite_add("sprites/sprSAKbody.png",6,0,0)
+global.sprmods = sprite_add("sprites/sprSAKmods.png",9,0,0)
 global.shellbods = ["shotgun", "eraser", "flak cannon", "pop gun", "shot cannon"]
 global.slugbods = ["shotgun", "eraser", "flak cannon", "slugger", "shot cannon"]
 
@@ -64,7 +66,7 @@ a[? "assault"] = "shoot three times in a row"
 a[? "hyper"] = "instant travel with more damage"
 a[? "none"] = "no mod because i respect ammo"
 a[? "bird"] = "shoot in a forking pattern"
-a[? "wave"] = "shoot in a wave pattern" 
+a[? "wave"] = "shoot in a wave pattern"
 a[? "triple"] = "shoot three projectiles in a regular spread"
 a[? "rifle"] = "shoot three times, for only two ammo"
 a[? "super"] = "five times the projectiles"
@@ -498,7 +500,7 @@ if is_object(w){
 return global.box
 
 #define weapon_text
-return "Gunlocker, eat your heart out"
+return choose("Gunlocker, eat your heart out","essence of shell")
 
 #define birdspread
 with instances_matching_ne(projectile,"birdspeed",null){
@@ -626,5 +628,5 @@ w.name = string_replace(w.name, "none ", "")
 w.name = string_replace(w.name, "shell ", "")
 if w.info[2] = "slugger" w.name = string_replace(w.name, "slug ", "")
 
-
-
+#define weapon_reloaded
+return-4;

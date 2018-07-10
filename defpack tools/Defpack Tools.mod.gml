@@ -512,7 +512,7 @@ with (c){
 	lasthit = -4
 	recycle_amount = 0
 	image_speed = 1
-	damage = 3
+	damage = 2
 	falloff = 1
 	fallofftime = current_frame + 2
 	timer = 5 + irandom(4)

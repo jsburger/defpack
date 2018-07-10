@@ -45,7 +45,7 @@ if !instance_exists(creator){instance_destroy();exit}
 				sound_play_pitch(sndJackHammer,random_range(1.6,1.8))
 				weapon_post(-6 - (6*skill_get(13)),6,0)
 			}
-			instance_create(x+lengthdir_x(6+(6*skill_get(13)),other.creator.gunangle),y+lengthdir_y(6+(6*skill_get(13)),other.creator.gunangle),Smoke)
+			if irandom(3) < current_time_scale instance_create(x+lengthdir_x(6+(6*skill_get(13)),other.creator.gunangle),y+lengthdir_y(6+(6*skill_get(13)),other.creator.gunangle),Smoke)
 			sprite_index = mskNone
 			canfix = false
 			force = 0
@@ -69,13 +69,42 @@ if !instance_exists(creator){instance_destroy();exit}
 #define chainsawshank_hit
 if projectile_canhit(other) = true
 {
-	instance_create((other.x+x)/2,(other.y+y)/2,AllyDamage)
+	view_shake_at(x,y,9)
+	sleep(3)
+	var _splat = -4;
+	_splat = determine_gore(other)
+  with instance_create((other.x+x)/2,(other.y+y)/2,_splat){image_angle = random(360)}
 	projectile_hit(other,damage,force,direction)
+}
+#define determine_gore(_id)
+switch object_get_name(_id.object_index)
+{
+	//ROBOT BLEEDERS
+	case "SnowBot"  : return SmokeOLD;
+	//LIGHTNING BLEEDERS
+	case "LightningCrystal"  : return LightningSpawn;
+	// BIG BLEEDERS
+	case "JungleFly"  : return BloodGamble;
+	case "BigMaggot"  : return BloodGamble;
+	case "BanditBoss" : return BloodGamble;
+	//BIG GREEN BLEEDERS
+	case "Scorpion" 		: return AcidStreak;
+	case "GoldScorpion" : return AcidStreak;
+	case "GoldScorpion" : return AcidStreak;
+	// ULTRA BOYS
+	case "EnemyHorror"      : return ScorpionBulletHit;
+	case "CrownGuardianOld" : return ScorpionBulletHit;
+	case "CrownGuardian"    : return ScorpionBulletHit;
+	case "Guardian"         : return ScorpionBulletHit;
+	case "GhostGuardian"    : return ScorpionBulletHit;
+	case "ExploGuardian"    : return ScorpionBulletHit;
+	case "DogGuardian"      : return ScorpionBulletHit;
+	default : return AllyDamage;break;
 }
 #define weapon_sprt
 return global.sprChainsaw
 #define weapon_text
-return "SLAY"
+return "RIP AND TEAR"
 #define anim_destroy
 instance_destroy()
 #define chainsawshank_step
