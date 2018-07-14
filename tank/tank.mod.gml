@@ -77,7 +77,7 @@ with Player if "tankthings" in self && driving{
         }
 }
 
-if button_pressed(0,"horn") tank_create(mouse_x,mouse_y)
+if button_pressed(0,"horn") tank_create(mouse_x[0],mouse_y[0])
 
 #define tankbeginstep
 if doortime > 0 {doortime -=1}
