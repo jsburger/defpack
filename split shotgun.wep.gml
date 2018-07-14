@@ -14,7 +14,7 @@ return 1;
 return false;
 
 #define weapon_load
-return 15;
+return 19;
 
 #define weapon_cost
 return 2;
@@ -33,7 +33,7 @@ return "MORE @ySHELL @sPER @ySHELL";
 weapon_post(6,0,19)
 sound_play_pitch(sndShotgun,random_range(1.3,1.5))
 sound_play_pitch(sndSlugger,random_range(1.3,1.5))
-repeat(3){
+repeat(4){
 	with mod_script_call("mod","defpack tools","create_split_shell",x,y){
 		creator = other
 		team = other.team

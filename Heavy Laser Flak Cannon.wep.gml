@@ -1,6 +1,6 @@
 #define init
 global.sprHeavyLaserFlakCannon = sprite_add_weapon("sprites/sprHeavyLaserFlakCannon.png", 8, 6);
-global.sprHeavyLaserFlakBullet = sprite_add("defpack tools/sprHeavyLaserFlak.png",2, 14, 14);
+global.sprHeavyLaserFlakBullet = sprite_add("defpack tools/sprHeavyLaserFlak.png",2, 12, 12);
 
 #define weapon_name
 return "HEAVY LASER FLAK CANNON";
@@ -53,6 +53,7 @@ else
 }
 with mod_script_call("mod","defpack tools","create_laser_flak",x,y)
 {
+	name = "Heavy Laser Flak"
 	creator = other
 	move_contact_solid(other.gunangle,8)
 	motion_add(other.gunangle+random_range(-14,14)*other.accuracy,16)

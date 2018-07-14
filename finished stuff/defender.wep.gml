@@ -45,13 +45,14 @@ sound_play_pitch(sndUltraShotgun,random_range(1.2,1.5))
 sound_play_pitch(sndDogGuardianLand,random_range(.3,.5))
 sound_play_pitch(sndGuardianFire,random_range(.6,.8))
 sound_play_pitch(sndBasicUltra,random_range(1.6,1.7))
-weapon_post(8,-5,18)
+weapon_post(8,-5,26)
 var i = 1;
 var j = 1;
 repeat(3)
 {
 	repeat(clamp(i,1,2))
 	{
+		sleep(2)
 		with instance_create(x,y,CustomSlash)
 		{
 			move_contact_solid(other.gunangle,2)
@@ -95,12 +96,16 @@ if place_meeting(x + hspeed,y +vspeed,Wall){sound_play_hit(sndHitWall,.2)}
 if !instance_exists(self){instance_destroy();exit}
 if team != other.team
 {
+	sleep(4)
+	sound_play_pitchvol(sndShielderDeflect,random_range(1.8,2.2),.6)
+	view_shake_at(x,y,4)
 	with other{instance_destroy()}
 	pierce--
 	if pierce < 0{instance_destroy()}
 }
 
 #define def_hit
+view_shake_at(x,y,8)
 projectile_hit(other, damage, force, direction)
 instance_destroy()
 

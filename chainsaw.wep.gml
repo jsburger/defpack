@@ -1,5 +1,6 @@
 #define init
 global.sprChainsaw = sprite_add_weapon("sprites/sprChainsaw.png",0,3)
+global.sprMiniAmmo = sprite_add("sprites/sprMiniAmmo.png",7,3,3)
 #define weapon_name
 return "CHAINSAW"
 #define weapon_type
@@ -75,12 +76,21 @@ if projectile_canhit(other) = true
 	_splat = determine_gore(other)
   with instance_create((other.x+x)/2,(other.y+y)/2,_splat){image_angle = random(360)}
 	projectile_hit(other,damage,force,direction)
+	if other.my_health <= 0
+	{
+		sleep(other.size * 60)
+		view_shake_at(x,y,other.size * 50)
+		repeat(other.size)
+		{
+			with instance_create(other.x,other.y,AmmoPickup){num = .2;sprite_index = global.sprMiniAmmo}
+		}
+	}
 }
 #define determine_gore(_id)
 switch object_get_name(_id.object_index)
 {
 	//ROBOT BLEEDERS
-	case "SnowBot"  : return SmokeOLD;
+	case "SnowBot"  : return AllyDamage;
 	//LIGHTNING BLEEDERS
 	case "LightningCrystal"  : return LightningSpawn;
 	// BIG BLEEDERS
