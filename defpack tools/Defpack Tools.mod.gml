@@ -1,30 +1,30 @@
 #define init
-global.sprPsyBullet = sprite_add("Psy Bullet.png", 2, 8, 8)
-global.mskPsyBullet = sprite_add("Psy Bullet Mask.png", 0, 7, 3)
-global.sprPsyBulletHit = sprite_add("Psy Bullet Hit.png", 4, 8, 8)
+global.sprPsyBullet = sprite_add("Psy Bullet.png", 2, 8, 8);
+global.mskPsyBullet = sprite_add("Psy Bullet Mask.png", 0, 7, 3);
+global.sprPsyBulletHit = sprite_add("Psy Bullet Hit.png", 4, 8, 8);
 global.sprPsyPellet = sprite_add("Psy Pellet.png", 2, 8, 8);
 global.sprPsyPelletDisappear = sprite_add("Psy Pellet Disappear.png", 5, 8, 8);
 global.sprMagPellet = sprite_add("Magnet Pellet.png", 2, 8, 8);
 global.sprMagPelletDisappear = sprite_add("Magnet Pellet Dissapear.png", 5, 8, 8);
 global.sprHeavyMagPellet = sprite_add("Heavy Magnet Pellet.png", 2, 9, 9);
 global.sprHeavyMagPelletDisappear = sprite_add("Heavy Magnet Pellet Dissapear.png", 5, 9, 8);
-global.sprLightningBullet = sprite_add("Lightning Bullet.png", 2, 8, 8)
-global.sprLightningBulletUpg = sprite_add("sprThunderBulletUpg.png", 2, 8, 8)
-global.sprLightningBulletHit = sprite_add("Lightning Bullet Hit.png", 4, 8, 8)
-global.sprToxicBullet = sprite_add("Toxic Bullet.png", 2, 8, 8)
-global.sprToxicBulletHit = sprite_add("Toxic Bullet Hit.png", 4, 8, 8)
-global.sprFireBullet = sprite_add("Fire Bullet.png", 2, 8, 8)
-global.sprFireBulletHit = sprite_add("Fire Bullet Hit.png", 4, 8, 8)
-global.sprDarkBullet = sprite_add("Dark Bullet.png", 2, 8, 8)
-global.mskDarkBullet = sprite_add("Dark Bullet Mask.png", 0, 2.5, 4.5)
-global.sprDarkBulletHit = sprite_add("Dark Bullet Hit.png", 4, 8, 8)
-global.sprLightBullet = sprite_add("Light Bullet.png", 2, 8, 8)
-global.sprLightBulletHit = sprite_add("Light Bullet Hit.png", 4, 8, 8)
+global.sprLightningBullet = sprite_add("Lightning Bullet.png", 2, 8, 8);
+global.sprLightningBulletUpg = sprite_add("sprThunderBulletUpg.png", 2, 8, 8);
+global.sprLightningBulletHit = sprite_add("Lightning Bullet Hit.png", 4, 8, 8);
+global.sprToxicBullet = sprite_add("Toxic Bullet.png", 2, 8, 8);
+global.sprToxicBulletHit = sprite_add("Toxic Bullet Hit.png", 4, 8, 8);
+global.sprFireBullet = sprite_add("Fire Bullet.png", 2, 8, 8);
+global.sprFireBulletHit = sprite_add("Fire Bullet Hit.png", 4, 8, 8);
+global.sprDarkBullet = sprite_add("Dark Bullet.png", 2, 8, 8);
+global.mskDarkBullet = sprite_add("Dark Bullet Mask.png", 0, 2.5, 4.5);
+global.sprDarkBulletHit = sprite_add("Dark Bullet Hit.png", 4, 8, 8);
+global.sprLightBullet = sprite_add("Light Bullet.png", 2, 8, 8);
+global.sprLightBulletHit = sprite_add("Light Bullet Hit.png", 4, 8, 8);
 
-global.sprPlasmite    = sprite_add("sprPlasmite.png",0,3,3)
-global.sprPlasmiteUpg = sprite_add("sprPlasmiteUpg.png",0,3,3)
+global.sprPlasmite    = sprite_add("sprPlasmite.png",0,3,3);
+global.sprPlasmiteUpg = sprite_add("sprPlasmiteUpg.png",0,3,3);
 
-global.sprRocklet = sprite_add("sprRocklet.png",2,1,6)
+global.sprRocklet = sprite_add("sprRocklet.png",2,1,6);
 
 global.sprSonicExplosion = sprite_add("Soundwave_strip8.png",8,61,59);
 global.mskSonicExplosion = sprite_add("mskSonicExplosion_strip9.png",9,32,32);
@@ -32,12 +32,14 @@ global.mskSonicExplosion = sprite_add("mskSonicExplosion_strip9.png",9,32,32);
 global.sprGenShell      = sprite_add("sprGenShell.png",7, 2, 2);
 global.sprGenShellLong  = sprite_add("sprGenShellL.png",7, 2, 3);
 global.sprGenShellBig   = sprite_add("sprGenShellXL.png",7, 3, 3);
-global.stripes = sprite_add("BIGstripes.png",1,1,1)
+global.stripes = sprite_add("BIGstripes.png",1,1,1);
 
-global.sprSquare = sprite_add("sprSquare.png", 0, 7, 7)
-global.mskSquare = sprite_add("mskSquare.png",0,5,5)
-global.sprSuperSquare = sprite_add("sprSuperSquare.png", 0, 14, 14)
-global.mskSuperSquare = sprite_add("mskSuperSquare.png",0,10,10)
+global.sprSquare = sprite_add("sprSquare.png", 0, 7, 7);
+global.mskSquare = sprite_add("mskSquare.png",0,5,5);
+global.sprSuperSquare = sprite_add("sprSuperSquare.png", 0, 14, 14);
+global.mskSuperSquare = sprite_add("mskSuperSquare.png",0,10,10);
+
+global.sprTriangle = sprite_add("sprTriangle.png",0,7,7);
 
 global.sprLaserFlakBullet = sprite_add("sprLaserFlak.png",2, 7, 7);
 
@@ -186,6 +188,21 @@ with TopCont
     draw_sprite_ext(global.sprCursorCentre,0,_mx,_my,1,1,0,_pc,1)
   }
   with instances_matching(CustomObject,"name","sniper psy charge")
+  {
+  	if !instance_exists(creator){instance_destroy();exit}
+  	var _pc     = player_get_color(creator.index);
+      if charged = 0{if (current_frame mod 5) <= current_time_scale {if _pc != c_white {_pc = c_white}else{_pc = player_get_color(creator.index)}}}
+  	var _offset = charge;
+  	var _vpf    = 3;
+  	var _mx     = x - view_xview[creator.index];
+  	var _my     = y - view_yview[creator.index];
+  	draw_sprite_ext(global.sprAim,0,_mx-_vpf+_offset-100,_my-_vpf+_offset-100,1,1,0  ,_pc,.1+.9*(charge/100))
+  	draw_sprite_ext(global.sprAim,0,_mx-_vpf+_offset-100,_my+_vpf-_offset+100,1,1,90 ,_pc,.1+.9*(charge/100))
+  	draw_sprite_ext(global.sprAim,0,_mx+_vpf-_offset+100,_my+_vpf-_offset+100,1,1,180,_pc,.1+.9*(charge/100))
+  	draw_sprite_ext(global.sprAim,0,_mx+_vpf-_offset+100,_my-_vpf+_offset-100,1,1,270,_pc,.1+.9*(charge/100))
+    draw_sprite_ext(global.sprCursorCentre,0,_mx,_my,1,1,0,_pc,1)
+  }
+  with instances_matching(CustomObject,"name","sniper bouncer charge")
   {
   	if !instance_exists(creator){instance_destroy();exit}
   	var _pc     = player_get_color(creator.index);
@@ -497,7 +514,7 @@ with (c){
 	lasthit = -4
 	recycle_amount = 0
 	image_speed = 1
-	damage = 3
+	damage = 2
 	falloff = 1
 	fallofftime = current_frame + 2
 	timer = 5 + irandom(4)
@@ -1411,7 +1428,7 @@ with a
 	size = 4
 	friction = .3
 	bounce = 5+skill_get(17)*2
-	damage = 3
+	damage = 2
 	image_xscale = 1+skill_get(17)*.3
 	image_yscale = 1+skill_get(17)*.3
 	force = 12
@@ -1431,6 +1448,48 @@ with a
 }
 return a;
 
+#define create_triangle(_x,_y)
+var a = instance_create(_x,_y,CustomProjectile);
+with a
+{
+  typ = 1
+  name = "triangle"
+  size = 1
+  friction = 1.3
+  damage = 5
+  image_xscale = 1.2
+  image_yscale = 1.2
+  sprite_index = global.sprTriangle
+  image_angle = direction - 45
+  on_step    = triangle_step
+  on_wall    = triangle_wall
+  on_destroy = triangle_destroy
+}
+return a;
+
+#define triangle_step
+if friction > speed{instance_destroy()}
+
+#define triangle_wall
+instance_destroy()
+
+#define triangle_destroy
+sleep(2)
+view_shake_at(x,y,8)
+sound_play_pitchvol(sndPlasmaHit,random_range(2,3),.4)
+var i = direction - 90;
+repeat(3)
+{
+  with instance_create(x,y,Laser)
+	{
+	  creator = other.creator
+    team = other.team
+		image_angle = i
+		event_perform(ev_alarm,0)
+	}
+  i += 90
+}
+
 #define create_square(_x,_y)
 var a = instance_create(_x,_y,CustomProjectile);
 with a
@@ -1440,11 +1499,11 @@ with a
 	size = 1
 	friction = .3
 	bounce = 7+skill_get(17)*3
-	damage = 2
+	damage = 1
 	minspeed = 2
-	image_xscale = 1+skill_get(17)*.3
-	image_yscale = 1+skill_get(17)*.3
-	force = 6
+	image_xscale = 1+skill_get(17)*.2
+	image_yscale = 1+skill_get(17)*.2
+	force = 1
 	iframes = 0
 	anglefac = random_range(0.8,2.5)
 	fac = choose(1,-1)
@@ -1481,7 +1540,7 @@ with instance_create(x,y,PlasmaImpact){team = other.team;image_xscale=1.5;image_
 
 #define square_hit
 with other motion_add(point_direction(other.x,other.y,x,y),other.size)
-if speed > minspeed && projectile_canhit_melee(other) = true{projectile_hit(other, round(5*damage), force, direction)}else{hitframes += 1;projectile_hit(other, damage, force, direction)};
+if speed > minspeed && projectile_canhit_melee(other) = true{projectile_hit(other, round(2*damage), force, direction)}else{hitframes += 1;projectile_hit(other, damage, force, direction)};
 
 #define square_draw
 draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, image_yscale, image_angle, image_blend, 1.0);
@@ -1491,7 +1550,11 @@ draw_set_blend_mode(bm_normal);
 
 #define square_wall
 move_bounce_solid(1)
+sound_play_pitchvol(sndPlasmaHit,random_range(2,4),.3)
+repeat(3) with instance_create(x,y,PlasmaTrail){image_index = 0;image_speed = .5;motion_add(other.direction+random_range(-30,30),random_range(6,8))}
 if speed <= minspeed bounce--
+sleep(size * 5)
+view_shake_at(x,y,size * 5)
 
 #define square_step
 if speed > 2
@@ -1511,12 +1574,31 @@ with instance_create(x+random_range(-8,8)+lengthdir_x(sprite_width/2,direction-1
 	image_xscale += skill_get(17)/2
 	image_yscale = image_xscale
 }
+with Laser
+{
+  if team = other.team
+  {
+    if place_meeting(x,y,other)
+    {
+      var _i = direction;
+      with other
+      {
+        motion_add(other.direction,2/size)
+        repeat(3) with instance_create(x,y,PlasmaTrail)
+        {
+          motion_add(_i+choose(0,180),random_range(3,8))
+        }
+      }
+    }
+  }
+}
 if iframes <= 0
 {
 	with EnergyShank
 	{
 		if place_meeting(x,y,other)
 		{
+      sleep(10)
 				with instance_create(other.x,other.y,GunGun){image_index=2}
 				if other.speed <20{with other{direction=other.direction;speed=9}}
 				sound_play_pitch(sndPlasmaBigExplode,1.4)
@@ -1529,6 +1611,7 @@ if iframes <= 0
 	{
 		if place_meeting(x,y,other)
 		{
+      sleep(20)
 				with instance_create(other.x,other.y,GunGun){image_index=2}
 				with other{direction=other.direction;speed=12}
 				sound_play_pitch(sndPlasmaBigExplode,1.4)
@@ -1541,6 +1624,7 @@ if iframes <= 0
 	{
 		if place_meeting(x,y,other)
 		{
+      sleep(40)
 				with instance_create(other.x,other.y,GunGun){image_index=2}
 				with other{direction=other.direction;speed=17}
 				sound_play_pitch(sndPlasmaBigExplode,1.4)
@@ -1550,17 +1634,166 @@ if iframes <= 0
 		}
 	}
 }
+if place_meeting(x,y,PlasmaBall) || place_meeting(x,y,PopoPlasmaBall)
+{
+  if team = other.team
+  {
+    with other
+    {
+      repeat(8)
+      {
+        with create_plasmite(x,y)
+        {
+          creator = other.creator
+          team = other.team
+          motion_add(other.direction+random_range(-140,140),random_range(12,16))
+        }
+      }
+      repeat(4)
+      {
+        with create_plasmite(x,y)
+        {
+          creator = other.creator
+          team = other.team
+          motion_add(other.direction+random_range(-20,20),random_range(16,20))
+        }
+      }
+      instance_destroy();exit
+    }
+  }
+}
+if place_meeting(x,y,PlasmaBig)
+{
+  if team = other.team
+  {
+    with other
+    {
+      repeat(10)
+      {
+        with create_plasmite(x,y)
+        {
+          creator = other.creator
+          team = other.team
+          motion_add(other.direction+random_range(-140,140),random_range(14,18))
+        }
+      }
+      repeat(5)
+      {
+        with create_plasmite(x,y)
+        {
+          creator = other.creator
+          team = other.team
+          motion_add(other.direction+random_range(-20,20),random_range(16,20))
+        }
+      }
+      instance_destroy();exit
+    }
+  }
+}
+if place_meeting(x,y,PlasmaHuge)
+{
+  if team = other.team
+  {
+    with other
+    {
+      repeat(12)
+      {
+        with create_plasmite(x,y)
+        {
+          creator = other.creator
+          team = other.team
+          motion_add(other.direction+random_range(-140,140),random_range(16,20))
+        }
+      }
+      repeat(6)
+      {
+        with create_plasmite(x,y)
+        {
+          creator = other.creator
+          team = other.team
+          motion_add(other.direction+random_range(-20,20),random_range(16,20))
+        }
+      }
+      instance_destroy();exit
+    }
+  }
+}
 else{iframes-=current_time_scale}
 if speed < minspeed speed = minspeed
 if speed > 16 speed = 16
 image_angle += speed * anglefac * fac * current_time_scale
+with instances_matching(CustomProjectile,"name","Plasmite")
+{
+	if place_meeting(x,y,other)
+	{
+    other.speed += 1/other.size
+		motion_add(point_direction(other.x,other.y,x,y),random_range(8,10))
+    sound_play_pitchvol(sndPlasmaHit,random_range(3,6),.3)
+    with instance_create(x,y,PlasmaTrail){image_xscale = 2;image_yscale = 2}
+	}
+}
+with instances_matching(CustomProjectile,"name","Laser Flak") || instances_matching(CustomProjectile,"name","Heavy Laser Flak")
+{
+	if place_meeting(x,y,other)
+	{
+    sound_play_pitchvol(sndPlasmaBigExplode,random_range(3,6),.3)
+    repeat(12) with instance_create(x,y,PlasmaTrail){image_index = 0;image_speed = .5;motion_add(other.direction+random_range(-120,120),random_range(9,12))}
+    with other
+    {
+      var i = direction + 90;
+      repeat(2)
+      {
+        with create_triangle(x,y)
+        {
+          creator = other.creator
+          team = other.team
+          motion_add(i,12)
+          if direction > 180 turn = -1 else turn = 1
+          image_angle = direction - 45
+        }
+        i += 180
+      }
+      instance_destroy()
+      exit
+    }
+	}
+}
 with instances_matching(CustomProjectile,"name","square")
 {
 	if place_meeting(x,y,other)
 	{
-		motion_add(point_direction(other.x,other.y,x,y),7*(other.size/size))
+		motion_add(random(360),7*(other.size/size))
+    repeat(6) with instance_create(x,y,PlasmaTrail){image_index = 0;image_speed = .5;motion_add(other.direction+random_range(-60,60),random_range(9,12))}
 		sound_play_pitch(sndPlasmaHit,random_range(.9,1.1))
-		with instance_create(x,y,PlasmaImpact){team = other.team}
+		with instance_create(x,y,PlasmaImpact){team = other.team;instance_create(x+random_range(-8,8),y+random_range(-8,8),Smoke)}
+	}
+}
+with instances_matching(CustomProjectile,"name","plasmite cannon")
+{
+	if place_meeting(x,y,other)
+	{
+		ammo += 5*other.size
+    repeat(5*other.size)
+	  {
+  		mod_script_call("weapon","plasmite cannon","create_electron")
+	  }
+    repeat(3*other.size) with instance_create(x,y,PlasmaTrail){image_index = 0;image_speed = .5;motion_add(other.direction+random_range(-140,140),random_range(9,12))}
+    repeat(8*other.size)
+    {
+      with create_plasmite(x,y)
+      {
+        creator = other.creator
+        team = other.team
+        motion_add(other.direction+random_range(-140,140),random_range(16,20))
+      }
+    }
+		sound_play_pitch(sndPlasmaHit,random_range(.9,1.1))
+		with instance_create(x,y,PlasmaImpact){team = other.team;instance_create(x+random_range(-8,8),y+random_range(-8,8),Smoke)}
+    with other
+    {
+      instance_destroy()
+      exit
+    }
 	}
 }
 if bounce <= 0 instance_destroy()

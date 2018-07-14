@@ -21,7 +21,7 @@ return 1
 #define weapon_laser_sight
 return 0
 #define weapon_text
-return "AHAHAHAHAHAHAHAHAHA";
+return "HEH";
 #define weapon_fire
 
 weapon_post(7,1,32+skill_get(17)*12)
@@ -37,6 +37,7 @@ else
 }
 with instance_create(x,y,CustomProjectile)
 {
+	name = "plasmite cannon"
 	move_contact_solid(other.gunangle,12)
 	creator = other
 	team = other.team
@@ -53,28 +54,31 @@ with instance_create(x,y,CustomProjectile)
 	on_wall 	 = mb_wall
 	on_destroy = atom_destroy
 	on_draw 	 = atom_draw
-	repeat(6)
-	{
-		with instance_create(x,y,CustomProjectile)
-		{
-			creator = other
-			team = other.team
-			image_speed = 0
-			image_index = 0
-			damage = 2+skill_get(17)
-			sprite_index = sprPlasmaTrail
-			fric = random_range(.1,.2)
-			motion_set(other.direction+random_range(-30,30),random_range(12,19))
-			speedset = 1
-			maxspeed = 7
-			radius = random_range(.6,1)
-			target = other
-			on_step 	 = mbs_step
-			on_wall 	 = mb_wall
-			on_destroy = mb_destroy
-		}
-	}
+	repeat(6){create_electron()}
 }
+
+#define create_electron()
+var _a = instance_create(x,y,CustomProjectile)
+
+with _a
+{
+	creator = other
+	team = other.team
+	image_speed = 0
+	image_index = 0
+	damage = 2+skill_get(17)
+	sprite_index = sprPlasmaTrail
+	fric = random_range(.1,.2)
+	motion_set(other.direction+random_range(-30,30),random_range(12,19))
+	speedset = 1
+	maxspeed = 7
+	radius = random_range(.6,1)
+	target = other
+	on_step 	 = mbs_step
+	on_wall 	 = mb_wall
+	on_destroy = mb_destroy
+}
+return _a;
 
 #define atom_step
 image_angle = direction

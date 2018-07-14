@@ -29,8 +29,18 @@ return 12;
 return choose("PLAY TETRIS");
 
 #define weapon_fire
-if skill_get(17){sound_play(sndPlasmaUpg)}else{sound_play(sndPlasma)}
-weapon_post(4,-5,7)
+sound_play_pitch(sndSlugger,random_range(1.8,2))
+if skill_get(17) = true
+{
+	sound_play_pitchvol(sndDevastatorUpg,random_range(1.8,2),.4)
+	sound_play_pitchvol(sndPlasmaRifleUpg,random_range(1.3,1.5),.5)
+}
+else
+{
+	sound_play_pitchvol(sndDevastator,random_range(1.8,2),.4)
+	sound_play_pitchvol(sndPlasmaRifle,random_range(1.3,1.5),.5)
+}
+weapon_post(5,-5,18)
 with mod_script_call("mod","defpack tools","create_square",x,y)
 {
 	move_contact_solid(other.gunangle,8)

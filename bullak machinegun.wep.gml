@@ -14,7 +14,7 @@ return 1;
 return true;
 
 #define weapon_load
-return 12;
+return 8;
 
 #define weapon_cost
 return 10;
@@ -37,4 +37,4 @@ sound_play_pitch(sndFlakCannon,random_range(.6,.8))
 sound_play_pitch(sndHeavyNader,random_range(1.6,1.8))
 weapon_post(4,-4,11)
 mod_script_call("mod","defpack tools", "shell_yeah_big", 100, 12, 4+random(1), c_yellow)
-mod_script_call("mod", "defpack tools 2","create_flak",0,14,13,0,Bullet1,irandom_range(4,5),id)
+mod_script_call("mod", "defpack tools 2","create_flak",0,14,13,0,Bullet1,3,id)

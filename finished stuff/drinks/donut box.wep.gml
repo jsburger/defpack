@@ -26,9 +26,10 @@ return 0
 if is_object(w){
     if w.wep = mod_current{
         if w.ammo > 0{
-            if my_health < maxhealth  {my_health+=1;w.ammo--;with instance_create(x,y,PopupText){target = other.index;text = "+1 HEALTH"}}else{with instance_create(x,y,PopupText){target = other.index;text = "MAX HEALTH"}}
+            if my_health < maxhealth  {my_health+=1;w.ammo--;sound_play_pitch(sndHPPickup,random_range(.8,1.2)+.2);with instance_create(x,y,PopupText){target = other.index;text = "+1 HEALTH"}}else{with instance_create(x,y,PopupText){target = other.index;text = "MAX HEALTH"}}
         }else
         {
+            sound_play_pitch(sndEnemySlash,random_range(1,1.3))
             with instance_create(x,y,ThrownWep)
             {
               sprite_index = global.sprDonutBoxEmpty

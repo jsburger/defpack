@@ -1,5 +1,5 @@
 #define init
-global.box = sprite_add_weapon("assemblykit.png",2,3)
+global.box = sprite_add_weapon("sprites/sprSAK.png",2,3)
 global.guys = [0,0,0,0]
 with instances_matching([CustomDraw,CustomStep],"customshell",1){
 	instance_destroy()
@@ -12,9 +12,153 @@ with script_bind_step(birdspread, 0){
 	persistent = 1
 	customshell = 1
 }
-global.sprammo = sprite_add("ammoicons.png",8,0,0)
+global.sprammo = sprite_add("sprites/sprSAKammo.png",8,0,0)
+global.sprbody = sprite_add("sprites/sprSAKbody.png",6,0,0)
+global.sprmods = sprite_add("sprites/sprSAKmods.png",9,0,0)
 global.shellbods = ["shotgun", "eraser", "flak cannon", "pop gun", "shot cannon"]
 global.slugbods = ["shotgun", "eraser", "flak cannon", "slugger", "shot cannon"]
+
+//epic gunsprite action
+///REGULAR///
+global.sprShotgun 	     = sprShotgun
+global.sprDoubleShotgun  = sprSuperShotgun
+global.sprSawnOffShotgun = sprSawnOffShotgun
+global.sprAutoShotgun    = sprAutoShotgun
+global.sprAssaultShotgun = sprite_add_weapon("sprites/sak/sprAssaultShotgun.png",8,4)
+global.sprHyperShotgun   = sprite_add_weapon("sprites/sak/sprHyperShotgun.png",6,6)
+
+global.sprFlakCannon      = sprFlakCannon
+global.sprSuperFlakCannon = sprSuperFlakCannon
+global.sprAutoFlakCannon  = sprite_add_weapon("sprites/sak/sprAutoFlakCannon.png",3,5)
+global.sprHyperFlakCannon = sprite_add_weapon("sprites/sak/sprHyperFlakCannon.png",7,8)
+
+global.sprShotCannon 			= sprite_add_weapon("sprites/sak/sprShotCannon.png",6,6)
+global.sprSuperShotCannon = sprite_add_weapon("sprites/sak/sprSuperShotCannon.png",7,7)
+global.sprAutoShotCannon  = sprite_add_weapon("sprites/sak/sprAutoShotCannon.png",5,5)
+global.sprHyperShotCannon = sprite_add_weapon("sprites/sak/sprHyperShotCannon.png",6,9)
+
+global.sprEraser 		    = sprEraser
+global.sprAutoEraser    = sprite_add_weapon("sprites/sak/sprAutoEraser.png",8,5)
+global.sprAssaultEraser = sprite_add_weapon("sprites/sak/sprAssaultEraser.png",9,5)
+global.sprBird          = sprite_add_weapon("sprites/sak/sprBird.png",8,6)
+global.sprWaveGun       = sprWaveGun
+global.sprHyperEraser   = sprite_add_weapon("sprites/sak/sprHyperEraser.png",7,7)
+
+global.sprPopGun 			  = sprPopGun
+global.sprTriplePopGun  = sprite_add_weapon("sprites/sak/sprTriplePopGun.png",9,7)
+global.sprPopRifle      = sprPopRifle
+global.sprHyperPopGun   = sprite_add_weapon("sprites/sak/sprHyperPopGun.png",7,6)
+
+///PSY///
+global.sprPsyShotgun 	      = sprite_add_weapon("sprites/sak/sprPsyShotgun.png",7,6)
+global.sprDoublePsyShotgun  = sprite_add_weapon("sprites/sak/sprDoublePsyShotgun.png",8,6)
+global.sprSawnOffPsyShotgun = sprite_add_weapon("sprites/sak/sprSawedOffPsyShotgun.png",8,6)
+global.sprAutoPsyShotgun    = sprite_add_weapon("sprites/sak/sprAutoPsyShotgun.png",7,3)
+global.sprAssaultPsyShotgun = sprite_add_weapon("sprites/sak/sprAutoPsyShotgun.png",7,5)
+global.sprHyperPsyShotgun   = sprite_add_weapon("sprites/sak/sprHyperPsyShotgun.png",7,6)
+
+global.sprPsyFlakCannon  		 = sprite_add_weapon("sprites/sak/sprPsyFlakCannon.png",4,6)
+global.sprSuperPsyFlakCannon = sprite_add_weapon("sprites/sak/sprSuperPsyFlakCannon.png",6,7)
+global.sprAutoPsyFlakCannon  = sprite_add_weapon("sprites/sak/sprAutoPsyFlakCannon.png",4,6)
+global.sprHyperPsyFlakCannon = sprite_add_weapon("sprites/sak/sprHyperPsyFlakCannon.png",8,6)
+
+global.sprPsyShotCannon 		 = sprite_add_weapon("sprites/sak/sprPsyShotCannon.png",8,6)
+global.sprSuperPsyShotCannon = sprite_add_weapon("sprites/sak/sprSuperPsyShotCannon.png",7,7)
+global.sprAutoPsyShotCannon  = sprite_add_weapon("sprites/sak/sprAutoPsyShotCannon.png",6,8)
+global.sprHyperPsyShotCannon = sprite_add_weapon("sprites/sak/sprHyperPsyShotCannon.png",6,8)
+
+global.sprPsyEraser        = sprite_add_weapon("sprites/sak/sprHyperPsyShotCannon.png",6,8)
+global.sprAutoPsyEraser    = sprite_add_weapon("sprites/sak/sprAutoPsyEraser.png",6,5)
+global.sprAssaultPsyEraser = sprite_add_weapon("sprites/sak/sprAssaultPsyEraser.png",8,6)
+global.sprPsyBird					 = sprite_add_weapon("sprites/sak/sprPsyBird.png",6,8)
+global.sprPsyWaveGun       = sprite_add_weapon("sprites/sak/sprPsyWaveGun.png",7,6)
+global.sprHyperPsyEraser   = sprite_add_weapon("sprites/sak/sprHyperPsyEraser.png",7,7)
+
+global.sprPsyPopGun				 = sprite_add_weapon("sprites/sak/sprPsyPopGun.png",6,3)
+global.sprTriplePsyPopGun  = sprite_add_weapon("sprites/sak/sprTriplePsyPopGun.png",6,6)
+global.sprAssaultPsyPopGun = sprite_add_weapon("sprites/sak/sprAssaultPsyPopGun.png",6,5)
+global.sprPsyPopRifle    	 = sprite_add_weapon("sprites/sak/sprHyperPsyPopGun.png",6,4)
+
+///SPLIT SHELL///
+global.sprSplitShotgun 				= sprite_add_weapon("sprites/sak/sprSplitShotgun.png",6,5)
+global.sprDoubleSplitShotgun  = sprite_add_weapon("sprites/sak/sprDoubleSplitShotgun.png",6,6)
+global.sprSawnOffSplitShotgun = sprite_add_weapon("sprites/sak/sprSawedOffSplitShotgun.png",6,6)
+global.sprAutoSplitShotgun    = sprite_add_weapon("sprites/sak/sprAutoSplitShotgun.png",7,4)
+global.sprAssaultSplitShotgun = sprite_add_weapon("sprites/sak/sprAssaultSplitShotgun.png",9,4)
+global.sprHyperSplitShotgun   = sprite_add_weapon("sprites/sak/sprHyperSplitShotgun.png",7,6)
+
+global.sprSplitFlakCannon			 = sprite_add_weapon("sprites/sak/sprSplitFlakCannon.png",4,86)
+global.sprSuperSplitFlakCannon = sprite_add_weapon("sprites/sak/sprSuperSplitFlakCannon.png",5,8)
+global.sprAutoSplitFlakCannon  = sprite_add_weapon("sprites/sak/sprAutoSplitFlakCannon.png",5,6)
+global.sprHyperSplitFlakCannon = sprite_add_weapon("sprites/sak/sprHyperSplitFlakCannon.png",9,6)
+
+global.sprSplitShotCannon 		 = sprite_add_weapon("sprites/sak/sprSplitShotCannon.png",7,6)
+global.sprSuperSplitShotCannon = sprite_add_weapon("sprites/sak/sprSuperSplitShotCannon.png",8,7)
+global.sprAutoSplitShotCannon  = sprite_add_weapon("sprites/sak/sprAutoSplitShotCannon.png",5,6)
+global.sprHyperSplitShotCannon = sprite_add_weapon("sprites/sak/sprHyperSplitShotCannon.png",5,7)
+
+global.sprSplitEraser 			 = sprite_add_weapon("sprites/sak/sprAutoSplitEraser.png",10,5)
+global.sprAutoSplitEraser    = sprite_add_weapon("sprites/sak/sprAutoSplitEraser.png",8,5)
+global.sprAssaultSplitEraser = sprite_add_weapon("sprites/sak/sprAssaultSplitEraser.png",8,5)
+global.sprSplitBird					 = sprite_add_weapon("sprites/sak/sprSplitBird.png",6,7)
+global.sprSplitWaveGun			 = sprite_add_weapon("sprites/sak/sprSplitWaveGun.png",6,7)
+global.sprHyperSplitEraser   = sprite_add_weapon("sprites/sak/sprHyperSplitEraser.png",7,7)
+
+global.sprSplitPopGun			 	 = sprite_add_weapon("sprites/sak/sprSplitPopGun.png",6,4)
+global.sprTripleSplitPopGun	 = sprite_add_weapon("sprites/sak/sprTripleSplitPopGun.png",8,6)
+global.sprSplitPopRifle 		 = sprite_add_weapon("sprites/sak/sprAssaultSplitPopGun.png",7,4)
+global.sprHyperSplitPopGun	 = sprite_add_weapon("sprites/sak/sprHyperSplitPopGun.png",6,6)
+
+///FLAME SHELLS///
+global.sprFlameShotgun  		  = sprFlameShotgun
+global.sprDoubleFlameShotgun  = sprDoubleFlameShotgun
+global.sprSawnOffFlameShotgun = sprite_add_weapon("sprites/sak/sprSawedOffFlameShotgun.png",6,5)
+global.sprAutoFlameShotgun    = sprAutoFlameShotgun
+global.sprAssaultFlameShotgun = sprite_add_weapon("sprites/sak/sprAssaultFlameShotgun.png",6,4)
+global.sprHyperFlameShotgun   = sprite_add_weapon("sprites/sak/sprHyperFlameShotgun.png",6,5)
+
+global.sprFlameFlakCannon 		 = sprite_add_weapon("sprites/sak/sprFlameFlakCannon.png",4,6)
+global.sprSuperFlameFlakCannon = sprite_add_weapon("sprites/sak/sprSuperFlameFlakCannon.png",5,8)
+global.sprAutoFlameFlakCannon  = sprite_add_weapon("sprites/sak/sprAutoFlameFlakCannon.png",4,5)
+global.sprHyperFlameFlakCannon = sprite_add_weapon("sprites/sak/sprHyperFlameFlakCannon.png",5,7)
+
+global.sprFlameShotCannon 		 = sprite_add_weapon("sprites/sak/sprFlameShotCannon.png",7,6)
+global.sprSuperFlameShotCannon = sprite_add_weapon("sprites/sak/sprSuperFlameShotCannon.png",8,7)
+global.sprAutoFlameShotCannon  = sprite_add_weapon("sprites/sak/sprAutoFlameShotCannon.png",7,5)
+global.sprHyperFlameShotCannon = sprite_add_weapon("sprites/sak/sprHyperFlameShotCannon.png",7,7)
+
+global.sprFlameEraser 			 = sprite_add_weapon("sprites/sak/sprFlameEraser.png",7,6)
+global.sprAutoFlameEraser    = sprite_add_weapon("sprites/sak/sprAutoFlameEraser.png",7,5)
+global.sprAssaultFlameEraser = sprite_add_weapon("sprites/sak/sprAssaultFlameEraser.png",7,6)
+global.sprPhoenix						 = sprite_add_weapon("sprites/sak/sprPhoenix.png",6,5)
+global.sprFlameWaveGun 			 = sprite_add_weapon("sprites/sak/sprFlameWaveGun.png",5,7)
+global.sprHyperFlameEraser	 = sprite_add_weapon("sprites/sak/sprHyperFlameEraser.png",8,6)
+
+global.sprFlamePopGun 			 = sprite_add_weapon("sprites/sak/sprFlamePopGun.png",6,5)
+global.sprTripleFlamePopGun  = sprite_add_weapon("sprites/sak/sprFlamePopGun.png",8,8)
+global.sprFlamePopRifle 	   = sprite_add_weapon("sprites/sak/sprFlamePopRifle.png",9,5)
+global.sprHyperFlamePopGun   = sprite_add_weapon("sprites/sak/sprHyperFlamePopGun.png",7,6)
+
+///ULTRA SHELLS///
+/*global.
+global.
+global.
+global.
+global.
+global.
+global.
+global.
+global.
+global.
+global.
+global.
+global.
+global.
+global.
+global.
+global.
+global.
+*/
 
 makethechoices()
 makethetexts()
@@ -64,7 +208,7 @@ a[? "assault"] = "shoot three times in a row"
 a[? "hyper"] = "instant travel with more damage"
 a[? "none"] = "no mod because i respect ammo"
 a[? "bird"] = "shoot in a forking pattern"
-a[? "wave"] = "shoot in a wave pattern" 
+a[? "wave"] = "shoot in a wave pattern"
 a[? "triple"] = "shoot three projectiles in a regular spread"
 a[? "rifle"] = "shoot three times, for only two ammo"
 a[? "super"] = "five times the projectiles"
@@ -498,7 +642,7 @@ if is_object(w){
 return global.box
 
 #define weapon_text
-return "Gunlocker, eat your heart out"
+return choose("Gunlocker, eat your heart out","essence of shell")
 
 #define birdspread
 with instances_matching_ne(projectile,"birdspeed",null){
@@ -626,5 +770,5 @@ w.name = string_replace(w.name, "none ", "")
 w.name = string_replace(w.name, "shell ", "")
 if w.info[2] = "slugger" w.name = string_replace(w.name, "slug ", "")
 
-
-
+#define weapon_reloaded
+return-4;

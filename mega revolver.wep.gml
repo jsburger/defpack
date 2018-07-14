@@ -33,6 +33,7 @@ return "replace me please"
 
 #define weapon_fire
 weapon_post(7,0,28)
+sleep(5)
 motion_add(gunangle-180,3)
 mod_script_call("mod","defpack tools", "shell_yeah_big", 100, 12, 4+random(1), c_yellow)
 sound_play_pitch(sndSawedOffShotgun,random_range(.6,.7))

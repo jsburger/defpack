@@ -1,4 +1,4 @@
-#define init
+ #define init
 global.sprEnergyGun = sprite_add_weapon("sprites/Energy Gun.png", 5, 2);
 
 #define weapon_name
@@ -95,7 +95,7 @@ with lightning_create(x,y,12,gunangle+random_range(-10,10)){
         on_draw = lightning_draw;
         on_hit = lightning_hit;
         on_anim = lightning_anim;
-        
+
         timer = 5
 
         return id;
