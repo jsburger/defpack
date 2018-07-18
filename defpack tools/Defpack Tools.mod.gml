@@ -131,7 +131,9 @@ with TopCont
   {
   	if !instance_exists(creator){instance_destroy();exit}
   	var _pc     = player_get_color(creator.index);
-      if charged = 0{if (current_frame mod 5) <= current_time_scale {if _pc != c_white {_pc = c_white}else{_pc = player_get_color(creator.index)}}}
+    var _p      = 5;
+    if holdtime < 2 * 30 _p = 3
+    if charged = 0{if (current_frame mod _p) <= current_time_scale {if _p < 5{sound_play_pitch(sndCursedReminder,5)};if _pc != c_white {_pc = c_white}else{_pc = player_get_color(creator.index)}}}
   	var _offset = charge;
   	var _vpf    = 3;
   	var _mx     = x - view_xview[creator.index];
@@ -146,7 +148,9 @@ with TopCont
   {
   	if !instance_exists(creator){instance_destroy();exit}
   	var _pc     = player_get_color(creator.index);
-      if charged = 0{if (current_frame mod 5) <= current_time_scale {if _pc != c_white {_pc = c_white}else{_pc = player_get_color(creator.index)}}}
+    var _p      = 5;
+    if holdtime < 2 * 30 _p = 3
+    if charged = 0{if (current_frame mod _p) <= current_time_scale {if _p < 5{sound_play_pitch(sndCursedReminder,5)};if _pc != c_white {_pc = c_white}else{_pc = player_get_color(creator.index)}}}
   	var _offset = charge;
   	var _vpf    = 3;
   	var _mx     = x - view_xview[creator.index];
@@ -161,7 +165,9 @@ with TopCont
   {
   	if !instance_exists(creator){instance_destroy();exit}
   	var _pc     = player_get_color(creator.index);
-      if charged = 0{if (current_frame mod 5) <= current_time_scale {if _pc != c_white {_pc = c_white}else{_pc = player_get_color(creator.index)}}}
+    var _p      = 5;
+    if holdtime < 2 * 30 _p = 3
+    if charged = 0{if (current_frame mod _p) <= current_time_scale {if _p < 5{sound_play_pitch(sndCursedReminder,5)};if _pc != c_white {_pc = c_white}else{_pc = player_get_color(creator.index)}}}
   	var _offset = charge;
   	var _vpf    = 3;
   	var _mx     = x - view_xview[creator.index];
@@ -176,7 +182,9 @@ with TopCont
   {
   	if !instance_exists(creator){instance_destroy();exit}
   	var _pc     = player_get_color(creator.index);
-      if charged = 0{if (current_frame mod 5) <= current_time_scale {if _pc != c_white {_pc = c_white}else{_pc = player_get_color(creator.index)}}}
+    var _p      = 5;
+    if holdtime < 2 * 30 _p = 3
+    if charged = 0{if (current_frame mod _p) <= current_time_scale {if _p < 5{sound_play_pitch(sndCursedReminder,5)};if _pc != c_white {_pc = c_white}else{_pc = player_get_color(creator.index)}}}
   	var _offset = charge;
   	var _vpf    = 3;
   	var _mx     = x - view_xview[creator.index];
@@ -191,7 +199,9 @@ with TopCont
   {
   	if !instance_exists(creator){instance_destroy();exit}
   	var _pc     = player_get_color(creator.index);
-      if charged = 0{if (current_frame mod 5) <= current_time_scale {if _pc != c_white {_pc = c_white}else{_pc = player_get_color(creator.index)}}}
+    var _p      = 5;
+    if holdtime < 2 * 30 _p = 3
+    if charged = 0{if (current_frame mod _p) <= current_time_scale {if _p < 5{sound_play_pitch(sndCursedReminder,5)};if _pc != c_white {_pc = c_white}else{_pc = player_get_color(creator.index)}}}
   	var _offset = charge;
   	var _vpf    = 3;
   	var _mx     = x - view_xview[creator.index];
@@ -206,7 +216,9 @@ with TopCont
   {
   	if !instance_exists(creator){instance_destroy();exit}
   	var _pc     = player_get_color(creator.index);
-      if charged = 0{if (current_frame mod 5) <= current_time_scale {if _pc != c_white {_pc = c_white}else{_pc = player_get_color(creator.index)}}}
+    var _p      = 5;
+    if holdtime < 2 * 30 _p = 3
+    if charged = 0{if (current_frame mod _p) <= current_time_scale {if _p < 5{sound_play_pitch(sndCursedReminder,5)};if _pc != c_white {_pc = c_white}else{_pc = player_get_color(creator.index)}}}
   	var _offset = charge;
   	var _vpf    = 3;
   	var _mx     = x - view_xview[creator.index];
@@ -1540,7 +1552,7 @@ with instance_create(x,y,PlasmaImpact){team = other.team;image_xscale=1.5;image_
 
 #define square_hit
 with other motion_add(point_direction(other.x,other.y,x,y),other.size)
-if speed > minspeed && projectile_canhit_melee(other) = true{projectile_hit(other, round(2*damage), force, direction)}else{hitframes += 1;projectile_hit(other, damage, force, direction)};
+if speed > minspeed && projectile_canhit_melee(other) = true{projectile_hit(other, round(2*damage), force, direction)}else{hitframes += other.size;projectile_hit(other, damage, force, direction)};
 
 #define square_draw
 draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, image_yscale, image_angle, image_blend, 1.0);

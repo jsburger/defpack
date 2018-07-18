@@ -26,14 +26,15 @@ return 0
 if is_object(w){
     if w.wep = mod_current{
         if w.ammo > 0{
-            if my_health < maxhealth  {my_health+=1;w.ammo--;sound_play_pitch(sndHPPickup,random_range(.8,1.2)+.2);with instance_create(x,y,PopupText){target = other.index;text = "+1 HEALTH"}}else{with instance_create(x,y,PopupText){target = other.index;text = "MAX HEALTH"}}
+            if skill_get(9) = true{var _hp = 2}else{var _hp = 1}//second stomach synergy
+            if my_health <= maxhealth - _hp  {my_health+=_hp;w.ammo--;if _hp = 1{sound_play_pitch(sndHPPickup,random_range(.8,1.2)+.2)}else{sound_play_pitch(sndHPPickupBig,random_range(.8,1.2)+.2)};with instance_create(x,y,PopupText){target = other.index;text = "+1 HEALTH"}}else{with instance_create(x,y,PopupText){target = other.index;text = "MAX HEALTH"}}
         }else
         {
             sound_play_pitch(sndEnemySlash,random_range(1,1.3))
             with instance_create(x,y,ThrownWep)
             {
               sprite_index = global.sprDonutBoxEmpty
-              speed = 3
+              speed = 4
               wep = other.wep
               creator = other
               team = other.team
@@ -49,14 +50,14 @@ if is_object(w){
 else{
     wep = {
         wep: mod_current,
-        ammo: 12
+        ammo: 6
     }
 }
 #define weapon_sprt(w)
 if instance_is(self,WepPickup) && !is_object(w){
     wep = {
         wep: mod_current,
-        ammo: 12
+        ammo: 6
     }
 }
 if is_object(w){if w.ammo > 0{return global.sprDonutBox}else{return global.sprDonutBoxEmpty}}else{return global.sprDonutBox}

@@ -97,7 +97,7 @@ if !instance_exists(self){instance_destroy();exit}
 if team != other.team
 {
 	sleep(4)
-	sound_play_pitchvol(sndShielderDeflect,random_range(1.8,2.2),.6)
+	sound_play_pitchvol(sndShielderDeflect,random_range(1.8,2.2),.4)
 	view_shake_at(x,y,4)
 	with other{instance_destroy()}
 	pierce--

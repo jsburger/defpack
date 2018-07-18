@@ -49,6 +49,7 @@ with instance_create(x,y,CustomObject)
 	charge  = 0
 	acc     = other.accuracy
 	charged = 1
+	holdtime = 5 * 30
 	depth = TopCont.depth
 	undef = view_pan_factor[creator.index]
 	on_step 	 = snipercharge_step
@@ -77,6 +78,7 @@ if charged = 0
 	{
 		motion_add(random(360),random_range(2,3))
 	}
+	holdtime -= current_time_scale
 }
 view_pan_factor[creator.index] = 2.1+charged/10
 sound_play_pitchvol(sndFlameCannonLoop,10-charge/10,1)
@@ -84,7 +86,7 @@ sound_play_gun(sndFootOrgSand4,999999999999999999999999999999999999999999999999,
 x = mouse_x[creator.index]
 y = mouse_y[creator.index]
 for (var i=0; i<maxp; i++){player_set_show_cursor(creator.index,i,0)}
-if button_check(creator.index, btn) = false
+if button_check(creator.index, btn) = false || holdtime <= 0
 {
     sound_stop(sndFlameCannonLoop)
 	sound_play_gun(sndFootOrgSand4,999999999999999999999999999999999999999999999999,1)

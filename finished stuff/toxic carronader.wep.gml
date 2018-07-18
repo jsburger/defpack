@@ -34,7 +34,7 @@ repeat(4) with instance_create(x+2,y+4,Dust){
 }
 
 #define weapon_fire
-weapon_post(6,0,32)
+weapon_post(6,0,52)
 sound_play_pitch(sndToxicBoltGas,.7)
 sound_play_pitch(sndToxicBarrelGas,1.4)
 sound_play_pitch(sndToxicLauncher,random_range(.46,.54))

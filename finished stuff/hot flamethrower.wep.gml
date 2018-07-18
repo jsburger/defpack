@@ -49,14 +49,28 @@ var _load = weapon_get_load(argument0);
 
 	 // Flames:
 	repeat(_load) if(instance_exists(self)){
-		repeat(3) with instance_create(x,y,Flame){
+		repeat(4) with instance_create(x,y,CustomProjectile){
 			move_contact_solid(other.gunangle, 6);
-			sprite_index = sprFireLilHunter
-			motion_add(other.gunangle + (random_range(-2, 2) * other.accuracy), 10 + random(2));
-			hitid = [sprite_index, "Hot Flame"];
-			damage = 5
+			sprite_index = sprFishBoost
+			image_angle = random(360)
+			motion_add(other.gunangle + (random_range(-43, 43) * other.accuracy),random_range(8,14));
+			hitid = [sprite_index, "Water"];
+			damage = 2
+			image_speed = .5
 			team = other.team;
 			creator = other;
+			on_anim 	 = water_anim
+			on_wall 	 = water_wall
+			on_destroy = water_destroy
 		}
 		wait 1;
 	}
+
+#define water_anim
+instance_destroy()
+
+#define water_wall
+move_bounce_solid(false)
+
+#define water_destroy
+with instance_create(x,y,RainSplash){image_angle = other.direction + 90}

@@ -43,7 +43,8 @@ if !instance_exists(creator){instance_destroy();exit}
 		{
 			with other.creator
 			{
-				sound_play_pitch(sndJackHammer,random_range(1.6,1.8))
+				sound_play_pitch(sndJackHammer,random_range(1.8,2))
+				sound_play_pitch(sndSwapMotorized,random_range(1.5,1.6))
 				weapon_post(-6 - (6*skill_get(13)),6,0)
 			}
 			if irandom(3) < current_time_scale instance_create(x+lengthdir_x(6+(6*skill_get(13)),other.creator.gunangle),y+lengthdir_y(6+(6*skill_get(13)),other.creator.gunangle),Smoke)
@@ -89,8 +90,48 @@ if projectile_canhit(other) = true
 #define determine_gore(_id)
 switch object_get_name(_id.object_index)
 {
+	//FEATHER BLEEDERS
+	case "Raven" : return Feather;
+	//CURSED BLEEDERS
+	case "InvSpider"  		 : return Curse;
+	case "InvCrystal"      : return Curse;
+	case "InvLaserCrystal" : return Curse;
+	//CRYSTAL BLEEDERS
+	case "LaserCrystal" : return Hammerhead;
+	case "HyperCrystal" : return Hammerhead;
+	case "CrystalProp"  : return Hammerhead;
+	case "Spider"			  : return Hammerhead;
+	case "RhinoFreak"	  : return Hammerhead;
+	//WHITE BLEEDERS
+	case "YVStatue" : return MeleeHitWall;
+	case "BigSkull" : return MeleeHitWall;
+	case "SnowMan"  : return MeleeHitWall;
 	//ROBOT BLEEDERS
-	case "SnowBot"  : return AllyDamage;
+	case "SnowBot"       : return Smoke;
+	case "SnowTank"      : return Smoke;
+	case "GolTank"       : return Smoke;
+	case "Barrel"   		 : return Smoke;
+	case "OasisBarrel"   : return Smoke;
+	case "ToxicBarrel"   : return Smoke;
+	case "Wolf"          : return Smoke;
+	case "StreetLight"   : return Smoke;
+	case "SodaMachine"   : return Smoke;
+	case "Hydrant"		   : return Smoke;
+	case "Turret"	       : return Smoke;
+	case "TechnoMancer"  : return Smoke;
+	case "Terminal"      : return Smoke;
+	case "MutantTube"    : return Smoke;
+	case "DogMissile"    : return Smoke;
+	case "Sniper"        : return Smoke;
+	case "Car"         	 : return Smoke;
+	case "Pipe"        	 : return Smoke;
+	case "Anchor" 		 	 : return Smoke;
+	case "WaterMine"	 	 : return Smoke;
+	case "VenuzTV"     	 : return Smoke;
+	case "CarVenus"			 : return Smoke;
+	case "CarVenus2"		 : return Smoke;
+	case "CarVenusFixed" : return Smoke;
+	case "Van"					 : return Smoke;
 	//LIGHTNING BLEEDERS
 	case "LightningCrystal"  : return LightningSpawn;
 	// BIG BLEEDERS
