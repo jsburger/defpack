@@ -127,102 +127,30 @@ if fork()
 #define draw_gui
 with TopCont
 {
-  with instances_matching(CustomObject,"name","sniper charge")
-  {
-  	if !instance_exists(creator){instance_destroy();exit}
-  	var _pc     = player_get_color(creator.index);
-      if charged = 0{if (current_frame mod 5) <= current_time_scale {if _pc != c_white {_pc = c_white}else{_pc = player_get_color(creator.index)}}}
-  	var _offset = charge;
-  	var _vpf    = 3;
-  	var _mx     = x - view_xview[creator.index];
-  	var _my     = y - view_yview[creator.index];
-  	draw_sprite_ext(global.sprAim,0,_mx-_vpf+_offset-100,_my-_vpf+_offset-100,1,1,0  ,_pc,.1+.9*(charge/100))
-  	draw_sprite_ext(global.sprAim,0,_mx-_vpf+_offset-100,_my+_vpf-_offset+100,1,1,90 ,_pc,.1+.9*(charge/100))
-  	draw_sprite_ext(global.sprAim,0,_mx+_vpf-_offset+100,_my+_vpf-_offset+100,1,1,180,_pc,.1+.9*(charge/100))
-  	draw_sprite_ext(global.sprAim,0,_mx+_vpf-_offset+100,_my-_vpf+_offset-100,1,1,270,_pc,.1+.9*(charge/100))
-      draw_sprite_ext(global.sprCursorCentre,0,_mx,_my,1,1,0,_pc,1)
-  }
-  with instances_matching(CustomObject,"name","sniper pest charge")
-  {
-  	if !instance_exists(creator){instance_destroy();exit}
-  	var _pc     = player_get_color(creator.index);
-      if charged = 0{if (current_frame mod 5) <= current_time_scale {if _pc != c_white {_pc = c_white}else{_pc = player_get_color(creator.index)}}}
-  	var _offset = charge;
-  	var _vpf    = 3;
-  	var _mx     = x - view_xview[creator.index];
-  	var _my     = y - view_yview[creator.index];
-  	draw_sprite_ext(global.sprAim,0,_mx-_vpf+_offset-100,_my-_vpf+_offset-100,1,1,0  ,_pc,.1+.9*(charge/100))
-  	draw_sprite_ext(global.sprAim,0,_mx-_vpf+_offset-100,_my+_vpf-_offset+100,1,1,90 ,_pc,.1+.9*(charge/100))
-  	draw_sprite_ext(global.sprAim,0,_mx+_vpf-_offset+100,_my+_vpf-_offset+100,1,1,180,_pc,.1+.9*(charge/100))
-  	draw_sprite_ext(global.sprAim,0,_mx+_vpf-_offset+100,_my-_vpf+_offset-100,1,1,270,_pc,.1+.9*(charge/100))
-    draw_sprite_ext(global.sprCursorCentre,0,_mx,_my,1,1,0,_pc,1)
-  }
-  with instances_matching(CustomObject,"name","sniper fire charge")
-  {
-  	if !instance_exists(creator){instance_destroy();exit}
-  	var _pc     = player_get_color(creator.index);
-      if charged = 0{if (current_frame mod 5) <= current_time_scale {if _pc != c_white {_pc = c_white}else{_pc = player_get_color(creator.index)}}}
-  	var _offset = charge;
-  	var _vpf    = 3;
-  	var _mx     = x - view_xview[creator.index];
-  	var _my     = y - view_yview[creator.index];
-  	draw_sprite_ext(global.sprAim,0,_mx-_vpf+_offset-100,_my-_vpf+_offset-100,1,1,0  ,_pc,.1+.9*(charge/100))
-  	draw_sprite_ext(global.sprAim,0,_mx-_vpf+_offset-100,_my+_vpf-_offset+100,1,1,90 ,_pc,.1+.9*(charge/100))
-  	draw_sprite_ext(global.sprAim,0,_mx+_vpf-_offset+100,_my+_vpf-_offset+100,1,1,180,_pc,.1+.9*(charge/100))
-  	draw_sprite_ext(global.sprAim,0,_mx+_vpf-_offset+100,_my-_vpf+_offset-100,1,1,270,_pc,.1+.9*(charge/100))
-    draw_sprite_ext(global.sprCursorCentre,0,_mx,_my,1,1,0,_pc,1)
-  }
-  with instances_matching(CustomObject,"name","sniper thunder charge")
-  {
-  	if !instance_exists(creator){instance_destroy();exit}
-  	var _pc     = player_get_color(creator.index);
-      if charged = 0{if (current_frame mod 5) <= current_time_scale {if _pc != c_white {_pc = c_white}else{_pc = player_get_color(creator.index)}}}
-  	var _offset = charge;
-  	var _vpf    = 3;
-  	var _mx     = x - view_xview[creator.index];
-  	var _my     = y - view_yview[creator.index];
-  	draw_sprite_ext(global.sprAim,0,_mx-_vpf+_offset-100,_my-_vpf+_offset-100,1,1,0  ,_pc,.1+.9*(charge/100))
-  	draw_sprite_ext(global.sprAim,0,_mx-_vpf+_offset-100,_my+_vpf-_offset+100,1,1,90 ,_pc,.1+.9*(charge/100))
-  	draw_sprite_ext(global.sprAim,0,_mx+_vpf-_offset+100,_my+_vpf-_offset+100,1,1,180,_pc,.1+.9*(charge/100))
-  	draw_sprite_ext(global.sprAim,0,_mx+_vpf-_offset+100,_my-_vpf+_offset-100,1,1,270,_pc,.1+.9*(charge/100))
-    draw_sprite_ext(global.sprCursorCentre,0,_mx,_my,1,1,0,_pc,1)
-  }
-  with instances_matching(CustomObject,"name","sniper psy charge")
-  {
-  	if !instance_exists(creator){instance_destroy();exit}
-  	var _pc     = player_get_color(creator.index);
-      if charged = 0{if (current_frame mod 5) <= current_time_scale {if _pc != c_white {_pc = c_white}else{_pc = player_get_color(creator.index)}}}
-  	var _offset = charge;
-  	var _vpf    = 3;
-  	var _mx     = x - view_xview[creator.index];
-  	var _my     = y - view_yview[creator.index];
-  	draw_sprite_ext(global.sprAim,0,_mx-_vpf+_offset-100,_my-_vpf+_offset-100,1,1,0  ,_pc,.1+.9*(charge/100))
-  	draw_sprite_ext(global.sprAim,0,_mx-_vpf+_offset-100,_my+_vpf-_offset+100,1,1,90 ,_pc,.1+.9*(charge/100))
-  	draw_sprite_ext(global.sprAim,0,_mx+_vpf-_offset+100,_my+_vpf-_offset+100,1,1,180,_pc,.1+.9*(charge/100))
-  	draw_sprite_ext(global.sprAim,0,_mx+_vpf-_offset+100,_my-_vpf+_offset-100,1,1,270,_pc,.1+.9*(charge/100))
-    draw_sprite_ext(global.sprCursorCentre,0,_mx,_my,1,1,0,_pc,1)
-  }
-  with instances_matching(CustomObject,"name","sniper bouncer charge")
-  {
-  	if !instance_exists(creator){instance_destroy();exit}
-  	var _pc     = player_get_color(creator.index);
-      if charged = 0{if (current_frame mod 5) <= current_time_scale {if _pc != c_white {_pc = c_white}else{_pc = player_get_color(creator.index)}}}
-  	var _offset = charge;
-  	var _vpf    = 3;
-  	var _mx     = x - view_xview[creator.index];
-  	var _my     = y - view_yview[creator.index];
-  	draw_sprite_ext(global.sprAim,0,_mx-_vpf+_offset-100,_my-_vpf+_offset-100,1,1,0  ,_pc,.1+.9*(charge/100))
-  	draw_sprite_ext(global.sprAim,0,_mx-_vpf+_offset-100,_my+_vpf-_offset+100,1,1,90 ,_pc,.1+.9*(charge/100))
-  	draw_sprite_ext(global.sprAim,0,_mx+_vpf-_offset+100,_my+_vpf-_offset+100,1,1,180,_pc,.1+.9*(charge/100))
-  	draw_sprite_ext(global.sprAim,0,_mx+_vpf-_offset+100,_my-_vpf+_offset-100,1,1,270,_pc,.1+.9*(charge/100))
-    draw_sprite_ext(global.sprCursorCentre,0,_mx,_my,1,1,0,_pc,1)
-  }
+    with instances_matching(CustomObject,"name","sniper charge","sniper pest charge","sniper fire charge","sniper thunder charge","sniper psy charge", "sniper bouncer charge")
+    {
+        if !instance_exists(creator){instance_destroy();exit}
+        draw_set_visible_all(0)
+        draw_set_visible(creator.index,1)
+        var _pc     = player_get_color(creator.index);
+        if charged = 0{if (current_frame mod 5) <= current_time_scale {if _pc != c_white {_pc = c_white}else{_pc = player_get_color(creator.index)}}}
+        var _offset = charge;
+        var _vpf    = 3;
+        var _mx     = x - view_xview[creator.index];
+        var _my     = y - view_yview[creator.index];
+        draw_sprite_ext(global.sprAim,0,_mx-_vpf+_offset-100,_my-_vpf+_offset-100,1,1,0  ,_pc,.1+.9*(charge/100))
+        draw_sprite_ext(global.sprAim,0,_mx-_vpf+_offset-100,_my+_vpf-_offset+100,1,1,90 ,_pc,.1+.9*(charge/100))
+        draw_sprite_ext(global.sprAim,0,_mx+_vpf-_offset+100,_my+_vpf-_offset+100,1,1,180,_pc,.1+.9*(charge/100))
+        draw_sprite_ext(global.sprAim,0,_mx+_vpf-_offset+100,_my-_vpf+_offset-100,1,1,270,_pc,.1+.9*(charge/100))
+        draw_sprite_ext(global.sprCursorCentre,0,_mx,_my,1,1,0,_pc,1)
+    }
 }
+draw_set_visible_all(1)
 
 #define draw_trails
 surface_set_target(global.trailsf)
 draw_set_blend_mode(bm_subtract)
-draw_set_alpha(.15)
+draw_set_alpha(.2)
 draw_set_color_write_enable(0,0,0,1)
 draw_rectangle(0,0,surface_get_width(global.trailsf),surface_get_height(global.trailsf),0)
 draw_set_blend_mode(bm_normal)

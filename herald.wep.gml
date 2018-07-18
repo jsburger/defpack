@@ -11,12 +11,117 @@ with script_bind_draw(vignette,-10){
 	persistent = 1
 	name = mod_current
 }
+with script_bind_draw(meteordraw,-12){
+	global.drawer2 = id
+	persistent = 1
+	name = mod_current
+}
+
+global.noise = sprite_add("sprites/noise.png",1,1,1)
+global.sf = surface_create(game_width,game_height)
 
 global.sounds = [sndExplosion,sndExplosionL,sndExplosionXL]
 
 
 global.pink = make_color_rgb(252,59,82)
 
+//shader in brackets so i can hide it{
+global.sh = shader_create(
+	"/// Vertex Shader ///
+
+	struct VertexShaderInput
+	{
+		float4 vPosition : POSITION;
+		float2 vTexcoord : TEXCOORD0;
+	};
+
+	struct VertexShaderOutput
+	{
+		float4 vPosition : SV_POSITION;
+		float2 vTexcoord : TEXCOORD0;
+	};
+
+	uniform float4x4 matrix_world_view_projection;
+
+	VertexShaderOutput main(VertexShaderInput INPUT)
+	{
+		VertexShaderOutput OUT;
+
+		OUT.vPosition = mul(matrix_world_view_projection, INPUT.vPosition); // (x,y,z,w)
+		OUT.vTexcoord = INPUT.vTexcoord;
+
+		return OUT;
+	}
+	",
+
+
+	"/// Fragment/Pixel Shader ///
+	
+
+	struct PixelShaderInput
+	{
+		float2 vTexcoord : TEXCOORD0;
+	};
+
+	sampler2D s0; // Get Sprite Being Drawn
+	sampler2D s1;
+	uniform float frame : register(c0);
+
+
+	float4 main(PixelShaderInput INPUT) : SV_TARGET
+	{
+		 // Get Pixel's Color:
+		float4 MyColor = tex2D(s0, INPUT.vTexcoord); // (r,g,b,a)
+
+		 // Break Down MyColor:
+		float R = MyColor.r; // Red   (0.0 - 1.0)
+		float G = MyColor.g; // Green (0.0 - 1.0)
+		float B = MyColor.b; // Blue  (0.0 - 1.0)
+        float L = (0.299 * R + 0.587 * G + 0.114 * B);
+        float tolerance = .9;
+        
+		// bloom
+		{
+			
+			float ill = 0;
+			
+    		float Radius = 10.0;
+    		float Precision = 0.05;
+    		float num = Radius/Precision;
+			for(float dist = 1.0; dist < Radius; dist += Precision){
+			    float4 nCol = tex2D(s0, INPUT.vTexcoord + float2((floor(dist) * cos((dist - floor(dist)) * 2 * 3.14159))/" + string(game_width) + ".0, (floor(dist) * sin((dist - floor(dist)) * 2 * 3.14159))/" + string(game_height) + ".0));
+			    if(nCol.r == 0.0){
+			        ill += (1-sqrt(INPUT.vTexcoord.y))*10;
+			    };
+			}
+			
+			  return float4(R,G,B,min(MyColor.a,1-ill/num));  
+		}
+	}
+");
+//}
+
+
+while(1){
+    if !instance_exists(global.drawer){
+        with script_bind_draw(vignette,-10){
+        	global.drawer = id
+        	persistent = 1
+        	name = mod_current
+        }
+    }
+    if !instance_exists(global.drawer2){
+        with script_bind_draw(meteordraw,-12){
+        	global.drawer2 = id
+        	persistent = 1
+        	name = mod_current
+        }
+    }
+    wait(0)
+}
+
+#define cleanup
+with instances_matching(CustomDraw,"name",mod_current) instance_destroy()
 #define weapon_name
 if instance_is(self,Player) || instance_is(self,PopupText) || instance_is(self,WepPickup) return `@(color:${merge_color(c_red,c_black,random_range(.2,.5))})THE HERALD`
 return "THE HERALD"
@@ -86,6 +191,7 @@ with a{
 	on_draw = abris_draw
 	index = creator.index
 	phase = 0
+	phasespeed = 2
 	//accuarcy things
 	accbase = startsize
 	acc = accbase
@@ -129,45 +235,6 @@ with a{
 }
 return a
 
-
-//gerbai johjoh
-#define abris_check()
-switch creator.race{
-	case "steroids":
-		if creator.wep = wep var we = 1;
-		if creator.bwep = wep var be = 1;
-		if be && !we{
-			check = 2
-		}
-		if we && !be{
-			check = 1
-		}
-		if we && be{
-			if btn[2]{
-				check = 2
-			}
-			else check = 1
-		}
-		break
-	case "venuz":
-		if btn[1] {
-			check = 2;
-			++popped
-		}
-		else {check = 1}
-		break
-	case "skeleton":
-		if btn[1]{
-			check = 2
-		}else{
-			check = 1
-		}
-		break
-	default:
-		check = 1
-		break
-}
-
 #define meteor()
 meteortime = 0
 var ang = random(360)
@@ -175,9 +242,9 @@ with instance_create(mouse_x[index]+lengthdir_x(random(accbase),ang), mouse_y[in
     z = game_height+100+random(40)
     zstart = z
     depth = -12
-    zspeed = choose(16,22,18,30)
-    motion_set(random(360),random(1))
-    size = irandom_range(2,4)
+    zspeed = random_range(30,40)
+    motion_set(random(360),random(3))
+    size = choose(2,3,3,4)
     snd_dead = global.sounds[size-2]
     on_draw = meteor_draw
     on_step = meteor_step
@@ -185,7 +252,27 @@ with instance_create(mouse_x[index]+lengthdir_x(random(accbase),ang), mouse_y[in
 }
 
 #define meteor_draw
-draw_triangle(x+lengthdir_x(size*10,direction+90),y-z+lengthdir_y(size*10,direction+90),x+lengthdir_x(size*10,direction-90),y-z+lengthdir_y(size*10,direction+90),xstart,ystart-zstart,0)
+var _x= view_xview_nonsync,
+    _y= view_yview_nonsync,
+    ang = point_direction(x,y-z,xstart,ystart-zstart),
+    dis = min(point_distance(x,y-z,xstart,ystart-zstart),100*size);
+surface_set_target(global.sf)
+draw_triangle(x-_x+lengthdir_x(size*10,0),y-_y-z+lengthdir_y(size*10,0),x-_x+lengthdir_x(size*10,180),y-_y-z+lengthdir_y(size*10,180),x-_x+lengthdir_x(dis,ang),y-_y-z+lengthdir_y(dis,ang),0)
+draw_circle(x-_x,y-_y-z,size*10,0)
+surface_reset_target()
+
+#define meteordraw
+shader_set(global.sh);
+shader_set_vertex_constant_f(0, matrix_multiply(matrix_multiply(matrix_get(matrix_world), matrix_get(matrix_view)), matrix_get(matrix_projection)));
+shader_set_fragment_constant_f(0, [current_frame]);
+
+texture_set_stage(0, surface_get_texture(global.sf));
+
+draw_surface(global.sf, view_xview_nonsync, view_yview_nonsync);
+shader_reset();
+surface_set_target(global.sf)
+draw_clear_alpha(0,0)
+surface_reset_target()
 
 #define meteor_step
 z = max(z - zspeed*current_time_scale,0)
@@ -219,61 +306,42 @@ if size = 2{
 
 #define abris_step
 if instance_exists(creator){
-	if !dropped{
-		alpha = min(alpha + .01*current_time_scale, 1)
-		runealpha = min(runealpha + .0035*current_time_scale, 1)
-		if runealpha = 1{
-            runecolor = merge_color(runecolor,c_white,.03*current_time_scale)
-            runebloom = merge_color(runebloom,c_white,.03*current_time_scale)
-            bigrunecolor = merge_color(bigrunecolor,c_white,.01*current_time_scale)
-        }
-		image_angle += rotspeed * current_time_scale;
-		subangle -= rotspeed * current_time_scale;
-        if phase < 1{
-            phase += .003*current_time_scale
-            vigncol1 = merge_color(c_white,c_black,other.alpha/2)
-	        vigncol2 = merge_color(c_white,c_red,other.alpha)
-        }
-        if phase >= 1 and phase < 2{
-            phase += .02*current_time_scale
-            vigncol2 = merge_color(vigncol2,c_silver,.06*current_time_scale)
-            vigncol1 = merge_color(vigncol1,c_black,.06*current_time_scale)
-        }
-        meteortime+=current_time_scale
-        if phase >= 2 && meteortime >= 4 meteor()
-        if phase < 1 rotspeed+=phase*current_time_scale*.025
-		if check = 1 || popped{
-			if popped{
-				var pops = 1;
-				with instances_matching(CustomObject,"name","Herald Circle") if creator = other.creator && id != other{
-					if popped {pops+=1}
-				}
-				creator.reload = weapon_get_load(creator.wep) *(pops)
-			}else{
-				creator.reload = weapon_get_load(creator.wep)
+	alpha = min(alpha + .01*current_time_scale*phasespeed, 1)
+	runealpha = min(runealpha + .0035*current_time_scale*phasespeed, 1)
+	if runealpha = 1{
+        runecolor = merge_color(runecolor,c_white,.03*current_time_scale*phasespeed)
+        runebloom = merge_color(runebloom,c_white,.03*current_time_scale*phasespeed)
+        bigrunecolor = merge_color(bigrunecolor,c_white,.01*current_time_scale*phasespeed)
+    }
+	image_angle += rotspeed * current_time_scale;
+	subangle -= rotspeed * current_time_scale;
+    if phase < 1{
+        phase += .003*current_time_scale*phasespeed
+        vigncol1 = merge_color(c_white,c_black,other.alpha/2)
+        vigncol2 = merge_color(c_white,c_red,other.alpha)
+    }
+    if phase >= 1 and phase < 2{
+        phase += .02*current_time_scale*phasespeed
+        vigncol2 = merge_color(vigncol2,c_silver,.06*current_time_scale*phasespeed)
+        vigncol1 = merge_color(vigncol1,c_black,.06*current_time_scale*phasespeed)
+    }
+    meteortime+=current_time_scale
+    if phase >= 2 && meteortime >= 3 meteor()
+    if phase < 1 rotspeed+=phase*current_time_scale*.025*phasespeed
+	if check = 1 || popped{
+		if popped{
+			var pops = 1;
+			with instances_matching(CustomObject,"name","Herald Circle") if creator = other.creator && id != other{
+				if popped {pops+=1}
 			}
+			creator.reload = weapon_get_load(creator.wep) *(pops)
 		}else{
-			creator.breload = weapon_get_load(creator.bwep)
+			creator.reload = weapon_get_load(creator.wep)
 		}
+	}else{
+		creator.breload = weapon_get_load(creator.bwep)
 	}
-	if !button_check(creator.index,(check = 1?"fire":"spec")){
-		if !collision_line(x,y,mouse_x[index],mouse_y[index],Wall,0,0) &&!dropped{
-			dropped = 1
-			explo_x = mouse_x[index]
-			explo_y = mouse_y[index]
-			if fork(){
-				on_destroy = payload
-				instance_destroy()
-				exit
-			}
-		}
-		else if instance_exists(self){
-			if !dropped{
-				if creator.infammo = 0{creator.ammo[type] += cost}
-				instance_destroy()
-			}
-		};
-	}
+	if !button_check(creator.index,(check = 1?"fire":"spec")) || (creator.ammo[4] < 3 && creator.infammo = 0) instance_destroy()
 }
 else{instance_destroy()}
 
@@ -283,19 +351,6 @@ if instance_exists(creator) && check{
 	y = creator.y
 	if button_check(creator.index, (check = 1? "fire":"spec")){
 	    ritual_draw()
-		if collision_line(x,y,mouse_x[index],mouse_y[index],Wall,0,0){
-			alpha = max(alpha - .1*current_time_scale, 0)
-		    runealpha = max(runealpha - .05*current_time_scale, 0)
-		    var q = instance_create(x,y,CustomObject);
-			with q{
-				mask_index = sprBulletShell
-				image_angle = other.creator.gunangle
-				move_contact_solid(image_angle,game_width)
-			}
-			lightning_line(x,y,q.x,q.y)
-			//draw_line_width_colour(x,y,q.x,q.y,1,lasercolour2,lasercolour2)
-			with q instance_destroy()
-		}
 		var comp = (check = 1 ? creator.wep : creator.bwep);
 		if popped {comp = wep}
 		if wep != comp {instance_destroy()}
@@ -329,7 +384,6 @@ var points = [];
 var _x = mouse_x[index], _y = mouse_y[index];
 
 var bloom = 1;
-if phase > 1 bloom = 0
 
 //big exterior runes
 for (var i = 0; i< sides; i++){
@@ -337,8 +391,8 @@ for (var i = 0; i< sides; i++){
 	var x1 = _x + lengthdir_x(accbase,ang), y1 = _y + lengthdir_y(accbase, ang), x2 = _x + lengthdir_x(accbase, ang2), y2 = _y + lengthdir_y(accbase,ang2);
 	runeline(x1,y1,x2,y2,runes[i],1,bloom)
 	var ydiff = phase > 2 ? 3: 5
-	if phase > 1 rune_beam(_x,_y,x1,y1+ydiff,x2,y2+ydiff,c_white,(phase-1)*alpha,2)
     //if !(i mod 2) array_push(points,[x1,y1])
+	if phase > 1 rune_beam(_x,_y,x1,y1+ydiff,x2,y2+ydiff,c_white,min((phase-1)*alpha,1),15)
 }
 
 //triangle
@@ -346,6 +400,10 @@ for (var i = 0; i< sides; i++){
 for (var i = 0; i < array_length_1d(points); i++){
     var o = (i + 1) mod 3
     draw_line_width_color(points[i][0],points[i][1],points[o][0],points[o][1],2,linecolor,linecolor)
+    draw_set_blend_mode(bm_add)
+    draw_line_width_color(points[i][0],points[i][1],points[o][0],points[o][1],4,runebloom,runebloom)
+    draw_set_blend_mode(bm_normal)
+
 }
 draw_set_alpha(1)
 */
@@ -356,7 +414,7 @@ for (var i = 0; i< subsides; i++){
 	var x1 = _x + lengthdir_x(accbase/n,ang), y1 = _y + lengthdir_y(accbase/n,ang), x2 = _x + lengthdir_x(accbase/n,ang2), y2 = _y + lengthdir_y(accbase/n,ang2);
 	runeline(x1,y1,x2,y2,subrunes[i],0,bloom)
 	var ydiff = phase > 2 ? 2: 3
-	if phase > 1 rune_beam(_x,_y,x1,y1+ydiff,x2,y2+ydiff,c_white,(phase-1)*alpha,1)
+	//if phase > 1 rune_beam(_x,_y,x1,y1+ydiff,x2,y2+ydiff,c_white,(phase-1)*alpha,1)
 
 }
 
@@ -392,15 +450,18 @@ repeat(4){
 
 if phase > 1 and phase < 2{
     draw_circle_color(_x,_y,accbase*1.2,merge_color(c_white,c_black,1/min(power(phase,10),accbase*1.5)),c_black,0)
-    coolline(_x,_y+20,_x,_y-game_height,min(power(phase,10),accbase*1.5),c_white,c_black)
 }
 if phase > 2{
     draw_circle_color(_x,_y,accbase*1.2,merge_color(c_white,c_black,1/min(power(phase,10),accbase*1.5)),c_black,0)
-    coolline(_x,_y+20,_x,_y-game_height,clamp(power(phase,10) - power(phase,12),0,accbase*1.5),c_white,c_black)
 }
 draw_set_blend_mode(bm_normal)
 
 
+
+#define draw_surface_centered(sf,sx,sy,xscale,yscale,rot,color,alpha)
+var w = surface_get_width(sf) * xscale / 2,
+    h = surface_get_height(sf) * yscale /2;
+draw_surface_ext(sf,x-lengthdir_x(w,rot),y-lengthdir_y(h,rot),xscale,yscale,rot,color,alpha)
 
 
 #define lightning_line(x1,y1,x2,y2)
@@ -440,7 +501,7 @@ for (var i = 1; i < len; i++){
 	}
 }
 
-#define rune_beam(xc,yc,x1,y1,x2,y2,color,alpha,pow)
+#define rune_beam(xc,yc,x1,y1,x2,y2,color,alpha,height)
 var dir = point_direction(x1,y1,x2,y2), dist = point_distance(x1,y1,x2,y2);
 x1 += lengthdir_x(dist/6,dir)
 y1 += lengthdir_y(dist/6,dir)
@@ -453,8 +514,8 @@ draw_set_blend_mode(bm_add)
 draw_primitive_begin(pr_trianglestrip)
 draw_vertex_color(x1,y1,col,1)
 draw_vertex_color(x2,y2,col,1)
-draw_vertex_color(x1+lengthdir_x(25,dir),y1-60+lengthdir_y(25,bdir),col2,1)
-draw_vertex_color(x2+lengthdir_x(25,bdir),y2-60+lengthdir_y(25,bdir),col2,1)
+draw_vertex_color(x1+lengthdir_x(25,dir),y1-height+lengthdir_y(25,bdir),col2,1)
+draw_vertex_color(x2+lengthdir_x(25,bdir),y2-height+lengthdir_y(25,bdir),col2,1)
 draw_primitive_end()
 /*for (var i = 1; i < len; i++){
     var xx = x1+ lengthdir_x((dist/len) * i, dir), yy = y1+ lengthdir_y((dist/len) * i,dir)
