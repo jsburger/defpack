@@ -24,7 +24,8 @@ global.sprLightBulletHit = sprite_add("Light Bullet Hit.png", 4, 8, 8);
 global.sprPlasmite    = sprite_add("sprPlasmite.png",0,3,3);
 global.sprPlasmiteUpg = sprite_add("sprPlasmiteUpg.png",0,3,3);
 
-global.sprRocklet = sprite_add("sprRocklet.png",2,1,6);
+global.sprRocklet      = sprite_add("sprRocklet.png",2,1,6);
+global.sprRockletFlame = sprite_add("sprRockletFlame.png",0,8,3);
 
 global.sprSonicExplosion = sprite_add("Soundwave_strip8.png",8,61,59);
 global.mskSonicExplosion = sprite_add("mskSonicExplosion_strip9.png",9,32,32);
@@ -42,6 +43,9 @@ global.mskSuperSquare = sprite_add("mskSuperSquare.png",0,10,10);
 global.sprTriangle = sprite_add("sprTriangle.png",0,7,7);
 
 global.sprLaserFlakBullet = sprite_add("sprLaserFlak.png",2, 7, 7);
+
+global.sprSpikeball = sprite_add("sprSpikeball.png",0, 11, 9);
+global.mskSpikeball = sprite_add("mskSpikeball.png",0, 11, 9);
 
 global.sprAim          = sprite_add("sprAim.png",0,10,10);
 global.sprCursorCentre = sprite_add("sprCursorCentre.png",0,1,1);
@@ -229,12 +233,30 @@ with TopCont
   	draw_sprite_ext(global.sprAim,0,_mx+_vpf-_offset+100,_my-_vpf+_offset-100,1,1,270,_pc,.1+.9*(charge/100))
     draw_sprite_ext(global.sprCursorCentre,0,_mx,_my,1,1,0,_pc,1)
   }
+    with instances_matching(CustomObject,"name","sniper charge","sniper pest charge","sniper fire charge","sniper thunder charge","sniper psy charge", "sniper bouncer charge")
+    {
+        if !instance_exists(creator){instance_destroy();exit}
+        draw_set_visible_all(0)
+        draw_set_visible(creator.index,1)
+        var _pc     = player_get_color(creator.index);
+        if charged = 0{if (current_frame mod 5) <= current_time_scale {if _pc != c_white {_pc = c_white}else{_pc = player_get_color(creator.index)}}}
+        var _offset = charge;
+        var _vpf    = 3;
+        var _mx     = x - view_xview[creator.index];
+        var _my     = y - view_yview[creator.index];
+        draw_sprite_ext(global.sprAim,0,_mx-_vpf+_offset-100,_my-_vpf+_offset-100,1,1,0  ,_pc,.1+.9*(charge/100))
+        draw_sprite_ext(global.sprAim,0,_mx-_vpf+_offset-100,_my+_vpf-_offset+100,1,1,90 ,_pc,.1+.9*(charge/100))
+        draw_sprite_ext(global.sprAim,0,_mx+_vpf-_offset+100,_my+_vpf-_offset+100,1,1,180,_pc,.1+.9*(charge/100))
+        draw_sprite_ext(global.sprAim,0,_mx+_vpf-_offset+100,_my-_vpf+_offset-100,1,1,270,_pc,.1+.9*(charge/100))
+        draw_sprite_ext(global.sprCursorCentre,0,_mx,_my,1,1,0,_pc,1)
+    }
 }
+draw_set_visible_all(1)
 
-#define draw_trails
+/*#define draw_trails
 surface_set_target(global.trailsf)
 draw_set_blend_mode(bm_subtract)
-draw_set_alpha(.15)
+draw_set_alpha(.2)
 draw_set_color_write_enable(0,0,0,1)
 draw_rectangle(0,0,surface_get_width(global.trailsf),surface_get_height(global.trailsf),0)
 draw_set_blend_mode(bm_normal)
@@ -262,10 +284,10 @@ for var i = 0; player_is_active(i); i++{
     draw_surface_part(global.trailsf,view_xview[i]-global.sfx,view_yview[i] - global.sfy, game_width, game_height, view_xview[i], view_yview[i])
 }
 draw_set_visible_all(1)
-
+*/
 
 #define step
-if !surface_exists(global.trailsf){
+/*if !surface_exists(global.trailsf){
     global.trailsf = surface_create(7000,7000)
     surface_set_target(global.trailsf)
     draw_clear_alpha(c_black,0)
@@ -281,7 +303,7 @@ if instance_exists(GenCont){
     surface_set_target(global.trailsf)
     draw_clear_alpha(c_black,0)
     surface_reset_target()
-}
+}*/
 
 with instances_matching([Explosion,SmallExplosion,GreenExplosion,PopoExplosion],"hitid",-1){
     hitid = [sprite_index,string_replace(string_upper(object_get_name(object_index)),"EXPLOSION"," EXPLOSION")]
@@ -1774,7 +1796,7 @@ with instances_matching(CustomProjectile,"name","square")
 {
 	if place_meeting(x,y,other)
 	{
-		motion_add(random(360),7*(other.size/size))
+		motion_add(point_direction(other.x,other.y,x,y),7*(other.size/size))
     repeat(6) with instance_create(x,y,PlasmaTrail){image_index = 0;image_speed = .5;motion_add(other.direction+random_range(-60,60),random_range(9,12))}
 		sound_play_pitch(sndPlasmaHit,random_range(.9,1.1))
 		with instance_create(x,y,PlasmaImpact){team = other.team;instance_create(x+random_range(-8,8),y+random_range(-8,8),Smoke)}
@@ -1840,7 +1862,7 @@ with instance_create(x,y,SmallExplosion){damage -= 2}
 
 #define rocket_draw
 draw_self()
-draw_sprite_ext(sprRocketFlame,-1,x,y,speed/(2*maxspeed),image_yscale/2,image_angle,c_white,image_alpha)
+draw_sprite_ext(global.sprRockletFlame,-1,x,y,1,1,image_angle,c_white,image_alpha)
 
 #define laserflak_hit
 if projectile_canhit_melee(other) = true
@@ -1857,6 +1879,74 @@ if projectile_canhit_melee(other) = true
 	if damage <= 0 instance_destroy()
 }
 
+//SPIKEBALL
+#define create_spikeball(_x,_y)
+var a = instance_create(_x,_y,CustomSlash);
+with a
+{
+  typ  = 1
+  name = "Spikeball"
+  image_speed = speed/10
+  damage = 8
+  force = 6
+  size = 10
+  sprite_index = global.sprSpikeball
+  mask_index   = global.mskSpikeball
+  on_hit        = spike_hit
+  on_wall       = spike_wall
+  on_step       = spike_step
+  on_projectile = spike_projectile
+  on_anim       = spike_anim
+}
+return a;
+
+#define spike_anim
+
+#define spike_hit
+if projectile_canhit_melee(other) = true
+{
+  projectile_hit(other,damage,force,direction)
+  if other.size >= size{motion_set(point_direction(other.x,other.y,x,y),speed)}
+}
+
+#define spike_wall
+sound_play_pitch(sndHitRock,random_range(.6,.8))
+sound_play_pitch(sndHitMetal,random_range(1.3,1.5))
+repeat(3)instance_create(x,y,Dust)
+sleep(speed)
+view_shake_at(x,y,12)
+move_bounce_solid(false)
+speed--
+image_speed = speed/10
+
+#define spike_step
+if current_frame mod (2*current_time_scale) = 0{instance_create(x,y,DiscTrail)}
+with instances_matching(CustomSlash,"name","Spikeball")
+{
+  if place_meeting(x,y,other)
+  {
+    sleep(speed)
+    view_shake_at(x,y,30)
+    motion_set(point_direction(other.x,other.y,x,y),speed)
+    repeat(3)instance_create(x,y,Dust)
+    sound_play_pitch(sndHitRock,random_range(.6,.8))
+    sound_play_pitch(sndHitMetal,random_range(1.3,1.5))
+    var _spd = (speed + other.speed)/2;
+    speed = _spd
+    with other{speed = _spd}
+    with instance_create((x+other.x)/2,(y+other.y)/2,MeleeHitWall){image_angle += other.direction+90}
+  }
+}
+if speed <= 1 instance_destroy()
+
+#define spike_projectile
+if other.team != team
+{
+  with other
+  {
+    instance_destroy()
+  }
+}
 //LASER FLAK
 #define create_laser_flak(_x,_y)
 var a = instance_create(_x,_y,CustomProjectile);

@@ -1,6 +1,8 @@
 #define init
 global.sprChainsaw = sprite_add_weapon("sprites/sprChainsaw.png",0,3)
 global.sprMiniAmmo = sprite_add("sprites/sprMiniAmmo.png",7,3,3)
+#macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)
+
 #define weapon_name
 return "CHAINSAW"
 #define weapon_type
@@ -8,7 +10,7 @@ return 4
 #define weapon_cost
 return 1
 #define weapon_area
-if !irandom(1) return 1;
+if !irandom(1) return 6;
 else return -1;
 #define weapon_load
 return 8
@@ -29,25 +31,41 @@ with instance_create(x,y,CustomObject)
 	ammo    = 8
 	timer   = current_time_scale
 	on_step = chainsaw_step
+	bwep = other.specfiring
 }
 
 #define chainsaw_step
 if !instance_exists(creator){instance_destroy();exit}
-//if timer > 0{timer -= current_time_scale}else
-//{
-	//timer = current_time_scale
-	if ammo > 0
+if ammo > 0 && current_frame_active
+{
+	ammo--
+	with instance_create(creator.x+lengthdir_x(6+(6*skill_get(13)),creator.gunangle),creator.y+lengthdir_y(6+(6*skill_get(13)),creator.gunangle),CustomProjectile)
 	{
-		ammo--
-		with instance_create(creator.x+lengthdir_x(6+(6*skill_get(13)),creator.gunangle),creator.y+lengthdir_y(6+(6*skill_get(13)),creator.gunangle),CustomProjectile)
+		with other.creator
 		{
-			with other.creator
-			{
-				sound_play_pitch(sndJackHammer,random_range(1.8,2))
-				sound_play_pitch(sndSwapMotorized,random_range(1.5,1.6))
-				weapon_post(-6 - (6*skill_get(13)),6,0)
+			sound_play_pitch(sndJackHammer,random_range(1.8,2))
+			sound_play_pitch(sndSwapMotorized,random_range(1.5,1.6))
+			weapon_post(-6 - (6*skill_get(13)),6,0)
+		}
+	}
+	with creator
+	{
+		sound_play_pitch(sndJackHammer,random_range(1.6,1.8))
+		weapon_post(0,6,0)
+		if other.bwep
+		{
+			bwkick = -6 - 6*skill_get(13) + random_range(-1,1)
+			    var l = bwkick;
 			}
-			if irandom(3) < current_time_scale instance_create(x+lengthdir_x(6+(6*skill_get(13)),other.creator.gunangle),y+lengthdir_y(6+(6*skill_get(13)),other.creator.gunangle),Smoke)
+			else
+			{
+			    wkick = -6 - 6*skill_get(13) + random_range(-1,1)
+			    var l = wkick;
+			}
+		}
+		with instance_create(creator.x+lengthdir_x(-l,creator.gunangle),creator.y+lengthdir_y(-l,creator.gunangle),CustomProjectile)
+		{
+			if !irandom(2) instance_create(x+lengthdir_x(6+(6*skill_get(13)),other.creator.gunangle),y+lengthdir_y(6+(6*skill_get(13)),other.creator.gunangle),Smoke)
 			sprite_index = mskNone
 			canfix = false
 			force = 0
@@ -64,9 +82,9 @@ if !instance_exists(creator){instance_destroy();exit}
 			on_step       = chainsawshank_step
 			on_anim       = anim_destroy
 		}
-		if ammo <= 0{instance_destroy();exit}
-	}
-//}
+
+	if ammo <= 0{instance_destroy();exit}
+}
 
 #define chainsawshank_hit
 if projectile_canhit(other) = true
@@ -75,10 +93,11 @@ if projectile_canhit(other) = true
 	sleep(3)
 	var _splat = -4;
 	_splat = determine_gore(other)
-  with instance_create((other.x+x)/2,(other.y+y)/2,_splat){image_angle = random(360)}
+     with instance_create((other.x+x)/2,(other.y+y)/2,_splat){image_angle = random(360)}
 	projectile_hit(other,damage,force,direction)
 	if other.my_health <= 0
 	{
+	    sound_play(sndDiscHit)
 		sleep(other.size * 60)
 		view_shake_at(x,y,other.size * 50)
 		repeat(other.size)
@@ -106,32 +125,33 @@ switch object_get_name(_id.object_index)
 	case "YVStatue" : return MeleeHitWall;
 	case "BigSkull" : return MeleeHitWall;
 	case "SnowMan"  : return MeleeHitWall;
+	case "Icicle"   : return MeleeHitWall;
 	//ROBOT BLEEDERS
-	case "SnowBot"       : return Smoke;
-	case "SnowTank"      : return Smoke;
-	case "GolTank"       : return Smoke;
-	case "Barrel"   		 : return Smoke;
-	case "OasisBarrel"   : return Smoke;
-	case "ToxicBarrel"   : return Smoke;
-	case "Wolf"          : return Smoke;
-	case "StreetLight"   : return Smoke;
-	case "SodaMachine"   : return Smoke;
-	case "Hydrant"		   : return Smoke;
-	case "Turret"	       : return Smoke;
-	case "TechnoMancer"  : return Smoke;
-	case "Terminal"      : return Smoke;
-	case "MutantTube"    : return Smoke;
-	case "DogMissile"    : return Smoke;
-	case "Sniper"        : return Smoke;
-	case "Car"         	 : return Smoke;
-	case "Pipe"        	 : return Smoke;
-	case "Anchor" 		 	 : return Smoke;
-	case "WaterMine"	 	 : return Smoke;
-	case "VenuzTV"     	 : return Smoke;
-	case "CarVenus"			 : return Smoke;
-	case "CarVenus2"		 : return Smoke;
-	case "CarVenusFixed" : return Smoke;
-	case "Van"					 : return Smoke;
+	case "SnowBot"       : return BulletHit;
+	case "SnowTank"      : return BulletHit;
+	case "GolTank"       : return BulletHit;
+	case "Barrel"   		 : return BulletHit;
+	case "OasisBarrel"   : return BulletHit;
+	case "ToxicBarrel"   : return BulletHit;
+	case "Wolf"          : return BulletHit;
+	case "StreetLight"   : return BulletHit;
+	case "SodaMachine"   : return BulletHit;
+	case "Hydrant"		   : return BulletHit;
+	case "Turret"	       : return BulletHit;
+	case "TechnoMancer"  : return BulletHit;
+	case "Terminal"      : return BulletHit;
+	case "MutantTube"    : return BulletHit;
+	case "DogMissile"    : return BulletHit;
+	case "Sniper"        : return BulletHit;
+	case "Car"         	 : return BulletHit;
+	case "Pipe"        	 : return BulletHit;
+	case "Anchor" 		 	 : return BulletHit;
+	case "WaterMine"	 	 : return BulletHit;
+	case "VenuzTV"     	 : return BulletHit;
+	case "CarVenus"			 : return BulletHit;
+	case "CarVenus2"		 : return BulletHit;
+	case "CarVenusFixed" : return BulletHit;
+	case "Van"					 : return BulletHit;
 	//LIGHTNING BLEEDERS
 	case "LightningCrystal"  : return LightningSpawn;
 	// BIG BLEEDERS
@@ -155,7 +175,7 @@ switch object_get_name(_id.object_index)
 #define weapon_sprt
 return global.sprChainsaw
 #define weapon_text
-return "RIP AND TEAR"
+return choose("RIP AND TEAR","KILLED ENEMIES ALWAYS#DROP SOME @yAMMO")
 #define anim_destroy
 instance_destroy()
 #define chainsawshank_step

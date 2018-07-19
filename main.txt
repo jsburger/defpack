@@ -96,7 +96,7 @@
 
 //OTHER BULLET
 /loadwep bouncer pistol
-/loadwep heavy minigun
+/loadwep moby
 /loadwep heavy smart gun
 /loadwep smarter gun
 /loadwep lucky machinegun
@@ -179,7 +179,7 @@
 
 //HOT
 /loadwep finished stuff/hot flare gun
-/loadwep finished stuff/hot flamethrower
+/loadwep finished stuff/toxicthrower
 /loadwep finished stuff/hot dragon
 
 //SMART
