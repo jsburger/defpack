@@ -44,8 +44,12 @@ global.sprTriangle = sprite_add("sprTriangle.png",0,7,7);
 
 global.sprLaserFlakBullet = sprite_add("sprLaserFlak.png",2, 7, 7);
 
-global.sprSpikeball = sprite_add("sprSpikeball.png",0, 11, 9);
-global.mskSpikeball = sprite_add("mskSpikeball.png",0, 11, 9);
+global.sprMiniSpikeball = sprite_add("sprMiniSpikeball.png",0, 6, 5);
+global.mskMiniSpikeball = sprite_add("mskMiniSpikeball.png",0, 6, 5);
+global.sprSpikeball     = sprite_add("sprSpikeball.png",0, 11, 9);
+global.mskSpikeball     = sprite_add("mskSpikeball.png",0, 11, 9);
+global.sprHeavySpikeball  = sprite_add("sprHeavySpikeball.png",0, 15, 15);
+global.mskHeavySpikeball  = sprite_add("mskHeavySpikeball.png",0, 15, 15);
 
 global.sprAim          = sprite_add("sprAim.png",0,10,10);
 global.sprCursorCentre = sprite_add("sprCursorCentre.png",0,1,1);
@@ -252,7 +256,6 @@ with TopCont
     }
 }
 draw_set_visible_all(1)
-
 /*#define draw_trails
 surface_set_target(global.trailsf)
 draw_set_blend_mode(bm_subtract)
@@ -285,7 +288,6 @@ for var i = 0; player_is_active(i); i++{
 }
 draw_set_visible_all(1)
 */
-
 #define step
 /*if !surface_exists(global.trailsf){
     global.trailsf = surface_create(7000,7000)
@@ -1880,6 +1882,26 @@ if projectile_canhit_melee(other) = true
 }
 
 //SPIKEBALL
+#define create_minispikeball(_x,_y)
+var a = instance_create(_x,_y,CustomSlash);
+with a
+{
+  typ  = 1
+  name = "Spikeball"
+  image_speed = speed/10
+  damage = 2
+  force = 3
+  size = 2
+  sprite_index = global.sprMiniSpikeball
+  mask_index   = global.mskMiniSpikeball
+  on_hit        = spike_hit
+  on_wall       = spike_wall
+  on_step       = spike_step
+  on_projectile = spike_projectile
+  on_anim       = spike_anim
+}
+return a;
+
 #define create_spikeball(_x,_y)
 var a = instance_create(_x,_y,CustomSlash);
 with a
@@ -1887,11 +1909,31 @@ with a
   typ  = 1
   name = "Spikeball"
   image_speed = speed/10
-  damage = 8
+  damage = 5
   force = 6
-  size = 10
+  size = 4
   sprite_index = global.sprSpikeball
   mask_index   = global.mskSpikeball
+  on_hit        = spike_hit
+  on_wall       = spike_wall
+  on_step       = spike_step
+  on_projectile = spike_projectile
+  on_anim       = spike_anim
+}
+return a;
+
+#define create_heavyspikeball(_x,_y)
+var a = instance_create(_x,_y,CustomSlash);
+with a
+{
+  typ  = 1
+  name = "Spikeball"
+  image_speed = speed/10
+  damage = 10
+  force = 8
+  size = 10
+  sprite_index = global.sprHeavySpikeball
+  mask_index   = global.mskHeavySpikeball
   on_hit        = spike_hit
   on_wall       = spike_wall
   on_step       = spike_step
@@ -1906,38 +1948,43 @@ return a;
 if projectile_canhit_melee(other) = true
 {
   projectile_hit(other,damage,force,direction)
-  if other.size >= size{motion_set(point_direction(other.x,other.y,x,y),speed)}
+  if other.size > size{motion_set(point_direction(other.x,other.y,x,y),speed)}
 }
 
 #define spike_wall
 sound_play_pitch(sndHitRock,random_range(.6,.8))
-sound_play_pitch(sndHitMetal,random_range(1.3,1.5))
-repeat(3)instance_create(x,y,Dust)
-sleep(speed)
-view_shake_at(x,y,12)
+//sound_play_pitch(sndHitMetal,random_range(1.3,1.5))
+sleep(size*2)
+view_shake_at(x,y,3*size)
+repeat(size)instance_create(x,y,Dust)
 move_bounce_solid(false)
 speed--
 image_speed = speed/10
 
 #define spike_step
-if current_frame mod (2*current_time_scale) = 0{instance_create(x,y,DiscTrail)}
+with instance_create(x-lengthdir_x(speed,direction),y-lengthdir_y(speed,direction),BoltTrail){
+    image_angle = other.direction
+    image_yscale = other.size / 3
+    image_xscale = other.speed
+}
 with instances_matching(CustomSlash,"name","Spikeball")
 {
   if place_meeting(x,y,other)
   {
-    sleep(speed)
-    view_shake_at(x,y,30)
+    sleep(size*2)
+    view_shake_at(x,y,3*size)
     motion_set(point_direction(other.x,other.y,x,y),speed)
-    repeat(3)instance_create(x,y,Dust)
+    repeat(size)instance_create(x,y,Dust)
     sound_play_pitch(sndHitRock,random_range(.6,.8))
     sound_play_pitch(sndHitMetal,random_range(1.3,1.5))
+    sound_play_pitch(sndGrenadeHitWall,random_range(1.7,2.5))
     var _spd = (speed + other.speed)/2;
     speed = _spd
     with other{speed = _spd}
     with instance_create((x+other.x)/2,(y+other.y)/2,MeleeHitWall){image_angle += other.direction+90}
   }
 }
-if speed <= 1 instance_destroy()
+if speed <= 3 instance_destroy()
 
 #define spike_projectile
 if other.team != team

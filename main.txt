@@ -179,8 +179,10 @@
 
 //HOT
 /loadwep finished stuff/hot flare gun
+
+//TOXIC
 /loadwep finished stuff/toxicthrower
-/loadwep finished stuff/hot dragon
+/loadwep finished stuff/cobra
 
 //SMART
 /loadwep smart bazooka

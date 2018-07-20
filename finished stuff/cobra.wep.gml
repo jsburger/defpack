@@ -1,11 +1,11 @@
 #define init
-global.sprHotDragon = sprite_add_weapon("sprHotDragon.png", 8, 6);
+global.sprCobra = sprite_add_weapon("sprCobra.png", 8, 6);
 
 #define weapon_name
-return "HOT DRAGON";
+return "COBRA";
 
 #define weapon_sprt
-return global.sprHotDragon;
+return global.sprCobra;
 
 #define weapon_type
 return 4;
@@ -14,10 +14,10 @@ return 4;
 return true;
 
 #define weapon_load
-return 6;
+return 12;
 
 #define weapon_cost
-return 2;
+return 1;
 
 #define weapon_swap
 return sndSwapDragon;
@@ -26,7 +26,7 @@ return sndSwapDragon;
 return 13;
 
 #define weapon_text
-return choose("HEY, IT'S DPS","LET THEM FEEL THE DRAGONS ANGER");
+return choose("HEY, IT'S DPS","DO THE SERPENT SWAY");
 
 #define weapon_fire
 //huge fuckin props to yokin for letting me use code from GunLocker for this
@@ -48,13 +48,10 @@ var _load = weapon_get_load(argument0);
 
 	 // Flames:
 	repeat(_load) if(instance_exists(self)){
-		repeat(7) with instance_create(x,y,Flame){
-			move_contact_solid(other.gunangle, 6);
-			sprite_index = sprFireLilHunter
-			motion_add(other.gunangle + (random_range(-15, 15) * other.accuracy), 10 + random(5));
+		repeat(4) with instance_create(x,y,ToxicGas){
+			move_contact_solid(other.gunangle, 16);
+			motion_add(other.gunangle + (random_range(-15, 15) * other.accuracy), random_range(2,4));
 			hitid = [sprite_index, "Hot Flame"];
-			team = other.team;
-			damage = 5
 			creator = other;
 		}
 		wait 1;
