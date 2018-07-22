@@ -31,7 +31,7 @@ if is_object(w) && w.charge > 20 && ammo[1] > 1 return irandom(1)
 return 1;
 
 #define weapon_swap
-return sndSwapPistol;
+return sndSwapMachinegun;
 
 #define weapon_area
 return 12;
@@ -59,14 +59,14 @@ else{
         w.persist = 5
     }
 }
-weapon_post(5+random_range(w.charge/24,-w.charge/24),-9,2)
+weapon_post(5+random_range(w.charge/24,-w.charge/24),-3,2)
 sound_play_pitch(sndTripleMachinegun,.7 + w.charge/50)
 
 
 with instance_create(x,y,Shell){motion_add(other.gunangle+other.right*100+random(80)-40,3+random(3))}
 with create_bullet(x+lengthdir_x(24,gunangle),y+ lengthdir_y(24,gunangle)){
 		on_destroy = shell_destroy
-		direction = other.gunangle + random_range(-20,20)*other.accuracy*(12/w.charge);
+		direction = other.gunangle + random_range(-20,20)*other.accuracy*sqrt(w.charge)/6;
 		image_angle = direction;
 		creator = other
 		team = other.team
