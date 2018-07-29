@@ -32,7 +32,7 @@ return "PROTECTION AT ALL COSTS";
 #define weapon_fire
 var _strtsize = 45-skill_get(13)*25
 var _endsize  = 30;
-sound_play_pitch(sndSniperTarget,exp((_strtsize-_endsize)/room_speed/current_time_scale/accuracy*(1.06)))
+sound_play_pitch(sndSniperTarget,1/accuracy+1.5)
 if ammo[4] >= 2
 {
 	ammo[4] -= 2
@@ -61,9 +61,9 @@ else
 }
 
 #define pop
-with instance_create(x,y,BloodGamble){image_angle = other.creator.gunangle}
-sound_play(sndBloodLauncher)
-sound_play(sndBloodLauncherExplo)
+with instance_create(x,y,BloodStreak){image_angle = other.creator.gunangle}
+sound_play_pitch(sndBloodLauncher,random_range(.8,1.2))
+sound_play_pitch(sndBloodLauncherExplo,random_range(.8,1.2))
 creator.wkick = 2
 repeat(4){
 instance_create(explo_x+lengthdir_x(acc+12,offset),explo_y+lengthdir_y(acc+12,offset),MeatExplosion);

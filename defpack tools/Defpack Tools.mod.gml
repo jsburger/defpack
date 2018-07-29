@@ -141,7 +141,12 @@ with TopCont
         draw_set_visible_all(0)
         draw_set_visible(creator.index,1)
         var _pc     = player_get_color(creator.index);
-        if charged = 0{if (current_frame mod 5) <= current_time_scale {if _pc != c_white {_pc = c_white}else{_pc = player_get_color(creator.index)}}}
+        if holdtime >= 60 {var _m = 5}else
+        {
+          var _m = 3;
+        }
+        if current_frame mod _m <= current_time_scale && _m = 3{sound_play_pitch(sndCursedReminder,5)}
+        if charged = 0{if (current_frame mod _m) <= current_time_scale {if _pc != c_white {_pc = c_white}else{_pc = player_get_color(creator.index)}}}
         var _offset = charge;
         var _vpf    = 3;
         var _mx     = x - view_xview[creator.index];
@@ -1200,12 +1205,22 @@ with instance_create(_x,_y,CustomProjectile){
 	create_frame = current_frame
 	colors = [c_black,c_white,c_white,merge_color(c_blue,c_white,.3),c_white]
 	damage = 9
-	repeat(30){
-		with instance_create(x,y,Dust){
-			motion_set(random(360),3+random(10))
-		}
+	repeat(30)
+  {
+		with instance_create(x,y,Dust)
+    {
+		  motion_set(random(360),3+random(10))
+  	}
 	}
-	if instance_exists(Floor){
+  repeat(8)
+  {
+    with instance_create(x+random_range(-30,30),y+random_range(-30,30),LightningSpawn)
+    {
+      image_angle = point_direction(other.x,other.y,x,y) + random_range(-8,8)
+    }
+  }
+	if instance_exists(Floor)
+  {
 	    var closeboy = instance_nearest(x,y,Floor);
     	if point_in_rectangle(x,y,closeboy.x-16,closeboy.y-16,closeboy.x+16,closeboy.y+16){
     	    with instance_create(x,y,Scorchmark){
@@ -1231,12 +1246,14 @@ with instance_create(_x,_y,CustomProjectile){
     	}
 	}
 	force = 40
-	on_wall = lightning_wall
-	on_draw = lightning_draw;
-	mask_index = sprGammaBlast
-    on_destroy = lightning_destroy
-	on_step = lightning_step
-	on_hit = lightning_hit
+  mask_index   = sprPlasmaBall
+  image_xscale = 5
+  image_yscale = 5
+	on_wall    = lightning_wall
+	on_draw    = lightning_draw;
+  on_destroy = lightning_destroy
+	on_step    = lightning_step
+	on_hit     = lightning_hit
 	depth = -8
 	return id
 }
@@ -1316,6 +1333,7 @@ with a
 	if skill_get(17) = false sprite_index = global.sprPlasmite else sprite_index = global.sprPlasmiteUpg
  	fric = random_range(.2,.3)
 	speedset = 0
+  force = 2
 	maxspeed = 7
 	on_step 	 = plasmite_step
 	on_wall 	 = plasmite_wall
@@ -1333,11 +1351,14 @@ if speedset = 0
 }
 else
 {
-	/*if instance_exists(enemy)
+	if instance_exists(enemy)
 	{
 		var closeboy = instance_nearest(x,y,enemy)
-		motion_add(point_direction(x,y,closeboy.x,closeboy.y),.5+skill_get(17)*.3*current_time_scale)
-	}*/
+    if distance_to_object(closeboy) <= 16
+    {
+		  motion_add(point_direction(x,y,closeboy.x,closeboy.y),4)
+    }
+  }
 	if speed > maxspeed{speed = maxspeed}
 	maxspeed /= 1+(fric*current_time_scale)
 	if maxspeed <= 1+fric instance_destroy()

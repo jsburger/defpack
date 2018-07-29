@@ -43,11 +43,12 @@ with mod_script_call("mod","defpack tools","create_abris",self,27,18,argument0){
 	accspeed = 1.45
 	payload = script_ref_create(pop)
 }
-sound_play_pitch(sndSniperTarget,exp((_strtsize-_endsize)/room_speed/current_time_scale/accuracy*(1.2)))
+sound_play_pitch(sndSniperTarget,1/accuracy+2)
 
 
 #define pop
-sound_play_pitch(sndGrenadeRifle,random_range(1.1,1.4))
+sound_play_pitch(sndGrenadeRifle,random_range(1.5,1.8))
+sound_play_pitch(sndGrenade,random_range(1.5,1.8))
 sound_play(sndExplosionS)
 sound_play(sndGoldShotgun)
 creator.wkick = 2

@@ -115,7 +115,7 @@ repeat(4){
 		}
 	}
 	ang += 360/8
-	repeat(30)
+	repeat(10)
 	{
 	with instance_create(x+lengthdir_x(5,ang), y+lengthdir_x(5,ang), Flame){
 		image_xscale *= .75

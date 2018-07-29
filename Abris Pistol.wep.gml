@@ -30,16 +30,17 @@ return 3;
 return "GET SOME COVER";
 
 #define weapon_fire
-var _strtsize = 27;
-var _endsize  = 18;
+var _strtsize = 30;
+var _endsize  = 15;
 with mod_script_call("mod","defpack tools","create_abris",self,_strtsize,_endsize,argument0){
 	accspeed = 1.33
 	payload = script_ref_create(pop)
 }
-sound_play_pitch(sndSniperTarget,exp((_strtsize-_endsize)/room_speed/current_time_scale/accuracy*(1.33)))
+sound_play_pitch(sndSniperTarget,1/accuracy+1.5)
 
 #define pop
-sound_play_pitch(sndGrenadeRifle,random_range(1.1,1.4))
+sound_play_pitch(sndGrenadeRifle,random_range(1.5,1.8))
+sound_play_pitch(sndGrenade,random_range(1.5,1.8))
 sound_play(sndExplosionS)
 creator.wkick = 2
 repeat(3)

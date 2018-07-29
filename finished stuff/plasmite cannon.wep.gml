@@ -59,7 +59,6 @@ with instance_create(x,y,CustomProjectile)
 
 #define create_electron()
 var _a = instance_create(x,y,CustomProjectile)
-
 with _a
 {
 	creator = other
