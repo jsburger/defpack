@@ -72,25 +72,6 @@ repeat(ammo)
 }
 
 #define pulser_step
-if irandom(19) <= current_time_scale
-{
-	with instance_create(x+random_range(-20,20),y+random_range(-20,20),CustomObject)
-	{
-		name = "pulserparticle"
-		radius = choose(16,48,32)
-		linger = 45
-		wave[0] = 0
-		wave[1] = 0
-		on_step = pulserparticle_step
-		on_draw = pulserparticle_draw
-		with instance_create(x,y,CustomObject)
-		{
-			depth = other.depth +1
-			parent = other
-			on_draw = pulserparticle_draw2
-		}
-	}
-}
 image_angle += 7 * current_time_scale * radiusmin/radius
 if radiusmin < radius{radius /= (1 + .02/acc) * current_time_scale}
 else
@@ -127,28 +108,6 @@ draw_set_color(c_white)
 mod_script_call("mod","defpack tools","draw_circle_width_colour",12,radius,1,image_angle,x,y,c_lime,1)
 mod_script_call("mod","defpack tools","draw_circle_width_colour",12,radiusmax,1,image_angle*-1,x,y,c_lime,.1+.5/(radius/radiusmin))
 mod_script_call("mod","defpack tools","draw_circle_width_colour",12,radiusmin,1,image_angle*-1,x,y,c_lime,.7)
-
-#define pulserparticle_step
-image_xscale = radius*dsin(wave[0])/pi
-if wave[0] < 180
-{
-    if wave[0] < 89{wave[0]+=current_time_scale*3}
-    else
-    {
-        if wave[1] < linger
-        {
-            wave[1]+=current_time_scale*4
-            exit
-        }
-        wave[0]+=current_time_scale*3
-    }
-}else{instance_destroy()}
-
-#define pulserparticle_draw
-draw_circle_colour(x,y,image_xscale,c_black,c_black,false)
-#define pulserparticle_draw2
-if !instance_exists(parent){instance_destroy();exit}
-draw_circle_colour(parent.x,parent.y,parent.image_xscale*1.1,c_lime,c_lime,false)
 
 #define draw_pie(_x1,_y1,_x2,_y2,_x3,_y3,_x4,_y4,_outline,_precision)
 {

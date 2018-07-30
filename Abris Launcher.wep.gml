@@ -30,21 +30,22 @@ return 8;
 return "HIDE AND KILL";
 
 #define weapon_fire
-var _strtsize = 45;//never thought id have to nerf eagle eyes im so proud of you
+var _strtsize = 50;//never thought id have to nerf eagle eyes im so proud of you
 var _endsize  = 30;
 var _accspeed = 1.2;
 with mod_script_call("mod","defpack tools","create_abris",self,_strtsize,_endsize,argument0){
 	accspeed = 1.2
 	payload = script_ref_create(pop)
 }
-sound_play_pitch(sndSniperTarget,(_endsize)/(_accspeed+abs(accuracy*3)))
-
+sound_play_pitch(sndSniperTarget,1/accuracy+.5)
 #define pop
-sound_play_pitch(sndGrenadeRifle,.8)
+sound_play_pitch(sndGrenadeRifle,random_range(.5,.8))
+sound_play_pitch(sndGrenade,random_range(.5,.8))
+sound_play_pitch(sndGrenadeShotgun,random_range(.5,.8))
 sound_play(sndExplosion)
-creator.wkick = 5
-repeat(3)
+creator.wkick = 6
+repeat(6)
 {
-	with instance_create(explo_x+lengthdir_x(acc+30,offset),explo_y+lengthdir_y(acc+30,offset),Explosion){hitid = [sprite_index,"explosion"]}
-	offset += 120
+	with instance_create(explo_x+lengthdir_x(acc+30,offset),explo_y+lengthdir_y(acc+30,offset),SmallExplosion){hitid = [sprite_index,"small explosion"]}
+	offset += 360/6
 }

@@ -45,8 +45,9 @@ sound_play_pitch(sndSniperTarget,exp((_strtsize-_endsize)/room_speed/current_tim
 
 #define pop
 sound_set_track_position(sndVanWarning,0)
-sound_play_pitch(sndGrenadeRifle,.4)
-sound_play_pitch(sndNukeExplosion,.8)
+sound_play_pitch(sndGrenadeShotgun,random_range(.5,.8))
+sound_play_pitch(sndGrenade,random_range(.5,.8))
+sound_play_pitch(sndGrenadeRifle,random_range(.5,.8))
 with creator{weapon_post(12,0,244)}
 sleep(200)
 with creator{motion_add(gunangle,-5)}
