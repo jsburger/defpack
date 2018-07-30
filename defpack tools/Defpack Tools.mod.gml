@@ -54,20 +54,20 @@ global.mskHeavySpikeball  = sprite_add("mskHeavySpikeball.png",0, 15, 15);
 global.sprAim          = sprite_add("sprAim.png",0,10,10);
 global.sprCursorCentre = sprite_add("sprCursorCentre.png",0,1,1);
 
-global.traildrawer = -4
+/*global.traildrawer = -4
 global.trailsf = surface_create(4000,4000)
 global.sfx = 7500
 global.sfy = 7500
 surface_set_target(global.trailsf)
 draw_clear_alpha(c_white,0)
-surface_reset_target()
+surface_reset_target()*/
 
 //thanks yokin
 #macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)
 
 #define cleanup
 with instances_matching(CustomProjectile,"name","Psy Bullet","Psy Shell") instance_delete(self)
-with global.traildrawer instance_destroy()
+//with global.traildrawer instance_destroy()
 
 #define draw_shadows()
 with instances_matching(CustomProjectile,"name","volley arrow")
@@ -1885,13 +1885,8 @@ with instances_matching(CustomSlash,"name","Spikeball")
 if speed <= 3 instance_destroy()
 
 #define spike_projectile
-if other.team != team
-{
-  with other
-  {
-    instance_destroy()
-  }
-}
+with other if typ > 0 instance_destroy()
+
 //LASER FLAK
 #define create_laser_flak(_x,_y)
 var a = instance_create(_x,_y,CustomProjectile);
