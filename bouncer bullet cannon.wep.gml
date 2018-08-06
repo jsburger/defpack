@@ -1,7 +1,7 @@
 #define init
 global.sprBouncerBulletCannon = sprite_add_weapon("sprites/sprBouncerCannon.png", 4, 0);
 #define weapon_name
-return "BOUNCER CANNON";
+return "BOUNCER BULLET CANNON";
 
 #define weapon_sprt
 return global.sprBouncerBulletCannon;

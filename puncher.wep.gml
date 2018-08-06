@@ -37,7 +37,7 @@ if fork(){
 				team = other.team
 				creator = other
 				damage = 15
-				extradir = random_range(-.3,.3)*creator.accuracy*i
+				extradir = random_range(-.2,.2)*creator.accuracy*i
 				motion_set(other.gunangle + random_range(-5,5)*i,1)
 				repeat(2){with instance_create(x,y,Smoke){speed = random_range(3,5);direction = other.direction+random_range(-5,5)}}
 				image_angle = direction
