@@ -8,7 +8,7 @@ return "SPLIT SHOTGUN";
 return global.sprSplitShotgun;
 
 #define weapon_type
-return 1;
+return 2;
 
 #define weapon_auto
 return false;
