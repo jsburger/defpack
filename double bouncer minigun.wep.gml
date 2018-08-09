@@ -1,5 +1,5 @@
 #define init
-global.sprDoubleBouncerMinigun = sprite_add_weapon("sprites/sprDoubleBouncerMinigun.png", 3, 1);
+global.sprDoubleBouncerMinigun = sprite_add_weapon("sprites/sprDoubleBouncerMinigun.png", 4, 2);
 
 #define weapon_name
 return "DOUBLE BOUNCER MINIGUN"
@@ -33,7 +33,7 @@ motion_add(gunangle-180,1.5)
 sound_play_pitch(sndBouncerSmg,random_range(1.1,1.2))
 sound_play_pitch(sndDoubleMinigun,random_range(.8,1.2))
 weapon_post(6,0,14)
-repeat(2)with instance_create(x,y,Shell){motion_add(other.gunangle-180+random_range(-40,40),2+random(2))}
+repeat(2)with instance_create(x,y,Shell){motion_add(other.gunangle+90+random_range(-40,40),2+random(2))}
 with instance_create(x,y,BouncerBullet)
 {
 	move_contact_solid(other.gunangle,12)

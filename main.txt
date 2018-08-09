@@ -220,6 +220,7 @@
 /loadwep finished stuff/fire beamer
 /loadwep finished stuff/toxic carronader
 /loadwep puncher
+/loadwep blaster
 /loadwep pulser
 /loadwep airstrike
 /loadwep herald
