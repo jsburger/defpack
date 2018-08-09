@@ -52,7 +52,7 @@ with instance_create(_x,_y,CustomProjectile){
 	creator = other
 	team  = other.team
 	image_yscale = .5
-	trailscale = 2
+	trailscale = 1
 	hyperspeed = 8
 	sprite_index = mskNothing
 	mask_index = mskBullet2
@@ -104,24 +104,24 @@ do
 	{
 		if distance_to_object(other) <= 4
 		{
-      var _hp = my_health;
+            var _hp = my_health;
 			projectile_hit(self,other.damage,other.force,other.direction)
 			with other
 			{
-        if _hp >= damage*3
-        {
-			    instance_destroy()
-			    exit
-        }
-        else
-        {
-          damage--
-          if damage <= 0
-          {
-            instance_destroy()
-            exit
-          }
-        }
+                if _hp >= damage*3
+                {
+        			    instance_destroy()
+        			    exit
+                }
+                else
+                {
+                  damage--
+                  if damage <= 0
+                  {
+                    instance_destroy()
+                    exit
+                  }
+                }
 			}
 		}
 	}
@@ -138,14 +138,14 @@ instance_destroy()
 #define void
 
 #define line()
-var dis = point_distance(x,y,xstart,ystart) + 1;
+var dis = point_distance(x,y,xstart,ystart);
+var ang = point_direction(x,y,xstart,ystart)+180;
 var num = 20;
 for var i = 0; i <= num; i++{
     with instance_create(xstart+lengthdir_x(dis/num * i,direction),ystart + lengthdir_y(dis/num * i,direction),BoltTrail){
         image_angle = other.direction
         image_yscale = other.trailscale * (i/num)
         image_xscale = dis/num
-        image_alpha = .5
     }
 }
 xstart = x

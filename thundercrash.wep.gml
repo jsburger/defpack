@@ -57,17 +57,17 @@ with instance_create(x,y,CustomProjectile)
 	motion_add(other.gunangle+random_range(-7,7)*other.accuracy,26)
 	projectile_init(other.team,other)
 	sprite_index = global.sprUmbrella
-  mask_index   = global.mskUmbrella
+    mask_index   = global.mskUmbrella
 	image_speed = .45;
 	image_angle = direction
 	damage  = 20
 	friction = 0
-  force = 30
-  image_speed = 1
+    force = 30
+    image_speed = 1
 	on_draw = bloom_draw
-  on_step = stop_anim
-  on_wall = lightningcluster_wall
-  on_hit  = lightningcluster_hit
+    on_anim = stop_anim
+    on_wall = lightningcluster_wall
+    on_hit  = lightningcluster_hit
 	on_destroy = lightningcluster_destroy
 }
 
