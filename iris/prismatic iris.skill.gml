@@ -4,11 +4,11 @@ global.colors = ["stock", "pest", "fire", "psy", "thunder", "blind", "bouncer"] 
 global.names = ["prismatic iris", "pestilent gaze", "blazing visage", "all-seeing eye", "clouded stare", "filtered lens", "quivering sight"]     //sub mutation names
 global.customs = ["sniper rifle", "bullet cannon", "bullak cannon", "gunhammer"]                                                                 //custom guns that need coloring too, make sure to add to the converter switch
 global.order = [-1,0,1,2,3,5,4]                                                                                                                  //the code goes through the colors array in order, assigning the subpick to the slot numbered here
-global.descriptions = ["h", "@gTOXIC", "@rFLAMING", "@pHOMING", "@bCHARGED", "@SOMETHING NEW", "@yBOUNCY"]                                       //shit thats appended to the subpick description
+global.descriptions = ["h", "@gTOXIC", "@rFLAMING", "@pHOMING", "@bCHARGED", "@sSOMETHING NEW", "@yBOUNCY"]                                       //shit thats appended to the subpick description
 global.colorcount = array_length_1d(global.colors)-1
 global.icons = []
 global.icon = sprite_add("sprMutPrismaticIris0.png",1,12,16)
-global.effect = sprite_add("sprIrisEffect.png",1,16,11)
+global.effect = sprite_add("sprIrisEffect.png",8,16,11)
 for var i = 0; i <= global.colorcount; i++{
     array_push(global.icons,sprite_add(`sprMutPrismaticIcon${i}.png`,1,7,8))
 }
@@ -17,10 +17,14 @@ global.color = 0
 
 #define skill_take
 GameCont.skillpoints++
+GameCont.endpoints++
 if fork(){
     wait(0)
+    GameCont.endpoints--
     with SkillIcon instance_destroy()
-    LevCont.maxselect = global.colorcount - 1
+    with LevCont{
+        maxselect = global.colorcount - 1
+    }
     for var i = 1; i <= global.colorcount; i++{
         var skil = `irisslave${i}`
         with instance_create(0,0,SkillIcon){
@@ -64,7 +68,7 @@ sprite_index = global.icon
 return global.icons[global.color]
 
 #define skill_text
-if global.color > 0 return "@yBULLET@w WEAPONS BECOME " + global.descriptions[i]
+if global.color > 0 return "@yBULLET@w WEAPONS BECOME " + global.descriptions[global.color]
 return "@pREIMAGINE@w YOUR @yBULLET@w WEAPONS"
 
 #define array_index_exists(array,index)
@@ -87,6 +91,7 @@ if global.colors[global.color] = "blind"{
             scrGimmeWep(x,y,0,GameCont.hard,curse,weps)
             with instance_create(x,y,ImpactWrists){
                 sprite_index = global.effect
+                image_angle = 0
             }
             instance_destroy()
         }
@@ -102,11 +107,22 @@ else{
                     name = weapon_get_name(wep)
                     with instance_create(x,y,ImpactWrists){
                         sprite_index = global.effect
+                        image_angle = 0
                     }
                 }
             }
         }
     }
+}
+
+
+
+#define reverse(wep)
+switch wep{
+    case "bouncer smg":
+        return wep_bouncer_smg
+    default:
+        return wep
 }
 
 #define convert(wep)
@@ -122,6 +138,8 @@ switch wep{
     case wep_minigun:
         return "x minigun"
     case wep_smg:
+        return "x smg"
+    case wep_bouncer_smg:
         return "x smg"
     case wep_triple_machinegun:
         return "triple x machinegun"
@@ -158,7 +176,8 @@ else{
         str = string_replace(str, global.colors[i], global.colors[col])
     }
 }
-if mod_exists("weapon",str){
+str = reverse(str)
+if (is_real(str) || mod_exists("weapon",str)) && str != wp{
    if obj with wep set_nest(wep,str)
    else wep = str
    return 1

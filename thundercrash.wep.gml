@@ -76,7 +76,8 @@ create_lightningorb()
 instance_destroy()
 
 #define stop_anim
-if image_index = 1 image_speed = 0
+image_speed = 0
+image_index = 0
 
 #define lightningcluster_hit
 if projectile_canhit(other) = true
