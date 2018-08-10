@@ -49,6 +49,7 @@ with create_psy_laser(x+lengthdir_x(10,gunangle),y+lengthdir_y(10,gunangle)){
 	team = other.team
 	creator = other
 	image_angle = other.gunangle+random_range(-9,9)*creator.accuracy
+	langle = image_angle
 	image_xscale = lspeed/2
 }
 
@@ -65,6 +66,7 @@ with a{
 	loss = .08-skill_get(17)*.04
 	pierce = 1
 	damage = 3
+    langle = 0
 	lspeed = 10-skill_get(17)*4
 	sprite_index = global.sprVector
 	mask_index = mskLaser
@@ -91,15 +93,17 @@ instance_destroy()
 if ammo > 0 {
     ammo-=current_time_scale
     if ammo<=0{
-        var ang = image_angle;
+        var ang = langle;
         if instance_exists(enemy){
             var near = instance_nearest(x,y,enemy);
             //consider removing the distance cap, it wasnt in the original, but it helps with the projectile being aimable
             if distance_to_object(near) < 120 && !collision_line(x,y,near.x,near.y,Wall,0,0){
                 var dir = angle_difference(ang,point_direction(x,y,near.x,near.y));
                 //i also changed this
-                var cap = lspeed;
-                ang -= clamp(dir,-cap,cap)
+                if abs(dir) < 45 {
+                    var cap = 45;
+                    ang -= clamp(dir,-cap,cap)
+                }
             }
         }
         var _x = x+lengthdir_x(lspeed,ang), _y = y+lengthdir_y(lspeed,ang);
@@ -108,6 +112,7 @@ if ammo > 0 {
             image_xscale = lspeed/2
             pierce = other.pierce
             creator = other.creator
+            langle = other.langle
             team = other.team
             image_angle = ang
             if place_meeting(x,y,Wall) ammo = 0

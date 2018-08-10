@@ -1,0 +1,7 @@
+/loadskill prismatic iris
+/loadskill irisslave1
+/loadskill irisslave2
+/loadskill irisslave3
+/loadskill irisslave4
+/loadskill irisslave5
+/loadskill irisslave6
