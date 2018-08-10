@@ -559,7 +559,7 @@ sound_play(sndFlakExplode)
 view_shake_at(x,y,8)
 if skill_get(19) = false{
 repeat(ammo){
-	with mod_script_call("mod","defpack tools","create_lightning_bullet",x,y){
+	with instance_create(x,y,BouncerBullet){
 	team = other.team
 	creator = other.creator
 	motion_set(random(359),5)
