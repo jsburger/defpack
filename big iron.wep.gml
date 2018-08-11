@@ -17,7 +17,7 @@ return false;
 return 17;
 
 #define weapon_cost
-return 15;
+return 10;
 
 #define weapon_swap
 return sndSwapPistol;
@@ -59,8 +59,9 @@ with instance_create(_x,_y,CustomProjectile){
 	force = 2
 	damage = 4
 	lasthit = -4
+	recycle = skill_get(mut_recycle_gland)
 	dir = 0
-	on_step 	 = sniper_step
+	on_end_step  = sniper_step
 	on_hit 		 = void
 	return id
 }
@@ -99,38 +100,30 @@ do
 	with instances_matching_ne([CrystalShield,PopoShield], "team", team){if place_meeting(x,y,other){with other{line()};other.team = team;other.direction = point_direction(x,y,other.x,other.y);other.image_angle = other.direction;with instance_create(other.x,other.y,Deflect){image_angle = other.direction;sound_play_pitch(sndCrystalRicochet,random_range(.9,1.1))}}}
 	with instances_matching_ne([EnergySlash,Slash,EnemySlash,EnergyHammerSlash,BloodSlash,GuitarSlash], "team", team){if place_meeting(x,y,other){with other{line()};other.team = team;other.direction = direction ;other.image_angle = other.direction}}
 	with instances_matching_ne([Shank,EnergyShank], "team", team){if place_meeting(x,y,other){with other{instance_destroy();exit}}}
-	with instances_matching_ne(CustomSlash, "team", team){if place_meeting(x,y,other){mod_script_call(on_projectile[0],on_projectile[1],on_projectile[2]);with other{line()};}}
+	with instances_matching_ne(CustomSlash, "team", team){if place_meeting(x,y,other){with other{line()};mod_script_call(on_projectile[0],on_projectile[1],on_projectile[2]);}}
 	with instances_matching_ne(hitme, "team", team)
 	{
-		if distance_to_object(other) <= 4
-		{
+        if distance_to_object(other) <= 4{
             var _hp = my_health;
-			projectile_hit(self,other.damage,other.force,other.direction)
-			with other
-			{
-                if _hp >= damage*3
-                {
-        			    instance_destroy()
-        			    exit
+            with other{
+                if recycle && irandom(2){
+                    recycle--
+                    with creator ammo[1] = min(ammo[1]+1,typ_amax[1])
+                    sound_play(sndRecGlandProc)
+                    instance_create(x,y,RecycleGland)
                 }
-                else
-                {
-                  damage--
-                  if damage <= 0
-                  {
+                projectile_hit_np(other,damage,force,direction)
+                if _hp >= damage*3 || --damage <= 0{
                     instance_destroy()
                     exit
-                  }
                 }
-			}
-		}
+            }
+        }
 	}
-  if place_meeting(x+lengthdir_x(hyperspeed,direction),y+lengthdir_y(hyperspeed,direction),Wall)
-  {
-    sleep(5)
-    instance_destroy()
-    exit
-  }
+    if place_meeting(x+lengthdir_x(hyperspeed,direction),y+lengthdir_y(hyperspeed,direction),Wall){
+        instance_destroy()
+        exit
+    }
 }
 while instance_exists(self) and dir < 1000
 instance_destroy()

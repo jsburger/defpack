@@ -62,22 +62,22 @@ with instance_create(x,y,Slash)
 		with mod_script_call("mod", "defpack tools", "create_lightning_bullet",x+lengthdir_x(5,other.gunangle),y+lengthdir_y(5,other.gunangle)){
 				creator = other.creator
 				team = other.team
-				motion_set(other.creator.gunangle +random_range(12,20)* other.creator.accuracy,8)
+				motion_set(other.creator.gunangle +random_range(12,20)* other.creator.accuracy,10)
 				image_angle = direction
 		}with mod_script_call("mod", "defpack tools", "create_lightning_bullet",x+lengthdir_x(5,other.gunangle),y+lengthdir_y(5,other.gunangle)){
 				creator = other.creator
 				team = other.team
-				motion_set(other.creator.gunangle -random_range(12,20)* other.creator.accuracy,8)
+				motion_set(other.creator.gunangle -random_range(12,20)* other.creator.accuracy,10)
 				image_angle = direction
 		}with mod_script_call("mod", "defpack tools", "create_lightning_bullet",x+lengthdir_x(5,other.gunangle),y+lengthdir_y(5,other.gunangle)){
 				creator = other.creator
 				team = other.team
-				motion_set(other.creator.gunangle +random_range(24,40)* other.creator.accuracy,8)
+				motion_set(other.creator.gunangle +random_range(24,40)* other.creator.accuracy,10)
 				image_angle = direction
 		}with mod_script_call("mod", "defpack tools", "create_lightning_bullet",x+lengthdir_x(5,other.gunangle),y+lengthdir_y(5,other.gunangle)){
 				creator = other.creator
 				team = other.team
-				motion_set(other.creator.gunangle -random_range(24,40)* other.creator.accuracy,8)
+				motion_set(other.creator.gunangle -random_range(24,40)* other.creator.accuracy,10)
 				image_angle = direction
 		}
 		shell = 1

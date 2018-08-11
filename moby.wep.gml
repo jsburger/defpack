@@ -99,7 +99,7 @@ with instance_create(_x,_y,CustomProjectile){
 	lasthit = -4
 	dir = 0
 	recycle = (skill_get(mut_recycle_gland) && !irandom(2))
-	on_step 	 = sniper_step
+	on_end_step 	 = sniper_step
 	on_hit 		 = void
 	return id
 }

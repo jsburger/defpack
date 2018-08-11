@@ -456,7 +456,7 @@ if skill_get(19) = false{
 			with mod_script_call("mod","defpack tools","create_lightning_bullet",x,y){
 				team = other.team
 				creator = other.creator
-				motion_set(random(359),5)
+				motion_set(random(359),10)
 				image_angle = direction
 				}
 			}

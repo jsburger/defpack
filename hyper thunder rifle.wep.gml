@@ -14,7 +14,7 @@ return 1;
 return false;
 
 #define weapon_load
-return 19;
+return 11;
 
 #define weapon_cost
 return 16;
@@ -26,17 +26,15 @@ return sndSwapMachinegun;
 return -1;
 
 #define weapon_text
-return "replace me please";
+return "ITS A LONG ONE";
 
 #define weapon_fire
 
-repeat (6)
+repeat (12)
 {
 	if (!instance_exists(self)) break;
-	repeat(3)mod_script_call("mod","defpack tools", "shell_yeah", 180, 25, 2+random(3), c_navy)
-	repeat(2)
-	{
-	weapon_post(5, -10, 9);
+	mod_script_call("mod","defpack tools", "shell_yeah", 180, 25, 2+random(3), c_navy)
+	weapon_post(5, -10, 4);
 	if !skill_get(17)sound_play_pitch(sndLightningRifle,random_range(1.3,1.5))else sound_play_pitch(sndLightningRifleUpg,random_range(1.3,1.5))
 	sound_play_pitch(sndHyperRifle,random_range(.7,.9))
 	sound_play_pitchvol(sndGammaGutsKill,1.4,.4+skill_get(17)*.1)
@@ -46,8 +44,6 @@ repeat (6)
 		image_angle = direction
 		team = other.team
 		creator = other
-	}
-	wait 1;
 	}
 	wait 1;
 }

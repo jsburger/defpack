@@ -33,7 +33,7 @@
 /loadwep sniper fire rifle
 
 //BOUNCER BULLET
-/loadwep bouncer pistol
+/loadwep bouncer revolver
 /loadwep bouncer machinegun
 /loadwep triple bouncer machinegun
 /loadwep quad bouncer machinegun
@@ -49,7 +49,7 @@
 /loadwep sniper bouncer rifle
 
 //PEST BULLET
-/loadwep pest pistol
+/loadwep pest revolver
 /loadwep pest machinegun
 /loadwep triple pest machinegun
 /loadwep quad pest machinegun
@@ -298,6 +298,7 @@
 
 ///NON-WEAPONS///
 /loadmod IDPD Weapon Chest/IDPD Weapon Chest
+/load iris
 
 ///TODO///
 /loadwep comboweps/bigsword

@@ -17,13 +17,13 @@ return true;
 return 5;
 
 #define weapon_cost
-return 2;
+return 1;
 
 #define weapon_swap
 return sndSwapPistol;
 
 #define weapon_area
-return 3;
+return -1;
 
 #define weapon_text
 return choose("GO FOR A @wTRICKSHOT @sOR TWO");

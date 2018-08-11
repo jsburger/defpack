@@ -16,7 +16,7 @@ return false;
 return 12;
 
 #define weapon_cost
-return 10;
+return 5;
 
 #define weapon_swap
 return sndSwapMachinegun;
@@ -25,7 +25,7 @@ return sndSwapMachinegun;
 return -1;
 
 #define weapon_text
-return "replace me please";
+return "bizarre looking weaponry";
 
 #define weapon_fire
 

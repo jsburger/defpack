@@ -16,13 +16,13 @@ return true;
 return 32;
 
 #define weapon_cost
-return 12;
+return 7;
 
 #define weapon_swap
 return sndSwapPistol;
 
 #define weapon_area
-return 14;
+return -1;
 
 #define weapon_text
 return "WOBBLING BLAST";

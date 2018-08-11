@@ -16,7 +16,7 @@ return true;
 return 8;
 
 #define weapon_cost
-return 3;
+return 4;
 
 #define weapon_swap
 return sndSwapPistol;
@@ -25,11 +25,11 @@ return sndSwapPistol;
 return -1;
 
 #define weapon_text
-return "replace me please";
+return "PERCUSSION BLAST";
 
 #define weapon_fire
 
-repeat(2)
+repeat(3)
 {
 	weapon_post(4,-3,7)
 	sound_play_pitchvol(sndGammaGutsKill,1.4,.3+skill_get(17)*.2)
@@ -38,10 +38,11 @@ repeat(2)
 	mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, 2+random(3), c_navy)
 	with mod_script_call("mod", "defpack tools", "create_lightning_bullet",x,y){
 		move_contact_solid(other.gunangle,6)
-		motion_add(other.gunangle+random_range(-13,13)*other.accuracy,8)
+		motion_add(other.gunangle+random_range(-13,13)*other.accuracy,10)
 		image_angle = direction
 		team = other.team
 		creator = other
 	}
 	wait 3
+	if !instance_exists(self)exit
 }
