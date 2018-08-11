@@ -17,13 +17,13 @@ return true;
 return 2;
 
 #define weapon_cost
-return 2;
+return 1;
 
 #define weapon_swap
 return sndSwapMachinegun;
 
 #define weapon_area
-return 10;
+return -1;
 
 #define weapon_text
 return choose("WOBBLE WOBBLE","YOU AND I WEREN'T MEANT TO BE");

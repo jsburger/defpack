@@ -26,7 +26,7 @@ return sndSwapMachinegun;
 return -1;
 
 #define weapon_text
-return "replace me please";
+return "PRECISION PERCUSSION";
 
 #define weapon_fire
 var ang = point_direction(x,y,mouse_x[index],mouse_y[index]);
@@ -45,6 +45,12 @@ if fork(){
 }
 repeat(2)
 {
+    if instance_exists(enemy)
+    {
+    	var mydude = instance_nearest(mouse_x[index],mouse_y[index],enemy);
+    	ang = point_direction(x,y,mydude.x,mydude.y)
+    }
+
 	sound_play_pitch(sndSmartgun,random_range(.8,1.2))
 	sound_play_pitchvol(sndGammaGutsKill,1.6,.3+skill_get(17)*.2)
 	if !skill_get(17)sound_play_pitch(sndLightningRifle,random_range(1.4,1.6))else sound_play_pitch(sndLightningRifleUpg,random_range(1.6,1.8))
@@ -62,9 +68,10 @@ repeat(2)
 	}
 
 	with mod_script_call("mod","defpack tools","create_lightning_bullet",x,y){
-		motion_set(ang+random_range(-6,6)*other.accuracy,8)
+		motion_set(ang+random_range(-6,6)*other.accuracy,10)
 		projectile_init(other.team,other)
 		image_angle = direction
 	}
 	wait(3)
+	if !instance_exists(self)exit
 }

@@ -17,13 +17,13 @@ return false;
 return 16;
 
 #define weapon_cost
-return 6;
+return 3;
 
 #define weapon_swap
 return sndSwapPistol;
 
 #define weapon_area
-return 6;
+return -1;
 
 #define weapon_text
 return choose("TRIPLE BOUNCE");
@@ -43,5 +43,5 @@ repeat(3)
 		motion_add(other.gunangle+random_range(-8,8)*other.accuracy,6)
 	}
 	wait(3)
-	if !instance_exists(self){instance_destroy();exit}
+	if !instance_exists(self){exit}
 }

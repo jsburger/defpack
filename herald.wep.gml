@@ -63,8 +63,6 @@ global.sh = shader_create(
 	};
 
 	sampler2D s0; // Get Sprite Being Drawn
-	sampler2D s1;
-	uniform float frame : register(c0);
 
 
 	float4 main(PixelShaderInput INPUT) : SV_TARGET
@@ -127,7 +125,7 @@ return "THE HERALD"
 #define weapon_type
 return 4
 #define weapon_cost
-return 0
+return 3
 #define weapon_area
 return 12
 #define weapon_load
@@ -235,6 +233,7 @@ with a{
 return a
 
 #define meteor()
+with creator ammo[other.type] -= (infammo == 0) ? other.cost : 0
 meteortime = 0
 var ang = random(360)
 with instance_create(mouse_x[index]+lengthdir_x(random(accbase),ang), mouse_y[index]+lengthdir_y(random(accbase),ang),CustomObject){
@@ -263,7 +262,6 @@ surface_reset_target()
 #define meteordraw
 shader_set(global.sh);
 shader_set_vertex_constant_f(0, matrix_multiply(matrix_multiply(matrix_get(matrix_world), matrix_get(matrix_view)), matrix_get(matrix_projection)));
-shader_set_fragment_constant_f(0, [current_frame]);
 
 texture_set_stage(0, surface_get_texture(global.sf));
 

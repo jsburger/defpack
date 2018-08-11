@@ -16,7 +16,7 @@ return true;
 return 43;
 
 #define weapon_cost
-return 30;
+return 20;
 
 #define weapon_swap
 return sndSwapMachinegun;
@@ -30,10 +30,9 @@ with mod_script_call("mod","defpack tools", "shell_yeah_long", 100, 8, 3+random(
 sound_play_pitchvol(sndSwapPistol,2,.4)
 sound_play_pitchvol(sndRecGlandProc,1.4,1)
 weapon_post(-3,0,3)
-return -1;
 
 #define weapon_area
-return 9;
+return -1;
 
 #define weapon_text
 return choose("replace me please");
@@ -122,7 +121,7 @@ if button_check(creator.index, btn) = false || holdtime <= 0
 			recycleset = (irandom(2)==0)
 			image_angle = other.gunangle
 			motion_set(other.gunangle,8)
-			on_step 	 = sniper_step
+			on_end_step 	 = sniper_step
 			on_destroy = sniper_destroy
 			on_hit 		 = void
 		}

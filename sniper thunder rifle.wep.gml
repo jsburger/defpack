@@ -40,7 +40,7 @@ return -1;
 return -1;
 
 #define weapon_text
-return choose("replace me please");
+return choose("THE SPEED OF SOUND");
 
 #define weapon_fire
 
@@ -53,6 +53,7 @@ with instance_create(x,y,CustomObject)
 	charged = 1
 	holdtime = 5 * 30
 	depth = TopCont.depth
+	fired = 0
 	undef = view_pan_factor[creator.index]
 	on_step 	 = snipercharge_step
 	on_destroy = snipercharge_destroy
@@ -88,70 +89,62 @@ sound_play_gun(sndFootOrgSand4,999999999999999999999999999999999999999999999999,
 x = mouse_x[creator.index]
 y = mouse_y[creator.index]
 for (var i=0; i<maxp; i++){player_set_show_cursor(creator.index,i,0)}
-if button_check(creator.index, btn) = false || holdtime <= 0
+if (button_check(creator.index, btn) = false || holdtime <= 0) && !fired
 {
-	var _a = 0
-	do
-	{
-		if fork()
+    fired = 1
+	repeat(2){
+	    sound_stop(sndFlameCannonLoop)
+		sound_play_gun(sndFootOrgSand4,999999999999999999999999999999999999999999999999,1)
+		sound_pitch(sndNoSelect,1)
+		var _ptch = random_range(-.5,.5)
+		sound_play_pitch(sndHeavyRevoler,.7-_ptch/3)
+		sound_play_pitch(sndSawedOffShotgun,1.8-_ptch)
+		sound_play_pitch(sndHeavyMachinegun,1.7+_ptch)
+		sound_play_pitch(sndLightningRifleUpg,random_range(1.8,2.1))
+		sound_play_pitchvol(sndGammaGutsKill,random_range(1.8,2.1),1*skill_get(17))
+		sound_play_pitch(sndSniperFire,random_range(.6,.8))
+		sound_play_pitch(sndHeavySlugger,1.3+_ptch/2)
+ 		var _c = charge;
+		with creator
 		{
-			_a++;
-		  sound_stop(sndFlameCannonLoop)
-			sound_play_gun(sndFootOrgSand4,999999999999999999999999999999999999999999999999,1)
-			sound_pitch(sndNoSelect,1)
-			var _ptch = random_range(-.5,.5)
-			sound_play_pitch(sndHeavyRevoler,.7-_ptch/3)
-			sound_play_pitch(sndSawedOffShotgun,1.8-_ptch)
-			sound_play_pitch(sndHeavyMachinegun,1.7+_ptch)
-			sound_play_pitch(sndLightningRifleUpg,random_range(1.8,2.1))
-			sound_play_pitchvol(sndGammaGutsKill,random_range(1.8,2.1),1*skill_get(17))
-			sound_play_pitch(sndSniperFire,random_range(.6,.8))
-			sound_play_pitch(sndHeavySlugger,1.3+_ptch/2)
- 			var _c = charge;
-			with creator
-			{
-				weapon_post(12,2,158)
-				motion_add(gunangle -180,_c / 20)
-				with instance_create(x+lengthdir_x(10,gunangle),y+lengthdir_y(10,gunangle),CustomProjectile)
-				{
-						sleep(120)
-						move_contact_solid(other.gunangle,18)
-						typ = 1
-						creator = other
-						index = other.index
-						team  = other.team
-						image_yscale = .5
-						trailscale = 1 + (_c/110)
-						hyperspeed = 4
-						sprite_index = mskNothing
-						mask_index = mskBullet2
-						force = 7
-						damage = 12 + round(28*(_c/100))
-						lasthit = -4
-						dir = 0
-						dd = 0
-						recycleset = 0
-						if irandom(2)=0 recycleset = 1
-						image_angle = other.gunangle
-						direction = other.gunangle
-						on_step 	 = sniper_step
-						on_destroy = sniper_destroy
-						on_hit 		 = void
-					}
-					with instance_create(x,y,CustomObject)
-					{
-						move_contact_solid(other.gunangle,24)
-						depth = -1
-						sprite_index = global.sprLightningBullet
-						image_speed = .4
-						on_step = muzzle_step
-						on_draw = muzzle_draw
-					}
-				}
+			weapon_post(12,2,158)
+			motion_add(gunangle -180,_c / 20)
+			with instance_create(x+lengthdir_x(10,gunangle),y+lengthdir_y(10,gunangle),CustomProjectile){
+				move_contact_solid(other.gunangle,18)
+				typ = 1
+				creator = other
+				index = other.index
+				team  = other.team
+				image_yscale = .5
+				trailscale = 1 + (_c/110)
+				hyperspeed = 8
+				sprite_index = mskNothing
+				mask_index = mskBullet2
+				force = 7
+				damage = 12 + round(28*(_c/100))
+				lasthit = -4
+				dir = 0
+				dd = 0
+				recycleset = 0
+				if irandom(2)=0 recycleset = 1
+				image_angle = other.gunangle
+				direction = other.gunangle
+				on_end_step 	 = sniper_step
+				on_destroy = sniper_destroy
+				on_hit 		 = void
 			}
-			sleep(clamp(_c*10,400,_c*10))
+			with instance_create(x,y,CustomObject)
+			{
+				move_contact_solid(other.gunangle,24)
+				depth = -1
+				sprite_index = global.sprLightningBullet
+				image_speed = .4
+				on_step = muzzle_step
+				on_draw = muzzle_draw
+			}
 		}
-		while instance_exists(self) and _a < 2
+		wait(4)
+    }
 	instance_destroy()
 }
 
@@ -168,7 +161,7 @@ do
 	dir += hyperspeed
 	x += lengthdir_x(hyperspeed,direction)
 	y += lengthdir_y(hyperspeed,direction)
-	if random(17) < 1*current_time_scale
+	if random(17) < 2
 	{
 		with instance_create(x,y,Lightning)
 		{
@@ -221,9 +214,9 @@ var dis = point_distance(x,y,xstart,ystart) + 1;
 var num = 20;
 for var i = 0; i <= num; i++{
     with instance_create(xstart+lengthdir_x(dis/num * i,direction),ystart + lengthdir_y(dis/num * i,direction),BoltTrail){
-        image_blend = c_yellow
+        image_blend = c_blue
         image_angle = other.direction
-        image_yscale = other.trailscale * 2 * (i/num)
+        image_yscale = other.trailscale * (i/num)
         image_xscale = dis/num
     }
 }
@@ -236,7 +229,7 @@ var dis = point_distance(x,y,xstart,ystart) + 1;
 var num = 20;
 for var i = 0; i <= num; i++{
     with instance_create(xstart+lengthdir_x(dis/num * i,direction),ystart + lengthdir_y(dis/num * i,direction),BoltTrail){
-        image_blend = c_navy
+        image_blend = c_aqua
         image_angle = other.direction
         image_yscale = other.trailscale * (i/num)
         image_xscale = dis/num

@@ -128,7 +128,7 @@ if button_check(creator.index, btn) = false || holdtime <= 0
 				if irandom(2)=0 recycleset = 1
 				image_angle = other.gunangle
 				direction = other.gunangle
-				on_step 	 = sniper_step
+				on_end_step 	 = sniper_step
 				on_destroy = sniper_destroy
 				on_hit 		 = void
 		}

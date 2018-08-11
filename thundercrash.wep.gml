@@ -77,7 +77,7 @@ instance_destroy()
 
 #define stop_anim
 image_speed = 0
-image_index = 0
+image_index = 1
 
 #define lightningcluster_hit
 if projectile_canhit(other) = true

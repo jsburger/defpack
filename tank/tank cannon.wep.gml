@@ -58,7 +58,7 @@ with instance_create(_x,_y,CustomProjectile){
 	damage = 3
 	lasthit = -4
 	dir = 0
-	on_step 	 = sniper_step
+	on_end_step 	 = sniper_step
 	on_hit 		 = void
 	return id
 }

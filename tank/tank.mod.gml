@@ -291,7 +291,7 @@ with instance_create(_x,_y,CustomProjectile){
 	dd = 0
 	recycleset = 0
 	if irandom(2)=0 recycleset = 1 
-	on_step 	 = sniper_step
+	on_end_step 	 = sniper_step
 	on_destroy = sniper_destroy
 	on_hit 		 = void
 	return id
