@@ -2,7 +2,7 @@
 global.sprBlaster 		  = sprite_add_weapon("sprites/sprBlaster.png",7,5)
 global.sprBlasterRocket = sprite_add("sprites/projectiles/sprBlasterRocket.png",0,12,6)
 #define weapon_name
-return "BLASTER"
+return "BUSTER"
 
 #define weapon_sprt
 return global.sprBlaster;

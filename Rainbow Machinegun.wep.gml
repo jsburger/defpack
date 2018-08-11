@@ -54,7 +54,7 @@ switch rainbow_cycle{
 		break
 	case 1:
 		mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, random_range(2,5), c_yellow)
-		with instance_create(x,y,Bullet1){
+		with instance_create(x,y,BouncerBullet){
 			creator = other
 			team = other.team
 			motion_add(other.gunangle+random_range(-10,10)*other.accuracy,20)

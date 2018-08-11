@@ -3,19 +3,49 @@ global.color = 0                                                                
 global.colors = ["stock", "pest", "fire", "psy", "thunder", "blind", "bouncer"]                                                                  //the actual words used for the gun filenames
 global.names = ["prismatic iris", "pestilent gaze", "blazing visage", "all-seeing eye", "clouded stare", "filtered lens", "quivering sight"]     //sub mutation names
 global.customs = ["sniper rifle", "bullet cannon", "bullak cannon", "gunhammer"]                                                                 //custom guns that need coloring too, make sure to add to the converter switch
-global.order = [-1,0,1,2,3,5,4]                                                                                                                  //the code goes through the colors array in order, assigning the subpick to the slot numbered here
-global.descriptions = ["h", "@gTOXIC", "@rFLAMING", "@pHOMING", "@bCHARGED", "@sSOMETHING NEW", "@yBOUNCY"]                                       //shit thats appended to the subpick description
+global.order = [-1,2,0,4,3,5,1]                                                                                              //the code goes through the colors array in order, assigning the subpick to the slot numbered here
+global.descriptions = ["h", "@gTOXIC", "@rFLAMING", "@pHOMING", "@bCHARGED", "@wSOMETHING NEW", "@yBOUNCY"]                                       //shit thats appended to the subpick description
 global.colorcount = array_length_1d(global.colors)-1
 global.icons = []
 global.icon = sprite_add("sprMutPrismaticIris0.png",1,12,16)
 global.effect = sprite_add("sprIrisEffect.png",8,16,11)
 for var i = 0; i <= global.colorcount; i++{
-    array_push(global.icons,sprite_add(`sprMutPrismaticIcon${i}.png`,1,7,8))
+    array_push(global.icons,sprite_add(`sprMutPrismaticIcon${i}.png`,1,8,7))
 }
 #define game_start
 global.color = 0
 
+#define sound_play_iris()
+var a = instance_create(0,0,CustomObject);
+with a
+{
+  sound_play_pitch(sndStatueDead,2)
+  sound_play_pitchvol(sndStatueCharge,.8,.4)
+  sound_play_pitch(sndHeavyRevoler,.6)
+  on_step = sound_step
+  maxsound = 1
+  timer  = 30
+  timer2 = 53
+  amount = 0
+  on_step = sound_step
+}
+return a;
+
+#define sound_step
+var i = 0;
+timer -= current_time_scale
+if timer <= 0 && amount <= 3{amount++;timer = 8-amount;sound_play_pitchvol(sndHeavyRevoler,.8+amount/10,.5-amount/20)}
+if amount = 3
+{
+  sound_play_pitch(sndMutant2Cptn,1.1)
+}
+if amount >= 3
+{
+  if timer2 > 0 timer2 -= current_time_scale else{sound_play_pitch(sndMutant2Cptn,.0000000000000000000000000001);instance_destroy()}
+}
+
 #define skill_take
+sound_play_iris()
 GameCont.skillpoints++
 GameCont.endpoints++
 if fork(){
@@ -35,7 +65,7 @@ if fork(){
             skill = skil
             sprite_index = mod_variable_get("skill",skil,"sprite")
             name = `${global.names[i]}`
-            text = "@yBULLET@w WEAPONS BECOME " + global.descriptions[i]
+            text = "@yBULLET@s WEAPONS BECOME " + global.descriptions[i]
         }
     }
     exit
@@ -68,8 +98,8 @@ sprite_index = global.icon
 return global.icons[global.color]
 
 #define skill_text
-if global.color > 0 return "@yBULLET@w WEAPONS BECOME " + global.descriptions[global.color]
-return "@pREIMAGINE@w YOUR @yBULLET@w WEAPONS"
+if global.color > 0 return "@yBULLET@s WEAPONS BECOME " + global.descriptions[global.color]
+return "@wREIMAGINE@s YOUR @yBULLET@s WEAPONS"
 
 #define array_index_exists(array,index)
 var o = array_length_1d(array);
@@ -166,7 +196,7 @@ var str = wp;
 var obj = 0
 while is_object(str){
     obj++
-    str = str.wep    
+    str = str.wep
 }
 if is_real(str) || array_index_exists(global.customs,str){
     str = string_replace(convert(str),"x ", `${global.colors[col]} `)
@@ -209,10 +239,10 @@ else destination = payload
 			 // Weapon Exceptions:
 			if(is_array(_nowep) && array_find_index(_nowep, w) >= 0) c = 1;
 			if(w == _nowep) c = 1;
-            
+
             //Prismatic Iris Denounces Bullet Weapons
             if weapon_get_type(w) = 1 c = 1
-            
+
 			 // Specific Weapon Spawn Conditions:
 			if(!is_string(w)) switch(w){
 				case wep_super_disc_gun:        if(curse <= 0)			c = 1; break;
@@ -233,4 +263,3 @@ else destination = payload
 
         return id;
 	}
-
