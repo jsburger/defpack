@@ -1,12 +1,15 @@
 #define init
-global.sprWhitePrism  = sprite_add_weapon("sprites/sprWhitePrism.png", 2, 6);
-global.sprBlackPrism  = sprite_add_weapon("sprites/sprBlackPrism.png", 2, 6);
-global.sprBluePrism   = sprite_add_weapon("sprites/sprBluePrism.png", 2, 6);
-global.sprYellowPrism = sprite_add_weapon("sprites/sprYellowPrism.png", 2, 6);
-global.sprGreenPrism  = sprite_add_weapon("sprites/sprGreenPrism.png", 2, 6);
-global.sprPurplePrism = sprite_add_weapon("sprites/sprPurplePrism.png", 2, 6);
-global.sprRedPrism 		= sprite_add_weapon("sprites/sprRedPrism.png", 2, 6);
- //0 = light 1 = dark 2 = lightning 3 = regular 4 = pest 5 = spy 6 = fire
+global.sprPrism[0] = sprite_add_weapon("sprites/sprWhitePrism.png", 2, 6);
+global.sprPrism[1] = sprite_add_weapon("sprites/sprBlackPrism.png", 2, 6);
+global.sprPrism[2] = sprite_add_weapon("sprites/sprBluePrism.png", 2, 6);
+global.sprPrism[3] = sprite_add_weapon("sprites/sprYellowPrism.png", 2, 6);
+global.sprPrism[4] = sprite_add_weapon("sprites/sprGreenPrism.png", 2, 6);
+global.sprPrism[5] = sprite_add_weapon("sprites/sprPurplePrism.png", 2, 6);
+global.sprPrism[6] = sprite_add_weapon("sprites/sprRedPrism.png", 2, 6);
+//0 = light 1 = dark 2 = lightning 3 = regular 4 = pest 5 = psy 6 = fire
+
+
+
 
 #define weapon_name
 return "ANTIPRISM"
@@ -15,13 +18,7 @@ return "ANTIPRISM"
 if "AntiCycle" not in self{return global.sprWhitePrism}
 else
 {
-	if AntiCycle = 0{return global.sprWhitePrism}
-	if AntiCycle = 1{return global.sprRedPrism}
-	if AntiCycle = 2{return global.sprYellowPrism}
-	if AntiCycle = 3{return global.sprGreenPrism}
-	if AntiCycle = 4{return global.sprBluePrism}
-	if AntiCycle = 5{return global.sprPurplePrism}
-	if AntiCycle = 6{return global.sprBlackPrism}
+	return global.sprPrism[AntiCycle]
 }
 
 #define weapon_type

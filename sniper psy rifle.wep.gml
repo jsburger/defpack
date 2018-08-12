@@ -148,7 +148,7 @@ for (var i=0; i<maxp; i++){player_set_show_cursor(index,i,1)}
 #define void
 
 #define sniper_step
-
+var trails = [];
 do
 {
 	dir += hyperspeed
@@ -167,7 +167,7 @@ do
 	    if !collision_line(x - lengthdir_x(hyperspeed,direction),y - lengthdir_y(hyperspeed,direction),q.x,q.y,Wall,1,1){
             var ang1 = point_direction(x,y,q.x,q.y),
                 ang2 = angle_difference(direction,ang1);
-            if abs(ang2) < 120{
+            if abs(ang2) < 90{
                 direction -= clamp(ang2,-cap,cap)
                 reset = 0
             }
@@ -181,6 +181,7 @@ do
 	    image_yscale = other.trailscale
 	    image_blend = c_fuchsia
 	    image_angle = other.direction
+	    array_push(trails,id)
 	}
 
 	if dd <= 0
@@ -211,6 +212,14 @@ do
 }
 while instance_exists(self) and dir < 1000
 instance_destroy()
+var a = array_length(trails);
+for var i = 0; i < a; i++{
+    with trails[i]{
+        image_yscale *= i/a
+    }
+}
+
+
 
 #define instance_nearest_matching_ne(_x,_y,obj,varname,value)
 var num = instance_number(obj),
