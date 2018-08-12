@@ -39,7 +39,7 @@ with mod_script_call("mod","defpack tools","create_fire_bullet",x,y){
 	team = other.team
 	creator = other
 }
-with instance_create(x,y,Bullet1){
+with instance_create(x,y,BouncerBullet){
 	motion_add(other.gunangle-7+random_range(-3,3)*other.accuracy,10)
 	image_angle = direction
 	team = other.team

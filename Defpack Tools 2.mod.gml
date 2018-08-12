@@ -9,7 +9,7 @@ global.sprFireFlak = sprite_add("sprites/projectiles/Fire Flak.png", 2, 8, 8)
 global.sprDarkFlak = sprFlakBullet //rip
 global.sprIDPDFlak = sprite_add("sprites/projectiles/IDPD Flak.png", 2, 8, 8)
 global.sprSplitFlak = sprite_add("sprites/projectiles/IDPD Flak.png", 2, 8, 8)
-global.flaks = ["recursive", "fire", "toxic", "lightning", "psy", "dark", "split"]
+global.flaks = ["recursive", "fire", "toxic", "lightning", "psy", "dark", "split", "bouncer"]
 
 #define flak_draw
 draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, image_yscale, image_angle, image_blend, 1.0);
@@ -485,6 +485,102 @@ else
 	}
 }
 
+#define create_bouncer_flak(_x,_y)
+var a = instance_create(_x,_y,CustomProjectile);
+with(a){
+	name = "Bouncer Bullet Flak"
+	sprite_index = sprBouncerBullet
+	mask_index = sprGrenade
+	image_speed = 1
+	image_angle += 90
+	image_xscale = 1.5
+	image_yscale = 1.5
+	ammo = 8
+	force = 8
+	typ = 1
+	bounce = 2
+	damage = 16
+	mask_index = mskFlakBullet
+	friction = 0
+	on_draw = flak_draw
+	on_destroy = bounce_pop
+	on_step = bounce_step
+	on_hit = bounce_hit
+	on_wall = bounce_wall
+}
+return a;
+
+#define bounce_wall
+if speed > 12 speed = 12
+move_bounce_solid(false)
+speed -= 3
+bounce--
+with instance_create(x,y,BouncerBullet){
+	team = other.team
+	creator = other.creator
+	view_shake_at(x,y,8)
+	sleep(3)
+	sound_play_pitch(sndBouncerBounce,random_range(.6,.7))
+	motion_set(other.direction+random_range(-33,33),8)
+	image_angle = direction
+	}
+if bounce < 0 instance_destroy()
+
+#define bounce_hit
+if other.team != team
+{
+		if projectile_canhit_melee(other) = true
+		{
+			var _hp = other.my_health;
+			projectile_hit(other,damage,force,direction)
+			damage = round(damage-_hp)
+			instance_create(x,y,Smoke)
+			if ammo > 0
+			{
+				ammo--
+				with instance_create(x,y,BouncerBullet){
+					team = other.team
+					creator = other.creator
+					motion_set(random(359),18)
+					image_angle = direction
+					}
+			}
+			if damage <= 0 instance_destroy()
+		}
+}
+
+#define bounce_step
+if image_index = 1 image_speed = 0
+image_angle += 8
+
+#define bounce_pop
+sound_play(sndMachinegun)
+sound_play(sndFlakExplode)
+view_shake_at(x,y,8)
+if skill_get(19) = false{
+repeat(ammo){
+	with instance_create(x,y,BouncerBullet){
+	team = other.team
+	creator = other.creator
+	motion_set(random(359),5)
+	image_angle = direction
+	}
+}
+}
+else
+{
+	var offset = random(359);
+	repeat(ammo){
+			with instance_create(x,y,BouncerBullet){
+				team = other.team
+				creator = other.creator
+				motion_set(offset,5)
+				image_angle = direction
+				}
+			offset += 360/ammo
+			}
+}
+
 #define create_toxic_flak(_x,_y)
 var a = instance_create(_x,_y,CustomProjectile);
 with(a){
@@ -879,6 +975,9 @@ var y1 = y+lengthdir_y(offset,gunangle);
 var b = "stop this";
 if bullet = HeavyBullet{
 	b = create_heavy_flak(x1,y1)
+}
+if bullet = BouncerBullet{
+	b = create_bouncer_flak(x1,y1)
 }
 if bullet = "split"{
 	b = create_split_flak(x1,y1)

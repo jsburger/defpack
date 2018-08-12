@@ -1,5 +1,5 @@
 #define init
-global.sprBouncerMinigun = sprite_add_weapon("sprites/sprBouncerMinigun.png", 3, 1);
+global.sprBouncerMinigun = sprite_add_weapon("sprites/sprBouncerMinigun.png", 3, 4);
 
 #define weapon_name
 return "BOUNCER MINIGUN"
@@ -33,7 +33,7 @@ return choose("WOBBLE WOBBLE","YOU AND I WEREN'T MEANT TO BE");
 sound_play_pitch(sndBouncerSmg,random_range(1.1,1.2))
 sound_play_pitch(sndMinigun,random_range(.8,1.2))
 weapon_post(5,0,8)
-with instance_create(x,y,Shell){motion_add(other.gunangle-180+random_range(-40,40),2+random(2))}
+with instance_create(x,y,Shell){motion_add(other.gunangle+90+random_range(-40,40),2+random(2))}
 with instance_create(x,y,BouncerBullet)
 {
 	move_contact_solid(other.gunangle,12)

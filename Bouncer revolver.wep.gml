@@ -33,7 +33,7 @@ return choose("WOBBLE WOBBLE","YOU AND I WEREN'T MEANT TO BE");
 sound_play_pitch(sndBouncerSmg,random_range(1.1,1.2))
 sound_play(sndPistol)
 weapon_post(2,-2,3)
-
+with instance_create(x,y,Shell){motion_add(other.gunangle+other.right*100+random(80)-40,2+random(2))}
 with instance_create(x,y,BouncerBullet)
 {
 	team = other.team

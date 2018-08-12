@@ -61,6 +61,16 @@ with instance_create(x,y,CustomObject)
 					ammo = 6+irandom(18)
 					creator = other.creator
 					image_angle = other.direction
+					if instance_exists(hitme)
+					{
+						var nearest = -4;
+						with instances_matching_ne(hitme,"team",other.team)
+						{
+							//if nearest = -4 nearest = self
+							if (!instance_exists(nearest) || distance_to_object(other)<distance_to_object(nearest)) && distance_to_object(other)<= 128{nearest = id}
+						}
+						if nearest != -4 image_angle = point_direction(x,y,nearest.x,nearest.y)
+					}
 					team = other.team
 					//copypasted alarm0 code
 					var dir;

@@ -2,7 +2,7 @@
 global.sprBlaster 		  = sprite_add_weapon("sprites/sprBlaster.png",7,5)
 global.sprBlasterRocket = sprite_add("sprites/projectiles/sprBlasterRocket.png",0,12,6)
 #define weapon_name
-return "BLASTER"
+return "BUSTER"
 
 #define weapon_sprt
 return global.sprBlaster;
@@ -45,8 +45,7 @@ move_contact_solid(other.gunangle,16)
 	team = other.team
 	creator = other
 	typ = 1
-	force = 10
-	damage = 3
+	damage = 4
 	motion_add(other.gunangle+(random_range(-7,7))*other.accuracy,.1)
 	friction = -1.5
 	maxspeed = 14
@@ -71,7 +70,7 @@ move_contact_solid(other.gunangle,16)
 
 #define blaster_step
 if speed > maxspeed speed = maxspeed
-if speed = maxspeed if lifetime>0{if lifetime = 5{sound_play_pitch(sndSniperTarget,8)};lifetime -= current_time_scale}else{instance_destroy();exit}
+//if speed = maxspeed if lifetime>0{if lifetime = 5{sound_play_pitch(sndSniperTarget,8)};lifetime -= current_time_scale}else{instance_destroy();exit}
 with instance_create(x-lengthdir_x(16+speed,other.direction),y-lengthdir_y(16+speed,other.direction),BoltTrail)
 {
 	image_blend = c_yellow
@@ -93,8 +92,9 @@ if projectile_canhit(other) = true
 	sleep(12*other.size)
 	view_shake_at(x,y,5)
 	with instance_create(x,y,Smoke){image_angle = random(360)}
-	projectile_hit(other,damage,force,direction)
+	projectile_hit(other,damage,speed,direction)
 }
+if other.size > 1 instance_destroy()
 
 #define blaster_wall
 sleep(5)
