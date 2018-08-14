@@ -1,5 +1,5 @@
 #define init
-global.sprBigIron = sprite_add_weapon("sprites/sprBigIron.png", 3, 2);
+global.sprBigIron = sprite_add_weapon("sprites/sprBigIron.png", 2, 4);
 
 #define weapon_name
 return "BIG IRON"
@@ -37,6 +37,7 @@ sound_play_pitch(sndHeavyNader,random_range(1.3,1.4))
 sound_play_pitch(sndMachinegun,random_range(.6,.7))
 repeat(6)
 {
+with instance_create(x,y,Shell){motion_add(other.gunangle+90+random_range(-40,40),2+random(2))}
   with create_bullet(x+lengthdir_x(24,gunangle),y+ lengthdir_y(24,gunangle)){
       on_destroy = shell_destroy
       direction = other.gunangle + random_range(-14,14)*other.accuracy;

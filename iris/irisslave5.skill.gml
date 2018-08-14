@@ -3,6 +3,7 @@ global.mycolor = real(string_char_at(mod_current,10))
 global.sprite = sprite_add("sprMutPrismaticIris"+string(global.mycolor)+".png",1,12,16)
 
 #define skill_take
+sound_play_pitchvol(sndBasicUltra,2,.5)
 mod_variable_set("skill","prismatic iris","color",global.mycolor)
 skill_set(mod_current,0)
 

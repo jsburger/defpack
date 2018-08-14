@@ -275,7 +275,7 @@
 
 ///GOLD///
 /loadwep golden abris pistol
-/loadwep golden bullak cannon
+/loadwep finished stuff/golden plasmite pistol
 /loadwep golden gunhammer
 
 ///TOOLS///

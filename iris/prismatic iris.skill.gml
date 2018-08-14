@@ -35,11 +35,11 @@ return a;
 var i = 0;
 timer -= current_time_scale
 if timer <= 0 && amount <= 3{amount++;timer = 8-amount;sound_play_pitchvol(sndHeavyRevoler,.8+amount/10,.5-amount/20)}
-if amount = 3
+if amount = 2
 {
-  sound_play_pitch(sndMutant2Cptn,1.1)
+  sound_play_pitchvol(sndMutant2Cptn,1.1,.5)
 }
-if amount >= 3
+if amount >= 2
 {
   if timer2 > 0 timer2 -= current_time_scale else{sound_play_pitch(sndMutant2Cptn,.0000000000000000000000000001);instance_destroy()}
 }
