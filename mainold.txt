@@ -1,0 +1,336 @@
+///BULLET WEAPONS///
+
+//GUNHAMMER
+/loadwep gunhammer
+/loadwep heavy gunhammer
+/loadwep ultra gunhammer
+
+//BULLAKS
+/loadwep bullak cannon
+/loadwep bullak machinegun
+
+//CANNON
+/loadwep bullet cannon
+
+//SNIPER RIFLES
+/loadwep sniper rifle
+
+//FIRE BULLET
+/loadwep fire revolver
+/loadwep fire machinegun
+/loadwep triple fire machinegun
+/loadwep quad fire machinegun
+/loadwep fire smg
+/loadwep assault fire rifle
+/loadwep hyper fire rifle
+/loadwep fire minigun
+/loadwep double fire minigun
+/loadwep smart fire gun
+/loadwep fire bullet cannon
+/loadwep fire gunhammer
+/loadwep fire bullet cannon
+/loadwep fire bullak cannon
+/loadwep sniper fire rifle
+
+//BOUNCER BULLET
+/loadwep bouncer revolver
+/loadwep bouncer machinegun
+/loadwep triple bouncer machinegun
+/loadwep quad bouncer machinegun
+//loadwep bouncer smg
+/loadwep assault bouncer rifle
+/loadwep hyper bouncer rifle
+/loadwep bouncer minigun
+/loadwep double bouncer minigun
+/loadwep smart bouncer gun
+/loadwep bouncer gunhammer
+/loadwep bouncer bullet cannon
+/loadwep bouncer bullak cannon
+/loadwep sniper bouncer rifle
+
+//PEST BULLET
+/loadwep pest revolver
+/loadwep pest machinegun
+/loadwep triple pest machinegun
+/loadwep quad pest machinegun
+/loadwep pest smg
+/loadwep assault pest rifle
+/loadwep hyper pest rifle
+/loadwep pest minigun
+/loadwep double pest minigun
+/loadwep smart pest gun
+/loadwep pest bullet cannon
+/loadwep pest gunhammer
+/loadwep pest bullet cannon
+/loadwep pest bullak cannon
+/loadwep sniper pest rifle
+
+//THUNDER BULLET
+/loadwep thunder revolver
+/loadwep thunder machinegun
+/loadwep triple thunder machinegun
+/loadwep quad thunder machinegun
+/loadwep thunder smg
+/loadwep assault thunder rifle
+/loadwep hyper thunder rifle
+/loadwep thunder minigun
+/loadwep double thunder minigun
+/loadwep smart thunder gun
+/loadwep thunder bullet cannon
+/loadwep thunder gunhammer
+/loadwep thunder bullet cannon
+/loadwep thunder bullak cannon
+/loadwep sniper thunder rifle
+
+//PSY BULLET
+/loadwep psy revolver
+/loadwep psy machinegun
+/loadwep triple psy machinegun
+/loadwep quad psy machinegun
+/loadwep psy smg
+/loadwep assault psy rifle
+/loadwep hyper psy rifle
+/loadwep psy minigun
+/loadwep double psy minigun
+/loadwep smart psy gun
+/loadwep psy bullet cannon
+/loadwep psy gunhammer
+/loadwep psy bullet cannon
+/loadwep psy bullak cannon
+/loadwep sniper psy rifle
+
+//SPAM
+/loadwep spam gun
+/loadwep fire spam gun
+/loadwep ultra spam gun
+
+//COMPLEMENTARY
+/loadwep undulator
+/loadwep perpetrator
+
+//OTHER BULLET
+/loadwep moby
+/loadwep big iron
+/loadwep heavy smart gun
+/loadwep smarter gun
+/loadwep lucky machinegun
+/loadwep bullet machinegun
+/loadwep signal beamer
+/loadwep prism
+/loadwep rainbow machinegun
+/loadwep mega revolver
+/loadwep spy revolver
+/loadwep antiprism
+
+///SHELL///
+//PSY SHELL
+/loadwep psy pop gun
+/loadwep psy shotgun
+/loadwep psy eraser
+/loadwep psybird
+
+//SHOT CANNON
+/loadwep shot cannon
+/loadwep hot shot cannon
+/loadwep ultra shot cannon
+/loadwep psy shot cannon
+
+//FLAK CANNON
+/loadwep flak shotgun
+/loadwep phlogenitator
+
+//OTHER SHELL
+/loadwep popper
+/loadwep super heavy slugger
+/loadwep apergig tanat
+
+///BOLT///
+//BLOOD
+/loadwep finished stuff/blood crossbow
+/loadwep finished stuff/heavy blood crossbow
+
+//SPLINTER
+/loadwep nail gun
+/loadwep auto splinter gun
+/loadwep finished stuff/splinter cannon
+/loadwep millimata
+
+//DISC
+/loadwep finished stuff/bouncer disc gun
+/loadwep finished stuff/sticky disc gun
+
+//OTHER BOLT
+/loadwep marker
+/loadwep hot crossbow
+/loadwep heavy toxic crossbow
+/loadwep hyper crossbow
+/loadwep bolt gun
+
+///EXPLOSIVE///
+//ABRIS
+/loadwep abris pistol
+/loadwep abris launcher
+/loadwep abris rifle
+/loadwep auto abris launcher
+/loadwep super abris launcher
+/loadwep blood abris launcher
+/loadwep plasma abris launcher
+
+//ROCKLET
+/loadwep rocklet pistol
+/loadwep rocklet rifle
+/loadwep rocklet shotgun
+/loadwep rocklet minigun
+/loadwep rocklet cannon
+/loadwep super rocklet cannon
+
+//SONIC
+/loadwep sonic launcher
+/loadwep assault sonic launcher
+/loadwep finished stuff/supersonic launcher
+/loadwep screecher
+
+//HOT
+/loadwep finished stuff/hot flare gun
+
+//TOXIC
+/loadwep finished stuff/toxicthrower
+/loadwep finished stuff/cobra
+
+//SMART
+/loadwep smart bazooka
+/loadwep finished stuff/smart nuke launcher
+
+//CLAYMORE
+/loadwep claymore
+/loadwep heavy claymore
+/loadwep ultra claymore
+
+//CANNON
+/loadwep toxic cannon
+/loadwep super toxic cannon
+/loadwep super flame cannon
+
+//OTHER EXPLOSIVE
+/loadwep chainsaw
+/loadwep auto grenade launcher
+/loadwep finished stuff/heavy nuke launcher
+/loadwep firestorm
+/loadwep scorcher
+/loadwep finished stuff/andromeda launcher
+/loadwep finished stuff/fire beamer
+/loadwep finished stuff/toxic carronader
+/loadwep puncher
+/loadwep buster
+/loadwep pulser
+/loadwep airstrike
+/loadwep herald
+
+///ENERGY///
+
+//LASER FLAK
+/loadwep laser flak cannon
+/loadwep heavy laser flak cannon
+
+//VECTOR
+/loadwep finished stuff/vector rifle
+/loadwep finished stuff/vector shotgun
+
+//PLASMITE
+/loadwep finished stuff/plasmite pistol
+/loadwep finished stuff/plasmite rifle
+/loadwep finished stuff/plasmite shotgun
+/loadwep finished stuff/plasmite cannon
+
+//SQUARE
+/loadwep square gun
+/loadwep square rifle
+/loadwep square cannon
+
+//LIGHTNING
+/loadwep thundercrash
+
+//OTHER ENERGY
+/loadwep energy gun
+/loadwep stopwatch
+/loadwep inquisitor
+
+///MELEE///
+/loadwep toothbrush
+/loadwep bone
+/loadwep auto screwdriver
+/loadwep chris knife
+/loadwep comboweps/rapier
+/loadwep comboweps/bigsword
+/loadwep wondersword
+
+///POPO///
+/loadmod idpd weapon chest/idpd weapon chest
+/loadwep idpd bazooka
+/loadwep idpd energy sword
+/loadwep idpd grenade launcher
+/loadwep idpd minigun
+/loadwep idpd plasma minigun
+/loadwep idpd shotgun
+/loadwep idpd slugger
+
+///GOLD///
+/loadwep golden abris pistol
+/loadwep finished stuff/golden plasmite pistol
+/loadwep golden gunhammer
+
+///TOOLS///
+/loadmod defpack tools/defpack tools
+/loadmod defpack tools 2
+
+///OTHER///
+/loadwep finished stuff/defender
+/loadwep finished stuff/drinks/vinegar
+/loadwep finished stuff/drinks/munitions mist
+/loadwep finished stuff/drinks/sunset mayo
+/loadwep finished stuff/drinks/saltshake
+/loadwep finished stuff/drinks/autoproductive expresso
+/loadwep finished stuff/drinks/extra double triple coffee
+/loadwep finished stuff/drinks/lightning blue lifting drink(tm)
+/loadwep finished stuff/drinks/guardian juice
+/loadwep finished stuff/drinks/soda popper
+/loadmod finished stuff/drinks/sodaeffect
+/loadwep finished stuff/drinks/donut box
+/loadwep infinipistol
+
+///NON-WEAPONS///
+/loadmod IDPD Weapon Chest/IDPD Weapon Chest
+/load iris
+
+///TODO///
+/loadwep comboweps/bigsword
+/loadwep comboweps/rapier
+/loadwep ultra bullet cannon
+/loadwep ultra flare gun
+/loadwep ultra claymore
+/loadwep tempest blade
+/loadwep heavy claymore
+/loadwep screecher
+/loadwep finished stuff/hot flamethrower
+/loadwep finished stuff/hot flare gun
+/loadwep finished stuff/hot dragon
+/loadwep airstrike
+/loadwep pulser
+/loadwep sticky disc gun
+/loadwep marker
+/loadwep idpd shotgun
+/loadwep inquisitor
+/loadwep split shotgun
+/loadwep double split shotgun
+/loadwep heavy split shotgun
+/loadwep gatling heavy split shotgun
+/loadwep steel diver
+/loadwep antiprism
+/loadwep sak
+/loadwep polygun
+/loadwep stopwatch
+/loadwep herald
+/loadwep finished stuff/andromeda launcher
+/loadwep bolt gun
+/loadwep bullet machinegun
+/loadwep energy gun

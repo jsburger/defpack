@@ -1,0 +1,24 @@
+
+///SHELL///
+//PSY SHELL
+/loadwep psy pop gun
+/loadwep psy shotgun
+/loadwep psy eraser
+/loadwep psybird
+
+//SHOT CANNON
+/loadwep shot cannon
+/loadwep hot shot cannon
+/loadwep ultra shot cannon
+/loadwep psy shot cannon
+
+//FLAK CANNON
+/loadwep flak shotgun
+/loadwep phlogenitator
+
+//OTHER SHELL
+/loadwep popper
+/loadwep super heavy slugger
+/loadwep apergig tanat
+
+/load mainbolts
