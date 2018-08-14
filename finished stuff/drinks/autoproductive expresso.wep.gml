@@ -36,6 +36,9 @@ with instance_create(x,y,PopupText){
 	text = "+MAX SPEED"
 }
 wep = bwep;bwep = 0
+curse = bcurse
+mod_script_call("mod","sodaeffect","drink",x,y)
+
 #define weapon_text
 return "a rare substance, usually greener"
 

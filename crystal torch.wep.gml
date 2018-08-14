@@ -1,27 +1,23 @@
 #define init
-global.sprCrystalTorch5 = sprite_add_weapon("sprites/sprCrystalTorch5.png",6,10)
-global.sprCrystalTorch4 = sprite_add_weapon("sprites/sprCrystalTorch4.png",6,10)
-global.sprCrystalTorch3 = sprite_add_weapon("sprites/sprCrystalTorch3.png",6,10)
-global.sprCrystalTorch2 = sprite_add_weapon("sprites/sprCrystalTorch2.png",6,10)
-global.sprCrystalTorch1 = sprite_add_weapon("sprites/sprCrystalTorch1.png",6,10)
+global.sprCrystalTorch[0] = sprite_add_weapon("sprites/sprCrystalTorch1.png",6,10)
+global.sprCrystalTorch[1] = sprite_add_weapon("sprites/sprCrystalTorch2.png",6,10)
+global.sprCrystalTorch[2] = sprite_add_weapon("sprites/sprCrystalTorch3.png",6,10)
+global.sprCrystalTorch[3] = sprite_add_weapon("sprites/sprCrystalTorch4.png",6,10)
+global.sprCrystalTorch[4] = sprite_add_weapon("sprites/sprCrystalTorch5.png",6,10)
 
-#define weapon_sprt
-if "ammo" in self
-{
-	if "CrystalTorchCharge" not in self
-	{
-		return global.sprCrystalTorch1;
-	}
-	else
-	{
-		if CrystalTorchCharge <= 10{return global.sprCrystalTorch1}
-		if CrystalTorchCharge <= 20{return global.sprCrystalTorch2}
-		if CrystalTorchCharge <= 30{return global.sprCrystalTorch3}
-		if CrystalTorchCharge <= 40{return global.sprCrystalTorch4}
-		if CrystalTorchCharge <= 60{return global.sprCrystalTorch5}
-	}
+global.reloads = [16,18,20,22,24]
+global.cursed  = [InvCrystal,InvLaserCrystal,InvSpider]
+global.uncursed= [CrystalProp,LaserCrystal,Spider]
+
+
+#define weapon_mergable
+return 0
+
+#define weapon_sprt(w)
+if is_object(w){
+    return global.sprCrystalTorch[min(floor(w.cursecharge/10),4)]
 }
-else return global.sprCrystalTorch1
+return global.sprCrystalTorch[0];
 #define weapon_text
 return choose("ILLUMINATE","PURGE")
 #define weapon_name
@@ -32,19 +28,12 @@ return 0
 return 0
 #define weapon_area
 return -1;
-#define weapon_load
-if "CrystalTorchCharge" not in self
-{
-	return 16
+#define weapon_load(w)
+if is_object(w){
+    return global.reloads[min(floor(w.cursecharge/10),4)]
 }
-else
-{
-	if CrystalTorchCharge <= 10{return 16}
-	if CrystalTorchCharge <= 20{return 18}
-	if CrystalTorchCharge <= 30{return 20}
-	if CrystalTorchCharge <= 40{return 22}
-	if CrystalTorchCharge <= 60{return 24}
-}
+return global.reloads[4];
+
 #define weapon_swap
 return sndSwapHammer
 #define weapon_auto
@@ -54,101 +43,127 @@ return 1
 #define weapon_laser_sight
 return 0
 
-#define weapon_fire
+#define weapon_fire(w)
+if !is_object(w){
+    wep = {
+        wep: mod_current,
+        cursecharge: 0,
+        torchid: irandom(10000)
+    }
+}
+else if "cursecharge" not in wep{
+    wep.cursecharge = 0
+    wep.torchid = irandom(10000)
+}
+w = wep
+
 sound_play_pitch(sndLaserCrystalHit,random_range(.6,.8))
 sound_play_pitch(sndWrench,random_range(.8,1.2))
-weapon_post(-7,0,28)
-if "CrystalTorchCharge" not in self{CrystalTorchCharge = 0}
-with instance_create(x,y,Slash)
+weapon_post(-7,0,14)
+motion_set(gunangle,4)
+with instance_create(x,y,CustomSlash)
 {
-	creator = other
-	team = other.team
-	if other.CrystalTorchCharge <= 10{lv = 1}
-	if other.CrystalTorchCharge <= 20{lv = 2}
-	if other.CrystalTorchCharge <= 30{lv = 3}
-	if other.CrystalTorchCharge <= 40{lv = 4}
-	if other.CrystalTorchCharge <= 60{lv = 5}
+    sprite_index = sprSlash
+    mask_index = mskSlash
+    torchid = w.torchid
+	lv = min(floor(w.cursecharge/10),4) + 1
 	damage = lv * 4
-	if lv >= 3
-	{
-		sprite_index = sprHeavySlash
-	}
-	if lv = 5
-	{
+	if lv >= 3 sprite_index = sprHeavySlash
+	if lv = 5 {
 		sprite_index = sprMegaSlash
 		mask_indedx  = mskMegaSlash
 	}
 	name = "crystal slash"
-	motion_add(other.gunangle+random_range(-12,12), 1 + (skill_get(13) * 2))
+	motion_add(other.gunangle, 1 + (skill_get(13) * 2))
+	image_speed = .4
+	walled = 0
+	
+	projectile_init(other.team,other)
 	image_angle = direction
-	on_hit = ct_hit
+	on_hit = torchhit
+	on_wall = torchwall
+	on_projectile = torchproj
+	on_grenade = torchproj
 }
 wepangle *= -1
 
-#define ct_hit
-if team != other.team
-{
-	if projectile_canhit_melee(other)
-	{
-			projectile_hit(other,damage,direction,lv)
-			if instance_exists(creator)
-			{
-				with creator
-				{
-					CrystalTorchCharge -= 3
-					trace(CrystalTorchCharge)
-				}
-			}
+#define torchproj
+with other{
+    if typ = 1{
+        team = other.team
+        direction = other.direction
+        image_angle = direction
+        with instance_create(x,y,Deflect){
+            image_angle = other.direction
+        }
+    }
+    if typ > 1 instance_destroy()
+}
+
+#define torchwall
+if !walled sound_play(sndMeleeWall)
+walled = 1
+
+#define torchhit
+if projectile_canhit_melee(other){
+	projectile_hit(other,damage,lv*2,direction)
+	var cursechange = -1;
+	
+    for var i = 0; i < array_length(global.cursed); i++{
+        if instance_is(other,global.cursed[i]){
+            with other{
+                var hp = my_health
+                with instance_create(x,y,global.uncursed[i]) my_health = hp
+                instance_delete(self)
+            }
+            cursechange = 6
+            break
+        }
+    }
+	with creator{
+	    if is_object(wep) && wep.wep = mod_current && wep.torchid = other.torchid{
+	        wep.cursecharge = clamp(wep.cursecharge + cursechange, 0, 50)
+	    }
+	    if is_object(bwep) && bwep.wep = mod_current && bwep.torchid = other.torchid{
+	        bwep.cursecharge = clamp(bwep.cursecharge + cursecharge, 0, 50)
+	    }
 	}
 }
+
 #define step
-with instances_matching(Slash,"name","crystal slash")
-{
-	with InvLaserCrystal
-	{
-		if distance_to_object(other) <= 0
-		{
-			with instance_create(x,y,LaserCrystal){my_health = other.my_health}
-			instance_delete(self)
-			with other.creator{CrystalTorchCharge = clamp(CrystalTorchCharge+6,0,60)}
-		}
-	}
-	with InvSpider
-	{
-		if distance_to_object(other) <= 0
-		{
-			with instance_create(x,y,Spider){my_health = other.my_health}
-			instance_delete(self)
-			with other.creator{CrystalTorchCharge = clamp(CrystalTorchCharge+5,0,60)}
-		}
-	}
-	with InvCrystal
-	{
-		if distance_to_object(other) <= 0
-		{
-			with instance_create(x,y,CrystalProp){my_health = other.my_health}
-			instance_delete(self)
-			with other.creator{CrystalTorchCharge = clamp(CrystalTorchCharge+2,0,60)}
-		}
-	}
-	with BigCursedChest
-	{
-		if distance_to_object(other) <= 0
-		{
+with instances_matching(Slash,"name","crystal slash"){
+	with BigCursedChest{
+		if distance_to_object(other) <= 0{
 			instance_create(x,y,BigWeaponChest)
 			instance_delete(self)
-			with other.creator{CrystalTorchCharge = clamp(CrystalTorchCharge+2,0,60)}
+			var cursechange = 2
+			with other {
+			    with creator{
+            	    if is_object(wep) && wep.wep = mod_current && wep.torchid = other.torchid{
+            	        wep.cursecharge = clamp(wep.cursecharge + cursechange, 0, 50)
+            	    }
+            	    if is_object(bwep) && bwep.wep = mod_current && bwep.torchid = other.torchid{
+            	        bwep.cursecharge = clamp(bwep.cursecharge + cursecharge, 0, 50)
+            	    }
+        	    }
+		    }
 		}
 	}
-	with WepPickup
-	{
-		if distance_to_object(other) <= 0
-		{
-			if curse != false
-			{
-				curse = false
-				with other.creator{CrystalTorchCharge = clamp(CrystalTorchCharge+2,0,60)}
-			}
+	with instances_matching_gt(WepPickup,"curse",0){
+		if distance_to_object(other) <= 0{
+			var cursechange = 2 * curse
+			curse = 0
+			with other {
+			    with creator{
+            	    if is_object(wep) && wep.wep = mod_current && wep.torchid = other.torchid{
+            	        wep.cursecharge = clamp(wep.cursecharge + cursechange, 0, 50)
+            	    }
+            	    if is_object(bwep) && bwep.wep = mod_current && bwep.torchid = other.torchid{
+            	        bwep.cursecharge = clamp(bwep.cursecharge + cursecharge, 0, 50)
+            	    }
+        	    }
+		    }
+
 		}
 	}
 }

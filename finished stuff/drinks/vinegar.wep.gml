@@ -35,6 +35,9 @@ with instance_create(x,y,PopupText){
 	text = "+ACCURACY"
 }
 wep = bwep;bwep = 0
+curse = bcurse
+mod_script_call("mod","sodaeffect","drink",x,y)
+
 #define weapon_text
 return "you're not supposed to drink these"
 

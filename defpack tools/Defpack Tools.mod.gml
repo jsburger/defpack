@@ -74,62 +74,33 @@ with instances_matching(CustomProjectile,"name","volley arrow")
     draw_sprite_ext(shd16,0,x,y,clamp(1/z*10,0,1),clamp(1/z*10,0,1),0,c_white,1)
 
 #define draw_dark()
-if fork()
-{
-  with Player
-  {
-    if "CrystalTorchCharge" in self
-    if wep = "crystal torch" || bwep = "crystal torch"
-    {
-      var lv = 0;
-      if CrystalTorchCharge <= 10{lv = 1}
-    	if CrystalTorchCharge <= 20{lv = 2}
-    	if CrystalTorchCharge <= 30{lv = 3}
-    	if CrystalTorchCharge <= 40{lv = 4}
-    	if CrystalTorchCharge <= 60{lv = 5}
-      draw_circle_color(x,y,180 + 20*lv + random(5), c_gray,c_gray,0)
-  		draw_circle_color(x,y,70  + 20*lv + random(5), c_black,c_black,0)
+with Player{
+    var level = 0,blevel = 0, lv;
+    if is_object(wep) && wep.wep = "crystal torch"{
+        level = min(ceil(wep.cursecharge/10),5)
     }
-  }
-  with WepPickup
-  {
-    if wep = "crystal torch"
-    {
-      draw_circle_color(x,y,40 + random(2), c_gray,c_gray,0)
-  		draw_circle_color(x,y,20 + random(2), c_black,c_black,0)
+    if is_object(bwep) && bwep.wep = "crystal torch"{
+        blevel = min(ceil(bwep.cursecharge/10),5)
     }
-  }
-  with ThrownWep
-  {
-    if wep = "crystal torch"
-    {
-      draw_circle_color(x,y,40 + random(2), c_gray,c_gray,0)
-  		draw_circle_color(x,y,20 + random(2), c_black,c_black,0)
+    lv = max(blevel,level)
+    if lv > 0{
+        draw_circle_color(x,y,180 + 20*lv + random(5), c_gray,c_gray,0)
+        draw_circle_color(x,y,70  + 20*lv + random(5), c_black,c_black,0)
     }
-  }
-	with instances_matching(CustomProjectile,"name","Lightning Bolt"){
-		draw_circle_color(x,y,550 + random(10), c_gray,c_gray,0)
-		draw_circle_color(x,y,250 + random(10), c_black,c_black,0)
-	}
-	with instances_matching(Bolt,"name","marker bolt")
-	{
-		draw_circle_color(x+lengthdir_x(sprite_width/2+2,direction),y+lengthdir_y(sprite_width/2+2,direction),35 + random(3), c_gray,c_gray,0)
-		draw_circle_color(x+lengthdir_x(sprite_width/2+2,direction),y+lengthdir_y(sprite_width/2+2,direction),20 + random(3), c_black,c_black,0)
-	}
-	with instances_matching(BoltStick,"name","marker bolt")
-	{
-		draw_circle_color(x+lengthdir_x(sprite_width/2+2,direction),y+lengthdir_y(sprite_width/2+2,direction),35 + random(3), c_gray,c_gray,0)
-		draw_circle_color(x+lengthdir_x(sprite_width/2+2,direction),y+lengthdir_y(sprite_width/2+2,direction),20 + random(3), c_black,c_black,0)
-	}
-	with instances_matching(CustomProjectile,"name","volley arrow")
-	{
-		draw_circle_color(x,y-z,20 + random(3), c_black,c_black,0)
-	}
-	with instances_matching(CustomProjectile,"name","Fire Bullet")
-	{
-		//draw_circle_color(x,y,30 + random(3),c_gray,c_gray,0)
-		draw_circle_color(x,y,20 + random(3),c_black,c_black,0)
-	}
+}
+with instances_matching(CustomProjectile,"name","Lightning Bolt"){
+	draw_circle_color(x,y,550 + random(10), c_gray,c_gray,0)
+	draw_circle_color(x,y,250 + random(10), c_black,c_black,0)
+}
+with instances_matching([Bolt,BoltStick],"name","marker bolt"){
+	draw_circle_color(x+lengthdir_x(sprite_width/2+2,direction),y+lengthdir_y(sprite_width/2+2,direction),35 + random(3), c_gray,c_gray,0)
+	draw_circle_color(x+lengthdir_x(sprite_width/2+2,direction),y+lengthdir_y(sprite_width/2+2,direction),20 + random(3), c_black,c_black,0)
+}
+with instances_matching(CustomProjectile,"name","volley arrow"){
+	draw_circle_color(x,y-z,20 + random(3), c_black,c_black,0)
+}
+with instances_matching(CustomProjectile,"name","Fire Bullet"){
+	draw_circle_color(x,y,20 + random(3),c_black,c_black,0)
 }
 
 #define draw_gui

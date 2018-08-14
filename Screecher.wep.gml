@@ -23,7 +23,7 @@ return 2;
 return sndSwapExplosive;
 
 #define weapon_area
-return 14;
+return 8;
 
 #define weapon_melee
 return 0;
@@ -32,8 +32,12 @@ return 0;
 return "MAGIC REFLECTION";
 
 #define weapon_fire
+sound_play_pitch(sndGruntDeadM,1.2)
+sound_play_pitch(sndGruntDeadF,.8)
 weapon_post(6,0,1)
-with mod_script_call("mod","defpack tools","create_sonic_explosion",x+lengthdir_x(16,gunangle),y+lengthdir_y(16,gunangle))
+var ang = gunangle
+var x1 = x, y1 = y
+with mod_script_call("mod","defpack tools","create_sonic_explosion",x1+lengthdir_x(16,ang),y1+lengthdir_y(16,ang))
 {
 	image_xscale = .1
 	image_yscale = .1
@@ -44,7 +48,7 @@ with mod_script_call("mod","defpack tools","create_sonic_explosion",x+lengthdir_
 }
 wait(2)
 if !instance_exists(self){exit}
-with mod_script_call("mod","defpack tools","create_sonic_explosion",x+lengthdir_x(32,gunangle),y+lengthdir_y(32,gunangle))
+with mod_script_call("mod","defpack tools","create_sonic_explosion",x1+lengthdir_x(32,ang),y1+lengthdir_y(32,ang))
 {
 	image_xscale = .2
 	image_yscale = .2
@@ -55,7 +59,7 @@ with mod_script_call("mod","defpack tools","create_sonic_explosion",x+lengthdir_
 }
 wait(2)
 if !instance_exists(self){exit}
-with mod_script_call("mod","defpack tools","create_sonic_explosion",x+lengthdir_x(72,gunangle),y+lengthdir_y(72,gunangle))
+with mod_script_call("mod","defpack tools","create_sonic_explosion",x1+lengthdir_x(72,ang),y1+lengthdir_y(72,ang))
 {
 	image_xscale = .5
 	image_yscale = .5

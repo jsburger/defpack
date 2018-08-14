@@ -15,7 +15,7 @@ global.sprPrism[6] = sprite_add_weapon("sprites/sprRedPrism.png", 2, 6);
 return "ANTIPRISM"
 
 #define weapon_sprt
-if "AntiCycle" not in self{return global.sprWhitePrism}
+if "AntiCycle" not in self{return global.sprPrism[0]}
 else
 {
 	return global.sprPrism[AntiCycle]

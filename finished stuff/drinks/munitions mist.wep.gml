@@ -38,6 +38,9 @@ with instance_create(x,y,PopupText){
 	text = "+AMMO GAIN"
 }
 wep = bwep;bwep = 0
+curse = bcurse
+mod_script_call("mod","sodaeffect","drink",x,y)
+
 #define weapon_text
 return "smells a bit off"
 
