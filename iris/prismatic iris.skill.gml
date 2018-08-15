@@ -263,3 +263,15 @@ else destination = payload
 
         return id;
 	}
+
+#define skill_tip
+switch global.colors[global.color]
+{
+  case "pest"    : return "@sREIGN OF @gTERROR";
+  case "fire"    : return "@rBURN @sTHE WORLD DOWN";
+  case "psy"     : return "@sIT @pBEGINS";
+  case "thunder" : return "@bSTRIKE @s'EM DOWN";
+  case "blind"   : return "@dNEVERMIND";
+  case "bouncer" : return "@sTHE @ySTARS @sHAVE ALIGNED";
+}
+return "BELIEVE";

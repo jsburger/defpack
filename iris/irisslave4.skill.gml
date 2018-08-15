@@ -6,7 +6,7 @@ global.sprite = sprite_add("sprMutPrismaticIris"+string(global.mycolor)+".png",1
 sound_play_pitchvol(sndBasicUltra,2,.5)
 sound_play_pitchvol(sndGammaGutsKill,1.4,.5)
 sound_play_pitchvol(sndLightningReload,.6,1)
-sound_play_pitchvol(sndLightningPistolUpg,1.5,.5)
+sound_play_pitchvol(sndLightningRifleUpg,1.5,.5)
 mod_variable_set("skill","prismatic iris","color",global.mycolor)
 skill_set(mod_current,0)
 

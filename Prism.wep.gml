@@ -1,5 +1,5 @@
 #define init
-global.sprPrism = sprite_add_weapon("sprites/sprPrism.png", 6, 4);
+global.sprPrism = sprite_add_weapon("sprites/sprPrism.png", 9, 4);
 
 #define weapon_name
 return "PRISM"
@@ -20,7 +20,7 @@ return 21;
 return 7;
 
 #define weapon_swap
-return sndPistol;
+return sndSwapMachinegun;
 
 #define weapon_area
 return 8;

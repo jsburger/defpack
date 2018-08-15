@@ -26,7 +26,7 @@ return sndSwapPistol;
 return -1;
 
 #define weapon_text
-return "PEST BULLETS CREATE TOXIN WHEN CONNECTING";
+return "@gPEST @sBULLETS CREATE TOXIN ON CONTACT";
 
 #define weapon_fire
 
