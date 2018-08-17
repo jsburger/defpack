@@ -1,30 +1,30 @@
 #define init
-global.sprQuartzMachinegun = sprite_add_weapon("sprites/sprQuartzMachinegun.png",7,3)
-global.sprQuartzBullet     = sprite_add("sprites/projectiles/sprQuartzBullet.png",2,12,12)
+global.sprQuartzShotgun = sprite_add_weapon("sprites/sprQuartzShotgun.png",7,3)
+global.sprQuartzBullet2 = sprite_add("sprites/projectiles/sprQuartzBullet2.png",2,12,12)
 
 #define weapon_name
-return "QUARTZ MACHINEGUN"
+return "QUARTZ SHOTGUN"
 
 #define weapon_sprt
-return global.sprQuartzMachinegun;
+return global.sprQuartzShotgun;
 
 #define weapon_type
-return 1;
+return 2;
 
 #define weapon_cost
-return 1;
+return 2;
 
 #define weapon_area
 return -1;
 
 #define weapon_load
-return 4;
+return 12;
 
 #define weapon_swap
-return sndSwapMachinegun;
+return sndSwapShotgun;
 
 #define weapon_auto
-return true;
+return false;
 
 #define weapon_melee
 return false;
@@ -33,22 +33,25 @@ return false;
 return false;
 
 #define weapon_text
-return "QUARTZ CANNON"
+return "PRODUCT OF PRISMATIC FORGERY"
 
 #define weapon_fire
-weapon_post(7,0,18)
-sound_play_pitch(sndHeavyRevoler,random_range(1,1.1))
-sound_play_pitch(sndLaserCrystalHit,random_range(1.7,2.1))
-with instance_create(x,y,CustomProjectile)
+weapon_post(7,0,25)
+sound_play_pitch(sndSawedOffShotgun,random_range(1.2,1.4))
+sound_play_pitch(sndSlugger,random_range(.7,.8))
+sound_play_pitch(sndLaserCrystalHit,random_range(1.4,1.7))
+repeat(5) with instance_create(x,y,CustomProjectile)
 {
-  sprite_index = global.sprQuartzBullet
+  sprite_index = global.sprQuartzBullet2
   mask_index   = mskHeavyBullet
   projectile_init(other.team,other)
   force  = 4
-  damage = 6
+  damage[0] = 6
+  damage[1] = 4
   typ = 1
+  friction = random_range(.6,2)
   image_speed = 1
-  motion_add(other.gunangle+random_range(-2,2)*other.accuracy,20)
+  motion_add(other.gunangle+random_range(-9,9)*other.accuracy,26)
   image_angle = direction
   pierce  = 2
   lasthit = -4
@@ -56,10 +59,19 @@ with instance_create(x,y,CustomProjectile)
   on_step    = quartzbullet_step
   on_draw    = quartzbullet_draw
   on_destroy = quartzbullet_destroy
+  on_wall    = quartzbullet_wall
 }
+
+#define quartzbullet_wall
+move_bounce_solid(false)
+image_angle = direction
+direction += random_range(-4,4)
+sound_play_pitchvol(sndHitWall,random_range(.8,1.2),.5)
+with instance_create(x+random_range(-4,4),y+random_range(-4,4),Dust){sprite_index = sprExtraFeetDust}
 
 #define quartzbullet_step
 if image_index = 1 image_speed = 0;
+if speed <= friction instance_destroy()
 
 #define quartzbullet_destroy
 repeat(3) with instance_create(x+random_range(-4,4),y+random_range(-4,4),Dust){sprite_index = sprExtraFeetDust}
@@ -68,11 +80,11 @@ view_shake_at(x,y,2)
 sleep(1)
 
 #define quartzbullet_hit
-if projectile_canhit_melee(other) = true && lasthit != other
+if projectile_canhit(other) = true && lasthit != other
 {
   sleep(5)
   view_shake_at(x,y,6)
-  projectile_hit(other,damage,force,direction)
+  projectile_hit(other,damage[image_index],force,direction)
   pierce--
   lasthit = other
 }
