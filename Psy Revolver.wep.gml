@@ -26,7 +26,7 @@ return sndSwapPistol;
 return -1;
 
 #define weapon_text
-return choose("BEGONE","PSY BULLETS HOME INTO ENEMIES");
+return choose("BEGONE","@pPSY @sBULLETS HOME INTO ENEMIES");
 
 #define weapon_fire
 

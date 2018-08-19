@@ -1,6 +1,6 @@
 #define create_splash(_x,_y,tex)
 with instance_create(_x,_y,CustomObject){
-	on_draw = text_draw 
+	on_draw = text_draw
 	text = tex
 	ys = []
 	for (var i = 0; i<= string_length(text); i++){
@@ -21,7 +21,7 @@ with instance_create(_x,_y,CustomObject){
 #define drink(_x,_y)
 var angle = random_range(45,135);
 var length = random_range(30,50);
-with create_splash(_x+lengthdir_x(length,angle),_y+lengthdir_y(length,angle),choose("DELICIOUS", "EXTREME", "REFRESHING", "RADICAL")){
+with create_splash(_x+lengthdir_x(length,angle),_y+lengthdir_y(length,angle),choose("DELICIOUS", "EXTREME", "REFRESHING", "RADICAL", "MOIST", "JUICY")){
     image_angle = random_range(-10,30)
 }
 

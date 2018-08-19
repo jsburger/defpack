@@ -55,10 +55,7 @@
 /loadwep tempest blade
 /loadwep heavy claymore
 /loadwep screecher
-/loadwep finished stuff/hot flamethrower
 /loadwep finished stuff/hot flare gun
-/loadwep finished stuff/hot dragon
-/loadwep airstrike
 /loadwep pulser
 /loadwep sticky disc gun
 /loadwep marker
