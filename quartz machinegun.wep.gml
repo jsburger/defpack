@@ -33,7 +33,7 @@ return false;
 return false;
 
 #define weapon_text
-return "QUARTZ CANNON"
+return "GLASS CANNON"
 
 #define weapon_fire
 weapon_post(7,0,18)
@@ -48,6 +48,7 @@ with instance_create(x,y,CustomProjectile)
   damage = 6
   typ = 1
   image_speed = 1
+  recycle_amount = 1
   motion_add(other.gunangle+random_range(-2,2)*other.accuracy,20)
   image_angle = direction
   pierce  = 2
@@ -75,6 +76,7 @@ if projectile_canhit_melee(other) = true && lasthit != other
   projectile_hit(other,damage,force,direction)
   pierce--
   lasthit = other
+  recycle_amount = 0
 }
 if pierce < 0{instance_destroy()}
 

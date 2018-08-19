@@ -82,8 +82,8 @@ sleep(1)
 #define quartzbullet_hit
 if projectile_canhit(other) = true && lasthit != other
 {
-  sleep(5)
-  view_shake_at(x,y,6)
+  sleep(damage[image_index])
+  view_shake_at(x,y,damage[image_index])
   projectile_hit(other,damage[image_index],force,direction)
   pierce--
   lasthit = other
