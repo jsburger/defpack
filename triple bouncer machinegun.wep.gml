@@ -17,13 +17,13 @@ return true;
 return 5;
 
 #define weapon_cost
-return 5;
+return 3;
 
 #define weapon_swap
 return sndSwapPistol;
 
 #define weapon_area
-return 3;
+return -1;
 
 #define weapon_text
 return choose("THE POWER");

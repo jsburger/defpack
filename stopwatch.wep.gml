@@ -4,6 +4,7 @@ global.time = current_time_scale
 global.slowed = 0
 global.user = -1
 global.clock = 1
+global.shake = UberCont.opt_shake
 
 while 1 {
 	if global.slowed{
@@ -178,12 +179,15 @@ return 0
 #define weapon_fire
 if global.slowed {
 	current_time_scale = global.time
+	UberCont.opt_shake = global.shake
 	sound_play(sndPlasmaReload)
 	global.user = -1
 }
 else{
 	global.user = index
 	global.time = current_time_scale
+	global.shake = UberCont.opt_shake
+	UberCont.opt_shake = 1
 	current_time_scale = .001 * (30 / room_speed)
 	sound_play(sndPlasmaReloadUpg)
 }
@@ -199,7 +203,7 @@ with script_bind_draw(circle,depth,global.slowed){
 #define weapon_sprt
 return global.watch
 #define weapon_text
-return "TIME HAS ITS PRICE"
+return "TIME HAS ITS @yPRICE"
 
 #define circle
 with creator{

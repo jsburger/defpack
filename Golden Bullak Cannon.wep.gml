@@ -26,7 +26,7 @@ return 10;
 return sndSwapMachinegun;
 
 #define weapon_area
-return 5;
+return -1;
 
 #define weapon_text
 return " 90/100";
