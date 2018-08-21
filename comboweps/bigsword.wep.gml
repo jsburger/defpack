@@ -2,7 +2,7 @@
 global.sword = sprite_add_weapon("bigsword.png",4,10)
 global.slash = sprite_add("bigslash.png",4,36,36)
 #define weapon_name
-return "BIG SWORD"
+return "MEGA HAMMER"
 #define weapon_type
 return 0
 #define weapon_cost
@@ -30,8 +30,10 @@ wepflip *= -1
 #define weapon_fire
 if "bigsword" not in self{
 	bigsword = 1
+	bigcooldown = 0
 }
 bigsword = ++bigsword mod (30 *(1+(skill_get(mut_long_arms)*1))) * current_time_scale
+bigcooldown = 35
 nexthurt = current_frame + 2
 sound_play_pitch(sndHammer,1 + bigsword*.008)
 with instance_create(x,y,CustomSlash){
@@ -50,11 +52,11 @@ with instance_create(x,y,CustomSlash){
 }
 for (var i = 0; i <= bigsword/2; i++){
 	with instance_create(x,y,Dust){
-		motion_set(other.wepangle + other.gunangle - 40*i,random_range(1,3))
+		motion_set(other.wepangle + other.gunangle - 40*i + random_range(-20,20),random_range(1,3))
 		move_contact_solid(direction,20)
 	}
 }
-if bigsword = 0{
+if bigsword < 1{
 	with instance_create(x,y,ThrownWep){
 		team = other.team
 		creator = other
@@ -62,10 +64,12 @@ if bigsword = 0{
 		sound_play(sndChickenThrow)
 		wep = other.wep
 		sprite_index = weapon_sprt()
-		damaage = 20
+		damage = 20
 	}
 	wep = bwep
 	bwep = 0
+	curse = bcurse
+	bcurse = 0
 }
 #define coolhit
 if projectile_canhit_melee(other){
@@ -80,6 +84,19 @@ with creator{
 	sprite_angle = wepangle + 180
 	motion_set(other.direction,other.speed)
 }
+#define step
+if "bigcooldown" in self{
+    bigcooldown -= current_time_scale
+    if bigcooldown <= 0 && bigsword > 0{
+        bigsword-= current_time_scale
+        if random(100) < 100*current_time_scale{
+            with instance_create(x,y,Sweat){
+                
+            }
+        }
+    }
+}
+
 #define weapon_sprt
 return global.sword
 #define weapon_text
