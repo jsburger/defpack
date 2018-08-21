@@ -40,7 +40,7 @@ weapon_post(8,-4,22)
 with instance_create(x,y,CustomProjectile)
 {
 	sprite_index = global.sprQuartzGrenade
-	damage = 8
+	damage = 12
 	force = 3
 	friction = 1
 	motion_add(other.gunangle+random_range(-4,4)*other.accuracy,24)

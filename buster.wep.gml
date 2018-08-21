@@ -1,6 +1,6 @@
 #define init
 global.sprBlaster 		  = sprite_add_weapon("sprites/sprBlaster.png",7,5)
-global.sprBlasterRocket = sprite_add("sprites/projectiles/sprBlasterRocket.png",0,12,6)
+global.sprBlasterRocket = sprite_add("sprites/projectiles/sprBlasterRocket.png",0,12,7)
 #define weapon_name
 return "BUSTER"
 
@@ -45,7 +45,7 @@ move_contact_solid(other.gunangle,16)
 	team = other.team
 	creator = other
 	typ = 1
-	damage = 4
+	damage = 5
 	motion_add(other.gunangle+(random_range(-7,7))*other.accuracy,.1)
 	friction = -1.5
 	maxspeed = 14
@@ -89,7 +89,7 @@ with instance_create(x-lengthdir_x(16+speed,other.direction),y-lengthdir_y(16+sp
 #define blaster_hit
 if projectile_canhit(other) = true
 {
-	sleep(12*other.size)
+	sleep(15*other.size)
 	view_shake_at(x,y,5)
 	with instance_create(x,y,Smoke){image_angle = random(360)}
 	projectile_hit(other,damage,speed,direction)
@@ -97,18 +97,17 @@ if projectile_canhit(other) = true
 if other.size > 1 instance_destroy()
 
 #define blaster_wall
-sleep(5)
+sleep(45)
 repeat(3) instance_create(x,y,Smoke)
 with other {instance_create(x,y,FloorExplo);instance_destroy()}
 hitwalls++
-if hitwalls >= 7 instance_destroy()
+if hitwalls >= 3 instance_destroy()
 
 #define blaster_destroy
 sound_play(sndExplosion)
 var i = random(360);
 var j = 32;
 var k = Explosion;
-with instance_create(x,y,Explosion){sprite_index = sprTrapFire}
 repeat(2)
 {
 	repeat(4)
