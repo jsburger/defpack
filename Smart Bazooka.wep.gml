@@ -1,9 +1,9 @@
 #define init
-global.sprSmartBazooka = sprite_add_weapon("sprites/Hot Bazooka.png", 8, 3);
-global.sprBlueExplosion = sprite_add("sprites/projectiles/Blue Explosion_strip9.png",9,24,24)
+global.sprSmartBazooka 		   = sprite_add_weapon("sprites/Hot Bazooka.png", 18, 5);
+global.sprBlueExplosion 		 = sprite_add("sprites/projectiles/Blue Explosion_strip9.png",9,24,24)
 global.sprSmallBlueExplosion = sprite_add("sprites/projectiles/Small Blue Explosion_strip7.png",7,12,12)
-global.sprSmartRocketFlame = sprite_add("sprites/projectiles/smart rocket flame.png",3,24,6)
-global.sprSmartRocket = sprite_add_base64("iVBORw0KGgoAAAANSUhEUgAAAAsAAAAGCAYAAAAVMmT4AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABHSURBVChTY4CC/1BMEIAV+nnHwjTgwwz/dbXN/kuJq/0X9F7zX77oP5yGYRAfQzG3YQFYAkbDMIgPVwzCxDoDBFA42AEDAwCBKEMDhOCIHwAAAABJRU5ErkJgggAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",0, -2, 3);
+global.sprSmartRocketFlame   = sprite_add("sprites/projectiles/smart rocket flame.png",3,24,6)
+global.sprSmartRocket 		   = sprite_add_base64("iVBORw0KGgoAAAANSUhEUgAAAAsAAAAGCAYAAAAVMmT4AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABHSURBVChTY4CC/1BMEIAV+nnHwjTgwwz/dbXN/kuJq/0X9F7zX77oP5yGYRAfQzG3YQFYAkbDMIgPVwzCxDoDBFA42AEDAwCBKEMDhOCIHwAAAABJRU5ErkJgggAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",0, -2, 3);
 #define weapon_name
 return "SMART BAZOOKA";
 
@@ -32,15 +32,20 @@ return 9;
 return "WHAT DO THESE ROCKETS THINK?";
 
 #define weapon_fire
-weapon_post(6,-3,3)
-sound_play(sndGrenade)
-sound_play_pitch(sndSmartgun,random_range(1.2,1.3))
+weapon_post(7,-20,4)
+sound_play_pitch(sndRocket,random_range(.6,.8))
+sound_play_pitch(sndExplosionS,random_range(.6,.8))
+sound_play_pitch(sndSmartgun,random_range(.4,.6))
+sound_play_pitch(sndTurretFire,random_range(.6,.8))
 with instance_create(x,y,CustomProjectile){
 	creator = other
 	team = other.team
-	motion_set(other.gunangle, 2)
+	sound_play_pitch(sndRocketFly,random_range(.6,.8))
+	motion_set(other.gunangle+random_range(-8,8)*other.accuracy,0)
+	friction = -.4
 	fimage_index = 0
-	timer = 18
+	timer = 0
+	damage = 5
 	sprite_index = global.sprSmartRocket
 	image_angle = direction
 	on_step = script_ref_create(rocket_step)
@@ -80,19 +85,23 @@ if timer <= 0 {
 		image_speed = random_range(.8,1)
 	}
 	var closeboy = instance_nearest(x,y,enemy)
-	if instance_exists(enemy) && collision_line(x,y, closeboy.x, closeboy.y, Wall, 0,0) < 0{
-		motion_add(point_direction(x,y, closeboy.x, closeboy.y),1.33)
+	if instance_exists(enemy) && collision_line(x,y, closeboy.x, closeboy.y, Wall, 0,0) < 0 && point_distance(x,y,closeboy.x,closeboy.y) <= 60{
+		motion_add(point_direction(x,y, closeboy.x, closeboy.y),3)
+		motion_add(direction,2)
 		image_angle = direction
 	}
-	speed = 9
 }
+if speed > 12 speed = 12
 
 #define rocket_destroy
+sound_play(sndExplosion)
+sleep(20)
+view_shake_at(x,y,12)
 with instance_create(x ,y, Explosion){
 	sprite_index = global.sprBlueExplosion
 	hitid = [sprite_index,"Blue Explosion"]
 }
-repeat(3){
+repeat(1){
 	with instance_create(x, y, SmallExplosion){
 		sprite_index = global.sprSmallBlueExplosion
 		hitid = [sprite_index,"Small Blue
