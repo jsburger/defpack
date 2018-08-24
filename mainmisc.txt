@@ -23,6 +23,13 @@
 /loadwep finished stuff/golden plasmite pistol
 /loadwep golden gunhammer
 
+///QUARTZ///
+/loadwep quartz machinegun
+/loadwep quartz shotgun
+/loadwep quartz crossbow
+/loadwep quartz launcher
+/loadwep quartz laser
+
 ///TOOLS///
 /loadmod defpack tools/defpack tools
 /loadmod defpack tools 2

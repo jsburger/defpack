@@ -20,5 +20,6 @@
 /loadwep popper
 /loadwep super heavy slugger
 /loadwep apergig tanat
+/loadwep flechette shotgun
 
 /load mainbolts

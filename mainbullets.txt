@@ -120,6 +120,7 @@
 /loadwep rainbow machinegun
 /loadwep mega revolver
 /loadwep spy revolver
+/loadwep flechette rifle
 /loadwep antiprism
 
 /loadtext mainshells
