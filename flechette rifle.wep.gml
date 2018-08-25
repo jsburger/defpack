@@ -1,5 +1,6 @@
 #define init
 global.sprFlechetteRifle = sprite_add_weapon("sprites/sprFlechetteRifle.png", 6, 3);
+global.sprShellFlechette = sprite_add("sprites\sprShellFlechette.png",0,2,4)
 global.sprFlechette  = sprite_add("sprites\projectiles\sprFlechette.png",0,3,2)
 global.mskFlechette  = sprite_add("sprites\projectiles\mskFlechette.png",0,3,2)
 
@@ -36,6 +37,7 @@ return "TERROR ABSOLUTE";
 #define weapon_fire
 repeat(2){
 weapon_post(5,-4,8)
+with instance_create(x,y,Shell){sprite_index = global.sprShellFlechette;motion_add(other.gunangle+other.right*100+random(80)-40,2+random(2))}
 sound_play_pitch(sndUltraCrossbow,random_range(2.5,3))
 sound_play_pitch(sndCrossbow,random_range(.4,.6))
 sound_play_pitchvol(sndShotgun,random_range(1.4,1.6),.3)

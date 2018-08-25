@@ -1,7 +1,6 @@
 #define init
 global.sprBlaster 		  = sprite_add_weapon("sprites/sprBlaster.png",7,5)
-global.sprBlasterRocket = sprite_add("sprites/projectiles/sprBlasterRocket.png",0,12,7)
-#define weapon_name
+global.sprBlasterRocket = sprite_add("sprites/projectiles/sprBlasterRocket.png",0,6,6) //"ROCKET"
 return "BUSTER"
 
 #define weapon_sprt
@@ -17,7 +16,7 @@ return false;
 return 28;
 
 #define weapon_cost
-return 4;
+return 3;
 
 #define weapon_swap
 return sndSwapExplosive;
@@ -31,11 +30,11 @@ return choose("WOOMY");
 #define weapon_fire
 
 sound_play_pitch(sndRocketFly,random_range(2,2.2))
-sound_play_pitch(sndGrenadeShotgun,random_range(.2,.3))
+sound_play_pitch(sndGrenadeShotgun,random_range(.7,.8))
 sound_play_pitchvol(sndNukeFire,.8,1)
-sound_play_pitch(sndRocketFly,random_range(2.6,2.8))
+sound_play_pitch(sndHeavyNader,random_range(1.6,1.8))
 sound_play_pitch(sndExplosionS,random_range(0.6,0.8))
-sound_play_pitchvol(sndHeavySlugger,random_range(.3,.5),1)
+sound_play_pitchvol(sndHeavySlugger,random_range(.6,.7),1)
 sound_play_pitchvol(sndSuperSlugger,random_range(.7,.8),1)
 weapon_post(7,0,24)
 
@@ -46,12 +45,17 @@ move_contact_solid(other.gunangle,16)
 	creator = other
 	typ = 1
 	damage = 5
-	motion_add(other.gunangle+(random_range(-7,7))*other.accuracy,.1)
-	friction = -1.5
+	if other.object_index = Player{
+		var _x = mouse_x[other.index]+random_range(-16,16)*other.accuracy;
+		var _y = mouse_y[other.index]+random_range(-16,16)*other.accuracy;
+		motion_add(point_direction(x,y,_x,_y),max(sqrt(point_distance(_x,_y,x,y)),10,sqrt(point_distance(_x,_y,x,y))))
+	}else{
+		motion_add(other.gunangle,10)
+	}
+	friction = .5
 	maxspeed = 14
 	lifetime = 5
 	image_speed = .5
-	hitwalls = 0
 	image_angle = direction
 	repeat(5)
 	{
@@ -65,18 +69,17 @@ move_contact_solid(other.gunangle,16)
 	on_hit 		 = blaster_hit
 	on_wall    = blaster_wall
 	on_destroy = blaster_destroy
-	on_draw    = blaster_draw
 }
 
 #define blaster_step
 if speed > maxspeed speed = maxspeed
 //if speed = maxspeed if lifetime>0{if lifetime = 5{sound_play_pitch(sndSniperTarget,8)};lifetime -= current_time_scale}else{instance_destroy();exit}
-with instance_create(x-lengthdir_x(16+speed,other.direction),y-lengthdir_y(16+speed,other.direction),BoltTrail)
+with instance_create(x-lengthdir_x(8+speed,other.direction),y-lengthdir_y(8+speed,other.direction),BoltTrail)
 {
 	image_blend = c_yellow
 	image_angle = other.direction
-	image_yscale = 2
-	image_xscale = 12+other.speed
+	image_yscale = 1.5
+	image_xscale = 6+other.speed
 	if fork(){
 	    while instance_exists(self){
 	        image_blend = merge_color(image_blend,c_red,.1*current_time_scale)
@@ -85,6 +88,7 @@ with instance_create(x-lengthdir_x(16+speed,other.direction),y-lengthdir_y(16+sp
 	    exit
 	}
 }
+if speed <= friction instance_destroy()
 
 #define blaster_hit
 if projectile_canhit(other) = true
@@ -94,14 +98,12 @@ if projectile_canhit(other) = true
 	with instance_create(x,y,Smoke){image_angle = random(360)}
 	projectile_hit(other,damage,speed,direction)
 }
-if other.size > 1 instance_destroy()
+if other.size > 1 && other.my_health > damage instance_destroy()
 
 #define blaster_wall
 sleep(45)
 repeat(3) instance_create(x,y,Smoke)
-with other {instance_create(x,y,FloorExplo);instance_destroy()}
-hitwalls++
-if hitwalls >= 3 instance_destroy()
+instance_destroy()
 
 #define blaster_destroy
 sound_play(sndExplosion)
@@ -121,7 +123,3 @@ repeat(2)
 }
 sleep(30)
 view_shake_at(x,y,15)
-
-#define blaster_draw
-draw_sprite_ext(sprRocketFlame,image_index,x,y,image_xscale*1.25,image_yscale,image_angle,image_blend,image_alpha)
-draw_self()
