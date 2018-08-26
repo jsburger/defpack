@@ -9,9 +9,9 @@ return "DEFENDER"
 #define weapon_sprt
 with(GameCont)
 {
-	if "rad" in self && rad >= 3 {return global.sprDefender};
-	else {return global.sprDefenderOff};
+	if rad >= 3 {return global.sprDefender};
 }
+return global.sprDefenderOff
 #define weapon_melee
 return false;
 
@@ -34,7 +34,7 @@ return 0;
 return sndSwapMachinegun;
 
 #define weapon_area
-return 15;
+return 21;
 
 #define weapon_text
 return "KEEP YOUR DISTANCE";

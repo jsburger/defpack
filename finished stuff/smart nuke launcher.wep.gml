@@ -26,7 +26,7 @@ return 3;
 return sndSwapExplosive;
 
 #define weapon_area
-return 9;
+return 11;
 
 #define weapon_text
 return "AT HIS MERCY";

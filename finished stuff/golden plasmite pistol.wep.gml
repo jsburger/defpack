@@ -9,7 +9,9 @@ return 5
 #define weapon_cost
 return 1
 #define weapon_area
-return 3
+return 18
+#define weapon_gold
+return 1
 #define weapon_load
 return 12
 #define weapon_swap
@@ -20,7 +22,7 @@ return 1
 #define weapon_laser_sight
 return 0
 #define weapon_text
-return "HAHA YES";
+return "PUNY POWER";
 #define weapon_fire
 repeat(2)
 {

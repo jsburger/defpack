@@ -26,10 +26,10 @@ return 6;
 return sndSwapExplosive;
 
 #define weapon_area
-return 11;
+return 12;
 
 #define weapon_text
-return choose("THIS IS WHAT WILL END IT ALL","STANDING, ON THE EDGE","WHAT A MESS WE MADE","A HEART OF BROKEN GLASS");
+return choose("STANDING, ON THE EDGE","WHAT A MESS WE MADE","A HEART OF BROKEN GLASS","DESOLATION","DEVASTATION");
 
 #define weapon_fire
 sound_play_pitch(sndRocket,.8)

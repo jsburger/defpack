@@ -22,7 +22,7 @@ return 3;
 return sndSwapExplosive;
 
 #define weapon_area
-return 7;
+return 11;
 
 #define weapon_text
 return choose("WOOMY");
@@ -40,7 +40,7 @@ weapon_post(7,0,24)
 
 with instance_create(x,y,CustomProjectile)
 {
-move_contact_solid(other.gunangle,16)
+    move_contact_solid(other.gunangle,16)
 	team = other.team
 	creator = other
 	typ = 1

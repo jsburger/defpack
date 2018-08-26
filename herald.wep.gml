@@ -127,7 +127,7 @@ return 4
 #define weapon_cost
 return 3
 #define weapon_area
-return 12
+return 16
 #define weapon_load
 return 13
 #define weapon_swap

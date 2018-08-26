@@ -15,7 +15,7 @@ return 2;
 return 2;
 
 #define weapon_area
-return -1;
+return 13;
 
 #define weapon_load
 return 12;

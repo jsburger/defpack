@@ -34,12 +34,12 @@ return 12;
 return sndSwapExplosive;
 
 #define weapon_area
-return 5;
+return 15;
 
 #define weapon_text
 return "TAKE IT IN YOUR HEART NOW, LOVER";
 
-#define weapon_fire
+/*#define weapon_fire
 with instance_create(x+lengthdir_x(14,gunangle),y+lengthdir_y(14,gunangle),CustomObject){
 	creator = other
 	team = other.team
@@ -266,7 +266,7 @@ if mode = 1{
 		}
 	}
 }
-
+*/
 
 #define drawmyshit(_x,_y,scale,size,off)
 var xref,yref,xn,yn;
@@ -277,7 +277,7 @@ yn = off+yref/size;
 draw_vertex_texture(_x,_y,xn,yn)
 
 
-
+/*
 #define spacedraw
 var xref,yref,sprite;
 sprite = global.space
@@ -319,6 +319,8 @@ with instances_matching(CustomObject,"andromeda",1) if mode = 1{
 draw_set_color(c_white);
 draw_set_alpha(1);
 texture_set_repeat(false);
+*/
+
 
 /*#define weapon_fire
 with instance_create(x,y,CustomObject){
