@@ -23,7 +23,7 @@ return 16;
 return sndSwapEnergy;
 
 #define weapon_area
-return 12;
+return 16;
 
 #define weapon_text
 return choose("THE CUBE","IT HUNTS");

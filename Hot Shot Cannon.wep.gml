@@ -24,7 +24,7 @@ return 8;
 return sndSwapShotgun;
 
 #define weapon_area
-return 14;
+return 11;
 
 #define weapon_text
 return "PROTOPLANETARY ANNIHILATION";

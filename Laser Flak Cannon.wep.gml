@@ -23,7 +23,7 @@ return 4;
 return sndSwapEnergy;
 
 #define weapon_area
-return 7;
+return 9;
 
 #define weapon_text
 return "1/10";

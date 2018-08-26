@@ -8,7 +8,7 @@ return 0
 #define weapon_cost
 return 0
 #define weapon_area
-return 8
+return 11
 #define weapon_load
 if instance_is(self,Player){
 	if "bigsword" in self{
@@ -100,4 +100,4 @@ if "bigcooldown" in self{
 #define weapon_sprt
 return global.sword
 #define weapon_text
-return "whirlwind"
+return "A HEFTY SWING"

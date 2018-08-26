@@ -313,7 +313,7 @@ return 0
 
 
 #define weapon_area
-return 10
+return 12
 
 #define weapon_load(w)
 if is_object(w){

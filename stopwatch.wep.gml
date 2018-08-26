@@ -165,7 +165,7 @@ return 5
 #define weapon_cost
 return !global.slowed
 #define weapon_area
-return 18
+return 20
 #define weapon_load
 return 5
 #define weapon_swap

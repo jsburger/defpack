@@ -8,13 +8,11 @@ return 4
 #define weapon_cost
 return 4
 #define weapon_area
-return 11
+return 7
 #define weapon_load
 return 27
 #define weapon_swap
 return sndSwapExplosive
-#define weapon_reloaded
-return -1;
 #define weapon_auto
 return 0
 #define weapon_melee

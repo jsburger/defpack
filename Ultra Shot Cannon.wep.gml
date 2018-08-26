@@ -29,7 +29,7 @@ return 6;
 return sndSwapShotgun;
 
 #define weapon_area
-return 20;
+return 24;
 
 #define weapon_rads
 return 130

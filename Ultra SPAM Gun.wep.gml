@@ -27,7 +27,7 @@ return 1;
 return sndSwapPistol;
 
 #define weapon_area
-return 20;
+return 24;
 
 #define weapon_text
 return choose("NOBODY IS HAPPY WITH THIS","@gULTRA @sSTALE");

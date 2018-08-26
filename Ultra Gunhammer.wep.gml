@@ -9,8 +9,8 @@ return "ULTRA GUNHAMMER";
 with(GameCont)
 {
 	if "rad" in self && rad >= 20 {return global.sprUltraGunhammer};
-	else {return global.sprUltraGunhammerOff};
 }
+return global.sprUltraGunhammerOff
 #define weapon_type
 return 1;
 
@@ -30,7 +30,7 @@ return 1;
 return sndSwapHammer;
 
 #define weapon_area
-return 20;
+return 24;
 
 #define weapon_text
 return "UNBELIEVABLE POWER";

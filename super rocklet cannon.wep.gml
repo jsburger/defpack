@@ -25,10 +25,10 @@ return 20;
 return sndSwapExplosive;
 
 #define weapon_area
-return 12;
+return 16;
 
 #define weapon_text
-return "replace me please";
+return "THE SWARM";
 
 #define weapon_fire
 weapon_post(10,-7,54)

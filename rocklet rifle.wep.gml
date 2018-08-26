@@ -23,7 +23,7 @@ return 3;
 return sndSwapExplosive;
 
 #define weapon_area
-return 5;
+return 10;
 
 #define weapon_text
 return "STORM";

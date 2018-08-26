@@ -24,7 +24,7 @@ return 2;
 return sndSwapBow;
 
 #define weapon_area
-return -1;
+return 14;
 
 #define weapon_text
 return choose("BREAKTHROUGH");

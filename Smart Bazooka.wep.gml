@@ -26,10 +26,10 @@ return 2;
 return sndSwapExplosive;
 
 #define weapon_area
-return 9;
+return 10;
 
 #define weapon_text
-return "WHAT DO THESE ROCKETS THINK?";
+return "WHAT DO ROCKETS THINK ABOUT?";
 
 #define weapon_fire
 weapon_post(7,-20,4)

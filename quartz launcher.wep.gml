@@ -24,7 +24,7 @@ return 1;
 return sndSwapExplosive;
 
 #define weapon_area
-return -1;
+return 14;
 
 #define weapon_reloaded
 sound_play(sndNadeReload)

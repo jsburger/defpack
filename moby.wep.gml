@@ -34,7 +34,7 @@ return 1;
 return sndSwapMachinegun;
 
 #define weapon_area
-return 12;
+return 14;
 
 #define weapon_text
 return "HEAVY OCEAN";

@@ -24,7 +24,7 @@ return 4;
 return sndSwapBow;
 
 #define weapon_area
-return 9;
+return 13;
 
 #define weapon_text
 return choose("BOLT STREAMER","A CONTINOUS STATE OF HYPE","HYPER HYPER");

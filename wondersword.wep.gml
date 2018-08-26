@@ -26,7 +26,7 @@ return 0;
 return sndSwapHammer;
 
 #define weapon_area
-return 999;
+return -1;
 
 #define weapon_text
 return "@yWonder @swhat @yis @sthis sword";

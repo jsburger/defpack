@@ -23,7 +23,7 @@ return 2;
 return sndSwapExplosive;
 
 #define weapon_area
-return 12;
+return 14;
 
 #define weapon_text
 return "HURRICANE";
