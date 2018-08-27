@@ -1,6 +1,6 @@
 #define init
 global.sprGun = sprite_add_weapon("sprites/sprFlareCannon.png",3,4)
-global.sprProj = sprite_add("sprites/projectiles/FireShot.png",3,8,8)
+global.sprProj = sprite_add("sprites/projectiles/BigFlare.png",2,7,7)
 #define weapon_name
 return "FIRESTORM"
 #define weapon_type
@@ -26,7 +26,7 @@ wkick = -1
 repeat(3){
     with instance_create(x+lengthdir_x(15,gunangle),y+lengthdir_y(15,gunangle),Smoke){
         gravity = -.15
-        
+
     }
 }
 
@@ -34,37 +34,45 @@ repeat(3){
 weapon_post(6,12,4)
 sound_play_pitch(sndGrenadeRifle,.9)
 sound_play_pitch(sndFlare,1.3)
+sound_play_pitch(sndFlameCannon,1.4)
 with instance_create(x,y,CustomProjectile){
     motion_set(other.gunangle,15+random(2))
     image_angle = direction
     projectile_init(other.team,other)
-    
+
     damage = 8
     force = 6
-    image_speed = .4
+    image_speed = .25
     sprite_index = global.sprProj
     mask_index = mskFlakBullet
-    
+
     ammo = 12
     timerbase = 4
     timer = timerbase
     angle = random(360)
     angle_speed = 5
     canshoot = 0
-    
+
     on_step = flarestep
     on_anim = flareanim
     on_hit = flarehit
     on_destroy = flaredie
-    on_draw = flaredraw
     on_wall = flarewall
-    
+
 }
 
 #define flarestep
+if image_index >= 1
+{
+  image_speed = 0
+  if current_frame_active
+  {
+    if speed > friction{repeat(2)with instance_create(x,y,Flame){team = other.team;creator = other.creator;motion_add(other.direction-180+random_range(-22,22),random_range(2,3))}}
+  }
+}
 image_xscale = clamp(image_xscale + (random_range(-.05,.05)*current_time_scale),.9,1.1)
 image_yscale = image_xscale
-image_angle += (6 + speed * 3) * current_time_scale
+//image_angle += (6 + speed * 3) * current_time_scale
 
 speed /= 1 + (.1*current_time_scale)
 if speed <= 1 {canshoot = 1; speed = 0}
@@ -92,13 +100,38 @@ view_shake_at(x,y,5)
 sound_play_hit(sndFlare,.2)
 var n = 3;
 for (var i = 0; i < 360; i+=360/n){
-    with instance_create(x,y,Flare){
+    with instance_create(x,y,CustomProjectile){
+        team = other.team
+        damage = 5
+        creator = other.creator
+        sprite_index = sprFlare
+        image_speed = .2
         motion_set(other.angle + i, 5)
         projectile_init(other.team,other.creator)
         gravity_direction = direction + 120
         gravity = 1
+        on_step    = fakeflare_step
+        on_destroy = fakeflare_destroy
     }
 }
+
+#define fakeflare_step
+if image_index >= 1 image_speed = 0
+if current_frame_active{with instance_create(x,y,Flame){team = other.team;creator = other.creator}}
+
+#define fakeflare_destroy
+sound_play_pitchvol(sndFlareExplode,random_range(.8,1.2),.4)
+repeat(16)
+{
+  with instance_create(x,y,Flame,)
+  {
+    creator = other.creator
+    team = other.team
+    motion_add(random(360),random_range(4,5))
+  }
+}
+
+#macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)
 
 #define flarehit
 if projectile_canhit_melee(other){
@@ -107,6 +140,7 @@ if projectile_canhit_melee(other){
 }
 
 #define flaredie
+sound_play_pitch(sndFlameCannonEnd,1.2)
 sound_play(sndFlareExplode)
 var n = 12;
 var b = 360/(3*n)
@@ -117,14 +151,9 @@ for (var i = 0; i < 360; i+=360/n){
     }
 }
 
-#define flaredraw
-draw_self()
-draw_set_blend_mode(bm_add)
-draw_sprite_ext(sprite_index,image_index,x,y,image_xscale*2,image_yscale*2,image_angle,image_blend,image_alpha/5)
-draw_set_blend_mode(bm_normal)
-
 #define flarewall
 move_bounce_solid(1)
+image_angle = direction
 flaredie()
 speed *= .8
 

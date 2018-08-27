@@ -129,11 +129,10 @@ repeat(16)
 }
 with instance_create(x,y,CustomObject){timer = 1;on_step = freeze_step}
 sleep(100)
-sound_play_pitch(sndSewerPipeBreak,.8)
-sound_play_pitch(sndSnowBotDead,1.4)
-sound_play_pitch(sndGuitarHit4,.6)
-sound_play_pitch(sndTurretHurt,.6)
-sound_play_pitchvol(sndHyperCrystalSearch,3,.6)
+sound_play_pitch(sndHyperCrystalTaunt,11)
+sound_play_pitch(sndHitMetal,.4)
+sound_play_pitch(sndDoubleShotgun,.6)
+sound_play_pitch(sndSuperSlugger,.7)
 sound_play_pitch(sndStatueXP,.09) //sound_play_pitch(sndStatueCharge,.2) for the gunsoleum, statue sound in general
 #define nuke_draw
 if timer <= 0{draw_sprite_ext(global.sprHeavyNukeFlame,fimage_index,x,y,.75,.75,direction,c_white,1)}

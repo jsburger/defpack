@@ -66,7 +66,7 @@ wepangle*=-1
 #define weapon_sprt
 return global.sword
 #define weapon_text
-return "@bhon @whon @rhon"
+return choose("@bhon @whon @rhon","make some new friends")
 
 #define step
 if "extraspeed" in self

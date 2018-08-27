@@ -1,6 +1,6 @@
 #define init
 global.sprQuartzLaser = sprite_add_weapon("sprites/sprQuartzLaser.png", 6, 4);
-global.sprBeam = sprite_add("sprites/projectiles/sprQuartzBeam.png",1,2,3)
+global.sprBeam = sprite_add("sprites/projectiles/sprQuartzBeam.png",1,2,5)
 
 #define weapon_name
 return "QUARTZ LASER"
