@@ -66,7 +66,6 @@ surface_reset_target()*/
 #macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)
 
 #define cleanup
-with instances_matching(CustomProjectile,"name","Psy Bullet","Psy Shell") instance_delete(self)
 //with global.traildrawer instance_destroy()
 
 #define draw_shadows()
@@ -214,6 +213,24 @@ with SodaMachine{
 	}
 }
 
+#define instance_nearest_matching_ne(_x,_y,obj,varname,value)
+var num = instance_number(obj),
+    man = instance_nearest(_x,_y,obj),
+    mans = [],
+    n = 0,
+    found = -4;
+if instance_exists(obj){
+    while ++n <= num && variable_instance_get(man,varname) = value || (instance_is(man,prop) || instance_is(man,Generator)){
+        man.x += 10000
+        array_push(mans,man)
+        man = instance_nearest(_x,_y,obj)
+    }
+    if variable_instance_get(man,varname) != value && !instance_is(man,prop) found = man
+    with mans x-= 10000
+}
+return found
+
+
 #define bullet_hit
 if name = "Psy Bullet"{with other{motion_add(point_direction(x,y,other.x,other.y),5)}}
 projectile_hit(other, damage, force, direction);
@@ -300,7 +317,7 @@ with (a) {
 	image_speed = 1
 	image_angle = direction
 	mask_index = global.mskPsyBullet
-	timer = 11 + irandom(8)
+	timer = 11+irandom(8)
 	maxspeed = 5
 	image_yscale = 1.2
 	image_xscale = 1.2
@@ -316,13 +333,13 @@ return a;
 if timer > 0{
 	timer -= current_time_scale
 }
-if timer = 0 && instance_exists(enemy){
-	var closeboy = instance_nearest(x,y,enemy)
-	if collision_line(x,y,closeboy.x,closeboy.y,Wall,0,0) < 0 && distance_to_object(closeboy) < 220{
+if timer <= 0{
+	var closeboy = instance_nearest_matching_ne(x,y,hitme,"team",team)
+	if instance_exists(closeboy) && distance_to_object(closeboy) < 220 && collision_line(x,y,closeboy.x,closeboy.y,Wall,0,0) < 0{
 		var dir, spd;
 
 		dir = point_direction(x, y, closeboy.x, closeboy.y);
-		spd = 11
+		spd = 11 * current_time_scale
 
 		direction -= clamp(angle_difference(image_angle, dir) * .3 * current_time_scale, -spd, spd); //Smoothly rotate to aim position.
 		image_angle = direction
@@ -374,9 +391,9 @@ instance_destroy()
 if timer > 0{
 	timer -= current_time_scale
 }
-if timer = 0 && instance_exists(enemy){
-	var closeboy = instance_nearest(x,y,enemy)
-	if collision_line(x,y,closeboy.x,closeboy.y,Wall,0,0) < 0 && distance_to_object(closeboy) < 200{
+if timer <= 0{
+	var closeboy = instance_nearest_matching_ne(x,y,hitme,"team",team)
+	if instance_exists(closeboy) && distance_to_object(closeboy) < 200 && collision_line(x,y,closeboy.x,closeboy.y,Wall,0,0) < 0{
 		motion_add(point_direction(x,y,closeboy.x,closeboy.y),current_time_scale * (1 + skill_get(15)))
 		motion_add(direction,-.03  * (1 + skill_get(15)))
 		image_angle = direction
@@ -1294,26 +1311,28 @@ time -= current_time_scale
 if time <= 0 instance_destroy()
 
 #define create_plasmite(_x,_y)
-a = instance_create(x,y,CustomProjectile);
+a = instance_create(_x,_y,CustomProjectile);
 with a
 {
   name = "Plasmite"
 	image_speed = 0
 	image_index = 0
-	damage = 2+skill_get(17)
+	damage = 3+skill_get(17)
 	if skill_get(17) = false sprite_index = global.sprPlasmite else sprite_index = global.sprPlasmiteUpg
  	fric = random_range(.2,.3)
 	speedset = 0
-  force = 2
+    force = 2
+    basexscale = 1
 	maxspeed = 7
 	on_step 	 = plasmite_step
 	on_wall 	 = plasmite_wall
 	on_destroy   = plasmite_destroy
+	on_draw      = plasmite_draw
 }
 return a;
 
 #define plasmite_step
-image_angle = direction
+if "speedboost" not in self{speed+=6;maxspeed+=6;speedboost = 1;fric+=.08}
 if chance(8 + 6*skill_get(17)) instance_create(x,y,PlasmaTrail)
 if speedset = 0
 {
@@ -1322,28 +1341,46 @@ if speedset = 0
 }
 else
 {
-	if instance_exists(enemy)
-	{
-		var closeboy = instance_nearest(x,y,enemy)
-    if distance_to_object(closeboy) <= 16
-    {
-		  motion_add(point_direction(x,y,closeboy.x,closeboy.y),4)
+	var closeboy = instance_nearest_matching_ne(x,y,hitme,"team",team)
+    if instance_exists(closeboy) && distance_to_object(closeboy) <= 24{
+		  motion_add(point_direction(x,y,closeboy.x,closeboy.y),4*current_time_scale)
+		  maxspeed+=.5*current_time_scale
     }
-  }
+    image_angle = direction
 	if speed > maxspeed{speed = maxspeed}
+    //image_xscale = 1+sqr(speed/8)
 	maxspeed /= 1+(fric*current_time_scale)
 	if maxspeed <= 1+fric instance_destroy()
 }
 
 #define plasmite_wall
 move_bounce_solid(false)
+image_angle = direction
 sound_play_pitchvol(sndPlasmaHit,random_range(3,6),.3)
-with instance_create(x,y,PlasmaTrail){image_xscale = 2;image_yscale = 2}
+var n = irandom_range(2,6), int = 360/n;
+for (var i = 0; i < 360; i+= int){
+    with mod_script_call("mod","defparticles","create_spark",x,y) {
+        motion_set(i + random_range(-int/3,int/3),random(8)+1)
+        friction = 1.2
+        age = speed
+        color = c_white
+        fadecolor = c_lime
+        gravity = .8
+        gravity_direction = other.direction
+    }
+}
+
 //instance_destroy()
+
+#define plasmite_draw
+var _x = image_xscale
+image_xscale = _x + (sqr(speed/(sprite_width*1.5)))*_x
+draw_self()
+image_xscale = _x
 
 #define plasmite_destroy
 sound_play_pitch(sndPlasmaHit,random_range(1.45,1.83))
-with instance_create(x,y,PlasmaImpact){image_xscale=.5;image_yscale=.5;damage = round(damage/2)}
+with instance_create(x,y,PlasmaImpact){image_xscale=.5;image_yscale=.5;team = other.team}
 
 #define create_supersquare(_x,_y)
 var a = instance_create(_x,_y,CustomProjectile);

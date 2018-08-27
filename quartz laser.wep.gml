@@ -67,6 +67,7 @@ with instance_create(x,y,Laser){
 	                xstart = x
 	                ystart = y
 	                image_angle = creator.gunangle
+	                direction = image_angle
 	                with hitme x += 10000
 	                event_perform(ev_alarm,0)
 	                with hitme x -= 10000

@@ -23,6 +23,7 @@ with instance_create(_x,_y,CustomObject){
 #define sparkdraw
     draw_line_width_color(x,y,xprevious,yprevious,1,color,color)
     
+/*
 #define step
     with instances_matching(instances_matching(CustomProjectile,"name","Psy Bullet"),"sparked",null){
         sparked = 1
@@ -71,5 +72,5 @@ with instance_create(_x,_y,CustomObject){
             color = c_blue
             fadecolor = c_aqua
         }
-    }
+    }*/
     //if button_check(0,"nort") create_spark(mouse_x,mouse_y)

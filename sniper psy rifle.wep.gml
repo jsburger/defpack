@@ -228,7 +228,7 @@ var num = instance_number(obj),
     n = 0,
     found = -4;
 if instance_exists(man){
-    while ++n <= num && variable_instance_get(man,varname) = value && instance_is(man,prop){
+    while ++n <= num && variable_instance_get(man,varname) = value || instance_is(man,prop){
         man.x += 10000
         array_push(mans,man)
         man = instance_nearest(_x,_y,obj)
