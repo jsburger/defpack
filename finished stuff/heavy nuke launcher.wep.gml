@@ -107,8 +107,6 @@ if place_meeting(x, y, Explosion){
 }
 
 #define nuke_pop
-sleep(300)
-view_shake_max_at(x,y,900)
 var i = random(360);
 //with instance_create(x + random_range(-10,10) * accuracy, y + random_range(-10,10) * accuracy, GreenExplosion){hitid = [sprite_index,"green#Explosion"]}
 repeat(8)
@@ -129,10 +127,24 @@ repeat(16)
 	}
 	i += 360/16
 }
-sound_play(sndNukeExplosion)
-sound_play_pitch(sndExplosionL,.7)
-sound_play_pitch(sndExplosionXL,.9)
-sound_play_pitch(sndStatueXP,.08) //sound_play_pitch(sndStatueCharge,.2) for the gunsoleum, statue sound in general
+with instance_create(x,y,CustomObject){timer = 1;on_step = freeze_step}
+sleep(100)
+sound_play_pitch(sndSewerPipeBreak,.8)
+sound_play_pitch(sndSnowBotDead,1.4)
+sound_play_pitch(sndGuitarHit4,.6)
+sound_play_pitch(sndTurretHurt,.6)
+sound_play_pitchvol(sndHyperCrystalSearch,3,.6)
+sound_play_pitch(sndStatueXP,.09) //sound_play_pitch(sndStatueCharge,.2) for the gunsoleum, statue sound in general
 #define nuke_draw
 if timer <= 0{draw_sprite_ext(global.sprHeavyNukeFlame,fimage_index,x,y,.75,.75,direction,c_white,1)}
 draw_self()
+
+#define freeze_step
+if timer > 0 timer -= current_time_scale else{
+	sleep(300)
+	sound_play(sndNukeExplosion)
+	sound_play_pitch(sndExplosionL,.7)
+	sound_play_pitch(sndExplosionXL,.9)
+	view_shake_max_at(x,y,1500)
+	instance_destroy()
+}
