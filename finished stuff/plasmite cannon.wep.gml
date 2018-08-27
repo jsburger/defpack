@@ -108,11 +108,11 @@ repeat(ammo)
 {
 	with mod_script_call("mod","defpack tools","create_plasmite",x,y)
 	{
-		creator = other.creator
-		team = other.team
 		speedset = 1
 		fric = random_range(.06,.08)
-		motion_set(i+random_range(-12,21)*creator.accuracy,14)
+		motion_set(i+random_range(-12,21)*other.creator.accuracy,10)
+		projectile_init(other.team,other.creator)
+		image_angle = direction
 	}
 	i += 360/ammo
 }
@@ -122,7 +122,7 @@ instance_destroy()
 
 #define mb_destroy
 sound_play_pitch(sndPlasmaHit,random_range(1.55,1.63))
-with instance_create(x,y,PlasmaImpact){image_xscale=.5;image_yscale=.5;damage = round(damage/2)}
+with instance_create(x,y,PlasmaImpact){image_xscale=.5;image_yscale=.5;damage = round(damage/2);team = other.team}
 
 #define mb_step
 image_angle = direction
@@ -148,7 +148,6 @@ else
 
 #define mbs_step
 move_bounce_solid(false)
-image_angle = direction
 if irandom(12-skill_get(17)*5) = 1{instance_create(x,y,PlasmaTrail)}
 if speedset = 0
 {
@@ -162,6 +161,7 @@ else
 	{
 		motion_add(point_direction(x,y,target.x,target.y),radius)
 		if speed > maxspeed{speed = maxspeed}
+		image_angle = direction
 	}
 	else instance_destroy()
 }

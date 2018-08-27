@@ -23,7 +23,7 @@ return 2;
 return sndSwapBow;
 
 #define weapon_area
-return 13;
+return 9;
 
 #define weapon_text
 return "FANCY ME A VOODOO DOLL";
