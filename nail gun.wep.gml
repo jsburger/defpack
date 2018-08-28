@@ -29,9 +29,9 @@ return 2;
 return "TAC TAC TAC";
 
 #define weapon_fire
-sound_play_pitch(sndSplinterGun,random_range(1.3,1.6))
-sound_play_pitch(sndCrossbow,random_range(1.3,1.6))
-sound_play_pitch(sndPopgun,random_range(1.3,1.6))
+sound_play_pitchvol(sndSplinterGun,random_range(1.3,1.6),.7)
+sound_play_pitchvol(sndCrossbow,random_range(1.3,1.6),.7)
+sound_play_pitchvol(sndPopgun,random_range(1.3,1.6),.7)
 weapon_post(1,0,4)
 with instance_create(x,y,Splinter)
 {
