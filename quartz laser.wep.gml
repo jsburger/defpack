@@ -41,7 +41,7 @@ with instance_create(x,y,Laser){
 	event_perform(ev_alarm,0)
 	image_yscale = 1 + skill_get(mut_laser_brain)/2
 	startscale = image_yscale
-	damage += skill_get(mut_laser_brain)
+	damage = 2
 	spec = other.specfiring
 	index = other.index
 	sprite_index = global.sprBeam

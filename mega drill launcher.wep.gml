@@ -1,18 +1,18 @@
 #define init
 //global.gun
-global.sprDrillLauncher = sprite_add_weapon("sprites/sprDrillLauncher.png",6,4)
-global.sprDrill = sprite_add("sprites/projectiles/sprDrill.png",4,6,4)
+global.sprMegaDrillLauncher = sprite_add_weapon("sprites/sprBigDrillLauncher.png",15,10)
+global.sprMegaDrill = sprite_add("sprites/projectiles/sprBigDrill.png",4,15,10)
 global.explosive = 1 //boolean, try turning it off
 #define weapon_name
-return "DRILL LAUNCHER"
+return "MEGA DRILL LAUNCHER"
 #define weapon_type
 return global.explosive ? 4 : 3
 #define weapon_cost
-return 2
-#define weapon_area
 return 8
+#define weapon_area
+return -1
 #define weapon_load
-return 30
+return 75
 #define weapon_swap
 return sndSwapMotorized
 #define weapon_auto
@@ -22,30 +22,32 @@ return 0
 #define weapon_laser_sight
 return 1
 #define weapon_sprt
-return global.sprDrillLauncher
+return global.sprMegaDrillLauncher
 #define weapon_text
 //how could you not
-return "PIERCE THE HEAVENS"
+return "HOLLOW THE EARTH"
 #define weapon_fire
-weapon_post(5,-12,5)
+weapon_post(21,-22,25)
 var _fac = random_range(.8,1.2);
 sound_play_pitch(sndSwapMotorized,1.3*_fac)
 sound_play_pitch(sndCrossbow,.7*_fac)
 sound_play_pitch(sndDiscBounce,1.5*_fac)
 sound_play_drill(.6)
+motion_set(gunangle-180,maxspeed * 2)
+sleep(12)
 with instance_create(x,y,CustomProjectile){
     motion_set(other.gunangle+random_range(-3,3)*other.accuracy,1)
-    friction = -1.5
+    friction = -.6
     image_speed = .4
-    maxspeed = 16
+    maxspeed = 12
     damage = 3 - global.explosive
-    sprite_index = global.sprDrill
+    sprite_index = global.sprMegaDrill
     lasthit = -4
     hits = 0
-    walls = 4
+    walls = 16
     image_angle = direction
     projectile_init(other.team,other)
-    repeat(4) instance_create(x,y,Smoke)
+    repeat(12) instance_create(x,y,Smoke)
     on_hit = global.explosive ? drill_explo : drill_hit
     on_step = drill_step
     on_wall = drill_wall
@@ -54,13 +56,15 @@ with instance_create(x,y,CustomProjectile){
 
 #define drill_draw
 draw_self()
+/* sorry burg i cant live a lie like this
 draw_set_blend_mode(bm_add)
 draw_sprite_ext(sprite_index,image_index,x,y,image_xscale*1.5,image_yscale*1.5,image_angle,image_blend,0.1)
 draw_set_blend_mode(bm_normal)
-
+*/
 #define drill_step
 if random(100) < 50*current_time_scale instance_create(x,y,Smoke)
 if speed > maxspeed speed = maxspeed
+image_speed = min(speed * .075,.4)
 
 #define drill_wall
 if walls > 0
@@ -68,7 +72,7 @@ if walls > 0
   sound_play_drill(.4)
    with other{instance_create(x,y,FloorExplo);instance_destroy()}
    walls--
-   speed = 4
+   speed = 3
    sleep(15)
    view_shake_at(x,y,5)
 }
@@ -90,19 +94,18 @@ else
 }
 
 #define drill_hit
-
 sleep(12)
 //speed = max(speed - 3, 3)
 x = xprevious
 y = yprevious
-speed = 2
+speed = 1
 other.speed = 0
-sleep(12)
-view_shake_at(x,y,4)
+sleep(30)
+view_shake_at(x,y,7)
 projectile_hit(other,damage)
 var mans = other;
 if other = lasthit{
-    if ++hits > 10{
+    if ++hits > 30{
         with instance_create(x,y,BoltStick){
             sprite_index = other.sprite_index
             target = mans

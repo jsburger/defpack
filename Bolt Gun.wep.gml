@@ -32,37 +32,48 @@ return "HEAR THE NEEDLE DROP";
 
 sound_play(sndGrenadeRifle)
 weapon_post(9,-14,6)
-with instance_create(x,y,Bolt)
+var _acc = random_range(-3,3)
+with instance_create(x,y,CustomSlash)
 {
-	team = other.team
-	motion_add(other.gunangle+random_range(-2,2)*other.accuracy,24)
-	image_angle = direction
+	name = "triangle orbital"
+	sprite_index = sprPlasmaBall
+	mask_index 	 = mskNothing
+	image_speed  = 0
+	maxspeed = 6
+	team 		= other.team
 	creator = other
+	maxrof = 6
+	rof 	 = maxrof
+	motion_add(other.gunangle,maxspeed)
+	on_hit  = triangle_hit
+	on_step = triangle_step
+	on_wall = triangle_wall
 }
-with instance_create(x,y,HeavyBolt)
+
+#define triangle_hit
+
+#define triangle_step
+if instance_exists(creator)
 {
-	team = other.team
-	motion_add(other.gunangle+random_range(-5,5)*other.accuracy,16)
-	image_angle = direction
-	creator = other
-}
-repeat(2)
-{
-	with instance_create(x,y,Seeker)
+	var _daddydir = point_direction(x,y,creator.x,creator.y)
+	motion_add(direction,1)
+	motion_add(_daddydir,2)
+	if rof > 0
 	{
-		team = other.team
-		creator = other
-		motion_add(other.gunangle+random_range(-25,25)*other.accuracy,8)
-		image_angle = direction
+		rof -= current_time_scale
+	}
+	else
+	{
+		//cool fire stuff here
+	}
+	if speed > maxspeed{speed = maxspeed}
+	with instances_matching(CustomSlash,"name","triangle orbital")
+	{
+		if place_meeting(x,y,other)
+		{
+			motion_add(point_direction(other.x,other.y,x,y),1)
+		}
 	}
 }
-repeat(4)
-{
-	with instance_create(x,y,Splinter)
-	{
-		team = other.team
-		motion_add(other.gunangle+random_range(-20,20)*other.accuracy,20)
-		image_angle = direction
-		creator = other
-	}
-}
+
+#define triangle_wall

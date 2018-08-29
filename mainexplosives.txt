@@ -26,6 +26,10 @@
 //HOT
 /loadwep finished stuff/hot flare gun
 
+//DRILL
+/loadwep drill launcher
+/loadwep mega drill launcher
+
 //TOXIC
 /loadwep finished stuff/toxicthrower
 /loadwep finished stuff/cobra
