@@ -55,8 +55,8 @@
 /loadwep firestorm
 /loadwep scorcher
 /loadwep finished stuff/andromeda launcher
-/loadwep finished stuff/fire beamer
 /loadwep finished stuff/toxic carronader
+/loadwep finished stuff/blaster
 /loadwep puncher
 /loadwep buster
 /loadwep pulser

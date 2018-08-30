@@ -14,7 +14,7 @@ return 4;
 return false;
 
 #define weapon_load
-return 27;
+return 43;
 
 #define weapon_cost
 return 2;
@@ -32,19 +32,20 @@ return 4;
 return "HEAT WAVES";
 
 #define weapon_fire
-sound_play_pitch(sndFlare,1.4)
+sound_play_pitch(sndFlare,.8)
 sound_play_pitch(sndFlareExplode,.9)
-sound_play_pitch(sndFlamerStop,2)
+sound_play_pitch(sndFlamerStop,.8)
 weapon_post(8,8,4)
 
 var things = [SmallExplosion,Explosion,GreenExplosion],
     lengths = [30,60,100],
     ang = gunangle,
     _x = x, _y = y;
-    
+
     for (var i = 0; i < array_length(things); i++){
         if instance_exists(self){
-            sound_play_pitch(sndGrenadeRifle,3)
+            sound_play_pitch(sndGrenadeRifle,.7)
+            sound_play_pitch(sndGrenadeShotgun,1.6)
             sound_play(sndExplosion)
             with instance_create(_x+lengthdir_x(lengths[i] + speed,ang),_y+lengthdir_y(lengths[i]+speed,ang),things[i]){
                 creator = other

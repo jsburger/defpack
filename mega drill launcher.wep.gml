@@ -27,10 +27,12 @@ return global.sprMegaDrillLauncher
 //how could you not
 return "HOLLOW THE EARTH"
 #define weapon_fire
-weapon_post(21,-22,25)
+weapon_post(21,-36,25)
 var _fac = random_range(.8,1.2);
-sound_play_pitch(sndSwapMotorized,1.3*_fac)
-sound_play_pitch(sndCrossbow,.7*_fac)
+sound_play_pitch(sndSwapMotorized,.7*_fac)
+sound_play_pitch(sndHeavyCrossbow,.7*_fac)
+sound_play_pitch(sndHeavySlugger,.7*_fac)
+sound_play_pitch(sndGrenade,.3*_fac)
 sound_play_pitch(sndDiscBounce,1.5*_fac)
 sound_play_drill(.6)
 motion_set(gunangle-180,maxspeed * 2)
@@ -136,9 +138,10 @@ drill_hit()
 #define sound_play_drill(_vol)
 if fork(){
     repeat(10){
-        sound_play_pitchvol(sndJackHammer,.8,_vol)
-        sound_play_pitchvol(sndCrossbow,2,_vol)
-        sound_play_pitchvol(sndDiscHit,1.6,_vol)
+        sound_play_pitchvol(sndJackHammer,.4,_vol)
+        sound_play_pitchvol(sndCrossbow,1.6,_vol)
+        sound_play_pitchvol(sndHyperRifle,.6,_vol)
+        sound_play_pitchvol(sndDiscHit,1.5,_vol)
         wait(0)
     }
     exit
