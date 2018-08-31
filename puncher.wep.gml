@@ -78,6 +78,7 @@ direction += extradir*current_time_scale
 if !random(2) instance_create(x,y,Smoke)
 speed += current_time_scale *.7
 image_angle = direction
+if speed >= 30 speed = 30
 
 #define puncherdie
 sound_play(sndExplosion)

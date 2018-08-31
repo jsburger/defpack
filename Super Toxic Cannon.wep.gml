@@ -39,7 +39,6 @@ with instance_create(x+lengthdir_x(24,gunangle),y+lengthdir_y(24,gunangle),Custo
 	team = other.team
 	image_xscale = 2
 	image_yscale = 2
-	creator = other
 	damage = 10
 	dirfac = random(359)
 	on_step = script_ref_create(toxic_step)

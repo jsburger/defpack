@@ -41,6 +41,7 @@ repeat(8)
 	with instance_create(x+lengthdir_x(random_range(-7,7)*accuracy,gunangle+90),y+lengthdir_y(random_range(-7,7)*accuracy,gunangle+90),BouncerBullet)
 	{
 		team = other.team
+		creator = other
 		move_contact_solid(other.gunangle,5)
 		motion_add(other.gunangle+random_range(-11,11)*other.accuracy,8+random_range(-3,3)*other.accuracy)
 		image_angle = direction

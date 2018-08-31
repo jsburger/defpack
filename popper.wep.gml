@@ -49,7 +49,8 @@ with instance_create(x,y,Bullet2)
 				var _acc  = accuracy;
 				var _crtr = creator;
         while instance_exists(self) && sprite_index != sprBullet2Disappear{var _x = x;var _y = y;wait(0)}
-				sound_play_pitch(sndHitWall,random_range(.8,1.2))
+				sound_play_pitchvol(sndFlakExplode,random_range(1.3,1.5),.2)
+				instance_create(x,y,Dust)
 				var i = random(360);
 				repeat(3)
 				{

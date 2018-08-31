@@ -7,6 +7,7 @@
 /loadwep comboweps/rapier
 /loadwep comboweps/bigsword
 /loadwep wondersword
+/loadwep crystal torch
 
 ///POPO///
 /loadmod idpd weapon chest/idpd weapon chest

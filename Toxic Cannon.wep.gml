@@ -37,6 +37,5 @@ with instance_create(x,y,FrogQueenBall)
 {
 	move_contact_solid(other.gunangle,18)
 	motion_set(other.gunangle,3)
-	creator = other
 	team = other.team
 }

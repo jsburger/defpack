@@ -72,6 +72,7 @@ repeat(3)
 		{
 			move_contact_solid(other.gunangle,4)
 			team = other.team
+			creator = other
 			motion_set(other.gunangle + random_range(-3,3) * other.accuracy,14)
 			image_angle = direction
 		}
@@ -88,6 +89,7 @@ repeat(3)
 				motion_set(other.gunangle + random_range(-3,3) * other.accuracy, 14)
 				image_angle = direction
 				team = other.team
+				creator = other
 			}
 		}
 		else
@@ -98,6 +100,7 @@ repeat(3)
 			{
 				move_contact_solid(other.gunangle,4)
 				team = other.team
+				creator = other
 				motion_set(other.gunangle + random_range(-3,3) * other.accuracy,14)
 				image_angle = direction
 			}

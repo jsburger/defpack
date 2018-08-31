@@ -1,6 +1,6 @@
 #define init
 global.sprLuckyMachinegun = sprite_add_weapon("sprites/Lucky Machinegun.png", 3, 1);
-global.sprLuckyBullet = sprite_add("sprites/projectiles/Lucky Bullet.png",2,8,8)
+global.sprLuckyBullet 	  = sprite_add("sprites/projectiles/Lucky Bullet.png",2,11,11)
 
 #define weapon_name
 return "LUCKY MACHINEGUN";
@@ -27,7 +27,7 @@ return sndSwapMachinegun;
 return 7;
 
 #define weapon_text
-return choose("7...7....","THE RICH GET RICHER");
+return choose("GET LUCKY","THE RICH GET RICHER");
 
 #define weapon_fire
 

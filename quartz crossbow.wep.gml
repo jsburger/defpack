@@ -38,6 +38,8 @@ sound_play_pitch(sndHyperCrystalHurt,random_range(1.5,1.6))
 sound_play_pitchvol(sndLaserCrystalDeath,random_range(1.6,2),.5)
 with instance_create(x+lengthdir_x(6,gunangle),y+lengthdir_y(6,gunangle),HeavyBolt)
 {
+	team = other.team
+	creator = other
 	sprite_index = global.sprQuartzBolt
 	mask_index   = global.mskQuartzBolt
 	damage = 60

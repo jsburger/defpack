@@ -61,6 +61,7 @@ draw_set_blend_mode(bm_normal)
 #define drill_step
 if random(100) < 50*current_time_scale instance_create(x,y,Smoke)
 if speed > maxspeed speed = maxspeed
+image_speed = max(speed * .075,.4)
 
 #define drill_wall
 if walls > 0
