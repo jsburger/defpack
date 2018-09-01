@@ -109,7 +109,7 @@ while 1 {
 		with instances_matching([WepSwap,CrystalShield,CrystalShieldDisappear],"visible",1){
 			image_index += image_speed * t;
 		}
-		global.clock = ++global.clock mod (4 + skill_get(mut_euphoria));
+		global.clock = ++global.clock mod (5 + skill_get(mut_euphoria));
 		if global.user != -1{
 			var p = player_find(global.user);
 			var stop = 1;
@@ -123,12 +123,16 @@ while 1 {
 				global.user = -1
 				global.slowed = 0
 				current_time_scale = global.time
+				UberCont.opt_shake = global.shake
+
 			}
 		}
 		if !instance_exists(Player) || instance_exists(GenCont) || instance_exists(button){
 			global.user = -1
 			global.slowed = 0
 			current_time_scale = global.time
+			UberCont.opt_shake = global.shake
+
 		}
 	}
 	wait(0)

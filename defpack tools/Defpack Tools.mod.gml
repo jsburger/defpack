@@ -54,6 +54,8 @@ global.mskHeavySpikeball  = sprite_add("mskHeavySpikeball.png",0, 15, 15);
 global.sprAim          = sprite_add("sprAim.png",0,10,10);
 global.sprCursorCentre = sprite_add("sprCursorCentre.png",0,1,1);
 
+global.SAKmode = 0
+
 /*global.traildrawer = -4
 global.trailsf = surface_create(4000,4000)
 global.sfx = 7500
@@ -61,6 +63,12 @@ global.sfy = 7500
 surface_set_target(global.trailsf)
 draw_clear_alpha(c_white,0)
 surface_reset_target()*/
+
+
+#define chat_command(cmd,arg)
+if cmd = "sakcity" global.SAKmode = !global.SAKmode
+
+
 
 //thanks yokin
 #macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)
@@ -179,6 +187,13 @@ if instance_exists(GenCont){
     draw_clear_alpha(c_black,0)
     surface_reset_target()
 }*/
+
+if global.SAKmode &&  mod_exists("weapon","sak"){
+    with instances_matching(instances_matching(WepPickup,"roll",1),"saked",undefined){
+        saked = 1
+        wep = mod_script_call_nc("weapon","sak","make_gun_random")
+    }
+}
 
 with instances_matching([Explosion,SmallExplosion,GreenExplosion,PopoExplosion],"hitid",-1){
     hitid = [sprite_index,string_replace(string_upper(object_get_name(object_index)),"EXPLOSION"," EXPLOSION")]
