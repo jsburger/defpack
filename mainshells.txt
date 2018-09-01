@@ -6,6 +6,11 @@
 /loadwep psy eraser
 /loadwep psybird
 
+//SPLIT SHELL
+/loadwep split shotgun
+/loadwep double split shotgun
+/loadwep heavy split shotgun
+
 //SHOT CANNON
 /loadwep shot cannon
 /loadwep hot shot cannon

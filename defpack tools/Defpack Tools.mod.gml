@@ -427,6 +427,34 @@ draw_set_blend_mode(bm_add);
 draw_sprite_ext(sprite_index, image_index, x, y, 2*image_xscale, 2*image_yscale, image_angle, image_blend, 0.2);
 draw_set_blend_mode(bm_normal);
 
+#define create_heavy_split_shell(_x,_y)
+var c = instance_create(_x, _y, CustomProjectile)
+with (c){
+	name = "Split Shell"
+	sprite_index = global.sprMagPellet
+	friction = .475
+	image_angle = direction
+	mask_index = mskBullet2
+	wallbounce = skill_get(15) * 4 + (skill_get("shotgunshouldersx10")*40)
+	force = 5
+	ammo = 3
+	lasthit = -4
+	recycle_amount = 0
+	image_speed = 1
+	damage = 4
+	falloff = 1
+	fallofftime = current_frame + 2
+	timer = 5 + irandom(4)
+	og_timer = timer
+	on_hit = script_ref_create(mag_hit)
+	on_draw = script_ref_create(mag_shell_draw)
+	on_step = script_ref_create(mag_shell_step)
+	on_destroy = script_ref_create(mag_shell_destroy)
+	on_anim = script_ref_create(bullet_anim)
+	on_wall = script_ref_create(split_wall)
+}
+return c;
+
 #define create_split_shell(_x,_y)
 var c = instance_create(_x, _y, CustomProjectile)
 with (c){
@@ -441,7 +469,7 @@ with (c){
 	lasthit = -4
 	recycle_amount = 0
 	image_speed = 1
-	damage = 2
+	damage = 3
 	falloff = 1
 	fallofftime = current_frame + 2
 	timer = 5 + irandom(4)

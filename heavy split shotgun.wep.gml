@@ -1,11 +1,11 @@
 #define init
-global.sprSplitShotgun = sprite_add_weapon("sprites/sprSplitShotgun.png", 3, 2);
+global.sprHeavySplitShotgun = sprite_add_weapon("sprites/sprSplitSlugShotgun.png", 3, 2);
 
 #define weapon_name
-return "SPLIT SHOTGUN";
+return "HEAVY SPLIT SHOTGUN";
 
 #define weapon_sprt
-return global.sprSplitShotgun;
+return global.sprHeavySplitShotgun;
 
 #define weapon_type
 return 2;
@@ -17,26 +17,27 @@ return false;
 return 23;
 
 #define weapon_cost
-return 1;
+return 2;
 
 #define weapon_swap
 return sndSwapShotgun;
 
 #define weapon_area
-return 7;
+return 11;
 
 #define weapon_text
-return "MORE @ySHELL @sPER @ySHELL";
+return "THE SEVERAL BEAT THE MANY";
 
 #define weapon_fire
 
-weapon_post(6,0,19)
+weapon_post(7,0,27)
 sound_play_pitch(sndShotgun,random_range(1.3,1.5))
-sound_play_pitch(sndSlugger,random_range(1.3,1.5))
+sound_play_pitch(sndSuperSlugger,random_range(1.3,1.5))
 repeat(4){
 	with mod_script_call("mod","defpack tools","create_split_shell",x,y){
 		creator = other
 		team = other.team
+		ammo++
 		motion_add(other.gunangle + random_range(-20,20)*other.accuracy,random_range(14,18))
 		image_angle = direction
 	}

@@ -49,13 +49,13 @@ with instance_create(x,y,Bullet2)
 				var _acc  = accuracy;
 				var _crtr = creator;
         while instance_exists(self) && sprite_index != sprBullet2Disappear{var _x = x;var _y = y;wait(0)}
-				sound_play_pitchvol(sndFlakExplode,random_range(1.3,1.5),.2)
-				instance_create(x,y,Dust)
 				var i = random(360);
 				repeat(3)
 				{
 					with instance_create(_x,_y,Bullet2)
 					{
+						sound_play_pitchvol(sndFlakExplode,random_range(1.3,1.5),.2)
+						instance_create(x,y,Dust)
 						creator = _crtr
 						team    = _team
 						motion_add(i+random_range(-30,30)*_acc,10)

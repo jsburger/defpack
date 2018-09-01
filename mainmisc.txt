@@ -22,7 +22,6 @@
 ///GOLD///
 /loadwep golden abris pistol
 /loadwep finished stuff/golden plasmite pistol
-/loadwep golden gunhammer
 
 ///QUARTZ///
 /loadwep quartz machinegun
@@ -55,24 +54,16 @@
 /load iris
 
 ///TODO///
-/loadwep comboweps/bigsword
-/loadwep comboweps/rapier
 /loadwep ultra bullet cannon
 /loadwep ultra flare gun
 /loadwep ultra claymore
-/loadwep tempest blade
 /loadwep heavy claymore
 /loadwep screecher
 /loadwep finished stuff/hot flare gun
 /loadwep pulser
-/loadwep sticky disc gun
 /loadwep marker
 /loadwep idpd shotgun
 /loadwep inquisitor
-/loadwep split shotgun
-/loadwep double split shotgun
-/loadwep heavy split shotgun
-/loadwep gatling heavy split shotgun
 /loadwep steel diver
 /loadwep antiprism
 /loadwep sak
