@@ -1,6 +1,6 @@
 #define init
 global.sprBlaster 		  = sprite_add_weapon("sprites/sprBlaster.png",7,5)
-global.sprBlasterRocket = sprite_add("sprites/projectiles/sprBlasterRocket.png",0,6,6) //"ROCKET"
+global.sprBlasterRocket = sprite_add("sprites/projectiles/sprBlasterRocket.png",0,10,6) //"ROCKET"
 return "BUSTER"
 
 #define weapon_sprt
@@ -31,11 +31,8 @@ return choose("WOOMY");
 
 sound_play_pitch(sndRocketFly,random_range(2,2.2))
 sound_play_pitch(sndGrenadeShotgun,random_range(.7,.8))
-sound_play_pitchvol(sndNukeFire,.8,1)
 sound_play_pitch(sndHeavyNader,random_range(1.6,1.8))
-sound_play_pitch(sndExplosionS,random_range(0.6,0.8))
 sound_play_pitchvol(sndHeavySlugger,random_range(.6,.7),1)
-sound_play_pitchvol(sndSuperSlugger,random_range(.7,.8),1)
 weapon_post(7,0,24)
 
 with instance_create(x,y,CustomProjectile)
@@ -73,6 +70,7 @@ with instance_create(x,y,CustomProjectile)
 
 #define blaster_step
 if speed > maxspeed speed = maxspeed
+image_angle += speed * 4 * current_time_scale
 //if speed = maxspeed if lifetime>0{if lifetime = 5{sound_play_pitch(sndSniperTarget,8)};lifetime -= current_time_scale}else{instance_destroy();exit}
 with instance_create(x-lengthdir_x(8+speed,other.direction),y-lengthdir_y(8+speed,other.direction),BoltTrail)
 {
@@ -101,9 +99,12 @@ if projectile_canhit(other) = true
 if other.size > 1 && other.my_health > damage instance_destroy()
 
 #define blaster_wall
-sleep(45)
+sleep(12)
 repeat(3) instance_create(x,y,Smoke)
-instance_destroy()
+move_bounce_solid(false)
+speed *= .5
+sound_play_pitchvol(sndGrenadeHitWall,random_range(.5,.7),.8)
+sound_play_pitchvol(sndTurretHurt,random_range(.5,.7),.3)
 
 #define blaster_destroy
 sound_play(sndExplosion)

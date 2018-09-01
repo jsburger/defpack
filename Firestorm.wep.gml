@@ -108,8 +108,9 @@ for (var i = 0; i < 360; i+=360/n){
         image_speed = .2
         motion_set(other.angle + i, 5)
         projectile_init(other.team,other.creator)
-        gravity_direction = direction + 120
-        gravity = 1
+        gravdir = direction + 120
+        grav = 1
+        maxspeed = 30
         on_step    = fakeflare_step
         on_destroy = fakeflare_destroy
     }
@@ -117,13 +118,15 @@ for (var i = 0; i < 360; i+=360/n){
 
 #define fakeflare_step
 if image_index >= 1 image_speed = 0
+motion_add(gravdir,grav)
 if current_frame_active{with instance_create(x,y,Flame){team = other.team;creator = other.creator}}
+if speed > maxspeed speed = maxspeed
 
 #define fakeflare_destroy
 sound_play_pitchvol(sndFlareExplode,random_range(.8,1.2),.4)
 repeat(16)
 {
-  with instance_create(x,y,Flame,)
+  with instance_create(x,y,Flame)
   {
     creator = other.creator
     team = other.team

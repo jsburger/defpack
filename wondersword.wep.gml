@@ -205,20 +205,6 @@ if w {
 					motion_add(point_direction(other.x,other.y,x,y)+random_range(-34,34),4)
 				}
 			}
-			with instance_create(x,y,CustomObject)
-			{
-				move_contact_solid(other.gunangle,40)
-				ammo = 20
-				creator = other
-				team = other.team
-				image_alpha = 0
-				otimer = 3
-				timer = otimer
-				sprite_index = sprGrenadeBlink
-				acc = other.accuracy
-				motion_add(other.gunangle+random_range(-6,6)*other.accuracy,4)
-				on_step = explosnake_step
-			}
 		}
 		/*if tier = 5
 		{
@@ -240,125 +226,180 @@ if w {
 
 //fuck steroids
 if race = "steroids" && !w{
-	if button_check(index,"spec"){
-		bwondershit[0]++
-		bwepangle += .5*sign(bwepangle)
-		if !(floor(bwondershit[0]) mod 45){
-			sound_play_pitch(sndCursedReminder,++bwondershit[1])
-			gunshine = 7
-			with instance_create(x,y-10,CustomObject){
-				sprite_index = global.sprFlarefire
-				motion_add(90,1)
-				friction = .2
-				bimage_index = image_index
-				image_speed = .4
-				depth = -8
-				on_step = flarefire_step
-				on_draw = flarefire_draw
+if "_breload" not in self{_breload = 0}
+	if _breload > 0{_breload -= current_time_scale;breload = _breload;exit}
+	if button_check(index,"spec") && bwondershit[1]<5{
+		view_shake_max_at(x,y,bwondershit[1]*2)
+		if bwondershit[1] = 0{bwondershit[0] = 43}
+		bwondershit[0]+= current_time_scale*2.6
+		if bwondershit[1] < 4{bwepangle += .75*sign(bwepangle)}
+		if bwondershit[1] = 4{if current_frame % 4 = 0{gunshine = 5};if bwondershit[0] > 40{bwondershit[0] = 40}}
+		if (bwondershit[0] >= 45)
+		{
+			bwondershit[0] = 0
+			bwondershit[1]++
+				if bwondershit[1] > 4{bwondershit[1] = 4}
+			if bwondershit[1] > 1
+			{
+				gunshine = 7
+				sound_play_pitch(sndSwapGold,.6+bwondershit[1]*.1)
+				sound_play_pitchvol(sndGoldPickup,.6+bwondershit[1]*.1,.2)
+				with instance_create(x,y-3-sprite_get_height(sprite_index),CustomObject)
+				{
+					image_alpha = 0
+					num = other.bwondershit[1] -1
+					sprite_index = sprGroundFlameBigDisappear
+					motion_add(90,2)
+					friction = .2
+					bimage_index = image_index
+					image_speed = .45-.05*other.bwondershit[1]
+					depth = -8
+					on_step = flarefire_step
+					on_draw = flarefire_draw
+				}
 			}
 		}
-	}else if bwondershit[0] > 20{
+	}
+	else if bwondershit[1] >= 1
+	{
+		weapon_post(12,0,12)
+		sleep(4)
+		sound_play_gun(sndBlackSword,.5,0)
+		sound_play_gun(sndGoldWrench,.6,0)
+		sound_play_pitch(sndGoldScrewdriver,.6)
+		_breload += 12
 		var tier = bwondershit[1]
-		if tier = 0{
-			with instance_create(x,y,Slash){
-				sprite_index = global.sprWonderSlash
+		var _x = x+lengthdir_x(20*skill_get(13),gunangle);
+		var _y = y+lengthdir_y(20*skill_get(13),gunangle);
+		var spd = 2+3*skill_get(13);
+		if tier = 1
+		{
+			with instance_create(_x,_y,Slash)
+			{
+				damage = 20
+				sprite_index = global.sprGoldSlash
+				mask_index 	 = mskSlash
+				motion_add(other.gunangle,spd)
+				image_angle = direction
 				team = other.team
-				creator = other.creator
+				creator = other
 			}
 		}
-		else if tier = 1{
-
+		else if tier = 2
+		{
+			weapon_post(12,0,21)
+			sleep(10)
+			sound_play_gun(sndBlackSword,.5,0)
+			sound_play_pitchvol(sndGoldDiscgun,.8,.4)
+			sound_play_gun(sndGoldWrench,.6,0)
+			sound_play_pitch(sndGoldScrewdriver,.6)
+			sound_play_pitch(sndEnemySlash,1.4)
+			_breload += 26
+			with instance_create(_x,_y,Slash){
+				damage = 28
+				sprite_index = global.sprGoldSlashBig
+				mask_index 	 = mskMegaSlash
+				motion_add(other.gunangle,spd)
+				image_angle = direction
+				team = other.team
+				creator = other
+			}
 		}
-		else if tier = 2{
-
+		else if tier = 3
+		{
+			weapon_post(12,0,40)
+			sleep(20)
+			sound_play_gun(sndBlackSword,.5,0)
+			sound_play_pitchvol(sndGoldDiscgun,.8,.4)
+			sound_play_gun(sndGoldWrench,.6,0)
+			sound_play_pitch(sndGoldScrewdriver,.6)
+			sound_play_pitch(sndEnemySlash,1.4)
+			sound_play_pitch(sndIncinerator,.8)
+			_breload += 12
+			with instance_create(_x,_y,Slash){
+				damage = 34
+				sprite_index = global.sprGoldSlashBig
+				mask_index 	 = mskMegaSlash
+				motion_add(other.gunangle,spd)
+				image_angle = direction
+				team = other.team
+				creator = other
+					repeat(7) with instance_create(x,y,Flame)
+					{
+						team = other.team
+						move_contact_solid(point_direction(other.x,other.y,other.x+lengthdir_x(60,other.direction-20),other.y+lengthdir_y(60,other.direction-20)),60)
+						motion_add(point_direction(other.x,other.y,x,y)+random_range(-34,34),4)
+					}
+					repeat(7) with instance_create(x,y,Flame)
+					{
+						move_contact_solid(point_direction(other.x,other.y,other.x+lengthdir_x(65,other.direction),other.y+lengthdir_y(65,other.direction)),65)
+						team = other.team
+						motion_add(point_direction(other.x,other.y,x,y)+random_range(-34,34),4)
+					}
+					repeat(7) with instance_create(x,y,Flame)
+					{
+							move_contact_solid(point_direction(other.x,other.y,other.x+lengthdir_x(60,other.direction+20),other.y+lengthdir_y(60,other.direction+20)),60)
+						team = other.team
+						motion_add(point_direction(other.x,other.y,x,y)+random_range(-34,34),4)
+					}
+			}
 		}
-		else if tier = 3{
-
+		else if tier = 4
+		{
+			weapon_post(12,0,74)
+			sound_play_gun(sndBlackSword,.5,0)
+			sound_play_pitchvol(sndGoldDiscgun,.8,.4)
+			sound_play_gun(sndGoldWrench,.6,0)
+			sound_play_pitch(sndGoldScrewdriver,.6)
+			sound_play_pitch(sndEnemySlash,1.4)
+			sound_play_pitch(sndIncinerator,.8)
+			sound_play_pitch(sndFireShotgun,random_range(.6,.8))
+			sleep(70)
+			sound_play_pitchvol(sndFlameCannonEnd,.7,.5)
+			_breload += 32
+			with instance_create(_x,_y,Slash){
+				damage = 40
+				sprite_index = global.sprGoldSlashBig
+				mask_index 	 = mskMegaSlash
+				motion_add(other.gunangle,spd)
+				image_angle = direction
+				team = other.team
+				creator = other
+				repeat(7) with instance_create(x,y,Flame)
+				{
+					team = other.team
+					move_contact_solid(point_direction(other.x,other.y,other.x+lengthdir_x(60,other.direction-20),other.y+lengthdir_y(60,other.direction-20)),60)
+					motion_add(point_direction(other.x,other.y,x,y)+random_range(-34,34),4)
+				}
+				repeat(7) with instance_create(x,y,Flame)
+				{
+					move_contact_solid(point_direction(other.x,other.y,other.x+lengthdir_x(65,other.direction),other.y+lengthdir_y(65,other.direction)),65)
+					team = other.team
+					motion_add(point_direction(other.x,other.y,x,y)+random_range(-34,34),4)
+				}
+				repeat(7) with instance_create(x,y,Flame)
+				{
+						move_contact_solid(point_direction(other.x,other.y,other.x+lengthdir_x(60,other.direction+20),other.y+lengthdir_y(60,other.direction+20)),60)
+					team = other.team
+					motion_add(point_direction(other.x,other.y,x,y)+random_range(-34,34),4)
+				}
+			}
 		}
+		/*if tier = 5
+		{
+				repeat(3){with instance_create(x,y,CustomObject){team = other.team;on_step = flare_step}}
+		}*/
+		bwondershit = [0,0]
 		bwepangle = -90 * sign(bwepangle)
-		sound_play_gun(sndBlackSword,.2,0)
 		bwkick = 9
 		motion_add(gunangle,4)
 	}
-}
-
-#define explosnake_step
-if place_meeting(x,y,Wall)
-{
-	with instance_create(x+random_range(-16,16),y+random_range(-16,16),CustomObject){team = other.team;spd = irandom_range(2,4);on_step = flare_step}
-	instance_destroy()
-	exit
-}
-timer -= current_time_scale
-if timer <= 0
-{
-	timer = otimer + irandom_range(1,2)
-	ammo--
-	with instance_create(x+random_range(-16,16),y+random_range(-16,16),CustomObject){team = other.team;spd = irandom_range(2,4);on_step = flare_step}
-}
-if ammo <= 0{instance_destroy()}
-
-#define flare_step
-if "spd" not in self{spd = 6}
-repeat(irandom(18)+6)
-{
-	with instance_create(x,y,Flame)
+	else
 	{
-		damage += 2
-		team = other.team
-		motion_add(random(360),other.spd)
+		bwondershit = [0,0]
+		bwepangle = 90 * sign(bwepangle)
 	}
 }
-instance_destroy()
-/*#define wondercharge_step
-if !instance_exists(creator){instance_delete(self);exit}
-if button_check(creator.index,"fire") {
-	x = creator.x
-	y = creator.y
-	creator.reload = weapon_get_load(creator.wep)
-	if tier < 3{
-		creator.wepangle += .5*sign(creator.wepangle)
-		charge += 1
-		if !(floor(charge) mod 45){
-			sound_play_pitch(sndCursedReminder,++tier)
-			creator.gunshine = 7
-			with instance_create(x,y-10,CustomObject){
-				sprite_index = global.sprFlarefire
-				motion_add(90,1)
-				friction = .2
-				bimage_index = image_index
-				image_speed = .4
-				depth = -8
-				on_step = flarefire_step
-				on_draw = flarefire_draw
-			}
-		}
-	}
-}
-else
-{
-	creator.wepangle = -90 * sign(creator.wepangle)
-	sound_play_gun(sndBlackSword,.2,0)
-	wkick = 9
-	with creator{motion_add(gunangle,4)}
-	if tier = 0{
-		with instance_create(x,y,Slash){
-			sprite_index = global.sprWonderSlash
-			team = other.team
-			creator = other.creator
-		}
-	}
-	else if tier = 1{
-
-	}
-	else if tier = 2{
-
-	}
-	else if tier = 3{
-
-	}
-	instance_destroy()
-}*/
 
 
 #define flarefire_step
@@ -447,4 +488,8 @@ repeat(5)with instance_create(x+random_range(-14,14),y+random_range(-14,14),Fire
 #define sweetspot_draw
 draw_self()
 draw_sprite_ext(global.sprWonderSlash,image_index,x,y,1,1,image_angle,c_white,1)
+
+
 #define actually_nothing
+
+#macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)

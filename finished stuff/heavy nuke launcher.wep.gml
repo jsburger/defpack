@@ -129,7 +129,8 @@ repeat(16)
 }
 with instance_create(x,y,CustomObject){timer = 1;on_step = freeze_step}
 sleep(100)
-sound_play_pitch(sndHyperCrystalTaunt,11)
+sound_play_pitchvol(sndHyperCrystalTaunt,11,.4)
+sound_play_pitch(sndSniperTarget,.8)
 sound_play_pitch(sndHitMetal,.4)
 sound_play_pitch(sndDoubleShotgun,.6)
 sound_play_pitch(sndSuperSlugger,.7)

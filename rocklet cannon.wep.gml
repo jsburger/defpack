@@ -70,7 +70,7 @@ if timer >= 2 && ammo > 0{
     sound_play_pitch(sndMachinegun,random_range(.7,.8))
     repeat(2){
         with mod_script_call("mod","defpack tools", "create_rocklet",x,y){
-            creator = other
+            creator = other.creator
             team = creator.team
             motion_add(other.direction + n,2)
             move_contact_solid(direction,10)

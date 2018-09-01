@@ -53,7 +53,6 @@ if j % 48 = 0
 	ammo--
 	with instance_create(x + random_range(-8,8) * accuracy,y + random_range(-8,8) * accuracy,CustomProjectile)
 	{
-		creator = other.creator
 		team    = other.team
 		acc 		= other.accuracy
 		sprite_index = mskNone

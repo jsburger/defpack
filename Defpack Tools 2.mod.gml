@@ -626,7 +626,6 @@ if other.team != team
 #define gas_step
 if image_index = 1 image_speed = 0
 if !irandom(1) && distance_to_object(creator) > 20 with instance_create(x,y,ToxicGas){
-	creator = other.creator
 	image_angle = random(359)
 	motion_set(random(356),random(2))
 }

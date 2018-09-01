@@ -39,6 +39,7 @@ repeat(5)
 	with instance_create(x+lengthdir_x(10,gunangle),y+lengthdir_y(10,gunangle),Bolt)
 	{
 		team = other.team
+		creator = other
 		sprite_index = global.sprHyperBolt
 		damage = 20
 		motion_add(other.gunangle+random_range(-1,1)*other.accuracy,25)

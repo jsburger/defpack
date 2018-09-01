@@ -41,6 +41,7 @@ repeat(8)
 	mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, 2+random(2), c_purple)
 	with mod_script_call("mod", "defpack tools", "create_psy_bullet",x+lengthdir_x(random_range(-7,7)*accuracy,gunangle+90),y+lengthdir_y(random_range(-7,7)*accuracy,gunangle+90)){
 		team = other.team
+		creator = other
 		move_contact_solid(other.gunangle,5)
 		motion_add(other.gunangle+random_range(-12,12)*other.accuracy,5+random_range(-1,1)*other.accuracy)
 		image_angle = direction

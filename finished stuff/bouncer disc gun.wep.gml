@@ -33,6 +33,7 @@ with instance_create(x+lengthdir_x(4,gunangle),y+lengthdir_y(4,gunangle),CustomP
   damage = 2
   team = -10
   image_speed = .5
+  creator = other
   name = "Bouncer Disc"
   sprite_index = global.sprBouncerDisc
   move_contact_solid(other.gunangle,12+other.speed)

@@ -57,6 +57,7 @@ repeat(3)
 		{
 			move_contact_solid(other.gunangle,2)
 			team     = other.team
+			creator  = other
 			typ 		 = 1
 			force    = 5
 			damage   = 6
