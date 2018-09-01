@@ -1,16 +1,19 @@
 #define init
 global.sprAndromedaLauncher = sprite_add_weapon("sprAndromedaLauncher.png", 0, 5);
-global.sprAndromedaBullet = sprite_add_base64("iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAYAAAB3AH1ZAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACLSURBVEhL3ZXRCcAgDESzRaEDdI6O1s1tgkmrcK1NFIQevK/gy+GH0rpsXewHXaRkPCXPyzNQ6qFe/jWDC/iWWwYViC23/KNAX6DU4EjHhGaGesKBUsGWt0qoJxwoFaYXEFrLBfWEA6Ue1BMOlHpgRUcJvl8k9TC9wPSnWCT+EoM/o7rEW5E8v88QnexX3Z4Uujk7AAAAAElFTkSuQmCCAAAAAAAAAAAAAA==",2, 8, 8);
-global.space = sprite_add("spaceforeground.png",1,0,0);
-global.space2 = sprite_add("spacebackground.png",1,0,0);
+global.sprAndromedaBullet = sprite_add_base64("iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAYAAAB3AH1ZAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACLSURBVEhL3ZXRCcAgDESzRaEDdI6O1s1tgkmrcK1NFIQevK/gy+GH0rpsXewHXaRkPCXPyzNQ6qFe/jWDC/iWWwYViC23/KNAX6DU4EjHhGaGesKBUsGWt0qoJxwoFaYXEFrLBfWEA6Ue1BMOlHpgRUcJvl8k9TC9wPSnWCT+EoM/o7rEW5E8v88QnexX3Z4Uujk7AAAAAElFTkSuQmCCAAAAAAAAAAAAAA==",2, 16, 8);
+global.space4 = sprite_add("spaceforeground.png",1,0,0);
+global.space3 = sprite_add("spacebackground.png",1,0,0);
 
-with CustomObject instance_destroy()
-with script_bind_draw(spacedraw,7.9) {
+global.space = sprite_add("sprStarfieldForeground.png",1,0,0)
+global.space2 = sprite_add("sprStarfieldBackground.png",1,0,0)
+
+//with CustomObject instance_destroy()
+/*with script_bind_draw(spacedraw,7.9) {
 	persistent = 1
 	with CustomDraw if script[2] = "spacedraw"{
 		if id !=other.id instance_destroy()
 	}
-}
+}*/
 
 #define weapon_name
 return "ANDROMEDA LAUNCHER"
@@ -37,7 +40,202 @@ return sndSwapExplosive;
 return 15;
 
 #define weapon_text
-return "TAKE IT IN YOUR HEART NOW, LOVER";
+return "MAN'S LAST DESIRE";
+
+#define weapon_fire
+with instance_create(x,y,CustomProjectile){
+    name = "Andromeda Bullet";
+    disgoal = distance_to_point(mouse_x[other.index],mouse_y[other.index]);
+    motion_set(other.gunangle,disgoal/5)
+    sprite_index = global.sprAndromedaBullet
+    projectile_init(other.team,team)
+    image_speed = .4
+    image_angle = direction
+    image_xscale = disgoal/20
+    on_anim = andro_anim
+    mask_index = mskNone
+}
+
+#define andro_anim  
+image_speed = 0
+image_xscale = 1
+image_index = 1
+speed = 0
+with instance_create(x,y,CustomObject){
+    depth = 7.9
+    on_draw = spacedraw
+    wantsucc = 100
+    succ = 0
+    team = other.team
+    creator = other.creator
+    on_step = spacestep
+    alarm0 = 30
+}
+instance_destroy()
+
+#define spacestep
+succ += (wantsucc - succ)*current_time_scale/3
+if alarm0 > 0 alarm0 -= current_time_scale
+if alarm0 <= 0{
+    alarm0 = -1
+    wantsucc = 0
+}
+
+with instances_in(x-succ,y-succ/2,x+succ,y+succ/2,Wall){
+    if (sqr(x+8 - other.x))/sqr(other.succ) + (sqr(y+8-other.y))/sqr(other.succ/2) <= 1{
+        instance_create(x,y,FloorExplo)
+        instance_destroy()
+    }
+}
+
+with instances_in(x-succ,y-succ/2,x+succ,y+succ/2,instances_matching_ne([hitme,Corpse],"team",team)){
+    //thank you stackexchange for teaching me ellipse math
+    if (sqr(x - other.x))/sqr(other.succ) + (sqr(y-other.y))/sqr(other.succ/2) <= 1{
+        with instance_create(x,y,CustomObject){
+            sprite = other.sprite_index
+            if "spr_hurt" in other sprite = other.spr_hurt
+            frames = sprite_get_number(sprite)
+            if "snd_hurt" in other sound_play(other.snd_hurt)
+            fallspeed = sqr(other.size)
+            depth = other.depth
+            on_draw = victimdraw
+            on_step = victimstep
+            height = sprite_get_yoffset(sprite)
+            fall = height
+            xoff = sprite_get_xoffset(sprite)
+            size = other.size
+            drawsize = max(other.sprite_width,other.sprite_height)
+            var n = drawsize + fall
+        }
+        other.alarm0 = max(other.alarm0,sqrt(n))
+        var _x = x, _y = y
+        if !instance_is(self,Corpse){
+            if instance_is(self,Nothing) || instance_is(self,NothingInactive){
+                if fork(){
+                    wait(80)
+                    if !(instance_exists(Generator) || instance_exists(GeneratorInactive)){
+                        instance_create(_x,_y,BigPortal)
+                    }
+                    else{
+                        instance_create(_x,_y,SitDown)
+                    }
+                    exit
+                }
+            }
+            else {
+                if instance_is(self,Nothing2){
+                    if fork(){
+                        wait(80)
+                        instance_create(_x,_y,BigPortal)
+                        exit
+                    }
+                }
+                else if instance_is(self,enemy){
+                    if instance_number(enemy) = 1{
+                        if fork(){
+                            wait(30)
+                            instance_create(_x,_y,Portal)
+                            exit
+                        }
+                    }
+                }
+            }
+        }
+        instance_delete(self)
+    }
+}
+
+if succ < .5  && wantsucc = 0 instance_destroy()
+
+#define victimdraw
+draw_sprite_part(sprite,current_frame *.4 mod frames,0,0,drawsize,clamp(drawsize+fall-height,0,drawsize),x-xoff,y-fall-height)
+
+#define victimstep
+fall += fallspeed
+fallspeed -= current_time_scale
+if fall < -height instance_destroy()
+
+
+#define instances_in(left,top,right,bottom,obj)
+return instances_matching_gt(instances_matching_lt(instances_matching_gt(instances_matching_lt(obj,"y",bottom),"y",top),"x",right),"x",left)
+
+
+#define drawmyshit(_x,_y,scale,size,off)
+var xref,yref,xn,yn;
+xref = (_x-view_xview_nonsync/scale)
+yref = (_y-view_yview_nonsync/scale)
+xn = (off+xref/size);
+yn = (off+yref/size);
+draw_vertex_texture(_x,_y,xn,yn)
+
+
+#define step
+if button_pressed(index,"horn"){
+     with instance_create(x,y,CustomObject){
+            sprite = other.sprite_index
+            if "spr_hurt" in other sprite = other.spr_hurt
+            frames = sprite_get_number(sprite)
+            fall = 0
+            fallspeed = other.size
+            depth = other.depth
+            on_draw = victimdraw
+            on_step = victimstep
+            size = other.size
+            drawsize = max(other.sprite_width,other.sprite_height)
+        }
+}
+
+
+#define spacedraw
+var xref,yref,sprite;
+sprite = global.space
+var tex,tex2,tex3,tex4,w,h,xn,yn;
+tex = sprite_get_texture(sprite, 0);
+tex2 = sprite_get_texture(global.space2,0);
+tex3 = sprite_get_texture(global.space3,0);
+tex4 = sprite_get_texture(global.space4,0);
+texture_set_repeat(1);
+var size = 512
+if instance_exists(Player){
+	var p = instance_nearest(x,y,Player);
+	var dir = point_direction(x,y,p.x,p.y)
+	if point_seen(x+lengthdir_x(succ,dir),y+lengthdir_y(succ/2,dir),p.index) || distance_to_object(p)<succ{
+
+        var sides = 18
+        var int = 360/sides
+		draw_primitive_begin_texture(pr_trianglefan, tex3);
+		drawmyshit(x,y,1,size,0)
+		for (var i = 0; i<= 360; i+=int){
+			drawmyshit(x+lengthdir_x(succ,i),y+lengthdir_y(succ/2,i),1,size,0)
+		}
+		draw_primitive_end();
+
+        draw_primitive_begin_texture(pr_trianglefan, tex2);
+		drawmyshit(x,y,1.5,size,0)
+		for (var i = 0; i<= 360; i+=int){
+			drawmyshit(x+lengthdir_x(succ,i),y+lengthdir_y(succ/2,i),1.5,size,0)
+		}
+		draw_primitive_end();
+
+		draw_primitive_begin_texture(pr_trianglefan, tex);
+		drawmyshit(x,y,2,size,0)
+		for (var i = 0; i<= 360; i+=int){
+			drawmyshit(x+lengthdir_x(succ,i),y+lengthdir_y(succ/2,i),2,size,0)
+		}
+		draw_primitive_end();
+		
+	    draw_primitive_begin_texture(pr_trianglefan, tex4);
+		drawmyshit(x,y,3,128,0)
+		for (var i = 0; i<= 360; i+=int){
+			drawmyshit(x+lengthdir_x(succ,i),y+lengthdir_y(succ/2,i),3,128,0)
+		}
+		draw_primitive_end();
+	}
+}
+draw_set_color(c_white);
+draw_set_alpha(1);
+texture_set_repeat(false);
+
 
 /*#define weapon_fire
 with instance_create(x+lengthdir_x(14,gunangle),y+lengthdir_y(14,gunangle),CustomObject){
@@ -267,60 +465,6 @@ if mode = 1{
 	}
 }
 */
-
-#define drawmyshit(_x,_y,scale,size,off)
-var xref,yref,xn,yn;
-xref = _x-view_xview[index]/scale
-yref = _y-view_yview[index]/scale
-xn = off+xref/size;
-yn = off+yref/size;
-draw_vertex_texture(_x,_y,xn,yn)
-
-
-/*
-#define spacedraw
-var xref,yref,sprite;
-sprite = global.space
-var tex,tex2,w,h,xn,yn;
-tex = sprite_get_texture(sprite, 0);
-tex2 = sprite_get_texture(global.space2,0)
-texture_set_repeat(1);
-var size = 128
-with instances_matching(CustomObject,"andromeda",1) if mode = 1{
-	if instance_exists(Player){
-		var p = instance_nearest(x,y,Player);
-		var dir = point_direction(x,y,p.x,p.y)
-		if point_seen(x+lengthdir_x(succ,dir),y+lengthdir_y(succ,dir),p.index) || distance_to_object(p)<succ{
-
-			draw_primitive_begin_texture(pr_trianglefan, tex2);
-			drawmyshit(x,y,1000,size*4,0)
-			for (var i = 0; i<= 360; i+=20){
-				drawmyshit(x+lengthdir_x(succ,i),y+lengthdir_y(succ,i),1000,size*4,0)
-			}
-			draw_primitive_end();
-
-			draw_primitive_begin_texture(pr_trianglefan, tex);
-			drawmyshit(x,y,2,size/2,0)
-			for (var i = 0; i<= 360; i+=20){
-				drawmyshit(x+lengthdir_x(succ,i),y+lengthdir_y(succ,i),2,size/2,0)
-			}
-			draw_primitive_end();
-
-			draw_primitive_begin_texture(pr_trianglefan, tex);
-			drawmyshit(x,y,3,size,.5)
-			for (var i = 0; i<= 360; i+=20){
-				drawmyshit(x+lengthdir_x(succ,i),y+lengthdir_y(succ,i),3,size,.5)
-			}
-			draw_primitive_end();
-
-		}
-	}
-}
-draw_set_color(c_white);
-draw_set_alpha(1);
-texture_set_repeat(false);
-*/
-
 
 /*#define weapon_fire
 with instance_create(x,y,CustomObject){
