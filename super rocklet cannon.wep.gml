@@ -54,7 +54,7 @@ with instance_create(x,y,CustomProjectile)
     flip = 1
     anginc = 0
     image_angle = direction
-    ammo = 6
+    ammo = 6 + (2 * (GameCont.crown == crwn_death))
     on_draw    = cannon_draw
     on_step    = scannon_step
     on_destroy = scannon_destroy
@@ -117,7 +117,7 @@ with instance_create(x,y,CustomProjectile)
     depth = -1
     maxspeed = 16
     image_angle = direction
-    ammo = 20
+    ammo = 20 + (4* (GameCont.crown == crwn_death))
     on_draw    = cannon_draw
     on_step    = cannon_step
     on_destroy = cannon_destroy

@@ -92,6 +92,8 @@ switch rainbow_cycle{
 			team = other.team
 			motion_add(other.gunangle+random_range(-10,10)*other.accuracy,20)
 			image_angle = direction
+			maxspeed = speed
+			timer = 0
 		}
 		break
 }

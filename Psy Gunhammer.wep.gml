@@ -56,8 +56,9 @@ with instance_create(x,y,Slash){
 			sound_play_pitch(sndMachinegun,1.2)
 			sprite_index = global.slash
 			with mod_script_call("mod","defpack tools","create_psy_bullet",x,y){
-				motion_set(other.direction + random_range(-20,20)*other.creator.accuracy, 5)
+				motion_set(other.direction + random_range(-20,20)*other.creator.accuracy, 8)
 				image_angle = direction
+				maxspeed = 8
 				creator = other.creator
 				team = other.team
 				timer -= 5

@@ -42,11 +42,11 @@ with instance_create(x,y,CustomProjectile){
     friction = -.6
     image_speed = .4
     maxspeed = 12
-    damage = 3 - global.explosive
+    damage = 6 - 2*global.explosive
     sprite_index = global.sprMegaDrill
     lasthit = -4
     hits = 0
-    walls = 16
+    walls = 8
     image_angle = direction
     projectile_init(other.team,other)
     repeat(12) instance_create(x,y,Smoke)
@@ -97,12 +97,13 @@ else
 
 #define drill_hit
 sleep(12)
+walls = 6
 //speed = max(speed - 3, 3)
 x = xprevious
 y = yprevious
 speed = 1
 other.speed = 0
-sleep(30)
+sleep(20)
 view_shake_at(x,y,7)
 projectile_hit(other,damage)
 var mans = other;
@@ -130,7 +131,7 @@ with instance_create(_meetx+random_range(-6,6),_meety+random_range(-6,6),SmallEx
     image_yscale = .5
     damage = 1
     team = other.team
-    sound_play_pitchvol(sndExplosionS,2,.3)
+    sound_play_pitchvol(sndExplosionS,2,.5)
     hitid = [sprite_index,"MINI EXPLOSION"]
 }
 drill_hit()

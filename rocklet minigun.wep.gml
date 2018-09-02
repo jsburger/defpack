@@ -32,7 +32,7 @@ return "HURRICANE";
 if fork(){
     sound_play_pitch(sndToxicBoltGas,.85)
     sound_play_pitch(sndRocket,2)
-    repeat(5) if instance_exists(self){
+    repeat(5 + (1 * (GameCont.crown == crwn_death))) if instance_exists(self){
         weapon_post(7,-7,4)
         sound_play_pitch(sndHeavySlugger,1.5)
         sound_play_pitch(sndServerBreak,random_range(.4,.5))

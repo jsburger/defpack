@@ -59,7 +59,7 @@ if fork(){
 }
 
 with mod_script_call("mod", "defpack tools", "create_psy_bullet",x,y){
-	motion_set(ang+random_range(-9,9)*other.accuracy,6)
+	motion_set(ang+random_range(-9,9)*other.accuracy,8)
 	projectile_init(other.team,other)
 	image_angle = direction
 }

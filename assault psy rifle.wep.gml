@@ -40,7 +40,7 @@ repeat(3)
 	creator = other
 	move_contact_solid(other.gunangle,10)
 	team = other.team
-	motion_add(other.gunangle+random_range(-5,5)*other.accuracy,5)
+	motion_add(other.gunangle+random_range(-5,5)*other.accuracy,8)
 	image_angle = direction
 }
 wait(3)

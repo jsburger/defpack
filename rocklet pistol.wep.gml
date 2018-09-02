@@ -31,7 +31,7 @@ return "DRIZZLE";
 #define weapon_fire
 if fork(){
     sound_play_pitch(sndToxicBoltGas,1.2)
-    repeat(3) if instance_exists(self){
+    repeat(3 + (1* (GameCont.crown == crwn_death))) if instance_exists(self){
         weapon_post(4,-7,6)
         sound_play_pitch(sndSlugger,2.2)
         sound_play_pitch(sndServerBreak,random_range(.6,.8))

@@ -26,7 +26,7 @@ return sndSwapPistol;
 return -1;
 
 #define weapon_text
-return "replace me please";
+return "@pPSIONIC@d BULLETS";
 
 #define weapon_fire
 weapon_post(9,-6,72)
@@ -43,7 +43,8 @@ repeat(8)
 		team = other.team
 		creator = other
 		move_contact_solid(other.gunangle,5)
-		motion_add(other.gunangle+random_range(-12,12)*other.accuracy,5+random_range(-1,1)*other.accuracy)
+		motion_add(other.gunangle+random_range(-12,12)*other.accuracy,8+random_range(-1,1)*other.accuracy)
 		image_angle = direction
+		maxspeed = speed
 	}
 }

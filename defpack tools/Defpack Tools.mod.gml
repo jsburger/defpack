@@ -56,25 +56,25 @@ global.sprCursorCentre = sprite_add("sprCursorCentre.png",0,1,1);
 
 global.SAKmode = 0
 
-/*global.traildrawer = -4
-global.trailsf = surface_create(4000,4000)
-global.sfx = 7500
-global.sfy = 7500
+global.traildrawer = -4
+global.trailsf = surface_create(game_width*4,game_height*4)
 surface_set_target(global.trailsf)
 draw_clear_alpha(c_white,0)
-surface_reset_target()*/
+surface_reset_target()
 
 
 #define chat_command(cmd,arg)
-if cmd = "sakcity" global.SAKmode = !global.SAKmode
-
+if cmd = "sakcity" {
+    global.SAKmode = !global.SAKmode
+    return 1
+}
 
 
 //thanks yokin
 #macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)
 
 #define cleanup
-//with global.traildrawer instance_destroy()
+with global.traildrawer instance_destroy()
 
 #define draw_shadows()
 with instances_matching(CustomProjectile,"name","volley arrow")
@@ -137,41 +137,40 @@ with TopCont
     }
 }
 draw_set_visible_all(1)
-/*#define draw_trails
-surface_set_target(global.trailsf)
-draw_set_blend_mode(bm_subtract)
-draw_set_alpha(.2)
-draw_set_color_write_enable(0,0,0,1)
-draw_rectangle(0,0,surface_get_width(global.trailsf),surface_get_height(global.trailsf),0)
-draw_set_blend_mode(bm_normal)
-draw_set_alpha(1)
-draw_set_color_write_enable(1,1,1,1)
 
-d3d_set_fog(1,c_white,1,1)
+#define instances_in(left,top,right,bottom,obj)
+return instances_matching_gt(instances_matching_lt(instances_matching_gt(instances_matching_lt(obj,"y",bottom),"y",top),"x",right),"x",left)
 
-with instances_matching(CustomProjectile,"name","big rocklet","huge rocklet"){
-    if point_seen(xprevious,yprevious,-1){
-        draw_sprite_ext(sprDust,irandom(3),xprevious-global.sfx,yprevious-global.sfy,2,(random(speed)/(maxspeed))+.1,direction,c_white,1)
+#define draw_trails
+if array_length_1d(instances_matching(CustomProjectile,"name","Rocklet","big rocklet","huge rocklet")){
+    surface_set_target(global.trailsf)
+    draw_set_blend_mode(bm_subtract)
+    draw_set_alpha(.5)
+    draw_set_color_write_enable(0,0,0,1)
+    draw_rectangle(0,0,game_width*4,game_height*4,0)
+    //draw_sprite_tiled(sprScrapDecal,-1,random(game_width),random(game_height))
+    draw_set_blend_mode(bm_normal)
+    draw_set_alpha(1)
+    draw_set_color_write_enable(1,1,1,1)
+    
+    d3d_set_fog(1,c_white,1,1)
+    
+    
+    with instances_in(view_xview_nonsync,view_yview_nonsync,view_xview_nonsync+game_width,view_yview_nonsync+game_height,instances_matching(CustomProjectile,"name","big rocklet","huge rocklet")){
+        draw_sprite_ext(sprDust,irandom(3),(xprevious-view_xview_nonsync)*4,(yprevious-view_yview_nonsync)*4,8,((random(speed)/(maxspeed))+.1)*4,direction,c_white,1)
     }
-}
-with instances_matching(CustomProjectile,"name","Rocklet"){
-    if point_seen(xprevious,yprevious,-1){
-        draw_sprite_ext(sprDust,irandom(3),xprevious-global.sfx,yprevious-global.sfy,2,random(speed)/(maxspeed*2),direction,c_white,1)
+    with instances_in(view_xview_nonsync,view_yview_nonsync,view_xview_nonsync+game_width,view_yview_nonsync+game_height,instances_matching(CustomProjectile,"name","Rocklet")){
+        draw_sprite_ext(sprDust,irandom(3),(xprevious-view_xview_nonsync)*4,4*(yprevious-view_yview_nonsync),4,4*(random(speed)/(maxspeed*2)),direction,c_white,1)
     }
+    d3d_set_fog(0,0,0,0)
+    
+    surface_reset_target()
+    draw_surface_ext(global.trailsf,view_xview_nonsync,view_yview_nonsync,0.25,0.25,0,c_white,1)
 }
-d3d_set_fog(0,0,0,0)
 
-surface_reset_target()
-for var i = 0; player_is_active(i); i++{
-    draw_set_visible_all(0)
-    draw_set_visible(i,1)
-    draw_surface_part(global.trailsf,view_xview[i]-global.sfx,view_yview[i] - global.sfy, game_width, game_height, view_xview[i], view_yview[i])
-}
-draw_set_visible_all(1)
-*/
 #define step
-/*if !surface_exists(global.trailsf){
-    global.trailsf = surface_create(7000,7000)
+if !surface_exists(global.trailsf){
+    global.trailsf = surface_create(game_width*4,game_height*4)
     surface_set_target(global.trailsf)
     draw_clear_alpha(c_black,0)
     surface_reset_target()
@@ -186,7 +185,7 @@ if instance_exists(GenCont){
     surface_set_target(global.trailsf)
     draw_clear_alpha(c_black,0)
     surface_reset_target()
-}*/
+}
 
 if global.SAKmode &&  mod_exists("weapon","sak"){
     with instances_matching(instances_matching(WepPickup,"roll",1),"saked",undefined){
@@ -235,12 +234,12 @@ var num = instance_number(obj),
     n = 0,
     found = -4;
 if instance_exists(obj){
-    while ++n <= num && variable_instance_get(man,varname) = value || (instance_is(man,prop) || instance_is(man,Generator)){
+    while ++n <= num && variable_instance_get(man,varname) = value || (instance_is(man,prop) && !instance_is(man,Generator)){
         man.x += 10000
         array_push(mans,man)
         man = instance_nearest(_x,_y,obj)
     }
-    if variable_instance_get(man,varname) != value && !instance_is(man,prop) found = man
+    if variable_instance_get(man,varname) != value && (!instance_is(man,prop) || instance_is(man,Generator)) found = man
     with mans x-= 10000
 }
 return found
@@ -326,14 +325,13 @@ with (a) {
 	pattern = false
 	sprite_index = global.sprPsyBullet
 	typ = 2
-	damage = 3
+	damage = 4
 	recycle_amount = 2
 	force = -10
 	image_speed = 1
 	image_angle = direction
 	mask_index = global.mskPsyBullet
-	timer = 11+irandom(8)
-	maxspeed = 5
+	timer = irandom(6)+4
 	image_yscale = 1.2
 	image_xscale = 1.2
 	on_step = script_ref_create(psy_step)
@@ -354,14 +352,10 @@ if timer <= 0{
 		var dir, spd;
 
 		dir = point_direction(x, y, closeboy.x, closeboy.y);
-		spd = 11 * current_time_scale
+		spd = speed * 2 * current_time_scale
 
 		direction -= clamp(angle_difference(image_angle, dir) * .3 * current_time_scale, -spd, spd); //Smoothly rotate to aim position.
 		image_angle = direction
-	}
-	if speed > maxspeed
-	{
-		speed = maxspeed
 	}
 }
 

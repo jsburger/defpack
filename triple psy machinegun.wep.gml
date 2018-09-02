@@ -38,20 +38,20 @@ with mod_script_call("mod", "defpack tools", "create_psy_bullet",x,y){
 	creator = other
 	move_contact_solid(other.gunangle,10)
 	team = other.team
-	motion_add(other.gunangle+random_range(-8,8)*other.accuracy,5)
+	motion_add(other.gunangle+random_range(-8,8)*other.accuracy,8)
 	image_angle = direction
 }
 with mod_script_call("mod", "defpack tools", "create_psy_bullet",x,y){
 	creator = other
 	move_contact_solid(other.gunangle,10)
 	team = other.team
-	motion_add(other.gunangle+26*other.accuracy+random_range(-8,8)*other.accuracy,5)
+	motion_add(other.gunangle+26*other.accuracy+random_range(-8,8)*other.accuracy,8)
 	image_angle = direction
 }
 with mod_script_call("mod", "defpack tools", "create_psy_bullet",x,y){
 	creator = other
 	move_contact_solid(other.gunangle,10)
 	team = other.team
-	motion_add(other.gunangle-26*other.accuracy+random_range(-8,8)*other.accuracy,5)
+	motion_add(other.gunangle-26*other.accuracy+random_range(-8,8)*other.accuracy,8)
 	image_angle = direction
 }

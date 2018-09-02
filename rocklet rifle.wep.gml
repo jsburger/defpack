@@ -31,7 +31,7 @@ return "STORM";
 #define weapon_fire
 if fork(){
     sound_play_pitch(sndToxicBoltGas,.85)
-    repeat(4) if instance_exists(self){
+    repeat(4 + (1* (GameCont.crown == crwn_death))) if instance_exists(self){
         weapon_post(5,-7,4)
         sound_play_pitch(sndHeavySlugger,1.5)
         sound_play_pitch(sndServerBreak,random_range(.5,.8))
