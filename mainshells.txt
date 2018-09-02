@@ -14,7 +14,6 @@
 //SHOT CANNON
 /loadwep shot cannon
 /loadwep hot shot cannon
-/loadwep ultra shot cannon
 /loadwep psy shot cannon
 
 //FLAK CANNON
@@ -22,6 +21,7 @@
 /loadwep phlogenitator
 
 //OTHER SHELL
+/loadwep tsunami
 /loadwep popper
 /loadwep super heavy slugger
 /loadwep apergig tanat
