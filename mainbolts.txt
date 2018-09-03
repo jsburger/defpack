@@ -3,36 +3,25 @@
 //BLOOD
 
 /loadwep finished stuff/blood crossbow
-
 /loadwep finished stuff/heavy blood crossbow
-
 
 //SPLINTER
 
 /loadwep nail gun
 /loadwep finished stuff/splinter cannon
-
 /loadwep millimata
-
 
 //DISC
 
 /loadwep finished stuff/bouncer disc gun
-
 /loadwep finished stuff/sticky disc gun
-
 
 //OTHER BOLT
 
 /loadwep marker
-
 /loadwep hot crossbow
-
 /loadwep heavy toxic crossbow
-
 /loadwep hyper crossbow
-
 /loadwep bolt gun
-
 
 /load mainexplosives

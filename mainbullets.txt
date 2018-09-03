@@ -1,238 +1,138 @@
-///BULLET WEAPONS//
-/
+///BULLET WEAPONS///
 
 //GUNHAMMER
 
 /loadwep gunhammer
-
 /loadwep heavy gunhammer
-
 /loadwep ultra gunhammer
-
 
 //BULLAKS
 
 /loadwep bullak cannon
-
 /loadwep bullak machinegun
 
-
 //CANNON
-
 /loadwep bullet cannon
-
 
 //SNIPER RIFLES
 
 /loadwep sniper rifle
 
-
 //FIRE BULLET
 
 /loadwep fire revolver
-
 /loadwep fire machinegun
-
 /loadwep triple fire machinegun
-
 /loadwep quad fire machinegun
-
 /loadwep fire smg
-
 /loadwep assault fire rifle
-
 /loadwep hyper fire rifle
-
 /loadwep fire minigun
-
 /loadwep double fire minigun
-
 /loadwep smart fire gun
-
 /loadwep fire bullet cannon
-
 /loadwep fire gunhammer
-
 /loadwep fire bullet cannon
-
 /loadwep fire bullak cannon
-
 /loadwep sniper fire rifle
 
 
 //BOUNCER BULLET
 
 /loadwep bouncer revolver
-
 /loadwep bouncer machinegun
-
 /loadwep triple bouncer machinegun
-
 /loadwep quad bouncer machinegun
-
 //loadwep bouncer smg
-
 /loadwep assault bouncer rifle
-
 /loadwep hyper bouncer rifle
-
 /loadwep bouncer minigun
-
 /loadwep double bouncer minigun
-
 /loadwep smart bouncer gun
-
 /loadwep bouncer gunhammer
-
 /loadwep bouncer bullet cannon
-
 /loadwep bouncer bullak cannon
-
 /loadwep sniper bouncer rifle
-
 
 //PEST BULLET
 
 /loadwep pest revolver
-
 /loadwep pest machinegun
-
 /loadwep triple pest machinegun
-
 /loadwep quad pest machinegun
-
 /loadwep pest smg
-
 /loadwep assault pest rifle
-
 /loadwep hyper pest rifle
-
 /loadwep pest minigun
-
 /loadwep double pest minigun
-
 /loadwep smart pest gun
-
 /loadwep pest bullet cannon
-
 /loadwep pest gunhammer
-
 /loadwep pest bullet cannon
-
 /loadwep pest bullak cannon
-
 /loadwep sniper pest rifle
-
 
 //THUNDER BULLET
 
 /loadwep thunder revolver
-
 /loadwep thunder machinegun
-
 /loadwep triple thunder machinegun
-
 /loadwep quad thunder machinegun
-
 /loadwep thunder smg
-
 /loadwep assault thunder rifle
-
 /loadwep hyper thunder rifle
-
 /loadwep thunder minigun
-
 /loadwep double thunder minigun
-
 /loadwep smart thunder gun
-
 /loadwep thunder bullet cannon
-
 /loadwep thunder gunhammer
-
 /loadwep thunder bullet cannon
-
 /loadwep thunder bullak cannon
-
 /loadwep sniper thunder rifle
-
 
 //PSY BULLET
 
 /loadwep psy revolver
-
 /loadwep psy machinegun
-
 /loadwep triple psy machinegun
-
 /loadwep quad psy machinegun
-
 /loadwep psy smg
-
 /loadwep assault psy rifle
-
 /loadwep hyper psy rifle
-
 /loadwep psy minigun
-
 /loadwep double psy minigun
-
 /loadwep smart psy gun
-
 /loadwep psy bullet cannon
-
 /loadwep psy gunhammer
-
 /loadwep psy bullet cannon
-
 /loadwep psy bullak cannon
-
 /loadwep sniper psy rifle
-
 
 //SPAM
 
 /loadwep spam gun
-
 /loadwep fire spam gun
-
 /loadwep ultra spam gun
-
 
 //COMPLEMENTARY
 
 /loadwep undulator
-
 /loadwep perpetrator
-
 
 //OTHER BULLET
 
 /loadwep moby
-
 /loadwep big iron
-
 /loadwep heavy smart gun
-
 /loadwep smarter gun
-
 /loadwep lucky machinegun
-
 /loadwep bullet machinegun
-
 /loadwep signal beamer
-
 /loadwep prism
-
 /loadwep rainbow machinegun
-
 /loadwep mega revolver
-
 /loadwep spy revolver
-
 /loadwep flechette rifle
-
 /loadwep antiprism
-
 
 /loadtext mainshells
