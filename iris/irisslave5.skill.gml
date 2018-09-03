@@ -12,3 +12,6 @@ return 0
 
 #define skill_button
 sprite_index = global.sprite
+
+#define skill_name
+return mod_variable_get("skill","prismatic iris","names")[global.mycolor]

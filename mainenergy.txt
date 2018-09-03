@@ -1,31 +1,53 @@
 
 ///ENERGY///
 
+
 //LASER FLAK
+
 /loadwep laser flak cannon
+
 /loadwep heavy laser flak cannon
 
+
 //VECTOR
+
 /loadwep finished stuff/vector rifle
+
 /loadwep finished stuff/vector shotgun
 
+
 //PLASMITE
+
 /loadwep finished stuff/plasmite pistol
+
 /loadwep finished stuff/plasmite rifle
+
 /loadwep finished stuff/plasmite shotgun
+
 /loadwep finished stuff/plasmite cannon
 
+
 //SQUARE
+
 /loadwep square gun
+
 /loadwep square rifle
+
 /loadwep square cannon
 
+
 //LIGHTNING
+
 /loadwep thundercrash
 
+
 //OTHER ENERGY
+
 /loadwep energy gun
+
 /loadwep stopwatch
+
 /loadwep inquisitor
+
 
 /load mainmisc

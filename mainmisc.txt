@@ -1,76 +1,142 @@
 
-///MELEE///
+///MELEE//
 /loadwep toothbrush
+
 /loadwep bone
+
 /loadwep auto screwdriver
+
 /loadwep chris knife
+
 /loadwep comboweps/rapier
+
 /loadwep comboweps/bigsword
+
 /loadwep wondersword
+
 /loadwep crystal torch
 
+
 ///POPO///
+
 /loadmod idpd weapon chest/idpd weapon chest
+
 /loadwep idpd bazooka
+
 /loadwep idpd energy sword
+
 /loadwep idpd grenade launcher
+
 /loadwep idpd minigun
+
 /loadwep idpd plasma minigun
+
 /loadwep idpd shotgun
+
 /loadwep idpd slugger
 
+
 ///GOLD///
+
 /loadwep golden abris pistol
+
 /loadwep finished stuff/golden plasmite pistol
 
+
 ///QUARTZ///
+
 /loadwep quartz machinegun
+
 /loadwep quartz shotgun
+
 /loadwep quartz crossbow
+
 /loadwep quartz launcher
+
 /loadwep quartz laser
 
+
 ///TOOLS///
+
 /loadmod defpack tools/defpack tools
+
 /loadmod defpack tools 2
 
+
 ///OTHER///
+
 /loadwep finished stuff/defender
+
 /loadwep finished stuff/drinks/vinegar
+
 /loadwep finished stuff/drinks/munitions mist
+
 /loadwep finished stuff/drinks/sunset mayo
+
 /loadwep finished stuff/drinks/saltshake
+
 /loadwep finished stuff/drinks/autoproductive expresso
+
 /loadwep finished stuff/drinks/extra double triple coffee
+
 /loadwep finished stuff/drinks/lightning blue lifting drink(tm)
+
 /loadwep finished stuff/drinks/guardian juice
+
 /loadwep finished stuff/drinks/soda popper
+
 /loadmod finished stuff/drinks/sodaeffect
+
 /loadwep finished stuff/drinks/donut box
+
 /loadwep infinipistol
 
+
 ///NON-WEAPONS///
+
 /loadmod IDPD Weapon Chest/IDPD Weapon Chest
+
 /load iris
 
+
 ///TODO///
+
 /loadwep ultra bullet cannon
+
 /loadwep ultra flare gun
+
 /loadwep ultra claymore
+
 /loadwep heavy claymore
+
 /loadwep screecher
+
 /loadwep finished stuff/hot flare gun
+
 /loadwep pulser
+
 /loadwep marker
+
 /loadwep idpd shotgun
+
 /loadwep inquisitor
+
 /loadwep steel diver
+
 /loadwep antiprism
+
 /loadwep sak
+
 /loadwep polygun
+
 /loadwep stopwatch
+
 /loadwep herald
+
 /loadwep finished stuff/andromeda launcher
+
 /loadwep bolt gun
+
 /loadwep bullet machinegun
+
 /loadwep energy gun

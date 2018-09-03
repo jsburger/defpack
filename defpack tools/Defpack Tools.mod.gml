@@ -157,10 +157,10 @@ if array_length_1d(instances_matching(CustomProjectile,"name","Rocklet","big roc
     
     
     with instances_in(view_xview_nonsync,view_yview_nonsync,view_xview_nonsync+game_width,view_yview_nonsync+game_height,instances_matching(CustomProjectile,"name","big rocklet","huge rocklet")){
-        draw_sprite_ext(sprDust,irandom(3),(xprevious-view_xview_nonsync)*4,(yprevious-view_yview_nonsync)*4,8,((random(speed)/(maxspeed))+.1)*4,direction,c_white,1)
+        draw_sprite_ext(sprDust,round(random_nonsync(3)),(xprevious-view_xview_nonsync)*4,(yprevious-view_yview_nonsync)*4,8,((random_nonsync(speed)/(maxspeed))+.1)*4,direction,c_white,1)
     }
     with instances_in(view_xview_nonsync,view_yview_nonsync,view_xview_nonsync+game_width,view_yview_nonsync+game_height,instances_matching(CustomProjectile,"name","Rocklet")){
-        draw_sprite_ext(sprDust,irandom(3),(xprevious-view_xview_nonsync)*4,4*(yprevious-view_yview_nonsync),4,4*(random(speed)/(maxspeed*2)),direction,c_white,1)
+        draw_sprite_ext(sprDust,round(random_nonsync(3)),(xprevious-view_xview_nonsync)*4,4*(yprevious-view_yview_nonsync),4,4*(random_nonsync(speed)/(maxspeed*2)),direction,c_white,1)
     }
     d3d_set_fog(0,0,0,0)
     
