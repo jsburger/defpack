@@ -25,13 +25,11 @@ with Player if race = mod_current create()
 global.spells = ds_map_create()
 global.spellnames = []
 
-add_spell("No Spell", NA,scr(none_channel),scr(none_release),NA,1,global.hands)
-add_spell("Merge", scr(merge_cast),NA,NA,NA,1,sprite_add("sprMerge.png",1,8,7))
-add_spell("Drain Mana",NA,scr(cheat1),NA,NA,1,sprite_add("sprShield.png",1,8,7))
-add_spell("Gimme Mana",NA,scr(cheat2),NA,NA,1,sprite_add("sprShield.png",1,8,7))
-add_spell("Rapid Fire",NA,scr(rapid_channel),NA,NA,1,sprite_add("sprBlast.png",1,8,7))
-
-trace("karm if youre reading this, try to come up with an alternative to the hand, or at least some way to make it look cool. thanks")
+//add_spell("No Spell", NA,scr(none_channel),scr(none_release),NA,1,global.hands)
+add_spell("Merge", scr(merge_cast),NA,NA,NA,1,sprite_add("sprMerge.png",2,8,7))
+add_spell("Drain Mana",NA,scr(cheat1),NA,NA,1,sprite_add("sprShield.png",2,8,7))
+add_spell("Gimme Mana",NA,scr(cheat2),NA,NA,1,sprite_add("sprShield.png",2,8,7))
+add_spell("Rapid Fire",NA,scr(rapid_channel),NA,NA,1,sprite_add("sprBlast.png",2,8,7))
 
 
 #define scr(script)
@@ -45,9 +43,7 @@ global.spells[? name] = [name,on_cast,on_channel,on_release,on_step,avail,icon]
 array_push(global.spellnames,name)
 
 #define draw_hud
-with Player if race = mod_current{
-    draw_set_visible_all(0)
-    draw_set_visible(index,1)
+with Player if race = mod_current && player_is_local_nonsync(index){
     var _x = view_xview_nonsync + 20;
     var _y = view_yview_nonsync + 16;
     var width = 86;
@@ -56,7 +52,6 @@ with Player if race = mod_current{
     draw_line_width_color(_x, _y, _x + width, _y, 2, c_dkgray, c_dkgray)
     draw_line_width_color(_x, _y, _x+(hand.mana/100) * width, _y, 2, global.purblue, merge_color(c_aqua,global.purblue,1-hand.mana/100))
 }
-draw_set_visible_all(1)
 
 #define race_name
     return "SAGE";
@@ -96,7 +91,7 @@ switch (argument0){
 
 
 #define race_ttip
-return("A NEW WORLD")
+return choose("A NEW WORLD", "COLLECTING @yPICKUPS@d GIVES YOU @(color:${global.purblue})MANA@d", "FASCINATING @wWEAPONRY@d")
 
 #define create
 	spr_idle = global.gunIdle
@@ -119,23 +114,27 @@ return("A NEW WORLD")
 	snd_valt = sndGoldChest;
 	snd_idpd = snd_cptn;
 	
+	var _x = x,
+	    _y = y;
+	
 	hand = {
 	    mana : 100,
-	    gx : 0,
-	    gy : 0,
-	    x : 0,
-	    y : 0,
+	    gx : _x,
+	    gy : _y,
+	    x : _x,
+	    y : _y,
+	    xoff : 0,
+	    yoff : 0,
 	    spell : "No Spell",
 	    resettime : 0,
 	    index : 0,
 	    col : global.skintone,
 	    animcol : global.skintone,
+	    sprite : sprSnowFlake,
 	    angle : 0,
 	    menulength : 0,
 	    cancast : 1
 	}
-
-	maxhealth = 8;
 
 #define step
 
@@ -152,24 +151,32 @@ for var i = 0; i< array_length_1d(global.drawers); i++{
 
     var h = hand;
     var click = button_check(index,"spec") * canspec;
-    var ang = point_direction(h.x,h.y,h.gx,h.gy);
-    var dis = point_distance(h.gx,h.gy,h.x,h.y);
 
     if h.resettime <= 0{
-        h.x += lengthdir_x((dis/3)*current_time_scale,ang)
-        h.y += lengthdir_y((dis/3)*current_time_scale,ang)
-        h.angle = point_direction(0,0,h.x,h.y)
+        var ang = point_direction(h.x,h.y,h.gx,h.gy);
+        var dis = point_distance(h.gx,h.gy,h.x,h.y);
+        
+        h.x += lengthdir_x((dis/4)*current_time_scale,ang)
+        h.y += lengthdir_y((dis/4)*current_time_scale,ang)
+        h.angle = point_direction(x,y,h.x,h.y)
     
-        h.gx =lengthdir_x(8,gunangle)
-        h.gy =lengthdir_y(5,gunangle)
+        h.sprite = sprSnowFlake
     
+        h.gx = x + (h.xoff - 10)*right
+        h.gy = y + h.yoff - 12
+        
+        if random(100) < 2*current_time_scale{
+            h.xoff = lengthdir_x(random(10),random(360))
+            h.yoff = lengthdir_y(random(10),random(360))
+        }
+        
         h.index = 0
     }
     else h.resettime -= current_time_scale
     
     hand = h
     
-    if canspec{
+    if canspec && hand.spell != "No Spell"{
         if button_pressed(index,"spec"){
             var array = global.spells[? h.spell][1];
             mod_script_call(array[0],array[1],array[2])
@@ -195,7 +202,13 @@ if sign(hand.y) hand_draw()
 if visible{
     var h = hand;
     var hright = sign(h.x);
-    draw_sprite_ext(global.hands,h.index,x+h.x ,y+h.y ,1,hright,h.angle,h.col,1)
+    d3d_set_fog(1,c_white,1,1)
+    draw_sprite_ext(h.sprite,-1,h.x ,h.y ,1,hright,h.angle,h.col,1)
+    d3d_set_fog(1,global.purblue,1,1)
+    draw_set_blend_mode(bm_add)
+    draw_sprite_ext(sprGroundFlameBig,-1,h.x,h.y-2,1,1,0,c_white,.5)
+    d3d_set_fog(0,0,0,0)
+    draw_set_blend_mode(bm_normal)
 }
 
 #macro view_xc view_xview[index] + game_width/2
@@ -205,6 +218,7 @@ if visible{
 #define spellpicker
 with instances_matching(Player,"race",mod_current){
     var btn = "key4"
+    if hand.spell = "No Spell" btn = "spec"
     if button_pressed(index,btn){
         hand.menulength = .1
     }
@@ -228,12 +242,12 @@ with instances_matching(Player,"race",mod_current){
             var pointed = abs(angle_difference(point_direction(view_xc,view_yc,mouse_x[index],mouse_y[index]),a)) < int/2;
             var col = pointed? c_white : c_gray;
             var _x = xc + lengthdir_x(40,a), _y = yc + lengthdir_y(40,a);
-            var size = 1 + .2*pointed
+            var size = 1
             
             var ang = (a + int/2)
             draw_line_width_color(xc + lengthdir_x(50, ang),yc + lengthdir_y(50, ang),xc + lengthdir_x(10, ang),yc + lengthdir_y(10, ang),1,c_white,c_white)
             
-            draw_sprite_ext(global.spells[? picks[num]][6], 0, _x, _y, size, size, 0, col, l)
+            draw_sprite_ext(global.spells[? picks[num]][6], pointed, _x, _y, size, size, 0, col, l)
             
             draw_set_font(fntSmall)
             draw_set_halign(1)
@@ -271,13 +285,11 @@ return n
 
 #define merge_cast
 if hand.mana >= 100{
-    hand.x = 8*right
-    hand.y = -12
-    hand.index = 1
-    hand.angle = 90 - 90*right
+    hand.x = x + 8*right
+    hand.y = y + -12
     hand.resettime = 6
     repeat(12){
-            with instance_create(x+hand.x ,y+hand.y,FireFly){
+            with instance_create(hand.x ,hand.y,FireFly){
                 sprite_index = sprLightning
                 hspeed = random_range(-2,2)
                 gravity = -random(.2)
@@ -294,7 +306,7 @@ if is_real(wep) return 1
 if is_string(wep) return is_undefined(mod_script_call("wep",wep,"weapon_mergable"))
 if is_object(wep){
     if wep.wep = "merged weapon"{
-        return (wep.merged * skill_get(mut_throne_butt)) == 1
+        return wep.merged
     }
     return mergable(wep.wep)
 }
@@ -307,9 +319,8 @@ hand.mana = min(hand.mana + current_time_scale*2, 100)
 
 #define rapid_channel
 if hand.mana >= current_time_scale{
-    hand.hx = lengthdir_x(10,gunangle+45*right)
-    hand.gy = lengthdir_y(10,gunangle+45*right)
-    hand.index = 2
+    hand.gx = x + lengthdir_x(10,gunangle+45*right)
+    hand.gy = y + lengthdir_y(10,gunangle+45*right) - 7
     hand.angle = gunangle
     hand.mana -= current_time_scale
     if reload >= 0 reload -= (1+skill_get(mut_throne_butt)/2)*current_time_scale
@@ -334,34 +345,34 @@ if hand.mana >= current_time_scale{
 }
 
 #define none_channel
-hand.gx = lengthdir_x(16,gunangle)
-hand.gy = lengthdir_y(16,gunangle)
+hand.gx = x + lengthdir_x(16,gunangle)
+hand.gy = y + lengthdir_y(16,gunangle)
 hand.index = 2
 var hold = 0
-if instance_exists(projectile) with instance_nearest(x+hand.x,y+hand.y,projectile) if distance_to_point(other.hand.x+other.x,other.hand.y+other.y) < 5{
-    x = other.x + other.hand.x - hspeed_raw
-    y = other.y + other.hand.y - vspeed_raw
+if instance_exists(projectile) with instance_nearest(hand.x,hand.y,projectile) if distance_to_point(other.hand.x+other.x,other.hand.y+other.y) < 5{
+    x = other.hand.x - hspeed_raw
+    y = other.hand.y - vspeed_raw
     team = other.team
     hold = 1
 }
 
-if !hold && instance_exists(enemy) with instance_nearest(x+hand.x,y+hand.y,enemy) if size < 2  && distance_to_point(other.hand.x+other.x,other.hand.y+other.y) < 5{
-    x = other.x + other.hand.x - hspeed_raw
-    y = other.y + other.hand.y - vspeed_raw
+if !hold && instance_exists(enemy) with instance_nearest(hand.x,hand.y,enemy) if size < 2  && distance_to_point(other.hand.x,other.hand.y) < 5{
+    x = other.hand.x - hspeed_raw
+    y = other.hand.y - vspeed_raw
     team = other.team
 }
 
 
 #define none_release
 var hold = 0;
-if instance_exists(projectile) with instance_nearest(x+hand.x,y+hand.y,projectile) if distance_to_point(other.hand.x+other.x,other.hand.y+other.y) < 5{
+if instance_exists(projectile) with instance_nearest(hand.x,hand.y,projectile) if distance_to_point(other.hand.x,other.hand.y) < 5{
     instance_create(x,y,Dust)
     instance_destroy()
     sound_play_pitch(sndWallBreak,3)
     hold = 1
 }
 
-if !hold && instance_exists(enemy) with instance_nearest(x+hand.x,y+hand.y,enemy) if size < 2 && distance_to_point(other.hand.x+other.x,other.hand.y+other.y) < 5{
+if !hold && instance_exists(enemy) with instance_nearest(hand.x,hand.y,enemy) if size < 2 && distance_to_point(other.hand.x,other.hand.y) < 5{
     my_health = 0
     instance_create(x,y,BloodStreak)
     sound_play(sndMaggotSpawnDie)
