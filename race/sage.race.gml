@@ -29,7 +29,10 @@ add_spell("No Spell", NA,scr(none_channel),scr(none_release),NA,1,global.hands)
 add_spell("Merge", scr(merge_cast),NA,NA,NA,1,sprite_add("sprMerge.png",1,8,7))
 add_spell("Drain Mana",NA,scr(cheat1),NA,NA,1,sprite_add("sprShield.png",1,8,7))
 add_spell("Gimme Mana",NA,scr(cheat2),NA,NA,1,sprite_add("sprShield.png",1,8,7))
-add_spell("Shield",NA,scr(shield_step),scr(shield_end),NA,1,sprite_add("sprShield.png",1,8,7))
+add_spell("Rapid Fire",NA,scr(rapid_channel),NA,NA,1,sprite_add("sprBlast.png",1,8,7))
+
+trace("karm if youre reading this, try to come up with an alternative to the hand, or at least some way to make it look cool. thanks")
+
 
 #define scr(script)
 return script_ref_create(script)
@@ -65,13 +68,12 @@ draw_set_visible_all(1)
 	return `EMPOWERED @(color:${global.purblue})SPELLS`;
 
 #define race_mapicon
-return sprLilHunterWalk;
+return sprHeavyRevolver;
 
 /*
 #define race_portrait
 return global.spr_port;
-#define race_portrait
-return global.spr_portrait;
+
 */
 #define race_menu_button
 sprite_index = global.gunSlct;
@@ -94,30 +96,27 @@ switch (argument0){
 
 
 #define race_ttip
-return("guns are cool")
+return("A NEW WORLD")
 
 #define create
-	//Needs spr_idle/walk/hurt/dead/chrg/fire
 	spr_idle = global.gunIdle
 	spr_walk = global.gunWalk;
 	spr_hurt = sprLilHunterHurt;
 	spr_dead = sprLilHunterDead;
 
-	snd_hurt = sndLilHunterHurt;
-	snd_dead = sndLilHunterBreak;
-	snd_lowh = sndLilHunterHalfHP;
-	snd_lowa = sndLilHunterHalfHP;
+	snd_hurt = sndStreetLightBreak;
+	snd_dead = sndStreetLightBreak;
+	snd_lowh = sndHyperRifle;
+	snd_lowa = sndShotReload;
 
-	snd_cptn = sndLilHunterSummon;
-	snd_spch = sndLilHunterTaunt;
+	snd_cptn = sndGoldUnlock;
+	snd_spch = sndWaveGun;
 
-	snd_whao = sndLilHunterLaunch;
-	snd_haha = sndLilHunterLand;
-	snd_wrld = snd_haha;
-	snd_chst = snd_whao;
-	snd_thrn = snd_whao;
-	snd_crwn = snd_whao;
-	snd_valt = snd_whao;
+	snd_wrld = sndGoldUnlock;
+	snd_chst = sndFishWarrantEnd;
+	snd_thrn = sndGoldChest;
+	snd_crwn = sndCrownGuns;
+	snd_valt = sndGoldChest;
 	snd_idpd = snd_cptn;
 	
 	hand = {
@@ -205,10 +204,11 @@ if visible{
 
 #define spellpicker
 with instances_matching(Player,"race",mod_current){
-    if button_pressed(index,"swap"){
+    var btn = "key4"
+    if button_pressed(index,btn){
         hand.menulength = .1
     }
-    if visible && (button_check(index,"swap") || button_released(index,"swap")){
+    if visible && (button_check(index,btn) || button_released(index,btn)){
         var picks = [];
         for var i = 0; i< array_length_1d(global.spellnames); i++{
             var avail = global.spells[? global.spellnames[i]][5];
@@ -240,7 +240,7 @@ with instances_matching(Player,"race",mod_current){
             draw_set_color(col)
             draw_text_shadow(_x,_y + 10,picks[num])
             
-            if pointed && button_released(index,"swap"){
+            if pointed && button_released(index,btn){
                 hand.spell = picks[num]
             }
             num++
@@ -269,8 +269,6 @@ for (var i=0; i<maxp; i++){
 }
 return n
 
-
-
 #define merge_cast
 if hand.mana >= 100{
     hand.x = 8*right
@@ -296,28 +294,44 @@ if is_real(wep) return 1
 if is_string(wep) return is_undefined(mod_script_call("wep",wep,"weapon_mergable"))
 if is_object(wep){
     if wep.wep = "merged weapon"{
-        return wep.merged * skill_get(mut_throne_butt)
+        return (wep.merged * skill_get(mut_throne_butt)) == 1
     }
     return mergable(wep.wep)
 }
 
-
-#define shield_step
-if hand.mana > 0{
-    hand.mana -= current_time_scale
-}
-
-
-
-#define shield_end
-
 #define cheat1
-hand.mana = max(hand.mana - current_time_scale,0)
+hand.mana = max(hand.mana - current_time_scale*2,0)
 
 #define cheat2
-hand.mana = min(hand.mana + current_time_scale, 100)
+hand.mana = min(hand.mana + current_time_scale*2, 100)
 
-
+#define rapid_channel
+if hand.mana >= current_time_scale{
+    hand.hx = lengthdir_x(10,gunangle+45*right)
+    hand.gy = lengthdir_y(10,gunangle+45*right)
+    hand.index = 2
+    hand.angle = gunangle
+    hand.mana -= current_time_scale
+    if reload >= 0 reload -= (1+skill_get(mut_throne_butt)/2)*current_time_scale
+    var _t = weapon_get_type(wep), _c = weapon_get_cost(wep), n = 0, _a = weapon_get_auto(wep) + 1;
+    while ammo[_t] >= _c && reload <= 0 && _a && ++n < 100 {
+        specfiring = 1
+        player_fire()
+        if mod_exists("mod","defparticles") && array_length_1d(instances_matching(CustomObject,"name","spark")) < 30 repeat(random(weapon_get_load(wep))*(1+skill_get(mut_throne_butt)/2)){
+            with mod_script_call("mod","defparticles","create_spark",x,y){
+                gravity_direction = other.gunangle
+                gravity = 2+random(1)
+                friction = 1
+                motion_set(other.gunangle+random_range(-20,20)+180,random_range(6,16))
+                fadecolor = c_aqua
+                color = c_purple
+                fadespeed = 1/10
+                age = 8 + irandom(4)
+            }
+        }
+    }
+    specfiring = 0
+}
 
 #define none_channel
 hand.gx = lengthdir_x(16,gunangle)
