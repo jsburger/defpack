@@ -54,7 +54,7 @@ a[? "wave gun"]       = sprWaveGun
 a[? "hyper eraser"]   = sprite_add_weapon("sprites/sak/sprHyperEraser.png",3,3)//
 
 a[? "pop gun"]	      = sprPopGun
-a[? "triple pop gun"] = sprite_add_weapon("sprites/sak/sprTriplePopGun.png",4,2)//
+a[? "triple pop gun"] = sprite_add_weapon("sprites/sak/sprTriplePopGun.png",5,4)//
 a[? "pop rifle"]      = sprPopRifle
 a[? "hyper pop gun"]  = sprite_add_weapon("sprites/sak/sprHyperPopGun.png",4,3)//
 
@@ -85,7 +85,7 @@ a[? "hyper psy eraser"]   = sprite_add_weapon("sprites/sak/sprHyperPsyEraser.png
 
 a[? "psy pop gun"]		     = sprite_add_weapon("sprites/sak/sprPsyPopGun.png",3,1)//
 a[? "triple psy pop gun"]  = sprite_add_weapon("sprites/sak/sprTriplePsyPopGun.png",5,3)//
-a[? "psy pop rifle"]			 = sprite_add_weapon("sprites/sak/sprAssaultPsyPopGun.png",3,1)//
+a[? "psy pop rifle"]			 = sprite_add_weapon("sprites/sak/sprPsyPopRifle.png",5,2)//
 a[? "hyper psy pop gun"]   = sprite_add_weapon("sprites/sak/sprHyperPsyPopGun.png",3,2)//
 
 ///SPLIT SHELL///
@@ -114,69 +114,69 @@ a[? "split wave gun"]			  = sprite_add_weapon("sprites/sak/sprSplitWaveGun.png",
 a[? "hyper split eraser"]   = sprite_add_weapon("sprites/sak/sprHyperSplitEraser.png",3,3)//
 
 a[? "split pop gun"]		 		 = sprite_add_weapon("sprites/sak/sprSplitPopGun.png",3,2)//
-a[? "triple split pop gun"]	 = sprite_add_weapon("sprites/sak/sprTripleSplitPopGun.png",5,2)//
+a[? "triple split pop gun"]	 = sprite_add_weapon("sprites/sak/sprTripleSplitPopGun.png",6,3)//
 a[? "split pop rifle"] 	 		 = sprite_add_weapon("sprites/sak/sprAssaultSplitPopGun.png",5,2)//
 a[? "hyper split pop gun"]	 = sprite_add_weapon("sprites/sak/sprHyperSplitPopGun.png",3,2)//
 
 ///FLAME SHELLS///
-a[? "flame shotgun"]  	  = sprFlameShotgun
-a[? "double flame shotgun"]  = sprDoubleFlameShotgun
-a[? "sawed-off flame shotgun"] = sprite_add_weapon("sprites/sak/sprSawedOffFlameShotgun.png",6,5)
-a[? "auto flame shotgun"]    = sprAutoFlameShotgun
-a[? "assault flame shotgun"] = sprite_add_weapon("sprites/sak/sprAssaultFlameShotgun.png",6,4)
-a[? "hyper flame shotgun"]   = sprite_add_weapon("sprites/sak/sprHyperFlameShotgun.png",6,5)
+a[? "flame shotgun"]  	  	   = sprFlameShotgun
+a[? "double flame shotgun"]    = sprDoubleFlameShotgun
+a[? "sawed-off flame shotgun"] = sprite_add_weapon("sprites/sak/sprSawedOffFlameShotgun.png",4,2)//
+a[? "auto flame shotgun"]    	 = sprAutoFlameShotgun
+a[? "assault flame shotgun"] 	 = sprite_add_weapon("sprites/sak/sprAssaultFlameShotgun.png",4,2)//
+a[? "hyper flame shotgun"]  	 = sprite_add_weapon("sprites/sak/sprHyperFlameShotgun.png",4,2)//
 
-a[? "flame flak cannon"] 	   = sprite_add_weapon("sprites/sak/sprFlameFlakCannon.png",4,6)
-a[? "super flame flak cannon"] = sprite_add_weapon("sprites/sak/sprSuperFlameFlakCannon.png",5,8)
-a[? "auto flame flak cannon"]  = sprite_add_weapon("sprites/sak/sprAutoFlameFlakCannon.png",4,5)
-a[? "hyper flame flak cannon"] = sprite_add_weapon("sprites/sak/sprHyperFlameFlakCannon.png",5,7)
+a[? "flame flak cannon"] 	     = sprite_add_weapon("sprites/sak/sprFlameFlakCannon.png",2,3)//
+a[? "super flame flak cannon"] = sprite_add_weapon("sprites/sak/sprSuperFlameFlakCannon.png",3,5)//
+a[? "auto flame flak cannon"]  = sprite_add_weapon("sprites/sak/sprAutoFlameFlakCannon.png",2,2)//
+a[? "hyper flame flak cannon"] = sprite_add_weapon("sprites/sak/sprHyperFlameFlakCannon.png",4,3)//
 
-a[? "flame shot cannon"] 	   = sprite_add_weapon("sprites/sak/sprFlameShotCannon.png",7,6)
-a[? "super flame shot cannon"] = sprite_add_weapon("sprites/sak/sprSuperFlameShotCannon.png",8,7)
-a[? "auto flame shot cannon"]  = sprite_add_weapon("sprites/sak/sprAutoFlameShotCannon.png",7,5)
-a[? "hyper flame shot cannon"] = sprite_add_weapon("sprites/sak/sprHyperFlameShotCannon.png",7,7)
+a[? "flame shot cannon"]  	   = sprite_add_weapon("sprites/sak/sprFlameShotCannon.png",3,2)//
+a[? "super flame shot cannon"] = sprite_add_weapon("sprites/sak/sprSuperFlameShotCannon.png",4,3)//
+a[? "auto flame shot cannon"]  = sprite_add_weapon("sprites/sak/sprAutoFlameShotCannon.png",3,2)//
+a[? "hyper flame shot cannon"] = sprite_add_weapon("sprites/sak/sprHyperFlameShotCannon.png",4,3)//
 
-a[? "flame eraser"] 		 = sprite_add_weapon("sprites/sak/sprFlameEraser.png",7,6)
-a[? "auto flame eraser"]    = sprite_add_weapon("sprites/sak/sprAutoFlameEraser.png",7,5)
-a[? "assault flame eraser"] = sprite_add_weapon("sprites/sak/sprAssaultFlameEraser.png",7,6)
-a[? "flame bird"]			 = sprite_add_weapon("sprites/sak/sprPhoenix.png",6,5)
-a[? "flame wave gun"] 		 = sprite_add_weapon("sprites/sak/sprFlameWaveGun.png",5,7)
-a[? "hyper flame eraser"]	 = sprite_add_weapon("sprites/sak/sprHyperFlameEraser.png",8,6)
+a[? "flame eraser"] 		    = sprite_add_weapon("sprites/sak/sprFlameEraser.png",3,3)//
+a[? "auto flame eraser"]    = sprite_add_weapon("sprites/sak/sprAutoFlameEraser.png",3,3)//
+a[? "assault flame eraser"] = sprite_add_weapon("sprites/sak/sprAssaultFlameEraser.png",4,2)//
+a[? "flame bird"]			      = sprite_add_weapon("sprites/sak/sprPhoenix.png",3,2)//
+a[? "flame wave gun"] 	  	= sprite_add_weapon("sprites/sak/sprFlameWaveGun.png",3,2)//
+a[? "hyper flame eraser"]	  = sprite_add_weapon("sprites/sak/sprHyperFlameEraser.png",3,2)//
 
-a[? "flame pop gun"] 		 = sprite_add_weapon("sprites/sak/sprFlamePopGun.png",6,5)
-a[? "triple flame pop gun"]  = sprite_add_weapon("sprites/sak/sprFlamePopGun.png",8,8)
-a[? "flame pop rifle"] 	 = sprite_add_weapon("sprites/sak/sprFlamePopRifle.png",9,5)
-a[? "hyper flame pop gun"]   = sprite_add_weapon("sprites/sak/sprHyperFlamePopGun.png",7,6)
+a[? "flame pop gun"] 		 		 = sprite_add_weapon("sprites/sak/sprFlamePopGun.png",3,2)//
+a[? "triple flame pop gun"]  = sprIncinerator
+a[? "flame pop rifle"] 			 = sprite_add_weapon("sprites/sak/sprFlamePopRifle.png",3,2)//
+a[? "hyper flame pop gun"]   = sprite_add_weapon("sprites/sak/sprHyperFlamePopGun.png",3,2)//
 
 ///ULTRA SHELLS///
-a[? "ultra shotgun"]  	  = sprUltraShotgun
-a[? "double ultra shotgun"]  = sprite_add_weapon("sprites/sak/sprDoubleUltraShotgun.png",4,4)
-a[? "sawed-off ultra shotgun"] = sprite_add_weapon("sprites/sak/sprSawedOffUltraShotgun.png",6,5)
-a[? "auto ultra shotgun"]    = sprite_add_weapon("sprites/sak/sprAutoUltraShotgun.png",4,4)
-a[? "assault ultra shotgun"] = sprite_add_weapon("sprites/sak/sprAssaultUltraShotgun.png",6,4)
-a[? "hyper ultra shotgun"]   = sprite_add_weapon("sprites/sak/sprHyperUltraShotgun.png",6,5)
+a[? "ultra shotgun"]  	  	   = sprUltraShotgun
+a[? "double ultra shotgun"]    = sprite_add_weapon("sprites/sak/sprDoubleUltraShotgun.png",3,3)//
+a[? "sawed-off ultra shotgun"] = sprite_add_weapon("sprites/sak/sprSawedOffUltraShotgun.png",3,3)//
+a[? "auto ultra shotgun"]   	 = sprite_add_weapon("sprites/sak/sprAutoUltraShotgun.png",3,2)//
+a[? "assault ultra shotgun"] 	 = sprite_add_weapon("sprites/sak/sprAssaultUltraShotgun.png",3,2)//
+a[? "hyper ultra shotgun"]   	 = sprite_add_weapon("sprites/sak/sprHyperUltraShotgun.png",3,4)//
 
-a[? "ultra flak cannon"] 	   = sprite_add_weapon("sprites/sak/sprUltraFlakCannon.png",4,6)
-a[? "super ultra flak cannon"] = sprite_add_weapon("sprites/sak/sprSuperUltraFlakCannon.png",5,8)
-a[? "auto ultra flak cannon"]  = sprite_add_weapon("sprites/sak/sprAutoUltraFlakCannon.png",4,5)
-a[? "hyper ultra flak cannon"] = sprite_add_weapon("sprites/sak/sprHyperUltraFlakCannon.png",5,7)
+a[? "ultra flak cannon"] 	     = sprite_add_weapon("sprites/sak/sprUltraFlakCannon.png",3,2)//
+a[? "super ultra flak cannon"] = sprite_add_weapon("sprites/sak/sprSuperUltraFlakCannon.png",3,1)//
+a[? "auto ultra flak cannon"]  = sprite_add_weapon("sprites/sak/sprAutoUltraFlakCannon.png",3,2)//
+a[? "hyper ultra flak cannon"] = sprite_add_weapon("sprites/sak/sprHyperUltraFlakCannon.png",5,3)//
 
-a[? "ultra shot cannon"] 	   = sprite_add_weapon("sprites/sak/sprUltraShotCannon.png",7,6)
-a[? "super ultra shot cannon"] = sprite_add_weapon("sprites/sak/sprSuperUltraShotCannon.png",8,7)
-a[? "auto ultra shot cannon"]  = sprite_add_weapon("sprites/sak/sprAutoUltraShotCannon.png",7,5)
-a[? "hyper ultra shot cannon"] = sprite_add_weapon("sprites/sak/sprHyperUltraShotCannon.png",7,7)
+a[? "ultra shot cannon"] 	     = sprite_add_weapon("sprites/sak/sprUltraShotCannon.png",3,2)//
+a[? "super ultra shot cannon"] = sprite_add_weapon("sprites/sak/sprSuperUltraShotCannon.png",6,3)//
+a[? "auto ultra shot cannon"]  = sprite_add_weapon("sprites/sak/sprAutoUltraShotCannon.png",3,2)//
+a[? "hyper ultra shot cannon"] = sprite_add_weapon("sprites/sak/sprHyperUltraShotCannon.png",5,2)//
 
-a[? "ultra eraser"] 		 = sprite_add_weapon("sprites/sak/sprUltraEraser.png",7,6)
-a[? "auto ultra eraser"]    = sprite_add_weapon("sprites/sak/sprAutoUltraEraser.png",7,5)
-a[? "assault ultra eraser"] = sprite_add_weapon("sprites/sak/sprAssaultUltraEraser.png",7,6)
-a[? "ultra bird"]			 = sprite_add_weapon("sprites/sak/sprUltraBird.png",6,5)
-a[? "ultra wave gun"] 		 = sprite_add_weapon("sprites/sak/sprUltraWaveGun.png",5,7)
-a[? "hyper ultra eraser"]	 = sprite_add_weapon("sprites/sak/sprHyperUltraEraser.png",8,6)
+a[? "ultra eraser"] 		 		= sprite_add_weapon("sprites/sak/sprUltraEraser.png",3,2)//
+a[? "auto ultra eraser"]    = sprite_add_weapon("sprites/sak/sprAutoUltraEraser.png",3,2)//
+a[? "assault ultra eraser"] = sprite_add_weapon("sprites/sak/sprAssaultUltraEraser.png",11,2)//
+a[? "ultra bird"]			 			= sprite_add_weapon("sprites/sak/sprUltraBird.png",5,3)//
+a[? "ultra wave gun"] 		  = sprite_add_weapon("sprites/sak/sprUltraWaveGun.png",4,4)//
+a[? "hyper ultra eraser"] 	= sprite_add_weapon("sprites/sak/sprHyperUltraEraser.png",7,3)//
 
-a[? "ultra pop gun"] 		 = sprite_add_weapon("sprites/sak/sprUltraPopGun.png",6,5)
-a[? "triple ultra pop gun"]  = sprite_add_weapon("sprites/sak/sprUltraPopGun.png",8,8)
-a[? "ultra pop rifle"] 	 = sprite_add_weapon("sprites/sak/sprUltraPopRifle.png",9,5)
-a[? "hyper ultra pop gun"]   = sprite_add_weapon("sprites/sak/sprHyperUltraPopGun.png",7,6)
+a[? "ultra pop gun"] 		 		 = sprite_add_weapon("sprites/sak/sprUltraPopGun.png",3,2)//
+a[? "triple ultra pop gun"]  = sprite_add_weapon("sprites/sak/sprTripleUltraPopGun.png",6,4)//
+a[? "ultra pop rifle"] 	 		 = sprite_add_weapon("sprites/sak/sprUltraPopRifle.png",3,2)//
+a[? "hyper ultra pop gun"]   = sprite_add_weapon("sprites/sak/sprHyperUltraPopGun.png",7,2)//
 
 
 

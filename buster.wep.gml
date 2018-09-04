@@ -41,7 +41,7 @@ with instance_create(x,y,CustomProjectile)
 	team = other.team
 	creator = other
 	typ = 1
-	damage = 5
+	damage = 1
 	if other.object_index = Player{
 		var _x = mouse_x[other.index]+random_range(-16,16)*other.accuracy;
 		var _y = mouse_y[other.index]+random_range(-16,16)*other.accuracy;
@@ -91,12 +91,11 @@ if speed <= friction instance_destroy()
 #define blaster_hit
 if projectile_canhit(other) = true
 {
-	sleep(15*other.size)
+	sleep(8*other.size)
 	view_shake_at(x,y,5)
 	with instance_create(x,y,Smoke){image_angle = random(360)}
 	projectile_hit(other,damage,speed,direction)
 }
-if other.size > 1 && other.my_health > damage instance_destroy()
 
 #define blaster_wall
 sleep(12)
@@ -107,9 +106,10 @@ sound_play_pitchvol(sndGrenadeHitWall,random_range(.5,.7),.8)
 sound_play_pitchvol(sndTurretHurt,random_range(.5,.7),.3)
 
 #define blaster_destroy
+instance_create(x,y,SmallExplosion)
 sound_play(sndExplosion)
 var i = random(360);
-var j = 32;
+var j = 24;
 var k = Explosion;
 repeat(2)
 {
