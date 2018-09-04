@@ -62,6 +62,7 @@ if bigsword < 1{
 		creator = other
 		motion_set(other.gunangle, 15)
 		sound_play(sndChickenThrow)
+		curse = other.curse
 		wep = other.wep
 		sprite_index = weapon_sprt()
 		damage = 20

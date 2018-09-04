@@ -33,11 +33,12 @@ else{
 #define chat_command(cmd,arg)
 if cmd = "defconfig"{
     global.menuopen = !global.menuopen
+    trace_color("Config menu" + global.menuopen ? "opened" : "closed",c_gray)
     return 1
 }
 if cmd = "defclearcache"{
     clear_cache()
-    trace_color("Variable cache cleared",c_lime)
+    trace_color("Variable cache cleared",c_gray)
     return 1
 }
 
@@ -86,11 +87,31 @@ if global.menuopen{
         var mouse = 0, found = 0
         //indicator width, height
         var iw = 10, ih = 6;
+        
+        //close button size
+        var xw = 10;
+        //drawing close button
+        mouse = point_in_rectangle(mouse_x[i],mouse_y[i],_x-3-xw,_y,_x-3,_y+xw)
+        found = mouse
+        draw_rectangle_c(_x-3-xw,_y,_x-3,_y+xw,mouse ? c_gray : c_dkgray)
+        draw_rectangle_co(_x-3-xw,_y,_x-3,_y+xw,c_black)
+        draw_text_shadow(_x-4-xw/2,_y-1,"x")
+        
+        if mouse && button_released(i,"fire"){
+            sound_play(sndClick)
+            global.menuopen = 0
+            trace_color("Closed config menu, use /defconfig to reopen it at any time",c_gray)
+            exit
+        }
+        
         var h = global.scroll[i]
         if d > 0{
             if h > 0{
-                mouse = point_in_rectangle(mouse_x[i],mouse_y[i],_x2 + 4,_y,_x2+sw + 4,_y+sh)
-                if found = 0 && mouse found = 1
+                if !found{
+                    mouse = point_in_rectangle(mouse_x[i],mouse_y[i],_x2 + 4,_y,_x2+sw + 4,_y+sh)
+                    found = mouse
+                }
+                else mouse = 0
                 draw_rectangle_c(_x2 + 4,_y,_x2+sw + 4,_y+sh,mouse ? c_gray : c_dkgray)
                 draw_rectangle_co(_x2 + 4,_y,_x2+sw + 4,_y+sh,c_black)
                 draw_triangle(_x2 + sw/2 + 4, _y + sh/2 - 4,_x2 +sw/2,_y + sh/2, _x2 + sw/2 + 8, _y + sh/2,0)
@@ -134,6 +155,12 @@ if global.menuopen{
                 mod_variable_set(a[0],a[1],a[2],!a[4]);
                 global.stuff[h+o,4] = !a[4];
                 sound_play(sndClick)
+                if fork(){
+                    //delay is for making sure that if the game crashes from an option change, the option isnt saved
+                    wait(5)
+                    cleanup()
+                    exit
+                }
             }
             o++
             _y+=2

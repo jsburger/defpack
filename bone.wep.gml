@@ -8,8 +8,7 @@ return 0
 #define weapon_cost
 return 0
 #define weapon_area
-if !irandom(2) return 3;
-else return -1;
+return 4;
 #define weapon_load
 return 10
 #define weapon_swap
@@ -50,7 +49,7 @@ with instance_create(x+lengthdir_x(12+(20*skill_get(13)),gunangle),y+lengthdir_y
 #define weapon_sprt
 return global.sprBone
 #define weapon_text
-return "RIPPER"
+return "DEVILISH"
 
 #define bone_wall
 speed = 0
@@ -61,7 +60,7 @@ if !hit with creator if instance_is(self,hitme){
 }
 
 #define bone_projectile
-with other instance_destroy()
+with other if typ > 0 instance_destroy()
 
 #define bone_grenade
 with other instance_destroy()
@@ -70,18 +69,17 @@ with other instance_destroy()
 instance_destroy()
 
 #define bone_hit
-if projectile_canhit_melee(other) = true{
-    hit = 1
-    sound_play_pitchvol(sndHammerHeadEnd,random_range(1.23,1.33),20)
-    sound_play_pitch(sndGruntHurtF,.8)
-    sound_play_pitchvol(sndCursedPickup,2,20)
-	projectile_hit(other,damage,12,direction)
-	sleep(100)
-	for (var i = 1; i <= 3; i++){
-	    with instance_create(x+lengthdir_x(18*i, direction),y+lengthdir_y(18*i, direction), MeatExplosion){
-	        creator = other.creator
-	        team = other.team
-	        if !place_meeting(x,y,Floor) instance_destroy()
-	    }
-	}
+hit = 1
+sound_play_pitchvol(sndHammerHeadEnd,random_range(1.23,1.33),20)
+sound_play_pitch(sndGruntHurtF,.8)
+sound_play_pitchvol(sndCursedPickup,2,20)
+projectile_hit(other,damage,12,direction)
+sleep(100)
+for (var i = 1; i <= 3; i++){
+    with instance_create(x+lengthdir_x(18*i, direction),y+lengthdir_y(18*i, direction), MeatExplosion){
+        creator = other.creator
+        team = other.team
+        if !place_meeting(x,y,Floor) instance_destroy()
+    }
 }
+instance_destroy()

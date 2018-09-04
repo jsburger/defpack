@@ -8,6 +8,7 @@ with instance_create(_x,_y,CustomObject){
     fadespeed = .1
     age = 15
     depth = -3
+    name = "spark"
     
     on_step = sparkstep
     on_draw = sparkdraw

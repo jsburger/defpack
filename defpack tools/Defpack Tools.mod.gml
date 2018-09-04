@@ -1022,11 +1022,21 @@ with a{
 	lasercolour = c_red
 	lasercolour2 = c_maroon
 	offset = random(359)
+	
+	primary = 1
 	//god bless YAL
 	if index <= 3
 	{
+	    btn = "fire"
 		check = other.specfiring ? 2 : 1;
-		if check = 2 && (other.race = "venuz" || other.race = "skeleton") popped = 1;
+		if check = 2{
+		    btn = "spec"
+		    if other.race = "steroids" primary = 0
+		    if other.race = "venuz" popped = 1
+		}
+	}
+	else{
+	    btn = "fire"
 	}
 }
 return a;
@@ -1078,14 +1088,15 @@ if instance_exists(creator){
 	if !dropped{
 		image_angle += rotspeed*current_time_scale;
 		offset += offspeed*current_time_scale;
-		if check = 1 || popped{
+		if primary{
 			if popped{
 				var pops = 1;
 				with instances_matching(CustomObject,"name","Abris Target") if creator = other.creator && id != other{
 					if popped {pops+=1}
 				}
-				creator.reload = weapon_get_load(creator.wep) *(pops)
-			}else{
+				creator.reload = max(weapon_get_load(creator.wep) * (pops), creator.reload)
+			}
+			else{
 				creator.reload = weapon_get_load(creator.wep)
 			}
 		}else{
@@ -1097,7 +1108,7 @@ if instance_exists(creator){
 			if acc < accbase{acc += abs(creator.accuracy*3)}else{acc = accbase;lasercolour=c_white}
 		}
 	}
-	if !button_check(creator.index,(check = 1?"fire":"spec")) || (auto && acc<=accmin){
+	if !button_check(creator.index,btn) || (auto && acc<=accmin){
 		if instance_exists(self){
 			dropped = 1
 			var _wall = collision_line_first(x,y,_xx,_yy,Wall,0,0);
@@ -1137,14 +1148,14 @@ if instance_exists(creator) && check{
 		var _tarx = mouse_x[index];
 		var _tary = mouse_y[index];
 	}
-	if button_check(creator.index, (check = 1? "fire":"spec")){
+	if button_check(creator.index,btn){
 			var radi = acc+accmin;
 			mod_script_call("mod", "defpack tools","draw_polygon_striped", 16, radi, 45, _tarx+1, _tary+1, global.stripes, lasercolour1, 0.1+(accbase-acc)/(accbase*5),(current_frame mod 16)*.004);
 			mod_script_call("mod", "defpack tools","draw_circle_width_colour",16,radi,1,acc+image_angle,_tarx,_tary,lasercolour1,1*(accbase-acc))
 			mod_script_call("mod", "defpack tools","draw_circle_width_colour",16, accmin,1,acc+image_angle,_tarx,_tary,lasercolour1,.2)
 			draw_line_width_colour(x,y,_tarx,_tary,1,lasercolour1,lasercolour1);
-		var comp = (check = 1 ? creator.wep : creator.bwep);
-		if popped {comp = wep}
+		var comp = (primary = 1 ? creator.wep : creator.bwep);
+		if popped {comp = creator.wep}
 		if wep != comp {instance_destroy()}
 	}
 }
@@ -1354,7 +1365,7 @@ with a
   name = "Plasmite"
 	image_speed = 0
 	image_index = 0
-	damage = 3+skill_get(17)
+	damage = 4+3*skill_get(17)
 	if skill_get(17) = false sprite_index = global.sprPlasmite else sprite_index = global.sprPlasmiteUpg
  	fric = random_range(.2,.3)
 	speedset = 0
@@ -1417,7 +1428,7 @@ image_xscale = _x
 
 #define plasmite_destroy
 sound_play_pitch(sndPlasmaHit,random_range(1.45,1.83))
-with instance_create(x,y,PlasmaImpact){image_xscale=.5;image_yscale=.5;team = other.team}
+with instance_create(x,y,PlasmaImpact){image_xscale=.5;image_yscale=.5;team = other.team;damage = floor(damage/2)}
 
 #define create_supersquare(_x,_y)
 var a = instance_create(_x,_y,CustomProjectile);
