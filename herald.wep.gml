@@ -24,98 +24,108 @@ global.sounds = [sndExplosion,sndExplosionL,sndExplosionXL]
 
 global.pink = make_color_rgb(252,59,82)
 
-//shader in brackets so i can hide it{
-global.sh = shader_create(
-	"/// Vertex Shader ///
+//set to one for default on
+global.canshader = 1
+mod_script_call("mod","defpermissions","permission_register","weapon",mod_current,"canshader","Herald Shader")
 
-	struct VertexShaderInput
-	{
-		float4 vPosition : POSITION;
-		float2 vTexcoord : TEXCOORD0;
-	};
-
-	struct VertexShaderOutput
-	{
-		float4 vPosition : SV_POSITION;
-		float2 vTexcoord : TEXCOORD0;
-	};
-
-	uniform float4x4 matrix_world_view_projection;
-
-	VertexShaderOutput main(VertexShaderInput INPUT)
-	{
-		VertexShaderOutput OUT;
-
-		OUT.vPosition = mul(matrix_world_view_projection, INPUT.vPosition); // (x,y,z,w)
-		OUT.vTexcoord = INPUT.vTexcoord;
-
-		return OUT;
-	}
-	",
-
-
-	"/// Fragment/Pixel Shader ///
-	
-
-	struct PixelShaderInput
-	{
-		float2 vTexcoord : TEXCOORD0;
-	};
-
-	sampler2D s0; // Get Sprite Being Drawn
-
-
-	float4 main(PixelShaderInput INPUT) : SV_TARGET
-	{
-		 // Get Pixel's Color:
-		float4 MyColor = tex2D(s0, INPUT.vTexcoord); // (r,g,b,a)
-
-		 // Break Down MyColor:
-		float R = MyColor.r; // Red   (0.0 - 1.0)
-		float G = MyColor.g; // Green (0.0 - 1.0)
-		float B = MyColor.b; // Blue  (0.0 - 1.0)
-        float L = (0.299 * R + 0.587 * G + 0.114 * B);
-        float tolerance = .9;
-        
-		// bloom
-		{
-			
-			float ill = 0;
-			
-    		float Radius = 10.0;
-    		float Precision = 0.05;
-    		float num = Radius/Precision;
-			for(float dist = 1.0; dist < Radius; dist += Precision){
-			    float4 nCol = tex2D(s0, INPUT.vTexcoord + float2((floor(dist) * cos((dist - floor(dist)) * 2 * 3.14159))/" + string(game_width) + ".0, (floor(dist) * sin((dist - floor(dist)) * 2 * 3.14159))/" + string(game_height) + ".0));
-			    if(nCol.r == 0.0){
-			        ill += (1-sqrt(INPUT.vTexcoord.y))*10;
-			    };
-			}
-			
-			  return float4(R,G,B,min(MyColor.a,1-ill/num));  
-		}
-	}
-");
-//}
-
-
-while(1){
-    if !instance_exists(global.drawer){
-        with script_bind_draw(vignette,-10){
-        	global.drawer = id
-        	persistent = 1
-        	name = mod_current
-        }
-    }
-    if !instance_exists(global.drawer2){
-        with script_bind_draw(meteordraw,-12){
-        	global.drawer2 = id
-        	persistent = 1
-        	name = mod_current
-        }
-    }
-    wait(0)
+//defpermissions should have set the proper value after the script call
+if global.canshader = 1{
+    //shader in brackets so i can hide it{
+    global.sh = shader_create(
+    	"/// Vertex Shader ///
+    
+    	struct VertexShaderInput
+    	{
+    		float4 vPosition : POSITION;
+    		float2 vTexcoord : TEXCOORD0;
+    	};
+    
+    	struct VertexShaderOutput
+    	{
+    		float4 vPosition : SV_POSITION;
+    		float2 vTexcoord : TEXCOORD0;
+    	};
+    
+    	uniform float4x4 matrix_world_view_projection;
+    
+    	VertexShaderOutput main(VertexShaderInput INPUT)
+    	{
+    		VertexShaderOutput OUT;
+    
+    		OUT.vPosition = mul(matrix_world_view_projection, INPUT.vPosition); // (x,y,z,w)
+    		OUT.vTexcoord = INPUT.vTexcoord;
+    
+    		return OUT;
+    	}
+    	",
+    
+    
+    	"/// Fragment/Pixel Shader ///
+    	
+    
+    	struct PixelShaderInput
+    	{
+    		float2 vTexcoord : TEXCOORD0;
+    	};
+    
+    	sampler2D s0; // Get Sprite Being Drawn
+    
+    
+    	float4 main(PixelShaderInput INPUT) : SV_TARGET
+    	{
+    		 // Get Pixel's Color:
+    		float4 MyColor = tex2D(s0, INPUT.vTexcoord); // (r,g,b,a)
+    
+    		 // Break Down MyColor:
+    		float R = MyColor.r; // Red   (0.0 - 1.0)
+    		float G = MyColor.g; // Green (0.0 - 1.0)
+    		float B = MyColor.b; // Blue  (0.0 - 1.0)
+            float L = (0.299 * R + 0.587 * G + 0.114 * B);
+            float tolerance = .9;
+            
+    		// bloom
+    		{
+    			
+    			float ill = 0;
+    			
+        		float Radius = 10.0;
+        		float Precision = 0.05;
+        		float num = Radius/Precision;
+    			for(float dist = 1.0; dist < Radius; dist += Precision){
+    			    float4 nCol = tex2D(s0, INPUT.vTexcoord + float2((floor(dist) * cos((dist - floor(dist)) * 2 * 3.14159))/" + string(game_width) + ".0, (floor(dist) * sin((dist - floor(dist)) * 2 * 3.14159))/" + string(game_height) + ".0));
+    			    if(nCol.r == 0.0){
+    			        ill += (1-sqrt(INPUT.vTexcoord.y))*10;
+    			    };
+    			}
+    			
+    			  return float4(R,G,B,min(MyColor.a,1-ill/num));  
+    		}
+    	}
+    ");
+    //}
 }
+
+if fork(){
+    while(1){
+        if !instance_exists(global.drawer){
+            with script_bind_draw(vignette,-10){
+            	global.drawer = id
+            	persistent = 1
+            	name = mod_current
+            }
+        }
+        if !instance_exists(global.drawer2){
+            with script_bind_draw(meteordraw,-12){
+            	global.drawer2 = id
+            	persistent = 1
+            	name = mod_current
+            }
+        }
+        wait(0)
+    }
+    exit
+}
+
 
 #define cleanup
 with instances_matching(CustomDraw,"name",mod_current) instance_destroy()
@@ -260,13 +270,14 @@ draw_circle(x-_x,y-_y-z,size*10,0)
 surface_reset_target()
 
 #define meteordraw
-shader_set(global.sh);
-shader_set_vertex_constant_f(0, matrix_multiply(matrix_multiply(matrix_get(matrix_world), matrix_get(matrix_view)), matrix_get(matrix_projection)));
-
-texture_set_stage(0, surface_get_texture(global.sf));
-
+if global.canshader{
+    shader_set(global.sh);
+    shader_set_vertex_constant_f(0, matrix_multiply(matrix_multiply(matrix_get(matrix_world), matrix_get(matrix_view)), matrix_get(matrix_projection)));
+    
+    texture_set_stage(0, surface_get_texture(global.sf));
+}
 draw_surface(global.sf, view_xview_nonsync, view_yview_nonsync);
-shader_reset();
+if global.canshader shader_reset();
 surface_set_target(global.sf)
 draw_clear_alpha(0,0)
 surface_reset_target()

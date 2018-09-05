@@ -3,7 +3,6 @@ global.stuff = []
 global.menuopen = 1
 global.scroll = [0,0,0,0]
 
-
 chat_comp_add("defconfig","Toggles the defpack configuration menu")
 chat_comp_add("defclearcache","Clears out the defpack config of unused variables")
 
@@ -11,6 +10,9 @@ var t = file_load("data/defpermissions.mod/defconfig.txt")
 if t wait(t)
 if !file_exists("data/defpermissions.mod/defconfig.txt") string_save("[]","defconfig.txt")
 else global.stuff = json_decode(string_load("data/defpermissions.mod/defconfig.txt"))
+
+//huh, this works
+permission_register("mod",mod_current,"menuopen","Config on Launch")
 
 #define cleanup
 string_save(json_encode(global.stuff),"defconfig.txt")
@@ -29,11 +31,12 @@ else{
     mod_variable_set(global.stuff[o][0],global.stuff[o][1],global.stuff[o][2],global.stuff[o][4])
     global.stuff[o,3] = desc
 }
+cleanup()
 
 #define chat_command(cmd,arg)
 if cmd = "defconfig"{
     global.menuopen = !global.menuopen
-    trace_color("Config menu" + global.menuopen ? "opened" : "closed",c_gray)
+    trace_color("Config menu " + (global.menuopen ? "opened" : "closed"),c_gray)
     return 1
 }
 if cmd = "defclearcache"{
@@ -72,8 +75,8 @@ if global.menuopen{
     draw_set_color(c_white)
     for (var i = 0; i < maxp; i++) if player_is_active(i){
         //menu width, menu height, scroll bar width
-        var mw = 60, mh = 100, sw = 10, sh = 20;
-        var _x = view_xview[i] - mw - 10 - sw + game_width, _y = view_yview[i] + 20;
+        var mw = 80, mh = 100, sw = 10, sh = 20;
+        var _x = view_xview[i] - mw - 5 - sw + game_width, _y = view_yview[i] + 20;
         //cell width, cell height
         var cw = mw, ch = 20;
         //maximum displayable cells
@@ -150,14 +153,17 @@ if global.menuopen{
             var v = global.stuff[h+o][4];
             draw_roundrect_c(_x+3,_y4-ih - 2,_x+3+iw,_y4 - 2,v ? merge_color(c_blue,c_gray,.4) : c_dkgray);
             draw_circle(_x +3 + iw/4 + iw*v/2, _y4 - 2 -ih/2, ih/2,0)
+            var c = c_black
+            draw_text_color(_x + 6 + iw, _y4 - 11,string_delete(global.stuff[h+o][1],15,100000),c,c,c,c,.6)
             if mouse && button_released(i,"fire"){
                 var a = array_clone(global.stuff[h+o]);
                 mod_variable_set(a[0],a[1],a[2],!a[4]);
                 global.stuff[h+o,4] = !a[4];
                 sound_play(sndClick)
+                if global.menuopen = 0 global.menuopen = 1
                 if fork(){
                     //delay is for making sure that if the game crashes from an option change, the option isnt saved
-                    wait(5)
+                    wait(3)
                     cleanup()
                     exit
                 }

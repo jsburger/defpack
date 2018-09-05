@@ -1,4 +1,6 @@
 
+/loadmod defparticles
+
 ///MELEE//
 /loadwep toothbrush
 /loadwep bone

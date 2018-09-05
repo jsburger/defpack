@@ -55,19 +55,13 @@ global.sprAim          = sprite_add("sprAim.png",0,10,10);
 global.sprCursorCentre = sprite_add("sprCursorCentre.png",0,1,1);
 
 global.SAKmode = 0
+mod_script_call("mod","defpermissions","permission_register","mod",mod_current,"SAKmode","SAK Mode")
 
 global.traildrawer = -4
 global.trailsf = surface_create(game_width*4,game_height*4)
 surface_set_target(global.trailsf)
 draw_clear_alpha(c_white,0)
 surface_reset_target()
-
-
-#define chat_command(cmd,arg)
-if cmd = "sakcity" {
-    global.SAKmode = !global.SAKmode
-    return 1
-}
 
 
 //thanks yokin

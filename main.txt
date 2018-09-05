@@ -1,3 +1,2 @@
 /load mainbullets
-/loadmod defparticles
 /loadmod defpermissions
