@@ -32,7 +32,7 @@ if rapiers != 1
 	weapon_post(-5 - 20*skill_get(13),32,0)
 	with instance_create(x+lengthdir_x(5+20*skill_get(13),gunangle),y+lengthdir_y(5+20*skill_get(13),gunangle),Slash)
 	{
-		can_fix = false
+		canfix = false
 		damage = 6
 		team = other.team
 		creator = other
@@ -52,7 +52,7 @@ else
 	move_contact_solid(gunangle,6)
 	with instance_create(x+lengthdir_x(extraspeed+20*skill_get(13),gunangle),y+lengthdir_y(extraspeed+20*skill_get(13),gunangle),Shank)
 	{
-		can_fix = false
+		canfix = false
 		damage = 25
 		team = other.team
 		creator = other
@@ -78,7 +78,7 @@ if "extraspeed" in self
 		if irandom(2) != 0{instance_create(x,y,Dust)}
 		canaim = false
 		with instance_create(x+lengthdir_x(extraspeed+20*skill_get(13),frac(extraspeed)*10000),y+lengthdir_y(extraspeed+20*skill_get(13),frac(extraspeed)*10000),Shank){
-			can_fix = false
+			canfix = false
 			sprite_index = mskNone
 			damage = 25
 			mask_index = global.sword

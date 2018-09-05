@@ -56,6 +56,9 @@ global.sprCursorCentre = sprite_add("sprCursorCentre.png",0,1,1);
 
 global.SAKmode = 0
 
+global.sprShard      = sprite_add_weapon("sprShard.png",0,3);
+global.sprGlassShard = sprite_add("sprGlassShard.png",5,4,4)
+
 global.traildrawer = -4
 global.trailsf = surface_create(game_width*4,game_height*4)
 surface_set_target(global.trailsf)
@@ -2061,3 +2064,59 @@ draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, image_yscale, ima
 draw_set_blend_mode(bm_add);
 draw_sprite_ext(sprite_index, image_index, x, y, 1.75*image_xscale, 1.75*image_yscale, image_angle, image_blend, 0.25);
 draw_set_blend_mode(bm_normal);
+
+#define quartz_penalty(_mod) //this is for player step only stupid
+if lsthealth > my_health
+{
+  if wep  = _mod
+  {
+    var _pitch = random_range(.9,1.1)
+    sound_play_pitch(sndHyperCrystalHurt,.8*_pitch)
+    sound_play_pitch(sndLaserCrystalHit,.7*_pitch)
+    sound_play_pitchvol(sndHyperCrystalHalfHP,2*_pitch,.4)
+    sound_play_gun(sndLaserCrystalDeath,.1,.0001)//mute action
+    sleep(400)
+    view_shake_at(x,y,45)
+    repeat(14) with instance_create(x,y,Feather)
+    {
+      motion_add(random(360),random_range(3,6))
+      sprite_index = global.sprGlassShard
+      image_speed = random_range(.4,.7)
+      image_index = irandom(5)
+    }
+    with instance_create(x,y,ThrownWep)
+    {
+      wep = "shard"
+      sprite_index = global.sprShard
+      curse = other.curse
+      motion_set(other.gunangle-180-random_range(-2,2),3)
+    }
+    wep = bwep
+    bwep = 0
+  }
+  if bwep = _mod && race = "steroids" //steroids hnnnnnnnnnnng
+  {
+    var _pitch = random_range(.9,1.1)
+    sound_play_pitch(sndHyperCrystalHurt,.8*_pitch)
+    sound_play_pitch(sndLaserCrystalHit,.7*_pitch)
+    sound_play_pitchvol(sndHyperCrystalHalfHP,2*_pitch,.4)
+    sound_play_gun(sndLaserCrystalDeath,.1,.0001)//mute action
+    sleep(400)
+    view_shake_at(x,y,45)
+    repeat(14) with instance_create(x,y,Feather)
+    {
+      motion_add(random(360),random_range(3,6))
+      sprite_index = global.sprGlassShard
+      image_speed = random_range(.4,.7)
+      image_index = irandom(5)
+    }
+    with instance_create(x,y,ThrownWep)
+    {
+      wep = "shard"
+      sprite_index = global.sprShard
+      curse = other.bcurse
+      motion_set(other.gunangle-180-random_range(-2,2),3)
+    }
+    bwep = 0
+  }
+}

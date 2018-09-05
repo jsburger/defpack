@@ -30,9 +30,9 @@
 /loadwep screecher
 
 
-//HOT
+//MINI EXPLOSIONS
 
-/loadwep finished stuff/hot flare gun
+/loadwep finished stuff/heavy flare gun
 
 //DRILL
 

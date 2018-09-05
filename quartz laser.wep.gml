@@ -23,15 +23,10 @@ return 0
 #define weapon_sprt
 return global.sprQuartzLaser
 #define weapon_text
-return "FRAGILE APPARATUS"
+return choose("FRAGILE APPARATUS","BE CAREFUL WITH IT")
 
 #define step
-if lsthealth > my_health
-{
-  if wep  = mod_current{sound_play_pitch(sndHyperCrystalHurt,.8);sound_play_pitch(sndLaserCrystalHit,.7);sleep(50);view_shake_at(x,y,12);wep = 0;curse=0}
-  if bwep = mod_current{sound_play_pitch(sndHyperCrystalHurt,.8);sound_play_pitch(sndLaserCrystalHit,.7);sleep(50);view_shake_at(x,y,12);bwep = 0;bcurse=0}
-}
-
+mod_script_call("mod","defpack tools","quartz_penalty",mod_current)
 
 #define weapon_fire
 with instance_create(x,y,Laser){
