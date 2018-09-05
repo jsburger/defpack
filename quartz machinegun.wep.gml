@@ -33,7 +33,7 @@ return false;
 return false;
 
 #define weapon_text
-return "GLASS CANNON"
+return choose("GLASS CANNON","BE CAREFUL WITH IT")
 
 #define weapon_fire
 weapon_post(7,0,18)
@@ -87,8 +87,4 @@ draw_sprite_ext(sprite_index, image_index, x, y, 2*image_xscale, 2*image_yscale,
 draw_set_blend_mode(bm_normal);
 
 #define step
-if lsthealth > my_health
-{
-  if wep  = mod_current{sound_play_pitch(sndHyperCrystalHurt,.8);sound_play_pitch(sndLaserCrystalHit,.7);sleep(50);view_shake_at(x,y,12);wep = 0}
-  if bwep = mod_current{sound_play_pitch(sndHyperCrystalHurt,.8);sound_play_pitch(sndLaserCrystalHit,.7);sleep(50);view_shake_at(x,y,12);bwep = 0}
-}
+mod_script_call("mod","defpack tools","quartz_penalty",mod_current)

@@ -10,6 +10,7 @@
 /loadwep comboweps/bigsword
 /loadwep wondersword
 /loadwep crystal torch
+/loadwep shard
 
 ///POPO///
 
@@ -64,11 +65,9 @@
 ///TODO///
 
 /loadwep ultra bullet cannon
-/loadwep ultra flare gun
 /loadwep ultra claymore
 /loadwep heavy claymore
 /loadwep screecher
-/loadwep finished stuff/hot flare gun
 /loadwep pulser
 /loadwep marker
 /loadwep idpd shotgun

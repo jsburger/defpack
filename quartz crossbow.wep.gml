@@ -28,7 +28,7 @@ return sndSwapBow;
 return 14;
 
 #define weapon_text
-return choose("BREAKTHROUGH");
+return choose("BREAKTHROUGH","BE CAREFUL WITH IT");
 
 #define weapon_fire
 weapon_post(10,-25,6)
@@ -49,8 +49,4 @@ with instance_create(x+lengthdir_x(6,gunangle),y+lengthdir_y(6,gunangle),HeavyBo
 }
 
 #define step
-if lsthealth > my_health
-{
-  if wep  = mod_current{sound_play_pitch(sndHyperCrystalHurt,.8);sound_play_pitch(sndLaserCrystalHit,.7);sleep(50);view_shake_at(x,y,12);wep = 0}
-  if bwep = mod_current{sound_play_pitch(sndHyperCrystalHurt,.8);sound_play_pitch(sndLaserCrystalHit,.7);sleep(50);view_shake_at(x,y,12);bwep = 0}
-}
+mod_script_call("mod","defpack tools","quartz_penalty",mod_current)

@@ -30,7 +30,7 @@ return 14;
 sound_play(sndNadeReload)
 
 #define weapon_text
-return "replace me please";
+return choose("BE CAREFUL WITH IT","ENERGIC FORTUNE TELLING");
 
 #define weapon_fire
 sound_play_pitch(sndHeavyNader,random_range(1.3,1.5))
@@ -131,8 +131,4 @@ repeat(3)
 }
 
 #define step
-if lsthealth > my_health
-{
-  if wep  = mod_current{sound_play_pitch(sndHyperCrystalHurt,.8);sound_play_pitch(sndLaserCrystalHit,.7);sleep(50);view_shake_at(x,y,12);wep = 0}
-  if bwep = mod_current{sound_play_pitch(sndHyperCrystalHurt,.8);sound_play_pitch(sndLaserCrystalHit,.7);sleep(50);view_shake_at(x,y,12);bwep = 0}
-}
+mod_script_call("mod","defpack tools","quartz_penalty",mod_current)
