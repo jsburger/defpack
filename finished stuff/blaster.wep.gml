@@ -14,10 +14,10 @@ return 4;
 return false;
 
 #define weapon_load
-return 43;
+return 24;
 
 #define weapon_cost
-return 2;
+return 1;
 
 #define weapon_melee
 return 0;
@@ -37,18 +37,28 @@ sound_play_pitch(sndFlareExplode,.9)
 sound_play_pitch(sndFlamerStop,.8)
 weapon_post(8,8,4)
 
-var things = [SmallExplosion,Explosion,GreenExplosion],
-    lengths = [30,60,100],
+var things = [SmallExplosion,SmallExplosion,Explosion],
+    lengths = [30,55,100],
     ang = gunangle,
     _x = x, _y = y;
 
     for (var i = 0; i < array_length(things); i++){
         if instance_exists(self){
-            sound_play_pitch(sndGrenadeRifle,.7)
-            sound_play_pitch(sndGrenadeShotgun,1.6)
-            sound_play(sndExplosion)
+            var _pitch = random_range(.8,1.2);
+            sound_play_pitch(sndGrenadeRifle,.8*_pitch)
+            sound_play_pitch(sndGrenadeShotgun,1.5*_pitch)
+            sound_play_pitch(sndExplosion,_pitch)
             with instance_create(_x+lengthdir_x(lengths[i] + speed,ang),_y+lengthdir_y(lengths[i]+speed,ang),things[i]){
                 creator = other
+                if i = 0
+                {
+                  image_xscale = .75
+                  image_yscale = .75
+                  damage = 3
+                  team = other.team
+                  sound_play_pitchvol(sndExplosionS,2,.3)
+                  hitid = [sprite_index,"MINI EXPLOSION"]
+                }
             }
         }
         wait(2)

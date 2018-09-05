@@ -178,8 +178,68 @@ a[? "triple ultra pop gun"]  = sprite_add_weapon("sprites/sak/sprTripleUltraPopG
 a[? "ultra pop rifle"] 	 		 = sprite_add_weapon("sprites/sak/sprUltraPopRifle.png",3,2)//
 a[? "hyper ultra pop gun"]   = sprite_add_weapon("sprites/sak/sprHyperUltraPopGun.png",7,2)//
 
+///SLUGS///
+a[? "slug shotgun"] 				  = sprite_add_weapon("sprites/sak/sprSlugShotgun.png",3,1)//
+a[? "double slug shotgun"] 		= sprite_add_weapon("sprites/sak/sprDoubleSlugShotgun.png",3,1)//
+a[? "sawed-off slug shotgun"] = sprite_add_weapon("sprites/sak/sprSawedOffSlugShotgun.png",3,1)//
+a[? "auto slug shotgun"]      = sprite_add_weapon("sprites/sak/sprAutoSlugShotgun.png",3,0)//
+a[? "assault slug shotgun"]   = sprite_add_weapon("sprites/sak/sprAssaultSlugShotgun.png",5,1)//
+a[? "hyper slug shotgun"]     = sprite_add_weapon("sprites/sak/sprHyperSlugShotgun.png",5,3)//
+
+a[? "slug eraser"] 				 = sprite_add_weapon("sprites/sak/sprSlugEraser.png",3,2)//
+a[? "auto slug eraser"] 	 = sprite_add_weapon("sprites/sak/sprAutoSlugEraser.png",2,1)//
+a[? "assault slug eraser"] = sprite_add_weapon("sprites/sak/sprAssaultSlugEraser.png",6,2)//
+a[? "hyper slug eraser"] 	 = sprite_add_weapon("sprites/sak/sprHyperSlugEraser.png",3,4)//
+a[? "slug bird"] 	 				 = sprite_add_weapon("sprites/sak/sprSlugBird.png",7,4)//
+a[? "slug wave gun"] 	 		 = sprite_add_weapon("sprites/sak/sprSlugWaveGun.png",5,5)//
+
+a[? "slug flak cannon"] 	 		= sprite_add_weapon("sprites/sak/sprSlugFlakCannon.png",4,3)//
+a[? "super slug flak cannon"] = sprite_add_weapon("sprites/sak/sprSuperSlugFlakCannon.png",4,3)//
+a[? "auto slug flak cannon"] 	= sprite_add_weapon("sprites/sak/sprAutoSlugFlakCannon.png",6,3)//
+a[? "hyper slug flak cannon"] = sprite_add_weapon("sprites/sak/sprHyperSlugFlakCannon.png",4,2)//
+
+a[? "super slugger"]   = sprSuperSlugger
+a[? "gatling slugger"] = sprGatlingSlugger
+a[? "assault slugger"] = sprAssaultSlugger
+a[? "hyper slugger"]   = sprHyperSlugger
+a[? "slugger"] 			   = sprSlugger
+
+a[? "slug shot cannon"]   		 = sprite_add_weapon("sprites/sak/sprSlugShotCannon.png",5,3)//
+a[? "super slug shot cannon"]  = sprite_add_weapon("sprites/sak/sprSuperSlugShotCannon.png",6,4)//
+a[? "auto slug shot cannon"]   = sprite_add_weapon("sprites/sak/sprAutoSlugShotCannon.png",5,2)//
+a[? "hyper slug shot cannon"]  = sprite_add_weapon("sprites/sak/sprHyperShotCannon.png",4,4)//
 
 
+///HEAVY SLUGS///
+a[? "heavy slug shotgun"] 				  = sprite_add_weapon("sprites/sak/sprHeavySlugShotgun.png",3,2)//
+a[? "double heavy slug shotgun"] 		= sprite_add_weapon("sprites/sak/sprHeavyDoubleSlugShotgun.png",3,5)//
+a[? "sawed-off heavy slug shotgun"] = sprite_add_weapon("sprites/sak/sprHeavySawedOffSlugShotgun.png",3,5)//
+a[? "auto heavy slug shotgun"]      = sprite_add_weapon("sprites/sak/sprHeavyAutoSlugShotgun.png",3,1)//
+a[? "assault heavy slug shotgun"]   = sprite_add_weapon("sprites/sak/sprHeavyAssaultSlugShotgun.png",5,1)//
+a[? "hyper heavy slug shotgun"]     = sprite_add_weapon("sprites/sak/sprHeavyHyperSlugShotgun.png",6,4)//
+
+a[? "heavy slug eraser"] 				 = sprite_add_weapon("sprites/sak/sprHeavySlugEraser.png",3,2)//
+a[? "auto heavy slug eraser"] 	 = sprite_add_weapon("sprites/sak/sprHeavyAutoSlugEraser.png",7,3)//
+a[? "assault heavy slug eraser"] = sprite_add_weapon("sprites/sak/sprHeavyAssaultSlugEraser.png",6,2)//
+a[? "hyper heavy slug eraser"] 	 = sprite_add_weapon("sprites/sak/sprHeavyHyperSlugEraser.png",3,5)//
+a[? "heavy slug bird"] 	 				 = sprite_add_weapon("sprites/sak/sprHeavySlugBird.png",7,4)//
+a[? "heavy slug wave gun"] 	 		 = sprite_add_weapon("sprites/sak/sprHeavySlugWaveGun.png",5,5)//
+
+a[? "heavy slug flak cannon"] 	 		= sprite_add_weapon("sprites/sak/sprHeavySlugFlakCannon.png",4,3)//
+a[? "super heavy slug flak cannon"] = sprite_add_weapon("sprites/sak/sprHeavySuperSlugFlakCannon.png",4,5)//
+a[? "auto heavy slug flak cannon"] 	= sprite_add_weapon("sprites/sak/sprHeavyAutoSlugFlakCannon.png",6,3)//
+a[? "hyper heavy slug flak cannon"] = sprite_add_weapon("sprites/sak/sprHeavyHyperSlugFlakCannon.png",4,4)//
+
+a[? "super heavy slugger"]   = sprite_add_weapon("sprites/sak/sprHeavySuperSlugger.png",5,4)//
+a[? "gatling heavy slugger"] = sprite_add_weapon("sprites/sak/sprHeavyGatlingSlugger.png",5,3)//
+a[? "assault heavy slugger"] = sprite_add_weapon("sprites/sak/sprHeavyAssaultSlugger.png",5,2)//
+a[? "hyper heavy slugger"]   = sprite_add_weapon("sprites/sak/sprHeavyHyperSlugger.png",3,5)//
+a[? "heavy slugger"] 			   = sprHeavySlugger
+
+a[? "heavy slug shot cannon"]   		 = sprite_add_weapon("sprites/sak/sprHeavySlugShotCannon.png",5,4)//
+a[? "super heavy slug shot cannon"]  = sprite_add_weapon("sprites/sak/sprHeavySuperSlugShotCannon.png",6,4)
+a[? "auto heavy slug shot cannon"]   = sprite_add_weapon("sprites/sak/sprHeavyAutoSlugShotCannon.png",5,3)//
+a[? "hyper heavy slug shot cannon"]  = sprite_add_weapon("sprites/sak/sprHeavyHyperSlugShotCannon.png",10,5)//
 
 #define cleanup
 ds_map_destroy(global.textmap)

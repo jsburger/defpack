@@ -1,5 +1,5 @@
 #define init
-global.sprAndromedaLauncher = sprite_add_weapon("sprAndromedaLauncher.png", 0, 5);
+global.sprAndromedaLauncher = sprite_add_weapon("sprAndromedaLauncher.png", 7, 5);
 global.sprAndromedaBullet = sprite_add_base64("iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAYAAAB3AH1ZAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACLSURBVEhL3ZXRCcAgDESzRaEDdI6O1s1tgkmrcK1NFIQevK/gy+GH0rpsXewHXaRkPCXPyzNQ6qFe/jWDC/iWWwYViC23/KNAX6DU4EjHhGaGesKBUsGWt0qoJxwoFaYXEFrLBfWEA6Ue1BMOlHpgRUcJvl8k9TC9wPSnWCT+EoM/o7rEW5E8v88QnexX3Z4Uujk7AAAAAElFTkSuQmCCAAAAAAAAAAAAAA==",2, 16, 8);
 global.space4 = sprite_add("spaceforeground.png",1,0,0);
 global.space3 = sprite_add("spacebackground.png",1,0,0);
@@ -56,7 +56,7 @@ with instance_create(x,y,CustomProjectile){
     mask_index = mskNone
 }
 
-#define andro_anim  
+#define andro_anim
 image_speed = 0
 image_xscale = 1
 image_index = 1
@@ -223,7 +223,7 @@ if instance_exists(Player){
 			drawmyshit(x+lengthdir_x(succ,i),y+lengthdir_y(succ/2,i),2,size,0)
 		}
 		draw_primitive_end();
-		
+
 	    draw_primitive_begin_texture(pr_trianglefan, tex4);
 		drawmyshit(x,y,3,128,0)
 		for (var i = 0; i<= 360; i+=int){

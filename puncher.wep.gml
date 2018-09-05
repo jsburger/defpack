@@ -6,7 +6,7 @@ return "PUNCHER"
 #define weapon_type
 return 4
 #define weapon_cost
-return 4
+return 3
 #define weapon_area
 return 7
 #define weapon_load

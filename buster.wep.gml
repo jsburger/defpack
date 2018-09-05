@@ -41,7 +41,7 @@ with instance_create(x,y,CustomProjectile)
 	team = other.team
 	creator = other
 	typ = 1
-	damage = 1
+	damage = 2
 	if other.object_index = Player{
 		var _x = mouse_x[other.index]+random_range(-16,16)*other.accuracy;
 		var _y = mouse_y[other.index]+random_range(-16,16)*other.accuracy;

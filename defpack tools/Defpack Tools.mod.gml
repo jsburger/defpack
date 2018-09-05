@@ -115,14 +115,11 @@ with TopCont
 {
     with instances_matching(CustomObject,"name","sniper charge","sniper pest charge","sniper fire charge","sniper thunder charge","sniper psy charge", "sniper bouncer charge")
     {
-        if !instance_exists(creator){instance_destroy();exit}
+        if !instance_exists(creator){draw_set_visible_all(1);instance_destroy();exit}
         draw_set_visible_all(0)
         draw_set_visible(creator.index,1)
         var _pc     = player_get_color(creator.index);
-        if holdtime >= 60 {var _m = 5}else
-        {
-          var _m = 3;
-        }
+        if holdtime >= 60 {var _m = 5}else{var _m = 3}
         if current_frame mod _m <= current_time_scale && _m = 3{sound_play_pitch(sndCursedReminder,5)}
         if charged = 0{if (current_frame mod _m) <= current_time_scale {if _pc != c_white {_pc = c_white}else{_pc = player_get_color(creator.index)}}}
         var _offset = charge;
@@ -152,10 +149,10 @@ if array_length_1d(instances_matching(CustomProjectile,"name","Rocklet","big roc
     draw_set_blend_mode(bm_normal)
     draw_set_alpha(1)
     draw_set_color_write_enable(1,1,1,1)
-    
+
     d3d_set_fog(1,c_white,1,1)
-    
-    
+
+
     with instances_in(view_xview_nonsync,view_yview_nonsync,view_xview_nonsync+game_width,view_yview_nonsync+game_height,instances_matching(CustomProjectile,"name","big rocklet","huge rocklet")){
         draw_sprite_ext(sprDust,round(random_nonsync(3)),(xprevious-view_xview_nonsync)*4,(yprevious-view_yview_nonsync)*4,8,((random_nonsync(speed)/(maxspeed))+.1)*4,direction,c_white,1)
     }
@@ -163,7 +160,7 @@ if array_length_1d(instances_matching(CustomProjectile,"name","Rocklet","big roc
         draw_sprite_ext(sprDust,round(random_nonsync(3)),(xprevious-view_xview_nonsync)*4,4*(yprevious-view_yview_nonsync),4,4*(random_nonsync(speed)/(maxspeed*2)),direction,c_white,1)
     }
     d3d_set_fog(0,0,0,0)
-    
+
     surface_reset_target()
     draw_surface_ext(global.trailsf,view_xview_nonsync,view_yview_nonsync,0.25,0.25,0,c_white,1)
 }
@@ -1022,7 +1019,7 @@ with a{
 	lasercolour = c_red
 	lasercolour2 = c_maroon
 	offset = random(359)
-	
+
 	primary = 1
 	//god bless YAL
 	if index <= 3
@@ -1658,6 +1655,7 @@ if place_meeting(x,y,PlasmaBall) || place_meeting(x,y,PopoPlasmaBall)
           creator = other.creator
           team = other.team
           motion_add(other.direction+random_range(-140,140),random_range(12,16))
+          image_angle = direction
         }
       }
       repeat(4)
@@ -1667,6 +1665,7 @@ if place_meeting(x,y,PlasmaBall) || place_meeting(x,y,PopoPlasmaBall)
           creator = other.creator
           team = other.team
           motion_add(other.direction+random_range(-20,20),random_range(16,20))
+          image_angle = direction
         }
       }
       instance_destroy();exit
@@ -1686,6 +1685,7 @@ if place_meeting(x,y,PlasmaBig)
           creator = other.creator
           team = other.team
           motion_add(other.direction+random_range(-140,140),random_range(14,18))
+          image_angle = direction
         }
       }
       repeat(5)
@@ -1695,6 +1695,7 @@ if place_meeting(x,y,PlasmaBig)
           creator = other.creator
           team = other.team
           motion_add(other.direction+random_range(-20,20),random_range(16,20))
+          image_angle = direction
         }
       }
       instance_destroy();exit
@@ -1714,6 +1715,7 @@ if place_meeting(x,y,PlasmaHuge)
           creator = other.creator
           team = other.team
           motion_add(other.direction+random_range(-140,140),random_range(16,20))
+          image_angle = direction
         }
       }
       repeat(6)
@@ -1723,6 +1725,7 @@ if place_meeting(x,y,PlasmaHuge)
           creator = other.creator
           team = other.team
           motion_add(other.direction+random_range(-20,20),random_range(16,20))
+          image_angle = direction
         }
       }
       instance_destroy();exit
@@ -1741,6 +1744,7 @@ with instances_matching(CustomProjectile,"name","Plasmite")
 		motion_add(point_direction(other.x,other.y,x,y),random_range(8,10))
     sound_play_pitchvol(sndPlasmaHit,random_range(3,6),.3)
     with instance_create(x,y,PlasmaTrail){image_xscale = 2;image_yscale = 2}
+    image_angle = direction
 	}
 }
 with instances_matching(CustomProjectile,"name","Laser Flak") || instances_matching(CustomProjectile,"name","Heavy Laser Flak")
@@ -1796,6 +1800,7 @@ with instances_matching(CustomProjectile,"name","plasmite cannon")
         creator = other.creator
         team = other.team
         motion_add(other.direction+random_range(-140,140),random_range(16,20))
+        image_angle = direction
       }
     }
 		sound_play_pitch(sndPlasmaHit,random_range(.9,1.1))

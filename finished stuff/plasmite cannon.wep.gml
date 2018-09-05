@@ -50,6 +50,7 @@ with instance_create(x,y,CustomProjectile)
 	image_angle = direction
 	speedset = 0
 	ammo = 8
+	accuracy = other.accuracy
 	on_step 	 = atom_step
 	on_wall 	 = mb_wall
 	on_destroy = atom_destroy
@@ -110,7 +111,7 @@ repeat(ammo)
 	{
 		speedset = 1
 		fric = random_range(.06,.08)
-		motion_set(i+random_range(-12,21)*other.creator.accuracy,10)
+		motion_set(i+random_range(-12,21)*other.accuracy,10)
 		projectile_init(other.team,other.creator)
 		image_angle = direction
 	}
