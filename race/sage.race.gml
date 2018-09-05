@@ -218,6 +218,14 @@ if visible{
 #define spellpicker
 with instances_matching(Player,"race",mod_current){
     var btn = "key4"
+    var btns = ["key1","key2","key3","key4","horn"]
+    for var i = 0; i < array_length(btns); i++{
+        if button_pressed(index,btns[i]) || button_check(index,btns[i]) || button_released(index,btns[i]){
+            btn = brns[i]
+            break
+        }
+    }
+    
     if hand.spell = "No Spell" btn = "spec"
     if button_pressed(index,btn){
         hand.menulength = .1
