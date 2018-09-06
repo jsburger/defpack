@@ -241,6 +241,37 @@ a[? "super heavy slug shot cannon"]  = sprite_add_weapon("sprites/sak/sprHeavySu
 a[? "auto heavy slug shot cannon"]   = sprite_add_weapon("sprites/sak/sprHeavyAutoSlugShotCannon.png",5,3)//
 a[? "hyper heavy slug shot cannon"]  = sprite_add_weapon("sprites/sak/sprHeavyHyperSlugShotCannon.png",10,5)//
 
+///SPLIT SLUGS///
+a[? "split slug shotgun"] 				  = sprite_add_weapon("sprites/sak/sprSplitSlugShotgun.png",3,2)//
+a[? "double split slug shotgun"] 		= sprite_add_weapon("sprites/sak/sprDoubleSplitSlugShotgun.png",3,3)//
+a[? "sawed-off split slug shotgun"] = sprite_add_weapon("sprites/sak/sprSawedOffSplitSlugShotgun.png",3,3)//
+a[? "auto split slug shotgun"]      = sprite_add_weapon("sprites/sak/sprAutoSplitSlugShotgun.png",4,2)//
+a[? "assault split slug shotgun"]   = sprite_add_weapon("sprites/sak/sprAssaultSplitSlugShotgun.png",3,2)//
+a[? "hyper split slug shotgun"]     = sprite_add_weapon("sprites/sak/sprHyperSplitSlugShotgun.png",3,4)//
+
+a[? "split slug eraser"] 				 = sprite_add_weapon("sprites/sak/sprSplitSlugEraser.png",6,2)//
+a[? "auto split slug eraser"] 	 = sprite_add_weapon("sprites/sak/sprAutoSplitSlugEraser.png",6,2)//
+a[? "assault split slug eraser"] = sprite_add_weapon("sprites/sak/sprAssaultSplitSlugEraser.png",4,2)//
+a[? "hyper split slug eraser"] 	 = sprite_add_weapon("sprites/sak/sprHyperSplitSlugEraser.png",7,4)//
+a[? "split slug bird"] 	 				 = sprite_add_weapon("sprites/sak/sprSplitSlugBird.png",7,4)//
+a[? "split slug wave gun"] 	 		 = sprite_add_weapon("sprites/sak/sprSplitSlugWaveGun.png",5,5)//
+
+a[? "split slug flak cannon"] 	 		= sprite_add_weapon("sprites/sak/sprSplitSlugFlakCannon.png",5,2)//
+a[? "super split slug flak cannon"] = sprite_add_weapon("sprites/sak/sprSuperSplitSlugFlakCannon.png",5,4)//
+a[? "auto split slug flak cannon"] 	= sprite_add_weapon("sprites/sak/sprAutoSplitSlugFlakCannon.png",4,3)//
+a[? "hyper split slug flak cannon"] = sprite_add_weapon("sprites/sak/sprHyperSplitSlugFlakCannon.png",4,3)//
+
+a[? "super split slugger"]   = sprite_add_weapon("sprites/sak/sprSuperSplitSlugger.png",5,4)//
+a[? "gatling split slugger"] = sprite_add_weapon("sprites/sak/sprGatlingSplitSlugger.png",0,2)//
+a[? "assault split slugger"] = sprite_add_weapon("sprites/sak/sprAssaultSplitSlugger.png",5,2)//
+a[? "hyper split slugger"]   = sprite_add_weapon("sprites/sak/sprHyperSplitSlugger.png",3,4)//
+a[? "split slugger"] 			   = sprite_add_weapon("sprites/sak/sprSplitSlugger.png",1,2)//
+
+a[? "split slug shot cannon"]   		 = sprite_add_weapon("sprites/sak/sprSplitSlugShotCannon.png",5,3)//
+a[? "super split slug shot cannon"]  = sprite_add_weapon("sprites/sak/sprSuperSplitSlugShotCannon.png",6,4)//
+a[? "auto split slug shot cannon"]   = sprite_add_weapon("sprites/sak/sprAutoSplitSlugShotCannon.png",5,3)//
+a[? "hyper split slug shot cannon"]  = sprite_add_weapon("sprites/sak/sprHyperSplitSlugShotCannon.png",4,5)//
+
 #define cleanup
 ds_map_destroy(global.textmap)
 ds_map_destroy(global.choicemap)

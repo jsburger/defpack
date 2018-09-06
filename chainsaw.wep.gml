@@ -12,7 +12,7 @@ return 1
 #define weapon_area
 return 6;
 #define weapon_load
-return 8
+return 11;
 #define weapon_swap
 return sndSwapMotorized
 #define weapon_auto
@@ -27,7 +27,7 @@ with instance_create(x,y,CustomObject)
 	creator = other
 	team    = other.team
 	name    = "chainsaw burst"
-	ammo    = 8
+	ammo    = 11
 	timer   = current_time_scale
 	on_step = chainsaw_step
 	bwep = other.specfiring
@@ -89,16 +89,16 @@ if projectile_canhit(other) = true
 	sleep(3)
 	var _splat = -4;
 	_splat = determine_gore(other)
-     with instance_create((other.x+x)/2,(other.y+y)/2,_splat){image_angle = random(360)}
+  with instance_create((other.x+x)/2,(other.y+y)/2,_splat){image_angle = random(360)}
 	projectile_hit(other,damage,force,direction)
 	if other.my_health <= 0
 	{
-	    sound_play(sndDiscHit)
+	  sound_play(sndDiscHit)
 		sleep(other.size * 60)
 		view_shake_at(x,y,other.size * 50)
 		repeat(other.size)
 		{
-			with instance_create(other.x,other.y,AmmoPickup){num = .2;sprite_index = global.sprMiniAmmo}
+			with instance_create(other.x,other.y,AmmoPickup){num = .5;sprite_index = global.sprMiniAmmo}
 		}
 	}
 }
