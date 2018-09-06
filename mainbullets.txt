@@ -125,7 +125,7 @@
 /loadwep big iron
 /loadwep heavy smart gun
 /loadwep smarter gun
-/loadwep lucky machinegun
+/loadwep kemosabe
 /loadwep bullet machinegun
 /loadwep signal beamer
 /loadwep prism

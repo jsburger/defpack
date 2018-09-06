@@ -25,9 +25,8 @@
 
 ///GOLD///
 
+/loadwep lucky machinegun
 /loadwep golden abris pistol
-/loadwep finished stuff/golden plasmite pistol
-
 
 ///QUARTZ///
 

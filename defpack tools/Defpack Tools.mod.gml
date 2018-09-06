@@ -60,6 +60,8 @@ mod_script_call("mod","defpermissions","permission_register","mod",mod_current,"
 global.sprShard      = sprite_add_weapon("sprShard.png",0,3);
 global.sprGlassShard = sprite_add("sprGlassShard.png",5,4,4)
 
+global.sprKillslash   = sprite_add("sprKillslash.png",8,16,16);
+
 global.traildrawer = -4
 global.trailsf = surface_create(game_width*4,game_height*4)
 surface_set_target(global.trailsf)
@@ -2114,3 +2116,48 @@ if lsthealth > my_health
     bwep = 0
   }
 }
+
+#define crit() //add this to on_hit effects in order to not be stupid
+var _t = team;
+view_shake_max_at(x,y,200)
+sleep(150)
+damage += 30
+sound_play_pitchvol(sndHammerHeadEnd,random_range(1.23,1.33),20)
+sound_play_pitchvol(sndBasicUltra,random_range(0.9,1.1),20)
+sound_play_pitch(sndCoopUltraA,random_range(3.8,4.05))
+sound_play_pitch(sndBasicUltra,random_range(.6,.8))
+with instance_create(x+lengthdir_x(sprite_get_width(sprite_index),image_angle),y+lengthdir_y(sprite_get_width(sprite_index),image_angle),CustomObject)
+{
+  with create_sonic_explosion(x,y)
+  {
+    team = _t
+    image_xscale = 5
+    image_yscale = 5
+    image_blend = c_black
+    image_speed = .5
+    damage = 0
+    image_alpha = 0
+  }
+  image_angle = random(359)
+  depth = other.depth -1
+  image_speed = .6
+  sprite_index = global.sprKillslash
+  image_xscale = random_range(1.3,1.5)
+  image_yscale = image_xscale
+  on_step = Killslash_step
+  with instance_create(x,y,CustomObject)
+  {
+    image_angle = other.image_angle - 90 + random_range(-8,8)
+    depth = other.depth
+    image_speed = .8
+    sprite_index = global.sprKillslash
+    image_blend = c_black
+    image_xscale = other.image_xscale-.5
+    image_yscale = image_xscale
+    on_step = Killslash_step
+  }
+}
+
+#define Killslash_step
+if image_index = 1.2 sleep(200)
+if image_index >= 7 instance_destroy();

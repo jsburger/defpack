@@ -1,7 +1,7 @@
 #define init
 global.sprKnife 	    = sprite_add_weapon("sprites/Knife.png", 0, 2);
-global.sprKillslash   = sprite_add("sprites/projectiles/Killslash.png"	,8,16,16);
-global.sprKnifeshank  = sprite_add("sprites/projectiles/knifeshank.png"	,2,0,8);
+global.sprKnifeshank  = sprite_add("sprites/projectiles/knifeshank.png",2,0,8);
+
 #define weapon_name
 return "CHRIS KNIFE";
 
@@ -55,49 +55,15 @@ with instance_create(x,y,CustomSlash)
 }
 
 #define knifeshank_proj
-if team != other.team
-{
-  with other{instance_destroy()}
-}
+if team != other.team{with other{instance_destroy()}}
 
 #define knifeshank_hit
 if projectile_canhit_melee(other)
 {
   if irandom(19-(skill_get(6)*5)) = 0 && can_crit = 1
   {
-    view_shake_max_at(x,y,200)
-    sleep(150)
     can_crit = 0
-    damage += 30
-    sound_play_pitchvol(sndHammerHeadEnd,random_range(1.23,1.33),20)
-    sound_play_pitchvol(sndBasicUltra,random_range(0.9,1.1),20)
-    sound_play_pitch(sndCoopUltraA,random_range(3.8,4.05))
-    sound_play_pitch(sndBasicUltra,random_range(.6,.8))
-    with instance_create(x+lengthdir_x(sprite_get_width(sprite_index),image_angle),y+lengthdir_y(sprite_get_width(sprite_index),image_angle),CustomObject)
-    {
-      image_angle = random(359)
-      depth = other.depth -1
-      image_speed = .6
-      sprite_index = global.sprKillslash
-      image_xscale = random_range(1.3,1.5)
-      image_yscale = image_xscale
-      on_step = Killslash_step
-      with instance_create(x,y,CustomObject)
-      {
-        image_angle = other.image_angle - 90 + random_range(-8,8)
-        depth = other.depth
-        image_speed = .8
-        sprite_index = global.sprKillslash
-        image_blend = c_black
-        image_xscale = other.image_xscale-.5
-        image_yscale = image_xscale
-        on_step = Killslash_step
-      }
-    }
+    mod_script_call("mod","defpack tools","crit")
   }
   projectile_hit(other,damage,force,direction)
 }
-
-#define Killslash_step
-if image_index = 1.2 sleep(200)
-if image_index >= 7 instance_destroy();

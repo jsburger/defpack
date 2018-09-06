@@ -44,12 +44,17 @@ image_speed = .55
 sound_play_pitch(sndSniperTarget,exp((_strtsize-_endsize)/room_speed/current_time_scale/accuracy*(1.07))/12)
 
 #define pop
-sound_set_track_position(sndVanWarning,0)
+sound_set_track_position(sndVanWarning,0.1)
+sound_play_pitch(sndVanWarning,1000)
 sound_play_pitch(sndGrenadeShotgun,random_range(.5,.8))
-sound_play_pitch(sndGrenade,random_range(.5,.8))
 sound_play_pitch(sndGrenadeRifle,random_range(.5,.8))
-with creator{weapon_post(12,0,244)}
-sleep(200)
+sound_play_pitch(sndUltraGrenade,.9)
+sound_play_pitch(sndHeavyNader,.7)
+sound_play_pitch(sndIDPDNadeExplo,.7)
+sleep(500)
+sound_play(sndExplosionXL)
+sound_play(sndExplosionL)
+with creator{weapon_post(12,-80,244)}
 with creator{motion_add(gunangle,-5)}
 repeat(8)
 {

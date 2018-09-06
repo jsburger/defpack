@@ -1,5 +1,5 @@
 #define init
-global.sprLuckyMachinegun = sprite_add_weapon("sprites/Lucky Machinegun.png", 3, 1);
+global.sprLuckyMachinegun = sprite_add_weapon("sprites/sprLuckyMachinegun.png", 3, 1);
 global.sprLuckyBullet 	  = sprite_add("sprites/projectiles/Lucky Bullet.png",2,11,11)
 
 #define weapon_name
@@ -13,6 +13,9 @@ return 1;
 
 #define weapon_auto
 return true;
+
+#define weapon_gold
+return 1;
 
 #define weapon_load
 return 3;
@@ -138,5 +141,3 @@ if random(100) < 50*current_time_scale with instance_create(x,y,CaveSparkle) ima
 	}
 }
 */
-
-

@@ -56,9 +56,7 @@ speed /= 1 + (.2*current_time_scale)
 if speed <= .01 instance_destroy()
 
 #define weapon_text
-return choose("MMMMH THATS SOME GOOD SHIT
-RIGHT THERE
-(RIGHT THERE)","THIS IS THE @yWAY");
+return choose("CHOOSE YOUR TARGET WISELY","THIS IS THE @yWAY");
 
 #define weapon_fire
 
@@ -68,15 +66,71 @@ sound_play(sndGoldTankShoot)
 sound_play_pitch(sndSlugger,2)
 sound_play_pitch(sndFlakCannon,.8)
 motion_set(gunangle-180,4)
-weapon_post(9,10,0)
-with instance_create(x,y,Bullet2)
+weapon_post(9,-30,24)
+with instance_create(x,y,CustomProjectile)
 {
+  sprite_index = sprEBullet3
+  mask_index   = mskBullet2
+  image_speed = 1
+  friction = .6
 	force = 50
-	damage = 1026
+	damage = 1000
 	motion_add(other.gunangle,22)
 	image_xscale /= 2
 	image_yscale /= 2
 	team = other.team
 	creator = other
 	repeat(6){instance_create(x+lengthdir_x(random_range(1,6),direction),y+lengthdir_y(random_range(1,6),direction),Smoke)}
+  image_angle = direction
+  on_wall    = shell_wall
+  on_step    = shell_step
+  on_draw    = shell_draw
+  on_hit     = shell_hit
+  on_destroy = shell_destroy
 }
+
+#define shell_wall
+speed *= (.8+skill_get(15)*.2)
+sound_play_pitchvol(sndHitWall,random_range(.8,1.2),.3)
+instance_create(x,y,Dust)
+move_bounce_solid(false)
+direction += random_range(-5,5)
+image_angle = direction
+
+#define shell_step
+if image_index = 1 image_speed = 0
+if speed < friction
+{
+  with instance_create(x,y,BulletHit)
+  {
+    sprite_index = sprEBullet3Disappear
+    image_angle = other.image_angle
+    image_xscale = other.image_xscale
+    image_yscale = other.image_yscale
+  }
+  instance_destroy()
+}
+
+#define shell_hit
+if projectile_canhit(other) = true
+{
+  mod_script_call("mod","defpack tools","crit")
+  sleep(200)
+  projectile_hit(other,damage,force,direction)
+}
+with instance_create(x,y,BulletHit)
+{
+  sprite_index = sprEBullet3Disappear
+  image_angle = random(360)
+  image_xscale = other.image_xscale
+  image_yscale = other.image_yscale
+}
+instance_destroy()
+
+#define shell_destroy
+
+#define shell_draw
+draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, image_yscale, image_angle, image_blend, 1.0);
+draw_set_blend_mode(bm_add);
+draw_sprite_ext(sprite_index, image_index, x, y, 1.75*image_xscale, 1.75*image_yscale, image_angle, image_blend, 0.15);
+draw_set_blend_mode(bm_normal);
