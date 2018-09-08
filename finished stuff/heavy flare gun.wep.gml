@@ -59,7 +59,7 @@ var _dir = random(360)
 with instance_create(x+lengthdir_x(15,_dir),y+lengthdir_y(15,_dir),SmallExplosion){
 		image_xscale = .5
 		image_yscale = .5
-		damage = 1
+		damage = 3
 		team = other.team
 		sound_play_pitchvol(sndExplosionS,2,.3)
 		hitid = [sprite_index,"MINI EXPLOSION"]
@@ -72,7 +72,7 @@ if current_frame mod (2/current_time_scale) = 0
 with instance_create(x+random_range(-1,1),y+random_range(-1,1),SmallExplosion){
     image_xscale = .5
     image_yscale = .5
-    damage = 1
+    damage = 3
     team = other.team
     sound_play_pitchvol(sndExplosionS,2,.04)
     hitid = [sprite_index,"MINI EXPLOSION"]
