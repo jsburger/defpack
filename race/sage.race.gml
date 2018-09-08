@@ -26,11 +26,13 @@ global.spells = ds_map_create()
 global.spellnames = []
 
 //add_spell("No Spell", NA,scr(none_channel),scr(none_release),NA,1,global.hands)
-add_spell("Merge", scr(merge_cast),NA,NA,NA,1,sprite_add("sprMerge.png",2,8,7))
-add_spell("Drain Mana",NA,scr(cheat1),NA,NA,1,sprite_add("sprShield.png",2,8,7))
-add_spell("Gimme Mana",NA,scr(cheat2),NA,NA,1,sprite_add("sprShield.png",2,8,7))
-add_spell("Rapid Fire",NA,scr(rapid_channel),NA,NA,1,sprite_add("sprBlast.png",2,8,7))
+add_spell("Merge", scr(merge_cast),NA,NA,NA,1,sprite_add("sprMerge.png",2,8,7),sprite_add("MergeBlob.png",1,4,4))
+add_spell("Drain Mana",NA,scr(cheat1),NA,NA,1,sprite_add("sprShield.png",2,8,7),sprite_add("ShieldBlob.png",1,3,3))
+add_spell("Gimme Mana",NA,scr(cheat2),NA,NA,1,sprite_add("sprShield.png",2,8,7),sprite_add("ShieldBlob.png",1,3,3))
+add_spell("Rapid Fire",NA,scr(rapid_channel),NA,NA,1,sprite_add("sprBlast.png",2,8,7),sprite_add("RapidFireBlob.png",1,3,3))
+add_spell("Proto Swap",scr(proto_cast),NA,NA,NA,1,sprite_add("sprProto.png",2,7,7),sprite_add("ProtoChestBlob.png",1,4,4))
 
+#macro maxmana 200
 
 #define scr(script)
 return script_ref_create(script)
@@ -38,8 +40,8 @@ return script_ref_create(script)
 #macro NA script_ref_create(nothing)
 #define nothing
 
-#define add_spell(name,on_cast,on_channel,on_release,on_step,avail,icon)
-global.spells[? name] = [name,on_cast,on_channel,on_release,on_step,avail,icon]
+#define add_spell(name,on_cast,on_channel,on_release,on_step,avail,icon,blob)
+global.spells[? name] = [name,on_cast,on_channel,on_release,on_step,avail,icon,blob]
 array_push(global.spellnames,name)
 
 #define draw_hud
@@ -47,10 +49,10 @@ with Player if race = mod_current && player_is_local_nonsync(index){
     var _x = view_xview_nonsync + 20;
     var _y = view_yview_nonsync + 16;
     var width = 86;
-    if curp() > 1 _x -= 19
+    if curp() > 1 _x -= 17
     draw_line_width_color(_x-1,_y+.5,_x+1+width,_y+.5,5,c_black,c_black)
     draw_line_width_color(_x, _y, _x + width, _y, 2, c_dkgray, c_dkgray)
-    draw_line_width_color(_x, _y, _x+(hand.mana/100) * width, _y, 2, global.purblue, merge_color(c_aqua,global.purblue,1-hand.mana/100))
+    draw_line_width_color(_x, _y, _x+(hand.mana/maxmana) * width, _y, 2, global.purblue, merge_color(c_aqua,global.purblue,1-hand.mana/maxmana))
 }
 
 #define race_name
@@ -79,19 +81,19 @@ sprite_index = global.spr_ult[argument0];
 */
 #define race_ultra_name
 switch(argument0){
-	case 1: return "X";
-	case 2: return "D";
+	case 1: return "Epic";
+	case 2: return "Gaming";
 }
 
 #define race_ultra_text
 switch (argument0){
-	case 1: return "haha";
-	case 2: return "yes";
+	case 1: return "Neither of these";
+	case 2: return "do anything yet.";
 }
 
 
 #define race_ttip
-return choose("A NEW WORLD", "COLLECTING @yPICKUPS@d GIVES YOU @(color:${global.purblue})MANA@d", "FASCINATING @wWEAPONRY@d")
+return choose("A NEW WORLD", `COLLECTING @yPICKUPS@s GIVES YOU @(color:${global.purblue})MANA@s`, "FASCINATING @wWEAPONRY@s")
 
 #define create
 	spr_idle = global.gunIdle
@@ -118,17 +120,21 @@ return choose("A NEW WORLD", "COLLECTING @yPICKUPS@d GIVES YOU @(color:${global.
 	    _y = y;
 	
 	hand = {
-	    mana : 100,
+	    mana : maxmana,
 	    gx : _x,
 	    gy : _y,
 	    x : _x,
 	    y : _y,
 	    xoff : 0,
 	    yoff : 0,
+	    dir : 0,
+	    spd : 0,
+	    move: 0,
+	    curve : 0,
 	    spell : "No Spell",
 	    resettime : 0,
 	    index : 0,
-	    col : global.skintone,
+	    col : global.purblue,
 	    animcol : global.skintone,
 	    sprite : sprSnowFlake,
 	    angle : 0,
@@ -136,8 +142,10 @@ return choose("A NEW WORLD", "COLLECTING @yPICKUPS@d GIVES YOU @(color:${global.
 	    cancast : 1
 	}
 
-#define step
+#define instances_in(left,top,right,bottom,obj)
+return instances_matching_gt(instances_matching_lt(instances_matching_gt(instances_matching_lt(obj,"y",bottom),"y",top),"x",right),"x",left)
 
+#define step
 for var i = 0; i< array_length_1d(global.drawers); i++{
     if !instance_exists(global.drawers[i]) 
         with script_bind_draw(nothing,global.depths[i]){
@@ -148,6 +156,19 @@ for var i = 0; i< array_length_1d(global.drawers); i++{
         }
 }
 
+    var size = 10
+    with instances_in(bbox_left-size,bbox_top-size,bbox_right+size,bbox_bottom+size,[HPPickup,AmmoPickup,Rad,BigRad]){
+        mask_index = mskNone
+        if point_distance(x,y,other.x,other.y) <= 10{
+            if instance_is(self,Rad) other.hand.mana+=1
+            else other.hand.mana += 5
+            if instance_is(self,HPPickup) && skill_get(mut_second_stomach) other.hand.mana += 5
+            other.hand.mana += (GameCont.crown = crwn_haste)
+            other.hand.mana = min(other.hand.mana,maxmana)
+            event_perform(ev_collision,Player)
+        }
+    }
+    
 
     var h = hand;
     var click = button_check(index,"spec") * canspec;
@@ -158,16 +179,30 @@ for var i = 0; i< array_length_1d(global.drawers); i++{
         
         h.x += lengthdir_x((dis/4)*current_time_scale,ang)
         h.y += lengthdir_y((dis/4)*current_time_scale,ang)
-        h.angle = point_direction(x,y,h.x,h.y)
-    
-        h.sprite = sprSnowFlake
+        var hright = -sign(h.x-x)
+        h.angle = 90 - 90*hright
+        
+        h.col = global.purblue
     
         h.gx = x + (h.xoff - 10)*right
         h.gy = y + h.yoff - 12
         
         if random(100) < 2*current_time_scale{
-            h.xoff = lengthdir_x(random(10),random(360))
-            h.yoff = lengthdir_y(random(10),random(360))
+            h.dir = random(360)
+            h.move = irandom_range(4,10)
+            h.spd = random(2)
+            h.curve = random_range(-10,10)
+            h.curve += sign(h.curve)*3
+        }
+        if h.move > 0{
+            h.move -= current_time_scale
+            h.xoff += lengthdir_x(h.spd*current_time_scale,h.dir)
+            h.yoff += lengthdir_y(h.spd*current_time_scale,h.dir)
+            h.dir += h.curve * current_time_scale
+            h.curve += sign(h.curve) * current_time_scale
+            if point_distance(h.xoff,h.yoff,0,0) > 10{
+                h.dir -= angle_difference(h.dir,point_direction(h.xoff,h.yoff,0,0))*current_time_scale/3
+            }
         }
         
         h.index = 0
@@ -201,12 +236,14 @@ if sign(hand.y) hand_draw()
 #define hand_draw
 if visible{
     var h = hand;
-    var hright = sign(h.x);
-    d3d_set_fog(1,c_white,1,1)
-    draw_sprite_ext(h.sprite,-1,h.x ,h.y ,1,hright,h.angle,h.col,1)
+    var hright = sign(h.x - x);
+    d3d_set_fog(1,h.col,1,1)
+    draw_sprite_ext(h.sprite,-1,h.x ,h.y ,1,-hright,h.angle,h.col,1)
     d3d_set_fog(1,global.purblue,1,1)
     draw_set_blend_mode(bm_add)
-    draw_sprite_ext(sprGroundFlameBig,-1,h.x,h.y-2,1,1,0,c_white,.5)
+    var gsize = 1/64;
+    var w = sprite_get_width(h.sprite) + 12, l = sprite_get_height(h.sprite) + 16;
+    draw_sprite_ext(sprGhostGuardianIdle,-1,h.x,h.y,w*gsize,l*gsize,0,c_white,.5)
     d3d_set_fog(0,0,0,0)
     draw_set_blend_mode(bm_normal)
 }
@@ -218,19 +255,21 @@ if visible{
 #define spellpicker
 with instances_matching(Player,"race",mod_current){
     var btn = "key4"
+    if hand.spell = "No Spell" btn = "spec"
     var btns = ["key1","key2","key3","key4","horn"]
     for var i = 0; i < array_length(btns); i++{
         if button_pressed(index,btns[i]) || button_check(index,btns[i]) || button_released(index,btns[i]){
-            btn = brns[i]
+            btn = btns[i]
             break
         }
     }
     
-    if hand.spell = "No Spell" btn = "spec"
     if button_pressed(index,btn){
         hand.menulength = .1
     }
     if visible && (button_check(index,btn) || button_released(index,btn)){
+        draw_set_visible_all(0)
+        draw_set_visible(index,1)
         var picks = [];
         for var i = 0; i< array_length_1d(global.spellnames); i++{
             var avail = global.spells[? global.spellnames[i]][5];
@@ -264,6 +303,7 @@ with instances_matching(Player,"race",mod_current){
             
             if pointed && button_released(index,btn){
                 hand.spell = picks[num]
+                hand.sprite = global.spells[? picks[num]][7]
             }
             num++
         }
@@ -271,6 +311,7 @@ with instances_matching(Player,"race",mod_current){
         hand.menulength = min(hand.menulength + hand.menulength * current_time_scale,1)
         draw_set_color(c_white)
     }
+    draw_set_visible_all(1)
 }
 #define instance_random(obj)
 var a = instances_matching(obj,"",null);
@@ -292,9 +333,11 @@ for (var i=0; i<maxp; i++){
 return n
 
 #define merge_cast
-if hand.mana >= 100{
+if hand.mana >= maxmana{
     hand.x = x + 8*right
     hand.y = y + -12
+    hand.mana -= maxmana
+    hand.col = c_white
     hand.resettime = 6
     repeat(12){
             with instance_create(hand.x ,hand.y,FireFly){
@@ -323,14 +366,15 @@ if is_object(wep){
 hand.mana = max(hand.mana - current_time_scale*2,0)
 
 #define cheat2
-hand.mana = min(hand.mana + current_time_scale*2, 100)
+hand.mana = min(hand.mana + current_time_scale*2, maxmana)
 
 #define rapid_channel
-if hand.mana >= current_time_scale{
-    hand.gx = x + lengthdir_x(10,gunangle+45*right)
-    hand.gy = y + lengthdir_y(10,gunangle+45*right) - 7
+if hand.mana >= 1.5*current_time_scale{
+    hand.gx = x + lengthdir_x(15,gunangle+30*right) + hspeed
+    hand.gy = y + lengthdir_y(15,gunangle+30*right) - 5 + vspeed
+    hand.col = c_white
     hand.angle = gunangle
-    hand.mana -= current_time_scale
+    hand.mana -= 1.5*current_time_scale
     if reload >= 0 reload -= (1+skill_get(mut_throne_butt)/2)*current_time_scale
     var _t = weapon_get_type(wep), _c = weapon_get_cost(wep), n = 0, _a = weapon_get_auto(wep) + 1;
     while ammo[_t] >= _c && reload <= 0 && _a && ++n < 100 {
@@ -342,8 +386,9 @@ if hand.mana >= current_time_scale{
                 gravity = 2+random(1)
                 friction = 1
                 motion_set(other.gunangle+random_range(-20,20)+180,random_range(6,16))
-                fadecolor = c_aqua
-                color = c_purple
+                colorset = choose([c_aqua,c_purple],[c_purple,c_white])
+                fadecolor = colorset[0]
+                color = colorset[1]
                 fadespeed = 1/10
                 age = 8 + irandom(4)
             }
@@ -351,6 +396,20 @@ if hand.mana >= current_time_scale{
     }
     specfiring = 0
 }
+
+#define proto_cast
+if hand.mana >= 50{
+    hand.mana -= 50
+    hand.col = c_white
+    var we = wep
+    with instance_create(x,y,ProtoChest){
+        other.wep = wep
+        wep = we
+        event_perform(ev_step,0)
+        instance_destroy()
+    }
+}
+
 
 #define none_channel
 hand.gx = x + lengthdir_x(16,gunangle)
