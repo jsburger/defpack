@@ -74,6 +74,8 @@ if global.menuopen{
     draw_set_font(fntChat)
     draw_set_color(c_white)
     for (var i = 0; i < maxp; i++) if player_is_active(i){
+        draw_set_visible_all(0)
+        draw_set_visible(i,1)
         //menu width, menu height, scroll bar width
         var mw = 80, mh = 100, sw = 10, sh = 20;
         var _x = view_xview[i] - mw - 5 - sw + game_width, _y = view_yview[i] + 20;
@@ -172,5 +174,6 @@ if global.menuopen{
             _y+=2
         }
     }
+    draw_set_visible_all(1)
     draw_set_font(fntM)
 }
