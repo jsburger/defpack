@@ -4,6 +4,9 @@ global.sprBigIron = sprite_add_weapon("sprites/sprBigIron.png", 2, 4);
 #define weapon_name
 return "BIG IRON"
 
+#define weapon_sprt_hud
+return sprShotgun
+
 #define weapon_sprt
 return global.sprBigIron;
 
@@ -105,7 +108,6 @@ do
 	with instances_matching_ne(hitme, "team", team)
 	{
         if distance_to_object(other) <= 4{
-            var _hp = my_health;
             with other{
                 if recycle && irandom(2){
                     recycle--
@@ -113,8 +115,8 @@ do
                     sound_play(sndRecGlandProc)
                     instance_create(x,y,RecycleGland)
                 }
-                projectile_hit_np(other,damage,force,direction)
-                if _hp >= damage*3 || --damage <= 0{
+                projectile_hit_np(other,damage,force,20)
+                if other.my_health >= damage*3 || --damage <= 0{
                     instance_destroy()
                     exit
                 }

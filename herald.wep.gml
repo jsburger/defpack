@@ -198,7 +198,7 @@ with a{
 	on_draw = abris_draw
 	index = creator.index
 	phase = 0
-	phasespeed = 2
+	phasespeed = 2.5
 	//accuarcy things
 	accbase = startsize
 	acc = accbase

@@ -1,3 +1,7 @@
+#define init
+    global.bonusparticles = 0
+    mod_script_call("mod","defpermissions","permission_register","mod",mod_current,"bonusparticles","Extra Particles")
+
 #define create_spark(_x,_y)
 with instance_create(_x,_y,CustomObject){
     gravity = .25
@@ -16,11 +20,6 @@ with instance_create(_x,_y,CustomObject){
     return id
 }
 
-#define init
-global.bonusparticles = 0
-mod_script_call("mod","defpermissions","permission_register","mod",mod_current,"bonusparticles","Extra Particles")
-
-
 #define sparkstep
     color = merge_color(color,fadecolor,fadespeed*current_time_scale)
     age -= current_time_scale
@@ -29,19 +28,59 @@ mod_script_call("mod","defpermissions","permission_register","mod",mod_current,"
 #define sparkdraw
     draw_line_width_color(x,y,xprevious,yprevious,1,color,color)
     
+//thanks gunlocker, heheheh
+#define create_waver(_x,_y)
+with instance_create(_x,_y,PlasmaTrail){
+    name = "waver"
+    friction = -.1
+	image_speed /= 1 + random(3);
+    direction = random(360)
+    image_angle = random(360)
+    turn = random_range(-50,50)
+    
+    if(fork()){
+    	wait 0;
+    	if(instance_exists(self)){
+    		var _wave = random(360);
+    		var _odir = direction;
+    		var _oang = image_angle;
+    	
+    		while(instance_exists(self)){
+    			_wave += 0.25*current_time_scale;
+    			turn += random_range(-1,1)*current_time_scale
+    			direction = _odir + sin(_wave) * turn;
+    			image_angle = _oang + sin(_wave) * turn;
+    			wait 0;
+    		}
+    	}
+    	exit;
+    }
+    
+    return id
+}
+
+
 
 #define step
     if global.bonusparticles{
+        /*with PlasmaBall{
+            if !irandom(3) with create_waver(x,y){
+                speed = random(1)
+                direction = other.direction + random_range(-90,90)
+            }
+        }*/
         with instances_matching(instances_matching(CustomProjectile,"name","Psy Bullet"),"sparked",null){
             sparked = 1
-            repeat(random(6)) with create_spark(x,y){
-                direction = other.direction + random_range(-40,40)
-                speed = random(10)
-                gravity = 0
-                age = max(2*speed,5)
-                color = c_purple
-                fadecolor = c_fuchsia
-                friction = 1
+            var colors = [c_red,c_yellow]
+            if instance_is(self,GreenExplosion) colors = [c_green,c_yellow]
+            if instance_is(self,PopoExplosion) colors = [c_blue,c_aqua]
+            repeat(random(2*damage)) with create_spark(x+random_range(-5,5),y+random_range(-5,5)){
+                vspeed -= 5
+                gravity = .4
+                color = colors[0]
+                fadecolor = colors[1]
+                age = 20
+                depth = other.depth+1
             }
         }
         with instances_matching(Explosion,"sparked",null){

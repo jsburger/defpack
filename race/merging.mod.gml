@@ -137,7 +137,7 @@ with(ThrownWep)
 }
 
 #define draw_player_wep
-with(Player) if back
+with(Player) if !back
 {
 	if(is_object(wep)
 	&& wep.wep == "merged weapon")
@@ -147,10 +147,8 @@ with(Player) if back
 }
 
 #define draw_player_bwep
-with(Player) if !back
+with(Player) if back || race = "steroids"
 {
-	
-	
 
 	if(is_object(bwep)
 	&& bwep.wep == "merged weapon")
