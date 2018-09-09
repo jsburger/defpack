@@ -20,7 +20,7 @@ return false;
 return 50;
 
 #define weapon_cost
-return 8;
+return 6;
 
 #define weapon_swap
 return sndSwapExplosive;
@@ -135,17 +135,18 @@ for var i = 0; i< 3; i++
 }
 
 #define play_sound_lightning()
-sound_play_pitch(sndExplosion,2)
-sound_play_pitch(sndExplosionS,.7)
-sound_play_pitchvol(sndExplosionL,.5,.6)
-sound_set_track_position(sndExplosionL,.3)
-sound_play_pitch(sndSuperBazooka,.5)
+var _pitch = random_range(.8,1.2)
+sound_play_pitch(sndExplosion,2*_pitch)
+sound_play_pitch(sndExplosionS,.7*_pitch)
+sound_play_pitchvol(sndExplosionL,.5*_pitch,.6)
+sound_set_track_position(sndExplosionL,.3*_pitch)
+sound_play_pitch(sndSuperBazooka,.5*_pitch)
 if skill_get(17){
-	sound_play_pitchvol(sndLightningCannonEnd,.8,.7)
-	sound_play_pitchvol(sndLightningRifleUpg,.7,.6)
+	sound_play_pitchvol(sndLightningCannonEnd,.8*_pitch,.7)
+	sound_play_pitchvol(sndLightningRifleUpg,.7*_pitch,.6)
 }
 else{
-	sound_play_pitchvol(sndLightningRifle,.7,.6)
+	sound_play_pitchvol(sndLightningRifle,.7*_pitch,.6)
 }
 
 

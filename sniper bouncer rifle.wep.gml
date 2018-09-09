@@ -48,7 +48,8 @@ with instance_create(x,y,CustomObject)
 	charged = 1
 	holdtime = 5 * 30
 	depth = TopCont.depth
-	undef = view_pan_factor[creator.index]
+	index = creator.index
+	undef = view_pan_factor[index]
 	on_step 	 = snipercharge_step
 	on_destroy = snipercharge_destroy
 	btn = other.specfiring ? "spec" : "fire"
@@ -56,7 +57,7 @@ with instance_create(x,y,CustomObject)
 
 #define snipercharge_step
 if !instance_exists(creator){instance_destroy();exit}
-if button_check(creator.index,"swap"){creator.ammo[1] = min(creator.ammo[1] + weapon_cost(), creator.typ_amax[1]);instance_destroy();exit}
+if button_check(index,"swap"){creator.ammo[1] = min(creator.ammo[1] + weapon_cost(), creator.typ_amax[1]);instance_destroy();exit}
 if btn = "fire" creator.reload = weapon_get_load(creator.wep)
 if btn = "spec" creator.breload = weapon_get_load(creator.bwep) * array_length_1d(instances_matching(instances_matching(CustomObject, "name", "sniper bouncer charge"),"creator",creator))
 charge += current_time_scale * 1.6 / acc
@@ -77,13 +78,13 @@ if charged = 0
 	}
 	holdtime -= current_time_scale
 }
-view_pan_factor[creator.index] = 2.1+charged/10
+view_pan_factor[index] = 2.1+charged/10
 sound_play_pitchvol(sndFlameCannonLoop,10-charge/10,1)
 sound_play_gun(sndFootOrgSand4,999999999999999999999999999999999999999999999999,.00001)
-x = mouse_x[creator.index]
-y = mouse_y[creator.index]
-for (var i=0; i<maxp; i++){player_set_show_cursor(creator.index,i,0)}
-if button_check(creator.index, btn) = false || holdtime <= 0
+x = mouse_x[index]
+y = mouse_y[index]
+for (var i=0; i<maxp; i++){player_set_show_cursor(index,i,0)}
+if button_check(index, btn) = false || holdtime <= 0
 {
     sound_stop(sndFlameCannonLoop)
 	sound_play_gun(sndFootOrgSand4,999999999999999999999999999999999999999999999999,1)
@@ -140,9 +141,9 @@ if button_check(creator.index, btn) = false || holdtime <= 0
 }
 
 #define snipercharge_destroy
-view_pan_factor[creator.index] = undefined
+view_pan_factor[index] = undefined
 //stealing from burg like a cool kid B)
-for (var i=0; i<maxp; i++){player_set_show_cursor(creator.index,i,1)}
+for (var i=0; i<maxp; i++){player_set_show_cursor(index,i,1)}
 
 /*
 with instance_create(x+lengthdir_x(10,gunangle),y+lengthdir_y(10,gunangle),CustomProjectile)

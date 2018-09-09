@@ -2128,15 +2128,21 @@ sound_play_pitch(sndCoopUltraA,random_range(3.8,4.05))
 sound_play_pitch(sndBasicUltra,random_range(.6,.8))
 with instance_create(x+lengthdir_x(sprite_get_width(sprite_index),image_angle),y+lengthdir_y(sprite_get_width(sprite_index),image_angle),CustomObject)
 {
-  with create_sonic_explosion(x,y)
+  with instance_create(x,y,CustomSlash)
   {
+    lifetime = 3
     team = _t
-    image_xscale = 5
-    image_yscale = 5
+    image_xscale = 2.5
+    image_yscale = 2.5
+    mask_index  = sprPortalShock
     image_blend = c_black
-    image_speed = .5
-    damage = 0
+    image_speed = 0
     image_alpha = 0
+    damage = 0
+    on_projectile = crit_proj
+    on_step       = crit_step
+    on_wall       = nothing
+    on_hit        = nothing
   }
   image_angle = random(359)
   depth = other.depth -1
@@ -2161,3 +2167,15 @@ with instance_create(x+lengthdir_x(sprite_get_width(sprite_index),image_angle),y
 #define Killslash_step
 if image_index = 1.2 sleep(200)
 if image_index >= 7 instance_destroy();
+
+#define crit_proj
+if other.team != team
+{
+  with other
+  {
+    instance_destroy()
+  }
+}
+
+#define crit_step
+if lifetime > 0{lifetime -= current_time_scale}else{instance_destroy()}
