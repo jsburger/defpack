@@ -30,7 +30,8 @@
 //OTHER SHELL
 
 /loadwep popper
-/loadwep super heavy slugger
+/loadwep big shotgun
+///loadwep super heavy slugger
 /loadwep apergig tanat
 /loadwep tsunami
 /loadwep flechette shotgun
