@@ -14,14 +14,11 @@
 
 ///POPO///
 
-/loadmod idpd weapon chest/idpd weapon chest
 /loadwep idpd bazooka
 /loadwep idpd energy sword
 /loadwep idpd grenade launcher
 /loadwep idpd minigun
 /loadwep idpd plasma minigun
-/loadwep idpd shotgun
-/loadwep idpd slugger
 
 ///GOLD///
 
@@ -67,11 +64,7 @@
 /loadwep ultra claymore
 /loadwep heavy claymore
 /loadwep screecher
-/loadwep pulser
-/loadwep marker
-/loadwep idpd shotgun
 /loadwep inquisitor
-/loadwep steel diver
 /loadwep antiprism
 /loadwep sak
 /loadwep polygun

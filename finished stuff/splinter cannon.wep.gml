@@ -42,13 +42,13 @@ with instance_create(x,y,HeavyBolt)
   image_angle = direction
   do
   {
-    with instance_create(x,y,BoltTrail){
+    /*with instance_create(x,y,BoltTrail){
       y += other.vspeed
       x += other.hspeed
       image_angle = point_direction(xprevious,yprevious,x,y)
       image_xscale = point_distance(xprevious,yprevious,x,y)
       image_yscale = 2
-    }
+    }*/
     if (place_meeting(x+lengthdir_x(1+speed,direction),y+lengthdir_y(1+speed,direction),enemy) || place_meeting(x+lengthdir_x(1+speed,direction),y+lengthdir_y(1+speed,direction),prop)) && !instance_exists(p){p = instance_nearest(x+lengthdir_x(1+speed,direction),y+lengthdir_y(1+speed,direction),hitme).id}
     if p > -4
     {

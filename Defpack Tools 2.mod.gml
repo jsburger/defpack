@@ -27,8 +27,8 @@ with(a){
 	typ = 1
 	force = 10
 	damage = 8
+	friction = 1.5
 	mask_index = mskFlakBullet
-	friction = 0 //yeah frick you
 	on_draw = flak_draw
 	on_destroy = split_pop
 	on_hit = split_hit
@@ -47,7 +47,7 @@ if other.sprite_index != other.spr_hurt
 	if ammo >= 0
 	{
 		if skill_get(19) = false{
-			repeat((4-ammo)*4){
+			repeat(4){
 					with mod_script_call("mod","defpack tools","create_split_shell",x,y){
 						creator = other.creator
 						team = other.team
@@ -60,7 +60,7 @@ if other.sprite_index != other.spr_hurt
 		else
 		{
 			var offset = random(359);
-			repeat((4-ammo)*4){
+			repeat(4){
 					with mod_script_call("mod","defpack tools","create_split_shell",x,y){
 						creator = other.creator
 						team = other.team
@@ -82,12 +82,12 @@ view_shake_at(x,y,8)
 if ammo >= 0
 {
 	if skill_get(19) = false{
-		repeat((4-ammo)*4){
+		repeat(4){
 				with mod_script_call("mod","defpack tools","create_split_shell",x,y){
 					creator = other.creator
 					team = other.team
 					ammo = other.ammo
-					motion_add(random(359),10)
+					motion_add(other.direction+random_range(-20,20),random_range(16,20))
 					image_angle = direction
 				}
 		}
@@ -95,12 +95,12 @@ if ammo >= 0
 	else
 	{
 		var offset = random(359);
-		repeat((4-ammo)*4){
+		repeat(4){
 				with mod_script_call("mod","defpack tools","create_split_shell",x,y){
 					creator = other.creator
 					team = other.team
 					ammo = other.ammo
-					motion_add(random(359),10)
+					motion_add(other.direction+random_range(-7,7),random_range(16,20))
 					image_angle = direction
 				}
 		offset += 360/ammo
@@ -181,7 +181,7 @@ if place_meeting(x,y+vspeed,Wall)
 			}
 		}
 	}
-	else{instance_destroy()}
+	else{instance_destroy();exit}
 	ammo--;
 }
 if speed <= .5
@@ -220,7 +220,7 @@ if speed <= .5
 	else{instance_destroy()}
 	ammo--;
 }
-if ammo <=0  instance_destroy()
+if ammo <=0  || speed <= friction instance_destroy()
 
 #define create_psy_flak(_x,_y)
 var a = instance_create(_x,_y,CustomProjectile);
@@ -936,7 +936,7 @@ with(a){
 	typ = 1
 	damage = 32
 	mask_index = mskFlakBullet
-	friction = 0.6
+	friction = 0
 	on_draw = flak_draw
 	on_destroy = loop_pop
 	on_step = loop_step

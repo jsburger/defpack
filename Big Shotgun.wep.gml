@@ -1,6 +1,6 @@
 #define init
 global.sprite = sprite_add_weapon("sprites/sprBigShotgun.png",4,1)
-global.sprMegaFlash = sprite_add("sprites/projectiles/sprMegaFlashShort.png",4,16,24)
+global.sprMegaFlash = sprHeavySlugHit//sprite_add("sprites/projectiles/sprMegaFlashShort.png",4,16,24)
 global.mskMegaFlash = sprite_add("sprites/projectiles/mskMegaFlashShort.png",4,16,24)
 if(fork()){
     wait 20;
@@ -60,7 +60,7 @@ repeat(interfacepop){
                       instance_create(x,y,Dust)
                       sound_play_pitchvol(sndWallBreak,20,.35)
                       if --bounces = 0 instance_destroy()
-                   } 
+                   }
                    wait(0)
                }
                exit

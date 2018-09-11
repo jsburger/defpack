@@ -52,15 +52,18 @@ with instance_create(x,y,CustomProjectile)
   creator = other
   move_contact_solid(other.gunangle,12)
   motion_add(other.gunangle+random_range(-3,3)*other.accuracy,20)
-  instance_create(x+random_range(-8,8),y+random_range(-8,8),Smoke)
   image_angle = direction
   on_destroy = mega_destroy
   on_wall    = mega_wall
   on_step    = mega_step
   on_draw    = mega_draw
   on_hit     = mega_hit
+  repeat(4)with instance_create(x+lengthdir_x(5,direction),y+lengthdir_y(5,direction),Smoke){
+  gravity = -.1
+  image_xscale /=2
+  image_yscale/=2
+  }
 }
-
 #define mega_hit
 frames--
 repeat(3) instance_create(x+random_range(-8,8),y+random_range(-8,8),Smoke)
@@ -75,7 +78,7 @@ instance_destroy()
 
 #define mega_destroy
 repeat(3) instance_create(x+random_range(-8,8),y+random_range(-8,8),Smoke)
-with instance_create(x,y,BulletHit){sprite_index = sprHeavyBulletHit}
+with instance_create(x,y,BulletHit){sprite_index = sprSlugHit;image_index = 1}
 #define mega_step
 if image_index = 1 image_speed = 0
 
