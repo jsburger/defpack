@@ -5,6 +5,7 @@ global.tank = sprite_add("tank.png",11,16,8)
 var tank = instance_create(_x,_y,CustomHitme);
 with tank{
 	sprite_index = global.tank
+	mask_index = mskNone
 	on_step = tankstep
 	on_draw = tankdraw
 	on_hurt = tankhit
@@ -15,15 +16,18 @@ with tank{
 	image_speed = 0
 	doortime = 0
 	maxspeed = 5
-	maxhealth = 1000
+	maxhealth = 200
 	my_health = maxhealth
-	spr_shadow = shd32
 	reload = 0
 	breload = 0
 	gunangle = direction
 	team = -1
 	size = 2
 	friction = .2
+	depth = -8
+	z = 800
+	zspeed = 0
+	zstart = z
 	portalmode = 0
 	hurt = 0
 	length = 10
@@ -77,18 +81,33 @@ with Player if "tankthings" in self && driving{
         }
 }
 
-if button_pressed(0,"horn") tank_create(mouse_x,mouse_y)
+//if button_pressed(0,"horn") tank_create(mouse_x,mouse_y)
+
+with instances_matching(WepPickup,"roll",1) if "tankcheck" not in self && !instance_exists(Portal){
+    tankcheck = 1
+    if !irandom(200){
+        tank_create(x,y)
+        instance_destroy()
+    }
+}
+
+
+#define draw_mount(_x,_y)
+draw_tooltip(_x,_y,"DRIVE#E")
+instance_destroy()
 
 #define tankbeginstep
 if doortime > 0 {doortime -=1}
-with Player if distance_to_object(other) < 15{
-    if "driving" not in self driving = 0
-	//ENTERING tank AND SETTING STATS(i optimized this by just making it a function)
-	if button_pressed(index,"pick") && other.doortime = 0 && other.driver = noone && !driving{
-		mount()
-	}
+if z = 0 && !instance_exists(driver){
+    with Player if distance_to_object(other) < 15{
+        script_bind_draw(draw_mount,-10,other.x,other.y-10)
+        if "driving" not in self driving = 0
+    	//ENTERING tank AND SETTING STATS(i optimized this by just making it a function)
+    	if button_pressed(index,"pick") && other.doortime = 0 && other.driver = noone && !driving{
+    		mount()
+    	}
+    }
 }
-
 
 #define tankstep
 //PREVENTING GHOSTS FROM STEALING tankS
@@ -97,6 +116,20 @@ if !instance_exists(driver) driver = noone
 //PREVENTING PEOPLE FROM DRIVING MULTIPLE tankS
 if driver != noone with instances_matching(CustomHitme,"driver",driver){
 	if id != other {driver = noone}
+}
+
+if z > 1{
+    zspeed += current_time_scale
+    z = max(z - zspeed*current_time_scale, 1)
+}
+else{
+    if z = 1{
+        mask_index = global.tank
+        depth = -2
+        z = 0
+        repeat(36)with instance_create(x,y,Dust) motion_set(random(360),random(1)+5)
+        sound_play(sndHyperSlugger)
+    }
 }
 
 //BEING DRIVEN
@@ -233,6 +266,15 @@ sound_play(sndExplosionCar)
 surface_destroy(sf)
 
 #define tankdraw
+var col = c_black
+var alpha = .4
+with BackCont{
+    col = shadcol
+    alpha = shadalpha
+}
+draw_set_alpha(alpha)
+draw_circle_color(x-1,y+4,12*(1-(z/zstart)),col,col,0)
+draw_set_alpha(1)
 var i;
 var yoff = random_range(-.5,.5) + 5;
 if driver = noone{yoff = 5}
@@ -250,10 +292,10 @@ for (i = i; i<11; i++){
 surface_reset_target()
 d3d_set_fog(1,0,0,0)
 for (var o = 0; o <360; o+=90){
-    draw_surface(sf,x-50+lengthdir_x(1,o),y-50+lengthdir_y(1,o))
+    draw_surface(sf,x-50+lengthdir_x(1,o),y-50+lengthdir_y(1,o)-z)
 }
 d3d_set_fog(0,0,0,0)
-draw_surface(sf,x-50,y-50)
+draw_surface(sf,x-50,y-50-z)
 hurt = max(hurt-current_time_scale,0)
 
 
@@ -308,7 +350,7 @@ line()
 #define sniper_step
 if !effected with instance_create(x,y,CustomObject)
 {
-	depth = -1
+	depth = -3
 	sprite_index = sprBullet1
 	image_speed = .9
 	on_step = muzzle_step

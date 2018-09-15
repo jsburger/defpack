@@ -34,14 +34,14 @@ weapon_post(7,43,0)
 sound_play_pitch(sndFlakCannon,1.2)
 sound_play_pitchvol(sndFlakExplode,random_range(.4,.7),.8)
 sound_play_pitch(sndDoubleShotgun,1.2)
-with instance_create(x-lengthdir_x(12,gunangle),y-lengthdir_y(12,gunangle),CustomProjectile) {
-	move_contact_solid(other.gunangle,18)
+with instance_create(x+lengthdir_x(12,gunangle),y+lengthdir_y(12,gunangle),CustomProjectile) {
+	move_contact_solid(other.gunangle,6)
 	motion_set(other.gunangle, 15 + random(2))
     projectile_init(other.team,other)
 	sprite_index = global.sprShotBullet
 	mask_index = mskFlakBullet
-	damage = 6
-	force = 6
+	damage = 2
+	force = 2
 	image_speed = .4
 	timer = 16
 	ftimer = 1.5
@@ -69,25 +69,26 @@ speed *= .8
 }
 
 #define cannon_hit
-if projectile_canhit_melee(other){
-    projectile_hit_push(other,damage,force)
-    dirfac += 12
-	var ang = dirfac;
-	sound_play_hit(sndShotgun,.4)
-	view_shake_at(x,y,5)
-	repeat (5){
-		with instance_create(x, y, Bullet2){
-			motion_set(ang, 11)
-			projectile_init(other.team,other.creator)
-			ang += 72
-			image_angle = direction
-		}
+x = xprevious
+y = yprevious
+projectile_hit_push(other,damage,force)
+dirfac += 12
+var ang = dirfac;
+sound_play_hit(sndShotgun,.4)
+view_shake_at(x,y,5)
+repeat (5){
+	with instance_create(x, y, Bullet2){
+		motion_set(ang, 11)
+		team = other.team
+		creator = other.creator
+		ang += 72
+		image_angle = direction
 	}
-	timer -= 1;
-	if timer <= 0
-	{
-		instance_destroy()
-	}
+}
+timer -= 1;
+if timer <= 0
+{
+	instance_destroy()
 }
 
 
@@ -113,7 +114,8 @@ while time <= 0{
 		repeat (5){
 			with instance_create(x, y, Bullet2){
 				motion_set(ang, 11)
-				projectile_init(other.team,other.creator)
+				team = other.team
+				creator = other.creator
 				ang += 72
 				image_angle = direction
 			}

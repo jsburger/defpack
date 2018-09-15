@@ -69,7 +69,9 @@ with instance_create(x,y,CustomObject){
     team = other.team
     creator = other.creator
     on_step = spacestep
+    on_destroy = spacedestroy
     alarm0 = 30
+    wantobject = -1
 }
 instance_destroy()
 
@@ -88,16 +90,26 @@ with instances_in(x-succ,y-succ/2,x+succ,y+succ/2,Wall){
     }
 }
 
+
+with instances_in(x-succ,y-succ/2,x+succ,y+succ/2,[Debris,ScorchTop,Scorch]){
+    if (sqr(x - other.x))/sqr(other.succ) + (sqr(y-other.y))/sqr(other.succ/2) <= 1{
+        instance_destroy()
+    }
+}
+
+
+var me = id;
 with instances_in(x-succ,y-succ/2,x+succ,y+succ/2,instances_matching_ne([hitme,Corpse],"team",team)){
     //thank you stackexchange for teaching me ellipse math
     if (sqr(x - other.x))/sqr(other.succ) + (sqr(y-other.y))/sqr(other.succ/2) <= 1{
         with instance_create(x,y,CustomObject){
             sprite = other.sprite_index
+            creator = me
             if "spr_hurt" in other sprite = other.spr_hurt
             frames = sprite_get_number(sprite)
             if "snd_hurt" in other sound_play(other.snd_hurt)
-            fallspeed = sqr(other.size)
-            depth = other.depth
+            fallspeed = other.size*3
+            depth = -8
             on_draw = victimdraw
             on_step = victimstep
             height = sprite_get_yoffset(sprite)
@@ -107,36 +119,20 @@ with instances_in(x-succ,y-succ/2,x+succ,y+succ/2,instances_matching_ne([hitme,C
             drawsize = max(other.sprite_width,other.sprite_height)
             var n = drawsize + fall
         }
-        other.alarm0 = max(other.alarm0,sqrt(n))
-        var _x = x, _y = y
         if !instance_is(self,Corpse){
             if instance_is(self,Nothing) || instance_is(self,NothingInactive){
-                if fork(){
-                    wait(80)
-                    if !(instance_exists(Generator) || instance_exists(GeneratorInactive)){
-                        instance_create(_x,_y,BigPortal)
-                    }
-                    else{
-                        instance_create(_x,_y,SitDown)
-                    }
-                    exit
+                if instance_exists(Generator) || instance_exists(GeneratorInactive){
+                    other.wantobject = SitDown
                 }
+                else other.wantobject = BigPortal
             }
             else {
                 if instance_is(self,Nothing2){
-                    if fork(){
-                        wait(80)
-                        instance_create(_x,_y,BigPortal)
-                        exit
-                    }
+                    other.wantobject = BigPortal
                 }
                 else if instance_is(self,enemy){
-                    if instance_number(enemy) = 1{
-                        if fork(){
-                            wait(30)
-                            instance_create(_x,_y,Portal)
-                            exit
-                        }
+                    if instance_number(enemy) = 1 && instance_number(becomenemy) = 0{
+                        other.wantobject = Portal
                     }
                 }
             }
@@ -147,10 +143,15 @@ with instances_in(x-succ,y-succ/2,x+succ,y+succ/2,instances_matching_ne([hitme,C
 
 if succ < .5  && wantsucc = 0 instance_destroy()
 
+#define spacedestroy
+if wantobject = SitDown with instance_create(x,y,wantobject){with instance_create(x,y,CustomObject){sprite_index = sprChair;image_speed = 0}}
+else if wantobject > 0 instance_create(x,y,wantobject)
+
 #define victimdraw
 draw_sprite_part(sprite,current_frame *.4 mod frames,0,0,drawsize,clamp(drawsize+fall-height,0,drawsize),x-xoff,y-fall-height)
 
 #define victimstep
+with creator alarm0 = max(creator.alarm0,10)
 fall += fallspeed
 fallspeed -= current_time_scale
 if fall < -height instance_destroy()

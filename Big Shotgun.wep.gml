@@ -1,5 +1,5 @@
 #define init
-global.sprite = sprite_add_weapon("sprites/sprBigShotgun.png",4,1)
+global.sprite = sprite_add_weapon("sprites/sprBigShotgun.png",4,2)
 global.sprMegaFlash = sprHeavySlugHit//sprite_add("sprites/projectiles/sprMegaFlashShort.png",4,16,24)
 global.mskMegaFlash = sprite_add("sprites/projectiles/mskMegaFlashShort.png",4,16,24)
 if(fork()){
@@ -31,12 +31,6 @@ return 0
 #define weapon_reloaded
 wkick = -2
 sound_play_pitch(sndShotReload,.76)
-if fork(){
-    repeat(12) wait(0)
-    if instance_exists(self) wkick = 2
-    sound_play_pitch(sndShotReload,.82)
-    exit
-}
 repeat(interfacepop){
     with instance_create(x,y,Shell){
         sprite_index = global.shells[skill_get(mut_shotgun_shoulders)]
@@ -48,18 +42,22 @@ repeat(interfacepop){
         }
         if vspeed < -1{
             gravity = .5
+            depth = -2
             friction = .1
             image_angle = direction -90
             bounces = 2 + irandom(2)
             if fork(){
-                while instance_exists(self){
+                while instance_exists(self) && bounces > 0{
                     image_angle += 10*current_time_scale*-(hspeed)
                     if y > ystart{
-                      vspeed*= -1
-                      hspeed*= random_range(.25,1.5) * choose(-1,1)
-                      instance_create(x,y,Dust)
-                      sound_play_pitchvol(sndWallBreak,20,.35)
-                      if --bounces = 0 instance_destroy()
+                        vspeed*= -1
+                        hspeed*= random_range(.25,1.5) * choose(-1,1)
+                        instance_create(x,y,Dust)
+                        sound_play_pitchvol(sndWallBreak,20,.35)
+                        if --bounces = 0{
+                          gravity = 0
+                          speed = 0
+                        }
                    }
                    wait(0)
                }
@@ -75,32 +73,49 @@ sound_play(sndSuperSlugger)
 sound_play_pitch(sndExplosionL,1.3)
 weapon_post(15,-120,60)
 var AP = 0
-with instance_create(x+lengthdir_x(30,gunangle),y+lengthdir_y(30,gunangle),SmallExplosion){
+with instance_create(x+lengthdir_x(20,gunangle),y+lengthdir_y(20,gunangle),SmallExplosion){
     sprite_index = global.sprMegaFlash
     mask_index = global.mskMegaFlash
     team = other.team
-    damage = 15
+    sparked = 1
+    damage = 10
+    image_xscale = .75
+    image_yscale = image_xscale
     depth = -2
     image_angle = other.gunangle
     if place_meeting(x,y,PopoShield) || place_meeting(x,y,CrystalShield){
         AP = 1
         sound_play_gun(sndHammerHeadEnd,.2,.2)
+        if fork(){
+            var ts = current_time_scale
+            current_time_scale /= 10
+            wait(1)
+            current_time_scale = ts
+            exit
+        }
     }
-    hitid = [sprite_index,"MUZZLE FLARE"]
+    hitid = [sprite_index,"MUZZLE BLAST"]
 }
 sleep(100)
 repeat(45){
     with instance_create(x,y,Bullet2){
-        motion_set(other.gunangle+random_range(-20,20)*other.accuracy,random_range(8,16)*2)
+        motion_set(other.gunangle+random_range(-25,25)*other.accuracy,random_range(8,14)*2)
         friction += speed/50
         projectile_init(other.team,other)
         image_angle = direction
         if AP = 1 typ = 0
     }
 }
-
-roll = 1
-direction = gunangle+180
+if fork(){
+    var ang = gunangle + 180;
+    repeat(4){
+        if instance_exists(self){
+            motion_set(ang,4)
+        }
+        wait(1)
+    }
+    exit
+}
 
 if fork(){
     repeat(20+random(10)){

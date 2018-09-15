@@ -14,7 +14,7 @@ while 1 {
 		    current_time_scale = t
 		    event_perform(ev_step,ev_step_begin)
 		    event_perform(ev_step,ev_step_normal)
-		    if button_pressed(index,"swap") scrSwap()
+		    if button_pressed(index,"swap") && canswap scrSwap()
 		    clicked = 0
 		    speed -= min(friction * t, speed);
 		    x += hspeed * t;
