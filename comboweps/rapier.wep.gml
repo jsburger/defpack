@@ -2,6 +2,8 @@
 global.sword = sprite_add_weapon("rapier.png",0,4)
 global.slash = sprite_add("rapierslash.png",3,3,28)
 global.mask = sprite_add("rapiermask.png",3,3,28)
+#macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)
+
 #define weapon_name
 return "RAPIER"
 #define weapon_type
@@ -20,6 +22,10 @@ return 1
 return 1
 #define weapon_laser_sight
 return 0
+#define weapon_reloaded
+if wep = mod_current wepangle = 120 * sign(wepangle)
+if bwep = mod_current bwepangle = 120 * sign(bwepangle)
+sound_play(sndMeleeFlip)
 #define weapon_fire
 if "rapiers" not in self {rapiers = 1}
 rapiers = ++rapiers mod 3
@@ -46,8 +52,8 @@ if rapiers != 1
 else
 {
 	sound_play_pitch(sndBlackSwordMega,random_range(1.4,1.7))
-	if "extraspeed" not in self{extraspeed = 11+gunangle/10000}else{extraspeed += 11+gunangle/10000}
-	wepangle = .1
+	extraspeed = 11
+	wepangle = .1*wepflip
 	weapon_post(-10 - 20*skill_get(13),15,2)
 	move_contact_solid(gunangle,6)
 	with instance_create(x+lengthdir_x(extraspeed+20*skill_get(13),gunangle),y+lengthdir_y(extraspeed+20*skill_get(13),gunangle),Shank)
@@ -71,13 +77,13 @@ return global.sword
 return choose("@bhon @whon @rhon","make some new friends")
 
 #define step
-if "extraspeed" in self
+if "extraspeed" in self && current_frame_active
 {
 	if extraspeed > 0
 	{
 		if irandom(2) != 0{instance_create(x,y,Dust)}
 		canaim = false
-		with instance_create(x+lengthdir_x(extraspeed+20*skill_get(13),frac(extraspeed)*10000),y+lengthdir_y(extraspeed+20*skill_get(13),frac(extraspeed)*10000),Shank){
+		with instance_create(x+lengthdir_x(extraspeed+20*skill_get(13),gunangle),y+lengthdir_y(extraspeed+20*skill_get(13),gunangle),Shank){
 			canfix = false
 			sprite_index = mskNone
 			damage = 25
@@ -88,9 +94,9 @@ if "extraspeed" in self
 			team = other.team
 			image_angle = other.gunangle
 		}
-		motion_add(frac(extraspeed)*10000,extraspeed-frac(extraspeed))
+		motion_add(gunangle,extraspeed)
 		extraspeed--
 	}
 	else{extraspeed = 0;canaim = true}
 }
-if "rapiers" in self{if button_pressed(index,"swap"){rapiers = 1}}
+if "rapiers" in self{if button_pressed(index,"swap") && canswap{rapiers = 1}}

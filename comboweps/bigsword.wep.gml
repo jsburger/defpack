@@ -32,7 +32,7 @@ if "bigsword" not in self{
 	bigsword = 1
 	bigcooldown = 0
 }
-bigsword = ++bigsword mod (30 *(1+(skill_get(mut_long_arms)*1))) * current_time_scale
+bigsword = ++bigsword mod (30 *(1+(skill_get(mut_long_arms)*1)))
 bigcooldown = 35
 nexthurt = current_frame + 2
 sound_play_pitch(sndHammer,1 + bigsword*.008)
@@ -77,24 +77,29 @@ if projectile_canhit_melee(other){
 	projectile_hit(other,damage,force,direction)
 }
 #define cooldie
-with creator sprite_angle = 0
+with creator{
+    sprite_angle = 0
+}
 #define coolstep
-image_angle -= rotspeed
+image_angle -= rotspeed*current_time_scale
 with creator{
 	wepangle = other.image_angle - 60 - other.direction - 2*other.rotspeed
 	sprite_angle = wepangle + 180
-	motion_set(other.direction,other.speed)
+	motion_set(other.direction,other.speed_raw)
 }
 #define step
 if "bigcooldown" in self{
     bigcooldown -= current_time_scale
     if bigcooldown <= 0 && bigsword > 0{
-        bigsword-= current_time_scale
+        bigsword = max(bigsword - current_time_scale, 0)
         if random(100) < 100*current_time_scale{
-            with instance_create(x,y,Sweat){
-                
-            }
+            instance_create(x,y,Sweat)
         }
+    }
+    if bigcooldown < current_time_scale && bigcooldown >= 0{
+        if wep = mod_current wepangle = 120 * sign(wepangle)
+        if bwep = mod_current bwepangle = 120 * sign(bwepangle)
+        sound_play(sndMeleeFlip)
     }
 }
 

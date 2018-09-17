@@ -57,6 +57,7 @@ speed = 0
 #define bone_destroy
 if !hit with creator if instance_is(self,hitme){
     projectile_hit(self,1)
+    lasthit = [global.sprBone,"BONE"]
 }
 
 #define bone_projectile

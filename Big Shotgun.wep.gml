@@ -108,9 +108,9 @@ repeat(45){
 }
 if fork(){
     var ang = gunangle + 180;
-    repeat(4){
+    repeat(8){
         if instance_exists(self){
-            motion_set(ang,4)
+            motion_set(ang,5)
         }
         wait(1)
     }

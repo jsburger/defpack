@@ -22,6 +22,8 @@ global.depths = [-14, -20]
 
 with Player if race = mod_current create()
 
+global.protowep = wep_rusty_revolver
+
 global.spells = ds_map_create()
 global.spellnames = []
 
@@ -29,8 +31,8 @@ global.spellnames = []
 add_spell("Merge", scr(merge_cast),NA,NA,NA,1,sprite_add("sprMerge.png",2,8,7),sprite_add("MergeBlob.png",1,4,4))
 add_spell("Drain Mana",NA,scr(cheat1),NA,NA,1,sprite_add("sprShield.png",2,8,7),sprite_add("ShieldBlob.png",1,3,3))
 add_spell("Gimme Mana",NA,scr(cheat2),NA,NA,1,sprite_add("sprShield.png",2,8,7),sprite_add("ShieldBlob.png",1,3,3))
-add_spell("Rapid Fire",NA,scr(rapid_channel),NA,NA,1,sprite_add("sprBlast.png",2,8,7),sprite_add("RapidFireBlob.png",1,3,3))
-add_spell("Proto Swap",scr(proto_cast),NA,NA,NA,1,sprite_add("sprProto.png",2,7,7),sprite_add("ProtoChestBlob.png",1,4,4))
+add_spell("Rapid Fire",NA,scr(rapid_channel),NA,NA,1,sprite_add("sprBlast.png",2,8,7),sprite_add("RapidFireBlob.png",1,4,3))
+add_spell("Proto Swap",scr(proto_cast),NA,NA,NA,1,sprite_add("sprProto.png",2,7,7),sprite_add("ProtoChestBlob.png",1,4,3))
 
 #macro maxmana 200
 
@@ -54,6 +56,9 @@ with Player if race = mod_current && player_is_local_nonsync(index){
     draw_line_width_color(_x, _y, _x + width, _y, 2, c_dkgray, c_dkgray)
     draw_line_width_color(_x, _y, _x+(hand.mana/maxmana) * width, _y, 2, global.purblue, merge_color(c_aqua,global.purblue,1-hand.mana/maxmana))
 }
+
+#define game_start
+global.protowep = wep_rusty_revolver
 
 #define race_name
     return "SAGE";
@@ -125,6 +130,7 @@ return choose("A NEW WORLD", `COLLECTING @yPICKUPS@s GIVES YOU @(color:${global.
 	    gy : _y,
 	    x : _x,
 	    y : _y,
+	    right : 0,
 	    xoff : 0,
 	    yoff : 0,
 	    dir : 0,
@@ -179,13 +185,13 @@ for var i = 0; i< array_length_1d(global.drawers); i++{
         
         h.x += lengthdir_x((dis/4)*current_time_scale,ang)
         h.y += lengthdir_y((dis/4)*current_time_scale,ang)
-        var hright = -sign(h.x-x)
-        h.angle = 90 - 90*hright
+        h.right = -sign(h.x-x)
+        h.angle = 90 - 90*h.right
         
         h.col = global.purblue
     
         h.gx = x + (h.xoff - 10)*right
-        h.gy = y + h.yoff - 12
+        h.gy = y + h.yoff - 16
         
         if random(100) < 2*current_time_scale{
             h.dir = random(360)
@@ -236,9 +242,8 @@ if sign(hand.y) hand_draw()
 #define hand_draw
 if visible{
     var h = hand;
-    var hright = sign(h.x - x);
     d3d_set_fog(1,h.col,1,1)
-    draw_sprite_ext(h.sprite,-1,h.x ,h.y ,1,-hright,h.angle,h.col,1)
+    draw_sprite_ext(h.sprite,-1,h.x ,h.y ,1,h.right,h.angle,h.col,1)
     d3d_set_fog(1,global.purblue,1,1)
     draw_set_blend_mode(bm_add)
     var gsize = 1/64;
@@ -357,7 +362,8 @@ if is_real(wep) return 1
 if is_string(wep) return is_undefined(mod_script_call("wep",wep,"weapon_mergable"))
 if is_object(wep){
     if wep.wep = "merged weapon"{
-        return wep.merged
+        if skill_get(5) and wep.merged == 0 return 1
+        return 0
     }
     return mergable(wep.wep)
 }
@@ -375,7 +381,7 @@ if hand.mana >= 1.5*current_time_scale{
     hand.col = c_white
     hand.angle = gunangle
     hand.mana -= 1.5*current_time_scale
-    if reload >= 0 reload -= (1+skill_get(mut_throne_butt)/2)*current_time_scale
+    if reload >= 0 reload -= (1+skill_get(mut_throne_butt))*current_time_scale
     var _t = weapon_get_type(wep), _c = weapon_get_cost(wep), n = 0, _a = weapon_get_auto(wep) + 1;
     while ammo[_t] >= _c && reload <= 0 && _a && ++n < 100 {
         specfiring = 1
@@ -386,7 +392,7 @@ if hand.mana >= 1.5*current_time_scale{
                 gravity = 2+random(1)
                 friction = 1
                 motion_set(other.gunangle+random_range(-20,20)+180,random_range(6,16))
-                colorset = choose([c_aqua,c_purple],[c_purple,c_white])
+                var colorset = choose([c_aqua,c_purple],[c_purple,c_white])
                 fadecolor = colorset[0]
                 color = colorset[1]
                 fadespeed = 1/10
@@ -398,16 +404,28 @@ if hand.mana >= 1.5*current_time_scale{
 }
 
 #define proto_cast
-if hand.mana >= 50{
-    hand.mana -= 50
+var cost = 50 - 25*skill_get(mut_throne_butt)
+if hand.mana >= cost{
+    //hand.mana -= cost
     hand.col = c_white
-    var we = wep
-    with instance_create(x,y,ProtoChest){
-        other.wep = wep
-        wep = we
-        event_perform(ev_step,0)
-        instance_destroy()
+    instance_create(x+lengthdir_x(10,gunangle),y+lengthdir_y(10,gunangle),WepSwap)
+    if mod_exists("mod","defparticles") && array_length_1d(instances_matching(CustomObject,"name","spark")) < 30 repeat(24){
+         with mod_script_call("mod","defparticles","create_spark",hand.x,hand.y){
+            motion_add(choose(random_range(60,0),random_range(120,180)),3)
+            gravity_direction = 90 + 90*sign(hspeed)
+            gravity = .5
+            friction = 1
+            color = c_lime
+            fadecolor = c_yellow
+            fadespeed = .2
+            age = 6
+         }
     }
+    sound_play(sndChest)
+    sound_play(sndCrystalRicochet)
+    var we = wep;
+    wep = global.protowep;
+    global.protowep = we;
 }
 
 
