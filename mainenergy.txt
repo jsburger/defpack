@@ -25,12 +25,12 @@
 /loadwep square cannon
 
 //LIGHTNING
+
 /loadwep thundercrash
 
 //OTHER ENERGY
 
 /loadwep energy gun
 /loadwep stopwatch
-/loadwep inquisitor
 
 /load mainmisc

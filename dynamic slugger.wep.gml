@@ -1,5 +1,7 @@
 #define init
-global.sprDynamicSlugger = sprPopoSlugger//sprite_add_weapon("sprDynamicSlugger.png",3,2)
+global.sprDynamicSlugger = sprite_add_weapon("sprWideSlugger.png",3,5)
+global.sprWideSlug = sprite_add("sprites/projectiles/sprWideSlug.png",2,12,17);
+global.mskWideSlug = sprite_add("sprites/projectiles/mskWideSlug.png",2,12,17);
 
 #define weapon_name
 return "DYNAMIC SLUGGER"
@@ -8,13 +10,13 @@ return "DYNAMIC SLUGGER"
 return 2;
 
 #define weapon_cost
-return 2;
+return 3;
 
 #define weapon_area
 return 8;
 
 #define weapon_load
-return 26;
+return 48;
 
 #define weapon_swap
 return sndSwapShotgun;
@@ -42,18 +44,19 @@ with instance_create(x,y,CustomProjectile)
 {
   team    = other.team
   creator = other
-  sprite_index = sprPopoSlug
-  mask_index   = 847
-  motion_add(other.gunangle+random_range(-4,4)*other.accuracy,28)
+  sprite_index = global.sprWideSlug
+  mask_index = global.mskWideSlug
+  motion_add(other.gunangle+random_range(-4,4)*other.accuracy,6)
+  maxspeed = speed
   image_angle = direction
-  opierce = 12
-  pierce  = opierce
   damage[0] = 3
   damage[1] = 2
-  force[0]  = 7
+  force[0]  = 1
   force[1]  = 2
-  friction  = 2
+  typ       = 0
+  friction  = .03
   image_speed = 1
+  pierce = 45
   on_destroy = dyn_destroy
   on_step = dyn_step
   on_wall = dyn_wall
@@ -61,19 +64,53 @@ with instance_create(x,y,CustomProjectile)
   on_hit  = dyn_hit
 }
 #define dyn_destroy
-with instance_create(x,y,BulletHit){sprite_index = sprPopoSlugDisappear;image_angle = other.image_angle}
+repeat(3)
+{
+  with instance_create(x,y,Bullet2)
+  {
+    motion_add(random(360),random_range(8,12))
+    image_angle = direction
+    team    = other.team
+    creator = other.creator
+  }
+}
+with instance_create(x,y,BulletHit){sprite_index = sprHeavySlugHit;image_angle = other.image_angle}
 
 #define dyn_step
 if image_index = 1 image_speed = 0
+with instances_matching_ne(hitme,"team",other.team)
+{
+  if distance_to_object(other) <= 12 && current_frame mod 2 = 0
+  {
+    var _id = id;
+    with other
+    {
+      x -= hspeed*3/4
+      y -= vspeed*3/4
+      other.direction = direction
+      projectile_hit(_id,damage[image_index],min(0,force[image_index]-other.size),direction)
+      speed *= .95 + skill_get(15)*.1
+      sleep(5*other.size)
+      view_shake_at(x,y,2*other.size)
+      if other.my_health <= 0{sleep(16*other.size);view_shake_at(x,y,8*other.size);speed += 2}
+      if speed > maxspeed speed = maxspeed
+      pierce--
+      if pierce <= 0{instance_destroy();exit}
+    }
+  }
+}
 if speed <= friction instance_destroy()
 
 #define dyn_wall
-move_bounce_solid(false)
-sleep(10)
-direction += random_range(10,10)
-repeat(3)instance_create(x,y,Dust)
-speed *= .9 + skill_get(15)*.1
-image_angle = direction
+if image_index = 0
+{
+  with other
+  {
+    instance_create(x,y,FloorExplo)
+    instance_destroy()
+  }
+}
+else instance_destroy()
 
 #define dyn_draw
 draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, image_yscale, image_angle, image_blend, 1.0);
@@ -82,18 +119,11 @@ draw_sprite_ext(sprite_index, image_index, x, y, 2*image_xscale, 2*image_yscale,
 draw_set_blend_mode(bm_normal);
 
 #define dyn_hit
+/*
 if projectile_canhit(other) = true
 {
     if other.team != team
     {
-      x -= hspeed/(1+other.size)*skill_get(15)*.8
-      y -= vspeed/(1+other.size)*skill_get(15)*.8
-      pierce--
-      projectile_hit(other,damage[image_index],force[image_index],direction)
-      speed *= .95 + skill_get(15)*.1
-      sleep(5*other.size)
-      view_shake_at(x,y,2*other.size)
-      if other.my_health <= 0{sleep(16*other.size);view_shake_at(x,y,8*other.size);pierce = opierce}
-      if pierce <= 0 instance_destroy()
+
     }
 }

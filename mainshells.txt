@@ -13,7 +13,7 @@
 /loadwep split shotgun
 /loadwep double split shotgun
 /loadwep heavy split shotgun
-
+/loadwep steel diver
 
 //SHOT CANNON
 

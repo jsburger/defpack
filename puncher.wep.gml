@@ -53,7 +53,7 @@ if fork(){
 return global.sprPuncher
 
 #define weapon_text
-return "god i love bazookas"
+return "god bless bazookas"
 
 #define puncherdraw
 draw_self()
@@ -86,6 +86,7 @@ instance_create(x,y,Explosion)
 for (var i = 1;i < 3; i++){
 	instance_create(x+lengthdir_x(16*i,direction),y+lengthdir_y(16*i,direction),SmallExplosion)
 }
+instance_create(x+lengthdir_x(16*4,direction),y+lengthdir_y(16*4,direction),SmallExplosion)
 /*instance_create(x+lengthdir_x(16,direction),y+lengthdir_y(16,direction),SmallExplosion)
 instance_create(x+lengthdir_x(-16,direction),y+lengthdir_y(16,direction),SmallExplosion)
 instance_create(x+lengthdir_x(16,direction),y+lengthdir_y(-16,direction),SmallExplosion)

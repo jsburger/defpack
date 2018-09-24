@@ -59,18 +59,12 @@
 /load iris
 
 ///TODO///
-
-/loadwep ultra bullet cannon
 /loadwep ultra claymore
 /loadwep heavy claymore
 /loadwep screecher
-/loadwep inquisitor
 /loadwep antiprism
 /loadwep sak
-/loadwep polygun
 /loadwep stopwatch
 /loadwep herald
 /loadwep finished stuff/andromeda launcher
-/loadwep bolt gun
-/loadwep bullet machinegun
 /loadwep energy gun

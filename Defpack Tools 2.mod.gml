@@ -511,10 +511,10 @@ with(a){
 return a;
 
 #define bounce_wall
-if speed > 12 speed = 12
 move_bounce_solid(false)
-speed -= 3
+speed *= .7
 bounce--
+//trace(bounce)
 with instance_create(x,y,BouncerBullet){
 	team = other.team
 	creator = other.creator
@@ -550,6 +550,7 @@ if other.team != team
 }
 
 #define bounce_step
+if speed > 12 speed = 12
 if image_index = 1 image_speed = 0
 image_angle += 8
 

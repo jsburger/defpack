@@ -1,6 +1,6 @@
 #define init
 global.sprStickyDiscGun = sprite_add_weapon("sprStickyDiscGun.png",1,3)
-global.sprStickyDisc    = sprite_add("sprStickyDisc.png",2,6,6)
+global.sprStickyDisc    = sprite_add("sprStickyDisc.png",2,7,6)
 #macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)
 #define weapon_name
 return "STICKY DISC GUN"

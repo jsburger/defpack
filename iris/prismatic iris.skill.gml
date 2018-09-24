@@ -109,6 +109,82 @@ for var i = 0; i < o; i++{
 return 0
 
 #define step
+//cool iris synergies
+if skill_get("prismatic iris")
+{
+  if skill_get(15)
+  {
+    if global.color = 6
+    with BouncerBullet
+    {
+      if "flag" not in self
+      {
+        flag = "i have seen the truth"
+      }
+    }
+    with instances_matching("CustomProjectile","name","Bouncer Bullet Flak")
+    {
+      if "flag" not in self
+      {
+        flag = "i have seen the truth"
+        bounce += 2
+        trace("yes",bounce)
+      }
+    }
+  }
+  //f skill_get()
+}
+with BouncerBullet
+{
+  if "flag" in self
+  {
+    if "ebounce" not in self ebounce = 2 + (skill_get("10xshotgunshoulders"))
+    if place_meeting(x+hspeed,y+vspeed,Wall)
+    {
+      if ebounce > 0
+      {
+        move_bounce_solid(false)
+        ebounce--
+      }
+    }
+    if place_meeting(x+hspeed,y+vspeed,enemy)
+    {
+      if instance_nearest(x,y,enemy).my_health -damage <= 0
+        if ebounce > 0
+        {
+          var _c = random_range(-45,45);
+          with instance_create(x,y,BouncerBullet)
+          {
+            //image_index = 1
+            team = other.team
+            creator = other
+            recycle_amount = 0
+            motion_add(other.direction - 180 + _c,other.speed)
+            sound_play_pitchvol(sndBouncerBounce,random_range(.9,1.1),.3)
+            ebounce = other.ebounce -1
+          }
+        }
+    }
+    if place_meeting(x+hspeed,y+vspeed,prop)
+    {
+      if instance_nearest(x,y,prop).my_health -damage <= 0
+        if ebounce > 0
+        {
+          var _c = random_range(-45,45);
+          with instance_create(x,y,BouncerBullet)
+          {
+            //image_index = 1
+            team = other.team
+            creator = other
+            recycle_amount = 0
+            motion_add(other.direction - 180 + _c,other.speed)
+            sound_play_pitchvol(sndBouncerBounce,random_range(.9,1.1),.3)
+            ebounce = other.ebounce -1
+          }
+        }
+    }
+  }
+}
 if global.colors[global.color] = "blind"{
     with instances_matching(WepPickup,"irischeck",null){
         irischeck = 1
@@ -121,6 +197,7 @@ if global.colors[global.color] = "blind"{
             scrGimmeWep(x,y,0,GameCont.hard,curse,weps)
             with instance_create(x,y,ImpactWrists){
                 sprite_index = global.effect
+                sound_play_pitchvol(sndStatueXP,.5*random_range(.8,1.2),.4)
                 image_angle = 0
             }
             instance_destroy()
@@ -137,6 +214,7 @@ else{
                     name = weapon_get_name(wep)
                     with instance_create(x,y,ImpactWrists){
                         sprite_index = global.effect
+                        sound_play_pitchvol(sndStatueXP,.5*random_range(.8,1.2),.4)
                         image_angle = 0
                     }
                 }

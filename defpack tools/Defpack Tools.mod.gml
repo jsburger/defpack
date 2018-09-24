@@ -195,16 +195,14 @@ with instances_matching([Explosion,SmallExplosion,GreenExplosion,PopoExplosion],
 }
 
 //drop tables
-with Inspector			{if my_health <= 0 && irandom(97)=0{with instance_create(x,y,WepPickup){wep = choose("donut box","idpd slugger")}}};
-with Shielder 			{if my_health <= 0 && irandom(97)=0{with instance_create(x,y,WepPickup){wep = choose("donut box","idpd minigun")}}};
-with EliteGrunt 		{if my_health <= 0 && irandom(97)=0{with instance_create(x,y,WepPickup){wep = choose("donut box","idpd bazooka")}}};
-with EliteInspector     {if my_health <= 0 && irandom(97)=0{with instance_create(x,y,WepPickup){wep = choose("donut box","idpd energy sword")}}};
-with EliteShielder      {if my_health <= 0 && irandom(97)=0{with instance_create(x,y,WepPickup){wep = choose("donut box","idpd plasma minigun")}}};
-with PopoFreak	        {if my_health <= 0 && irandom(97)=0{with instance_create(x,y,WepPickup){wep = choose("donut box","idpd grenade launcher")}}};
-with Van	            {if my_health <= 0 && irandom(97)=0{with instance_create(x,y,WepPickup){wep = choose("donut box","idpd shotgun")}}};
+with Inspector			{if my_health <= 0 && irandom(97)=0{with instance_create(x,y,WepPickup){wep = "donut box"}}};
+with Shielder 			{if my_health <= 0 && irandom(97)=0{with instance_create(x,y,WepPickup){wep = "donut box"}}};
+with EliteGrunt 		{if my_health <= 0 && irandom(97)=0{with instance_create(x,y,WepPickup){wep = "donut box"}}};
+with EliteInspector     {if my_health <= 0 && irandom(97)=0{with instance_create(x,y,WepPickup){wep = "donut box"}}};
+with EliteShielder      {if my_health <= 0 && irandom(97)=0{with instance_create(x,y,WepPickup){wep = "donut box"}}};
 
 with SodaMachine{
-	if my_health <= 0 && irandom(0)=0
+	if my_health <= 0 && irandom(1)=0
 	{
 		with instance_create(x,y,WepPickup)
 		{
@@ -673,10 +671,10 @@ if chance(8){
 
 #define fire_destroy
 repeat(3){
-	with instance_create(x,y,Flame){
-		team = other.team
-		creator = other.creator
-		motion_set(random(360),random_range(0.6,1.2))
+	with create_miniexplosion(x,y)
+  {
+    move_contact_solid(other.direction-180,10)
+		motion_set(other.direction-180+(random_range(-50,50)),random_range(1,2.2))
 	}
 }
 with instance_create(x,y,BulletHit){
@@ -1868,9 +1866,11 @@ with a
   typ  = 1
   name = "Spikeball"
   image_speed = speed/10
-  damage = 2
+  damage = 1
   force = 3
   size = 2
+  bounce = 0
+  hitframes = 0
   sprite_index = global.sprMiniSpikeball
   mask_index   = global.mskMiniSpikeball
   on_hit        = spike_hit
@@ -1891,6 +1891,7 @@ with a
   damage = 5
   force = 6
   size = 4
+  bounce = 0
   sprite_index = global.sprSpikeball
   mask_index   = global.mskSpikeball
   on_hit        = spike_hit
@@ -1911,6 +1912,7 @@ with a
   damage = 10
   force = 8
   size = 10
+  bounce = 0
   sprite_index = global.sprHeavySpikeball
   mask_index   = global.mskHeavySpikeball
   on_hit        = spike_hit
@@ -1924,21 +1926,35 @@ return a;
 #define spike_anim
 
 #define spike_hit
-if projectile_canhit_melee(other) = true
+if "creator" not in self creator = -4
+if other.id != creator
 {
   projectile_hit(other,damage,force,direction)
   if other.size > size{motion_set(point_direction(other.x,other.y,x,y),speed)}
+  x -= hspeed
+  y -= vspeed
 }
+else
+{
+    damage += 1
+    projectile_hit(other,damage,force,direction)
+    instance_destroy()
+    exit
+}
+hitframes++
+if hitframes >= 10 instance_destroy()
 
 #define spike_wall
-sound_play_pitch(sndHitRock,random_range(.6,.8))
+sound_play_pitchvol(sndHitRock,random_range(.6,.8),.3)
 //sound_play_pitch(sndHitMetal,random_range(1.3,1.5))
-sleep(size*2)
-view_shake_at(x,y,3*size)
+sleep(size*6)
+view_shake_at(x,y,4*size)
 repeat(size)instance_create(x,y,Dust)
 move_bounce_solid(false)
-speed--
 image_speed = speed/10
+bounce++
+direction += random_range(-12,12)
+if bounce >= 5 instance_destroy()
 
 #define spike_step
 with instance_create(x-lengthdir_x(speed,direction),y-lengthdir_y(speed,direction),BoltTrail){
@@ -1946,27 +1962,29 @@ with instance_create(x-lengthdir_x(speed,direction),y-lengthdir_y(speed,directio
     image_yscale = other.size / 3
     image_xscale = other.speed
 }
-with instances_matching(CustomSlash,"name","Spikeball")
+/*with instances_matching(CustomSlash,"name","Spikeball")
 {
-  if place_meeting(x,y,other)
+  if bounce>0 and other.bounce>0
   {
-    sleep(size*2)
-    view_shake_at(x,y,3*size)
-    motion_set(point_direction(other.x,other.y,x,y),speed)
-    repeat(size)instance_create(x,y,Dust)
-    sound_play_pitch(sndHitRock,random_range(.6,.8))
-    sound_play_pitch(sndHitMetal,random_range(1.3,1.5))
-    sound_play_pitch(sndGrenadeHitWall,random_range(1.7,2.5))
-    var _spd = (speed + other.speed)/2;
-    speed = _spd
-    with other{speed = _spd}
-    with instance_create((x+other.x)/2,(y+other.y)/2,MeleeHitWall){image_angle += other.direction+90}
+    if place_meeting(x,y,other)
+    {
+      sleep(size*2)
+      view_shake_at(x,y,3*size)
+      motion_set(point_direction(other.x,other.y,x,y),speed)
+      repeat(size)instance_create(x,y,Dust)
+      sound_play_pitch(sndHitRock,random_range(.6,.8))
+      sound_play_pitch(sndHitMetal,random_range(1.3,1.5))
+      sound_play_pitch(sndGrenadeHitWall,random_range(1.7,2.5))
+      var _spd = (speed + other.speed)/2;
+      speed = _spd
+      with other{speed = _spd}
+      with instance_create((x+other.x)/2,(y+other.y)/2,MeleeHitWall){image_angle += other.direction+90}
+    }
   }
-}
-if speed <= 3 instance_destroy()
+}*/
 
 #define spike_projectile
-with other if typ > 0 instance_destroy()
+//with other if typ > 0 instance_destroy()
 
 //LASER FLAK
 #define create_laser_flak(_x,_y)
@@ -2130,7 +2148,7 @@ with instance_create(x+lengthdir_x(sprite_get_width(sprite_index),image_angle),y
 {
   with instance_create(x,y,CustomSlash)
   {
-    lifetime = 3
+    lifetime = 73
     team = _t
     image_xscale = 2.5
     image_yscale = 2.5
@@ -2179,3 +2197,15 @@ if other.team != team
 
 #define crit_step
 if lifetime > 0{lifetime -= current_time_scale}else{instance_destroy()}
+
+#define create_miniexplosion(_x,_y)
+var  r = instance_create(_x,_y,SmallExplosion);
+with r
+{
+    image_xscale = .5
+    image_yscale = .5
+    damage = 3
+    sound_play_pitchvol(sndExplosionS,2,.04)
+    hitid = [sprite_index,"MINI EXPLOSION"]
+}
+return r;

@@ -1,6 +1,6 @@
 #define init
 global.sprClaymore = sprite_add_weapon("sprites/Claymore.png", 4, 4);
-global.sprLunatic = sprite_add_weapon("sprites/Lunatic.png", 4, 4);
+global.sprLunatic = sprite_add_weapon("sprites/sprLunatic.png", 1, 13);
 //FUCC ALL Y'ALL WHO DONT LIKE THIS PART HE DESERVES IT
 trace("Thanks to Wonderis_ for putting a ton of time testing all this");
 trace("Also Jsburg did a bunch of work polishing the mod")
@@ -12,8 +12,8 @@ return "CLAYMORE";
 
 #define weapon_sprt
 if instance_is(self,Player){
-	if alias = "Saix"{
-		return global.sprLunatic
+	if string_upper(alias) = "SAIX"{
+		return global.sprLunatic;
 	}
 }
 return global.sprClaymore;
