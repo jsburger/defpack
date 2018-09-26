@@ -16,7 +16,7 @@ with tank{
 	image_speed = 0
 	doortime = 0
 	maxspeed = 5
-	maxhealth = 200
+	maxhealth = 300
 	my_health = maxhealth
 	reload = 0
 	breload = 0

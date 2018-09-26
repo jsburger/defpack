@@ -6,7 +6,12 @@ global.handbotslct = sprite_add("handbotslct.png",1,0,0)
 global.gunIdle = sprite_add("sprGunIdle.png",6,12,12)
 global.gunWalk = sprite_add("sprGunWalk.png",6,12,12)
 global.gunSlct = sprite_add("sprGunSlct.png",1,0,0)
+global.gunMap =  sprite_add("sprGunMapIcon.png",2,10,8)
+global.gunLoad =  sprite_add("sprGunSkin.png",2,10,8)
 
+//replace me with custom not sonic explosions
+global.sprSonicExplosion = sprite_add("../defpack tools/Soundwave_strip8.png",8,61,59);
+global.mskSonicExplosion = sprite_add("../defpack tools/mskSonicExplosion_strip9.png",9,32,32);
 
 global.purblue = make_color_rgb(72,61,135)
 global.darkteal = make_color_rgb(1,68,65)
@@ -27,20 +32,37 @@ global.protowep = wep_rusty_revolver
 global.spells = ds_map_create()
 global.spellnames = []
 
+//dev spells
+//add_spell("Drain Mana",NA,scr(cheat1),NA,NA,1,sprite_add("sprShield.png",2,8,7),sprite_add("ShieldBlob.png",1,3,3))
+//add_spell("Gimme Mana",NA,scr(cheat2),NA,NA,1,sprite_add("sprShield.png",2,8,7),sprite_add("ShieldBlob.png",1,3,3))
+
 //add_spell("No Spell", NA,scr(none_channel),scr(none_release),NA,1,global.hands)
+
 add_spell("Merge", scr(merge_cast),NA,NA,NA,1,sprite_add("sprMerge.png",2,8,7),sprite_add("MergeBlob.png",1,4,4))
-add_spell("Drain Mana",NA,scr(cheat1),NA,NA,1,sprite_add("sprShield.png",2,8,7),sprite_add("ShieldBlob.png",1,3,3))
-add_spell("Gimme Mana",NA,scr(cheat2),NA,NA,1,sprite_add("sprShield.png",2,8,7),sprite_add("ShieldBlob.png",1,3,3))
 add_spell("Rapid Fire",NA,scr(rapid_channel),NA,NA,1,sprite_add("sprBlast.png",2,8,7),sprite_add("RapidFireBlob.png",1,4,3))
 add_spell("Proto Swap",scr(proto_cast),NA,NA,NA,1,sprite_add("sprProto.png",2,7,7),sprite_add("ProtoChestBlob.png",1,4,3))
 
+//ultra spells
+add_spell("Haste",scr(haste_cast),NA,NA,NA,ultraspell,sprite_add("sprHaste.png",2,7,7),sprite_add("HasteBlob.png",1,4,3))
+add_spell("Shield",scr(shield_cast),NA,NA,NA,ultraspell,sprite_add("sprShield.png",2,8,7),sprite_add("ShieldBlob.png",1,3,3))
+
 #macro maxmana 200
+
+#macro ultraspell scr(ultra_avail)
+
+#macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)
+
+#define cleanup
+with instances_matching(CustomDraw,"name",mod_current) instance_destroy()
 
 #define scr(script)
 return script_ref_create(script)
 
 #macro NA script_ref_create(nothing)
 #define nothing
+
+#define ultra_avail
+return ultra_get(mod_current,2)
 
 #define add_spell(name,on_cast,on_channel,on_release,on_step,avail,icon,blob)
 global.spells[? name] = [name,on_cast,on_channel,on_release,on_step,avail,icon,blob]
@@ -54,7 +76,7 @@ with Player if race = mod_current && player_is_local_nonsync(index){
     if curp() > 1 _x -= 17
     draw_line_width_color(_x-1,_y+.5,_x+1+width,_y+.5,5,c_black,c_black)
     draw_line_width_color(_x, _y, _x + width, _y, 2, c_dkgray, c_dkgray)
-    draw_line_width_color(_x, _y, _x+(hand.mana/maxmana) * width, _y, 2, global.purblue, merge_color(c_aqua,global.purblue,1-hand.mana/maxmana))
+    draw_line_width_color(_x, _y, _x+(hand.mana/maxmana) * width, _y, 2, shinetime > 0 ? c_white : global.purblue, shinetime > 0 ? c_white : merge_color(c_aqua,global.purblue,1-hand.mana/maxmana))
 }
 
 #define game_start
@@ -70,7 +92,11 @@ global.protowep = wep_rusty_revolver
 	return `EMPOWERED @(color:${global.purblue})SPELLS`;
 
 #define race_mapicon
-return sprHeavyRevolver;
+return global.gunMap;
+
+#define race_skin_button(skin)
+sprite_index = global.gunLoad
+image_index = skin
 
 /*
 #define race_portrait
@@ -86,14 +112,14 @@ sprite_index = global.spr_ult[argument0];
 */
 #define race_ultra_name
 switch(argument0){
-	case 1: return "Epic";
-	case 2: return "Gaming";
+	case 1: return "uuuuuhhhhhhhhhhhhh";
+	case 2: return "EXPANDED CHAMBER";
 }
 
 #define race_ultra_text
 switch (argument0){
-	case 1: return "Neither of these";
-	case 2: return "do anything yet.";
+	case 1: return "This isn't implemented yet";
+	case 2: return `MORE @(color:${global.purblue})SPELLS`;
 }
 
 
@@ -120,6 +146,10 @@ return choose("A NEW WORLD", `COLLECTING @yPICKUPS@s GIVES YOU @(color:${global.
 	snd_crwn = sndCrownGuns;
 	snd_valt = sndGoldChest;
 	snd_idpd = snd_cptn;
+	
+	controlprompted = 0
+	hastetime = 0
+	shinetime = 0
 	
 	var _x = x,
 	    _y = y;
@@ -162,19 +192,47 @@ for var i = 0; i< array_length_1d(global.drawers); i++{
         }
 }
 
-    var size = 10
+    var size = 15
+    var wantmana = 0;
     with instances_in(bbox_left-size,bbox_top-size,bbox_right+size,bbox_bottom+size,[HPPickup,AmmoPickup,Rad,BigRad]){
         mask_index = mskNone
         if point_distance(x,y,other.x,other.y) <= 10{
-            if instance_is(self,Rad) other.hand.mana+=1
-            else other.hand.mana += 5
-            if instance_is(self,HPPickup) && skill_get(mut_second_stomach) other.hand.mana += 5
-            other.hand.mana += (GameCont.crown = crwn_haste)
-            other.hand.mana = min(other.hand.mana,maxmana)
+            if instance_is(self,Rad) wantmana += 1.5
+            else wantmana += 5
+            if instance_is(self,HPPickup) && skill_get(mut_second_stomach) wantmana += 5
+            wantmana += (GameCont.crown = crwn_haste)
             event_perform(ev_collision,Player)
         }
     }
+    hand.mana = min(hand.mana + wantmana,maxmana)
     
+    if shinetime > 0{
+        shinetime = max(shinetime-current_time_scale,0)
+    }
+    if wantmana > 0 shinetime = 5
+    
+    
+    if hastetime > 0{
+        hastetime = max(hastetime-current_time_scale,0)
+        if hastetime = 0{
+            maxspeed -= 1 + skill_get(mut_throne_butt)*.5
+        }
+        if current_frame_active with instance_create(x,y,CustomObject){
+            sprite_index = other.sprite_index
+            image_index = other.image_index
+            image_speed = 0
+            image_alpha = 0
+            right = other.right
+            gravity = -.5
+            color = merge_color(merge_color(c_black,c_white,random(1)),global.purblue,random(1))
+            on_draw = flash_draw
+            if fork(){
+                wait(4)
+                if instance_exists(self) instance_destroy()
+                exit
+            }
+        }
+    }
 
     var h = hand;
     var click = button_check(index,"spec") * canspec;
@@ -253,15 +311,37 @@ if visible{
     draw_set_blend_mode(bm_normal)
 }
 
+#define textdraw
+if alphatime > 0 and alpha < 1{
+    alpha = min(alpha + .1*current_time_scale, 1)
+}
+if alpha = 1 and alphatime > 0{
+    alphatime = max(alphatime - current_time_scale, 0)
+}
+if alphatime = 0 and alpha > 0{
+    alpha -= .1*current_time_scale
+}
+var sf = surface_create(100,20);
+surface_set_target(sf)
+draw_set_halign(1)
+draw_set_font(fntSmall)
+draw_clear_alpha(0,0)
+draw_text_shadow(50,0,"HOLD KEYS 1-4 TO# SWITCH SPELLS")
+surface_reset_target()
+if instance_exists(creator){
+    draw_surface_ext(sf,creator.x - 50,creator.y + 20,1,1,0,c_white,alpha)
+}
+surface_destroy(sf)
+if alphatime = 0 and alpha < 0 instance_destroy()
+
 #macro view_xc view_xview[index] + game_width/2
 #macro view_yc view_yview[index] + game_height/2
-
 
 #define spellpicker
 with instances_matching(Player,"race",mod_current){
     var btn = "key4"
     if hand.spell = "No Spell" btn = "spec"
-    var btns = ["key1","key2","key3","key4","horn"]
+    var btns = ["key1","key2","key3","key4"]
     for var i = 0; i < array_length(btns); i++{
         if button_pressed(index,btns[i]) || button_check(index,btns[i]) || button_released(index,btns[i]){
             btn = btns[i]
@@ -271,6 +351,15 @@ with instances_matching(Player,"race",mod_current){
     
     if button_pressed(index,btn){
         hand.menulength = .1
+        if controlprompted = 0 {
+            controlprompted = 1
+            with instance_create(x,y,CustomObject){
+                creator = other
+                on_draw = textdraw
+                alpha = 0
+                alphatime = 90
+            }
+        }
     }
     if visible && (button_check(index,btn) || button_released(index,btn)){
         draw_set_visible_all(0)
@@ -318,6 +407,12 @@ with instances_matching(Player,"race",mod_current){
     }
     draw_set_visible_all(1)
 }
+
+#define flash_draw
+d3d_set_fog(1,color,0,0)
+draw_sprite_ext(sprite_index,image_index,x,y,(.9+random(.2))*right,.9+random(.2),0,0,.3+random(.2))
+d3d_set_fog(0,0,0,0)
+
 #define instance_random(obj)
 var a = instances_matching(obj,"",null);
 var b = array_length_1d(a)
@@ -341,18 +436,18 @@ return n
 if hand.mana >= maxmana{
     hand.x = x + 8*right
     hand.y = y + -12
-    hand.mana -= maxmana
     hand.col = c_white
     hand.resettime = 6
     repeat(12){
-            with instance_create(hand.x ,hand.y,FireFly){
-                sprite_index = sprLightning
-                hspeed = random_range(-2,2)
-                gravity = -random(.2)
-            }
+        with instance_create(hand.x ,hand.y,FireFly){
+            sprite_index = sprLightning
+            hspeed = random_range(-2,2)
+            gravity = -random(.2)
         }
+    }
     if mergable(wep) && mergable(bwep) && bwep != 0 && wep != 0{
         wep = mod_script_call("mod","merging","wep_combine",wep,bwep)
+        hand.mana -= maxmana
         bwep = 0
     }
 }
@@ -427,6 +522,69 @@ if hand.mana >= cost{
     wep = global.protowep;
     global.protowep = we;
 }
+
+#define haste_cast
+if hand.mana >= 50{
+    hand.mana -= 50
+    if hastetime = 0{
+        maxspeed += 1 + skill_get(mut_throne_butt)*.5
+    }
+    hastetime += 300
+    hand.resettime = 10
+    if fork(){
+        var time = 10, starttime = time;
+        while time > 0 && instance_exists(self){
+            time-= current_time_scale
+            hand.col = merge_color(global.purblue,c_white,time/starttime)
+            wait(0)
+        }
+        exit
+    }
+}
+
+
+#define shield_cast
+if hand.mana >= 30{
+    hand.mana -= 30
+    with instance_create(x,y,CustomSlash){
+        on_projectile = shine_proj
+        on_grenade = shine_grenade
+        on_hit = shine_hit
+        on_anim = shine_anim
+        team = other.team
+        image_speed = 1
+        image_xscale = .5
+        image_yscale = .5
+        image_blend = global.purblue
+        sprite_index = global.sprSonicExplosion
+        mask_index = global.mskSonicExplosion
+    }
+}
+
+#define shine_proj
+with other{
+	if typ = 1{
+		team = other.team
+		direction = point_direction(other.x,other.y,x,y)
+		image_angle = direction
+		with instance_create(x,y,Deflect) image_angle = other.image_angle
+		sound_play(sndShielderDeflect)
+	}
+	if typ = 2 || typ = 3{
+		instance_destroy()
+	}
+}
+
+#define shine_anim
+instance_destroy()
+
+#define shine_grenade
+with other{
+	direction = point_direction(other.x,other.y,x,y)
+	image_angle = direction
+}
+
+#define shine_hit
 
 
 #define none_channel
