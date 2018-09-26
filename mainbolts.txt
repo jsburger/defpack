@@ -15,6 +15,7 @@
 
 /loadwep finished stuff/bouncer disc gun
 /loadwep finished stuff/sticky disc gun
+/loadwep mega disc gun
 
 //OTHER BOLT
 

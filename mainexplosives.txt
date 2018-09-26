@@ -11,7 +11,6 @@
 /loadwep blood abris launcher
 /loadwep plasma abris launcher
 
-
 //ROCKLET
 
 /loadwep rocklet pistol
@@ -21,14 +20,12 @@
 /loadwep rocklet cannon
 /loadwep super rocklet cannon
 
-
 //SONIC
 
 /loadwep sonic launcher
 /loadwep assault sonic launcher
 /loadwep finished stuff/supersonic launcher
 /loadwep screecher
-
 
 //MINI EXPLOSIONS
 
@@ -49,21 +46,16 @@
 /loadwep smart bazooka
 /loadwep finished stuff/smart nuke launcher
 
-//CLAYMORE
-
-/loadwep claymore
-/loadwep heavy claymore
-/loadwep ultra claymore
-
 //CANNON
 
 /loadwep toxic cannon
-/loadwep super toxic cannon
 /loadwep super flame cannon
 
 //OTHER EXPLOSIVE
 
 /loadwep chainsaw
+/loadwep claymore
+/loadwep boomerang
 /loadwep auto grenade launcher
 /loadwep finished stuff/heavy nuke launcher
 /loadwep firestorm

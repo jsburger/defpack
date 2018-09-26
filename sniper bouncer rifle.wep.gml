@@ -103,6 +103,7 @@ if button_check(index, btn) = false || holdtime <= 0
 		motion_add(gunangle -180,_c / 20)
 		with instance_create(x+lengthdir_x(10,gunangle),y+lengthdir_y(10,gunangle),CustomProjectile)
 		{
+			name = "hyper bouncer"
 			move_contact_solid(other.gunangle,18)
 			typ = 1
 			creator = other

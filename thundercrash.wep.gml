@@ -23,7 +23,7 @@ return 50;
 return 6;
 
 #define weapon_swap
-return sndSwapExplosive;
+return sndSwapEnergy;
 
 #define weapon_area
 return 14;

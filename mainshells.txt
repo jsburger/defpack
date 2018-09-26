@@ -13,7 +13,7 @@
 /loadwep split shotgun
 /loadwep double split shotgun
 /loadwep heavy split shotgun
-
+/loadwep steel diver
 
 //SHOT CANNON
 
@@ -31,7 +31,7 @@
 
 /loadwep popper
 /loadwep big shotgun
-/loadwep dynamic slugger
+/loadwep wide slugger
 /loadwep apergig tanat
 /loadwep tsunami
 /loadwep flechette shotgun
