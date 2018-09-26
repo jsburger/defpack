@@ -1,16 +1,16 @@
 #define init
-global.sprDynamicSlugger = sprite_add_weapon("sprWideSlugger.png",3,5)
+global.sprWideSlugger = sprite_add_weapon("sprites/sprWideSlugger.png",3,5)
 global.sprWideSlug = sprite_add("sprites/projectiles/sprWideSlug.png",2,12,17);
 global.mskWideSlug = sprite_add("sprites/projectiles/mskWideSlug.png",2,12,17);
 
 #define weapon_name
-return "DYNAMIC SLUGGER"
+return "WIDE SLUGGER"
 
 #define weapon_type
 return 2;
 
 #define weapon_cost
-return 3;
+return 2;
 
 #define weapon_area
 return 8;
@@ -31,15 +31,19 @@ return false;
 return false;
 
 #define weapon_sprt
-return global.sprDynamicSlugger;
+return global.sprWideSlugger;
 
 #define weapon_text
-return "SO DYNAMIC"
+return "BRICK BLASTER"
 
 #define weapon_fire
 weapon_post(6,-20,15)
-sound_play_pitch(sndSlugger,.6)
-sound_play_pitch(sndSuperSlugger,1.6)
+var _p = random_range(.8,1.2);
+
+sound_play_pitch(sndSlugger,.7*_p)
+sound_play_pitch(sndDoubleShotgun,.7*_p)
+sound_play_pitch(sndSuperSlugger,1.4*_p)
+
 with instance_create(x,y,CustomProjectile)
 {
   team    = other.team
@@ -56,6 +60,8 @@ with instance_create(x,y,CustomProjectile)
   typ       = 0
   friction  = .03
   image_speed = 1
+  image_xscale = 1.25
+  image_yscale = 1.25
   pierce = 45
   on_destroy = dyn_destroy
   on_step = dyn_step
@@ -77,7 +83,7 @@ repeat(3)
 with instance_create(x,y,BulletHit){sprite_index = sprHeavySlugHit;image_angle = other.image_angle}
 
 #define dyn_step
-if image_index = 1 image_speed = 0
+if image_index = 1{image_speed = 0;image_xscale = 1;image_yscale = 1}
 with instances_matching_ne(hitme,"team",other.team)
 {
   if distance_to_object(other) <= 12 && current_frame mod 2 = 0

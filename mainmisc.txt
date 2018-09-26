@@ -4,21 +4,16 @@
 ///MELEE//
 /loadwep toothbrush
 /loadwep bone
+/loadwep mega Bone
 /loadwep auto screwdriver
 /loadwep chris knife
 /loadwep comboweps/rapier
+/loadwep other sword
 /loadwep comboweps/bigsword
 /loadwep wondersword
 /loadwep crystal torch
 /loadwep shard
 
-///POPO///
-
-/loadwep idpd bazooka
-/loadwep idpd energy sword
-/loadwep idpd grenade launcher
-/loadwep idpd minigun
-/loadwep idpd plasma minigun
 
 ///GOLD///
 
@@ -54,13 +49,10 @@
 /loadwep infinipistol
 
 ///NON-WEAPONS///
-
-/loadmod IDPD Weapon Chest/IDPD Weapon Chest
 /load iris
 
 ///TODO///
 /loadwep ultra claymore
-/loadwep heavy claymore
 /loadwep screecher
 /loadwep antiprism
 /loadwep sak

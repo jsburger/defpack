@@ -328,6 +328,7 @@ with (a) {
 	timer = irandom(6)+4
 	image_yscale = 1.2
 	image_xscale = 1.2
+  range = 160
 	on_step = script_ref_create(psy_step)
 	on_destroy = script_ref_create(psy_destroy)
 	on_hit = script_ref_create(bullet_hit)
@@ -342,13 +343,15 @@ if timer > 0{
 }
 if timer <= 0{
 	var closeboy = instance_nearest_matching_ne(x,y,hitme,"team",team)
-	if instance_exists(closeboy) && distance_to_object(closeboy) < 220 && collision_line(x,y,closeboy.x,closeboy.y,Wall,0,0) < 0{
+	if instance_exists(closeboy) && distance_to_object(closeboy) < 160 && collision_line(x,y,closeboy.x,closeboy.y,Wall,0,0) < 0{
 		var dir, spd;
 
 		dir = point_direction(x, y, closeboy.x, closeboy.y);
-		spd = speed * 2 * current_time_scale
+		spd = speed * 5 * current_time_scale
 
-		direction -= clamp(angle_difference(image_angle, dir) * .3 * current_time_scale, -spd, spd); //Smoothly rotate to aim position.
+    var _f = .3;
+    if timer = -500 _f = 1
+		direction -= clamp(angle_difference(image_angle, dir) * _f * current_time_scale, -spd, spd); //Smoothly rotate to aim position.
 		image_angle = direction
 	}
 }
@@ -2010,9 +2013,12 @@ return a;
 #define laserflak_destroy
 view_shake_at(x,y,32)
 var i = random(360);
-sound_play_pitch(sndPlasmaBigExplodeUpg,random_range(.6,.8))
+var _p = random_range(.8,1.2);
+sound_play_pitch(sndBouncerSmg,.4*_p)
+sound_play_pitch(sndSlugger,.5*_p)
+sound_play_pitch(sndPlasma,.8*_p)
 sound_play_pitch(sndPlasmaHit,random_range(.6,.8))
-if !skill_get(17)sound_play_pitch(sndLaser,random_range(.5,.6)) else sound_play_pitch(sndLaserUpg,random_range(.4,.5))
+sound_play_pitch(sndLaser,random_range(.5,.6))
 sound_play_pitch(sndExplosionS,random_range(1.2,1.5))
 repeat(ammo)
 {

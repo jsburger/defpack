@@ -112,6 +112,16 @@ return 0
 //cool iris synergies
 if skill_get("prismatic iris")
 {
+  if skill_get(21)
+  {
+    if global.color = 3
+    {
+      with instances_matching(CustomProjectile,"name","Psy Bullet")
+      {
+        if timer = 0{timer = -500;force = 3;range = 240}
+      }
+    }
+  }
   if skill_get(15)
   {
     if global.color = 6
@@ -122,13 +132,20 @@ if skill_get("prismatic iris")
         flag = "i have seen the truth"
       }
     }
-    with instances_matching("CustomProjectile","name","Bouncer Bullet Flak")
+    with instances_matching(CustomProjectile,"name","Bouncer Bullet Flak")
     {
       if "flag" not in self
       {
         flag = "i have seen the truth"
         bounce += 2
-        trace("yes",bounce)
+      }
+    }
+    with instances_matching(CustomProjectile,"name","hyper bouncer")
+    {
+      if "flag" not in self
+      {
+        flag = "i have seen the truth"
+        bounce += 2
       }
     }
   }

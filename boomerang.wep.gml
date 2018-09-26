@@ -8,7 +8,7 @@ return "BOOMERANG";
 return 4;
 
 #define weapon_cost
-return 0;
+return 1;
 
 #define weapon_area
 return -1;
@@ -30,49 +30,62 @@ return false;
 
 #define weapon_fire
 sound_play(sndChickenThrow)
-with instance_create(x,y,CustomSlash)
+with instance_create(x,y,CustomObject)
 {
-  canfix = false
   team = other.team
   creator = other
   sprite_index = global.sprboomerang
-  mask_index = sprEnemyBullet1
+  mask_index   = sprEnemyBullet1
   image_speed = 0
-  damage = 4
   curse = other.curse
   other.wep = 0
-  maxspeed = 9 + skill_get(13)*3
+  maxspeed = 14 + skill_get(13)*4
   phase = 0
-  friction = .4
+  friction = 1
   lasthit = -4
-  motion_add(other.gunangle,12)
-  on_projectile = boom_proj
+  motion_add(other.gunangle,18)
   on_step       = boom_step
-  on_wall       = boom_wall
-  on_hit         = boom_hit
   with instance_create(x,y,MeleeHitWall){image_angle = other.direction-180}
 }
-
-#define boom_proj
-if other.team != team with other instance_destroy()
 
 #define boom_step
 if instance_exists(creator){if current_frame mod 6 = 0{sound_play_pitchvol(sndAssassinAttack,random_range(.9,1.1),.6*(1-distance_to_object(creator)/200))}}
 with Pickup
 {
-   if place_meeting(x,y,other)
-   {
-     x = other.x
-     y = other.y
-   }
+  if place_meeting(x,y,other) && ("rang" not in self || ("rang" in self && rang != other.id)){rang = other.id}
+  if "rang" in self{if instance_exists(rang){x = rang.x;y = rang.y}}
 }
 with chestprop
 {
-  if self != GiantAmmoChest && self != GiantWeaponChest
+  if self != GiantAmmoChest && self != GiantWeaponChest && self != BigCursedChest && self != BigWeaponChest
+  if place_meeting(x,y,other) && ("rang" not in self || ("rang" in self && rang != other.id)){rang = other.id}
+  if "rang" in self{if instance_exists(rang){x = rang.x;y = rang.y}}
+}
+with instances_matching_ne(hitme,"team",other.team)
+{
   if place_meeting(x,y,other)
   {
-    x = other.x
-    y = other.y
+    if projectile_canhit(other) = true
+    {
+      with other
+      {
+        if lasthit != other
+        {
+          lasthit = other
+          sound_play(sndExplosionS)
+          var meetx = (x + other.x)/2;
+          var meety = (y + other.y)/2;
+          instance_create(meetx,meety,SmallExplosion)
+        }
+      }
+    }
+  }
+}
+with instances_matching_ne(projectile,"team",other.team)
+{
+  if place_meeting(x,y,other)
+  {
+    with other if other.team != team with other instance_destroy()
   }
 }
 if curse = true{instance_create(x+random_range(-2,2),y+random_range(-2,2),Curse)}
@@ -97,38 +110,41 @@ else//return to player
       if creator.bwep = 0{sleep(30);sound_play(sndSwapHammer);instance_create(x,y,WepSwap);creator.bwep = mod_current;instance_destroy();exit}
       //zphase = 2//not homing anymore
     }
+    if creator.mask_index != mskNothing && place_meeting(x,y,Portal)
+    {
+      if creator.wep  = 0{sleep(30);sound_play(sndSwapHammer);instance_create(x,y,WepSwap);creator.wep = mod_current;instance_destroy();exit}
+      if creator.bwep = 0{sleep(30);sound_play(sndSwapHammer);instance_create(x,y,WepSwap);creator.bwep = mod_current;instance_destroy();exit}
+      //zphase = 2//not homing anymore
+    }
   }
+}
+if place_meeting(x+hspeed,y+vspeed,Wall)
+{
+  phase = 1
+  lasthit = -4
+  var _y = false;
+  if instance_exists(creator){if !collision_line(x,y,creator.x,creator.y,Wall,0,0){_y = true}}else{_y = true}
+  if _y = false
+  {
+    with instance_create(x,y,ThrownWep)
+    {
+      sprite_index = other.sprite_index
+      wep = mod_current
+      curse = other.curse
+      motion_add(other.direction-180+random_range(-30,30),other.speed*.3)
+      team = other.team
+      creator = other.creator
+    }
+    sound_play(sndExplosionS)
+    var meetx = (x + other.x)/2;
+    var meety = (y + other.y)/2;
+    instance_create(meetx,meety,SmallExplosion)
+    instance_destroy()
+    exit
+  }
+  else{speed = 0}
 }
 if speed > maxspeed speed = maxspeed
-
-#define boom_wall
-phase = 1
-lasthit = -4
-var _y = false;
-if instance_exists(creator){if !collision_line(x,y,creator.x,creator.y,Wall,0,0){_y = true}}else{_y = true}
-if _y = false
-{
-  with instance_create(x,y,ThrownWep)
-  {
-    sprite_index = other.sprite_index
-    wep = mod_current
-    curse = other.curse
-    motion_add(other.direction-180+random_range(-30,30),other.speed*.3)
-    team = other.team
-    creator = other.creator
-  }
-  sound_play(sndExplosionS)
-  instance_create(x,y,SmallExplosion)
-  instance_destroy()
-}
-
-#define boom_hit
-if lasthit != other
-{
-  lasthit = other
-  sound_play(sndExplosionS)
-  instance_create(x,y,SmallExplosion)
-}
 
 #define weapon_sprt
 return global.sprboomerang

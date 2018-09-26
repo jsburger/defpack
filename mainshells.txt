@@ -31,7 +31,7 @@
 
 /loadwep popper
 /loadwep big shotgun
-/loadwep dynamic slugger
+/loadwep wide slugger
 /loadwep apergig tanat
 /loadwep tsunami
 /loadwep flechette shotgun
