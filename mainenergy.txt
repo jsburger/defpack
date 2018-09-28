@@ -30,6 +30,7 @@
 
 //OTHER ENERGY
 
+/loadwep lightning wheel
 /loadwep energy gun
 /loadwep stopwatch
 

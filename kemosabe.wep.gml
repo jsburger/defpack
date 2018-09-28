@@ -14,7 +14,7 @@ return 1;
 return true;
 
 #define weapon_load
-return 2;
+return 3;
 
 #define weapon_cost
 return 1;
@@ -40,6 +40,7 @@ with instance_create(x,y,Shell){
 }
 with instance_create(x,y,CustomProjectile)
 {
+		typ = 1
     damage = 3
     force = 5
     team = other.team
@@ -64,7 +65,7 @@ if image_index = 1 image_speed = 0
 #define kemosabe_hit
 if projectile_canhit(other) = true
 {
-  if irandom(29-(skill_get(6)*5)) = 0 && can_crit = 1
+  if irandom(34-(skill_get(6)*5)) = 0 && can_crit = 1
   {
     can_crit = 0
     mod_script_call("mod","defpack tools","crit")

@@ -1,5 +1,5 @@
  #define init
-global.sprEnergyGun = sprite_add_weapon("sprites/Energy Gun.png", 5, 2);
+global.sprEnergyGun = sprite_add_weapon("sprites/Energy Gun.png", 6, 4);
 
 #define weapon_name
 return "ENERGY GUN"
@@ -29,52 +29,26 @@ return 10;
 return "CATASTROPHIC";
 
 #define weapon_fire
-
-sound_play(sndLaser)
-sound_play(sndLightningPistol)
-sound_play(sndPlasma)
+sleep(20)
+var _p = random_range(.8,1.2)
+sound_play_pitch(sndLaser,.3*_p)
+if !skill_get(17)
+{
+  sound_play_pitch(sndUltraLaser,1.5*_p)
+  sound_play_pitch(sndPlasma,.7*_p)
+}
+else
+{
+  sound_play_pitch(sndUltraLaserUpg,1.5*_p)
+  sound_play_pitch(sndPlasmaUpg,.7*_p)
+}
 weapon_post(9,-10,16)
-
-
-
-
-/*repeat(2)
-{
-	with instance_create(x,y,Laser)
-	{
-		team = other.team
-		creator = other
-		image_angle = other.gunangle+random_range(-10,10)*other.accuracy
-		event_perform(ev_alarm,0)
-	}
-}
-with instance_create(x,y,PlasmaBall)
-{
-	team = other.team
-	motion_add(other.gunangle+random_range(-7,7)*other.accuracy,12)
-	image_angle = direction
-	creator = other
-}
-repeat(4)
-{
-	with instance_create(x,y,Lightning)
-	{
-		team = other.team
-		ammo = choose(9,12,15,18)
-		image_angle = other.gunangle+random_range(-34,34)*other.accuracy
-		event_perform(ev_alarm,0)
-	}
-}*/
-
 with lightning_create(x,y,12,gunangle+random_range(-10,10)){
     team = other.team
     creator = other
     lightning_grow();
 }
-
-
-
-
+motion_add(gunangle-180,2)
 //yokin is truly defpacks greatest ally
 #define lightning_create(_x, _y, _ammo, _direction)
     with(instance_create(_x, _y, CustomProjectile)){
@@ -82,6 +56,7 @@ with lightning_create(x,y,12,gunangle+random_range(-10,10)){
 
         sprite_index = sprLightning;
         mask_index = mskLaser;
+        image_alpha = 0
         image_speed = (skill_get(mut_laser_brain) ? 0.3 : 0.4);
         direction = _direction;
         image_angle = direction;
@@ -96,7 +71,7 @@ with lightning_create(x,y,12,gunangle+random_range(-10,10)){
         on_hit = lightning_hit;
         on_anim = lightning_anim;
 
-        timer = 5
+        timer = 1
 
         return id;
     }
@@ -108,16 +83,34 @@ with lightning_create(x,y,12,gunangle+random_range(-10,10)){
     }
     timer -= current_time_scale
     if timer<= 0{
-        with instance_create(x,y,Laser){
-            image_angle = random(360)
+        with instance_create(x,y,Laser)
+        {
+          image_angle = random(360)
+          team = other.team
+          creator = other.creator
+          image_yscale = other.image_yscale
+          with instance_create(x,y,PlasmaImpact)
+          {
+            s = choose(.5,.75)
+            image_xscale = s
+            image_yscale = s
             team = other.team
             creator = other.creator
-            image_yscale = other.image_yscale
-            event_perform(ev_alarm,0)
-            with instance_create(x,y,PlasmaImpact){
-                team = other.team
-                creator = other.creator
-            }
+          }
+          with instance_create(x+random_range(-30,30),y+random_range(-30,30),PlasmaImpact)
+          {
+            s = .25
+            image_xscale = s
+            image_yscale = s
+            team = other.team
+            creator = other.creator
+          }
+          event_perform(ev_alarm,0)
+          with instance_create(x,y,PlasmaImpact)
+          {
+            team = other.team
+            creator = other.creator
+          }
         }
         instance_destroy()
     }
@@ -161,7 +154,7 @@ with lightning_create(x,y,12,gunangle+random_range(-10,10)){
         var _dis = image_xscale / 2,
             _dir = image_angle;
 
-        instance_create(x + lengthdir_x(_dis, _dir), y + lengthdir_y(_dis, _dir), LightningHit);
+        //instance_create(x + lengthdir_x(_dis, _dir), y + lengthdir_y(_dis, _dir), LightningHit);
     }
 
 #define lightning_draw
@@ -174,6 +167,7 @@ with lightning_create(x,y,12,gunangle+random_range(-10,10)){
     draw_set_blend_mode(bm_normal);
 
 #define lightning_hit
+/*
     if(projectile_canhit_melee(other)){
          // Hit:
         projectile_hit(other, damage, force, image_angle);
@@ -182,6 +176,7 @@ with lightning_create(x,y,12,gunangle+random_range(-10,10)){
         instance_create(x, y, Smoke);
         sound_play(sndLightningHit);
     }
-
+*/
+if other.team != team other.speed = 0
 #define lightning_anim
     instance_destroy();

@@ -28,7 +28,38 @@ makethegunsprites()
 global.gunmap = ds_map_create()
 var a = global.gunmap;
 
-///REGULAR/// sprites for these look fine to me
+//PROJECTILES
+global.sprShot 		  = sprite_add("sprites/sak/projectiles/sprShot.png",2,8,8);
+global.sprPsyShot   = sprite_add("sprites/sak/projectiles/sprPsyShot.png",2,8,8);
+global.sprFireShot  = sprite_add("sprites/sak/projectiles/sprFireShot.png",2,8,8);
+global.sprUltraShot = sprite_add("sprites/sak/projectiles/sprUltraShot.png",2,8,8);
+global.sprSplitShot = sprite_add("sprites/sak/projectiles/sprSplitShot.png",2,8,8);
+global.sprSuperShot      = sprite_add("sprites/sak/projectiles/sprSuperShot.png",2,12,12);
+global.sprSuperPsyShot   = sprite_add("sprites/sak/projectiles/sprSuperPsyShot.png",2,12,12);
+global.sprSuperFireShot  = sprite_add("sprites/sak/projectiles/sprSuperFireShot.png",2,12,12);
+global.sprSuperUltraShot = sprite_add("sprites/sak/projectiles/sprSuperUltraShot.png",2,12,12);
+global.sprSuperSplitShot = sprite_add("sprites/sak/projectiles/sprSuperSplitShot.png",2,12,12);
+global.sprSuperHeavyShot      = sprite_add("sprites/sak/projectiles/sprSuperHeavyShot.png",2,18,18);
+global.sprSuperHeavySplitShot = sprite_add("sprites/sak/projectiles/sprSuperHeavySplitShot.png",2,18,18);
+global.sprFlak      = sprFlakBullet
+global.sprPsyFlak   = sprite_add("sprites/sak/projectiles/sprPsyFlak.png",2,8,8);
+global.sprFireFlak  = sprite_add("sprites/sak/projectiles/sprFireFlak.png",2,8,8);
+global.sprUltraFlak = sprite_add("sprites/sak/projectiles/sprUltraFlak.png",2,8,8);
+global.sprSplitFlak = sprite_add("sprites/sak/projectiles/sprSplitFlak.png",2,8,8);
+global.sprSuperFlak      = sprite_add("sprites/sak/projectiles/sprSuperFlak.png",2,12,12);
+global.sprSuperPsyFlak   = sprite_add("sprites/sak/projectiles/sprSuperPsyFlak.png",2,12,12);
+global.sprSuperFireFlak  = sprite_add("sprites/sak/projectiles/sprSuperFireFlak.png",2,12,12);
+global.sprSuperUltraFlak = sprite_add("sprites/sak/projectiles/sprSuperUltraFlak.png",2,12,12);
+global.sprSuperSplitFlak = sprite_add("sprites/sak/projectiles/sprSuperSplitFlak.png",2,12,12);
+global.sprSuperHeavyFlak      = sprite_add("sprites/sak/projectiles/sprSuperHeavyFlak.png",2,18,18);
+global.sprSuperHeavySplitFlak = sprite_add("sprites/sak/projectiles/sprSuperHeavySplitFlak.png",2,18,18);
+global.sprFlakHit      = sprFlakHit
+global.sprPsyFlakHit   = sprite_add("sprites/sak/projectiles/sprPsyFlakHit.png",9,8,8);
+global.sprFireFlakHit  = sprite_add("sprites/sak/projectiles/sprFireFlakHit.png",9,8,8);
+global.sprUltraFlakHit = sprite_add("sprites/sak/projectiles/sprUltraFlakHit.png",9,8,8);
+global.sprSplitFlakHit = sprite_add("sprites/sak/projectiles/sprSplitFlakHit.png",9,8,8);
+
+///REGULAR///
 a[? "shotgun"]	         = sprShotgun
 a[? "double shotgun"]    = sprSuperShotgun
 a[? "sawed-off shotgun"] = sprSawnOffShotgun

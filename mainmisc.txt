@@ -4,7 +4,7 @@
 ///MELEE//
 /loadwep toothbrush
 /loadwep bone
-/loadwep mega Bone
+/loadwep big bone
 /loadwep auto screwdriver
 /loadwep chris knife
 /loadwep comboweps/rapier
@@ -52,11 +52,12 @@
 /load iris
 
 ///TODO///
+/loadwep geysir
 /loadwep ultra claymore
-/loadwep screecher
 /loadwep antiprism
 /loadwep sak
 /loadwep stopwatch
 /loadwep herald
 /loadwep finished stuff/andromeda launcher
-/loadwep energy gun
+/loadwep golden abris pistol
+/loadwep geysir

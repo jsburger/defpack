@@ -62,7 +62,6 @@ repeat(3)
 			force    = 5
 			damage   = 6
 			friction = 2+1.1*(i-1)
-			pierce   = 3 + GameCont.loops
 			sprite_index = global.sprShieldBullet
 			motion_add(other.gunangle+(random_range(-1,1)* other.accuracy+13*j*(i-1)),28)
 			image_angle = direction
@@ -101,8 +100,6 @@ if team != other.team
 	sound_play_pitchvol(sndShielderDeflect,random_range(1.8,2.2),.4)
 	view_shake_at(x,y,4)
 	with other{instance_destroy()}
-	pierce--
-	if pierce < 0{instance_destroy()}
 }
 
 #define def_hit

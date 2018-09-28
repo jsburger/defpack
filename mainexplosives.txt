@@ -9,7 +9,6 @@
 /loadwep auto abris launcher
 /loadwep super abris launcher
 /loadwep blood abris launcher
-/loadwep plasma abris launcher
 
 //ROCKLET
 
@@ -28,8 +27,7 @@
 /loadwep screecher
 
 //MINI EXPLOSIONS
-
-/loadwep finished stuff/heavy flare gun
+/loadwep finished stuff/flechette bazooka
 
 //DRILL
 
