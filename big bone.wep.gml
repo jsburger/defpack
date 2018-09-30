@@ -2,7 +2,7 @@
 global.sprBone = sprite_add_weapon("sprites/sprMegaBone.png",8,6)
 
 #define weapon_name
-return "MEGA BONE"
+return "BIG BONE"
 #define weapon_type
 return 0
 #define weapon_cost
@@ -47,8 +47,10 @@ with instance_create(x+lengthdir_x(length,gunangle),y+lengthdir_y(length,gunangl
 	on_wall = bone_wall
 	on_anim = bone_anim
 }
+
 #define weapon_sprt
 return global.sprBone
+
 #define weapon_text
 return "UNHOLY"
 

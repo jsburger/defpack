@@ -31,7 +31,8 @@ return 14;
 return choose("BREAKTHROUGH","BE CAREFUL WITH IT");
 
 #define weapon_fire
-weapon_post(10,-25,6)
+weapon_post(12,-150,16)
+sleep(50)
 sound_play_pitch(sndHeavyCrossbow,random_range(.6,.8))
 sound_play_pitch(sndLaserCrystalHit,random_range(1.5,1.6))
 sound_play_pitch(sndHyperCrystalHurt,random_range(1.5,1.6))

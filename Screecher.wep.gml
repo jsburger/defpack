@@ -32,9 +32,13 @@ return 0;
 return "MAGIC REFLECTION";
 
 #define weapon_fire
-sound_play_pitch(sndGruntDeadM,1.2)
-sound_play_pitch(sndGruntDeadF,.8)
+var _p = random_range(.8,1.2);
+sound_play_pitch(sndFreakPopoHurt,.8*_p)
+sound_play_pitch(sndFreakPopoRevive,1.8*_p)
+sound_play_pitch(sndFreakPopoReviveArea,1.8*_p)
+sound_play_pitch(snd_hurt,2*_p)
 weapon_post(6,0,1)
+sleep(50)
 var ang = gunangle
 var x1 = x, y1 = y
 with mod_script_call("mod","defpack tools","create_sonic_explosion",x1+lengthdir_x(16,ang),y1+lengthdir_y(16,ang))

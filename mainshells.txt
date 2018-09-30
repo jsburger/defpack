@@ -19,8 +19,6 @@
 
 /loadwep shot cannon
 /loadwep hot shot cannon
-/loadwep psy shot cannon
-
 
 //FLAK CANNON
 
