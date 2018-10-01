@@ -30,17 +30,18 @@ return "HURRICANE";
 
 #define weapon_fire
 if fork(){
-    sound_play_pitch(sndToxicBoltGas,.85)
-    sound_play_pitch(sndRocket,2)
-    repeat(5 + (1 * (GameCont.crown == crwn_death))) if instance_exists(self){
+    sound_play_pitchvol(sndToxicBoltGas,.85,.7)
+    sound_play_pitchvol(sndRocket,2,.7)
+    repeat(6 + (1 * (GameCont.crown == crwn_death))) if instance_exists(self){
         weapon_post(7,-7,4)
-        sound_play_pitch(sndHeavySlugger,1.5)
+        var vol = random_range(.5,.7)
+        sound_play_pitchvol(sndHeavySlugger,1.5,vol)
         sound_play_pitch(sndServerBreak,random_range(.4,.5))
-        sound_play_pitch(sndRocketFly,4)
-        sound_play_pitch(sndSodaMachineBreak,3)
+        sound_play_pitchvol(sndRocketFly,4,vol)
+        sound_play_pitchvol(sndSodaMachineBreak,3,vol)
         sound_play_pitch(sndComputerBreak,random_range(.5,.6))
-        sound_play_pitch(sndSuperSplinterGun,2)
-        sound_play_pitch(sndSeekerShotgun,.2)
+        sound_play_pitchvol(sndSuperSplinterGun,2,vol)
+        sound_play_pitchvol(sndSeekerShotgun,.2,vol)
         repeat(3)with instance_create(x+lengthdir_x(10,gunangle),y+lengthdir_y(10,gunangle),Dust){
             motion_set(other.gunangle+choose(0,60,-60,0,0)+random_range(-15,15),sqr(1.8+random(1)))
         }

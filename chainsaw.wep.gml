@@ -38,18 +38,10 @@ if !instance_exists(creator){instance_destroy();exit}
 if ammo > 0 && current_frame_active
 {
 	ammo--
-	with instance_create(creator.x+lengthdir_x(6+(6*skill_get(13)),creator.gunangle),creator.y+lengthdir_y(6+(6*skill_get(13)),creator.gunangle),CustomProjectile)
-	{
-		with other.creator
-		{
-			sound_play_pitch(sndJackHammer,random_range(1.8,2))
-			sound_play_pitch(sndSwapMotorized,random_range(1.5,1.6))
-			weapon_post(-6 - (6*skill_get(13)),6,0)
-		}
-	}
 	with creator
 	{
-		sound_play_pitch(sndJackHammer,random_range(1.6,1.8))
+		sound_play_pitch(sndJackHammer,random_range(1.8,2))
+		sound_play_pitch(sndSwapMotorized,random_range(1.5,1.6))
 		weapon_post(0,6,0)
 		if other.bwep{
 			bwkick = -6 - 6*skill_get(13) + random_range(-1,1)

@@ -4,9 +4,6 @@ global.sprBigIron = sprite_add_weapon("sprites/sprBigIron.png", 2, 4);
 #define weapon_name
 return "BIG IRON"
 
-#define weapon_sprt_hud
-return sprShotgun
-
 #define weapon_sprt
 return global.sprBigIron;
 
