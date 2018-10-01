@@ -188,9 +188,9 @@ do
 		{
 			if other.lasthit != self
 			{
-				projectile_hit(self,other.damage,other.force,other.direction)
 				with other
 				{
+				    projectile_hit(other,damage,force,direction)
 					lasthit = other
 					dd += 20
 					view_shake_at(x,y,12)

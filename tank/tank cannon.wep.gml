@@ -98,9 +98,9 @@ do
 	{
 		if distance_to_object(other) <= 4
 		{
-			projectile_hit(self,other.damage,other.force,other.direction)
 			with other
 			{
+			    projectile_hit(other,damage,force,direction)
 			    instance_destroy()
 			    exit
 			}

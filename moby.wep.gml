@@ -142,7 +142,6 @@ do
 	{
 		if distance_to_object(other) <= 4
 		{
-			projectile_hit(self,other.damage,other.force,other.direction)
 			if other.recycle{
 			    instance_create(x,y,RecycleGland)
 			    sound_play(sndRecGlandProc)
@@ -150,8 +149,11 @@ do
 			        ammo[1] = min(ammo[1]+1,typ_amax[1])
 			    }
 			}
-			with other instance_destroy()
-			exit
+			with other{
+			    projectile_hit(other,damage,force,direction)
+			    instance_destroy()
+			    exit
+			}
 		}
 	}
   if place_meeting(x+lengthdir_x(hyperspeed,direction),y+lengthdir_y(hyperspeed,direction),Wall)

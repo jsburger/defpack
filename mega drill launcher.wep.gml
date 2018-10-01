@@ -126,13 +126,13 @@ else{
 #define drill_explo
 var _meetx = (x + other.x)/2;
 var _meety = (y + other.y)/2;
-with instance_create(_meetx+random_range(-6,6),_meety+random_range(-6,6),SmallExplosion){
-    image_xscale = .5
-    image_yscale = .5
-    damage = 1
+with instance_create(_meetx+random_range(-12,12),_meety+random_range(-12,12),SmallExplosion){
+    //image_xscale = .5
+    //image_yscale = .5
+    //damage = 1
     team = other.team
-    sound_play_pitchvol(sndExplosionS,2,.5)
-    hitid = [sprite_index,"MINI EXPLOSION"]
+    sound_play_pitchvol(sndExplosion,1,.5)
+    //hitid = [sprite_index,"MINI EXPLOSION"]
 }
 drill_hit()
 
