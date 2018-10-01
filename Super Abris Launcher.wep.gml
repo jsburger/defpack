@@ -1,5 +1,5 @@
 #define init
-global.sprSuperAbrisLauncher = sprite_add_weapon("sprites/sprSuperAbrisLauncher.png", 1, 4);
+global.sprSuperAbrisLauncher = sprite_add_weapon("sprites/sprSuperAbrisLauncher.png", 3, 4);
 global.sprDanger 						 = sprite_add("sprites/projectiles/Danger.png",0,1,29);
 global.stripes 							 = sprite_add("defpack tools/BIGstripes.png",1,1,1)
 

@@ -43,6 +43,7 @@ with instance_create(x+lengthdir_x(4,gunangle),y+lengthdir_y(4,gunangle),CustomP
   on_hit = bouncerdisc_hit
   on_wall = bouncerdisc_wall
   on_destroy = bouncerdisc_destroy
+  hitid = [sprite_index,name]
 }
 
 #define bouncerdisc_step
@@ -54,6 +55,7 @@ if speed > 0 and skill_get(21) = 1 and point_distance(x,y,dir.x,dir.y) < 32
 {
 x += lengthdir_x(1,point_direction(x,y,dir.x,dir.y))
 y += lengthdir_y(1,point_direction(x,y,dir.x,dir.y))}
+if place_meeting(x,y,Player){other.lasthit = hitid}
 }
 
 #define bouncerdisc_hit

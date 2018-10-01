@@ -1,6 +1,6 @@
 #define init
 global.sprBlaster 		  = sprite_add_weapon("sprites/sprBlaster.png",7,5)
-global.sprBlasterRocket = sprite_add("sprites/projectiles/sprBlasterRocket.png",0,10,6) //"ROCKET"
+global.sprBlasterBomb   = sprite_add("sprites/projectiles/sprBlasterBomb.png",4,12,12) //"ROCKET"
 return "BUSTER"
 
 #define weapon_sprt
@@ -33,11 +33,11 @@ sound_play_pitch(sndRocketFly,random_range(2,2.2))
 sound_play_pitch(sndGrenadeShotgun,random_range(.7,.8))
 sound_play_pitch(sndHeavyNader,random_range(1.6,1.8))
 sound_play_pitchvol(sndHeavySlugger,random_range(.6,.7),1)
-weapon_post(7,0,24)
+weapon_post(9,-20,24)
 
 with instance_create(x,y,CustomProjectile)
 {
-    move_contact_solid(other.gunangle,16)
+  move_contact_solid(other.gunangle,16)
 	team = other.team
 	creator = other
 	typ = 1
@@ -61,7 +61,7 @@ with instance_create(x,y,CustomProjectile)
 			motion_add(other.direction+random_range(-15,15),random_range(2,3))
 		}
 	}
-	sprite_index = global.sprBlasterRocket
+	sprite_index = global.sprBlasterBomb
 	on_step 	 = blaster_step
 	on_hit 		 = blaster_hit
 	on_wall    = blaster_wall

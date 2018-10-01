@@ -23,6 +23,5 @@
 /loadwep hot crossbow
 /loadwep heavy toxic crossbow
 /loadwep hyper crossbow
-/loadwep bolt gun
 
 /load mainexplosives

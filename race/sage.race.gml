@@ -5,13 +5,11 @@ global.handbotslct = sprite_add("handbotslct.png",1,0,0)
 
 global.gunIdle = sprite_add("sprGunIdle.png",6,12,12)
 global.gunWalk = sprite_add("sprGunWalk.png",6,12,12)
+global.gunHurt = sprite_add("sprGunHurt.png",3,12,12)
+global.gunDie  = sprite_add("sprGunHurt.png",6,12,12)
 global.gunSlct = sprite_add("sprGunSlct.png",1,0,0)
-global.gunMap =  sprite_add("sprGunMapIcon.png",2,10,8)
+global.gunMap  =  sprite_add("sprGunMapIcon.png",2,10,8)
 global.gunLoad =  sprite_add("sprGunSkin.png",2,10,8)
-
-//replace me with custom not sonic explosions
-global.sprSonicExplosion = sprite_add("../defpack tools/Soundwave_strip8.png",8,61,59);
-global.mskSonicExplosion = sprite_add("../defpack tools/mskSonicExplosion_strip9.png",9,32,32);
 
 global.purblue = make_color_rgb(72,61,135)
 global.darkteal = make_color_rgb(1,68,65)
@@ -31,6 +29,9 @@ global.protowep = wep_rusty_revolver
 
 global.spells = ds_map_create()
 global.spellnames = []
+
+global.sprReflect = sprite_add("sprReflect.png",3,90,90)
+global.mskReflect = sprite_add("mskReflect.png",3,90,90)
 
 //dev spells
 //add_spell("Drain Mana",NA,scr(cheat1),NA,NA,1,sprite_add("sprShield.png",2,8,7),sprite_add("ShieldBlob.png",1,3,3))
@@ -71,12 +72,16 @@ array_push(global.spellnames,name)
 #define draw_hud
 with Player if race = mod_current && player_is_local_nonsync(index){
     var _x = view_xview_nonsync + 20;
-    var _y = view_yview_nonsync + 16;
+    var _y = view_yview_nonsync + 4;
     var width = 86;
     if curp() > 1 _x -= 17
-    draw_line_width_color(_x-1,_y+.5,_x+1+width,_y+.5,5,c_black,c_black)
-    draw_line_width_color(_x, _y, _x + width, _y, 2, c_dkgray, c_dkgray)
-    draw_line_width_color(_x, _y, _x+(hand.mana/maxmana) * width, _y, 2, shinetime > 0 ? c_white : global.purblue, shinetime > 0 ? c_white : merge_color(c_aqua,global.purblue,1-hand.mana/maxmana))
+    draw_line_width_color(_x-1,_y-.5,_x+width+1,_y-.5,5,c_black,c_black)
+    draw_line_width_color(_x,_y-1,_x+width,_y-1,2,c_white,c_white)
+    draw_line_width_color(_x+.5,_y-2,_x+.5,_y+3,1,c_white,c_white)
+    draw_line_width_color(_x+ width-.5,_y-2,_x+ width-.5,_y+3,1,c_white,c_white)
+    draw_line_width_color(_x+1, _y, _x + width-1, _y, 2, c_dkgray, c_dkgray)
+    draw_line_width_color(_x+1, _y, _x+max((hand.mana/maxmana) * (width-1),1), _y, 2, shinetime > 0 ? c_white : global.purblue, shinetime > 0 ? c_white : merge_color(c_aqua,global.purblue,1-hand.mana/maxmana))
+    //draw_line_width_color(_x+1,_y-.5,_x+width-1,_y-.5,1,c_black,c_black)//you could leave that one out i guess
 }
 
 #define game_start
@@ -127,10 +132,10 @@ switch (argument0){
 return choose("A NEW WORLD", `COLLECTING @yPICKUPS@s GIVES YOU @(color:${global.purblue})MANA@s`, "FASCINATING @wWEAPONRY@s")
 
 #define create
-	spr_idle = global.gunIdle
+	spr_idle = global.gunIdle;
 	spr_walk = global.gunWalk;
-	spr_hurt = sprLilHunterHurt;
-	spr_dead = sprLilHunterDead;
+	spr_hurt = global.gunHurt;
+	spr_dead = global.gunDie;
 
 	snd_hurt = sndStreetLightBreak;
 	snd_dead = sndStreetLightBreak;
@@ -146,14 +151,14 @@ return choose("A NEW WORLD", `COLLECTING @yPICKUPS@s GIVES YOU @(color:${global.
 	snd_crwn = sndCrownGuns;
 	snd_valt = sndGoldChest;
 	snd_idpd = snd_cptn;
-	
+
 	controlprompted = 0
 	hastetime = 0
 	shinetime = 0
-	
+
 	var _x = x,
 	    _y = y;
-	
+
 	hand = {
 	    mana : maxmana,
 	    gx : _x,
@@ -183,7 +188,7 @@ return instances_matching_gt(instances_matching_lt(instances_matching_gt(instanc
 
 #define step
 for var i = 0; i< array_length_1d(global.drawers); i++{
-    if !instance_exists(global.drawers[i]) 
+    if !instance_exists(global.drawers[i])
         with script_bind_draw(nothing,global.depths[i]){
             persistent = 1
             global.drawers[i] = id
@@ -205,17 +210,18 @@ for var i = 0; i< array_length_1d(global.drawers); i++{
         }
     }
     hand.mana = min(hand.mana + wantmana,maxmana)
-    
+
     if shinetime > 0{
         shinetime = max(shinetime-current_time_scale,0)
     }
     if wantmana > 0 shinetime = 5
-    
-    
+
+
     if hastetime > 0{
         hastetime = max(hastetime-current_time_scale,0)
         if hastetime = 0{
             maxspeed -= 1 + skill_get(mut_throne_butt)*.5
+            accuracy *= (1.25+skill_get(mut_throne_butt)*.15)
         }
         if current_frame_active with instance_create(x,y,CustomObject){
             sprite_index = other.sprite_index
@@ -240,17 +246,17 @@ for var i = 0; i< array_length_1d(global.drawers); i++{
     if h.resettime <= 0{
         var ang = point_direction(h.x,h.y,h.gx,h.gy);
         var dis = point_distance(h.gx,h.gy,h.x,h.y);
-        
+
         h.x += lengthdir_x((dis/4)*current_time_scale,ang)
         h.y += lengthdir_y((dis/4)*current_time_scale,ang)
         h.right = -sign(h.x-x)
         h.angle = 90 - 90*h.right
-        
-        h.col = global.purblue
-    
+
+        h.col = merge_colour(global.purblue,c_black,.7)
+
         h.gx = x + (h.xoff - 10)*right
         h.gy = y + h.yoff - 16
-        
+
         if random(100) < 2*current_time_scale{
             h.dir = random(360)
             h.move = irandom_range(4,10)
@@ -268,13 +274,13 @@ for var i = 0; i< array_length_1d(global.drawers); i++{
                 h.dir -= angle_difference(h.dir,point_direction(h.xoff,h.yoff,0,0))*current_time_scale/3
             }
         }
-        
+
         h.index = 0
     }
     else h.resettime -= current_time_scale
-    
+
     hand = h
-    
+
     if canspec && hand.spell != "No Spell"{
         if button_pressed(index,"spec"){
             var array = global.spells[? h.spell][1];
@@ -348,7 +354,7 @@ with instances_matching(Player,"race",mod_current){
             break
         }
     }
-    
+
     if button_pressed(index,btn){
         hand.menulength = .1
         if controlprompted = 0 {
@@ -384,17 +390,17 @@ with instances_matching(Player,"race",mod_current){
             var col = pointed? c_white : c_gray;
             var _x = xc + lengthdir_x(40,a), _y = yc + lengthdir_y(40,a);
             var size = 1
-            
+
             var ang = (a + int/2)
             draw_line_width_color(xc + lengthdir_x(50, ang),yc + lengthdir_y(50, ang),xc + lengthdir_x(10, ang),yc + lengthdir_y(10, ang),1,c_white,c_white)
-            
+
             draw_sprite_ext(global.spells[? picks[num]][6], pointed, _x, _y, size, size, 0, col, l)
-            
+
             draw_set_font(fntSmall)
             draw_set_halign(1)
             draw_set_color(col)
             draw_text_shadow(_x,_y + 10,picks[num])
-            
+
             if pointed && button_released(index,btn){
                 hand.spell = picks[num]
                 hand.sprite = global.spells[? picks[num]][7]
@@ -470,7 +476,7 @@ hand.mana = max(hand.mana - current_time_scale*2,0)
 hand.mana = min(hand.mana + current_time_scale*2, maxmana)
 
 #define rapid_channel
-if hand.mana >= 1.5*current_time_scale{
+if hand.mana >= 1.5*current_time_scale && weapon_get_type(wep) != 0{
     hand.gx = x + lengthdir_x(15,gunangle+30*right) + hspeed
     hand.gy = y + lengthdir_y(15,gunangle+30*right) - 5 + vspeed
     hand.col = c_white
@@ -528,6 +534,7 @@ if hand.mana >= 50{
     hand.mana -= 50
     if hastetime = 0{
         maxspeed += 1 + skill_get(mut_throne_butt)*.5
+        accuracy /= (1.25+skill_get(mut_throne_butt)*.15)
     }
     hastetime += 300
     hand.resettime = 10
@@ -544,8 +551,9 @@ if hand.mana >= 50{
 
 
 #define shield_cast
-if hand.mana >= 30{
-    hand.mana -= 30
+if hand.mana >= 6{
+    hand.mana -= 0//6
+    speed = 0
     with instance_create(x,y,CustomSlash){
         on_projectile = shine_proj
         on_grenade = shine_grenade
@@ -555,9 +563,9 @@ if hand.mana >= 30{
         image_speed = 1
         image_xscale = .5
         image_yscale = .5
-        image_blend = global.purblue
-        sprite_index = global.sprSonicExplosion
-        mask_index = global.mskSonicExplosion
+        //image_blend  = global.purblue
+        sprite_index = global.sprReflect
+        mask_index   = global.mskReflect
     }
 }
 
@@ -568,7 +576,7 @@ with other{
 		direction = point_direction(other.x,other.y,x,y)
 		image_angle = direction
 		with instance_create(x,y,Deflect) image_angle = other.image_angle
-		sound_play(sndShielderDeflect)
+		sound_play_pitch(sndShielderDeflect,1.5*random_range(.8,1.2))
 	}
 	if typ = 2 || typ = 3{
 		instance_destroy()
@@ -620,4 +628,3 @@ if !hold && instance_exists(enemy) with instance_nearest(hand.x,hand.y,enemy) if
     instance_create(x,y,BloodStreak)
     sound_play(sndMaggotSpawnDie)
 }
-
