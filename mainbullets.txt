@@ -127,7 +127,6 @@
 /loadwep heavy smart gun
 /loadwep smarter gun
 /loadwep kemosabe
-/loadwep bullet machinegun
 /loadwep signal beamer
 /loadwep prism
 /loadwep rainbow machinegun

@@ -1,5 +1,5 @@
 #define weapon_name(_wep)
-return is_object(_wep) ? _wep.name : "what the fuck happened here";
+return is_object(_wep) ? _wep.name : "what the fuck happened here Burg this is system is chunky wtf";
 
 #define weapon_type(_wep)
 return is_object(_wep) ? _wep.type : 0;
@@ -49,7 +49,7 @@ with(AmmoPickup){
 				var a = choose(wep,bwep);
 				sound_play(sndAmmoPickup)
 				for (var i = 1; i<=5; i++){
-					if a.ammo[i]{ 
+					if a.ammo[i]{
 						ammo[i] += typ_ammo[i] * a.types[i] * n
 						if ammo[i] >= typ_amax[i]{
 							ammo[i] = typ_amax[i]

@@ -10,6 +10,7 @@
 
 /loadwep finished stuff/vector rifle
 /loadwep finished stuff/vector shotgun
+/loadwep vector cannon
 
 //PLASMITE
 

@@ -182,7 +182,7 @@ if instance_exists(GenCont){
     draw_clear_alpha(c_black,0)
     surface_reset_target()
 }
-
+with instances_matching(WepPickup,"wep",0){instance_delete(self)}
 if global.SAKmode &&  mod_exists("weapon","sak"){
     with instances_matching(instances_matching(WepPickup,"roll",1),"saked",undefined){
         saked = 1
@@ -673,7 +673,7 @@ if chance(8){
 }
 
 #define fire_destroy
-repeat(3){
+repeat(2){
 	with create_miniexplosion(x,y)
   {
     move_contact_solid(other.direction-180,10)
@@ -1146,11 +1146,12 @@ if instance_exists(creator) && check{
 		var _tary = mouse_y[index];
 	}
 	if button_check(creator.index,btn){
+      draw_sprite_ext(sprHeavyGrenadeBlink,0,x+lengthdir_x(14,creator.gunangle),y+lengthdir_y(14,creator.gunangle)+1,1,1,creator.gunangle,lasercolour1,1)
 			var radi = acc+accmin;
 			mod_script_call("mod", "defpack tools","draw_polygon_striped", 16, radi, 45, _tarx+1, _tary+1, global.stripes, lasercolour1, 0.1+(accbase-acc)/(accbase*5),(current_frame mod 16)*.004);
 			mod_script_call("mod", "defpack tools","draw_circle_width_colour",16,radi,1,acc+image_angle,_tarx,_tary,lasercolour1,1*(accbase-acc))
 			mod_script_call("mod", "defpack tools","draw_circle_width_colour",16, accmin,1,acc+image_angle,_tarx,_tary,lasercolour1,.2)
-			draw_line_width_colour(x,y,_tarx,_tary,1,lasercolour1,lasercolour1);
+			draw_line_width_colour(x+lengthdir_x(16,creator.gunangle),y+lengthdir_y(16,creator.gunangle),_tarx,_tary,1,lasercolour1,lasercolour1);
 		var comp = (primary = 1 ? creator.wep : creator.bwep);
 		if popped {comp = creator.wep}
 		if wep != comp {instance_destroy()}
@@ -2210,6 +2211,7 @@ with r
 {
     image_xscale = .5
     image_yscale = .5
+    mask_index = sprite_index
     damage = 3
     sound_play_pitchvol(sndExplosionS,2,.04)
     hitid = [sprite_index,"MINI EXPLOSION"]
