@@ -1,17 +1,17 @@
 #define init
 global.sprQuartzLauncher = sprite_add_weapon("sprites/sprQuartzLauncher.png", 7, 4);
 global.sprQuartzGrenade  = sprite_add("sprites/projectiles/sprQuartzGrenade.png",0,4,4);
-global.sprHud = sprite_add("sprites/sprQuartzLancherHud.png", 1, 7, 4)
+global.sprHud = sprite_add("sprites/sprQuartzLauncherHud.png", 1, 7, 4)
 
 
 #define weapon_name
 return "QUARTZ LAUNCHER";
 
-#define weapon_sprt_hud
-return global.sprHud
-
 #define weapon_sprt
 return global.sprQuartzLauncher;
+
+#define weapon_sprt_hud
+return global.sprHud
 
 #define weapon_type
 return 4;

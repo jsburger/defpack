@@ -50,7 +50,7 @@ else
 	sound_set_track_position(sndLaserUpg,.2)
 	sound_play_pitch(sndLaserUpg,.4*random_range(.8,1.2))
 }
-sound_play_pitch(sndPlasmaRifle,.2*random_range(.8,1.2))
+var _s = true
 with instance_create(x,y,CustomObject)
 {
 	creator = other
@@ -58,7 +58,12 @@ with instance_create(x,y,CustomObject)
 	gunangle = other.gunangle
 	ammo = weapon_get_load(mod_current)+1
 	on_step = charge_step
+	with instances_matching(CustomSlash,"name","vector beam")
+	{
+		if creator = other.creator _s = false
+	}
 }
+if _s = true sound_play_pitch(sndPlasmaRifle,.2*random_range(.8,1.2))
 
 #define charge_step
 if !instance_exists(creator){instance_delete(self);exit}
@@ -107,12 +112,12 @@ with instances_matching_ne(hitme,"team",other.team)
 	if place_meeting(x,y,other)
 	{
 		speed = 0
-		motion_set(other.direction,(4+skill_get(17)*2)/max(size,1))
+		motion_set(other.direction,(4+skill_get(17)*2))
 		view_shake_at(other.creator.x,other.creator.y,.35*size)
 	}
 }
 with instances_matching_ne(prop,"team",other.team){if place_meeting(x,y,other){speed = 0}}//5000 iq workaround
-image_yscale = 1 - sin(current_frame * pi*10)
+image_yscale = 1 - sin(current_frame * pi*10*current_time_scale)
 x = startx + lengthdir_x(dir,direction) * ammo
 y = starty + lengthdir_y(dir,direction) * ammo
 if ammo <= 0 {instance_destroy();exit}
@@ -126,16 +131,14 @@ with instance_create(x+random_range(-12,12),y+random_range(-12,12),BulletHit)
 #define beam_wall
 
 #define beam_hit
-if projectile_canhit_melee(other)
+if projectile_canhit_melee(other) = true
 {
 	with other
 	{
-		projectile_hit(self,1,0,other.direction)
-		if place_meeting(x+hspeed,y+vspeed,Wall)
+		projectile_hit(self,1,1,other.direction)
+		if place_meeting(x+lengthdir_x(speed+1,other.direction)+hspeed,y+lengthdir_y(speed+1,other.direction)+vspeed,Wall)
 		{
-			if "dropx" not in self dropx = x
-			if "dropy" not in self dropy = y
-			projectile_hit(self,speed*2,0,other.direction)
+			projectile_hit(self,speed*2,1,other.direction)
 			view_shake_at(other.creator.x,other.creator.y,6*size)
 			sleep(10*size)
 		}
@@ -179,4 +182,4 @@ with instance_create(x+lengthdir_x(_r,direction)+random_range(-5,5),y+lengthdir_
 }
 sound_set_track_position(sndEnergyHammerUpg,0)
 sound_set_track_position(sndLaserUpg,0)
-sound_set_track_position(sndLaser,0)
+sound_set_track_position(sndLaser	,0)

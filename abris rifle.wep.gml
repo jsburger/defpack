@@ -1,5 +1,5 @@
 #define init
-global.sprAbrisRifle = sprite_add_weapon("sprites/sprAbrisRifle.png", 3, 1);
+global.sprAbrisRifle = sprite_add_weapon("sprites/sprAbrisRifle.png", 3, 2);
 global.stripes 		   = sprite_add("defpack tools/BIGstripes.png",1,1,1)
 
 #define weapon_name

@@ -70,7 +70,7 @@ with instance_create(x,y,CustomObject)
   motion_add(other.gunangle,14)
   on_step = boom_step
   on_draw = boom_draw
-  with instance_create(x,y,MeleeHitWall){ang = other.direction-180}
+  with instance_create(x,y,MeleeHitWall){image_angle = other.direction-180}
 }
 
 #define boom_step

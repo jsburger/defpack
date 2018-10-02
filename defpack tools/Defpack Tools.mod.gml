@@ -158,7 +158,7 @@ if array_length_1d(instances_matching(CustomProjectile,"name","Rocklet","big roc
         var len = ((random_nonsync(speed)/maxspeed))*16;
         var xoff = lengthdir_x(len,direction + 90), yoff = lengthdir_y(len,direction + 90);
         draw_triangle_color(_x + xoff, _y + yoff, _x - xoff, _y - yoff, _xp, _yp, c_white, c_white, c_black, 0)
-        
+
         //draw_sprite_ext(sprDust,round(random_nonsync(3)),(xprevious-view_xview_nonsync)*4,(yprevious-view_yview_nonsync)*4,8,((random_nonsync(speed)/(maxspeed))+.1)*4,direction,c_white,1)
     }
     with instances_in(view_xview_nonsync,view_yview_nonsync,view_xview_nonsync+game_width,view_yview_nonsync+game_height,instances_matching(CustomProjectile,"name","Rocklet")){
@@ -166,7 +166,7 @@ if array_length_1d(instances_matching(CustomProjectile,"name","Rocklet","big roc
         var len = (random_nonsync(speed)/maxspeed)*8;
         var xoff = lengthdir_x(len,direction + 90), yoff = lengthdir_y(len,direction + 90);
         draw_triangle_color(_x + xoff, _y + yoff, _x - xoff, _y - yoff, _xp, _yp, c_white, c_white, c_black, 0)
-        
+
         //draw_line_width_color((xprevious-view_xview_nonsync)*4,4*(yprevious-view_yview_nonsync),(lerp(x,xprevious,4*speed/maxspeed)-view_xview_nonsync)*4,(lerp(y,yprevious,4*speed/maxspeed)-view_yview_nonsync)*4,16*(random_nonsync(speed)/maxspeed),c_white,c_black)
         //draw_sprite_ext(sprDust,round(random_nonsync(3)),(xprevious-view_xview_nonsync)*4,4*(yprevious-view_yview_nonsync),4,4*(random_nonsync(speed)/(maxspeed*2)),direction,c_white,1)
     }
@@ -666,9 +666,9 @@ with (e){
 	pattern = false
 	sprite_index = global.sprFireBullet
 	typ = 1
-	force = 7
+	force = -5
 	mask_index = mskBullet1
-	damage = 3
+	damage = 4
 	recycle_amount = 2
 	image_speed = 1
 	on_step = script_ref_create(fire_step)
@@ -688,12 +688,9 @@ if chance(8){
 }
 
 #define fire_destroy
-repeat(2){
-	with create_miniexplosion(x,y)
-  {
-    move_contact_solid(other.direction-180,10)
-		motion_set(other.direction-180+(random_range(-50,50)),random_range(1,2.2))
-	}
+with create_miniexplosion(x,y)
+{
+  move_contact_solid(other.direction-180,4)
 }
 with instance_create(x,y,BulletHit){
 	sprite_index = global.sprFireBulletHit
@@ -2228,8 +2225,7 @@ with r
 {
     image_xscale = .5
     image_yscale = .5
-    mask_index = sprite_index
-    damage = 3
+    damage = 1
     sound_play_pitchvol(sndExplosionS,2,.04)
     hitid = [sprite_index,"MINI EXPLOSION"]
 }

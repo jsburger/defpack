@@ -1,8 +1,10 @@
 #define init
-global.sprVectorRifle  = sprite_add_weapon("sprVectorRifle.png",2,2)
-global.sprVectorHead 	 = sprite_add("sprVectorHead.png",0,8,2)
-global.sprVector	     = sprite_add("sprVector.png",0,2,3)
-global.sprVectorImpact = sprite_add("sprVectorImpact.png",7,16,16)
+global.sprVectorRifle   = sprite_add_weapon("sprVectorRifle.png",2,2)
+global.sprVectorHead 	  = sprite_add("sprVectorHead.png",0,8,2)
+global.sprVector	      = sprite_add("sprVector.png",0,2,3)
+global.sprVectorImpact  = sprite_add("sprVectorImpact.png",7,16,16)
+global.sprVectorBeamEnd = sprite_add("sprVectorBeamEnd.png",3,5,5);
+
 #define weapon_name
 return "VECTOR RIFLE"
 #define weapon_type
@@ -91,6 +93,14 @@ instance_destroy()
 
 #define laserstep
 if ammo > 0 {
+	var _s = choose(random_range(-10,-4),random_range(4,10))
+	var s_ = choose(random_range(-10,-4),random_range(4,10))
+	if irandom(5-skill_get(17)) = 0 with instance_create(x+s_,y+_s,BulletHit)
+	{
+		sprite_index = global.sprVectorBeamEnd
+		image_angle = other.image_angle
+		motion_add(other.image_angle,choose(1,2))
+	}
     ammo-=current_time_scale
     if ammo<=0{
         var ang = langle;
