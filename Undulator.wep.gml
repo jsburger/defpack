@@ -59,7 +59,7 @@ if instance_exists(creator)
 	accuracy = creator.accuracy
 	x = creator.x+lengthdir_x(15,gunangle)
 	y = creator.y+lengthdir_y(15,gunangle)
-	with creator weapon_post(7,-6,32)
+	with creator weapon_post(7,-6,16)
 time -= 1
 if time = 0
 {

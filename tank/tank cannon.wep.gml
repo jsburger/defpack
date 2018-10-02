@@ -34,6 +34,7 @@ return "HOLY SHIT THERES A TANK";
 
 #define weapon_fire
 sound_play(sndRocket)
+weapon_post(4,-12,4)
 with create_bullet(x+lengthdir_x(24,gunangle),y+ lengthdir_y(24,gunangle) - 5){
     on_destroy = shell_destroy
     direction = other.gunangle;
@@ -117,13 +118,11 @@ instance_destroy()
 var dis = point_distance(x,y,xstart,ystart) + 1;
 var num = 20;
 for var i = 0; i <= num; i++{
-    if !irandom(1){
         with instance_create(xstart+lengthdir_x(dis/num * i,direction),ystart + lengthdir_y(dis/num * i,direction),BoltTrail){
             image_angle = other.direction
-            image_yscale = other.trailscale * (i/num)
+            image_yscale = random(other.trailscale) * (i/num)
             image_xscale = dis/num
         }
-    }
 }
 xstart = x
 ystart = y

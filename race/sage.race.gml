@@ -6,7 +6,7 @@ global.handbotslct = sprite_add("handbotslct.png",1,0,0)
 global.gunIdle = sprite_add("sprGunIdle.png",6,12,12)
 global.gunWalk = sprite_add("sprGunWalk.png",6,12,12)
 global.gunHurt = sprite_add("sprGunHurt.png",3,12,12)
-global.gunDie  = sprite_add("sprGunHurt.png",6,12,12)
+global.gunDie  = sprite_add("sprGunDie.png",6,12,12)
 global.gunSlct = sprite_add("sprGunSlct.png",1,0,0)
 global.gunMap  =  sprite_add("sprGunMapIcon.png",2,10,8)
 global.gunLoad =  sprite_add("sprGunSkin.png",2,10,8)
@@ -39,12 +39,12 @@ global.mskReflect = sprite_add("mskReflect.png",3,90,90)
 
 //add_spell("No Spell", NA,scr(none_channel),scr(none_release),NA,1,global.hands)
 
-add_spell("Merge", scr(merge_cast),NA,NA,NA,1,sprite_add("sprMerge.png",2,8,7),sprite_add("MergeBlob.png",1,4,4))
+add_spell("Merge", scr(merge_cast),NA,NA,NA,ultraspell,sprite_add("sprMerge.png",2,8,7),sprite_add("MergeBlob.png",1,4,4))
 add_spell("Rapid Fire",NA,scr(rapid_channel),NA,NA,1,sprite_add("sprBlast.png",2,8,7),sprite_add("RapidFireBlob.png",1,4,3))
 add_spell("Proto Swap",scr(proto_cast),NA,NA,NA,1,sprite_add("sprProto.png",2,7,7),sprite_add("ProtoChestBlob.png",1,4,3))
 
 //ultra spells
-add_spell("Haste",scr(haste_cast),NA,NA,NA,ultraspell,sprite_add("sprHaste.png",2,7,7),sprite_add("HasteBlob.png",1,4,3))
+add_spell("Haste",scr(haste_cast),NA,NA,NA,1,sprite_add("sprHaste.png",2,7,7),sprite_add("HasteBlob.png",1,4,3))
 add_spell("Shield",scr(shield_cast),NA,NA,NA,ultraspell,sprite_add("sprShield.png",2,8,7),sprite_add("ShieldBlob.png",1,3,3))
 
 #macro maxmana 200
@@ -75,9 +75,10 @@ with Player if race = mod_current && player_is_local_nonsync(index){
     var _y = view_yview_nonsync + 4;
     var width = 86;
     if curp() > 1 _x -= 17
-    draw_line_width_color(_x-1,_y-.5,_x+width+1,_y-.5,5,c_black,c_black)
-    draw_line_width_color(_x,_y-1,_x+width,_y-1,2,c_white,c_white)
+    draw_line_width_color(_x-1,_y-1,_x+width+1,_y-1,6,c_black,c_black)
+    draw_line_width_color(_x,_y-2,_x+width,_y-2,2,c_white,c_white)
     draw_line_width_color(_x+.5,_y-2,_x+.5,_y+3,1,c_white,c_white)
+    draw_line_width_color(_x+1, _y-1.5, _x + width-1, _y-1.5,1,c_black,c_black)
     draw_line_width_color(_x+ width-.5,_y-2,_x+ width-.5,_y+3,1,c_white,c_white)
     draw_line_width_color(_x+1, _y, _x + width-1, _y, 2, c_dkgray, c_dkgray)
     draw_line_width_color(_x+1, _y, _x+max((hand.mana/maxmana) * (width-1),1), _y, 2, shinetime > 0 ? c_white : global.purblue, shinetime > 0 ? c_white : merge_color(c_aqua,global.purblue,1-hand.mana/maxmana))
@@ -91,7 +92,7 @@ global.protowep = wep_rusty_revolver
     return "SAGE";
 
 #define race_text
-	return `ACCURATE#@(color:${global.purblue})SPELLCASTING`;
+	return `MORE WEAPON DROPS#@(color:${global.purblue})SPELLCASTING`;
 
 #define race_tb_text
 	return `EMPOWERED @(color:${global.purblue})SPELLS`;
@@ -395,6 +396,7 @@ with instances_matching(Player,"race",mod_current){
             draw_line_width_color(xc + lengthdir_x(50, ang),yc + lengthdir_y(50, ang),xc + lengthdir_x(10, ang),yc + lengthdir_y(10, ang),1,c_white,c_white)
 
             draw_sprite_ext(global.spells[? picks[num]][6], pointed, _x, _y, size, size, 0, col, l)
+            if picks[num] = "Proto Swap" draw_sprite_ext(weapon_get_sprite(global.protowep), 0, _x + lengthdir_x(20,a), _y + lengthdir_y(20,a), size, size, 0, col, l)
 
             draw_set_font(fntSmall)
             draw_set_halign(1)

@@ -140,28 +140,43 @@ return instances_matching_gt(instances_matching_lt(instances_matching_gt(instanc
 #define draw_trails
 if array_length_1d(instances_matching(CustomProjectile,"name","Rocklet","big rocklet","huge rocklet")){
     surface_set_target(global.trailsf)
-    draw_set_blend_mode(bm_subtract)
-    draw_set_alpha(.5)
+    draw_clear_alpha(0,0)
+    /*draw_set_blend_mode(bm_subtract)
+    draw_set_alpha(1)
     draw_set_color_write_enable(0,0,0,1)
-    draw_rectangle(0,0,game_width*4,game_height*4,0)
+    draw_rectangle(0,0,game_width*4,game_height*4,0)*/
     //draw_sprite_tiled(sprScrapDecal,-1,random(game_width),random(game_height))
     draw_set_blend_mode(bm_normal)
     draw_set_alpha(1)
     draw_set_color_write_enable(1,1,1,1)
 
-    d3d_set_fog(1,c_white,1,1)
+    //d3d_set_fog(1,c_white,1,1)
 
 
     with instances_in(view_xview_nonsync,view_yview_nonsync,view_xview_nonsync+game_width,view_yview_nonsync+game_height,instances_matching(CustomProjectile,"name","big rocklet","huge rocklet")){
-        draw_sprite_ext(sprDust,round(random_nonsync(3)),(xprevious-view_xview_nonsync)*4,(yprevious-view_yview_nonsync)*4,8,((random_nonsync(speed)/(maxspeed))+.1)*4,direction,c_white,1)
+         var _x = (x - view_xview_nonsync)*4, _y = (y - view_yview_nonsync)*4, _xp = (lerp(x,xprevious,4*speed/maxspeed) - view_xview_nonsync)*4, _yp = (lerp(y,yprevious,4*speed/maxspeed) - view_yview_nonsync)*4;
+        var len = ((random_nonsync(speed)/maxspeed))*16;
+        var xoff = lengthdir_x(len,direction + 90), yoff = lengthdir_y(len,direction + 90);
+        draw_triangle_color(_x + xoff, _y + yoff, _x - xoff, _y - yoff, _xp, _yp, c_white, c_white, c_black, 0)
+        
+        //draw_sprite_ext(sprDust,round(random_nonsync(3)),(xprevious-view_xview_nonsync)*4,(yprevious-view_yview_nonsync)*4,8,((random_nonsync(speed)/(maxspeed))+.1)*4,direction,c_white,1)
     }
     with instances_in(view_xview_nonsync,view_yview_nonsync,view_xview_nonsync+game_width,view_yview_nonsync+game_height,instances_matching(CustomProjectile,"name","Rocklet")){
-        draw_sprite_ext(sprDust,round(random_nonsync(3)),(xprevious-view_xview_nonsync)*4,4*(yprevious-view_yview_nonsync),4,4*(random_nonsync(speed)/(maxspeed*2)),direction,c_white,1)
+        var _x = (x - view_xview_nonsync)*4, _y = (y - view_yview_nonsync)*4, _xp = (lerp(x,xprevious,4*speed/maxspeed) - view_xview_nonsync)*4, _yp = (lerp(y,yprevious,4*speed/maxspeed) - view_yview_nonsync)*4;
+        var len = (random_nonsync(speed)/maxspeed)*8;
+        var xoff = lengthdir_x(len,direction + 90), yoff = lengthdir_y(len,direction + 90);
+        draw_triangle_color(_x + xoff, _y + yoff, _x - xoff, _y - yoff, _xp, _yp, c_white, c_white, c_black, 0)
+        
+        //draw_line_width_color((xprevious-view_xview_nonsync)*4,4*(yprevious-view_yview_nonsync),(lerp(x,xprevious,4*speed/maxspeed)-view_xview_nonsync)*4,(lerp(y,yprevious,4*speed/maxspeed)-view_yview_nonsync)*4,16*(random_nonsync(speed)/maxspeed),c_white,c_black)
+        //draw_sprite_ext(sprDust,round(random_nonsync(3)),(xprevious-view_xview_nonsync)*4,4*(yprevious-view_yview_nonsync),4,4*(random_nonsync(speed)/(maxspeed*2)),direction,c_white,1)
     }
-    d3d_set_fog(0,0,0,0)
+    //d3d_set_fog(0,0,0,0)
 
     surface_reset_target()
+    draw_set_blend_mode(bm_add)
     draw_surface_ext(global.trailsf,view_xview_nonsync,view_yview_nonsync,0.25,0.25,0,c_white,1)
+    draw_set_blend_mode(bm_normal)
+
 }
 
 #define step
@@ -692,7 +707,7 @@ with (f){
 	name = "Dark Bullet"
 	pattern = false
 	sprite_index = global.sprDarkBullet
-	typ = 2
+	typ = 0
 	mask_index =global.mskDarkBullet
 	damage = 8
 	force = 7
@@ -779,6 +794,7 @@ with (g){
 	force = 2
 	damage = 3
 	recycle_amount = 1
+	lasthit = -4
 	pierces = 6
 	image_speed = 1
 	image_angle = direction
@@ -791,8 +807,9 @@ with (g){
 return g;
 
 #define light_hit
-if (projectile_canhit_melee(other)){
+if other != lasthit{
 	projectile_hit(other, damage, force, direction);
+	lasthit = other
 	pierces -= 1
 	if irandom(5) = 5 && skill_get(16){
     	creator.ammo[1]+=recycle_amount

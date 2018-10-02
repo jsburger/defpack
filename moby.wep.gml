@@ -64,7 +64,7 @@ sound_play_pitch(sndTripleMachinegun,.7 + w.charge/50)
 
 
 with instance_create(x,y,Shell){motion_add(other.gunangle+other.right*100+random(80)-40,3+random(3))}
-with create_bullet(x+lengthdir_x(24,gunangle),y+ lengthdir_y(24,gunangle)){
+with create_bullet(x+lengthdir_x(20,gunangle),y+ lengthdir_y(20,gunangle)){
 		on_destroy = shell_destroy
 		direction = other.gunangle + random_range(-20,20)*other.accuracy*sqrt(w.charge)/6;
 		image_angle = direction;
@@ -171,10 +171,10 @@ instance_destroy()
 var dis = point_distance(x,y,xstart,ystart) + 1;
 var num = 20;
 for var i = 0; i <= num; i++{
-    if !irandom(2)
+    
     with instance_create(xstart+lengthdir_x(dis/num * i,direction),ystart + lengthdir_y(dis/num * i,direction),BoltTrail){
         image_angle = other.direction
-        image_yscale = other.trailscale * (i/num)
+        image_yscale = floor(random(other.trailscale)*3)/3 * (i/num)
         image_xscale = dis/num
     }
 }

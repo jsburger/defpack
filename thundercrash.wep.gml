@@ -4,6 +4,11 @@ global.sprUmbrella     = sprite_add("defpack tools/sprRainDisk.png",2,14,14);
 global.mskUmbrella     = sprite_add("defpack tools/mskRainDisk.png",0,14,14);
 global.sprUmbrellaOrb  = sprite_add("sprites/projectiles/sprRainOrb.png",2,9,9);
 
+while 1{
+    if instance_exists(GenCont) || instance_exists(mutbutton) with instances_matching(CustomProjectile,"name","mega lightning bullet","lightning orb") instance_delete(self)
+    wait(0)
+}
+
 #define weapon_name
 return "THUNDERCRASH"
 
@@ -61,6 +66,7 @@ with instance_create(x,y,CustomProjectile)
 	image_speed = .45;
 	image_angle = direction
 	damage  = 20
+	persistent = 1
 	friction = 0
     force = 30
     image_speed = 1
@@ -127,6 +133,7 @@ for var i = 0; i< 3; i++
     motion_add(ang + 120*i,2+i)
     projectile_init(other.team,other.creator)
     image_angle = direction
+    persistent = 1
     on_step = fric_step
     on_wall = bounce_wall
     on_draw = bloom_draw_nade

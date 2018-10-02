@@ -27,7 +27,7 @@
 /loadwep screecher
 
 //MINI EXPLOSIONS
-/loadwep finished stuff/flechette bazooka
+/loadwep flechette bazooka
 
 //DRILL
 

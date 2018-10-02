@@ -2,7 +2,7 @@
 global.sprEnergyGun = sprite_add_weapon("sprites/Energy Gun.png", 6, 4);
 
 #define weapon_name
-return "ENERGY GUN"
+return "IONIZER"
 
 #define weapon_sprt
 return global.sprEnergyGun;

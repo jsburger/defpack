@@ -1,6 +1,7 @@
 #define init
 global.sprQuartzLaser = sprite_add_weapon("sprites/sprQuartzLaser.png", 6, 4);
 global.sprBeam = sprite_add("sprites/projectiles/sprQuartzBeam.png",1,2,5)
+global.sprHud = sprite_add("sprites/sprQuartzLaserHud.png", 1, 6, 4)
 
 #define weapon_name
 return "QUARTZ LASER"
@@ -18,6 +19,8 @@ return sndSwapEnergy
 return true
 #define weapon_melee
 return 0
+#define weapon_sprt_hud
+return global.sprHud
 #define weapon_laser_sight
 return 0
 #define weapon_sprt

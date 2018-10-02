@@ -1,9 +1,13 @@
 #define init
 global.sprQuartzMachinegun = sprite_add_weapon("sprites/sprQuartzMachinegun.png",7,3)
 global.sprQuartzBullet     = sprite_add("sprites/projectiles/sprQuartzBullet.png",2,12,12)
+global.sprHud = sprite_add("sprites/sprQuartzMachinegunHud.png", 1, 12, 3)
 
 #define weapon_name
 return "QUARTZ MACHINEGUN"
+
+#define weapon_sprt_hud
+return global.sprHud
 
 #define weapon_sprt
 return global.sprQuartzMachinegun;

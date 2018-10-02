@@ -1,5 +1,5 @@
 #define init
-global.sprSmartBazooka 		   = sprite_add_weapon("sprites/Hot Bazooka.png", 18, 5);
+global.sprSmartBazooka 		   = sprite_add_weapon("sprites/Hot Bazooka.png", 14, 4);
 global.sprBlueExplosion 		 = sprite_add("sprites/projectiles/Blue Explosion_strip9.png",9,24,24)
 global.sprSmallBlueExplosion = sprite_add("sprites/projectiles/Small Blue Explosion_strip7.png",7,12,12)
 global.sprSmartRocketFlame   = sprite_add("sprites/projectiles/smart rocket flame.png",3,24,6)
@@ -17,7 +17,7 @@ return 4;
 return true;
 
 #define weapon_load
-return 20;
+return 17;
 
 #define weapon_cost
 return 2;
@@ -32,20 +32,19 @@ return 10;
 return "WHAT DO ROCKETS THINK ABOUT?";
 
 #define weapon_fire
-weapon_post(7,-20,4)
+weapon_post(15,-20,4)
 sound_play_pitch(sndRocket,random_range(.6,.8))
 sound_play_pitch(sndExplosionS,random_range(.6,.8))
-sound_play_pitch(sndSmartgun,random_range(.4,.6))
+sound_play_pitch(sndSmartgun,random_range(.6,.8))
 sound_play_pitch(sndTurretFire,random_range(.6,.8))
 with instance_create(x,y,CustomProjectile){
 	creator = other
 	team = other.team
-	sound_play_pitch(sndRocketFly,random_range(.6,.8))
-	motion_set(other.gunangle+random_range(-8,8)*other.accuracy,0)
+	sound_play_pitch(sndRocketFly,random_range(1.2,1.4))
+	motion_set(other.gunangle+random_range(-8,8)*other.accuracy,5)
 	friction = -.4
-	fimage_index = 0
-	timer = 0
-	damage = 5
+	timer = 5
+	damage = 10
 	sprite_index = global.sprSmartRocket
 	image_angle = direction
 	on_step = script_ref_create(rocket_step)
@@ -54,40 +53,16 @@ with instance_create(x,y,CustomProjectile){
 }
 
 #define rocket_step
-if timer >= 0 {
-	timer -= 1;
-	speed = 2
-	with instance_create(x,y,Flame){
-		team = other.team
-		sprite_index = sprFireLilHunter
-		image_speed = random_range(.8,1)
-		image_xscale = .5
-		image_yscale = .5
-	}
-}
-if timer = 0 {
-	sound_play(sndRocket)
-	sound_play(sndRocketFly)
-	repeat(7){
-		instance_create(x -hspeed +random_range(-30,30),y - vspeed +random_range(-30,30),Smoke)
-	}
-	instance_create(x,y,AssassinNotice)
+if timer > 0{
+    timer -= current_time_scale
 }
 if timer <= 0 {
-	if fimage_index < 2{fimage_index += .5}
-	else
-	{
-		fimage_index = 0
-	}
-	with instance_create(x,y,Flame){
-		team = other.team
-		sprite_index = sprFireLilHunter
-		image_speed = random_range(.8,1)
-	}
-	var closeboy = instance_nearest(x,y,enemy)
-	if instance_exists(enemy) && collision_line(x,y, closeboy.x, closeboy.y, Wall, 0,0) < 0 && point_distance(x,y,closeboy.x,closeboy.y) <= 60{
-		motion_add(point_direction(x,y, closeboy.x, closeboy.y),3)
-		motion_add(direction,2)
+    var closeboy;
+    if mod_exists("mod","defpack tools") closeboy = mod_script_call("mod","defpack tools","instance_nearest_matching_ne",x,y,hitme,"team",team)
+	else closeboy = instance_nearest(x,y,enemy)
+	if instance_exists(closeboy) && collision_line(xprevious,yprevious, closeboy.x, closeboy.y, Wall, 0,0) < 0{
+	    var num = 45/2
+		direction = floor(point_direction(x,y,closeboy.x,closeboy.y)/num)*num
 		image_angle = direction
 	}
 }
@@ -101,7 +76,7 @@ with instance_create(x ,y, Explosion){
 	sprite_index = global.sprBlueExplosion
 	hitid = [sprite_index,"Blue Explosion"]
 }
-repeat(1){
+repeat(3){
 	with instance_create(x, y, SmallExplosion){
 		sprite_index = global.sprSmallBlueExplosion
 		hitid = [sprite_index,"Small Blue
@@ -110,5 +85,5 @@ repeat(1){
 }
 
 #define rocket_draw
-if timer <= 0{draw_sprite_ext(global.sprSmartRocketFlame,fimage_index,x,y,.75,.75,direction,c_white,1)}
+if timer <= 0{draw_sprite_ext(global.sprSmartRocketFlame,current_frame * .4,x,y,1,1,direction,c_white,1)}
 draw_self()
