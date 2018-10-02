@@ -179,4 +179,4 @@ with instance_create(x+lengthdir_x(_r,direction)+random_range(-5,5),y+lengthdir_
 }
 sound_set_track_position(sndEnergyHammerUpg,0)
 sound_set_track_position(sndLaserUpg,0)
-sound_set_track_position(sndLaserUpg,0)
+sound_set_track_position(sndLaser,0)
