@@ -54,6 +54,13 @@ global.mskHeavySpikeball  = sprite_add("mskHeavySpikeball.png",0, 15, 15);
 global.sprAim          = sprite_add("sprAim.png",0,10,10);
 global.sprCursorCentre = sprite_add("sprCursorCentre.png",0,1,1);
 
+global.sprBouncerDisc = sprite_add("sprBouncerDisc.png",2,6,6)
+global.sprStickyDisc  = sprite_add("sprStickyDisc.png",2,7,6)
+global.sprMegaDisc       = sprite_add("sprMegaDisc.png",2,12,12);
+global.sprMegaDiscDie    = sprite_add("sprMegaDiscDie.png",6,12,12);
+global.sprMegaDiscTrail  = sprite_add("sprMegaDiscTrail.png",3,12,12);
+global.sprMegaDiscBounce = sprite_add("sprMegaDiscBounce.png",4,12,12);
+
 global.SAKmode = 0
 mod_script_call("mod","defpermissions","permission_register","mod",mod_current,"SAKmode","SAK Mode")
 
@@ -2230,3 +2237,206 @@ with r
     hitid = [sprite_index,"MINI EXPLOSION"]
 }
 return r;
+
+#define create_bouncerdisc(_x,_y)
+var a = instance_create(_x+lengthdir_x(4,gunangle),_y+lengthdir_y(4,gunangle),CustomProjectile);
+with a
+{
+  typ = 1
+  dist = 0
+  damage = 2
+  team = -10
+  image_speed = .5
+  name = "Bouncer Disc"
+  sprite_index = global.sprBouncerDisc
+  on_step = bouncerdisc_step
+  on_hit = bouncerdisc_hit
+  on_wall = bouncerdisc_wall
+  on_destroy = bouncerdisc_destroy
+  hitid = [sprite_index,name]
+}
+return a;
+
+#define bouncerdisc_step
+if speed > 0{instance_create(x,y,DiscTrail)}
+dist += 1
+if instance_exists(Player) and instance_exists(enemy)
+{dir = instance_nearest(x,y,enemy)
+if speed > 0 and skill_get(21) = 1 and point_distance(x,y,dir.x,dir.y) < 32
+{
+x += lengthdir_x(1,point_direction(x,y,dir.x,dir.y))
+y += lengthdir_y(1,point_direction(x,y,dir.x,dir.y))}
+if place_meeting(x,y,Player){other.lasthit = hitid}
+}
+
+#define bouncerdisc_hit
+if other.my_health-damage>0{motion_set(point_direction(other.x,other.y,x,y),speed)}else{motion_set(random(359),speed)}
+if other.sprite_index != other.spr_hurt{projectile_hit(other, damage+round(speed), 5, other.direction-180)}
+if speed < 12{speed+=.6}
+
+sound_play_pitch(sndDiscBounce,random_range(.8,1.2))
+sound_play_pitch(sndBouncerBounce,random_range(1,1))
+image_angle = direction
+
+#define bouncerdisc_wall
+move_bounce_solid(false)
+direction += random_range(-6,6)
+instance_create(x,y,DiscBounce)
+image_angle = direction
+sound_play_pitch(sndDiscBounce,random_range(.9,1.1)+((speed/4)-1)*.2)
+sound_play_pitch(sndBouncerBounce,random_range(1,1))
+if dist > 250{instance_destroy();exit}
+if speed < 12{speed+=.6}
+
+#define bouncerdisc_destroy
+with instance_create(x,y,DiscTrail){sprite_index=sprDiscDisappear}
+sound_play_hit(sndDiscDie, 0.2)
+
+#define create_stickydisc(_x,_y)
+var a = instance_create(x,y,CustomProjectile);
+with a
+{
+    typ = 1
+    dist = 0
+    damage = 4
+    team = other.team
+    image_speed = .4
+    name = "Sticky Disc"
+    sprite_index = global.sprStickyDisc
+    mask_index = mskDisc
+    stuckto = -4
+    teamswap = 1
+    orspeed = 0
+    hitid = [sprite_index,name]
+    depth = -3
+    on_step    = stickydisc_step
+    on_hit     = stickydisc_hit
+    on_destroy = stickydisc_destroy
+    on_wall    = stickydisc_wall
+}
+return a;
+
+#define stickydisc_step
+if speed > 0 && current_frame_active {instance_create(x,y,DiscTrail)}
+dist += current_time_scale
+if dist > 200{instance_destroy();exit}
+if instance_exists(creator) && teamswap && !place_meeting(x,y,creator){
+    teamswap = 0
+    team = -1
+}
+
+if instance_exists(stuckto){
+    x = stuckto.x - xoff + stuckto.hspeed_raw
+    y = stuckto.y - yoff + stuckto.vspeed_raw
+    xprevious = x
+    yprevious = y
+    instance_create(x,y,Dust)
+}
+else if skill_get(mut_bolt_marrow){
+    if instance_exists(enemy){
+        var q = instance_nearest(x,y,enemy)
+        if distance_to_object(q) < 30
+            motion_add(point_direction(x,y,q.x,q.y),.25*current_time_scale)
+    }
+}
+
+#define stickydisc_hit
+if projectile_canhit_melee(other){
+    sound_play_hit(sndDiscHit,.2)
+    projectile_hit(other, damage, 5, direction)
+    if other.my_health > 0{
+        if stuckto != other{
+            stuckto = other
+            xoff = (other.x - x)/2
+            yoff = (other.y - y)/2
+            sound_play(sndGrenadeStickWall)
+            repeat(12){with instance_create(x,y,Smoke){depth = -4}}
+        }
+    }
+    else {
+        speed = orspeed
+        stuckto = -4
+    }
+}
+
+#define stickydisc_wall
+if !instance_exists(stuckto) sound_play_hit(sndDiscBounce,.2)
+move_bounce_solid(true)
+
+#define stickydisc_destroy
+with instance_create(x,y,DiscTrail){sprite_index=sprDiscDisappear;image_xscale = 2}
+sound_play_hit(sndDiscDie, 0.2)
+with instance_create(x,y,Smoke){depth = -3}
+
+#define create_megadisc(_x,_y)
+var a = instance_create(x,y,CustomProjectile)
+with a
+{
+  typ = 1
+  sprite_index = global.sprMegaDisc
+  dist = 0
+  damage = 2
+  image_speed = .5
+  maxspeed = speed
+  hitid = [sprite_index,"MEGA DISC"]
+  on_step    = md_step
+  on_wall    = md_wall
+  on_hit     = md_hit
+  on_destroy = md_destroy
+}
+return a
+
+#define md_step
+dist++
+if current_frame mod 1 / current_time_scale = 0
+{
+  with instance_create(x,y,DiscTrail)
+  {
+    sprite_index = global.sprMegaDiscTrail
+  }
+}
+if skill_get(21) = true
+{
+    var closeboy = instance_nearest(x,y,enemy);
+    if distance_to_object(closeboy) <= 40
+    {
+      motion_add(point_direction(x,y,closeboy.x,closeboy.y),.5)
+      speed = maxspeed
+    }
+}
+if instance_exists(creator){if team = creator.team{if !place_meeting(x,y,creator){team = -10}}}
+
+#define md_wall
+dist += 5
+sleep(20)
+view_shake_at(x,y,8)
+sound_play_pitchvol(sndDiscBounce,random_range(.6,.8),.4)
+move_bounce_solid(false)
+direction += random_range(-12,12)
+with other{instance_create(x,y,FloorExplo);instance_destroy()}
+with instance_create(x,y,DiscBounce)
+{
+  sprite_index = global.sprMegaDiscBounce
+}
+if dist >= 200 instance_destroy()
+
+#define md_destroy
+sound_play_pitchvol(sndDiscDie,random_range(.6,.8),.4)
+with instance_create(x,y,DiscDisappear)
+{
+  sprite_index = global.sprMegaDiscDie
+}
+
+#define md_hit
+if place_meeting(x,y,creator)
+{
+  sound_play(sndDiscHit)
+  other.lasthit = hitid
+  sleep(3*other.size+4)
+}
+x -= hspeed/2
+y -= vspeed/2
+projectile_hit(other,damage,0,direction)
+sleep(other.size * 7)
+view_shake_at(x,y,10)
+dist++
