@@ -37,7 +37,7 @@ return false;
 var _disc = choose("normal","golden","sticky","bouncer","mega");
 repeat(4)
 {
-  sound_play_slowdown(sndSuperDiscGun,.6)
+  sound_play_slowdown(sndSuperDiscGun,.8)
   weapon_post(6,-50,5)
   switch _disc
   {
