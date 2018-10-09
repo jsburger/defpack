@@ -47,7 +47,6 @@
 //CANNON
 
 /loadwep toxic cannon
-/loadwep super flame cannon
 
 //OTHER EXPLOSIVE
 

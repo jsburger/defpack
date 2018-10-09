@@ -1,6 +1,6 @@
 #define init
-global.sprAndromedaLauncher = sprite_add_weapon("sprAndromedaLauncher.png", 7, 5);
-global.sprAndromedaBullet = sprite_add_base64("iVBORw0KGgoAAAANSUhEUgAAACAAAAAQCAYAAAB3AH1ZAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACLSURBVEhL3ZXRCcAgDESzRaEDdI6O1s1tgkmrcK1NFIQevK/gy+GH0rpsXewHXaRkPCXPyzNQ6qFe/jWDC/iWWwYViC23/KNAX6DU4EjHhGaGesKBUsGWt0qoJxwoFaYXEFrLBfWEA6Ue1BMOlHpgRUcJvl8k9TC9wPSnWCT+EoM/o7rEW5E8v88QnexX3Z4Uujk7AAAAAElFTkSuQmCCAAAAAAAAAAAAAA==",2, 16, 8);
+global.sprAndromedaLauncher = sprite_add_weapon("sprAndromedaLauncher.png", 8, 5);
+//global.sprAndromedaBullet   = sprite_add("sprAndromedaBullet.png",2, 9, 9);
 global.space4 = sprite_add("spaceforeground.png",1,0,0);
 global.space3 = sprite_add("spacebackground.png",1,0,0);
 
@@ -28,10 +28,10 @@ return 4;
 return true;
 
 #define weapon_load
-return 60;
+return 70;
 
 #define weapon_cost
-return 12;
+return 8;
 
 #define weapon_swap
 return sndSwapExplosive;
@@ -43,16 +43,26 @@ return 15;
 return "MAN'S LAST DESIRE";
 
 #define weapon_fire
+motion_add(gunangle-180,10)
+weapon_post(12,70,12)
+var p = random_range(.8,1.2)
+sleep(40)
+sound_play_pitchvol(sndHeavySlugger,.4*p,1)
+sound_play_pitchvol(sndBasicUltra,2*p,1)
+sound_play_pitchvol(sndBloodLauncher,.4*p,1)
+sound_play_pitchvol(sndStatueHurt,.4*p,1)
+sound_play_pitchvol(sndLilHunterSniper,.3*p,.5)
+sound_play_pitchvol(sndPlasmaRifle,.3*p,.8)
 with instance_create(x,y,CustomProjectile){
     name = "Andromeda Bullet";
     disgoal = distance_to_point(mouse_x[other.index],mouse_y[other.index]);
     motion_set(other.gunangle,disgoal/5)
-    sprite_index = global.sprAndromedaBullet
+    sprite_index = mskNone//global.sprAndromedaBullet
     projectile_init(other.team,team)
     image_speed = .4
     image_angle = direction
-    image_xscale = disgoal/20
     on_anim = andro_anim
+    on_draw = sp_draw
     mask_index = mskNone
 }
 
@@ -74,6 +84,16 @@ with instance_create(x,y,CustomObject){
     wantobject = -1
 }
 instance_destroy()
+
+#define sp_draw
+draw_circle_color(x,y,16,c_black,c_black,false)
+draw_set_alpha(.15)
+draw_circle_color(x,y,20,c_black,c_black,false)
+draw_set_alpha(.35)
+draw_circle_color(x,y,18,c_black,c_black,false)
+draw_set_alpha(1)
+//draw_sprite_ext(sprite_index,image_index,x,y,image_xscale*1.5,image_yscale*1.5,image_angle,c_black,1)
+//draw_sprite_ext(sprite_index,image_index,x,y,image_xscale*2.25,image_yscale*2.25,image_angle,c_black,.5)
 
 #define spacestep
 succ += (wantsucc - succ)*current_time_scale/3
