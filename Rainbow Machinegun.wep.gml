@@ -48,7 +48,7 @@ switch rainbow_cycle{
 		with mod_script_call("mod", "defpack tools", "create_fire_bullet",x,y){
 			creator = other
 			team = other.team
-			motion_add(other.gunangle+random_range(-10,10)*other.accuracy,20)
+			motion_add(other.gunangle+random_range(-10,10)*other.accuracy,12)
 			image_angle = direction
 		}
 		break
@@ -57,7 +57,7 @@ switch rainbow_cycle{
 		with instance_create(x,y,BouncerBullet){
 			creator = other
 			team = other.team
-			motion_add(other.gunangle+random_range(-10,10)*other.accuracy,20)
+			motion_add(other.gunangle+random_range(-10,10)*other.accuracy,12)
 			image_angle = direction
 		}
 		break
@@ -68,7 +68,7 @@ switch rainbow_cycle{
 			creator = other
 			move_contact_solid(other.gunangle,6)
 			team = other.team
-			motion_add(other.gunangle+random_range(-10,10)*other.accuracy,20)
+			motion_add(other.gunangle+random_range(-10,10)*other.accuracy,12)
 			image_angle = direction
 		}
 		break
@@ -79,7 +79,7 @@ switch rainbow_cycle{
 			creator = other
 			move_contact_solid(other.gunangle,6)
 			team = other.team
-			motion_add(other.gunangle+random_range(-10,10)*other.accuracy,20)
+			motion_add(other.gunangle+random_range(-10,10)*other.accuracy,12)
 			image_angle = direction
 		}
 		break
@@ -90,7 +90,7 @@ switch rainbow_cycle{
 			creator = other
 			move_contact_solid(other.gunangle,6)
 			team = other.team
-			motion_add(other.gunangle+random_range(-10,10)*other.accuracy,20)
+			motion_add(other.gunangle+random_range(-10,10)*other.accuracy,12)
 			image_angle = direction
 			maxspeed = speed
 			timer = 0

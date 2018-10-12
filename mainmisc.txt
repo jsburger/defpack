@@ -50,9 +50,9 @@
 
 ///NON-WEAPONS///
 /load iris
+/load exchange
 
 ///TODO///
-/loadwep geysir
 /loadwep ultra claymore
 /loadwep antiprism
 /loadwep sak
@@ -60,4 +60,3 @@
 /loadwep herald
 /loadwep finished stuff/andromeda launcher
 /loadwep golden abris pistol
-/loadwep geysir

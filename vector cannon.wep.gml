@@ -70,7 +70,7 @@ if !instance_exists(creator){instance_delete(self);exit}
 x = creator.x+creator.hspeed + lengthdir_x(16,creator.gunangle)
 y = creator.y+creator.vspeed + lengthdir_y(16,creator.gunangle)
 gunangle = creator.gunangle
-with creator weapon_post(5,0,0)
+with creator weapon_post(5,20,0)
 with instance_create(x,y,CustomSlash)
 {
 	sound_set_track_position(sndEnergyHammerUpg,.3)
