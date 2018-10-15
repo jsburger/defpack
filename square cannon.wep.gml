@@ -46,6 +46,7 @@ with mod_script_call("mod","defpack tools","create_supersquare",x,y)
 	move_contact_solid(other.gunangle,16)
 	creator = other
 	team    = other.team
+	pseudoteam = team
 	size    = 4
 	motion_add(other.gunangle+random_range(-6,6)*creator.accuracy,6)
 	with Wall

@@ -1230,21 +1230,16 @@ if instance_exists(creator) && check{
 //      direction   start angle of the curve, real
 //      detail      number of segments in the curve, real
 //var x1, y1, x2, y2, start_angle, detail, dist, dist_ang, inc, draw_x, draw_y;
-x1 = argument[0];
-y1 = argument[1];
-x2 = argument[2];
-y2 = argument[3];
-start_angle = argument[4];
-detail = argument[5];
+var start_angle = direction
 
-dist = point_distance(x1,y1,x2,y2);
-dist_ang = angle_difference(point_direction(x1,y1,x2,y2),start_angle);
-inc = (1/detail);
+var dist = point_distance(x1,y1,x2,y2);
+var dist_ang = angle_difference(point_direction(x1,y1,x2,y2),start_angle);
+var inc = (1/detail);
 
 draw_primitive_begin(pr_linestrip);
-for (i=0; i<1+inc; i+=inc) {
-	draw_x = x1 + (lengthdir_x(i * dist, i * dist_ang + start_angle));
-	draw_y = y1 + (lengthdir_y(i * dist, i * dist_ang + start_angle));
+for (var i=0; i<1+inc; i+=inc) {
+	var draw_x = x1 + (lengthdir_x(i * dist, i * dist_ang + start_angle));
+	var draw_y = y1 + (lengthdir_y(i * dist, i * dist_ang + start_angle));
 	draw_vertex(draw_x,draw_y);
 }
 draw_primitive_end();
@@ -1260,22 +1255,17 @@ with instance_create(_x,_y,CustomProjectile){
 	create_frame = current_frame
 	colors = [c_black,c_white,c_white,merge_color(c_blue,c_white,.3),c_white]
 	damage = 9
-	repeat(30)
-  {
-		with instance_create(x,y,Dust)
-    {
+	repeat(30){
+		with instance_create(x,y,Dust){
 		  motion_set(random(360),3+random(10))
-  	}
+  	    }
 	}
-  repeat(8)
-  {
-    with instance_create(x+random_range(-30,30),y+random_range(-30,30),LightningSpawn)
-    {
-      image_angle = point_direction(other.x,other.y,x,y) + random_range(-8,8)
+    repeat(8){
+        with instance_create(x+random_range(-30,30),y+random_range(-30,30),LightningSpawn){
+          image_angle = point_direction(other.x,other.y,x,y) + random_range(-8,8)
+        }
     }
-  }
-	if instance_exists(Floor)
-  {
+	if instance_exists(Floor){
 	    var closeboy = instance_nearest(x,y,Floor);
     	if point_in_rectangle(x,y,closeboy.x-16,closeboy.y-16,closeboy.x+16,closeboy.y+16){
     	    with instance_create(x,y,Scorchmark){
@@ -1301,15 +1291,16 @@ with instance_create(_x,_y,CustomProjectile){
     	}
 	}
 	force = 40
-  mask_index   = sprPlasmaBall
-  image_xscale = 5
-  image_yscale = 5
+    mask_index   = sprPlasmaBall
+    image_xscale = 5
+    image_yscale = 5
 	on_wall    = lightning_wall
 	on_draw    = lightning_draw;
-  on_destroy = lightning_destroy
+    on_destroy = lightning_destroy
 	on_step    = lightning_step
 	on_hit     = lightning_hit
 	depth = -8
+	
 	return id
 }
 
@@ -1378,10 +1369,10 @@ time -= current_time_scale
 if time <= 0 instance_destroy()
 
 #define create_plasmite(_x,_y)
-a = instance_create(_x,_y,CustomProjectile);
+var a = instance_create(_x,_y,CustomProjectile);
 with a
 {
-  name = "Plasmite"
+    name = "Plasmite"
 	image_speed = 0
 	image_index = 0
 	damage = 4+3*skill_get(17)
@@ -1395,6 +1386,7 @@ with a
 	on_wall 	 = plasmite_wall
 	on_destroy   = plasmite_destroy
 	on_draw      = plasmite_draw
+	on_square    = script_ref_create(plasmite_square)
 }
 return a;
 
@@ -1450,7 +1442,22 @@ sound_play_pitch(sndPlasmaHit,random_range(1.45,1.83))
 with instance_create(x,y,PlasmaImpact){image_xscale=.5;image_yscale=.5;team = other.team;damage = floor(damage/2)}
 
 #define create_supersquare(_x,_y)
-var a = instance_create(_x,_y,CustomProjectile);
+with create_square(_x,_y){
+    damage = 2
+    force = 12
+    bounce = 5+skill_get(17)*2
+    image_xscale = 1+skill_get(17)*.3
+	image_yscale = 1+skill_get(17)*.3
+	sprite_index = global.sprSuperSquare
+	mask_index 	 = global.mskSuperSquare
+	anglefac = random_range(0.6,2)
+	lifetime += room_speed
+	size = 4
+	
+	return id
+}
+
+/*var a = instance_create(_x,_y,CustomProjectile);
 with a
 {
 	typ = 1
@@ -1477,23 +1484,24 @@ with a
 	on_destroy = square_destroy
 }
 return a;
+*/
 
 #define create_triangle(_x,_y)
 var a = instance_create(_x,_y,CustomProjectile);
 with a
 {
-  typ = 1
-  name = "triangle"
-  size = 1
-  friction = 1.3
-  damage = 5
-  image_xscale = 1.2
-  image_yscale = 1.2
-  sprite_index = global.sprTriangle
-  image_angle = direction - 45
-  on_step    = triangle_step
-  on_wall    = triangle_wall
-  on_destroy = triangle_destroy
+    typ = 1
+    name = "triangle"
+    size = 1
+    friction = 1.3
+    damage = 5
+    image_xscale = 1.2
+    image_yscale = 1.2
+    sprite_index = global.sprTriangle
+    image_angle = direction - 45
+    on_step    = triangle_step
+    on_wall    = triangle_wall
+    on_destroy = triangle_destroy
 }
 return a;
 
@@ -1508,69 +1516,74 @@ sleep(2)
 view_shake_at(x,y,8)
 sound_play_pitchvol(sndPlasmaHit,random_range(2,3),.4)
 var i = direction - 90;
-repeat(3)
-{
-  with instance_create(x,y,Laser)
-	{
-	  creator = other.creator
-    team = other.team
-		image_angle = i
-		event_perform(ev_alarm,0)
-	}
-  i += 90
+repeat(3){
+    with instance_create(x,y,Laser){
+        creator = other.creator
+        team = other.team
+        image_angle = i
+        event_perform(ev_alarm,0)
+    }
+    i += 90
 }
 
 #define create_square(_x,_y)
-var a = instance_create(_x,_y,CustomProjectile);
-with a
-{
-	typ = 1
-	name = "square"
-	size = 1
-	friction = .3
-	bounce = 7+skill_get(17)*3
-	damage = 1
-	minspeed = 2
-	image_xscale = 1+skill_get(17)*.2
-	image_yscale = 1+skill_get(17)*.2
-	force = 1
-	iframes = 0
-	anglefac = random_range(0.8,2.5)
-	fac = choose(1,-1)
-	sprite_index = global.sprSquare
-	mask_index 	 = global.mskSquare
-	hitframes = 0
-	lifetime = room_speed * 6
-	on_step    = square_step
-	on_hit     = square_hit
-	on_wall    = square_wall
-	on_draw    = square_draw
-	on_destroy = square_destroy
+var a = instance_create(_x,_y,CustomSlash);
+with a{
+    typ = 1
+    name = "square"
+    size = 1
+    pseudoteam = -1
+    friction = .3
+    bounce = 7+skill_get(17)*3
+    damage = 1
+    minspeed = 2
+    image_xscale = 1+skill_get(17)*.2
+    image_yscale = 1+skill_get(17)*.2
+    force = 1
+    iframes = 0
+    anglefac = random_range(0.8,2.5)
+    fac = choose(1,-1)
+    sprite_index = global.sprSquare
+    mask_index 	 = global.mskSquare
+    hitframes = 0
+    lifetime = room_speed * 6
+    on_projectile = square_projectile
+    on_grenade = nothing
+    on_step    = square_step
+    on_hit     = square_hit
+    on_wall    = square_wall
+    on_draw    = square_draw
+    on_destroy = square_destroy
+    on_square  = script_ref_create(square_square)
+    on_anim    = nothing
 }
 return a;
 
 #define square_destroy
 if size > 1
 {
-		var i = random(360);
-		repeat(4)
+	var i = random(360);
+	repeat(4)
+	{
+		with create_square(x,y)
 		{
-			with create_square(x,y)
-			{
-				creator = other.creator
-				team    = other.team
-				size    = 1
-				motion_add(i+random_range(-6,6),6*current_time_scale)
-			}
-			i += 360/size
+			creator = other.creator
+			team    = other.pseudoteam
+			pseudoteam = team
+			size    = 1
+			motion_add(i+random_range(-6,6),6)
 		}
+		i += 360/size
+	}
 }
 sound_play_pitch(sndPlasmaHit,random_range(.9,1.1))
-with instance_create(x,y,PlasmaImpact){team = other.team;image_xscale=1.5;image_yscale=1.5}
+with instance_create(x,y,PlasmaImpact){team = other.pseudoteam;}
 
 #define square_hit
-with other motion_add(point_direction(other.x,other.y,x,y),other.size)
-if speed > minspeed && projectile_canhit_melee(other) = true{projectile_hit(other, round(2*damage), force, direction)}else{hitframes += other.size;projectile_hit(other, damage, force, direction)};
+if other.team != pseudoteam{
+    with other motion_add(point_direction(other.x,other.y,x,y),other.size)
+    if speed > minspeed && projectile_canhit_melee(other) = true{projectile_hit(other, round(2*damage + speed), force, direction)}else{projectile_hit(other, damage, force, direction)};
+}
 
 #define square_draw
 draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, image_yscale, image_angle, image_blend, 1.0);
@@ -1578,261 +1591,124 @@ draw_set_blend_mode(bm_add);
 draw_sprite_ext(sprite_index, image_index, x, y, 2*image_xscale, 2*image_yscale, image_angle, image_blend, 0.1);
 draw_set_blend_mode(bm_normal);
 
-#define square_wall
-move_bounce_solid(1)
-sound_play_pitchvol(sndPlasmaHit,random_range(2,4),.3)
-repeat(3) with instance_create(x,y,PlasmaTrail){image_index = 0;image_speed = .5;motion_add(other.direction+random_range(-30,30),random_range(6,8))}
-if speed <= minspeed bounce--
-sleep(size * 5)
-view_shake_at(x,y,size * 5)
+#define square_projectile
+if other.team = pseudoteam || ("pseudoteam" in other and other.pseudoteam == pseudoteam){
+    if instance_is(other,CustomProjectile){
+        if "on_square" in other{
+            with other mod_script_call(on_square[0],on_square[1],on_square[2])
+        }
+    }
+    else if instance_is(other,Laser){
+        motion_add(other.direction,(2/size) * current_time_scale)
+        if current_frame_active with instance_create(x + lengthdir_x(random(sprite_width/2),random(360)),y+lengthdir_y(random(sprite_height/2),random(360)),PlasmaTrail) motion_set(other.direction, random_range(3,8))
+    }
+    else if iframes <= 0{
+        var melee = [EnergySlash,EnergyShank,EnergyHammerSlash]
+        var speeds = [12,9,17]
+        for var i = 0; i < 2; i++{
+            if instance_is(other,melee[i]){
+				with instance_create(other.x,other.y,GunGun) image_index=2
+				if speed < 20 {
+				    direction = other.direction;
+				    speed = speeds[i]
+				}
+				sound_play_pitch(sndPlasmaBigExplode,1.4)
+				sound_play_pitch(sndPlasmaHit,2.2)
+				if skill_get(17){sound_play_pitch(sndPlasmaBigExplodeUpg,2.2)}
+				iframes += 10
+                break
+            }
+        }
+    }
+    if instance_is(other,PlasmaBall) || instance_is(other,PopoPlasmaBall) || instance_is(other,PlasmaHuge) || instance_is(other,PlasmaBig){
+        var num = plasmite_count(other.object_index)
+        repeat(num[0]){
+            with create_plasmite(x,y){
+                creator = other.creator
+                team = other.pseudoteam
+                motion_add(other.direction+random_range(-140,140),random_range(12,16))
+                image_angle = direction
+            }
+        }
+        repeat(num[1]){
+            with create_plasmite(x,y){
+                creator = other.creator
+                team = other.pseudoteam
+                motion_add(other.direction+random_range(-20,20),random_range(16,20))
+                image_angle = direction
+            }
+        }
+        instance_destroy();exit
+    }
+}
 
-#define square_step
-if speed > 2
-{
-	if current_frame_active with instance_create(x+random_range(-8,8),y+random_range(-8,8),PlasmaImpact)
-	{
-		image_index = 1
-		image_speed = 0.3-skill_get(17)*0.05
-		image_xscale = .25
-		image_yscale = .25
-		with Smoke if place_meeting(x,y,other) instance_destroy()
-	}
-}
-with instance_create(x+random_range(-8,8)+lengthdir_x(sprite_width/2,direction-180),y+random_range(-8,8)+lengthdir_y(sprite_width/2,direction-180),PlasmaTrail)
-{
-	image_speed = 0.35-skill_get(17)*0.05
-	image_xscale += skill_get(17)/2
-	image_yscale = image_xscale
-}
-with Laser
-{
-  if team = other.team
-  {
-    if place_meeting(x,y,other)
-    {
-      var _i = direction;
-      with other
-      {
-        motion_add(other.direction,2/size)
-        repeat(3) with instance_create(x,y,PlasmaTrail)
-        {
-          motion_add(_i+choose(0,180),random_range(3,8))
-        }
-      }
+#define plasmite_count(object)
+    switch object{
+        case PlasmaBig: return[10,5]
+        case PlasmaHuge: return[12,6]
+        default: return[8,4]
     }
-  }
-}
-if iframes <= 0
-{
-	with EnergyShank
-	{
-		if place_meeting(x,y,other)
-		{
-      sleep(10)
-				with instance_create(other.x,other.y,GunGun){image_index=2}
-				if other.speed <20{with other{direction=other.direction;speed=9}}
-				sound_play_pitch(sndPlasmaBigExplode,1.4)
-				sound_play_pitch(sndPlasmaHit,2.2)
-				if skill_get(17){sound_play_pitch(sndPlasmaBigExplodeUpg,2.2)}
-				other.iframes += 10*image_speed
-		}
-	}
-	with EnergySlash
-	{
-		if place_meeting(x,y,other)
-		{
-      sleep(20)
-				with instance_create(other.x,other.y,GunGun){image_index=2}
-				with other{direction=other.direction;speed=12}
-				sound_play_pitch(sndPlasmaBigExplode,1.4)
-				sound_play_pitch(sndPlasmaHit,2.2)
-				if skill_get(17){sound_play_pitch(sndPlasmaBigExplodeUpg,2.2)}
-				other.iframes += 10*image_speed
-		}
-	}
-	with EnergyHammerSlash
-	{
-		if place_meeting(x,y,other)
-		{
-      sleep(40)
-				with instance_create(other.x,other.y,GunGun){image_index=2}
-				with other{direction=other.direction;speed=17}
-				sound_play_pitch(sndPlasmaBigExplode,1.4)
-				sound_play_pitch(sndPlasmaHit,2.2)
-				if skill_get(17){sound_play_pitch(sndPlasmaBigExplodeUpg,2.2)}
-				other.iframes += 10*image_speed
-		}
-	}
-}
-if place_meeting(x,y,PlasmaBall) || place_meeting(x,y,PopoPlasmaBall)
-{
-  if team = other.team
-  {
-    with other
-    {
-      repeat(8)
-      {
-        with create_plasmite(x,y)
-        {
-          creator = other.creator
-          team = other.team
-          motion_add(other.direction+random_range(-140,140),random_range(12,16))
-          image_angle = direction
-        }
-      }
-      repeat(4)
-      {
-        with create_plasmite(x,y)
-        {
-          creator = other.creator
-          team = other.team
-          motion_add(other.direction+random_range(-20,20),random_range(16,20))
-          image_angle = direction
-        }
-      }
-      instance_destroy();exit
-    }
-  }
-}
-if place_meeting(x,y,PlasmaBig)
-{
-  if team = other.team
-  {
-    with other
-    {
-      repeat(10)
-      {
-        with create_plasmite(x,y)
-        {
-          creator = other.creator
-          team = other.team
-          motion_add(other.direction+random_range(-140,140),random_range(14,18))
-          image_angle = direction
-        }
-      }
-      repeat(5)
-      {
-        with create_plasmite(x,y)
-        {
-          creator = other.creator
-          team = other.team
-          motion_add(other.direction+random_range(-20,20),random_range(16,20))
-          image_angle = direction
-        }
-      }
-      instance_destroy();exit
-    }
-  }
-}
-if place_meeting(x,y,PlasmaHuge)
-{
-  if team = other.team
-  {
-    with other
-    {
-      repeat(12)
-      {
-        with create_plasmite(x,y)
-        {
-          creator = other.creator
-          team = other.team
-          motion_add(other.direction+random_range(-140,140),random_range(16,20))
-          image_angle = direction
-        }
-      }
-      repeat(6)
-      {
-        with create_plasmite(x,y)
-        {
-          creator = other.creator
-          team = other.team
-          motion_add(other.direction+random_range(-20,20),random_range(16,20))
-          image_angle = direction
-        }
-      }
-      instance_destroy();exit
-    }
-  }
-}
-else{iframes-=current_time_scale}
-if speed < minspeed speed = minspeed
-if speed > 16 speed = 16
-image_angle += speed * anglefac * fac * current_time_scale
-with instances_matching(CustomProjectile,"name","Plasmite")
-{
-	if place_meeting(x,y,other)
-	{
-    other.speed += 1/other.size
-		motion_add(point_direction(other.x,other.y,x,y),random_range(8,10))
+
+#define plasmite_square
+    motion_set(point_direction(other.x,other.y,x,y),speed + other.size)
+    with other motion_add(point_direction(other.x,other.y,x,y),other.damage/(size*2))
     sound_play_pitchvol(sndPlasmaHit,random_range(3,6),.3)
     with instance_create(x,y,PlasmaTrail){image_xscale = 2;image_yscale = 2}
     image_angle = direction
-	}
-}
-with instances_matching(CustomProjectile,"name","Laser Flak") || instances_matching(CustomProjectile,"name","Heavy Laser Flak")
-{
-	if place_meeting(x,y,other)
-	{
+
+#define lflak_square
     sound_play_pitchvol(sndPlasmaBigExplode,random_range(3,6),.3)
     repeat(12) with instance_create(x,y,PlasmaTrail){image_index = 0;image_speed = .5;motion_add(other.direction+random_range(-120,120),random_range(9,12))}
-    with other
-    {
-      var i = direction + 90;
-      repeat(2)
-      {
-        with create_triangle(x,y)
-        {
-          creator = other.creator
-          team = other.team
-          motion_add(i,12)
-          if direction > 180 turn = -1 else turn = 1
-          image_angle = direction - 45
+    with other{
+        var i = direction + 90;
+        repeat(2){
+            with create_triangle(x,y){
+                creator = other.creator
+                team = other.psuedoteam
+                motion_add(i,12)
+                if direction > 180 turn = -1 else turn = 1
+                image_angle = direction - 45
+            }
+            i += 180
         }
-        i += 180
-      }
-      instance_destroy()
-      exit
+        instance_destroy()
+        exit
     }
-	}
-}
-with instances_matching(CustomProjectile,"name","square")
-{
-	if place_meeting(x,y,other)
-	{
-		motion_add(point_direction(other.x,other.y,x,y),7*(other.size/size))
+
+#define square_square
+    motion_add(point_direction(other.x,other.y,x,y),7*(other.size/size))
     repeat(6) with instance_create(x,y,PlasmaTrail){image_index = 0;image_speed = .5;motion_add(other.direction+random_range(-60,60),random_range(9,12))}
-		sound_play_pitch(sndPlasmaHit,random_range(.9,1.1))
-		with instance_create(x,y,PlasmaImpact){team = other.team;instance_create(x+random_range(-8,8),y+random_range(-8,8),Smoke)}
+    sound_play_pitch(sndPlasmaHit,random_range(.9,1.1))
+    with instance_create(x,y,PlasmaImpact){team = other.pseudoteam;instance_create(x+random_range(-8,8),y+random_range(-8,8),Smoke)}
+
+#define square_wall
+    move_bounce_solid(1)
+    sound_play_pitchvol(sndPlasmaHit,random_range(2,4),.3)
+    repeat(3) with instance_create(x,y,PlasmaTrail){image_index = 0;image_speed = .5;motion_add(other.direction+random_range(-30,30),random_range(6,8))}
+    if speed <= minspeed bounce--
+    sleep(size * 5)
+    view_shake_at(x,y,size * 5)
+
+#define square_step
+if team != id{
+    pseudoteam = team
+    team = id
+}
+if speed > 2{
+	if current_frame_active with instance_create(x + lengthdir_x(random(sprite_width/2),random(360)),y+lengthdir_y(random(sprite_height/2),random(360)),PlasmaTrail){
+	    sprite_index = sprPlasmaImpact
+		image_index = 2
+		image_speed = 0.3-skill_get(17)*0.05
+		image_xscale = .25
+		image_yscale = .25
 	}
 }
-with instances_matching(CustomProjectile,"name","plasmite cannon")
-{
-	if place_meeting(x,y,other)
-	{
-		ammo += 5*other.size
-    repeat(5*other.size)
-	  {
-  		mod_script_call("weapon","plasmite cannon","create_electron")
-	  }
-    repeat(3*other.size) with instance_create(x,y,PlasmaTrail){image_index = 0;image_speed = .5;motion_add(other.direction+random_range(-140,140),random_range(9,12))}
-    repeat(8*other.size)
-    {
-      with create_plasmite(x,y)
-      {
-        creator = other.creator
-        team = other.team
-        motion_add(other.direction+random_range(-140,140),random_range(16,20))
-        image_angle = direction
-      }
-    }
-		sound_play_pitch(sndPlasmaHit,random_range(.9,1.1))
-		with instance_create(x,y,PlasmaImpact){team = other.team;instance_create(x+random_range(-8,8),y+random_range(-8,8),Smoke)}
-    with other
-    {
-      instance_destroy()
-      exit
-    }
-	}
+iframes = max(iframes - current_time_scale, 0)
+if speed < minspeed speed = minspeed
+if speed > 16 speed = 16
+image_angle += speed * anglefac * fac * current_time_scale
+with instance_create(x+random_range(-8,8)+lengthdir_x(sprite_width/2,direction-180),y+random_range(-8,8)+lengthdir_y(sprite_width/2,direction-180),PlasmaTrail){
+	image_speed = 0.35-skill_get(17)*0.05
 }
 if bounce <= 0 instance_destroy()
 
@@ -2029,6 +1905,7 @@ with a
 	on_draw     = laserflak_draw
 	on_step     = laserflak_step
 	on_destroy  = laserflak_destroy
+	on_square   = script_ref_create(lflak_square)
 }
 return a;
 
@@ -2172,42 +2049,39 @@ sound_play_pitchvol(sndHammerHeadEnd,random_range(1.23,1.33),20)
 sound_play_pitchvol(sndBasicUltra,random_range(0.9,1.1),20)
 sound_play_pitch(sndCoopUltraA,random_range(3.8,4.05))
 sound_play_pitch(sndBasicUltra,random_range(.6,.8))
-with instance_create(x+lengthdir_x(sprite_get_width(sprite_index),image_angle),y+lengthdir_y(sprite_get_width(sprite_index),image_angle),CustomObject)
-{
-  with instance_create(x,y,CustomSlash)
-  {
-    lifetime = 73
-    team = _t
-    image_xscale = 2.5
-    image_yscale = 2.5
-    mask_index  = sprPortalShock
-    image_blend = c_black
-    image_speed = 0
-    image_alpha = 0
-    damage = 0
-    on_projectile = crit_proj
-    on_step       = crit_step
-    on_wall       = nothing
-    on_hit        = nothing
-  }
-  image_angle = random(359)
-  depth = other.depth -1
-  image_speed = .6
-  sprite_index = global.sprKillslash
-  image_xscale = random_range(1.3,1.5)
-  image_yscale = image_xscale
-  on_step = Killslash_step
-  with instance_create(x,y,CustomObject)
-  {
-    image_angle = other.image_angle - 90 + random_range(-8,8)
-    depth = other.depth
-    image_speed = .8
+with instance_create(x+lengthdir_x(sprite_get_width(sprite_index),image_angle),y+lengthdir_y(sprite_get_width(sprite_index),image_angle),CustomObject){
+    with instance_create(x,y,CustomSlash){
+        lifetime = 73
+        team = _t
+        image_xscale = 2.5
+        image_yscale = 2.5
+        mask_index  = sprPortalShock
+        image_blend = c_black
+        image_speed = 0
+        image_alpha = 0
+        damage = 0
+        on_projectile = crit_proj
+        on_step       = crit_step
+        on_wall       = nothing
+        on_hit        = nothing
+    }
+    image_angle = random(359)
+    depth = other.depth -1
+    image_speed = .6
     sprite_index = global.sprKillslash
-    image_blend = c_black
-    image_xscale = other.image_xscale-.5
+    image_xscale = random_range(1.3,1.5)
     image_yscale = image_xscale
     on_step = Killslash_step
-  }
+    with instance_create(x,y,CustomObject){
+        image_angle = other.image_angle - 90 + random_range(-8,8)
+        depth = other.depth
+        image_speed = .8
+        sprite_index = global.sprKillslash
+        image_blend = c_black
+        image_xscale = other.image_xscale-.5
+        image_yscale = image_xscale
+        on_step = Killslash_step
+    }
 }
 
 #define Killslash_step
@@ -2215,12 +2089,8 @@ if image_index = 1.2 sleep(200)
 if image_index >= 7 instance_destroy();
 
 #define crit_proj
-if other.team != team
-{
-  with other
-  {
-    instance_destroy()
-  }
+with other{
+    if typ > 0 instance_destroy()
 }
 
 #define crit_step
@@ -2240,40 +2110,46 @@ return r;
 
 #define create_bouncerdisc(_x,_y)
 var a = instance_create(_x+lengthdir_x(4,gunangle),_y+lengthdir_y(4,gunangle),CustomProjectile);
-with a
-{
-  typ = 1
-  dist = 0
-  damage = 2
-  team = -10
-  image_speed = .5
-  name = "Bouncer Disc"
-  sprite_index = global.sprBouncerDisc
-  on_step = bouncerdisc_step
-  on_hit = bouncerdisc_hit
-  on_wall = bouncerdisc_wall
-  on_destroy = bouncerdisc_destroy
-  hitid = [sprite_index,name]
+with a{
+    typ = 1
+    dist = 0
+    damage = 2
+    image_speed = .5
+    teamswap = 1
+    name = "Bouncer Disc"
+    sprite_index = global.sprBouncerDisc
+    on_step = bouncerdisc_step
+    on_hit = bouncerdisc_hit
+    on_wall = bouncerdisc_wall
+    on_destroy = bouncerdisc_destroy
+    hitid = [sprite_index,name]
 }
 return a;
 
 #define bouncerdisc_step
-if speed > 0{instance_create(x,y,DiscTrail)}
-dist += 1
-if instance_exists(Player) and instance_exists(enemy)
-{dir = instance_nearest(x,y,enemy)
-if speed > 0 and skill_get(21) = 1 and point_distance(x,y,dir.x,dir.y) < 32
-{
-x += lengthdir_x(1,point_direction(x,y,dir.x,dir.y))
-y += lengthdir_y(1,point_direction(x,y,dir.x,dir.y))}
-if place_meeting(x,y,Player){other.lasthit = hitid}
+if speed > 0 && current_frame_active {instance_create(x,y,DiscTrail)}
+dist += current_time_scale
+if instance_exists(creator) && teamswap && !place_meeting(x,y,creator){
+    teamswap = 0
+    team = -1
+}
+if skill_get(mut_bolt_marrow){
+    var q = instance_nearest_matching_ne(x,y,hitme,"team",team)
+    if instance_exists(q){
+        if distance_to_object(q) < 30{
+            var dir = point_direction(x,y,q.x,q.y)
+            x += lengthdir_x(current_time_scale,dir)
+            y += lengthdir_y(current_time_scale,dir)
+        }
+    }
 }
 
 #define bouncerdisc_hit
-if other.my_health-damage>0{motion_set(point_direction(other.x,other.y,x,y),speed)}else{motion_set(random(359),speed)}
-if other.sprite_index != other.spr_hurt{projectile_hit(other, damage+round(speed), 5, other.direction-180)}
-if speed < 12{speed+=.6}
-
+projectile_hit(other,damage+floor(speed),5,direction)
+if other.my_health > 0{
+    direction = point_direction(other.x,other.y,x,y)
+    if speed < 12 speed += .6
+}
 sound_play_pitch(sndDiscBounce,random_range(.8,1.2))
 sound_play_pitch(sndBouncerBounce,random_range(1,1))
 image_angle = direction
@@ -2333,11 +2209,9 @@ if instance_exists(stuckto){
     instance_create(x,y,Dust)
 }
 else if skill_get(mut_bolt_marrow){
-    if instance_exists(enemy){
-        var q = instance_nearest(x,y,enemy)
-        if distance_to_object(q) < 30
-            motion_add(point_direction(x,y,q.x,q.y),.25*current_time_scale)
-    }
+    var q = instance_nearest_matching_ne(x,y,hitme,"team",team)
+    if instance_exists(q) && distance_to_object(q) < 30
+        motion_add(point_direction(x,y,q.x,q.y),.25*current_time_scale)
 }
 
 #define stickydisc_hit
@@ -2364,7 +2238,7 @@ if !instance_exists(stuckto) sound_play_hit(sndDiscBounce,.2)
 move_bounce_solid(true)
 
 #define stickydisc_destroy
-with instance_create(x,y,DiscTrail){sprite_index=sprDiscDisappear;image_xscale = 2}
+with instance_create(x,y,DiscTrail){sprite_index=sprDiscDisappear;}
 sound_play_hit(sndDiscDie, 0.2)
 with instance_create(x,y,Smoke){depth = -3}
 
@@ -2372,39 +2246,38 @@ with instance_create(x,y,Smoke){depth = -3}
 var a = instance_create(x,y,CustomProjectile)
 with a
 {
-  typ = 1
-  sprite_index = global.sprMegaDisc
-  dist = 0
-  damage = 2
-  image_speed = .5
-  maxspeed = speed
-  hitid = [sprite_index,"MEGA DISC"]
-  on_step    = md_step
-  on_wall    = md_wall
-  on_hit     = md_hit
-  on_destroy = md_destroy
+    typ = 1
+    sprite_index = global.sprMegaDisc
+    dist = 0
+    damage = 2
+    teamswap = 1
+    image_speed = .5
+    maxspeed = speed
+    hitid = [sprite_index,"MEGA DISC"]
+    on_step    = md_step
+    on_wall    = md_wall
+    on_hit     = md_hit
+    on_destroy = md_destroy
 }
 return a
 
 #define md_step
-dist++
-if current_frame mod 1 / current_time_scale = 0
-{
-  with instance_create(x,y,DiscTrail)
-  {
+dist += current_time_scale
+if current_frame_active with instance_create(x,y,DiscTrail){
     sprite_index = global.sprMegaDiscTrail
-  }
 }
-if skill_get(21) = true
-{
-    var closeboy = instance_nearest(x,y,enemy);
-    if distance_to_object(closeboy) <= 40
-    {
-      motion_add(point_direction(x,y,closeboy.x,closeboy.y),.5)
-      speed = maxspeed
+if instance_exists(creator) && teamswap && !place_meeting(x,y,creator){
+    teamswap = 0
+    team = -1
+}
+
+if skill_get(21){
+    var q = instance_nearest_matching_ne(x,y,hitme,"team",team)
+    if instance_exists(q) && distance_to_object(q) <= 40{
+        motion_add(point_direction(x,y,q.x,q.y),.5*current_time_scale)
+        speed = maxspeed
     }
 }
-if instance_exists(creator){if team = creator.team{if !place_meeting(x,y,creator){team = -10}}}
 
 #define md_wall
 dist += 5
@@ -2414,25 +2287,22 @@ sound_play_pitchvol(sndDiscBounce,random_range(.6,.8),.4)
 move_bounce_solid(false)
 direction += random_range(-12,12)
 with other{instance_create(x,y,FloorExplo);instance_destroy()}
-with instance_create(x,y,DiscBounce)
-{
-  sprite_index = global.sprMegaDiscBounce
+with instance_create(x,y,DiscBounce){
+    sprite_index = global.sprMegaDiscBounce
 }
 if dist >= 200 instance_destroy()
 
 #define md_destroy
 sound_play_pitchvol(sndDiscDie,random_range(.6,.8),.4)
-with instance_create(x,y,DiscDisappear)
-{
-  sprite_index = global.sprMegaDiscDie
+with instance_create(x,y,DiscDisappear){
+    sprite_index = global.sprMegaDiscDie
 }
 
 #define md_hit
-if place_meeting(x,y,creator)
-{
-  sound_play(sndDiscHit)
-  other.lasthit = hitid
-  sleep(3*other.size+4)
+if place_meeting(x,y,creator){
+    sound_play(sndDiscHit)
+    other.lasthit = hitid
+    sleep(3*other.size+4)
 }
 x -= hspeed/2
 y -= vspeed/2
