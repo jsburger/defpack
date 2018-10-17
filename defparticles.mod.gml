@@ -69,26 +69,16 @@ with instance_create(_x,_y,PlasmaTrail){
                 direction = other.direction + random_range(-90,90)
             }
         }*/
-        with instances_matching(instances_matching(CustomProjectile,"name","Psy Bullet"),"sparked",null){
+        with instances_matching(Explosion,"sparked",null){
             sparked = 1
             var colors = [c_red,c_yellow]
             if instance_is(self,GreenExplosion) colors = [c_green,c_yellow]
             if instance_is(self,PopoExplosion) colors = [c_blue,c_aqua]
-            repeat(random(2*damage)) with create_spark(x+random_range(-5,5),y+random_range(-5,5)){
+            if array_length_1d(instances_matching(CustomObject,"name","spark")) < 40 repeat(random(2*damage)) with create_spark(x+random_range(-5,5),y+random_range(-5,5)){
                 vspeed -= 5
                 gravity = .4
                 color = colors[0]
                 fadecolor = colors[1]
-                age = 20
-                depth = other.depth+1
-            }
-        }
-        with instances_matching(Explosion,"sparked",null){
-            sparked = 1
-            repeat(random(2*damage)) with create_spark(x+random_range(-5,5),y+random_range(-5,5)){
-                vspeed -= 5
-                gravity = .4
-                color = c_red
                 age = 20
                 depth = other.depth+1
             }

@@ -53,10 +53,35 @@ with instance_create(x,y,CustomProjectile)
 	accuracy = other.accuracy
 	on_step 	 = atom_step
 	on_wall 	 = mb_wall
-	on_destroy = atom_destroy
+	on_destroy   = atom_destroy
 	on_draw 	 = atom_draw
+	on_square    = script_ref_create(atom_square)
 	repeat(6){create_electron()}
 }
+
+#define atom_square
+    ammo += 5*other.size
+    repeat(5*other.size){
+        create_electron()
+    }
+    repeat(3*other.size) with instance_create(x,y,PlasmaTrail){image_index = 0;image_speed = .5;motion_add(other.direction+random_range(-140,140),random_range(9,12))}
+    repeat(8*other.size){
+        with mod_script_call("mod","defpack tools","create_plasmite",x,y)
+        {
+            creator = other.creator
+            team = other.team
+            motion_add(other.direction+random_range(-140,140),random_range(16,20))
+            image_angle = direction
+        }
+    }
+    sound_play_pitch(sndPlasmaHit,random_range(.9,1.1))
+    with instance_create(x,y,PlasmaImpact){team = other.team;instance_create(x+random_range(-8,8),y+random_range(-8,8),Smoke)}
+    with other{
+        instance_destroy()
+        exit
+    }
+
+
 
 #define create_electron()
 var _a = instance_create(x,y,CustomProjectile)

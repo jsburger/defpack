@@ -35,6 +35,7 @@
 
 ///OTHER///
 /loadwep finished stuff/defender
+/loadwep punisher
 /loadwep finished stuff/drinks/vinegar
 /loadwep finished stuff/drinks/munitions mist
 /loadwep finished stuff/drinks/sunset mayo

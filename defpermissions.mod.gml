@@ -73,6 +73,7 @@ draw_roundrect_color(x1,y1,x2,y2,color,color,0)
 if global.menuopen{
     draw_set_font(fntChat)
     draw_set_color(c_white)
+    draw_set_halign(0)
     for (var i = 0; i < maxp; i++) if player_is_active(i){
         draw_set_visible_all(0)
         draw_set_visible(i,1)

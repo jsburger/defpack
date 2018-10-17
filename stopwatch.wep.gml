@@ -224,7 +224,7 @@ if !scaler && radius < 0 {instance_destroy()}
 #define blur_step
 	depth += 0.01;
 	image_alpha *= 0.5;
-	if(image_alpha <= 0) instance_destroy();
+	if(image_alpha <= 0.01) instance_destroy();
 
 #define blur_draw
 if back draw_sprite_ext(wepsprt, 0, x, y, 1, right, gunangle, image_blend, image_alpha)
