@@ -217,11 +217,7 @@ with instances_matching([Explosion,SmallExplosion,GreenExplosion,PopoExplosion],
 }
 
 //drop tables
-with Inspector			{if my_health <= 0 && irandom(97)=0{with instance_create(x,y,WepPickup){wep = "donut box"}}};
-with Shielder 			{if my_health <= 0 && irandom(97)=0{with instance_create(x,y,WepPickup){wep = "donut box"}}};
-with EliteGrunt 		{if my_health <= 0 && irandom(97)=0{with instance_create(x,y,WepPickup){wep = "donut box"}}};
-with EliteInspector     {if my_health <= 0 && irandom(97)=0{with instance_create(x,y,WepPickup){wep = "donut box"}}};
-with EliteShielder      {if my_health <= 0 && irandom(97)=0{with instance_create(x,y,WepPickup){wep = "donut box"}}};
+with instances_matching_le([Inspector,Shielder,EliteGrunt,EliteInspector,EliteShielder],"my_health",0) if !irandom(97) with instance_create(x,y,WepPickup){wep = "donut box"}
 
 with SodaMachine{
 	if my_health <= 0 && irandom(1)=0
