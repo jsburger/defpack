@@ -50,7 +50,7 @@
 
 ///NON-WEAPONS///
 /load iris
-/load exchange
+/load crown
 
 ///TODO///
 /loadwep ultra claymore
@@ -59,4 +59,3 @@
 /loadwep stopwatch
 /loadwep herald
 /loadwep finished stuff/andromeda launcher
-/loadwep golden abris pistol
