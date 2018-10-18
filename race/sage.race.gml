@@ -40,7 +40,8 @@ global.mskReflect = sprite_add("mskReflect.png",3,90,90)
 //add_spell("No Spell", NA,scr(none_channel),scr(none_release),NA,1,global.hands)
 
 add_spell("Merge", scr(merge_cast),NA,NA,NA,ultraspell,sprite_add("sprMerge.png",2,8,7),sprite_add("MergeBlob.png",1,4,4))
-add_spell("Rapid Fire",NA,scr(rapid_channel),NA,NA,1,sprite_add("sprBlast.png",2,8,7),sprite_add("RapidFireBlob.png",1,4,3))
+//add_spell("Rapid Fire",NA,scr(rapid_channel),NA,NA,1,sprite_add("sprBlast.png",2,8,7),sprite_add("RapidFireBlob.png",1,4,3))
+add_spell("Triple Shot",scr(triple_cast),NA,NA,NA,1,sprite_add("sprBlast.png",2,8,7),sprite_add("RapidFireBlob.png",1,4,3))
 add_spell("Proto Swap",scr(proto_cast),NA,NA,NA,1,sprite_add("sprProto.png",2,7,7),sprite_add("ProtoChestBlob.png",1,4,3))
 
 //ultra spells
@@ -175,6 +176,8 @@ return choose("A NEW WORLD", `COLLECTING @yPICKUPS@s GIVES YOU @(color:${global.
 	    curve : 0,
 	    spell : "No Spell",
 	    resettime : 0,
+	    menutime : 0,
+	    menucap : 15,
 	    index : 0,
 	    col : global.purblue,
 	    animcol : global.skintone,
@@ -203,7 +206,7 @@ for var i = 0; i< array_length_1d(global.drawers); i++{
     with instances_in(bbox_left-size,bbox_top-size,bbox_right+size,bbox_bottom+size,[HPPickup,AmmoPickup,Rad,BigRad]){
         mask_index = mskNone
         if point_distance(x,y,other.x,other.y) <= 10{
-            if instance_is(self,Rad) wantmana += 1.5
+            if instance_is(self,Rad) and speed <= 0 wantmana += 1.5
             else wantmana += 5
             if instance_is(self,HPPickup) && skill_get(mut_second_stomach) wantmana += 5
             wantmana += (GameCont.crown = crwn_haste)
@@ -216,14 +219,14 @@ for var i = 0; i< array_length_1d(global.drawers); i++{
         shinetime = max(shinetime-current_time_scale,0)
     }
     if wantmana > 0 shinetime = 5
-
-
+    
     if hastetime > 0{
         hastetime = max(hastetime-current_time_scale,0)
         if hastetime = 0{
             maxspeed -= 1 + skill_get(mut_throne_butt)*.5
             accuracy *= (1.25+skill_get(mut_throne_butt)*.15)
         }
+        if canfire && weapon_get_auto(wep) > -1 clicked = button_check(index,"fire")
         if current_frame_active with instance_create(x,y,CustomObject){
             sprite_index = other.sprite_index
             image_index = other.image_index
@@ -281,8 +284,13 @@ for var i = 0; i< array_length_1d(global.drawers); i++{
     else h.resettime -= current_time_scale
 
     hand = h
+    
+    if canspec && hand.spell != "No Spell" && (button_released(index,"spec") && hand.menutime < hand.menucap){
+        var array = global.spells[? hand.spell][1];
+        mod_script_call(array[0],array[1],array[2])
+    }
 
-    if canspec && hand.spell != "No Spell"{
+    /*if canspec && hand.spell != "No Spell"{
         if button_pressed(index,"spec"){
             var array = global.spells[? h.spell][1];
             mod_script_call(array[0],array[1],array[2])
@@ -296,7 +304,7 @@ for var i = 0; i< array_length_1d(global.drawers); i++{
             var array = global.spells[? h.spell][3];
             mod_script_call(array[0],array[1],array[2])
         }
-    }
+    }*/
 
 
 #define draw_begin
@@ -333,7 +341,7 @@ surface_set_target(sf)
 draw_set_halign(1)
 draw_set_font(fntSmall)
 draw_clear_alpha(0,0)
-draw_text_shadow(50,0,"HOLD KEYS 1-4 TO# SWITCH SPELLS")
+draw_text_shadow(50,0,"HOLD RMB TO# SWITCH SPELLS")
 surface_reset_target()
 if instance_exists(creator){
     draw_surface_ext(sf,creator.x - 50,creator.y + 20,1,1,0,c_white,alpha)
@@ -345,6 +353,72 @@ if alphatime = 0 and alpha < 0 instance_destroy()
 #macro view_yc view_yview[index] + game_height/2
 
 #define spellpicker
+with instances_matching(Player,"race",mod_current){
+    var btn = "spec";
+    
+    if button_pressed(index,btn){
+        hand.menulength = .1
+        if controlprompted = 0 {
+            controlprompted = 1
+            with instance_create(x,y,CustomObject){
+                creator = other
+                on_draw = textdraw
+                alpha = 0
+                alphatime = 90
+            }
+        }
+    }
+    if button_check(index,btn) || button_released(index,btn) hand.menutime += current_time_scale
+    else hand.menutime = 0
+    if hand.menutime >= hand.menucap && visible && (button_check(index,btn) || button_released(index,btn)){
+        draw_set_visible_all(0)
+        draw_set_visible(index,1)
+        var picks = [];
+        for var i = 0; i< array_length_1d(global.spellnames); i++{
+            var avail = global.spells[? global.spellnames[i]][5];
+            if is_array(avail){
+                avail = mod_script_call(avail[0],avail[1],avail[2])
+            }
+            if avail == true array_push(picks,global.spellnames[i])
+        }
+        var int = 360/array_length_1d(picks);
+        var num = 0;
+        var l = hand.menulength;
+        var startang = 0;
+        var xc = game_width/2;
+        var yc = game_height/2;
+        draw_set_projection(0)
+        for var a = startang; a<startang+360; a+=int{
+            var pointed = abs(angle_difference(point_direction(view_xc,view_yc,mouse_x[index],mouse_y[index]),a)) < int/2;
+            var col = pointed? c_white : c_gray;
+            var _x = xc + lengthdir_x(40,a), _y = yc + lengthdir_y(40,a);
+            var size = 1
+
+            var ang = (a + int/2)
+            draw_line_width_color(xc + lengthdir_x(50, ang),yc + lengthdir_y(50, ang),xc + lengthdir_x(10, ang),yc + lengthdir_y(10, ang),1,c_white,c_white)
+
+            draw_sprite_ext(global.spells[? picks[num]][6], pointed, _x, _y, size, size, 0, col, l)
+            if picks[num] = "Proto Swap" draw_sprite_ext(weapon_get_sprite(global.protowep), 0, _x + lengthdir_x(20,a), _y + lengthdir_y(20,a), size, size, 0, col, l)
+
+            draw_set_font(fntSmall)
+            draw_set_halign(1)
+            draw_set_color(col)
+            draw_text_shadow(_x,_y + 10,picks[num])
+
+            if pointed && button_released(index,btn){
+                hand.spell = picks[num]
+                hand.sprite = global.spells[? picks[num]][7]
+            }
+            num++
+        }
+        draw_reset_projection()
+        hand.menulength = min(hand.menulength + hand.menulength * current_time_scale,1)
+        draw_set_color(c_white)
+    }
+    draw_set_visible_all(1)
+}
+
+#define spellpicker_old
 with instances_matching(Player,"race",mod_current){
     var btn = "key4"
     if hand.spell = "No Spell" btn = "spec"
@@ -548,6 +622,19 @@ if hand.mana >= 50{
             wait(0)
         }
         exit
+    }
+}
+
+#define triple_cast
+if hand.mana >= 15{
+    if reload <= 0 and canfire and (infammo != 0 or (ammo[weapon_get_type(wep)] >= weapon_get_cost(wep) * 3)){
+        hand.mana -= 15
+        specfiring = 1
+        for var i = -1; i <= 1; i++{
+            player_fire(gunangle + 20*i*accuracy)
+        }
+        specfiring = 0
+        reload -= weapon_get_load(wep)
     }
 }
 

@@ -139,7 +139,7 @@ if timer >= 2 && ammo > 0{
     repeat(2){
         with mod_script_call("mod","defpack tools", "create_rocklet",x,y){
             creator = other.creator
-            team = creator.team
+            team = other.team
             motion_add(other.direction + n,2)
             move_contact_solid(direction,10)
             direction_goal = other.direction - n
