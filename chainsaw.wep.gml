@@ -12,7 +12,7 @@ return 1
 #define weapon_area
 return 6;
 #define weapon_load
-return 11;
+return 14;
 #define weapon_swap
 return sndSwapMotorized
 #define weapon_auto
@@ -27,7 +27,7 @@ with instance_create(x,y,CustomObject)
 	creator = other
 	team    = other.team
 	name    = "chainsaw burst"
-	ammo    = 11
+	ammo    = weapon_get_load(mod_current)
 	timer   = current_time_scale
 	on_step = chainsaw_step
 	bwep = other.specfiring
@@ -60,6 +60,8 @@ if ammo > 0 && current_frame_active
 		force = 0
 		damage = 1
 		mask_index = global.sprChainsaw
+		image_xscale = 1.33
+		image_yscale = 1.25
 		creator = other
 		team = other.team
 		image_angle = other.creator.gunangle
@@ -77,23 +79,24 @@ if ammo > 0 && current_frame_active
 #define chainsawshank_hit
 if projectile_canhit(other) = true
 {
-	view_shake_at(x,y,9)
-	sleep(3)
+	view_shake_at(x,y,8)
+	sleep(6)
 	var _splat = -4;
 	_splat = determine_gore(other)
-  with instance_create((other.x+x)/2,(other.y+y)/2,_splat){image_angle = random(360)}
+  with instance_create((other.x*other.size+x)/(other.size+1),(other.y*other.size+y)/(other.size+1),_splat){image_angle = random(360)}
 	projectile_hit(other,damage,force,direction)
 	if other.my_health <= 0
 	{
 	  sound_play(sndDiscHit)
-		sleep(other.size * 60)
-		view_shake_at(x,y,other.size * 50)
+		sleep(other.size * 80)
+		view_shake_at(x,y,other.size * 80)
 		repeat(other.size)
 		{
 			with instance_create(other.x,other.y,AmmoPickup){num = .5;sprite_index = global.sprMiniAmmo}
 		}
 	}
 }
+
 #define determine_gore(_id)
 switch object_get_name(_id.object_index)
 {

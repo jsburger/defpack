@@ -48,7 +48,7 @@ with lightning_create(x,y,12,gunangle+random_range(-10,10)){
     creator = other
     lightning_grow();
 }
-motion_add(gunangle-180,2)
+motion_add(gunangle-180,4)
 //yokin is truly defpacks greatest ally
 #define lightning_create(_x, _y, _ammo, _direction)
     with(instance_create(_x, _y, CustomProjectile)){
@@ -94,6 +94,7 @@ motion_add(gunangle-180,2)
             s = choose(.5,.75)
             image_xscale = s
             image_yscale = s
+            image_speed = random_range(.3,.6)
             team = other.team
             creator = other.creator
           }
@@ -102,6 +103,7 @@ motion_add(gunangle-180,2)
             s = .25
             image_xscale = s
             image_yscale = s
+            image_speed = random_range(.3,.6)
             team = other.team
             creator = other.creator
           }

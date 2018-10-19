@@ -2,11 +2,11 @@
 //global.gun
 global.sprDrillLauncher = sprite_add_weapon("sprites/sprDrillLauncher.png",6,4)
 global.sprDrill = sprite_add("sprites/projectiles/sprDrill.png",4,6,4)
-global.explosive = 1 //boolean, try turning it off
+global.explosive = 0 //boolean, try turning it off
 #define weapon_name
 return "DRILL LAUNCHER"
 #define weapon_type
-return global.explosive ? 4 : 3
+return 3//global.explosive ? 4 : 3
 #define weapon_cost
 return 2
 #define weapon_area
@@ -92,7 +92,8 @@ else
 
 #define drill_hit
 
-sleep(12)
+sound_play_drill(.4)
+sleep(35)
 //speed = max(speed - 3, 3)
 x = xprevious
 y = yprevious

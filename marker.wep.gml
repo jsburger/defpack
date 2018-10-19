@@ -14,7 +14,7 @@ return 3;
 return false;
 
 #define weapon_load
-return 15; //34
+return 18;
 
 #define weapon_cost
 return 2;
@@ -29,7 +29,7 @@ return 9;
 return "UNSEEN ALLIES";
 
 #define weapon_fire
-weapon_post(5,21,21)
+weapon_post(6,-50,5)
 sound_play_pitch(sndUltraCrossbow,random_range(3,4))
 sound_play_pitch(sndHeavyCrossbow,random_range(2,3))
 sound_play_pitch(sndSeekerPistol,random_range(1.6,2))
@@ -111,7 +111,7 @@ with instance_create(x,y-z-4,CustomObject){
             wait(1)
             if !instance_exists(wall) break
         }
-        if instance_exists(self) instance_destroy() 
+        if instance_exists(self) instance_destroy()
         exit
     }
 }
@@ -136,7 +136,7 @@ if z < 0
                 repeat(30){
                     wait(1)
                 }
-                if instance_exists(self) instance_destroy() 
+                if instance_exists(self) instance_destroy()
                 exit
             }
         }
@@ -144,6 +144,8 @@ if z < 0
 	instance_create(x,y-z,Dust)
 	sound_play_pitch(sndBoltHitWall,random_range(.8,1.2))
 	sound_play_pitch(sndHitWall,random_range(.8,1.2))
+	view_shake_at(x,y,2)
+	sleep(4)
 	instance_destroy()
 }
 

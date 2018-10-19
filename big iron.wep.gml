@@ -29,12 +29,13 @@ return 13;
 return "BIG SNEEZE";
 
 #define weapon_fire
-weapon_post(5,0,42)
-sleep(12)
-sound_play_pitch(sndSlugger,random_range(1.3,1.6))
-sound_play_pitch(sndShotgun,random_range(.8,.9))
-sound_play_pitch(sndHeavyNader,random_range(1.3,1.4))
-sound_play_pitch(sndMachinegun,random_range(.6,.7))
+weapon_post(7,30,52)
+sleep(24)
+var _p = random_range(.7,1.3)
+sound_play_pitch(sndSlugger,1.4*_p)
+sound_play_pitch(sndShotgun,.8*_p)
+sound_play_pitch(sndHeavyNader,1.3*_p)
+sound_play_pitch(sndMachinegun,.6*_p)
 repeat(6)
 {
 with instance_create(x,y,Shell){motion_add(other.gunangle+90+random_range(-40,40),2+random(2))}

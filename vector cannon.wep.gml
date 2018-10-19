@@ -19,7 +19,7 @@ return 5;
 return true;
 
 #define weapon_load
-return 22;
+return 18;
 
 #define weapon_cost
 return 1;
@@ -114,10 +114,11 @@ with instances_matching_ne(hitme,"team",other.team)
 		speed = 0
 		motion_set(other.direction,(4+skill_get(17)*2))
 		view_shake_at(other.creator.x,other.creator.y,.35*size)
+		if current_frame mod 3 = 0 projectile_hit(self,1,1,other.direction)
 	}
 }
 with instances_matching_ne(prop,"team",other.team){if place_meeting(x,y,other){speed = 0}}//5000 iq workaround
-image_yscale = 1 - sin(current_frame * pi*10*current_time_scale)
+image_yscale = 1 * random_range(.9,1.1)
 x = startx + lengthdir_x(dir,direction) * ammo
 y = starty + lengthdir_y(dir,direction) * ammo
 if ammo <= 0 {instance_destroy();exit}
@@ -135,7 +136,6 @@ if projectile_canhit_melee(other) = true
 {
 	with other
 	{
-		projectile_hit(self,1,1,other.direction)
 		if place_meeting(x+lengthdir_x(speed+1,other.direction)+hspeed,y+lengthdir_y(speed+1,other.direction)+vspeed,Wall)
 		{
 			projectile_hit(self,speed*2,1,other.direction)

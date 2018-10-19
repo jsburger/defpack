@@ -1296,7 +1296,7 @@ with instance_create(_x,_y,CustomProjectile){
 	on_step    = lightning_step
 	on_hit     = lightning_hit
 	depth = -8
-	
+
 	return id
 }
 
@@ -1449,7 +1449,7 @@ with create_square(_x,_y){
 	anglefac = random_range(0.6,2)
 	lifetime += room_speed
 	size = 4
-	
+
 	return id
 }
 
@@ -1525,7 +1525,7 @@ repeat(3){
 #define create_square(_x,_y)
 var a = instance_create(_x,_y,CustomSlash);
 with a{
-    typ = 1
+    typ = 0
     name = "square"
     size = 1
     pseudoteam = -1
@@ -2047,7 +2047,7 @@ sound_play_pitch(sndCoopUltraA,random_range(3.8,4.05))
 sound_play_pitch(sndBasicUltra,random_range(.6,.8))
 with instance_create(x+lengthdir_x(sprite_get_width(sprite_index),image_angle),y+lengthdir_y(sprite_get_width(sprite_index),image_angle),CustomObject){
     with instance_create(x,y,CustomSlash){
-        lifetime = 73
+        lifetime = 63
         team = _t
         image_xscale = 2.5
         image_yscale = 2.5
@@ -2086,7 +2086,7 @@ if image_index >= 7 instance_destroy();
 
 #define crit_proj
 with other{
-    if typ > 0 instance_destroy()
+    if team != other.team instance_destroy()
 }
 
 #define crit_step

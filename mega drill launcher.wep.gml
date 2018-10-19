@@ -2,11 +2,11 @@
 //global.gun
 global.sprMegaDrillLauncher = sprite_add_weapon("sprites/sprBigDrillLauncher.png",15,10)
 global.sprMegaDrill = sprite_add("sprites/projectiles/sprBigDrill.png",4,15,10)
-global.explosive = 1 //boolean, try turning it off
+global.explosive = 0 //boolean, try turning it off
 #define weapon_name
 return "MEGA DRILL LAUNCHER"
 #define weapon_type
-return global.explosive ? 4 : 3
+return 3//global.explosive ? 4 : 3
 #define weapon_cost
 return 8
 #define weapon_area
@@ -27,7 +27,8 @@ return global.sprMegaDrillLauncher
 //how could you not
 return "HOLLOW THE EARTH"
 #define weapon_fire
-weapon_post(21,-36,25)
+weapon_post(21,-260,80)
+extraspeed = 8+gunangle/10000
 var _fac = random_range(.8,1.2);
 sound_play_pitch(sndSwapMotorized,.7*_fac)
 sound_play_pitch(sndHeavyCrossbow,.7*_fac)
@@ -36,7 +37,7 @@ sound_play_pitch(sndGrenade,.3*_fac)
 sound_play_pitch(sndDiscBounce,1.5*_fac)
 sound_play_drill(.6)
 motion_set(gunangle-180,maxspeed * 2)
-sleep(12)
+sleep(55)
 with instance_create(x,y,CustomProjectile){
     motion_set(other.gunangle+random_range(-3,3)*other.accuracy,1)
     friction = -.6
@@ -98,6 +99,7 @@ else
 #define drill_hit
 sleep(12)
 walls = 6
+sound_play_drill(.4)
 //speed = max(speed - 3, 3)
 x = xprevious
 y = yprevious
@@ -146,4 +148,17 @@ if fork(){
         wait(0)
     }
     exit
+}
+
+#define step
+if "extraspeed" in self
+{
+  if extraspeed > 26 extraspeed = 26
+	if extraspeed > 0
+	{
+		if irandom(2) != 0{instance_create(x,y,Dust)}
+		motion_add(frac(extraspeed)*10000-180,extraspeed-frac(extraspeed))
+		extraspeed--
+	}
+	else{extraspeed = 0}
 }

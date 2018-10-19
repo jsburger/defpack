@@ -2,7 +2,6 @@
 
 //PSY SHELL
 
-/loadwep psy pop gun
 /loadwep psy shotgun
 /loadwep psy eraser
 /loadwep psybird
