@@ -40,7 +40,7 @@ return false;
 return choose("PRODUCT OF PRISMATIC FORGERY","BE CAREFUL WITH IT")
 
 #define weapon_fire
-weapon_post(7,0,25)
+weapon_post(7,30,25)
 sound_play_pitch(sndSawedOffShotgun,random_range(1.2,1.4))
 sound_play_pitch(sndSlugger,random_range(.7,.8))
 sound_play_pitch(sndLaserCrystalHit,random_range(1.4,1.7))

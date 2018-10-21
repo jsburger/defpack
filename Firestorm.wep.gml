@@ -31,7 +31,7 @@ repeat(3){
 }
 
 #define weapon_fire
-weapon_post(6,12,4)
+weapon_post(7,52,24)
 sound_play_pitch(sndGrenadeRifle,.9)
 sound_play_pitch(sndFlare,1.3)
 sound_play_pitch(sndFlameCannon,1.4)

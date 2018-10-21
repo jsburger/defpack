@@ -50,7 +50,7 @@ var _load = weapon_get_load(mod_current);
 	 // Flames:
 	repeat(_load) if(instance_exists(self)){
 		repeat(2) with instance_create(x,y,ToxicGas){
-			move_contact_solid(other.gunangle,22);
+			move_contact_solid(other.gunangle,18);
 			image_angle = random(360)
 			motion_add(other.gunangle + (random_range(-6, 6) * other.accuracy),random_range(2,3));
 		}

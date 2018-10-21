@@ -14,7 +14,7 @@ return 3;
 return false;
 
 #define weapon_load
-return 17;
+return 19;
 
 #define weapon_cost
 return 2;
@@ -30,7 +30,7 @@ return "FANCY ME A VOODOO DOLL";
 
 #define weapon_fire
 var i = 0;
-repeat(6)
+repeat(7)
 {
 	motion_add(gunangle-180,1)//anything higher has unreasonable amount of knockback, its quite cool
 	i++

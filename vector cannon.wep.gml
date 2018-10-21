@@ -112,9 +112,9 @@ with instances_matching_ne(hitme,"team",other.team)
 	if place_meeting(x,y,other)
 	{
 		speed = 0
-		motion_set(other.direction,(4+skill_get(17)*2))
+		motion_set(other.direction,max((4+skill_get(17)*2-size),1))
 		view_shake_at(other.creator.x,other.creator.y,.35*size)
-		if current_frame mod 3 = 0 projectile_hit(self,1,1,other.direction)
+		projectile_hit(self,choose(0,0,1),1,other.direction)
 	}
 }
 with instances_matching_ne(prop,"team",other.team){if place_meeting(x,y,other){speed = 0}}//5000 iq workaround

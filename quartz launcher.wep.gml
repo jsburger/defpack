@@ -41,9 +41,10 @@ return choose("BE CAREFUL WITH IT","ENERGIC FORTUNE TELLING");
 sound_play_pitch(sndHeavyNader,random_range(1.3,1.5))
 sound_play_pitch(sndLaserCrystalHit,random_range(1.2,1.3))
 sound_play_pitchvol(sndLaserCrystalDeath,random_range(1.6,2),.5)
-weapon_post(8,-4,22)
+weapon_post(8,-20,22)
 with instance_create(x,y,CustomProjectile)
 {
+	typ = 1
 	sprite_index = global.sprQuartzGrenade
 	damage = 12
 	force = 3
@@ -111,7 +112,24 @@ instance_create(x,y,WepSwap){image_angle = random(360)}
 #define quartznade_step
 if speed <= 0{lifetime -= current_time_scale}
 if lifetime <= 10 sprite_index = sprHeavyGrenadeBlink
-if lifetime <= 0{instance_destroy()}
+with Slash
+{
+	if place_meeting(x,y,other)
+	{
+		with other
+		{
+			view_shake_at(x,y,15)
+			sleep(7)
+			motion_set(other.direction,22)
+			with instance_create(x,y,Deflect)
+			{
+				image_angle = other.direction
+			}
+		}
+	}
+}
+if place_meeting(x,y,Shank){instance_destroy()}
+if lifetime <= 0{instance_destroy();exit}
 
 #define quartznade_destroy
 var i = random(360);
