@@ -111,7 +111,7 @@ do
                     recycle--
                     with creator ammo[1] = min(ammo[1]+1,typ_amax[1])
                     sound_play(sndRecGlandProc)
-                    instance_create(x,y,RecycleGland)
+                    with instance_create(x,y,RecycleGland) image_speed *= random_range(.8,1.2)
                 }
                 projectile_hit_np(other,damage,force,20)
                 if other.my_health >= damage*3 || --damage <= 0{

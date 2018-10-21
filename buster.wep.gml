@@ -28,13 +28,13 @@ return 11;
 return choose("WOOMY");
 
 #define weapon_fire
-
-sound_play_pitch(sndRocketFly,random_range(2,2.2))
-sound_play_pitch(sndGrenadeShotgun,random_range(.7,.8))
-sound_play_pitch(sndHeavyNader,random_range(1.6,1.8))
-sound_play_pitchvol(sndHeavySlugger,random_range(.6,.7),1)
-weapon_post(9,-20,24)
-
+var _p = random_range(.8,1.2)
+sound_play_pitch(sndRocketFly,2.1*_p)
+sound_play_pitch(sndGrenadeShotgun,.7*_p)
+sound_play_pitch(sndHeavyNader,1.7*_p)
+sound_play_pitchvol(sndHeavySlugger,.6*_p,1)
+weapon_post(9,-60,24)
+sleep(10)
 with instance_create(x,y,CustomProjectile)
 {
   move_contact_solid(other.gunangle,16)
@@ -91,8 +91,8 @@ if speed <= friction instance_destroy()
 #define blaster_hit
 if projectile_canhit(other) = true
 {
-	sleep(8*other.size)
-	view_shake_at(x,y,5)
+	sleep(9*min(other.size,4))
+	view_shake_at(x,y,6)
 	with instance_create(x,y,Smoke){image_angle = random(360)}
 	projectile_hit(other,damage,speed,direction)
 }
@@ -101,9 +101,8 @@ if projectile_canhit(other) = true
 sleep(12)
 repeat(3) instance_create(x,y,Smoke)
 move_bounce_solid(false)
-speed *= .5
+speed *= .6
 sound_play_pitchvol(sndGrenadeHitWall,random_range(.5,.7),.8)
-sound_play_pitchvol(sndTurretHurt,random_range(.5,.7),.3)
 
 #define blaster_destroy
 instance_create(x,y,SmallExplosion)

@@ -67,12 +67,28 @@ repeat(interfacepop){
     }
 }
 
+#define slugstep
+timer--
+if timer <= 0 instance_destroy()
+
+#define slugdraw
+draw_sprite_ext(sprite_index, image_index, x, y, 1.5*image_xscale, 1.5*image_yscale, image_angle, image_blend, 1.0);
+draw_set_blend_mode(bm_add);
+draw_sprite_ext(sprite_index, image_index, x, y, 3*image_xscale, 3*image_yscale, image_angle, image_blend, 0.25);
+draw_set_blend_mode(bm_normal);
+
 #define weapon_fire
-sound_play_pitch(sndDoubleShotgun,2)
-sound_play(sndSuperSlugger)
-sound_play_pitch(sndExplosionL,1.3)
-weapon_post(15,-120,60)
+sound_play_pitchvol(sndSlugger,.6,.8)
+weapon_post(15,-320,60)
 var AP = 0
+with instance_create(x+lengthdir_x(20,gunangle),y+lengthdir_y(20,gunangle),CustomObject)
+{
+  sprite_index = sprHeavySlug
+  image_speed = 0
+  timer = 2
+  on_step = slugstep
+  on_draw = slugdraw
+}
 with instance_create(x+lengthdir_x(20,gunangle),y+lengthdir_y(20,gunangle),SmallExplosion){
     sprite_index = global.sprMegaFlash
     mask_index = global.mskMegaFlash
@@ -96,7 +112,11 @@ with instance_create(x+lengthdir_x(20,gunangle),y+lengthdir_y(20,gunangle),Small
     }
     hitid = [sprite_index,"MUZZLE BLAST"]
 }
-sleep(100)
+sleep(120)
+var _p = random_range(.8,1.2)
+sound_play_pitch(sndDoubleShotgun,2*_p)
+sound_play(sndSuperSlugger)
+sound_play_pitch(sndExplosionL,1.3*_p)
 repeat(45){
     with instance_create(x,y,Bullet2){
         motion_set(other.gunangle+random_range(-25,25)*other.accuracy,random_range(8,14)*2)

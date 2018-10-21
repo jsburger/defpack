@@ -44,8 +44,8 @@ if skill_get(17){
 }else{
     sound_play_pitch(sndLightningPistol,.8)
 }
-weapon_post(16,-90,125)
-sleep(35)
+weapon_post(16,-190,125)
+sleep(45)
 motion_add(gunangle-180,5+abs(speed))
 with instance_create(x,y,LightningSpawn){
     move_contact_solid(other.gunangle,20);
