@@ -30,10 +30,10 @@ return 11;
 return "DISTANT ADMIRATION";
 
 #define weapon_fire
-var _strtsize = 52;
+var _strtsize = 20;
 var _endsize  = 8;
 with mod_script_call("mod","defpack tools","create_abris",self,_strtsize,_endsize,argument0){
-	accspeed = 1.1
+	accspeed = 1.07
 	payload = script_ref_create(pop)
 }
 sound_play_pitch(sndSniperTarget,1/accuracy+1)
@@ -42,7 +42,7 @@ sound_play_pitch(sndSniperTarget,1/accuracy+1)
 sound_play_pitch(sndGrenadeShotgun,random_range(1.5,1.8))
 sound_play_pitch(sndGrenade,random_range(1.5,1.8))
 sound_play(sndExplosionS)
-creator.wkick = 4
+with creator weapon_post(4,12,6)
 repeat(3)
 {
 	with instance_create(explo_x+lengthdir_x(acc+12,offset),explo_y+lengthdir_y(acc+12,offset),SmallExplosion){hitid = [sprite_index,"small explosion"]}

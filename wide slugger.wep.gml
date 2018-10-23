@@ -37,7 +37,7 @@ return global.sprWideSlugger;
 return "BRICK BLASTER"
 
 #define weapon_fire
-weapon_post(6,-20,15)
+weapon_post(7,-40,15)
 var _p = random_range(.8,1.2);
 
 sound_play_pitch(sndSlugger,.7*_p)
@@ -55,8 +55,8 @@ with instance_create(x,y,CustomProjectile)
   image_angle = direction
   damage[0] = 3
   damage[1] = 2
-  force[0]  = 1
-  force[1]  = 2
+  force[0]  = 6
+  force[1]  = 9
   typ       = 0
   friction  = .03
   image_speed = 1
@@ -94,7 +94,7 @@ with instances_matching_ne(hitme,"team",other.team)
       x -= hspeed*3/4
       y -= vspeed*3/4
       other.direction = direction
-      projectile_hit(_id,damage[image_index],min(0,force[image_index]-other.size),direction)
+      projectile_hit(_id,damage[image_index],min(0,force[image_index]-other.size/4),direction)
       speed *= .95 + skill_get(15)*.1
       sleep(5*other.size)
       view_shake_at(x,y,2*other.size)
@@ -117,6 +117,8 @@ if image_index = 0
   }
 }
 else instance_destroy()
+sound_play_pitchvol(sndFlakExplode,1.3,.2)
+sound_play_pitchvol(sndHitWall,1.3,.5)
 
 #define dyn_draw
 draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, image_yscale, image_angle, image_blend, 1.0);

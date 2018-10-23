@@ -1096,6 +1096,8 @@ switch creator.race{
 
 #define abris_step
 if instance_exists(creator){
+  var _a = other.accbase/other.accmin
+  with creator weapon_post(_a,8*_a,0)
 	if check = 0{
 		abris_check()
 	}
@@ -1163,12 +1165,13 @@ if instance_exists(creator) && check{
 		var _tary = mouse_y[index];
 	}
 	if button_check(creator.index,btn){
-      draw_sprite_ext(sprHeavyGrenadeBlink,0,x+lengthdir_x(14,creator.gunangle),y+lengthdir_y(14,creator.gunangle)+1,1,1,creator.gunangle,lasercolour1,1)
+    var _a = (primary = 1 ? creator.wkick : creator.bwkick)
+      draw_sprite_ext(sprHeavyGrenadeBlink,0,x+lengthdir_x(14-_a,creator.gunangle),y+lengthdir_y(14-_a,creator.gunangle)+1,1,1,creator.gunangle,lasercolour1,1)
 			var radi = acc+accmin;
 			mod_script_call("mod", "defpack tools","draw_polygon_striped", 16, radi, 45, _tarx+1, _tary+1, global.stripes, lasercolour1, 0.1+(accbase-acc)/(accbase*5),(current_frame mod 16)*.004);
 			mod_script_call("mod", "defpack tools","draw_circle_width_colour",16,radi,1,acc+image_angle,_tarx,_tary,lasercolour1,1*(accbase-acc))
 			mod_script_call("mod", "defpack tools","draw_circle_width_colour",16, accmin,1,acc+image_angle,_tarx,_tary,lasercolour1,.2)
-			draw_line_width_colour(x+lengthdir_x(16,creator.gunangle),y+lengthdir_y(16,creator.gunangle),_tarx,_tary,1,lasercolour1,lasercolour1);
+			draw_line_width_colour(x+lengthdir_x(16-_a,creator.gunangle),y+lengthdir_y(16-_a,creator.gunangle),_tarx,_tary,1,lasercolour1,lasercolour1);
 		var comp = (primary = 1 ? creator.wep : creator.bwep);
 		if popped {comp = creator.wep}
 		if wep != comp {instance_destroy()}

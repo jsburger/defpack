@@ -155,7 +155,7 @@ if projectile_canhit_melee(other){
 }
 if pierce<=0 && ammo{
     with instance_create(x,y,PlasmaImpact){
-        sound_play(sndPlasma)
+        sound_play(sndPlasmaHit)
         creator = other.creator
         team = other.team
         sprite_index = global.sprVectorImpact

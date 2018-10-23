@@ -47,14 +47,17 @@ sound_play_pitch(sndLaserCrystalHit,random_range(1.4,1.7))
 repeat(5) with instance_create(x,y,CustomProjectile)
 {
   sprite_index = global.sprQuartzBullet2
-  mask_index   = mskHeavyBullet
+  mask_index   = mskBullet2
   projectile_init(other.team,other)
   force  = 4
-  damage[0] = 6
-  damage[1] = 4
+  damage[0] = 4
+  damage[1] = 6
   typ = 1
+  maxframes = 2 + skill_get(15) * 2
+  frames    = maxframes
   friction = random_range(.6,2)
   image_speed = 1
+  wallbounce = 3 + skill_get(15) * 5;
   motion_add(other.gunangle+random_range(-9,9)*other.accuracy,26)
   image_angle = direction
   pierce  = 2
@@ -68,12 +71,24 @@ repeat(5) with instance_create(x,y,CustomProjectile)
 
 #define quartzbullet_wall
 move_bounce_solid(false)
-image_angle = direction
 direction += random_range(-4,4)
+image_angle = direction
+speed *= .9
+if speed + wallbounce > 26
+{
+  speed = 26
+}
+else
+{
+  speed += wallbounce
+}
+wallbounce *= .9
+frames = maxframes
 sound_play_pitchvol(sndHitWall,random_range(.8,1.2),.5)
 with instance_create(x+random_range(-4,4),y+random_range(-4,4),Dust){sprite_index = sprExtraFeetDust}
 
 #define quartzbullet_step
+if frames > 0{frames--}
 if image_index = 1 image_speed = 0;
 if speed <= friction instance_destroy()
 
@@ -88,16 +103,17 @@ if projectile_canhit(other) = true && lasthit != other
 {
   sleep(damage[image_index])
   view_shake_at(x,y,damage[image_index])
-  projectile_hit(other,damage[image_index],force,direction)
+  projectile_hit(other,damage[min(frames,1)],force,direction)
   pierce--
   lasthit = other
 }
 if pierce < 0{instance_destroy()}
 
 #define quartzbullet_draw
+var _f = min(frames,1);
 draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, image_yscale, image_angle, image_blend, 1.0);
 draw_set_blend_mode(bm_add);
-draw_sprite_ext(sprite_index, image_index, x, y, 2*image_xscale, 2*image_yscale, image_angle, image_blend, 0.1);
+draw_sprite_ext(sprite_index, image_index, x, y, 2*image_xscale, 2*image_yscale, image_angle, image_blend, 0.1+_f*.2);
 draw_set_blend_mode(bm_normal);
 
 #define step

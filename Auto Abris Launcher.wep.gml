@@ -30,11 +30,11 @@ return 10;
 return "RECOVERY FUEL";
 
 #define weapon_fire
-var _strtsize = 20;
-var _endsize  = 1;
+var _strtsize = 30;
+var _endsize  = 14;
 sound_play_pitch(sndSniperTarget,3)
 with mod_script_call("mod","defpack tools","create_abris",self,_strtsize,_endsize,argument0){
-	accspeed = 1.5
+	accspeed = 1.2
 	payload = script_ref_create(pop)
 }
 sound_play_pitch(sndSniperTarget,1/accuracy+3)
@@ -43,7 +43,7 @@ sound_play_pitch(sndSniperTarget,1/accuracy+3)
 sound_play_pitch(sndGrenadeRifle,random_range(.5,.8))
 sound_play_pitch(sndGrenadeShotgun,random_range(.5,.8))
 sound_play(sndExplosionS)
-creator.wkick = 5
+with creator weapon_post(5,25,5)
 instance_create(explo_x+lengthdir_x(acc,offset),explo_y+lengthdir_y(acc,offset),Explosion)
 repeat(3)
 {

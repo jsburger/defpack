@@ -54,7 +54,7 @@ sound_play_pitch(sndIDPDNadeExplo,.7)
 sleep(500)
 sound_play(sndExplosionXL)
 sound_play(sndExplosionL)
-with creator{weapon_post(12,-80,244)}
+with creator{weapon_post(12,80,244)}
 with creator{motion_add(gunangle,-5)}
 repeat(8)
 {

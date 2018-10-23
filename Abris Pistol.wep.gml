@@ -42,7 +42,7 @@ sound_play_pitch(sndSniperTarget,1/accuracy+1.5)
 sound_play_pitch(sndGrenadeRifle,random_range(1.5,1.8))
 sound_play_pitch(sndGrenade,random_range(1.5,1.8))
 sound_play(sndExplosionS)
-creator.wkick = 2
+with creator weapon_post(4,12,6)
 repeat(3)
 {
 	with instance_create(explo_x+lengthdir_x(acc+12,offset),explo_y+lengthdir_y(acc+12,offset),SmallExplosion){hitid = [sprite_index,"small explosion"]}
