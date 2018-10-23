@@ -31,7 +31,7 @@ return sndSwapEnergy;
 return 13;
 
 #define weapon_reloaded
-if !button_check(index,"fire")
+if !button_check(index,"fire") || (race = "steroids" and bwep = mod_current and !button_check(index,"spec"))
 {
 	sound_play_pitchvol(sndIDPDNadeAlmost,.5,.2)
 	sound_play_pitchvol(sndPlasmaReload,1.4,.4)
@@ -95,17 +95,22 @@ with instance_create(x,y,CustomSlash)
 	until dir >= 1800 || place_meeting(x,y,Wall)
 	//if instance_exists(creator){with creator weapon_post(6,30,0)}
 	on_wall 		  = beam_wall
-	on_step 			= beam_step
+	on_end_step 			= beam_step
 	on_draw       = beam_draw
 	on_hit  			= beam_hit
 	on_projectile = beam_projectile
 	on_destroy    = beam_destroy
+	image_xscale = dir
+	image_yscale = 1 * random_range(.9,1.1)
+    x = startx + lengthdir_x(dir,direction) * ammo
+    y = starty + lengthdir_y(dir,direction) * ammo
+
 }
 ammo--
 if ammo <= 0{instance_destroy()}
 
 #define beam_step
-image_xscale = dir
+/*
 with instances_matching_ne(hitme,"team",other.team)
 {
 
@@ -118,11 +123,9 @@ with instances_matching_ne(hitme,"team",other.team)
 	}
 }
 with instances_matching_ne(prop,"team",other.team){if place_meeting(x,y,other){speed = 0}}//5000 iq workaround
-image_yscale = 1 * random_range(.9,1.1)
-x = startx + lengthdir_x(dir,direction) * ammo
-y = starty + lengthdir_y(dir,direction) * ammo
+*/
 if ammo <= 0 {instance_destroy();exit}
-ammo--
+ammo-= current_time_scale
 with instance_create(x+random_range(-12,12),y+random_range(-12,12),BulletHit)
 {
 	sprite_index = global.sprVectorBeamEnd
@@ -132,16 +135,13 @@ with instance_create(x+random_range(-12,12),y+random_range(-12,12),BulletHit)
 #define beam_wall
 
 #define beam_hit
-if projectile_canhit_melee(other) = true
-{
-	with other
-	{
-		if place_meeting(x+lengthdir_x(speed+1,other.direction)+hspeed,y+lengthdir_y(speed+1,other.direction)+vspeed,Wall)
-		{
-			projectile_hit(self,speed*2,1,other.direction)
-			view_shake_at(other.creator.x,other.creator.y,6*size)
-			sleep(10*size)
-		}
+with other motion_set(other.direction,max((4+skill_get(17)*2-size/2),1))
+view_shake_at(other.x,other.y,other.size)
+if !irandom(2) projectile_hit(other,1,1,direction)
+with other{
+    if place_meeting(x+lengthdir_x(speed+1,other.direction)+hspeed,y+lengthdir_y(speed+1,other.direction)+vspeed,Wall){
+	    with other projectile_hit(other,other.speed ,1,direction)
+		view_shake_at(x,y,6*size)
 	}
 }
 
