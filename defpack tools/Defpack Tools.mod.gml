@@ -1942,6 +1942,7 @@ repeat(ammo)
 	{
 	    creator = other.creator
 		image_angle = i+random_range(-32,32)*other.accuracy
+		direction = image_angle
 		team = other.team
 		event_perform(ev_alarm,0)
 	}

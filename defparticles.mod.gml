@@ -1,6 +1,10 @@
 #define init
     global.bonusparticles = 0
     mod_script_call("mod","defpermissions","permission_register","mod",mod_current,"bonusparticles","Extra Particles")
+    global.particlelimit = 0
+    mod_script_call("mod","defpermissions","permission_register_range","mod",mod_current,"particlelimit","Particle Limit",0,200)
+
+#macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)
 
 #define create_spark(_x,_y)
 with instance_create(_x,_y,CustomObject){
@@ -26,7 +30,7 @@ with instance_create(_x,_y,CustomObject){
     if age <= 0 instance_destroy()
 
 #define sparkdraw
-    draw_line_width_color(x,y,xprevious,yprevious,1,color,color)
+    draw_line_width_color(x,y,lerp(x,xprevious,1/current_time_scale),lerp(y,yprevious,1/current_time_scale),1,color,color)
     
 //thanks gunlocker, heheheh
 #define create_waver(_x,_y)
@@ -62,6 +66,13 @@ with instance_create(_x,_y,PlasmaTrail){
 
 
 #define step
+    if global.particlelimit{
+        var sparks = instances_matching(CustomObject,"name","spark")
+        num = array_length_1d(sparks)
+        while num > global.particlelimit
+            with sparks[irandom(array_length_1d(sparks)-1)]
+                if instance_exists(self){ instance_destroy(); num--}
+    }
     if global.bonusparticles{
         /*with PlasmaBall{
             if !irandom(3) with create_waver(x,y){
@@ -91,7 +102,7 @@ with instance_create(_x,_y,PlasmaTrail){
             }
         }
         with SawBurst{
-            repeat(random(10)) with create_spark(x,y){
+            repeat(random(10/current_time_scale)) with create_spark(x,y){
                 direction = other.direction + random_range(-50,50)
                 speed = random(10)
                 gravity = 0
