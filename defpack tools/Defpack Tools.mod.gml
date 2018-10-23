@@ -1246,63 +1246,73 @@ return 0;
 
 
 #define create_lightning(_x,_y)
-with instance_create(_x,_y,CustomProjectile){
-	lightning_refresh()
-	hitid = [sprLightningHit,"Lightning Bolt"]
-	name = "Lightning Bolt"
-	time = skill_get(17)+4
-	create_frame = current_frame
-	colors = [c_black,c_white,c_white,merge_color(c_blue,c_white,.3),c_white]
-	damage = 9
-	repeat(30){
-		with instance_create(x,y,Dust){
-		  motion_set(random(360),3+random(10))
-  	    }
-	}
-    repeat(8){
-        with instance_create(x+random_range(-30,30),y+random_range(-30,30),LightningSpawn){
-          image_angle = point_direction(other.x,other.y,x,y) + random_range(-8,8)
-        }
-    }
-	if instance_exists(Floor){
-	    var closeboy = instance_nearest(x,y,Floor);
-    	if point_in_rectangle(x,y,closeboy.x-16,closeboy.y-16,closeboy.x+16,closeboy.y+16){
-    	    with instance_create(x,y,Scorchmark){
-    	        time = 0;
-    	        if fork(){
-    	            while instance_exists(self) && time < 45{
-    	                time += current_time_scale
-    	                image_alpha -= current_time_scale/45
-    	                if random(100) <= (45-time)*current_time_scale{
-    	                    with instance_create(x,y,Smoke){
-    	                        motion_add(90,random_range(1,2))
-    	                        image_xscale = (1-(other.time/45)) * random_range(.5,1)
-    	                        image_yscale = image_xscale
-    	                        gravity = -friction
-    	                    }
-    	                }
-    	                wait(0)
-    	            }
-    	            if instance_exists(self) instance_destroy()
-    	            exit
-    	        }
-    	    }
-    	}
-	}
-	force = 40
-    mask_index   = sprPlasmaBall
-    image_xscale = 5
-    image_yscale = 5
-	on_wall    = lightning_wall
-	on_draw    = lightning_draw;
-    on_destroy = lightning_destroy
-	on_step    = lightning_step
-	on_hit     = lightning_hit
-	depth = -8
-
-	return id
+if GameCont.area = 101
+{
+  sleep(150)
+  with Player lasthit = [sprLightningDeath,"ELECTROCUTION"]
+  with hitme projectile_hit(self,7,0,0)
+  instance_destroy()
+  exit
 }
+else
+{
+  with instance_create(_x,_y,CustomProjectile){
+  	lightning_refresh()
+  	hitid = [sprLightningHit,"Lightning Bolt"]
+  	name = "Lightning Bolt"
+  	time = skill_get(17)+4
+  	create_frame = current_frame
+  	colors = [c_black,c_white,c_white,merge_color(c_blue,c_white,.3),c_white]
+  	damage = 9
+  	repeat(30){
+  		with instance_create(x,y,Dust){
+  		  motion_set(random(360),3+random(10))
+    	    }
+  	}
+      repeat(8){
+          with instance_create(x+random_range(-30,30),y+random_range(-30,30),LightningSpawn){
+            image_angle = point_direction(other.x,other.y,x,y) + random_range(-8,8)
+          }
+      }
+  	if instance_exists(Floor){
+  	    var closeboy = instance_nearest(x,y,Floor);
+      	if point_in_rectangle(x,y,closeboy.x-16,closeboy.y-16,closeboy.x+16,closeboy.y+16){
+      	    with instance_create(x,y,Scorchmark){
+      	        time = 0;
+      	        if fork(){
+      	            while instance_exists(self) && time < 45{
+      	                time += current_time_scale
+      	                image_alpha -= current_time_scale/45
+      	                if random(100) <= (45-time)*current_time_scale{
+      	                    with instance_create(x,y,Smoke){
+      	                        motion_add(90,random_range(1,2))
+      	                        image_xscale = (1-(other.time/45)) * random_range(.5,1)
+      	                        image_yscale = image_xscale
+      	                        gravity = -friction
+      	                    }
+      	                }
+      	                wait(0)
+      	            }
+      	            if instance_exists(self) instance_destroy()
+      	            exit
+      	        }
+      	    }
+      	}
+  	}
+  	force = 40
+      mask_index   = sprPlasmaBall
+      image_xscale = 5
+      image_yscale = 5
+  	on_wall    = lightning_wall
+  	on_draw    = lightning_draw;
+      on_destroy = lightning_destroy
+  	on_step    = lightning_step
+  	on_hit     = lightning_hit
+  	depth = -8
 
+  	return id
+  }
+}
 #define lightning_wall
 with other{
 	instance_create(x,y,FloorExplo)

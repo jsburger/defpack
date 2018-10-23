@@ -4,6 +4,7 @@ global.sprCrystalTorch[1] = sprite_add_weapon("sprites/sprCrystalTorch2.png",6,1
 global.sprCrystalTorch[2] = sprite_add_weapon("sprites/sprCrystalTorch3.png",6,10)
 global.sprCrystalTorch[3] = sprite_add_weapon("sprites/sprCrystalTorch4.png",6,10)
 global.sprCrystalTorch[4] = sprite_add_weapon("sprites/sprCrystalTorch5.png",6,10)
+global.sprNegaCurse = sprite_add("sprites/sprNegaCurse.png",6,4,4);
 
 global.reloads = [16,18,20,22,24]
 global.cursed  = [InvCrystal,InvLaserCrystal,InvSpider]
@@ -18,16 +19,24 @@ if is_object(w){
     return global.sprCrystalTorch[min(floor(w.cursecharge/10),4)]
 }
 return global.sprCrystalTorch[0];
+
 #define weapon_text
 return choose("ILLUMINATE","PURGE")
+
 #define weapon_name
 return "CRYSTAL TORCH"
+
 #define weapon_type
 return 0
+
 #define weapon_cost
 return 0
+
 #define weapon_area
-return -1;
+if GameCont.crown = 11
+return 6
+return -1
+
 #define weapon_load(w)
 if is_object(w){
     return global.reloads[min(floor(w.cursecharge/10),4)]
@@ -77,7 +86,7 @@ with instance_create(x,y,CustomSlash)
 	motion_add(other.gunangle, 1 + (skill_get(13) * 2))
 	image_speed = .4
 	walled = 0
-	
+
 	projectile_init(other.team,other)
 	image_angle = direction
 	on_hit = torchhit
@@ -108,7 +117,7 @@ walled = 1
 if projectile_canhit_melee(other){
 	projectile_hit(other,damage,lv*2,direction)
 	var cursechange = -1;
-	
+
     for var i = 0; i < array_length(global.cursed); i++{
         if instance_is(other,global.cursed[i]){
             with other{

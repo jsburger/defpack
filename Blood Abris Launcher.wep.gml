@@ -23,6 +23,10 @@ return 0
 #define weapon_swap
 return sndSwapExplosive;
 
+#define weapon_reloaded
+weapon_post(-1,-3,0)
+sound_play_pitchvol(sndNadeReload,1.4,.6)
+
 #define weapon_area
 return 7;
 

@@ -92,7 +92,7 @@ with instance_create(x,y,CustomSlash)
 	{
 		dir++;x+=lengthdir_x(1,direction);y+=lengthdir_y(1,direction);
 	}
-	until dir >= 500 || place_meeting(x,y,Wall)
+	until dir >= 1800 || place_meeting(x,y,Wall)
 	//if instance_exists(creator){with creator weapon_post(6,30,0)}
 	on_wall 		  = beam_wall
 	on_step 			= beam_step

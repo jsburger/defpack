@@ -132,7 +132,8 @@ else
 }
 
 #define drill_hit
-//sleep(12)
+sleep(5)
+view_shake_at(x,y,7*min(other.size,4))
 walls = 6
 sound_play_drill(.4)
 x = xprevious
@@ -186,4 +187,3 @@ if fork(){
     sound_set_track_position(sndFlakExplode,0)
     exit
 }
-

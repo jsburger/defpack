@@ -26,6 +26,7 @@ return 0;
 return sndSwapHammer;
 
 #define weapon_area
+if GameCont.hard = 0 return 14
 return -1;
 
 #define weapon_text

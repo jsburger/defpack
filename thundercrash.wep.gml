@@ -75,10 +75,15 @@ with instance_create(x,y,CustomProjectile)
     on_wall = lightningcluster_wall
     on_hit  = lightningcluster_hit
 	on_destroy = lightningcluster_destroy
+  if GameCont.area = 101 instance_destroy()
 }
 
 #define lightningcluster_wall
-create_lightningorb()
+if GameCont.area != 101
+{
+  create_lightningorb()
+}
+with other{instance_create(x,y,FloorExplo);instance_destroy()}
 instance_destroy()
 
 #define stop_anim

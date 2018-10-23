@@ -26,7 +26,7 @@ return global.sprDrillLauncher
 #define weapon_text
 return "HOLLOW THE EARTH"
 #define weapon_fire
-weapon_post(5,-12,5)
+weapon_post(5,-22,5)
 var _fac = random_range(.8,1.2);
 sound_play_pitch(sndSwapMotorized,1.3*_fac)
 sound_play_pitch(sndCrossbow,.7*_fac)
@@ -116,7 +116,7 @@ else
 }
 
 #define drill_hit
-
+view_shake_at(x,y,3*min(other.size,4))
 sound_play_drill(.4)
 //karm youre fucking insane if you think ill allow you to sleep for 35ms for TEN FRAMES IN A ROW
 //seriously though, use them for big chunky freezes, not several small ones, that just makes it look like the game is running poorly
