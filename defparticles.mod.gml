@@ -68,10 +68,10 @@ with instance_create(_x,_y,PlasmaTrail){
 #define step
     if global.particlelimit{
         var sparks = instances_matching(CustomObject,"name","spark")
-        num = array_length_1d(sparks)
+        var num = array_length_1d(sparks)
         while num > global.particlelimit
             with sparks[irandom(array_length_1d(sparks)-1)]
-                if instance_exists(self){ instance_destroy(); num--}
+                if instance_exists(self) {num--; instance_destroy();}
     }
     if global.bonusparticles{
         /*with PlasmaBall{

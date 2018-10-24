@@ -209,6 +209,7 @@ if global.menuopen{
                 var pd = 2, bw = cw - 2*pd - 10, bx = _x + 2, by = _y4 - 4, bh = 7, bxe = bx + bw * (v/(mx - mn))
                 by -= bh/4
                 var col = merge_color(c_blue,c_gray,.4)
+                //draw_line_width_color(bx-1, by - .5, bx + bw, by - .5, bh+ 1, c_black, c_black)
                 draw_line_width_color(bx, by, bx + bw, by, bh, c_dkgray, c_dkgray)
                 draw_line_width_color(bx, by, bxe, by, bh, col, col)
                 var col2 = c_white
@@ -220,10 +221,11 @@ if global.menuopen{
                     var a = array_clone(global.stuff[h+o]);
                     var num = round(clamp((mouse_x[i] - bx)*((mx -mn) / bw), mn, mx))
                     mod_variable_set(a[0],a[1],a[2],num);
+                    if abs(v - num) > (mx - mn)/100 sound_play_pitchvol(sndAmmoPickup,2 + 6*abs(num-v)/(mx-mn),1)
+                        //sound_play_pitch(sndAmmoPickup,5)
                     global.stuff[h+o,4] = num
                 }
                 if mouse && button_released(i,"fire"){
-                    sound_play(sndClick)
                     if fork(){
                         //delay is for making sure that if the game crashes from an option change, the option isnt saved
                         wait(3)
