@@ -45,7 +45,7 @@ with instance_create(x,y,CustomProjectile)
 	sprite_index = sprPlasmaBall
 	image_speed = 0
 	radiusmin = 28
-	lifetime = room_speed * 12
+	lifetime = 360
 	life = lifetime
 	radiusmax = radiusmin * 4
 	radius = radiusmax
@@ -73,7 +73,7 @@ repeat(ammo)
 
 #define pulser_step
 image_angle += 7 * current_time_scale * radiusmin/radius
-if radiusmin < radius{radius /= (1 + .02/acc) * current_time_scale}
+if radiusmin < radius{radius /= (1 + (.02*current_time_scale)/acc)}
 else
 {
 	var i = random(360)

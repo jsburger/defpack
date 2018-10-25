@@ -1604,7 +1604,7 @@ if other.team = pseudoteam || ("pseudoteam" in other and other.pseudoteam == pse
     else if iframes <= 0{
         var melee = [EnergySlash,EnergyShank,EnergyHammerSlash]
         var speeds = [12,9,17]
-        for var i = 0; i < 2; i++{
+        for var i = 0; i <= 2; i++{
             if instance_is(other,melee[i]){
 				with instance_create(other.x,other.y,GunGun) image_index=2
 				if speed < 20 {
@@ -1663,7 +1663,7 @@ if other.team = pseudoteam || ("pseudoteam" in other and other.pseudoteam == pse
         repeat(2){
             with create_triangle(x,y){
                 creator = other.creator
-                team = other.psuedoteam
+                team = other.pseudoteam
                 motion_add(i,12)
                 if direction > 180 turn = -1 else turn = 1
                 image_angle = direction - 45
