@@ -46,6 +46,7 @@ repeat(4)
     {
       sprite_index = global.sprVinyl
       creator = other
+      team = other.team
       move_contact_solid(other.gunangle,sprite_get_width(sprite_index))
       hitid = [sprite_index,"VINYL"]
       motion_add(other.gunangle + random_range(-6,6),5)
@@ -57,6 +58,7 @@ repeat(4)
     {
       sprite_index = global.sprGoldVinyl
       creator = other
+      team = other.team
       hitid = [sprite_index,"GOLDEN VINYL"]
       move_contact_solid(other.gunangle,sprite_get_width(sprite_index))
       motion_add(other.gunangle + random_range(-6,6),8)
@@ -68,6 +70,7 @@ repeat(4)
     {
       sprite_index = global.sprStickyVinyl
       creator = other
+      team = other.team
       hitid = [sprite_index,"STICKY VINYL"]
       move_contact_solid(other.gunangle,sprite_get_width(sprite_index))
       motion_add(other.gunangle + random_range(-6,6),4)
@@ -79,6 +82,7 @@ repeat(4)
     with mod_script_call("mod","defpack tools","create_bouncerdisc",x,y)
     {
       sprite_index = global.sprBouncerVinyl
+      team = other.team
       creator = other
       hitid = [sprite_index,"BOUNCER VINYL"]
       move_contact_solid(other.gunangle,sprite_get_width(sprite_index))
@@ -108,7 +112,7 @@ repeat(4)
 return global.sprRecordDealer;
 
 #define weapon_text
-return "replace me please";
+return "A FUNKY MIX";
 
 #define sound_play_slowdown(_snd,_vol)
 with instance_create(x,y,CustomObject)
@@ -120,7 +124,6 @@ with instance_create(x,y,CustomObject)
   vol = _vol
   snd = _snd
   on_step    = sound_step
-  on_destroy = sound_destroy
 }
 
 #define sound_step
@@ -128,5 +131,3 @@ pitch -= decel
 sound_play_pitchvol(snd,pitch*p,vol)
 lifetime -= 1
 if lifetime <= 0 instance_destroy() //should need time scale adjustments since sound speed is independent of it
-
-#define sound_destroy
