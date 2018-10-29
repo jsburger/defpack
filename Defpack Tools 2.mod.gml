@@ -37,6 +37,8 @@ with(a){
 return a;
 
 #define split_hit
+var a = "create_split_shell"
+if image_xscale > 1 a = "create_heavy_split_shell"
 if other.sprite_index != other.spr_hurt
 {
 	if other.size > 1{motion_set(point_direction(other.x,other.y,x,y),10)}
@@ -48,7 +50,7 @@ if other.sprite_index != other.spr_hurt
 	{
 		if skill_get(19) = false{
 			repeat(4){
-					with mod_script_call("mod","defpack tools","create_split_shell",x,y){
+					with mod_script_call("mod","defpack tools",a,x,y){
 						creator = other.creator
 						team = other.team
 						ammo = other.ammo
@@ -61,7 +63,7 @@ if other.sprite_index != other.spr_hurt
 		{
 			var offset = random(359);
 			repeat(4){
-					with mod_script_call("mod","defpack tools","create_split_shell",x,y){
+					with mod_script_call("mod","defpack tools",a,x,y){
 						creator = other.creator
 						team = other.team
 						ammo = other.ammo
@@ -77,13 +79,15 @@ if other.sprite_index != other.spr_hurt
 }
 
 #define split_pop
+var a = "create_split_shell"
+if image_xscale > 1 a = "create_heavy_split_shell"
 sound_play(sndFlakExplode)
 view_shake_at(x,y,8)
 if ammo >= 0
 {
 	if skill_get(19) = false{
 		repeat(4){
-				with mod_script_call("mod","defpack tools","create_split_shell",x,y){
+				with mod_script_call("mod","defpack tools",a,x,y){
 					creator = other.creator
 					team = other.team
 					ammo = other.ammo
@@ -96,7 +100,7 @@ if ammo >= 0
 	{
 		var offset = random(359);
 		repeat(4){
-				with mod_script_call("mod","defpack tools","create_split_shell",x,y){
+				with mod_script_call("mod","defpack tools",a,x,y){
 					creator = other.creator
 					team = other.team
 					ammo = other.ammo

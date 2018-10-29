@@ -70,7 +70,7 @@ with instance_create(x,y,CustomProjectile)
 
 #define blaster_step
 if speed > maxspeed speed = maxspeed
-image_angle += speed * 4 * current_time_scale
+image_angle += speed * 2 * current_time_scale
 //if speed = maxspeed if lifetime>0{if lifetime = 5{sound_play_pitch(sndSniperTarget,8)};lifetime -= current_time_scale}else{instance_destroy();exit}
 with instance_create(x-lengthdir_x(8+speed,other.direction),y-lengthdir_y(8+speed,other.direction),BoltTrail)
 {

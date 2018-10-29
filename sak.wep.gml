@@ -12,9 +12,13 @@ with script_bind_step(birdspread, 0){
 	persistent = 1
 	customshell = 1
 }
-global.sprammo = sprite_add("sprites/sprSAKammo.png",8,0,0)
-global.sprbody = sprite_add("sprites/sprSAKbody.png",6,0,0)
-global.sprmods = sprite_add("sprites/sprSAKmods.png",9,0,0)
+global.sprammo  = sprite_add("sprites/sprSAKammo.png",8,0,0)
+global.sprammom = sprite_add("sprites/sprSAKammoMini.png",8,0,0)
+global.sprbody  = sprite_add("sprites/sprSAKbody.png",6,0,0)
+global.sprbodym = sprite_add("sprites/sprSAKammoMini.png",8,0,0)
+global.sprmods  = sprite_add("sprites/sprSAKmods.png",10,0,0)
+global.sprmodsm = sprite_add("sprites/sprSAKammoMini.png",8,0,0)
+
 global.shellbods = ["shotgun", "eraser", "flak cannon", "pop gun", "shot cannon"]
 global.slugbods = ["shotgun", "eraser", "flak cannon", "slugger", "shot cannon"]
 
@@ -343,7 +347,7 @@ var a = global.textmap;
 //mods
 a[? "double"] = "Double gun, slightly better than one."
 a[? "sawed-off"] = "Double gun, but faster and inaccurate"
-a[? "auto"] = "shoot fast, eat ass"
+a[? "auto"] = "increased rate of fire and decreased accuracy"
 a[? "assault"] = "shoot three times in a row"
 a[? "hyper"] = "instant travel with more damage"
 a[? "none"] = "no mod because i respect ammo"
@@ -844,45 +848,110 @@ for (var i = 1; i<= 3; i++){
 
 #define makemycoolgun
 draw_set_halign(0)
-with Player if is_object(wep) && wep.wep = mod_current && !wep.done{
+with Player if is_object(wep) && wep.wep = mod_current && !wep.done
+{
 	var w = wep;
 	var tex = global.textmap;
 	var cho = global.choicemap;
 	var width = array_length_1d(cho[? w.info[w.phase]]);
 	var height = 50;
-	var _x = view_xview[index]+game_width/2 - width*gx/2;
-	var _y = view_yview[index] + 50;
+	var _x 			= view_xview[index]+game_width/2 - width*gx/2;
+	var _X 			= view_xview[index]+game_width/2 + width*gx/2-3;
+	var _y 			= view_yview[index] + 50;
+	var _Yline1 = view_yview[index] + 75;
+	var _Yline2 = view_yview[index] + 53;
+
+	var _btnm = mskNone
+
+	switch w.phase // this is supposed to draw your decisions over the first line but i cant figure this code out :(
+	{
+		case 0 : var _btnm = global.sprammom break;
+		case 1 : var _btnm = global.sprbodym break;
+		case 2 : var _btnm = global.sprmodsm break;
+	}
+
 	draw_set_color(make_color_rgb(47, 50, 56))
-	draw_rectangle(_x,_y,_x + gx*width, _y + height,0)
+	draw_set_alpha(.5)
+	draw_rectangle(_x+1,_Yline1,_X-1,_Yline2+2,0)
+	draw_set_alpha(1)
+
+	draw_sprite_ext(_btnm,0,(_x+_X)/2-15,_y-5,1,1,0,c_black,1)
+	draw_sprite_ext(_btnm,0,(_x+_X)/2,_y-5,1,1,0,c_black,1)
+	draw_sprite_ext(_btnm,0,(_x+_X)/2+15,_y-5,1,1,0,c_black,1)
+	draw_sprite(_btnm,0,(_x+_X)/2-15,_y-6)
+	draw_sprite(_btnm,0,(_x+_X)/2,_y-6)
+	draw_sprite(_btnm,0,(_x+_X)/2+15,_y-6)
+
+	draw_line_width_color(_x,_Yline2+1,_X+2,_Yline2+1,1,c_black,c_black)
+	draw_line_width_color(_x-1,_Yline2,_X+1,_Yline2,1,c_white,c_white)
+
+	draw_line_width_color(_x,_Yline1+1,_X+2,_Yline1+1,1,c_black,c_black)
+	draw_line_width_color(_x-1,_Yline1,_X+1,_Yline1,1,c_white,c_white)
+
 	draw_set_color(make_color_rgb(9, 15, 25))
-	draw_rectangle(_x+1,_y+5,_x + gx*width -1, _y + 25,0)
+
 	draw_set_color(c_white)
 	for (var i = 0; i< width; i++){
 		var x1 = _x+gx*i + 2;
 		var y1 = _y + 6;
 		var x2 = _x+gx*(i+1) - 2;
 		var y2 = y1 + 18;
-		draw_sprite_ext(global.sprammo,i,x1,y1,1,1,0,c_gray,1)
 		var push = button_pressed(index,"key"+string(i+1));
-		if point_in_rectangle(mouse_x[index], mouse_y[index], x1, y1, x2, y2) || push{
-			if !button_check(index, "fire"){
-				draw_sprite(global.sprammo,i,x1,y1)
+		var _btn = mskNone
+
+		switch w.phase
+		{
+			case 0 : var _btn = global.sprammo break;
+			case 1 : var _btn = global.sprbody break;
+			case 2 : var _btn = global.sprmods break;
+		}
+
+		if point_in_rectangle(mouse_x[index], mouse_y[index], x1, y1, x2, y2) || push
+		{
+			if !button_check(index, "fire")
+			{
+				draw_sprite(_btn,i,x1-1,y1-1)
+			}
+			else
+			{
+				draw_sprite_ext(_btn,i,x1-1,y1,1,1,0,c_ltgray,1)
 			}
 			draw_set_font(fntSmall)
+
 			var access = cho[? w.info[w.phase]][i]
-			draw_text(_x+1,y2+3,access)
-			draw_text_ext(_x+1,y2+9,tex[? access], 6, 22*width)
-			if button_released(index, "fire") || push{
-				sound_play(sndClick)
+
+			draw_set_color(c_black)
+			draw_text(_x+2,y2+6,access)
+			draw_set_color(c_white)
+			draw_text(_x+1,y2+5,access)
+
+			draw_set_color(c_black)
+			draw_text_ext(_x+2,y2+12,tex[? access], 6, 22*width)
+			draw_set_color(c_white)
+			draw_text_ext(_x+1,y2+11,tex[? access], 6, 22*width)
+
+			if button_released(index, "fire") || push
+			{
+				weapon_post(-2,8,0)
+				sleep(9)
+				repeat(5) instance_create(x+random_range(-5,5),y+random_range(-5,5),Dust)
+				view_shake_at(x,y,3)
+				draw_sprite_ext(_btn,i,x1-1,y1-2,1,1,0,c_white,1)
 				w.info[++w.phase] = access
 				w.numbers[w.phase-1] = i
-				if w.phase = 3{
+				sound_play(sndClick)
+				if w.phase = 3
+				{
 					w.done = 1;
 					stats(w)
 					name(w)
 					sprite(w)
 				}
 			}
+		}
+		else
+		{
+			draw_sprite_ext(_btn,i,x1-1,y1,1,1,0,c_gray,1)
 		}
 	}
 }
