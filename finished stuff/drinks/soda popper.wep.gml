@@ -41,6 +41,10 @@ if is_object(w)
         creator = other
         team = other.team
         direction = other.gunangle+random_range(-12,12)*other.accuracy
+        with instance_create(x,y,MeleeHitWall)
+        {
+          image_angle = other.direction - 180
+        }
       }
     }
     else

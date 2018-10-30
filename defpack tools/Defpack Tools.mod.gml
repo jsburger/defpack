@@ -1995,6 +1995,15 @@ draw_sprite_ext(sprite_index, image_index, x, y, 1.75*image_xscale, 1.75*image_y
 draw_set_blend_mode(bm_normal);
 
 #define quartz_penalty(_mod) //this is for player step only stupid
+if irandom(30) <= current_time_scale
+{
+  with instance_create(x+random_range(-8,8),y+random_range(-8,8),WepSwap)
+  {
+    image_xscale = .75
+    image_yscale = .75
+    image_speed = choose(.7,.7,.7,.45)
+  }
+}
 if lsthealth > my_health
 {
   if wep  = _mod

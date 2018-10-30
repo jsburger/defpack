@@ -1,5 +1,7 @@
 #define init
-global.box = sprite_add_weapon("sprites/sprSAK.png",2,3)
+global.box 			= sprite_add_weapon("sprites/sprSAK.png",2,3)
+global.boxopen  = sprite_add_weapon("sprites/sprSAKOpen.png",2,3)
+global.boxempty = sprite_add_weapon("sprites/sprSAKEmpty.png",2,3)
 global.guys = [0,0,0,0]
 with instances_matching([CustomDraw,CustomStep],"customshell",1){
 	instance_destroy()
@@ -13,10 +15,17 @@ with script_bind_step(birdspread, 0){
 	customshell = 1
 }
 global.sprammo  = sprite_add("sprites/sprSAKammo.png",8,0,0)
-global.sprammom = sprite_add("sprites/sprSAKammoMini.png",8,0,0)
-global.sprbody  = sprite_add("sprites/sprSAKbody.png",6,0,0)
-global.sprbodym = sprite_add("sprites/sprSAKammoMini.png",8,0,0)
-global.sprmods  = sprite_add("sprites/sprSAKmods.png",10,0,0)
+global.sprammom = sprite_add("sprites/sprSAKammoMini.png",9,0,0)
+global.sprbodyShell  = sprite_add("sprites/sprSAKbodyShell.png",6,0,0)
+global.sprbodySlug   = sprite_add("sprites/sprSAKbodySlug.png",6,0,0)
+global.sprbodym      = sprite_add("sprites/sprSAKbodyMini.png",7,0,0)
+global.sprmods  			  	 = sprite_add("sprites/sprSAKmods.png",10,0,0)
+global.sprmodsShotgun   	 = sprite_add("sprites/sprSAKmodsShotgun.png",10,0,0)
+global.sprmodsPopGun    	 = sprite_add("sprites/sprSAKmodsPop.png",10,0,0)
+global.sprmodsEraser       = sprite_add("sprites/sprSAKmodsEraser.png",10,0,0)
+global.sprmodsSlugger      = sprite_add("sprites/sprSAKmodsSlugger.png",10,0,0)
+global.sprmodsFlakCannon   = sprite_add("sprites/sprSAKmodsFlak.png",10,0,0)
+global.sprmodsShotCannon   = sprite_add("sprites/sprSAKmodsShot.png",10,0,0)
 global.sprmodsm = sprite_add("sprites/sprSAKammoMini.png",8,0,0)
 
 global.shellbods = ["shotgun", "eraser", "flak cannon", "pop gun", "shot cannon"]
@@ -487,7 +496,7 @@ if is_object(w){
 		if fork(){
 			repeat(w.shots){
 				for (var i = 0; i<array_length_1d(w.sounds); i++){
-					sound_play(w.sounds[i])
+					sound_play_pitch(w.sounds[i],random_range(.8,1.2))
 				}
 				weapon_post(w.ammo * 2,w.ammo,w.ammo)
 				mod_script_call_self("weapon",mod_current,string_replace(w.info[2]," ","_"),w.info[1],w.info[3])
@@ -798,6 +807,7 @@ if is_object(w){
 	    sprite(w)
 	}
 }
+if instance_is(self,Player) return global.boxopen
 return global.box
 
 #define weapon_text
@@ -861,26 +871,48 @@ with Player if is_object(wep) && wep.wep = mod_current && !wep.done
 	var _Yline1 = view_yview[index] + 75;
 	var _Yline2 = view_yview[index] + 53;
 
-	var _btnm = mskNone
-
-	switch w.phase // this is supposed to draw your decisions over the first line but i cant figure this code out :(
+	var _a_index = 0
+	switch w.info[1]
 	{
-		case 0 : var _btnm = global.sprammom break;
-		case 1 : var _btnm = global.sprbodym break;
-		case 2 : var _btnm = global.sprmodsm break;
+		case "shell" 			  : _a_index = 1 break;
+		case "slug"  			  : _a_index = 2 break;
+		case "heavy slug"   : _a_index = 3 break;
+		case "flame shell"  : _a_index = 4 break;
+		case "ultra shell"  : _a_index = 5 break;
+		case "psy shell"	  : _a_index = 6 break;
+		case "split shell"  : _a_index = 7 break;
+		case "split slug"   : _a_index = 8 break;
+		default : _a_index = 0 break;
 	}
+	var _b_index = 0
+	switch w.info[2]
+	{
+		case "shotgun" 		 : _b_index = 1 break;
+		case "eraser"  		 : _b_index = 2 break;
+		case "flak cannon" : _b_index = 3 break;
+		case "pop gun"     : _b_index = 4 break;
+		case "shot cannon" : _b_index = 5 break;
+		case "slugger"     : _b_index = 6 break;
+		default : _b_index = 0 break;
+	}
+	var _m_index = 0
+	/*switch w.info[2]
+	{
+		case
+	}
+	trace(w.info[0]) actually never gets seen like a boss*/
 
-	draw_set_color(make_color_rgb(47, 50, 56))
-	draw_set_alpha(.5)
+	draw_set_color(c_black)
+	draw_set_alpha(.3)
 	draw_rectangle(_x+1,_Yline1,_X-1,_Yline2+2,0)
 	draw_set_alpha(1)
 
-	draw_sprite_ext(_btnm,0,(_x+_X)/2-15,_y-5,1,1,0,c_black,1)
-	draw_sprite_ext(_btnm,0,(_x+_X)/2,_y-5,1,1,0,c_black,1)
-	draw_sprite_ext(_btnm,0,(_x+_X)/2+15,_y-5,1,1,0,c_black,1)
-	draw_sprite(_btnm,0,(_x+_X)/2-15,_y-6)
-	draw_sprite(_btnm,0,(_x+_X)/2,_y-6)
-	draw_sprite(_btnm,0,(_x+_X)/2+15,_y-6)
+	draw_sprite_ext(global.sprammom,_a_index,(_x+_X)/2-17,_y-5,1,1,0,c_black,1)
+	draw_sprite_ext(global.sprbodym,_b_index,(_x+_X)/2-3,_y-5,1,1,0,c_black,1)
+	draw_sprite_ext(global.sprmodsm,_m_index,(_x+_X)/2+12,_y-5,1,1,0,c_black,1)
+	draw_sprite(global.sprammom,_a_index,(_x+_X)/2-17,_y-6)
+	draw_sprite(global.sprbodym,_b_index,(_x+_X)/2-3,_y-6)
+	draw_sprite(global.sprmodsm,_m_index,(_x+_X)/2+12,_y-6)
 
 	draw_line_width_color(_x,_Yline2+1,_X+2,_Yline2+1,1,c_black,c_black)
 	draw_line_width_color(_x-1,_Yline2,_X+1,_Yline2,1,c_white,c_white)
@@ -891,7 +923,8 @@ with Player if is_object(wep) && wep.wep = mod_current && !wep.done
 	draw_set_color(make_color_rgb(9, 15, 25))
 
 	draw_set_color(c_white)
-	for (var i = 0; i< width; i++){
+	for (var i = 0; i< width; i++)
+	{
 		var x1 = _x+gx*i + 2;
 		var y1 = _y + 6;
 		var x2 = _x+gx*(i+1) - 2;
@@ -902,10 +935,22 @@ with Player if is_object(wep) && wep.wep = mod_current && !wep.done
 		switch w.phase
 		{
 			case 0 : var _btn = global.sprammo break;
-			case 1 : var _btn = global.sprbody break;
+			case 1 : var _btn = global.sprbodyShell break;
 			case 2 : var _btn = global.sprmods break;
 		}
-
+		if w.phase = 1{if w.info[1] = "slug" || w.info[1] = "heavy slug" || w.info[1] = "split slug" _btn = global.sprbodySlug}
+		if w.phase = 2
+		{
+			switch w.info[2]
+			{
+				case "shotgun"		: _btn = global.sprmodsShotgun break;
+				case "pop gun"		: _btn = global.sprmodsPopGun break;
+				case "slugger"		: _btn = global.sprmodsSlugger break;
+				case "eraser" 		: _btn = global.sprmodsEraser break;
+				case "flak cannon": _btn = global.sprmodsFlakCannon break;
+				case "shot cannon": _btn = global.sprmodsShotCannon break;
+			}
+		}
 		if point_in_rectangle(mouse_x[index], mouse_y[index], x1, y1, x2, y2) || push
 		{
 			if !button_check(index, "fire")
@@ -916,19 +961,29 @@ with Player if is_object(wep) && wep.wep = mod_current && !wep.done
 			{
 				draw_sprite_ext(_btn,i,x1-1,y1,1,1,0,c_ltgray,1)
 			}
-			draw_set_font(fntSmall)
 
 			var access = cho[? w.info[w.phase]][i]
 
-			draw_set_color(c_black)
-			draw_text(_x+2,y2+6,access)
-			draw_set_color(c_white)
-			draw_text(_x+1,y2+5,access)
+			var p = ""
+			switch access
+			{
+				case "shell"      :case "slug"    :case "heavy slug": p = `@(color:${merge_colour(c_yellow,c_orange,.5)})` break;
+				case "flame shell": p = `@(color:${merge_colour(c_red,c_orange,.3)})` break;
+				case "ultra shell": p = `@(color:${merge_colour(c_yellow,c_lime,.7)})` break;
+				case "psy shell"  : p = `@(color:${merge_colour(c_fuchsia,c_navy,.2)})` break;
+				case "split shell":case "split slug": p = `@(color:${merge_colour(c_aqua,c_blue,.1)})` break;
+			}
+
+			draw_text_nt(_x+1,y2+5,p+access)
+
+			draw_set_font(fntSmall)
 
 			draw_set_color(c_black)
-			draw_text_ext(_x+2,y2+12,tex[? access], 6, 22*width)
+			draw_text_ext(_x+1,y2+17,tex[? access], 6, 22*width)
+			draw_text_ext(_x+2,y2+17,tex[? access], 6, 22*width)
+			draw_text_ext(_x+2,y2+16,tex[? access], 6, 22*width)
 			draw_set_color(c_white)
-			draw_text_ext(_x+1,y2+11,tex[? access], 6, 22*width)
+			draw_text_ext(_x+1,y2+16,tex[? access], 6, 22*width)
 
 			if button_released(index, "fire") || push
 			{
@@ -942,6 +997,17 @@ with Player if is_object(wep) && wep.wep = mod_current && !wep.done
 				sound_play(sndClick)
 				if w.phase = 3
 				{
+					with instance_create(x,y,Shell)
+					{
+						image_speed = 0
+						sprite_index = global.boxempty
+						image_angle = random(360)
+						speed = 5
+						friction = .2
+						creator = other
+						team = other.team
+						direction = other.gunangle
+					}
 					w.done = 1;
 					stats(w)
 					name(w)

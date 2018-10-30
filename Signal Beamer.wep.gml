@@ -60,9 +60,10 @@ motion_add(gunangle+180,1)
 repeat(3)
 {
 	if !instance_exists(self){exit}
-	sound_play_pitch(sndMachinegun,.8)
-	sound_play_pitch(sndFlareExplode,2)
-	sound_play_pitchvol(sndBloodLauncherExplo,1,.12)
+	var _P = random_range(.8,1.2);
+	sound_play_pitch(sndMachinegun,.8*_P)
+	sound_play_pitch(sndFlareExplode,2*_P)
+	sound_play_pitchvol(sndBloodLauncherExplo,1*_P,.12)
 	weapon_post(6,-4,16)
 	if ammo[1]/typ_amax[1] >= (2/3)
 	{
