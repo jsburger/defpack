@@ -144,7 +144,6 @@ if projectile_canhit_melee(other){
 
 #define flaredie
 sound_play_pitch(sndFlameCannonEnd,1.2)
-sound_play(sndFlareExplode)
 var n = 12;
 var b = 360/(3*n)
 for (var i = 0; i < 360; i+=360/n){
@@ -157,6 +156,7 @@ for (var i = 0; i < 360; i+=360/n){
 #define flarewall
 move_bounce_solid(1)
 image_angle = direction
+sound_play(sndFlareExplode)
 flaredie()
 speed *= .8
 

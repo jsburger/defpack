@@ -161,6 +161,7 @@ if place_meeting(x+hspeed,y+vspeed,Wall)
   }
   else{speed = 0}
 }
+if place_meeting(x,y,Wall){x -= lengthdir_x(speed * 2,direction);y -= lengthdir_y(speed * 2,direction)}
 if speed > maxspeed speed = maxspeed
 
 #define weapon_sprt

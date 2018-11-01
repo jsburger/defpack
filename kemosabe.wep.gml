@@ -50,7 +50,7 @@ with instance_create(x,y,CustomProjectile)
     mask_index   = mskBullet1
     can_crit = 1
     recycle_amount = 2
-    move_contact_solid(other.gunangle,4)
+    move_contact_solid(other.gunangle,2)
 	  motion_add(other.gunangle+random_range(-14,14)*other.accuracy,20)
     image_angle = direction
     on_step    = kemosabe_step
