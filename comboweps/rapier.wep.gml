@@ -52,7 +52,7 @@ if rapiers != 1
 else
 {
 	sound_play_pitch(sndBlackSwordMega,random_range(1.4,1.7))
-	extraspeed = 11
+	extraspeed = 12
 	wepangle = .1*wepflip
 	weapon_post(-10 - 20*skill_get(13),15,2)
 	move_contact_solid(gunangle,6)
@@ -86,7 +86,7 @@ if "extraspeed" in self && current_frame_active
 		with instance_create(x+lengthdir_x(extraspeed+20*skill_get(13),gunangle),y+lengthdir_y(extraspeed+20*skill_get(13),gunangle),Shank){
 			canfix = false
 			sprite_index = mskNone
-			damage = 25
+			damage = 30
 			mask_index = global.sword
 			image_xscale = 2
 			image_yscale = 2

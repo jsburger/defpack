@@ -64,6 +64,7 @@ repeat(3)
 			damage   = 6
 			friction = 2+1.1*(i-1)
 			sprite_index = global.sprShieldBullet
+			mask_index   = mskHeavyBullet
 			motion_add(other.gunangle+(random_range(-1,1)* other.accuracy+13*j*(i-1)),28)
 			image_angle = direction
 			on_projectile = def_projectile
@@ -80,6 +81,16 @@ repeat(3)
 
 #define def_step
 if image_index = 1{image_speed = 0}
+with instances_matching_ne(projectile,"team",other.team)
+{
+	if distance_to_object(other) <= 11
+	{
+		sleep(4)
+		sound_play_pitchvol(sndShielderDeflect,random_range(1.8,2.2),.4)
+		view_shake_at(x,y,2)
+		instance_destroy()
+	}
+}
 if speed <= friction{instance_destroy()}
 
 #define def_wall
@@ -94,14 +105,6 @@ with instance_create(x,y,BulletHit)
 if place_meeting(x + hspeed,y +vspeed,Wall){sound_play_hit(sndHitWall,.2)}
 
 #define def_projectile
-if !instance_exists(self){instance_destroy();exit}
-if team != other.team
-{
-	sleep(4)
-	sound_play_pitchvol(sndShielderDeflect,random_range(1.8,2.2),.4)
-	view_shake_at(x,y,4)
-	with other{instance_destroy()}
-}
 
 #define def_hit
 view_shake_at(x,y,8)

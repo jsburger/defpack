@@ -47,6 +47,7 @@ else
 }
 with instance_create(x,y,CustomObject)
 {
+  move_contact_solid(other.gunangle,6)
   team = other.team
   creator = other
   if !skill_get(17){sprite_index = global.sprLightningWheelProj}else{sprite_index = global.sprLightningWheelProjUpg}
@@ -68,6 +69,7 @@ with instance_create(x,y,CustomObject)
     btn = "spec"
   }
   motion_add(other.gunangle,14)
+  if place_meeting(x,y,Wall){x -= lengthdir_x(speed * 2,direction);y -= lengthdir_y(speed * 2,direction)}
   on_step = boom_step
   on_draw = boom_draw
   with instance_create(x,y,MeleeHitWall){image_angle = other.direction-180}
@@ -217,6 +219,13 @@ else//return to player
 }
 if place_meeting(x+hspeed,y+vspeed,Wall)
 {
+  if instance_exists(creator)
+  {
+    if place_meeting(x,y,creator)
+    {
+      move_bounce_solid(false)
+    }
+  }
   phase = 1
   var _y = false;
   if instance_exists(creator){if !collision_line(x,y,creator.x,creator.y,Wall,0,0){_y = true}}else{_y = true}
@@ -236,6 +245,7 @@ if place_meeting(x+hspeed,y+vspeed,Wall)
   }
   else{speed = 0}
 }
+if place_meeting(x,y,Wall){x -= lengthdir_x(speed * 2,direction);y -= lengthdir_y(speed * 2,direction)}
 if speed > maxspeed speed = maxspeed
 
 #define weapon_sprt

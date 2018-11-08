@@ -584,7 +584,7 @@ with (c){
 	typ = 2
 	mask_index = mskBullet1
 	force = 7
-	damage = 1
+	damage = 2
 	recycle_amount = 1
 	image_speed = 1
 	image_angle = direction

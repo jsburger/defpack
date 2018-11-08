@@ -22,9 +22,10 @@ global.sprammom = sprite_add("sprites/sprSAKammoMini.png",9,0,0)
 global.sprbodyShell  = sprite_add("sprites/sprSAKbodyShell.png",6,0,0)
 global.sprbodySlug   = sprite_add("sprites/sprSAKbodySlug.png",6,0,0)
 global.sprbodym      = sprite_add("sprites/sprSAKbodyMini.png",7,0,0)
-global.sprmods             = sprite_add("sprites/sprSAKmods.png",10,0,0)
-global.sprmodsShotgun      = sprite_add("sprites/sprSAKmodsShotgun.png",10,0,0)
-global.sprmodsPopGun       = sprite_add("sprites/sprSAKmodsPop.png",10,0,0)
+global.sprmods  			  	 = sprite_add("sprites/sprSAKmods.png",10,0,0)
+global.sprmodsm  			  	 = sprite_add("sprites/sprSAKmodsm.png",11,0,0)
+global.sprmodsShotgun   	 = sprite_add("sprites/sprSAKmodsShotgun.png",10,0,0)
+global.sprmodsPopGun    	 = sprite_add("sprites/sprSAKmodsPop.png",10,0,0)
 global.sprmodsEraser       = sprite_add("sprites/sprSAKmodsEraser.png",10,0,0)
 global.sprmodsSlugger      = sprite_add("sprites/sprSAKmodsSlugger.png",10,0,0)
 global.sprmodsFlakCannon   = sprite_add("sprites/sprSAKmodsFlak.png",10,0,0)
@@ -916,12 +917,12 @@ with Player if is_object(wep) && wep.wep = mod_current && !wep.done
 	draw_rectangle(_x+1,_Yline1,_X-1,_Yline2+2,0)
 	draw_set_alpha(1)
 
-	draw_sprite_ext(global.sprammom,_a_index,(_x+_X)/2-17,_y-5,1,1,0,c_black,1)
-	draw_sprite_ext(global.sprbodym,_b_index,(_x+_X)/2-3,_y-5,1,1,0,c_black,1)
-	draw_sprite_ext(global.sprmodsm,_m_index,(_x+_X)/2+12,_y-5,1,1,0,c_black,1)
-	draw_sprite(global.sprammom,_a_index,(_x+_X)/2-17,_y-6)
-	draw_sprite(global.sprbodym,_b_index,(_x+_X)/2-3,_y-6)
-	draw_sprite(global.sprmodsm,_m_index,(_x+_X)/2+12,_y-6)
+	draw_sprite_ext(global.sprammom,_a_index,(_x+_X)/2-18,_y-5,1,1,0,c_black,1)
+	draw_sprite_ext(global.sprbodym,_b_index,(_x+_X)/2-4,_y-5,1,1,0,c_black,1)
+	draw_sprite_ext(global.sprmodsm,_m_index,(_x+_X)/2+11,_y-5,1,1,0,c_black,1)
+	draw_sprite(global.sprammom,_a_index,(_x+_X)/2-18,_y-6)
+	draw_sprite(global.sprbodym,_b_index,(_x+_X)/2-4,_y-6)
+	draw_sprite(global.sprmodsm,_m_index,(_x+_X)/2+11,_y-6)
 
 	draw_line_width_color(_x,_Yline2+1,_X+2,_Yline2+1,1,c_black,c_black)
 	draw_line_width_color(_x-1,_Yline2,_X+1,_Yline2,1,c_white,c_white)
@@ -993,6 +994,8 @@ with Player if is_object(wep) && wep.wep = mod_current && !wep.done
 			draw_text_ext(_x+2,y2+16,tex[? access], 6, 22*width)
 			draw_set_color(c_white)
 			draw_text_ext(_x+1,y2+16,tex[? access], 6, 22*width)
+
+			draw_set_font(fntM)
 
 			if button_released(index, "fire") || push
 			{
