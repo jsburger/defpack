@@ -1,3 +1,3 @@
 /loadmod defpermissions
-
-/load the works staller
+/loadmod defpack tools/defpack tools
+/loadmod defparticles

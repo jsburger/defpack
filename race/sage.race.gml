@@ -33,6 +33,23 @@ global.spellnames = []
 global.sprReflect = sprite_add("sprReflect.png",3,90,90)
 global.mskReflect = sprite_add("mskReflect.png",3,90,90)
 
+global.menutime = 12
+mod_script_call("mod","defpermissions","permission_register_range","race",mod_current,"menutime","Sage Menu Delay",3,20)
+global.oldmenutime = global.menutime
+
+if fork(){
+    while 1{
+        if global.menutime != global.oldmenutime{
+            with instances_matching(Player,"race",mod_current){
+                if hand.menucap = global.oldmenutime hand.menucap = global.menutime
+            }
+        }
+        global.oldmenutime = global.menutime
+        wait(0)
+    }
+    exit
+}
+
 //dev spells
 //add_spell("Drain Mana",NA,scr(cheat1),NA,NA,1,sprite_add("sprShield.png",2,8,7),sprite_add("ShieldBlob.png",1,3,3))
 //add_spell("Gimme Mana",NA,scr(cheat2),NA,NA,1,sprite_add("sprShield.png",2,8,7),sprite_add("ShieldBlob.png",1,3,3))
@@ -177,7 +194,7 @@ return choose("A NEW WORLD", `COLLECTING @yPICKUPS@s GIVES YOU @(color:${global.
 	    spell : "No Spell",
 	    resettime : 0,
 	    menutime : 0,
-	    menucap : 15,
+	    menucap : global.menutime,
 	    index : 0,
 	    col : global.purblue,
 	    animcol : global.skintone,
@@ -357,7 +374,7 @@ with instances_matching(Player,"race",mod_current){
     var btn = "spec";
     
     if button_pressed(index,btn){
-        hand.menulength = .1
+        hand.menulength = .4
         if controlprompted = 0 {
             controlprompted = 1
             with instance_create(x,y,CustomObject){

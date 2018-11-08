@@ -6,22 +6,25 @@ global.guys = [0,0,0,0]
 with instances_matching([CustomDraw,CustomStep],"customshell",1){
 	instance_destroy()
 }
+global.scripts = []
 with script_bind_draw(makemycoolgun,-15){
 	persistent = 1
 	customshell = 1
+	array_push(global.scripts,id)
 }
 with script_bind_step(birdspread, 0){
 	persistent = 1
 	customshell = 1
+	array_push(global.scripts,id)
 }
 global.sprammo  = sprite_add("sprites/sprSAKammo.png",8,0,0)
 global.sprammom = sprite_add("sprites/sprSAKammoMini.png",9,0,0)
 global.sprbodyShell  = sprite_add("sprites/sprSAKbodyShell.png",6,0,0)
 global.sprbodySlug   = sprite_add("sprites/sprSAKbodySlug.png",6,0,0)
 global.sprbodym      = sprite_add("sprites/sprSAKbodyMini.png",7,0,0)
-global.sprmods  			  	 = sprite_add("sprites/sprSAKmods.png",10,0,0)
-global.sprmodsShotgun   	 = sprite_add("sprites/sprSAKmodsShotgun.png",10,0,0)
-global.sprmodsPopGun    	 = sprite_add("sprites/sprSAKmodsPop.png",10,0,0)
+global.sprmods             = sprite_add("sprites/sprSAKmods.png",10,0,0)
+global.sprmodsShotgun      = sprite_add("sprites/sprSAKmodsShotgun.png",10,0,0)
+global.sprmodsPopGun       = sprite_add("sprites/sprSAKmodsPop.png",10,0,0)
 global.sprmodsEraser       = sprite_add("sprites/sprSAKmodsEraser.png",10,0,0)
 global.sprmodsSlugger      = sprite_add("sprites/sprSAKmodsSlugger.png",10,0,0)
 global.sprmodsFlakCannon   = sprite_add("sprites/sprSAKmodsFlak.png",10,0,0)
@@ -35,13 +38,13 @@ makethechoices()
 makethetexts()
 makethestats()
 makethegunsprites()
+maketheprojectiles()
 
 
-#define makethegunsprites()
-global.gunmap = ds_map_create()
-var a = global.gunmap;
+#define maketheprojectiles()
+global.flakmap = ds_map_create()
+var a = global.flakmap;
 
-//PROJECTILES
 global.sprShot 		  = sprite_add("sprites/sak/projectiles/sprShot.png",2,8,8);
 global.sprPsyShot   = sprite_add("sprites/sak/projectiles/sprPsyShot.png",2,8,8);
 global.sprFireShot  = sprite_add("sprites/sak/projectiles/sprFireShot.png",2,8,8);
@@ -71,6 +74,12 @@ global.sprPsyFlakHit   = sprite_add("sprites/sak/projectiles/sprPsyFlakHit.png",
 global.sprFireFlakHit  = sprite_add("sprites/sak/projectiles/sprFireFlakHit.png",9,8,8);
 global.sprUltraFlakHit = sprite_add("sprites/sak/projectiles/sprUltraFlakHit.png",9,8,8);
 global.sprSplitFlakHit = sprite_add("sprites/sak/projectiles/sprSplitFlakHit.png",9,8,8);
+
+
+#define makethegunsprites()
+global.gunmap = ds_map_create()
+var a = global.gunmap;
+
 
 ///REGULAR///
 a[? "shotgun"]	         = sprShotgun
@@ -246,7 +255,7 @@ a[? "super slugger"]   = sprSuperSlugger
 a[? "gatling slugger"] = sprGatlingSlugger
 a[? "assault slugger"] = sprAssaultSlugger
 a[? "hyper slugger"]   = sprHyperSlugger
-a[? "slugger"] 			   = sprSlugger
+a[? "slugger"] 		   = sprSlugger
 
 a[? "slug shot cannon"]   		 = sprite_add_weapon("sprites/sak/sprSlugShotCannon.png",5,3)//
 a[? "super slug shot cannon"]  = sprite_add_weapon("sprites/sak/sprSuperSlugShotCannon.png",6,4)//

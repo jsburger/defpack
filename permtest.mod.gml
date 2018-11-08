@@ -17,6 +17,15 @@ permission_register("test6","Gamer3")
 global.test5 = 0
 permission_register("test5","Gamer4")
 
+for var i = 6; i < 12; i++{
+    mod_variable_set("mod",mod_current,"test"+string(i),0)
+    permission_register("test"+string(i),"Gamer"+string(i))
+}
+
+global.slider = 12
+mod_script_call("mod","defpermissions","permission_register_range","mod",mod_current,"slider","Cool Slider",5,40)
+
+
 #define step
 with TopCont darkness = global.test1
 
