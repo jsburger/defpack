@@ -41,13 +41,13 @@ if fork(){
         repeat(3)with instance_create(x+lengthdir_x(10,gunangle),y+lengthdir_y(10,gunangle),Dust){
             motion_set(other.gunangle+choose(0,60,-60,0,0)+random_range(-15,15),sqr(1.4+random(1)))
         }
-        with mod_script_call("mod","defpack tools", "create_rocklet",x,y)
+        with mod_script_call("mod","defpack tools", "create_rocklet",x+lengthdir_x(4,gunangle),y+lengthdir_y(4,gunangle))
         {
             creator = other
             team = creator.team
-            move_contact_solid(other.gunangle,10)
+            move_contact_solid(other.gunangle,12)
             direction_goal = other.gunangle
-            motion_add(other.gunangle+random_range(-45,45)*creator.accuracy,2)
+            motion_add(other.gunangle+random_range(-30,30)*creator.accuracy,2)
             image_angle = direction
         }
         wait(2)

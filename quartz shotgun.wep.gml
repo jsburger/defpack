@@ -48,7 +48,8 @@ repeat(5) with instance_create(x,y,CustomProjectile)
 {
   sprite_index = global.sprQuartzBullet2
   mask_index   = mskBullet2
-  projectile_init(other.team,other)
+  team    = other.team
+  creator = other
   force  = 4
   damage[0] = 4
   damage[1] = 6

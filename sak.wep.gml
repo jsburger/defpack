@@ -905,6 +905,10 @@ with Player if is_object(wep) && wep.wep = mod_current && !wep.done
 		case "slugger"     : _b_index = 6 break;
 		default : _b_index = 0 break;
 	}
+
+	var _str = "CREATE YOUR GUN"
+	draw_text_nt((_X+_x)/2-string_width(_str)/2,_y-15,_str)
+
 	var _m_index = 0
 	/*switch w.info[2]
 	{

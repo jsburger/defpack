@@ -7,6 +7,7 @@ global.wasscrolling = [0,0,0,0]
 //global.sprSave = sprite_add("sprSave.png",1,5,5)
 //global.sprTrash = sprite_add("sprTrash.png",1,5,5)
 
+//burg everytime you add something like this i think less of you as a person
 var p1 = {
     name : "Default Palette",
     //bgcolor : merge_color(c_black,c_white,0.2),
@@ -48,6 +49,10 @@ global.paletteeditor = {
 global.editingpalette = p1
 
 global.palettes = [1 , lq_clone(p1)]
+
+global.sprButtons = sprite_add("sprites/sprButtons.png",3,5,1);
+global.sprButtonX = sprite_add("sprites/sprX.png",0,8,8);
+global.sprArrow   = sprite_add("sprites/sprArrow.png",0,3,2);
 //trace(global.palettes)
 
 chat_comp_add("defconfig","Toggles the defpack configuration menu")
@@ -165,7 +170,7 @@ return newarray
 
 
 #define click(n)
-sound_play_pitchvol(sndClick,10 + 10*n,.5)
+sound_play_pitchvol(sndClick,(1 + n/4)*1.5,.5)
 
 #define draw_rectangle_c(x1,y1,x2,y2,color)
 draw_rectangle_color(x1,y1,x2,y2,color,color,color,color,0)
@@ -200,10 +205,10 @@ if global.menuopen{
     var p = global.palettes[global.palettes[0]]
     draw_set_halign(0)
     for (var i = 0; i < maxp; i++) if player_is_active(i){
-        
+
         var mousex = mouse_x[i], mousey = mouse_y[i]
         var press = button_pressed(i, "fire"), check = button_check(i, "fire"), released = button_released(i, "fire")
-        
+
         if i = 0 and !player_is_active(1){
             mousex = mouse_x_nonsync
             mousey = mouse_y_nonsync
@@ -211,12 +216,12 @@ if global.menuopen{
             check = button_check_nonsync(0,"fire")
             released = button_released_nonsync(0,"fire")
         }
-        
+
         draw_set_visible_all(0)
         draw_set_visible(i,1)
         //menu width, menu height, scroll bar width
-        var mw = 80, mh = 100, sw = 8, sh = 8;
-        var _x = view_xview[i] - mw - 6 - sw + game_width, _y = view_yview[i] + 20;
+        var mw = 80, mh = 100, sw = 6, sh = 8;
+        var _x = view_xview[i] - mw - 12 - sw + game_width, _y = view_yview[i] + 20;
         //cell width, cell height
         var cw = mw, ch = 20;
         //maximum displayable cells
@@ -233,33 +238,34 @@ if global.menuopen{
         var mouse = 0, found = 0
         //indicator width, height
         var iw = 10, ih = 6;
-        
-        
+
+
         if global.paletteopen[i]{
             var pmw = 62, pmh = 95
             var pmx = _x - 9
-            draw_rectangle_c(pmx - pmw, _y, pmx, _y + pmh,c_ltgray)
-            draw_rectangle_co(pmx - pmw, _y, pmx, _y + pmh,c_black)
-            
+            draw_rectangle_c(pmx - pmw + 1, _y + 1, pmx + 1, _y + pmh + 1,c_black)
+            draw_rectangle_c(pmx - pmw, _y, pmx, _y + pmh,c_gray)
+            //draw_rectangle_co(pmx - pmw, _y, pmx, _y + pmh,c_black)
+
             var edit = global.paletteeditor
-            
+
             var radius = 20, cx = pmx + 9 - radius * 2, cy = _y + radius * 1.25
             var sides = 12, inc = 360/sides, hueinc = 255/sides
-            
+
             var vbx = cx - radius, vbw = radius*2, vby = cy + radius + 10;
-            
+
             draw_line_width_color(vbx-1, vby, vbx + 1 + vbw, vby, 6, c_black, c_black)
             draw_line_width_color(vbx, vby, vbx + vbw, vby, 4, c_black, c_white)
             draw_tri(vbx + vbw*(edit.value/255), vby + 5, 4, 2, 90, c_black)
-            
+
             if point_in_rectangle(mousex, mousey, vbx - 4, vby - 4, vbx + vbw + 4, vby + 4) and check{
                 var oldval = edit.value
                 edit.value = clamp(round(((mousex - vbx)/vbw) * 255), 0, 255)
                 if oldval != edit.value click(6)
                 edit.color = make_color_hsv(edit.hue,edit.saturation,edit.value)
             }
-            
-            draw_circle_color(cx,cy,radius+.75,0,0,0)
+
+            draw_circle_color(cx,cy,radius+3,0,c_black,0)
             draw_primitive_begin(pr_trianglefan)
             draw_vertex_color(cx + 1,cy +1,make_color_hsv(0,0,edit.value),1)
             //im running out of easy to use variables
@@ -267,36 +273,39 @@ if global.menuopen{
                 draw_vertex_color(cx + 1 + lengthdir_x(radius, inc * e), cy+ 1 + lengthdir_y(radius, inc * e), make_color_hsv(hueinc * e, 255, edit.value),1)
             }
             draw_primitive_end()
-            
+
             draw_set_halign(0)
             draw_text_c(pmx - pmw, _y + pmh, "Use /palette#to name your#palette",c_gray)
-            
-            var copyx = cx - 4, copyw = 28, copyy = cy + radius + 20, copyh = 12
+
+            var copyx = cx - 10, copyw = 30, copyy = cy + radius + 20, copyh = 12
             var mouse = point_in_rectangle(mousex,mousey,copyx,copyy,copyx+copyw,copyy+copyh)
-            draw_rectangle_c(copyx,copyy,copyx+copyw,copyy+copyh,mouse ? c_ltgray : c_gray)
-            draw_rectangle_co(copyx,copyy,copyx+copyw,copyy+copyh,c_black)
-            draw_text_c(copyx + 1, copyy, "copy", c_white)
-            
+            draw_rectangle_c(copyx+6,copyy+1,copyx+copyw+1,copyy+copyh+1,c_black)
+            draw_rectangle_c(copyx+5,copyy,copyx+copyw,copyy+copyh,mouse ? c_white : c_ltgray)
+            //draw_rectangle_co(copyx,copyy,copyx+copyw,copyy+copyh,c_black)
+            draw_text_c(copyx + 8, copyy-1, "copy", p.textcolor)
+
             if mouse and released{
                 edit.copy = edit.color
                 click(1)
             }
-            
+
              var mouse = point_in_rectangle(mousex,mousey,copyx,copyy + copyh + 2,copyx+copyw,copyy+copyh*2 + 2)
              if mouse and released{
                  edit.color = edit.copy
                  click(0)
              }
-            draw_rectangle_c(copyx,copyy + copyh + 2,copyx+copyw,copyy+copyh*2 + 2,mouse ? c_ltgray : c_gray)
-            draw_rectangle_co(copyx,copyy + copyh + 2,copyx+copyw,copyy+copyh*2 + 2,c_black)
-            draw_text_c(copyx + 1, copyy + copyh, "paste", c_white)
+            draw_rectangle_c(copyx+6,copyy + copyh + 3,copyx+copyw+1,copyy+copyh*2 + 3,c_black)
+            draw_rectangle_c(copyx+5,copyy + copyh + 2,copyx+copyw,copyy+copyh*2 + 2,mouse ? c_white : c_ltgray)
+            //draw_rectangle_co(copyx,copyy + copyh + 2,copyx+copyw,copyy+copyh*2 + 2,c_black)
+            draw_text_c(copyx + 6, copyy + copyh + 1, "paste", p.textcolor)
 
+            draw_rectangle_c(copyx,copyy+1, copyx - 8,copyy + 2*copyh + 3, c_black)
             draw_rectangle_c(copyx - 1,copyy, copyx - 9,copyy + 2*copyh + 2, edit.copy)
-            draw_rectangle_co(copyx - 1 ,copyy, copyx - 9,copyy + 2 * copyh + 2, 0)
+            //draw_rectangle_co(copyx - 1 ,copyy, copyx - 9,copyy + 2 * copyh + 2, 0)
 
-            
+
             var color = edit.color
-            
+
             var dis = point_distance(cx, cy, mousex, mousey)
             if dis <=  radius + 4{
                 if check{
@@ -306,31 +315,34 @@ if global.menuopen{
                     edit.color = color
                 }
             }
-            
+
             if edit.selected > 0 lq_set(p, lq_get_key(p,edit.selected), edit.color)
-            
+
             var s = color_get_saturation(edit.color), hu = color_get_hue(edit.color), value = color_get_value(edit.color)
             edit.saturation = s
             edit.hue = hu
             edit.value = value
-            
+
             draw_circle_color(cx + lengthdir_x(s/255 * radius, hu/255 * 360), cy + lengthdir_y(s/255 * radius, hu/255 * 360), 1.5, 0, 0 ,1)
-            
+
+            draw_rectangle_c(pmx - pmw + 4 ,copyy, pmx - pmw + 10,copyy + 2*copyh + 3, c_black)
             draw_rectangle_c(pmx - pmw + 3 ,copyy, pmx - pmw + 9,copyy + 2*copyh + 2, edit.color)
-            draw_rectangle_co(pmx - pmw + 3 ,copyy, pmx - pmw + 9,copyy + 2*copyh + 2, 0)
-            
+            //draw_rectangle_co(pmx - pmw + 3 ,copyy, pmx - pmw + 9,copyy + 2*copyh + 2, 0)
+
 
             var tleft = pmx - pmw*2 - 5, tright = pmx - pmw - 2
             var theight = 8, tgap = 2
-            
+
             var moused = 0
             if mousex > tleft and mousex < tright moused = ceil((mousey - _y + tgap)/(theight))
-            
+
             for var q = 1+edit.scroll; q < lq_size(p); q++{
                 var ty = _y + theight*(q - 1);
+
+                draw_rectangle_c(tleft - 8, ty, tright, ty + theight - tgap + 1, c_black)
                 draw_rectangle_c(tright, ty, tleft-4, ty + theight - tgap, q = moused || edit.selected = q ? c_ltgray : c_gray)
-                draw_rectangle_c(tleft - 4, ty, tleft - 1, ty + theight - tgap, lq_get_value(p,q))
-                draw_rectangle_co(tleft - 4, ty, tleft - 1, ty + theight - tgap, 0)
+                draw_rectangle_c(tleft - 9, ty, tleft - 5, ty + theight - tgap, lq_get_value(p,q))
+                //draw_rectangle_co(tleft - 4, ty, tleft - 1, ty + theight - tgap, 0)
                 draw_text_c(tleft + 2, ty - 3, lq_get_key(p,q), c_white)
                 if q = moused and released{
                     click(1)
@@ -338,13 +350,13 @@ if global.menuopen{
                     edit.color = lq_get_value(p,q)
                 }
             }
-            
+
             var found = moused
-            
+
             var sleft = tleft - 34, sheight = 16, sgap = 4
-            
+
             for var u = 1; u <= array_length(global.palettes); u++{
-                var sy = _y + (sheight + sgap) * (u - .5) 
+                var sy = _y + (sheight + sgap) * (u - .5)
                 if u < array_length (global.palettes){
                     if !found{
                         mouse = point_in_rectangle(mousex,mousey,sleft - sheight*2, sy, sleft + sheight, sy + sheight)
@@ -352,12 +364,14 @@ if global.menuopen{
                     }
                     else mouse = 0
                     var pal = global.palettes[u]
+                    draw_rectangle_c(sleft + 1, sy + 1, sleft + sheight + 1, sy + sheight + 1, global.palettes[0] = u ? c_white : pal.celloutline)
                     draw_rectangle_c(sleft, sy, sleft + sheight, sy + sheight, mouse and mousex > sleft ? pal.cellhighlight : pal.cellcolor)
-                    draw_rectangle_co(sleft, sy, sleft + sheight, sy + sheight, global.palettes[0] = u ? c_white : pal.celloutline)
                     if u != 1{
-                        var xcol = (mouse and mousex < sleft - 2) ? c_red : merge_color(c_red,c_black,.3)
-                        draw_line_width_color(sleft - 4, sy + 2, sleft - sheight, sy + sheight - 2, 2, xcol, xcol)
-                        draw_line_width_color(sleft - 4, sy +sheight - 2, sleft - sheight, sy + 2, 2, xcol, xcol)
+                        //RED X
+                        var xcol = (mouse and mousex < sleft - 2) ? c_white : c_ltgray
+                        draw_sprite_ext(global.sprButtonX,0,sleft-11,sheight-12,1,1,0,c_black,1)
+                        draw_sprite_ext(global.sprButtonX,0,sleft-12,sheight-13,1,1,0,xcol,1)
+                        //draw_line_width_color(sleft - 4, sy +sheight - 2, sleft - sheight, sy + 2, 2, xcol, xcol)
                     }
                     if mouse{
                         if u != 1 and mousex < sleft - 2{
@@ -396,9 +410,10 @@ if global.menuopen{
                         found = mouse
                     }
                     else mouse = 0
+                    draw_rectangle_c(sleft+1, sy+1, sleft + sheight+1, sy + sheight+1, c_black)
                     draw_rectangle_c(sleft, sy, sleft + sheight, sy + sheight, mouse ? c_ltgray : c_gray)
                     draw_text_c(sleft + 7, sy + 2, "+", c_white)
-                    draw_rectangle_co(sleft, sy, sleft + sheight, sy + sheight, c_black)
+                    //draw_rectangle_co(sleft, sy, sleft + sheight, sy + sheight, c_black)
                     if mouse{
                         draw_tooltip(sleft + sheight/2, sy, "Create new palette")
                         if released{
@@ -411,28 +426,30 @@ if global.menuopen{
                 }
             }
         }
-        
+
 
         //x button center
-        var xx = _x -4, xy = _y-2;
+        var xx = _x -4, xy = _y + 1;
         //x button size
         var xw = 10;
         //drawing x button
         mouse = point_in_rectangle(mousex,mousey,xx-xw,xy,xx,xy+xw)
         found = mouse
-        draw_rectangle_c(xx-xw,xy,xx,xy+xw,mouse ? p.sidehighlight : p.sidebutton)
-        draw_rectangle_co(xx-xw,xy,xx,xy+xw,p.sideoutline)
-        draw_text_c(xx-1-xw/2,xy-1,"x",p.xcolor)
-        
+        //draw_rectangle_c(xx-xw,xy,xx,xy+xw,mouse ? p.sidehighlight : p.sidebutton)
+        //draw_rectangle_co(xx-xw,xy,xx,xy+xw,p.sideoutline)
+        draw_sprite_ext(sprDailyArrowSplat,2,xx-xw/2,xy+5,1,1,0,c_black,1)
+        draw_sprite_ext(global.sprButtons,0,xx-xw/2,xy,1,1,0,mouse ? p.textcolor : c_ltgray,1)
+        //draw_text_c(xx-1-xw/2,xy-1,"x",p.xcolor)
+
         if mouse && released{
             click(-.5)
             global.menuopen = 0
             trace_color("Closed config menu, use /defconfig to reopen it at any time",c_gray)
             exit
         }
-        
+
         //palette button center
-        var px = _x -4, py = _y + 10;
+        var px = _x -4, py = _y + 16;
         //palette button size
         var pw = 10;
         //drawing palette button
@@ -441,18 +458,20 @@ if global.menuopen{
             found = mouse
         }
         else mouse = 0
-        draw_rectangle_c(px-pw,py,px,py+pw,mouse ? p.sidehighlight : p.sidebutton)
-        draw_rectangle_co(px-pw,py,px,py+pw,p.sideoutline)
-        draw_text_c(px-1-pw/2,py-1,"c",p.xcolor)
-        
+        //draw_rectangle_c(px-pw,py,px,py+pw,mouse ? p.sidehighlight : p.sidebutton)
+        //draw_rectangle_co(px-pw,py,px,py+pw,p.sideoutline)
+        draw_sprite_ext(sprDailyArrowSplat,2,px-pw/2,py+5,1,1,180,c_black,1)
+        draw_sprite_ext(global.sprButtons,1,px-1-pw/2,py,1,1,0,mouse ? p.textcolor : c_ltgray,1)
+        //draw_text_c(px-1-pw/2,py-1,"c",p.xcolor)
+
         if mouse && released{
-            global.paletteopen[i] = !global.paletteopen[i] 
+            global.paletteopen[i] = !global.paletteopen[i]
             /*if global.paletteopen[i] = 1{
                 global.editingpalette = lq_clone(global.palettes[global.palettes[0]])
             }*/
             click(0)
         }
-       
+
         var h = global.scroll[i]
         if d > 0{
             if h > 0{
@@ -461,39 +480,44 @@ if global.menuopen{
                     found = mouse
                 }
                 else mouse = 0
-                draw_rectangle_c(_x2 + 4,_y,_x2+sw + 4,_y+sh,mouse ? p.sidehighlight : p.sidebutton)
-                draw_rectangle_co(_x2 + 4,_y,_x2+sw + 4,_y+sh,p.sideoutline)
-                draw_tri(_x2 + sw/2 + 3.5, _y + sh/2, 4,3, 90, p.arrowcolor)
                 if mouse && released{
-                    h--
-                    click(0)
+                  h--
+                  click(0)
                 }
-            }
+              }
+                draw_rectangle_c(_x2 + 5,_y2+2,_x2+sw + 5,_y+sh+1,c_black)
+                draw_rectangle_c(_x2 + 4,_y+1,_x2+sw + 4,_y+sh,mouse ? p.sidehighlight : p.sidebutton)
+                //draw_rectangle_co(_x2 + 4,_y,_x2+sw + 4,_y+sh,p.sideoutline)
+                draw_sprite_ext(global.sprArrow,0,_x2 + sw/2 + 5,_y + sh/2,1,1,0,p.arrowcolor,1)
+                //draw_tri(_x2 + sw/2 + 3.5, _y + sh/2, 4,3, 90, p.arrowcolor)
             if h + mc < l{
                 if !found{
                     mouse = point_in_rectangle(mousex,mousey,_x2 + 4,_y2-sh,_x2+sw + 4,_y2)
                     found = mouse
                 }
                 else mouse = 0
-                draw_rectangle_c(_x2 + 4,_y2-sh,_x2+sw + 4,_y2,mouse ? p.sidehighlight : p.sidebutton)
-                draw_rectangle_co(_x2 + 4,_y2-sh,_x2+sw + 4,_y2,p.sideoutline)
-                draw_tri(_x2 + 3.5 + sw/2, _y2 + - sh/2, 4,3, 270,p.arrowcolor)
                 if mouse && released{
-                    h++
-                    click(1)
+                  h++
+                  click(1)
                 }
-            }
+              }
+                draw_rectangle_c(_x2 + 5,_y2-sh+1,_x2+sw + 5,_y2,c_black)
+                draw_rectangle_c(_x2 + 4,_y2-sh,_x2+sw + 4,_y2-1,mouse ? p.sidehighlight : p.sidebutton)
+                //draw_rectangle_co(_x2 + 4,_y2-sh,_x2+sw + 4,_y2,p.sideoutline)d
+                draw_sprite_ext(global.sprArrow,0,_x2 + sw/2 + 4,_y2 - sh/2 + 1,1,1,180,p.arrowcolor,1)
+                //draw_tri(_x2 + 3.5 + sw/2, _y2 + - sh/2, 4,3, 270,p.arrowcolor)
 
             var sbx = _x2 + 4, sbx2 = sbx + sw, sby = _y + sh + 2, sbh = mh - sh - 4, sby2 = sby + sbh
+            draw_rectangle_c(sbx+1, sby+1, sbx2+1, sby2+1, c_black)
             draw_rectangle_c(sbx, sby, sbx2, sby2, p.scrollbg)
-            draw_rectangle_co(sbx, sby, sbx2, sby2, p.sideoutline)
+            //draw_rectangle_co(sbx, sby, sbx2, sby2, p.sideoutline)
             var sbl = sbh * mc/l, sbl2 = h/l * sbh
             if !found{
                 mouse = point_in_rectangle(mousex,mousey, sbx, sby, sbx2, sby2)
                 found = mouse
             }
             else mouse = 0
-            draw_rectangle_c(sbx, sby + sbl2, sbx2, sby + sbl2 + sbl, (mouse || global.wasscrolling[i]) and check ? p.scrollpress : p.scrollcolor)
+            draw_rectangle_c(sbx, sby + sbl2, sbx2, sby + sbl2 + sbl, (mouse || global.wasscrolling[i]) and check ? p.scrollcolor : p.scrollpress)
             if mouse and press global.wasscrolling[i] = 1
             if (mouse || global.wasscrolling[i]) and check{
                 global.wasscrolling[i] = 1
@@ -502,11 +526,11 @@ if global.menuopen{
                 if oldscroll != h click(3)
             }
             if released global.wasscrolling[i] = 0
-            
+
             global.scroll[i] = h
 
         }
-        
+
         var n = floor(min(mc,l)/2)
         var o = 0
         while o < min(mc,l){
@@ -519,16 +543,21 @@ if global.menuopen{
             var col = merge_color(p.cellfadetop, p.cellcolor, o/n)
             //if o = n + 1 col = p.cellcolor
             if o > n col = merge_color(p.cellcolor, p.cellfadebottom, (o-n)/n)
-            draw_rectangle_c(_x,_y3,_x2,_y4,mouse ? p.cellhighlight : col);
-            draw_rectangle_co(_x,_y3,_x2,_y4,p.celloutline);
+            draw_rectangle_c(_x+1,_y3+2,_x2+1,_y4,c_black);
+            draw_line_width_color(_x+6,_y4+2,_x2-5,_y4+2,1,c_black,c_black)
+            draw_line_width_color(_x+6,_y4+1,_x2-5,_y4+1,1,c_black,c_black)
+            draw_line_width_color(_x+5,_y4+1,_x2-6,_y4+1,1,p.sidehighlight,p.sidehighlight)
+            draw_rectangle_c(_x,_y3+1,_x2,_y4-1,mouse ? p.cellhighlight : col);
+            //draw_rectangle_co(_x,_y3,_x2,_y4,p.celloutline);
             draw_text_c(_x+2,_y3,global.stuff[h+o][3],p.textcolor);
             var v = global.stuff[h+o][4];
             var typ = global.stuff[h+o][5];
             //toggle style permissions
             if typ = 0{
                 //draw indicators
-                draw_roundrect_c(_x+3,_y4-ih - 2,_x+3+iw,_y4 - 2,v ? p.toggleon : p.toggleoff);
-                draw_circle_color(_x +3 + iw/4 + iw*v/2, _y4 - 2 -ih/2, ih/2, p.togglecolor, p.togglecolor,0)
+                draw_roundrect_c(_x+3,_y4-ih - 2,_x+3+iw,_y4 - 3,v ? p.toggleon : p.toggleoff);
+                draw_circle_color(_x +4 + iw/4 + iw*v/2, _y4 - 2 -ih/2, ih/2, c_black, c_black,0)
+                draw_circle_color(_x +3 + iw/4 + iw*v/2, _y4 - 3 -ih/2, ih/2, p.togglecolor, p.togglecolor,0)
                 var c = p.modlabel
                 //draw mod name
                 draw_text_color(_x + 6 + iw, _y4 - 11,string_delete(global.stuff[h+o][1],15,100000),c,c,c,c,.6)
@@ -551,11 +580,13 @@ if global.menuopen{
             else if typ = 1{
                 var mn = global.stuff[h+o][6], mx = global.stuff[h+o][7];
                 //bar padding, bar width, bar x start, bar ystart, bar height, bar x end
-                var pd = 2, bw = cw - 2*pd - 10, bx = _x + 2, by = _y4 - 5, bh = 7, bxe = bx + bw * ((v - mn)/(mx - mn))
+                var pd = 2, bw = cw - 2*pd - 10, bx = _x + 2, by = _y4 - 6, bh = 7, bxe = bx + bw * ((v - mn)/(mx - mn))
                 var r = mx - mn
                 //draw_line_width_color(bx-1, by - .5, bx + bw, by - .5, bh+ 1, c_black, c_black)
+                draw_line_width_color(bx+1, by, bx + bw + 1, by+1, bh, c_black, c_black)
                 draw_line_width_color(bx, by, bx + bw, by, bh, p.barbg, p.barbg)
                 draw_line_width_color(bx, by, bxe, by, bh, p.barleft, merge_color(p.barleft,p.barright,(v-mn)/r))
+                draw_line_width_color(bxe, by+1, bxe+3, by+1, bh + 2, c_black, c_black)
                 draw_line_width_color(bxe, by, bxe+2, by, bh + 2, p.bartip, p.bartip)
                 draw_set_halign(1)
                 draw_text_c(bx + bw/2, by - 5, string(v), p.bartext)
@@ -564,7 +595,7 @@ if global.menuopen{
                     var a = array_clone(global.stuff[h+o]);
                     var num = clamp(round(((mousex - bx)/bw) * r) + mn, mn, mx)
                     mod_variable_set(a[0],a[1],a[2],num);
-                    if v != num sound_play_pitchvol(sndAmmoPickup,50 + sqr(1 + 100 * abs(num-v)/r),2)
+                    if v != num sound_play_pitchvol(sndCursedReminder,17 + sqr(1 + 5 * abs(num-v)/r),2)
                         //sound_play_pitch(sndAmmoPickup,5)
                     global.stuff[h+o,4] = num
                 }
