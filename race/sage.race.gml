@@ -385,9 +385,12 @@ with instances_matching(Player,"race",mod_current){
             }
         }
     }
-    if button_check(index,btn) || button_released(index,btn) hand.menutime += current_time_scale
-    else hand.menutime = 0
-    if hand.menutime >= hand.menucap && visible && (button_check(index,btn) || button_released(index,btn)){
+    var pressed = 0
+    if button_check(index,btn) || button_pressed(index,btn){
+        hand.menutime += current_time_scale
+        pressed = 1
+    }
+    if hand.menutime >= hand.menucap && visible && (pressed or button_released(index,btn)){
         draw_set_visible_all(0)
         draw_set_visible(index,1)
         var picks = [];
@@ -432,6 +435,7 @@ with instances_matching(Player,"race",mod_current){
         hand.menulength = min(hand.menulength + hand.menulength * current_time_scale,1)
         draw_set_color(c_white)
     }
+    if pressed = 0 hand.menutime = 0
     draw_set_visible_all(1)
 }
 

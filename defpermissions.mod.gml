@@ -11,7 +11,7 @@ global.wasscrolling = [0,0,0,0]
 var p1 = {
     name : "Default Palette",
     //bgcolor : merge_color(c_black,c_white,0.2),
-    sideoutline : c_black,
+    //sideoutline : c_black,
     sidebutton : c_dkgray,
     sidehighlight : c_gray,
     xcolor : c_white,
@@ -23,7 +23,7 @@ var p1 = {
     cellfadetop : c_gray,
     cellfadebottom : c_gray,
     cellhighlight : merge_color(c_white,c_black,.2),
-    celloutline : c_black,
+    //celloutline : c_black,
     togglecolor : c_white,
     toggleon : merge_color(c_blue,c_gray,.4),
     toggleoff : c_dkgray,
@@ -195,9 +195,14 @@ repeat(3){
 draw_primitive_end()
 
 #define draw_pause
-draw()
+
+draw_menu()
 
 #define draw
+
+if instance_exists(CharSelect) draw_menu()
+
+#define draw_menu
 
 if global.menuopen{
     draw_set_font(fntChat)
@@ -311,7 +316,7 @@ if global.menuopen{
                 if check{
                     var oldval = color
                     var hue = point_direction(cx,cy,mousex,mousey) * 255/360, sat =  min(dis, radius)/radius * 255, val = edit.value, color = make_color_hsv(hue, sat, val)
-                    if color != oldval click(1 + dsin(hue * 360/255) + 1 + dsin(sat * 360/255))
+                    if color != oldval click(((1 + dsin(hue * 360/255) + 1 + dsin(sat * 360/255))+ 1)*10)
                     edit.color = color
                 }
             }
@@ -325,7 +330,7 @@ if global.menuopen{
 
             draw_circle_color(cx + lengthdir_x(s/255 * radius, hu/255 * 360), cy + lengthdir_y(s/255 * radius, hu/255 * 360), 1.5, 0, 0 ,1)
 
-            draw_rectangle_c(pmx - pmw + 4 ,copyy, pmx - pmw + 10,copyy + 2*copyh + 3, c_black)
+            draw_rectangle_c(pmx - pmw + 4 ,copyy + 1, pmx - pmw + 10,copyy + 2*copyh + 3, c_black)
             draw_rectangle_c(pmx - pmw + 3 ,copyy, pmx - pmw + 9,copyy + 2*copyh + 2, edit.color)
             //draw_rectangle_co(pmx - pmw + 3 ,copyy, pmx - pmw + 9,copyy + 2*copyh + 2, 0)
 
@@ -369,13 +374,13 @@ if global.menuopen{
                     if u != 1{
                         //RED X
                         var xcol = (mouse and mousex < sleft - 2) ? c_white : c_ltgray
-                        draw_sprite_ext(global.sprButtonX,0,sleft-11,sheight-12,1,1,0,c_black,1)
-                        draw_sprite_ext(global.sprButtonX,0,sleft-12,sheight-13,1,1,0,xcol,1)
+                        draw_sprite_ext(global.sprButtonX,0,sleft-11,sy +2 + sheight/2,1,1,0,c_black,1)
+                        draw_sprite_ext(global.sprButtonX,0,sleft-12,sy +1 + sheight/2,1,1,0,xcol,1)
                         //draw_line_width_color(sleft - 4, sy +sheight - 2, sleft - sheight, sy + 2, 2, xcol, xcol)
                     }
                     if mouse{
                         if u != 1 and mousex < sleft - 2{
-                            draw_tooltip(sleft - sheight/2, sy, "Delete this palette")
+                            draw_tooltip(sleft - sheight*3/4, sy, "Delete this palette")
                             if released {
                                 global.palettes = array_clone(array_index_delete(global.palettes, u))
                                 if u >= array_length_1d(global.palettes)-1 global.palettes[0] = 2
@@ -404,7 +409,7 @@ if global.menuopen{
                         }
                     }
                 }
-                else{
+                else if u <= 7{
                     if !found{
                         mouse = point_in_rectangle(mousex,mousey,sleft, sy, sleft + sheight, sy + sheight)
                         found = mouse
@@ -474,39 +479,39 @@ if global.menuopen{
 
         var h = global.scroll[i]
         if d > 0{
-            if h > 0{
+            //if h > 0{
                 if !found{
                     mouse = point_in_rectangle(mousex,mousey,_x2 + 4,_y,_x2+sw + 4,_y+sh)
                     found = mouse
                 }
                 else mouse = 0
-                if mouse && released{
-                  h--
-                  click(0)
+                if h > 0 && mouse && released{
+                    h--
+                    click(0)
                 }
-              }
-                draw_rectangle_c(_x2 + 5,_y2+2,_x2+sw + 5,_y+sh+1,c_black)
+                draw_rectangle_c(_x2 + 5,_y+2,_x2+sw + 5,_y+sh+1,c_black)
                 draw_rectangle_c(_x2 + 4,_y+1,_x2+sw + 4,_y+sh,mouse ? p.sidehighlight : p.sidebutton)
                 //draw_rectangle_co(_x2 + 4,_y,_x2+sw + 4,_y+sh,p.sideoutline)
                 draw_sprite_ext(global.sprArrow,0,_x2 + sw/2 + 5,_y + sh/2,1,1,0,p.arrowcolor,1)
                 //draw_tri(_x2 + sw/2 + 3.5, _y + sh/2, 4,3, 90, p.arrowcolor)
-            if h + mc < l{
+            //}
+            //if h + mc < l{
                 if !found{
                     mouse = point_in_rectangle(mousex,mousey,_x2 + 4,_y2-sh,_x2+sw + 4,_y2)
                     found = mouse
                 }
                 else mouse = 0
-                if mouse && released{
-                  h++
-                  click(1)
+                if h + mc < l && mouse && released{
+                    h++
+                    click(1)
                 }
-              }
+              
                 draw_rectangle_c(_x2 + 5,_y2-sh+1,_x2+sw + 5,_y2,c_black)
                 draw_rectangle_c(_x2 + 4,_y2-sh,_x2+sw + 4,_y2-1,mouse ? p.sidehighlight : p.sidebutton)
                 //draw_rectangle_co(_x2 + 4,_y2-sh,_x2+sw + 4,_y2,p.sideoutline)d
                 draw_sprite_ext(global.sprArrow,0,_x2 + sw/2 + 4,_y2 - sh/2 + 1,1,1,180,p.arrowcolor,1)
                 //draw_tri(_x2 + 3.5 + sw/2, _y2 + - sh/2, 4,3, 270,p.arrowcolor)
-
+            //}
             var sbx = _x2 + 4, sbx2 = sbx + sw, sby = _y + sh + 2, sbh = mh - sh - 4, sby2 = sby + sbh
             draw_rectangle_c(sbx+1, sby+1, sbx2+1, sby2+1, c_black)
             draw_rectangle_c(sbx, sby, sbx2, sby2, p.scrollbg)
@@ -523,7 +528,10 @@ if global.menuopen{
                 global.wasscrolling[i] = 1
                 var oldscroll = h
                 h = round(clamp((mousey - sby)/(sbh-4) * d,0,d))
-                if oldscroll != h click(3)
+                if oldscroll != h{
+                    //sound_play_pitchvol(sndBurn,3.5 + sqr((1 - h/(l-mc)) * 2),.35)
+                    sound_play_pitchvol(sndClickBack,3 + sqr((1 - h/(l-mc)) * 1.5),.5)
+                }
             }
             if released global.wasscrolling[i] = 0
 
@@ -566,7 +574,7 @@ if global.menuopen{
                     var a = array_clone(global.stuff[h+o]);
                     mod_variable_set(a[0],a[1],a[2],!a[4]);
                     global.stuff[h+o,4] = !a[4];
-                    click(a[4])
+                    click(1.5 * !a[4])
                     if global.menuopen = 0 global.menuopen = 1
                     if fork(){
                         //delay is for making sure that if the game crashes from an option change, the option isnt saved
@@ -583,7 +591,7 @@ if global.menuopen{
                 var pd = 2, bw = cw - 2*pd - 10, bx = _x + 2, by = _y4 - 6, bh = 7, bxe = bx + bw * ((v - mn)/(mx - mn))
                 var r = mx - mn
                 //draw_line_width_color(bx-1, by - .5, bx + bw, by - .5, bh+ 1, c_black, c_black)
-                draw_line_width_color(bx+1, by, bx + bw + 1, by+1, bh, c_black, c_black)
+                draw_line_width_color(bx+1, by+1, bx + bw + 1, by+1, bh, c_black, c_black)
                 draw_line_width_color(bx, by, bx + bw, by, bh, p.barbg, p.barbg)
                 draw_line_width_color(bx, by, bxe, by, bh, p.barleft, merge_color(p.barleft,p.barright,(v-mn)/r))
                 draw_line_width_color(bxe, by+1, bxe+3, by+1, bh + 2, c_black, c_black)
@@ -591,11 +599,11 @@ if global.menuopen{
                 draw_set_halign(1)
                 draw_text_c(bx + bw/2, by - 5, string(v), p.bartext)
                 draw_set_halign(0)
-                if mouse && check{
+                if mouse && check && !global.wasscrolling[i]{
                     var a = array_clone(global.stuff[h+o]);
                     var num = clamp(round(((mousex - bx)/bw) * r) + mn, mn, mx)
                     mod_variable_set(a[0],a[1],a[2],num);
-                    if v != num sound_play_pitchvol(sndCursedReminder,17 + sqr(1 + 5 * abs(num-v)/r),2)
+                    if v != num sound_play_pitchvol(sndClickBack,2 + sqr(1 + 2 * (1 - abs(mx - num)/r)),.75)
                         //sound_play_pitch(sndAmmoPickup,5)
                     global.stuff[h+o,4] = num
                 }
