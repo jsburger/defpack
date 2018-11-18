@@ -1,5 +1,5 @@
 #define init
-global.sprBloodCrossbow = sprite_add_weapon("sprBloodCrossbow.png", 2, 5);
+global.sprBloodCrossbow = sprite_add_weapon("sprBloodCrossbow.png", 6, 3);
 global.sprBloodBolt = sprite_add("sprBloodBolt.png",0, -2, 3);
 
 #define weapon_name
@@ -43,8 +43,9 @@ if infammo <= 0{
 	else
 	{
 		ammo[3] -= 1
-		sound_play_pitch(sndCrossbow,.8)
-		sound_play_pitch(sndBloodHammer,1.2)
+		var _p = random_range(.8,1.2)
+		sound_play_pitchvol(sndHeavyCrossbow,.8*_p,.6)
+		sound_play_pitchvol(sndBloodHammer,1.2*_p,.6)
 	}
 }
 weapon_post(5,-40,0)

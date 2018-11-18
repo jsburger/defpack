@@ -35,12 +35,13 @@ return "POTENTIAL"
 #define weapon_fire
 weapon_post(2,0,3)
 sound_play_pitch(sndPopgun,random_range(1,2))
-sound_play_pitch(sndRustyRevolver,random_range(2,3))
-sound_play_pitch(sndNothing2Ball,random_range(2,3))
+sound_play_pitchvol(sndRustyRevolver,random_range(2,3),.6)
+sound_play_pitchvol(sndNothing2Ball,random_range(2,3),.4)
 with instance_create(x,y,CustomProjectile)
 {
   typ = 1
   sprite_index = global.sprPellet
+  mask_index   = global.sprPellet
   recycle_amount = 0
   damage = 1 if irandom(999999) = 0 damage = 999999999999999999999999
   team = other.team
@@ -83,13 +84,13 @@ if place_meeting(x+hspeed,y+vspeed,Wall)
   bounce--
   image_angle = direction
 }
+if bounce < 0 instance_destroy()
 
 #define pellet_destroy
 with instance_create(x,y,BulletHit){sprite_index = global.sprPelletHit}
 
 #define pellet_step
 if image_index = 1 image_speed = 0
-if bounce < 0 {instance_destroy();exit}
 
 #define pellet_draw
 draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, image_yscale, image_angle, image_blend, 1.0);
