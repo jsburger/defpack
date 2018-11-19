@@ -10,7 +10,7 @@ return 0
 #define weapon_area
 return 24
 #define weapon_load
-return 16
+return 12
 #define weapon_swap
 return sndSwapHammer
 #define weapon_auto
@@ -22,7 +22,7 @@ return 0
 #define weapon_reloaded
 
 #define weapon_rads
-return 10
+return 8
 
 #define weapon_fire
 
@@ -45,14 +45,14 @@ with instance_create(x,y,CustomObject){
     image_angle = other.gunangle + other.wepangle
     
     length = sprite_width - sprite_xoffset + 20*skill_get(mut_long_arms)
-    trailx = x + lengthdir_x(length, image_angle) + other.hspeed_raw
-    traily = y + lengthdir_y(length, image_angle) + other.vspeed_raw
+    trailx = x + lengthdir_x(length, image_angle)// + other.hspeed_raw
+    traily = y + lengthdir_y(length, image_angle)// + other.vspeed_raw
 
     on_step = hand_step
 }
 
 
-with instance_create(x,y,CustomSlash){
+with instance_create(x - lengthdir_x(12*skill_get(mut_long_arms), gunangle),y - lengthdir_y(12*skill_get(mut_long_arms), gunangle),CustomSlash){
     team = other.team
     creator = other
     depth = other.depth - 1
@@ -63,22 +63,31 @@ with instance_create(x,y,CustomSlash){
     //sprite_index = sprSlash
     flip = -sign(other.wepangle)
     mask_index = mskSlash
+    //sprite_index = mskSlash
     image_xscale = .5
     image_yscale = .7
     if skill_get(mut_long_arms){
-        image_xscale = 1
+        image_xscale = 1.2
         image_yscale = 1.4
     }
     image_angle = other.gunangle
     
     on_hit = hand_hit
     on_projectile = hand_proj
+    on_grenade = hand_grenade
     on_anim = nothing
 }
 wepangle *= -1
 
 #define nothing
 instance_destroy()
+
+#define hand_grenade
+with other{
+    team = other.team
+    motion_set(other.image_angle, speed)
+    image_angle = direction
+}
 
 #define hand_proj
 with other if typ > 0{
@@ -103,14 +112,16 @@ if instance_is(other, EnemyLaser){
     }
 }
 
+
+
 #define hand_step
-var xlen = 0, ylen = 0
+//var xlen = 0, ylen = 0
 counter += rotspeed * current_time_scale * flip
 if instance_exists(creator){
     x = creator.x + creator.hspeed_raw
     y = creator.y + creator.vspeed_raw
-    xlen = creator.hspeed_raw
-    ylen = creator.vspeed_raw
+    //xlen = creator.hspeed_raw
+    //ylen = creator.vspeed_raw
     image_angle += rotspeed * current_time_scale * flip
 }
 if abs(counter) > 240 instance_destroy()
@@ -118,7 +129,8 @@ else {
     var ang = image_angle - (rotspeed * current_time_scale * flip)
     for (var i = 0; i < trailcount; i++){
         ang += (rotspeed * current_time_scale * flip)/trailcount
-        with instance_create(x + lengthdir_x(length, ang) + xlen*i/trailcount, y + lengthdir_y(length, ang) + ylen*i/trailcount, BoltTrail){
+        //with instance_create(x + lengthdir_x(length, ang) + xlen*i/trailcount, y + lengthdir_y(length, ang) + ylen*i/trailcount, BoltTrail){
+        with instance_create(xstart + lengthdir_x(length, ang), ystart + lengthdir_y(length, ang), BoltTrail){
             image_xscale = point_distance(x, y, other.trailx, other.traily)
             image_angle = point_direction(x, y, other.trailx, other.traily)
             other.trailx = x
@@ -139,23 +151,22 @@ else {
 #define hand_hit
 if projectile_canhit_melee(other){
     sound_play_pitch(sndHammerHeadProc,.6)
-
     sleep(100)
     projectile_hit(other, damage, 1000, image_angle)
     var _x = x, _y = y, dir = image_angle - 90 * flip, leng = 90, dirfac = 11*flip, t = team;
     if fork(){
         repeat(6){
             repeat(6){
-                var l = random(leng) + 16
-                with instance_create(_x + lengthdir_x(l, dir), _y+ lengthdir_y(l, dir), UltraShell){
+                var l = random(leng) + 16, lx = lengthdir_x(l, dir), ly = lengthdir_y(l, dir)
+                with instance_create(_x + lx, _y + ly, UltraShell){
                     motion_set(dir + 90 * sign(dirfac), 10)
                     sound_play_hit(sndShotgun,.1)
+                    typ = 0
                     team = t
                     if !place_meeting(x,y,Floor) || place_meeting(x,y,Wall) instance_delete(self)
                 }
                 dir += (dirfac)/2
             }
-            
             wait(1)
         }
         exit

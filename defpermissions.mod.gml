@@ -90,7 +90,7 @@ file_unload("data/defpermissions.mod/defconfig.txt")
 
 
 #define permission_register(type,name,variable,desc)
-while !file_exists("data/defpermissions.mod/defconfig.txt") {trace(4);wait(0)}
+while !file_exists("data/defpermissions.mod/defconfig.txt") {wait(0)}
 var arr = [type,name,variable,desc,mod_variable_get(type,name,variable),0];
 var count = 0;
 for var o = 0; o < array_length_1d(global.stuff); o++{

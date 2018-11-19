@@ -23,8 +23,6 @@ global.drawers = [noone,noone]
 global.scripts = [script_ref_create(spellpicker),script_ref_create(draw_hud)]
 global.depths = [-14, -20]
 
-with Player if race = mod_current create()
-
 global.protowep = wep_rusty_revolver
 
 global.spells = ds_map_create()
@@ -58,16 +56,20 @@ if fork(){
 
 add_spell("Merge", scr(merge_cast),NA,NA,NA,ultraspell,sprite_add("sprMerge.png",2,8,7),sprite_add("MergeBlob.png",1,4,4))
 //add_spell("Rapid Fire",NA,scr(rapid_channel),NA,NA,1,sprite_add("sprBlast.png",2,8,7),sprite_add("RapidFireBlob.png",1,4,3))
-add_spell("Triple Shot",scr(triple_cast),NA,NA,NA,1,sprite_add("sprBlast.png",2,8,7),sprite_add("RapidFireBlob.png",1,4,3))
+add_spell("Multi Shot",scr(triple_cast),NA,NA,NA,1,sprite_add("sprBlast.png",2,8,7),sprite_add("RapidFireBlob.png",1,4,3))
 add_spell("Proto Swap",scr(proto_cast),NA,NA,NA,1,sprite_add("sprProto.png",2,7,7),sprite_add("ProtoChestBlob.png",1,4,3))
 
 //ultra spells
 add_spell("Haste",scr(haste_cast),NA,NA,NA,1,sprite_add("sprHaste.png",2,7,7),sprite_add("HasteBlob.png",1,4,3))
 add_spell("Shield",scr(shield_cast),NA,NA,NA,ultraspell,sprite_add("sprShield.png",2,8,7),sprite_add("ShieldBlob.png",1,3,3))
 
+with Player if race = mod_current create()
+
 #macro maxmana 200
 
 #macro ultraspell scr(ultra_avail)
+
+#macro usemana 0
 
 #macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)
 
@@ -88,7 +90,7 @@ global.spells[? name] = [name,on_cast,on_channel,on_release,on_step,avail,icon,b
 array_push(global.spellnames,name)
 
 #define draw_hud
-with Player if race = mod_current && player_is_local_nonsync(index){
+if usemana with Player if race = mod_current && player_is_local_nonsync(index){
     var _x = view_xview_nonsync + 20;
     var _y = view_yview_nonsync + 4;
     var width = 86;
@@ -217,25 +219,26 @@ for var i = 0; i< array_length_1d(global.drawers); i++{
             script = global.scripts[i]
         }
 }
-
-    var size = 15
-    var wantmana = 0;
-    with instances_in(bbox_left-size,bbox_top-size,bbox_right+size,bbox_bottom+size,[HPPickup,AmmoPickup,Rad,BigRad]){
-        mask_index = mskNone
-        if point_distance(x,y,other.x,other.y) <= 10{
-            if instance_is(self,Rad) and speed <= 0 wantmana += 1.5
-            else wantmana += 5
-            if instance_is(self,HPPickup) && skill_get(mut_second_stomach) wantmana += 5
-            wantmana += (GameCont.crown = crwn_haste)
-            event_perform(ev_collision,Player)
+    if usemana{
+        var size = 15
+        var wantmana = 0;
+        with instances_in(bbox_left-size,bbox_top-size,bbox_right+size,bbox_bottom+size,[HPPickup,AmmoPickup,Rad,BigRad]){
+            mask_index = mskNone
+            if point_distance(x,y,other.x,other.y) <= 10{
+                if instance_is(self,Rad) and speed <= 0 wantmana += 1.5
+                else wantmana += 5
+                if instance_is(self,HPPickup) && skill_get(mut_second_stomach) wantmana += 5
+                wantmana += (GameCont.crown = crwn_haste)
+                event_perform(ev_collision,Player)
+            }
         }
-    }
-    hand.mana = min(hand.mana + wantmana,maxmana)
-
-    if shinetime > 0{
-        shinetime = max(shinetime-current_time_scale,0)
-    }
-    if wantmana > 0 shinetime = 5
+        hand.mana = min(hand.mana + wantmana,maxmana)
+    
+        if shinetime > 0{
+            shinetime = max(shinetime-current_time_scale,0)
+        }
+        if wantmana > 0 shinetime = 5
+    }    
     
     if hastetime > 0{
         hastetime = max(hastetime-current_time_scale,0)
@@ -243,6 +246,7 @@ for var i = 0; i< array_length_1d(global.drawers); i++{
             maxspeed -= 1 + skill_get(mut_throne_butt)*.5
             accuracy *= (1.25+skill_get(mut_throne_butt)*.15)
         }
+        if reload > 0 reload -= (.1 + .05*skill_get(mut_throne_butt))*current_time_scale
         if canfire && weapon_get_auto(wep) > -1 clicked = button_check(index,"fire")
         if current_frame_active with instance_create(x,y,CustomObject){
             sprite_index = other.sprite_index
@@ -374,7 +378,7 @@ with instances_matching(Player,"race",mod_current){
     var btn = "spec";
     
     if button_pressed(index,btn){
-        hand.menulength = .4
+        hand.menulength = .2
         if controlprompted = 0 {
             controlprompted = 1
             with instance_create(x,y,CustomObject){
@@ -382,6 +386,7 @@ with instances_matching(Player,"race",mod_current){
                 on_draw = textdraw
                 alpha = 0
                 alphatime = 90
+                depth = -8
             }
         }
     }
@@ -436,78 +441,6 @@ with instances_matching(Player,"race",mod_current){
         draw_set_color(c_white)
     }
     if pressed = 0 hand.menutime = 0
-    draw_set_visible_all(1)
-}
-
-#define spellpicker_old
-with instances_matching(Player,"race",mod_current){
-    var btn = "key4"
-    if hand.spell = "No Spell" btn = "spec"
-    var btns = ["key1","key2","key3","key4"]
-    for var i = 0; i < array_length(btns); i++{
-        if button_pressed(index,btns[i]) || button_check(index,btns[i]) || button_released(index,btns[i]){
-            btn = btns[i]
-            break
-        }
-    }
-
-    if button_pressed(index,btn){
-        hand.menulength = .1
-        if controlprompted = 0 {
-            controlprompted = 1
-            with instance_create(x,y,CustomObject){
-                creator = other
-                on_draw = textdraw
-                alpha = 0
-                alphatime = 90
-            }
-        }
-    }
-    if visible && (button_check(index,btn) || button_released(index,btn)){
-        draw_set_visible_all(0)
-        draw_set_visible(index,1)
-        var picks = [];
-        for var i = 0; i< array_length_1d(global.spellnames); i++{
-            var avail = global.spells[? global.spellnames[i]][5];
-            if is_array(avail){
-                avail = mod_script_call(avail[0],avail[1],avail[2])
-            }
-            if avail == true array_push(picks,global.spellnames[i])
-        }
-        var int = 360/array_length_1d(picks);
-        var num = 0;
-        var l = hand.menulength;
-        var startang = 0;
-        var xc = game_width/2;
-        var yc = game_height/2;
-        draw_set_projection(0)
-        for var a = startang; a<startang+360; a+=int{
-            var pointed = abs(angle_difference(point_direction(view_xc,view_yc,mouse_x[index],mouse_y[index]),a)) < int/2;
-            var col = pointed? c_white : c_gray;
-            var _x = xc + lengthdir_x(40,a), _y = yc + lengthdir_y(40,a);
-            var size = 1
-
-            var ang = (a + int/2)
-            draw_line_width_color(xc + lengthdir_x(50, ang),yc + lengthdir_y(50, ang),xc + lengthdir_x(10, ang),yc + lengthdir_y(10, ang),1,c_white,c_white)
-
-            draw_sprite_ext(global.spells[? picks[num]][6], pointed, _x, _y, size, size, 0, col, l)
-            if picks[num] = "Proto Swap" draw_sprite_ext(weapon_get_sprite(global.protowep), 0, _x + lengthdir_x(20,a), _y + lengthdir_y(20,a), size, size, 0, col, l)
-
-            draw_set_font(fntSmall)
-            draw_set_halign(1)
-            draw_set_color(col)
-            draw_text_shadow(_x,_y + 10,picks[num])
-
-            if pointed && button_released(index,btn){
-                hand.spell = picks[num]
-                hand.sprite = global.spells[? picks[num]][7]
-            }
-            num++
-        }
-        draw_reset_projection()
-        hand.menulength = min(hand.menulength + hand.menulength * current_time_scale,1)
-        draw_set_color(c_white)
-    }
     draw_set_visible_all(1)
 }
 
@@ -578,7 +511,7 @@ if hand.mana >= 1.5*current_time_scale && weapon_get_type(wep) != 0{
     hand.gy = y + lengthdir_y(15,gunangle+30*right) - 5 + vspeed
     hand.col = c_white
     hand.angle = gunangle
-    hand.mana -= 1.5*current_time_scale
+    hand.mana -= 1.5*current_time_scale * usemana
     if reload >= 0 reload -= (1+skill_get(mut_throne_butt))*current_time_scale
     var _t = weapon_get_type(wep), _c = weapon_get_cost(wep), n = 0, _a = weapon_get_auto(wep) + 1;
     while ammo[_t] >= _c && reload <= 0 && _a && ++n < 100 {
@@ -602,9 +535,9 @@ if hand.mana >= 1.5*current_time_scale && weapon_get_type(wep) != 0{
 }
 
 #define proto_cast
-var cost = 50 - 25*skill_get(mut_throne_butt)
+var cost = 50 - 25*skill_get(mut_throne_butt) * usemana
 if hand.mana >= cost{
-    //hand.mana -= cost
+    //hand.mana -= cost * usemana
     hand.col = c_white
     instance_create(x+lengthdir_x(10,gunangle),y+lengthdir_y(10,gunangle),WepSwap)
     if mod_exists("mod","defparticles") && array_length_1d(instances_matching(CustomObject,"name","spark")) < 30 repeat(24){
@@ -627,8 +560,8 @@ if hand.mana >= cost{
 }
 
 #define haste_cast
-if hand.mana >= 50{
-    hand.mana -= 50
+if hand.mana >= 50 * usemana{
+    hand.mana -= 50 * usemana
     if hastetime = 0{
         maxspeed += 1 + skill_get(mut_throne_butt)*.5
         accuracy /= (1.25+skill_get(mut_throne_butt)*.15)
@@ -647,9 +580,9 @@ if hand.mana >= 50{
 }
 
 #define triple_cast
-if hand.mana >= 15{
+if hand.mana >= 15 * usemana{
     if reload <= 0 and canfire and (infammo != 0 or (ammo[weapon_get_type(wep)] >= weapon_get_cost(wep) * 3)){
-        hand.mana -= 15
+        hand.mana -= 15 * usemana
         specfiring = 1
         for var i = -1; i <= 1; i++{
             player_fire(gunangle + 20*i*accuracy)
@@ -661,8 +594,8 @@ if hand.mana >= 15{
 
 
 #define shield_cast
-if hand.mana >= 6{
-    hand.mana -= 0//6
+if hand.mana >= 6 * usemana{
+    hand.mana -= 0//6 * usemana
     speed = 0
     with instance_create(x,y,CustomSlash){
         on_projectile = shine_proj
@@ -670,6 +603,7 @@ if hand.mana >= 6{
         on_hit = shine_hit
         on_anim = shine_anim
         team = other.team
+        creator = other
         image_speed = 1
         image_xscale = .5
         image_yscale = .5
