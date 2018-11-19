@@ -113,12 +113,6 @@ with instances_matching([Bolt,BoltStick],"name","marker bolt"){
 	draw_circle_color(x+lengthdir_x(sprite_width/2+2,direction),y+lengthdir_y(sprite_width/2+2,direction),35 + random(3), c_gray,c_gray,0)
 	draw_circle_color(x+lengthdir_x(sprite_width/2+2,direction),y+lengthdir_y(sprite_width/2+2,direction),20 + random(3), c_black,c_black,0)
 }
-with instances_matching(CustomProjectile,"name","volley arrow"){
-	draw_circle_color(x,y-z,20 + random(3), c_black,c_black,0)
-}
-with instances_matching(CustomProjectile,"name","Fire Bullet"){
-	draw_circle_color(x,y,20 + random(3),c_black,c_black,0)
-}
 
 #define draw_gui
 with TopCont
@@ -696,13 +690,11 @@ if chance(8){
 }
 
 #define fire_destroy
-with create_miniexplosion(x,y)
-{
-  move_contact_solid(other.direction-180,4)
-}
+create_miniexplosion(x,y)
 with instance_create(x,y,BulletHit){
 	sprite_index = global.sprFireBulletHit
 	direction = other.direction
+  image_index = 1
 }
 if place_meeting(x + hspeed,y +vspeed,Wall){sound_play_hit(sndHitWall,.2)}
 
@@ -2157,16 +2149,25 @@ with other{
 if lifetime > 0{lifetime -= current_time_scale}else{instance_destroy()}
 
 #define create_miniexplosion(_x,_y)
-var  r = instance_create(_x,_y,SmallExplosion);
+var  r = instance_create(_x,_y,CustomProjectile);
 with r
 {
+    team = other.team
+    sprite_index = sprSmallExplosion
+    mask_index   = mskSmallExplosion
+    image_index = 2
     image_xscale = .5
     image_yscale = .5
     damage = 1
+    image_speed = .25
     sound_play_pitchvol(sndExplosionS,2,.04)
     hitid = [sprite_index,"MINI EXPLOSION"]
+    on_anim = explo_anim
 }
 return r;
+
+#define explo_anim
+instance_destroy()
 
 #define create_bouncerdisc(_x,_y)
 var a = instance_create(_x+lengthdir_x(4,gunangle),_y+lengthdir_y(4,gunangle),CustomProjectile);

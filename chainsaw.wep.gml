@@ -40,8 +40,8 @@ if ammo > 0 && current_frame_active
 	ammo--
 	with creator
 	{
-		sound_play_pitch(sndJackHammer,random_range(1.8,2))
-		sound_play_pitch(sndSwapMotorized,random_range(1.5,1.6))
+		sound_play_pitch(sndJackHammer,random_range(.4,.6))
+		sound_play_pitchvol(sndSwapMotorized,1,.8)
 		weapon_post(0,6,0)
 		if other.bwep{
 			bwkick = -6 - 6*skill_get(13) + random_range(-1,1)
@@ -87,7 +87,9 @@ if projectile_canhit(other) = true
 	projectile_hit(other,damage,force,direction)
 	if other.my_health <= 0
 	{
-	  sound_play(sndDiscHit)
+	  sound_play_pitch(sndDiscHit,random_range(.7,.8))
+		sound_play_pitch(sndImpWristKill,random_range(1.6,1.8))
+		sound_play_pitch(sndDiscBounce,random_range(.5,.6))
 		sleep(other.size * 80)
 		view_shake_at(x,y,other.size * 80)
 		repeat(other.size)

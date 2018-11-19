@@ -9,7 +9,6 @@
 //BULLAKS
 
 /loadwep bullak cannon
-/loadwep bullak machinegun
 
 //CANNON
 
