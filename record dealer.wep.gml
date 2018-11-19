@@ -16,7 +16,7 @@ return 3;
 return 2;
 
 #define weapon_area
-return -1;
+return 13;
 
 #define weapon_load
 return 32;
@@ -75,7 +75,7 @@ repeat(4)
       move_contact_solid(other.gunangle,sprite_get_width(sprite_index))
       motion_add(other.gunangle + random_range(-6,6),4)
       image_angle = direction
-      orspeed  =speed
+      orspeed = speed
     }
     break;
     case "bouncer":
@@ -123,7 +123,8 @@ with instance_create(x,y,CustomObject)
   lifetime = pitch/decel + 1
   vol = _vol
   snd = _snd
-  on_step    = sound_step
+  on_step = sound_step
+  persistent = 1
 }
 
 #define sound_step

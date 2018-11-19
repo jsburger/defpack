@@ -281,48 +281,6 @@ projectile_hit(other, (current_frame < fallofftime? damage : (damage - falloff))
 #define chance(percentage)
 return random(100) <= percentage*current_time_scale
 
-//ill get to this later
-#define bullet_step
-if pattern = "helix"
-{
-	cycle = (cycle + 9) mod 360
-	direction = dsin(cycle*pi)*(32-skill_get(19)*20)*dir+_direction
-	image_angle = direction
-}
-if pattern = "tree"
-{
-	if timer1 > 0{timer1--}else
-	{
-		dir *= -1
-		motion_set(direction+newdir*dir,speed)
-		newdir = 0
-		image_angle = direction
-		newdir2 = 45
-		if timer2 > 0{timer2--}else
-		{
-			if irandom(9) != 0 motion_set(direction+newdir2*dir*-1,speed)
-			image_angle = direction
-			newdir2 = 0
-			timer1 = choose(10,12,12,15)
-			newdir1 = 45
-		}
-	}
-}
-if pattern = "wide"
-{
-	motion_add(direction+range*dir*creator.accuracy,speed)
-	if range > 1{range /= 1.05}
-	if speed > _spd{speed = _spd}
-	image_angle = direction
-}
-if pattern = "cloud"
-{
-	if instance_exists(parent){motion_add(point_direction(x,y,parent.x,parent.y)+50,_spd*radius)}
-	image_angle = direction
-	if speed > _spd{speed = _spd}
-	if irandom(79) = 0{parent = -99999}
-}
-
 #define bullet_draw
 draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, image_yscale, image_angle, image_blend, 1.0);
 draw_set_blend_mode(bm_add);
@@ -2197,7 +2155,7 @@ if instance_exists(creator) && teamswap && !place_meeting(x,y,creator){
 if skill_get(mut_bolt_marrow){
     var q = instance_nearest_matching_ne(x,y,hitme,"team",team)
     if instance_exists(q){
-        if distance_to_object(q) < 30{
+        if distance_to_object(q) < 30 && q != creator{
             var dir = point_direction(x,y,q.x,q.y)
             x += lengthdir_x(current_time_scale,dir)
             y += lengthdir_y(current_time_scale,dir)
@@ -2206,7 +2164,7 @@ if skill_get(mut_bolt_marrow){
 }
 
 #define bouncerdisc_hit
-projectile_hit(other,damage+floor(speed),5,direction)
+projectile_hit(other,damage+floor(speed/2),5,direction)
 if other.my_health > 0{
     direction = point_direction(other.x,other.y,x,y)
     if speed < 12 speed += .6
@@ -2271,7 +2229,7 @@ if instance_exists(stuckto){
 }
 else if skill_get(mut_bolt_marrow){
     var q = instance_nearest_matching_ne(x,y,hitme,"team",team)
-    if instance_exists(q) && distance_to_object(q) < 30
+    if instance_exists(q) && distance_to_object(q) < 30 && q != creator
         motion_add(point_direction(x,y,q.x,q.y),.25*current_time_scale)
 }
 
@@ -2301,7 +2259,7 @@ move_bounce_solid(true)
 #define stickydisc_destroy
 with instance_create(x,y,DiscTrail){sprite_index=sprDiscDisappear;}
 sound_play_hit(sndDiscDie, 0.2)
-with instance_create(x,y,Smoke){depth = -3}
+//with instance_create(x,y,Smoke){depth = -3}
 
 #define create_megadisc(_x,_y)
 var a = instance_create(x,y,CustomProjectile)
@@ -2334,7 +2292,7 @@ if instance_exists(creator) && teamswap && !place_meeting(x,y,creator){
 
 if skill_get(21){
     var q = instance_nearest_matching_ne(x,y,hitme,"team",team)
-    if instance_exists(q) && distance_to_object(q) <= 40{
+    if instance_exists(q) && distance_to_object(q) <= 40 && q != creator{
         motion_add(point_direction(x,y,q.x,q.y),.5*current_time_scale)
         speed = maxspeed
     }

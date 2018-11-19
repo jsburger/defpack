@@ -52,14 +52,9 @@ with instance_create(x,y,Slash)
 	image_xscale *= 1
 	image_yscale *= 1
 	damage += 8
-	if fork() if place_meeting(x,y,enemy)
-	{
+	if place_meeting(x,y,enemy){
 		creator.reload = round(creator.reload*.4)
 		creator.gunshine = 12
-		if other.my_health <= 0
-		{
-			sleep(other.size*10)
-		}
 	}
 }
 motion_add(gunangle,4)

@@ -56,7 +56,6 @@
 /loadwep auto grenade launcher
 /loadwep finished stuff/heavy nuke launcher
 /loadwep firestorm
-/loadwep scorcher
 /loadwep finished stuff/andromeda launcher
 /loadwep finished stuff/toxic carronader
 /loadwep finished stuff/blaster

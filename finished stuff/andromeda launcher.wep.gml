@@ -59,7 +59,7 @@ with instance_create(x,y,CustomProjectile){
     motion_set(other.gunangle,disgoal/5)
     sprite_index = mskNone//global.sprAndromedaBullet
     projectile_init(other.team,team)
-    image_speed = .4
+    image_speed = .2
     image_angle = direction
     on_anim = andro_anim
     on_draw = sp_draw
@@ -150,8 +150,8 @@ with instances_in(x-succ,y-succ/2,x+succ,y+succ/2,instances_matching_ne([hitme,C
                 if instance_is(self,Nothing2){
                     other.wantobject = BigPortal
                 }
-                else if instance_is(self,enemy){
-                    if instance_number(enemy) = 1 && instance_number(becomenemy) = 0{
+                else if instance_is(self,enemy) || instance_is(self,becomenemy){
+                    if instance_number(enemy) + instance_number(becomenemy) = 1{
                         other.wantobject = Portal
                     }
                 }

@@ -10,7 +10,7 @@ return global.explosive ? 4 : 3
 #define weapon_cost
 return 8
 #define weapon_area
-return -1
+return 23
 #define weapon_load
 return 75
 #define weapon_swap
@@ -75,7 +75,7 @@ draw_set_blend_mode(bm_normal)
 #define bolt_step
 if skill_get(mut_bolt_marrow){
     var q = mod_script_call("mod","defpack tools","instance_nearest_matching_ne",x,y,hitme,"team",team)
-    if instance_exists(q){
+    if instance_exists(q) and distance_to_object(q) < 120{
         var ang = angle_difference(direction, point_direction(x,y,q.x,q.y))
         if abs(ang) < 50 direction -= ang/10
     }

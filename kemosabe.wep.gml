@@ -26,7 +26,7 @@ return sndSwapMachinegun;
 return 12;
 
 #define weapon_text
-return choose("IS IT STATTRACK","A NICER DICER","CRITICAL");
+return choose("SO CLEAN FOR#SUCH DIRTY WORK", "LIL FRIEND");
 
 #define weapon_fire
 weapon_post(5,-5,5)
@@ -40,7 +40,7 @@ with instance_create(x,y,Shell){
 }
 with instance_create(x,y,CustomProjectile)
 {
-		typ = 1
+	typ = 1
     damage = 3
     force = 5
     team = other.team

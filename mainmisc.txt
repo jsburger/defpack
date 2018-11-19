@@ -5,11 +5,13 @@
 /loadwep toothbrush
 /loadwep bone
 /loadwep big bone
+/loadwep ultra hand
 /loadwep auto screwdriver
 /loadwep chris knife
 /loadwep comboweps/rapier
 /loadwep other sword
 /loadwep comboweps/bigsword
+/loadwep tempest blade
 /loadwep wondersword
 /loadwep crystal torch
 /loadwep shard

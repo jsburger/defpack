@@ -27,7 +27,7 @@ return sndSwapSword;
 return 12;
 
 #define weapon_text
-return choose("IS IT STATTRACK","A NICER DICER","CRITICAL");
+return choose("IS IT STATTRACK","CRITICAL");
 
 #define weapon_fire
 wepangle = -wepangle

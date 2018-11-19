@@ -1,14 +1,15 @@
 #define init
 global.sprPrism[0] = sprite_add_weapon("sprites/sprWhitePrism.png", 2, 6);
-global.sprPrism[1] = sprite_add_weapon("sprites/sprBlackPrism.png", 2, 6);
-global.sprPrism[2] = sprite_add_weapon("sprites/sprBluePrism.png", 2, 6);
-global.sprPrism[3] = sprite_add_weapon("sprites/sprYellowPrism.png", 2, 6);
-global.sprPrism[4] = sprite_add_weapon("sprites/sprGreenPrism.png", 2, 6);
+global.sprPrism[1] = sprite_add_weapon("sprites/sprRedPrism.png", 2, 6);
+global.sprPrism[2] = sprite_add_weapon("sprites/sprYellowPrism.png", 2, 6);
+global.sprPrism[3] = sprite_add_weapon("sprites/sprGreenPrism.png", 2, 6);
+global.sprPrism[4] = sprite_add_weapon("sprites/sprBluePrism.png", 2, 6);
 global.sprPrism[5] = sprite_add_weapon("sprites/sprPurplePrism.png", 2, 6);
-global.sprPrism[6] = sprite_add_weapon("sprites/sprRedPrism.png", 2, 6);
-//0 = light 1 = dark 2 = lightning 3 = regular 4 = pest 5 = psy 6 = fire
-
-
+global.sprPrism[6] = sprite_add_weapon("sprites/sprBlackPrism.png", 2, 6);
+//light, fire, regular, toxic, lightning, psy, dark
+global.colors = [c_white, c_red, c_yellow, c_lime, c_blue, c_purple, c_black]
+global.reloads = [2, 1, 7, 12, 47, 3, 9]
+global.tips = ["THE SUN HAS RISEN ONCE MORE", "TO BRAND IS TO CONTROL", "BULLET TYPE AQUEDUCT", "DISGUSTING", "THE ANGER OF ZEUS", "I CAN SEE YOU", "SAFE AT LAST"]
 
 
 #define weapon_name
@@ -28,21 +29,10 @@ return 1;
 return true
 
 #define weapon_load
-if "AntiCycle" not in self
-{
-	if wep = "black prism"{reload = weapon_get_load(wep)}
-	if bwep = "black prism"{reload = weapon_get_load(bwep)}
+if "AntiCycle" in self{
+	return global.reloads[AntiCycle]
 }
-else
-{
-	if AntiCycle = 0{return 2}
-	if AntiCycle = 1{return 1}
-	if AntiCycle = 2{return 7}
-	if AntiCycle = 3{return 12}
-	if AntiCycle = 4{return 47}
-	if AntiCycle = 5{return 3}
-	if AntiCycle = 6{return 9}
-}
+return 1
 #define weapon_cost
 return 1;
 
@@ -53,101 +43,49 @@ return sndPistol;
 return -1;
 
 #define step
-//if button_released(index, "fire") && wep = "black prism" && "AntiCycle" in self{if AntiCycle <= 5{AntiCycle++}else{AntiCycle = 0};trace(AntiCycle)}
-if "PrismText" not in self{PrismText = false}
-if PrismText = false
-{
-	if button_pressed(index,"horn")
-	{
-		with instance_create(x,y,CustomObject)
-		{
-			owner = other
-			depth = -16
-			on_step = gui_step
-			ammomax = 7
-			ammo = 1
-			owner.PrismText = true
-			hbox_left[1]  = -79 //taste the pet mod coding experience(TM)
-			hbox_right[1] = hbox_left[1]+20
-			hbox_left[2]  = hbox_right[1]+2
-			hbox_right[2] = hbox_left[2]+20
-			hbox_left[3]  = hbox_right[2]+2
-			hbox_right[3] = hbox_left[3]+20
-			hbox_left[4]  = hbox_right[3]+2
-			hbox_right[4] = hbox_left[4]+20
-			hbox_left[5]  = hbox_right[4]+2
-			hbox_right[5] = hbox_left[5]+20
-			hbox_left[6]  = hbox_right[5]+2
-			hbox_right[6] = hbox_left[6]+20
-			hbox_left[7]  = hbox_right[6]+2
-			hbox_right[7] = hbox_left[7]+20
-			GuiCol[1] = c_white
-			GuiCol[2] = c_red
-			GuiCol[3] = c_yellow
-			GuiCol[4] = c_green
-			GuiCol[5] = c_blue
-			GuiCol[6] = c_purple
-			GuiCol[7] = merge_colour(c_dkgray,c_black,.7)
-			GuiName[1] = "@wLIGHT"
-			GuiName[2] = "@rFIRE"
-			GuiName[3] = "@yREGULAR"
-			GuiName[4] = "@gPEST"
-			GuiName[5] = "@bTHUNDER"
-			GuiName[6] = "@pPSY"
-			GuiName[7] = "@dDARK"
-			offset = 0
-			on_draw = gui_draw
-		}
-	}
+if button_check(index, "pick") || button_released(index,"pick") script_bind_draw(colorswapper, -16, index)
+with instances_matching_ne(CustomProjectile, "pattern", null){
+    bullet_step()
 }
 
-#define gui_step
-if !instance_exists(owner) || !button_check(owner.index,"horn") || button_pressed(owner.index,"fire") || (owner.wep != "antiprism" && owner.bwep != "antiprism"){owner.PrismText = false;instance_destroy();exit}
-x = owner.x
-y = owner.y
+#define colorswapper(i)
+    instance_destroy()
 
-#define gui_draw
-//draw_rectangle_colour(owner.x-80,owner.y+4,owner.x+74,owner.y+26,c_ltgray,c_ltgray,c_ltgray,c_ltgray,false)
-repeat(ammomax)
-{
-	if point_in_rectangle(mouse_x[owner.index],mouse_y[owner.index],owner.x+hbox_left[ammo], owner.y+5, owner.x+hbox_right[ammo], owner.y+25)
-	{
-		offset = 2
-		if button_released(owner.index,"fire")
-		{
-			owner.PrismText = false
-			owner.AntiCycle = ammo-1
-			instance_destroy()
-			exit
-		}
-		draw_text_nt(owner.x,owner.y+26+string_height(GuiName[ammo])/2,GuiName[ammo])
-	}
-	else
-	{
-		draw_set_alpha(.85)
-		offset = 0
-		draw_rectangle_colour(owner.x+hbox_left[ammo],owner.y+25,owner.x+hbox_right[ammo],owner.y+25+2,merge_colour(c_black,GuiCol[ammo],.7),merge_colour(c_black,GuiCol[ammo],.7),merge_colour(c_black,GuiCol[ammo],.7),merge_colour(c_black,GuiCol[ammo],.7),false)
-	}
-	draw_rectangle_colour(owner.x+hbox_left[ammo],owner.y+5+offset,owner.x+hbox_right[ammo],owner.y+25+offset,c_black,c_black,c_black,c_black,false)
-	draw_rectangle_colour(owner.x+hbox_left[ammo],owner.y+5+offset,owner.x+hbox_right[ammo],owner.y+25+offset,GuiCol[ammo],GuiCol[ammo],GuiCol[ammo],GuiCol[ammo],false)
-	draw_set_alpha(1)
-	ammo++;
+    draw_set_visible_all(0)
+    draw_set_visible(i, 1)
+    var p = player_find(i)
+    var xc = p.x, yc = p.y;
+    var n = array_length(global.colors), length = 40, inc = 360/n
+    var ang = point_direction(xc,yc,mouse_x[i],mouse_y[i])
+    for (var o = 0; o <= 6; o++){
+        var ang2 = inc * o
+        var picked = abs(angle_difference(ang, ang2)) < inc/2
+        var col = picked ? global.colors[o] : merge_color(global.colors[o], c_dkgray, .2)
+        var a = .5 + .5*picked
+        draw_arc(xc, yc, ang2, length - 10 + 2 * picked, length + 2 * picked, inc, 4, col, a, a)
+        if picked and button_released(i, "pick"){
+            p.AntiCycle = o
+        }
+    }
+    draw_set_visible_all(1)
+
+#define draw_arc(x, y, angle, innerradius, outerradius, degrees, precision, col, inneralpha, outeralpha)
+var r1 = innerradius, r2 = outerradius, ang1 = angle - degrees/2, inc = degrees/precision;
+draw_primitive_begin(pr_trianglestrip)
+for (var i = 0; i <= precision; i++){
+    var xl = lengthdir_x(1, ang1 + inc * i), yl = lengthdir_y(1, ang1 + inc * i)
+    draw_vertex_color(x + xl * r1, y + yl * r1, col, inneralpha)
+    draw_vertex_color(x + xl * r2, y + yl * r2, col, outeralpha)
 }
-ammo = 1
+draw_primitive_end()
 
 #define weapon_text
-if "AntiCycle" not in self{return "PRESS B TO WITNESS THE TRUE POWER"}
+if "AntiCycle" not in self{return "PRESS E TO WITNESS THE TRUE POWER"}
 else if irandom(1) = 0
 {
-	if AntiCycle = 0{return "THE SUN HAS RISEN ONCE MORE"};
-	if AntiCycle = 1{return "TO BRAND IS TO CONTROL"};
-	if AntiCycle = 2{return "BULLET TYPE AQUEDUCT"};
-	if AntiCycle = 3{return "DISGUSTING"};
-	if AntiCycle = 4{return "THE ANGER OF ZEUS"};
-	if AntiCycle = 5{return "I CAN SEE YOU"};
-	if AntiCycle = 6{return "SAFE AT LAST"};
+    return global.tips[AntiCycle]
 }
-else{return "PRESS B TO WITNESS THE TRUE POWER"}
+else{return "PRESS E TO WITNESS THE TRUE POWER"}
 #define weapon_fire
 sound_play(sndLaserUpg)
 weapon_post(4,-12,9)
@@ -334,6 +272,48 @@ if AntiCycle = 6//dark bullet
 		}
 	}
 	angprev = ang
+}
+
+//ill get to this later
+#define bullet_step
+if pattern = "helix"
+{
+	cycle = (cycle + 9) mod 360
+	direction = dsin(cycle*pi)*(32-skill_get(19)*20)*dir+_direction
+	image_angle = direction
+}
+if pattern = "tree"
+{
+	if timer1 > 0{timer1--}else
+	{
+		dir *= -1
+		motion_set(direction+newdir*dir,speed)
+		newdir = 0
+		image_angle = direction
+		newdir2 = 45
+		if timer2 > 0{timer2--}else
+		{
+			if irandom(9) != 0 motion_set(direction+newdir2*dir*-1,speed)
+			image_angle = direction
+			newdir2 = 0
+			timer1 = choose(10,12,12,15)
+			newdir1 = 45
+		}
+	}
+}
+if pattern = "wide"
+{
+	motion_add(direction+range*dir*creator.accuracy,speed)
+	if range > 1{range /= 1.05}
+	if speed > _spd{speed = _spd}
+	image_angle = direction
+}
+if pattern = "cloud"
+{
+	if instance_exists(parent){motion_add(point_direction(x,y,parent.x,parent.y)+50,_spd*radius)}
+	image_angle = direction
+	if speed > _spd{speed = _spd}
+	if irandom(79) = 0{parent = -99999}
 }
 
 #define destroy

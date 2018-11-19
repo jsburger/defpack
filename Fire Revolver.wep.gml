@@ -25,7 +25,7 @@ return sndSwapPistol;
 return -1;
 
 #define weapon_text
-return "MAN ITS A HOT ONE";
+return "OUT OF THE KETTLE";
 
 #define weapon_fire
 

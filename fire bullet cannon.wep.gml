@@ -26,7 +26,7 @@ return sndSwapPistol;
 return -1;
 
 #define weapon_text
-return "replace me please";
+return "GOUTS OF @rFLAME@d";
 
 #define weapon_fire
 

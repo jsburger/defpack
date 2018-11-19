@@ -17,7 +17,7 @@ return 4;
 return true;
 
 #define weapon_load
-return 50;
+return 43;
 
 #define weapon_cost
 return 2;
@@ -49,8 +49,8 @@ with instance_create(x,y,CustomProjectile){
 	friction 	  = -1.4
 	image_speed = .5
 	maxspeed    = 28
-	damage      = 5
-	motion_set(other.gunangle + random_range(-7,7), 1)
+	damage      = 8
+	motion_set(other.gunangle + random_range(-3,3), 1)
 	image_angle = direction
 	on_destroy = script_ref_create(flare_destroy)
 	on_step 	 = script_ref_create(flare_step)
@@ -78,7 +78,7 @@ repeat(6)
 		mask_index   = global.mskFlechette
 		creator = other
 	}
-	_dir += 360/8
+	_dir += 360/6
 }
 _dir = random(360)
 repeat(3)
@@ -9770,4 +9770,4 @@ draw_self()
 
 sleep(20)
 view_shake_at(x,y,15)
-if team != other.team{projectile_hit(other,damage,4,direction);if other.my_health > 0{instance_destroy()}}
+projectile_hit(other,damage,4,direction);if other.my_health > 0{instance_destroy()}

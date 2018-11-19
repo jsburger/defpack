@@ -26,7 +26,7 @@ return sndSwapPistol;
 return -1;
 
 #define weapon_text
-return "WELL I HEAR YOU WHISPERING IN THE WORDS";
+return "SPRAYING HELL";
 
 #define weapon_fire
 

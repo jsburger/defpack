@@ -30,7 +30,7 @@ return sndSwapHammer;
 return -1;
 
 #define weapon_text
-return "BUT YOU STAY SO COOL";
+return "THE BURNING TORCH";
 
 #define weapon_fire
 

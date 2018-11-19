@@ -123,7 +123,24 @@ instance_destroy()
 
 #define rainarrow_step
 z -= current_time_scale*20
-if z <= 25 {mask_index = mskBolt;depth = TopCont.depth+1}
+if z <= 25 {
+    mask_index = mskBolt;
+    depth = TopCont.depth+1
+    if skill_get(mut_bolt_marrow){
+        var q = mod_script_call_self("mod", "defpack tools", "instance_nearest_matching_ne", x, y, hitme, "team", team)
+        if instance_exists(q) && point_distance(x, y, q.x, q.y) < 30{
+            x = q.x
+            y = q.y
+        }
+    }
+}
+/*with instance_create(x,y - z,BoltTrail){
+    image_angle = point_direction(x,y,other.xprevious,other.yprevious - other.z + 20*current_time_scale)
+    image_xscale = point_distance(x,y,other.xprevious,other.yprevious - other.z + 20*current_time_scale)
+    depth = other.depth
+    image_yscale /= 2
+}*/
+
 if z < 0
 {
     if place_meeting(x,y,Floor){
@@ -145,7 +162,6 @@ if z < 0
 	sound_play_pitch(sndBoltHitWall,random_range(.8,1.2))
 	sound_play_pitch(sndHitWall,random_range(.8,1.2))
 	view_shake_at(x,y,2)
-	sleep(4)
 	instance_destroy()
 }
 
