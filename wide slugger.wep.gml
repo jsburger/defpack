@@ -64,7 +64,7 @@ with instance_create(x,y,CustomProjectile)
   image_yscale = 1.25
   pierce = 45
   on_destroy = dyn_destroy
-  on_step = dyn_step
+  on_end_step = dyn_step
   on_wall = dyn_wall
   on_draw = dyn_draw
   on_hit  = dyn_hit
@@ -84,9 +84,9 @@ with instance_create(x,y,BulletHit){sprite_index = sprHeavySlugHit;image_angle =
 
 #define dyn_step
 if image_index = 1{image_speed = 0;image_xscale = 1;image_yscale = 1}
-with instances_matching_ne(hitme,"team",other.team)
+with instances_matching_ne(hitme,"team",team)
 {
-  if distance_to_object(other) <= 12 && current_frame mod 2 = 0
+  if distance_to_object(other) <= 12 && current_frame mod 2 < current_time_scale
   {
     var _id = id;
     with other
@@ -100,8 +100,7 @@ with instances_matching_ne(hitme,"team",other.team)
       view_shake_at(x,y,2*other.size)
       if other.my_health <= 0{sleep(16*other.size);view_shake_at(x,y,8*other.size);speed += 2}
       if speed > maxspeed speed = maxspeed
-      pierce--
-      if pierce <= 0{instance_destroy();exit}
+      if --pierce <= 0{instance_destroy();exit}
     }
   }
 }
