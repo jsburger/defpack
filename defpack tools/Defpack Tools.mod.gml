@@ -61,6 +61,8 @@ global.sprMegaDiscDie    = sprite_add("sprMegaDiscDie.png",6,12,12);
 global.sprMegaDiscTrail  = sprite_add("sprMegaDiscTrail.png",3,12,12);
 global.sprMegaDiscBounce = sprite_add("sprMegaDiscBounce.png",4,12,12);
 
+global.sprCharge = sprEnergyIcon
+
 global.SAKmode = 0
 mod_script_call("mod","defpermissions","permission_register","mod",mod_current,"SAKmode","SAK Mode")
 
@@ -185,6 +187,14 @@ if array_length_1d(instances_matching(CustomProjectile,"name","Rocklet","big roc
 }
 
 #define step
+with instances_matching(WepPickup,"chargecheck",null){
+    chargecheck = 1
+    var w = is_object(wep) ? wep.wep : wep
+    if is_string(w) and (mod_script_exists("weapon", w, "weapon_chrg") || string_count("ABRIS ",  string_upper(weapon_get_name(w)))){
+        name += ` @0(${global.sprCharge}:0) `
+    }
+}
+
 if !surface_exists(global.trailsf){
     global.trailsf = surface_create(game_width*4,game_height*4)
     surface_set_target(global.trailsf)
@@ -1228,6 +1238,7 @@ else
   	on_wall    = lightning_wall
   	on_draw    = lightning_draw;
     on_destroy = lightning_destroy
+    on_cleanup = lightning_cleanup
   	on_step    = lightning_step
   	on_hit     = lightning_hit
   	depth = -8
@@ -1322,6 +1333,9 @@ for (var i = 1; i < array_length_1d(ypoints); i++){
 		vspeed += random_range(-.5,.5)
 	}
 }
+lightning_cleanup()
+
+#define lightning_cleanup
 vertex_delete_buffer(vbuf)
 sound_set_track_position(sndExplosionL,0)
 
