@@ -1,5 +1,5 @@
 #define init
-global.sprPrism = sprite_add_weapon("sprites/sprPrism.png", 9, 4);
+global.sprPrism = sprite_add_weapon("sprites/sprPrism.png", 7, 3);
 
 #define weapon_name
 return "PRISM"
@@ -30,7 +30,7 @@ return choose("DARK SIDE","@rP @yR @gI @bS @pM");
 
 #define weapon_fire
 
-sound_play_pitch(sndLaserCannonUpg,random_range(2.2,3))
+sound_play_pitchvol(sndLaserCannonUpg,random_range(2.2,3),.7)
 sound_play_pitch(sndBasicUltra,random_range(2.6,2.7))
 weapon_post(7,0,16)
 with mod_script_call("mod","defpack tools","create_fire_bullet",x,y){

@@ -218,7 +218,7 @@ do
 	}
 	if place_meeting(x,y,Wall){instance_destroy()}
 }
-while instance_exists(self) and dir < 1000
+while instance_exists(self) and dir < 3000
 instance_destroy()
 
 #define line()

@@ -24,7 +24,7 @@ return 0
 return "HEH";
 #define weapon_fire
 
-weapon_post(7,1,32+skill_get(17)*12)
+weapon_post(7,12,32+skill_get(17)*12)
 if !skill_get(17)
 {
 	sound_play_pitch(sndPlasmaHuge,2)
@@ -127,6 +127,7 @@ draw_set_blend_mode(bm_normal)
 
 #define atom_destroy
 sleep(50)
+view_shake_at(x,y,12)
 sound_play_pitch(sndPlasmaBigExplodeUpg,random_range(1.2,1.4))
 instance_create(x,y,PlasmaImpact)
 var i = random(360);

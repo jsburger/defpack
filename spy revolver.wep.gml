@@ -4,6 +4,8 @@ global.spyArm = sprite_add("sprites/projectiles/spy arm.png",1,0,3)
 global.spyHand = sprite_add("sprites/projectiles/spy hand.png",1,0,4)
 global.gun = sprite_add_weapon("sprites/spy revolver.png",2,2)
 global.hit = sprite_add("sprites/projectiles/spy bullet hit.png",4,8,8)
+global.crit = sprite_add("sprites/sprCritIndicator.png",0,11,14)
+
 #define weapon_name
 return "SPY REVOLVER";
 
@@ -29,13 +31,10 @@ return sndSwapPistol
 return 0;
 
 #define weapon_fire
-weapon_post(4,-3,15)
-//sound_play_pitch(sndServerBreak,.6); uwu
-//sound_play_pitch(sndMinigun,.6);
-sound_play_pitch(sndFlakCannon,.6);
-sound_play_pitch(sndPistol,1.1);
-sound_play_pitchvol(sndLightningRifleUpg,.9,.6);
-sound_set_track_position(sndLightningRifleUpg,.3)
+weapon_post(4,-3,45)
+var _p = random_range(.8,1.2);
+sound_play_pitchvol(sndSlugger,.8*_p,.8);
+sound_play_pitchvol(sndPistol,.7*_p,.8);
 mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, 2+random(3), c_yellow)
 with instance_create(x + lengthdir_x(6,gunangle),y + lengthdir_y(6,gunangle),CustomProjectile){
 	motion_set(other.gunangle,3)
@@ -60,9 +59,9 @@ return global.gun
 return choose("oops i meant psy","damn typos","psy among us");
 
 #define spy_draw
-draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, image_yscale, image_angle, image_blend, 1.0);
+draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, image_yscale, image_angle, image_blend, image_alpha);
 draw_set_blend_mode(bm_add);
-draw_sprite_ext(sprite_index, image_index, x, y, 1.75*image_xscale, 1.75*image_yscale, image_angle, image_blend, 0.2);
+draw_sprite_ext(sprite_index, image_index, x, y, 1.75*image_xscale, 1.75*image_yscale, image_angle, image_blend, image_alpha * .2);
 draw_set_blend_mode(bm_normal);
 if "target" in self && handscale > 0{
 	draw_sprite_ext(global.spyArm, 0, x, y, handscale, 1, point_direction(x,y,targx,targy), image_blend, 1.0);
@@ -74,6 +73,7 @@ if "target" in self && handscale > 0{
 }
 
 #define spy_step
+if handscale = 0 {if image_alpha > .2 image_alpha -= .04}
 with instance_nearest(x,y,enemy) if distance_to_object(other) <= 64{
 	with other {
 		motion_add(point_direction(other.x,other.y,x,y),5/distance_to_object(other) + .1)
@@ -84,7 +84,22 @@ with instance_nearest(x,y,enemy) if distance_to_object(other) <= 64{
 			targy = target.y
 			canstab = 0
 			stabsremaining -=1
+			image_alpha = 1
 			with other if "my_health" in self{
+				with instance_create(x,y,CustomObject)
+				{
+					depth = TopCont.depth - 1	
+					sprite_index = global.crit
+					s = 1.4
+					sf = .12
+					startc = c_lime
+					endc   = c_red
+					vspeed = -.4
+					lifetime = 60 // 2 seconds
+					image_xscale = s
+					image_yscale = s
+					on_step = crit_step
+				}
 				view_shake_max_at(x,y,200)
     		    sleep(30)
     		    sound_play_pitchvol(sndHammerHeadEnd,random_range(1.23,1.33),20)
@@ -115,3 +130,12 @@ with instance_create(x,y,BulletHit){
 	image_angle = other.direction + 180
 }
 if place_meeting(x + hspeed,y +vspeed,Wall){sound_play_pitchvol(sndHitWall,1,100/distance_to_object(creator))}
+
+#define crit_step
+image_blend = merge_color(endc,startc,lifetime/60)
+image_alpha = lifetime/60
+if sf != 0{s += sf;sf -= .043}
+if s < 1{s = 1;sf = 0}
+image_xscale = s
+image_yscale = s
+if lifetime > 0 lifetime -= current_time_scale else instance_destroy()

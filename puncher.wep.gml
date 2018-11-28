@@ -27,7 +27,7 @@ if fork(){
 			sound_play_pitchvol(sndHeavySlugger,random_range(.7,.8),1)
 			sound_play_pitchvol(sndSuperSlugger,random_range(.7,.8),1)
 			sound_play_pitchvol(sndNukeFire,.8,1)
-			weapon_post(6,2,16)
+			weapon_post(6,7,22)
 			with instance_create(x,y,CustomProjectile){
 				move_contact_solid(other.gunangle,8)
 				name = "Puncher Rocket"
