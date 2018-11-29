@@ -57,7 +57,7 @@ with instance_create(x,y,CustomObject)
 
 #define bow_step
 if !instance_exists(creator){instance_destroy();exit}
-with creator weapon_post(0,other.charge / 2,0)
+with creator weapon_post(0,-(other.charge/3),0)
 if button_check(index,"swap"){creator.ammo[3] = min(creator.ammo[3] + weapon_cost(), creator.typ_amax[3]);instance_destroy();exit}
 if btn = "fire" creator.reload = weapon_get_load(creator.wep)
 if btn = "spec" creator.breload = weapon_get_load(creator.bwep) * array_length_1d(instances_matching(instances_matching(instances_matching(CustomObject, "name", "bow charge"),"creator",creator),"btn",btn))
