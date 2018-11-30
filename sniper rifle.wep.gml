@@ -1,6 +1,9 @@
 #define init
 global.sprSniperRifle = sprite_add_weapon("sprites/sprSniperRifle.png", 5, 3);
 
+#define weapon_chrg
+return true;
+
 #define weapon_name
 return "SNIPER RIFLE"
 

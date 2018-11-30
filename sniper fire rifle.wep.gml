@@ -3,6 +3,9 @@ global.sprSniperFireRifle = sprite_add_weapon("sprites/sprSniperFireRifle.png", 
 global.sprFireBullet 			= sprite_add("defpack tools/Fire Bullet.png", 2, 8, 8);
 global.sprFireBulletHit   = sprite_add("defpack tools/Fire Bullet Hit.png", 4, 8, 8);
 
+#define weapon_chrg
+return true;
+
 #define weapon_name
 return "SNIPER FIRE RIFLE"
 
