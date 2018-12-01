@@ -4,6 +4,9 @@ global.sprGoldSlashBig = sprite_add("sprites/projectiles/sprGoldSlashBig.png",3,
 global.sprGoldSlash    = sprite_add("sprites/projectiles/Gunhammer Slash.png",3,0,24)
 //global.sprFlarefire   = sprite_add("Flarefire.png",5,10,10)
 
+#define weapon_chrg
+return 1;
+
 #define weapon_name
 return "WONDERSWORD";
 

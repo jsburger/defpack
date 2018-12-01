@@ -33,12 +33,13 @@ var i = 0;
 repeat(7)
 {
 	motion_add(gunangle-180,1)//anything higher has unreasonable amount of knockback, its quite cool
-	i++
-	sound_play_pitch(sndSplinterPistol,random_range(.6,.8))
-	sound_play_pitch(sndSplinterGun,random_range(.6,.8))
-	sound_play_pitch(sndSuperSplinterGun,random_range(.6,.8))
-	sound_play_pitch(sndDoubleMinigun,random_range(.7,.9))
-	sound_play_pitch(sndHeavyCrossbow,random_range(.7,.9))
+	i+=1.5
+	var p = random_range(.8,1.2)
+	sound_play_pitchvol(sndSplinterPistol,.7*p,.5)
+	sound_play_pitchvol(sndSeekerPistol,.75*p,.5)
+	sound_play_pitchvol(sndSplinterGun,.7*p,.5)
+	sound_play_pitchvol(sndHeavyCrossbow,.5*p,.5)
+	sound_play_pitchvol(sndDoubleMinigun,.8*p,.5)
 	weapon_post(7,21,24)
 	with instance_create(x,y,Splinter)
 	{

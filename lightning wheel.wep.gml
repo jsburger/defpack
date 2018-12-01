@@ -9,6 +9,9 @@ return "Lightning WHEEL";
 #define weapon_type
 return 5;
 
+#define weapon_chrg
+return 1;
+
 #define weapon_cost
 return 1;
 

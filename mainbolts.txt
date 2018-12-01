@@ -18,10 +18,14 @@
 /loadwep mega disc gun
 /loadwep record dealer
 
+
+//BOWS
+/loadwep bow
+/loadwep explosive bow
+
 //OTHER BOLT
 
 /loadwep marker
-/loadwep hot crossbow
 /loadwep heavy toxic crossbow
 /loadwep hyper crossbow
 
