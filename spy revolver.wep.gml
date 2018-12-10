@@ -73,7 +73,7 @@ if "target" in self && handscale > 0{
 }
 
 #define spy_step
-if handscale = 0 {if image_alpha > .2 image_alpha -= .04}
+if handscale = 0 {if image_alpha -.04 = .22 instance_create(x,y,Smoke);if image_alpha > .2 image_alpha -= .04 }
 with instance_nearest(x,y,enemy) if distance_to_object(other) <= 64{
 	with other {
 		motion_add(point_direction(other.x,other.y,x,y),5/distance_to_object(other) + .1)
@@ -88,7 +88,7 @@ with instance_nearest(x,y,enemy) if distance_to_object(other) <= 64{
 			with other if "my_health" in self{
 				with instance_create(x,y,CustomObject)
 				{
-					depth = TopCont.depth - 1	
+					depth = TopCont.depth - 1
 					sprite_index = global.crit
 					s = 1.4
 					sf = .12
