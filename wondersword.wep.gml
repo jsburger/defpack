@@ -55,7 +55,7 @@ if w {
 	if _reload > 0{_reload -= current_time_scale;reload = _reload;exit}
 	if button_check(index,"fire") && wondershit[1]<5{
 		view_shake_max_at(x,y,wondershit[1]*2)
-		if wondershit[1] = 0{wondershit[0] = 43}
+		if wondershit[1] = 0{wondershit[0] = 60}
 		wondershit[0]+= current_time_scale*2.6
 		if wondershit[1] < 4{wepangle += .75*sign(wepangle)}
 		if wondershit[1] = 4{if current_frame % 4 = 0{gunshine = 5};if wondershit[0] > 40{wondershit[0] = 40}}

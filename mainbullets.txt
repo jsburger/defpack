@@ -132,6 +132,7 @@
 /loadwep mega revolver
 /loadwep spy revolver
 /loadwep flechette rifle
+/loadwep flex
 /loadwep antiprism
 
 /loadtext mainshells

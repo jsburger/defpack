@@ -1,7 +1,7 @@
 #define init
-global.sprExplosiveBow   = sprite_add_weapon("sprites/sprHotCrossbow.png", 2, 3);
-global.sprHotArrow  	   = sprite_add("sprites/projectiles/sprHotBolt.png",0, 1, 5);
-global.sprHotArrowHUD  	 = sprite_add_weapon("sprites/projectiles/sprHotBolt.png", 7, 5);
+global.sprExplosiveBow   = sprite_add_weapon("sprites/sprFireBow.png", 4, 9);
+global.sprHotArrow  	   = sprite_add("sprites/projectiles/sprFireArrow.png",0, 9, 4);
+global.sprHotArrowHUD  	 = sprite_add_weapon("sprites/projectiles/sprFireArrow.png", 7, 3);
 
 #define weapon_name
 return "EXPLOSIVE BOW"
@@ -19,7 +19,10 @@ return false;
 return 8;
 
 #define weapon_cost
-return 2;
+return 1;
+
+#define weapon_chrg
+return 1;
 
 #define weapon_swap
 return sndSwapHammer;
@@ -29,6 +32,9 @@ return 6;
 
 #define weapon_text
 return "CHECK THE ROUTES";
+
+#define weapon_laser_sight
+return false;
 
 #define weapon_sprt_hud
 return global.sprHotArrowHUD;
@@ -41,7 +47,7 @@ with instance_create(x,y,CustomObject)
 	name    = "bow charge"
 	creator = other
 	charge    = 0
-  maxcharge = 30
+  maxcharge = 50
 	charged = 0
 	holdtime = 5 * 30
 	depth = TopCont.depth
@@ -90,6 +96,23 @@ var _p = random_range(.8,1.2)
 sound_play_pitchvol(sndSwapGuitar,4*_p,.8)
 sound_play_pitchvol(sndAssassinAttack,2*_p,.8)
 sound_play_pitchvol(sndClusterOpen,2*_p,.2)
+if charged = 0
+{
+  with creator weapon_post(1,-10,0)
+}
+else
+{
+    with creator
+    {
+      weapon_post(1,-30,0)
+      repeat(6) with instance_create(x,y,Dust)
+      {
+        motion_add(random(360),choose(5,6))
+      }
+    }
+    sound_play_pitchvol(sndShovel,2,.8)
+    sound_play_pitchvol(sndUltraCrossbow,3,.8)
+}
 with instance_create(creator.x,creator.y,Bolt)
 {
 	sprite_index = global.sprHotArrow
@@ -97,8 +120,8 @@ with instance_create(creator.x,creator.y,Bolt)
 	team = creator.team
 	check = 0
 	charged = other.charged
-	motion_add(creator.gunangle+random_range(-8,8)*creator.accuracy*(1-(other.charge/other.maxcharge)),16+6*other.charge/other.maxcharge)
-	damage = 12
+	motion_add(creator.gunangle+random_range(-8,8)*creator.accuracy*(1-(other.charge/other.maxcharge)),16+8*other.charge/other.maxcharge)
+	damage = 12 + charged * 8
 	image_angle = direction
 	if fork(){
 		while(instance_exists(self)){
@@ -114,17 +137,18 @@ with instance_create(creator.x,creator.y,Bolt)
 							team = other.team
 							instance_destroy()
 						}
-						sound_play(sndFlareExplode)
-						if charged = 1 instance_create(x+lengthdir_x(10,direction),y+lengthdir_y(10,direction),SmallExplosion)
+						sound_play_pitchvol(sndFlareExplode,1,.4+charged*.6)
+						if charged = 1 {instance_create(x+lengthdir_x(10,direction),y+lengthdir_y(10,direction),Explosion);sound_play(sndExplosion)}
 					}
 				}
 				else
 				{
-					repeat(1+charged*3)
+					if irandom(1-charged) = 0 repeat(1+charged*5)
 					{
 						with instance_create(x+random_range(-8,8),y+random_range(-8,8),Flame)
 						{
 							team = other.team
+              if other.charged = true motion_add(point_direction(other.x,other.y,x,y),choose(1,1,1,3,4))
 						}
 					}
 				}
