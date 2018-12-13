@@ -122,7 +122,7 @@ with instance_create(x,y,HeavyBolt)
         i++
       }
       sleep(12)
-      with instance_nearest(x+lengthdir_x(1+speed,direction),y+lengthdir_y(1+speed,direction),Wall){instance_create(x,y,FloorExplo);instance_destroy()}
+      with instance_nearest(x+lengthdir_x(1+speed,direction),y+lengthdir_y(1+speed,direction),Wall){repeat(3){with instance_create(other.x,other.y,Shell){image_index = choose(3,4);image_speed = 0;sprite_index = sprTutorialSplinter;motion_add(random(360),random_range(3,6))}};instance_create(x,y,FloorExplo);instance_destroy()}
       instance_destroy()
     }
     wait(1)

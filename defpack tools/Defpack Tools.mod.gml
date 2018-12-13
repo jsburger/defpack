@@ -61,7 +61,7 @@ global.sprMegaDiscDie    = sprite_add("sprMegaDiscDie.png",6,12,12);
 global.sprMegaDiscTrail  = sprite_add("sprMegaDiscTrail.png",3,12,12);
 global.sprMegaDiscBounce = sprite_add("sprMegaDiscBounce.png",4,12,12);
 
-global.sprCharge = sprEnergyIcon
+global.sprCharge = sprite_add("sprHoldIcon.png",0,5,5)
 
 global.SAKmode = 0
 mod_script_call("mod","defpermissions","permission_register","mod",mod_current,"SAKmode","SAK Mode")
@@ -1242,7 +1242,7 @@ else
   	on_step    = lightning_step
   	on_hit     = lightning_hit
   	depth = -8
-  	
+
   	return id
   }
 }
@@ -1302,15 +1302,15 @@ while yy > y - 2*game_height{
         array_push(xpoints,xx)
         array_push(ypoints,yy)
     }
-    
+
     //ang = random_range(50,130)
-    
+
 
 	/*xx += random_range(-6,6)
 	yy -= random_range(-2,8)
 	array_push(xpoints,xx)
 	array_push(ypoints,yy)
-	
+
 	var m = slope(x,xx,y,yy)
 	if m < 0.01 && abs(m) < abs(mmin) {mmin = m}
 	if  m > 0.01 && m < mmax {mmax = m} */

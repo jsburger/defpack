@@ -16,6 +16,8 @@ if instance_is(self,Player){
 	}
 }
 return 15
+#define weapon_chrg
+return true;
 #define weapon_swap
 return sndSwapSword
 #define weapon_auto

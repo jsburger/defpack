@@ -5,6 +5,9 @@ global.sprPsyBulletHit   = sprite_add("defpack tools/Psy Bullet Hit.png", 4, 8, 
 #define weapon_name
 return "SNIPER PSY RIFLE"
 
+#define weapon_chrg
+return true;
+
 #define weapon_sprt
 return global.sprSniperPsyRifle;
 

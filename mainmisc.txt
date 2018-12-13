@@ -55,7 +55,6 @@
 /load crown
 
 ///TODO///
-/loadwep ultra claymore
 /loadwep antiprism
 /loadwep sak
 /loadwep stopwatch

@@ -5,6 +5,9 @@ global.sprToxicBulletHit  = sprite_add("defpack tools/Toxic Bullet Hit.png", 4, 
 #define weapon_name
 return "SNIPER PEST RIFLE"
 
+#define weapon_chrg
+return true;
+
 #define weapon_sprt
 return global.sprSniperPestRifle ;
 

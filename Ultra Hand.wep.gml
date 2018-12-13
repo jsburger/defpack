@@ -26,15 +26,16 @@ return 8
 
 #define weapon_fire
 
-sound_play_pitch(sndLaserUpg,4)
-sound_play_pitch(sndWaveGun,2)
-
+var _p = random_range(.8,1.2)
+sound_play_pitchvol(sndLaserUpg,4*_p,.7)
+sound_play_pitchvol(sndWaveGun,2*_p,.7)
+sound_play_pitch(sndAssassinAttack,2*_p)
 with instance_create(x,y,CustomObject){
     team = other.team
     creator = other
     depth = other.depth - 1
     name = "Ultra Hand"
-    
+
     image_speed = 0
     flip = -sign(other.wepangle)
     image_yscale = -other.wepflip
@@ -43,7 +44,7 @@ with instance_create(x,y,CustomObject){
     trailcount = 6
     counter = 0
     image_angle = other.gunangle + other.wepangle
-    
+
     length = sprite_width - sprite_xoffset + 20*skill_get(mut_long_arms)
     trailx = x + lengthdir_x(length, image_angle)// + other.hspeed_raw
     traily = y + lengthdir_y(length, image_angle)// + other.vspeed_raw
@@ -57,7 +58,7 @@ with instance_create(x - lengthdir_x(12*skill_get(mut_long_arms), gunangle),y - 
     creator = other
     depth = other.depth - 1
     name = "Ultra Hand Slash"
-    
+
     damage = 30
     image_speed = .4
     //sprite_index = sprSlash
@@ -71,7 +72,7 @@ with instance_create(x - lengthdir_x(12*skill_get(mut_long_arms), gunangle),y - 
         image_yscale = 1.4
     }
     image_angle = other.gunangle
-    
+
     on_hit = hand_hit
     on_projectile = hand_proj
     on_grenade = hand_grenade
@@ -151,6 +152,7 @@ else {
 #define hand_hit
 if projectile_canhit_melee(other){
     sound_play_pitch(sndHammerHeadProc,.6)
+    sound_play_pitchvol(sndImpWristKill,.7,.9)
     sleep(100)
     projectile_hit(other, damage, 1000, image_angle)
     var _x = x, _y = y, dir = image_angle - 90 * flip, leng = 90, dirfac = 11*flip, t = team;

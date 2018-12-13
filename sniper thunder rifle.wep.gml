@@ -3,6 +3,9 @@ global.sprSniperThunderRifle = sprite_add_weapon("sprites/sprSniperThunderRifle.
 global.sprLightningBullet 	 = sprite_add("defpack tools/Lightning Bullet.png", 2, 8, 8)
 global.sprLightningBulletHit = sprite_add("defpack tools/Lightning Bullet Hit.png", 4, 8, 8)
 
+#define weapon_chrg
+return true;
+
 #define weapon_name
 return "SNIPER THUNDER RIFLE"
 

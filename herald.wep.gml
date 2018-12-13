@@ -33,61 +33,61 @@ if global.canshader = 1{
     //shader in brackets so i can hide it{
     global.sh = shader_create(
     	"/// Vertex Shader ///
-    
+
     	struct VertexShaderInput
     	{
     		float4 vPosition : POSITION;
     		float2 vTexcoord : TEXCOORD0;
     	};
-    
+
     	struct VertexShaderOutput
     	{
     		float4 vPosition : SV_POSITION;
     		float2 vTexcoord : TEXCOORD0;
     	};
-    
+
     	uniform float4x4 matrix_world_view_projection;
-    
+
     	VertexShaderOutput main(VertexShaderInput INPUT)
     	{
     		VertexShaderOutput OUT;
-    
+
     		OUT.vPosition = mul(matrix_world_view_projection, INPUT.vPosition); // (x,y,z,w)
     		OUT.vTexcoord = INPUT.vTexcoord;
-    
+
     		return OUT;
     	}
     	",
-    
-    
+
+
     	"/// Fragment/Pixel Shader ///
-    	
-    
+
+
     	struct PixelShaderInput
     	{
     		float2 vTexcoord : TEXCOORD0;
     	};
-    
+
     	sampler2D s0; // Get Sprite Being Drawn
-    
-    
+
+
     	float4 main(PixelShaderInput INPUT) : SV_TARGET
     	{
     		 // Get Pixel's Color:
     		float4 MyColor = tex2D(s0, INPUT.vTexcoord); // (r,g,b,a)
-    
+
     		 // Break Down MyColor:
     		float R = MyColor.r; // Red   (0.0 - 1.0)
     		float G = MyColor.g; // Green (0.0 - 1.0)
     		float B = MyColor.b; // Blue  (0.0 - 1.0)
             float L = (0.299 * R + 0.587 * G + 0.114 * B);
             float tolerance = .9;
-            
+
     		// bloom
     		{
-    			
+
     			float ill = 0;
-    			
+
         		float Radius = 10.0;
         		float Precision = 0.05;
         		float num = Radius/Precision;
@@ -97,8 +97,8 @@ if global.canshader = 1{
     			        ill += (1-sqrt(INPUT.vTexcoord.y))*10;
     			    };
     			}
-    			
-    			  return float4(R,G,B,min(MyColor.a,1-ill/num));  
+
+    			  return float4(R,G,B,min(MyColor.a,1-ill/num));
     		}
     	}
     ");
@@ -126,7 +126,8 @@ if fork(){
     exit
 }
 
-
+#define weapon_chrg
+return true;
 #define cleanup
 with instances_matching(CustomDraw,"name",mod_current) instance_destroy()
 #define weapon_name
@@ -273,7 +274,7 @@ surface_reset_target()
 if global.canshader{
     shader_set(global.sh);
     shader_set_vertex_constant_f(0, matrix_multiply(matrix_multiply(matrix_get(matrix_world), matrix_get(matrix_view)), matrix_get(matrix_projection)));
-    
+
     texture_set_stage(0, surface_get_texture(global.sf));
 }
 draw_surface(global.sf, view_xview_nonsync, view_yview_nonsync);
@@ -473,7 +474,7 @@ draw_surface_ext(sf,x-lengthdir_x(w,rot),y-lengthdir_y(h,rot),xscale,yscale,rot,
 
 
 #define lightning_line(x1,y1,x2,y2)
-var xs = x1, ys = y1, int = 0; 
+var xs = x1, ys = y1, int = 0;
 var ang = point_direction(x1,y1,x2,y2);
 var bdis = point_distance(x1,y1,x2,y2);
 while point_distance(x1,y1,x2,y2) > 3 && ++int <= bdis{
@@ -564,6 +565,3 @@ var lx = lengthdir_x(width/2,dir+90)
 var ly = lengthdir_y(width/2,dir+90)
 draw_line_width_color(__x,__y,__x+lx,__y+ly,dist,col,col2)
 draw_line_width_color(__x,__y,__x-lx,__y-ly,dist,col,col2)
-
-
-

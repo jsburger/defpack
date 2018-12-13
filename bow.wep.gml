@@ -1,6 +1,7 @@
 #define init
-global.sprBow   = sprite_add_weapon("sprites/sprBow.png",2,8)
-global.sprArrow = sprite_add("sprites/projectiles/sprArrow.png",0,3,4)
+global.sprBow      = sprite_add_weapon("sprites/sprBow.png",2,8)
+global.sprArrow    = sprite_add("sprites/projectiles/sprArrow.png",0,3,4)
+global.sprArrowHUD = sprite_add_weapon("sprites/projectiles/sprArrow.png",5,3)
 
 #define weapon_name
 //if instance_is(self,WepPickup) return `  BOW @0(${sprEnergyIcon}:0) `
@@ -22,7 +23,7 @@ return 1
 return 5
 
 #define weapon_swap
-return sndSwapBow
+return sndSwapHammer
 
 #define weapon_auto
 return 1
@@ -36,6 +37,10 @@ return false
 #define weapon_reloaded
 
 #define weapon_fire
+with instances_matching(CustomObject,"name","bow charge")
+{
+  instance_destroy()
+}
 with instance_create(x,y,CustomObject)
 {
     sound = sndAssassinAttack
@@ -56,8 +61,10 @@ with instance_create(x,y,CustomObject)
 }
 
 #define bow_step
-if !instance_exists(creator){instance_destroy();exit}
-with creator weapon_post(0,other.charge / 2,0)
+if !instance_exists(creator){instance_delete(self);exit}
+with creator weapon_post(0,-(other.charge/2),0)
+if btn = "fire" && creator.wep != mod_current{instance_delete(self);exit}
+if btn = "spec" && creator.bwep != mod_current{instance_delete(self);exit}
 if button_check(index,"swap"){creator.ammo[3] = min(creator.ammo[3] + weapon_cost(), creator.typ_amax[3]);instance_destroy();exit}
 if btn = "fire" creator.reload = weapon_get_load(creator.wep)
 if btn = "spec" creator.breload = weapon_get_load(creator.bwep) * array_length_1d(instances_matching(instances_matching(instances_matching(CustomObject, "name", "bow charge"),"creator",creator),"btn",btn))
@@ -65,14 +72,14 @@ if button_check(index,btn){
     if charge < maxcharge{
       charge += current_time_scale;
       charged = 0
-      sound_play_pitch(sound,sqr((charge/maxcharge) * 1.2) + .2)
+      sound_play_pitchvol(sound,sqr((charge/maxcharge) * 1.2) + .2,.6)
       sound_set_track_position(sound,.15)
     }
     else{
+        if current_frame mod 6 < current_time_scale creator.gunshine = 1
         charge = maxcharge;
         if charged = 0{
             instance_create(creator.x,creator.y,WepSwap);
-            sound_play_gun(sndClickBack,.1,.5)
             charged = 1
         }
     }
@@ -85,10 +92,13 @@ sound_stop(sound)
 
 #define bow_destroy
 bow_cleanup()
-sound_play_pitch(sndSwapGuitar,4)
-sound_play_pitch(sndAssassinAttack,2)
+var _p = random_range(.8,1.2)
+sound_play_pitchvol(sndSwapGuitar,4*_p,.8)
+sound_play_pitchvol(sndAssassinAttack,2*_p,.8)
+sound_play_pitchvol(sndClusterOpen,2*_p,.2)
 if charged = 0
 {
+  with creator weapon_post(1,-10,0)
   with instance_create(creator.x,creator.y,Bolt)
   {
     sprite_index = global.sprArrow
@@ -96,13 +106,23 @@ if charged = 0
     creator = other.creator
     team    = creator.team
     damage = 10
-    move_contact_solid(creator.gunangle,12)
-    motion_add(creator.gunangle+random_range(-8,8)*creator.accuracy,18)
+    move_contact_solid(creator.gunangle,6)
+    motion_add(creator.gunangle+random_range(-8,8)*creator.accuracy*(1-(other.charge/other.maxcharge)),16+6*other.charge/other.maxcharge)
     image_angle = direction
   }
 }
 else
 {
+    with creator
+    {
+      weapon_post(1,-30,0)
+      repeat(6) with instance_create(x,y,Dust)
+      {
+        motion_add(random(360),choose(5,6))
+      }
+    }
+    sound_play_pitchvol(sndShovel,2,.8)
+    sound_play_pitchvol(sndUltraCrossbow,3,.8)
     var ang = creator.gunangle + random_range(-5,5) * creator.accuracy
     var i = -12;
     repeat(3){
@@ -112,7 +132,7 @@ else
             creator = other.creator
             team    = creator.team
             damage = 10
-            move_contact_solid(creator.gunangle,12)
+            move_contact_solid(creator.gunangle,6)
             motion_add(ang + i,20)
             image_angle = direction
         }
@@ -122,6 +142,9 @@ else
 
 #define weapon_sprt
 return global.sprBow
+
+#define weapon_sprt_hud
+return global.sprArrowHUD
 
 #define weapon_text
 return "CLASSIC"
