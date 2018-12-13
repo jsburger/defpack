@@ -195,12 +195,12 @@ repeat(3){
 draw_primitive_end()
 
 #define draw_pause
+draw_set_projection(0)
+draw_menu()
+draw_reset_projection()
+#define draw_gui
 
 draw_menu()
-
-#define draw
-
-if instance_exists(CharSelect) draw_menu()
 
 #define draw_menu
 
@@ -211,12 +211,12 @@ if global.menuopen{
     draw_set_halign(0)
     for (var i = 0; i < maxp; i++) if player_is_active(i){
 
-        var mousex = mouse_x[i], mousey = mouse_y[i]
+        var mousex = mouse_x[i] - view_xview[i], mousey = mouse_y[i] - view_yview[i]
         var press = button_pressed(i, "fire"), check = button_check(i, "fire"), released = button_released(i, "fire")
 
         if i = 0 and !player_is_active(1){
-            mousex = mouse_x_nonsync
-            mousey = mouse_y_nonsync
+            mousex = mouse_x_nonsync - view_xview_nonsync
+            mousey = mouse_y_nonsync - view_yview_nonsync
             press = button_pressed_nonsync(0,"fire")
             check = button_check_nonsync(0,"fire")
             released = button_released_nonsync(0,"fire")
@@ -226,7 +226,7 @@ if global.menuopen{
         draw_set_visible(i,1)
         //menu width, menu height, scroll bar width
         var mw = 80, mh = 100, sw = 6, sh = 8;
-        var _x = view_xview[i] - mw - 12 - sw + game_width, _y = view_yview[i] + 20;
+        var _x =  - mw - 12 - sw + game_width, _y = + 20;
         //cell width, cell height
         var cw = mw, ch = 20;
         //maximum displayable cells

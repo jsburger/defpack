@@ -3,34 +3,30 @@ global.box 			= sprite_add_weapon("sprites/sprSAK.png",2,3)
 global.boxopen  = sprite_add_weapon("sprites/sprSAKOpen.png",2,3)
 global.boxempty = sprite_add_weapon("sprites/sprSAKEmpty.png",2,3)
 global.guys = [0,0,0,0]
-with instances_matching([CustomDraw,CustomStep],"customshell",1){
+with instances_matching([CustomDraw],"customshell",1){
 	instance_destroy()
 }
-global.scripts = []
-with script_bind_draw(makemycoolgun,-15){
-	persistent = 1
-	customshell = 1
-	array_push(global.scripts,id)
+if fork(){
+    while 1{
+        birdspread()
+        wait(0)
+    }
+    exit
 }
-with script_bind_step(birdspread, 0){
-	persistent = 1
-	customshell = 1
-	array_push(global.scripts,id)
-}
-global.sprammo  = sprite_add("sprites/sprSAKammo.png",8,0,0)
-global.sprammom = sprite_add("sprites/sprSAKammoMini.png",9,0,0)
-global.sprbodyShell  = sprite_add("sprites/sprSAKbodyShell.png",6,0,0)
-global.sprbodySlug   = sprite_add("sprites/sprSAKbodySlug.png",6,0,0)
-global.sprbodym      = sprite_add("sprites/sprSAKbodyMini.png",7,0,0)
-global.sprmods  			  	 = sprite_add("sprites/sprSAKmods.png",10,0,0)
-global.sprmodsm  			  	 = sprite_add("sprites/sprSAKmodsm.png",11,0,0)
-global.sprmodsShotgun   	 = sprite_add("sprites/sprSAKmodsShotgun.png",10,0,0)
-global.sprmodsPopGun    	 = sprite_add("sprites/sprSAKmodsPop.png",10,0,0)
-global.sprmodsEraser       = sprite_add("sprites/sprSAKmodsEraser.png",10,0,0)
-global.sprmodsSlugger      = sprite_add("sprites/sprSAKmodsSlugger.png",10,0,0)
-global.sprmodsFlakCannon   = sprite_add("sprites/sprSAKmodsFlak.png",10,0,0)
-global.sprmodsShotCannon   = sprite_add("sprites/sprSAKmodsShot.png",10,0,0)
-global.sprmodsm = sprite_add("sprites/sprSAKammoMini.png",8,0,0)
+global.sprammo           = sprite_add("sprites/sprSAKammo.png",8,0,0)
+global.sprammom          = sprite_add("sprites/sprSAKammoMini.png",9,0,0)
+global.sprbodyShell      = sprite_add("sprites/sprSAKbodyShell.png",6,0,0)
+global.sprbodySlug       = sprite_add("sprites/sprSAKbodySlug.png",6,0,0)
+global.sprbodym          = sprite_add("sprites/sprSAKbodyMini.png",7,0,0)
+global.sprmods  	     = sprite_add("sprites/sprSAKmods.png",10,0,0)
+global.sprmodsm  	     = sprite_add("sprites/sprSAKmodsm.png",11,0,0)
+global.sprmodsShotgun    = sprite_add("sprites/sprSAKmodsShotgun.png",10,0,0)
+global.sprmodsPopGun     = sprite_add("sprites/sprSAKmodsPop.png",10,0,0)
+global.sprmodsEraser     = sprite_add("sprites/sprSAKmodsEraser.png",10,0,0)
+global.sprmodsSlugger    = sprite_add("sprites/sprSAKmodsSlugger.png",10,0,0)
+global.sprmodsFlakCannon = sprite_add("sprites/sprSAKmodsFlak.png",10,0,0)
+global.sprmodsShotCannon = sprite_add("sprites/sprSAKmodsShot.png",10,0,0)
+global.sprmodsm          = sprite_add("sprites/sprSAKammoMini.png",8,0,0)
 
 global.shellbods = ["shotgun", "eraser", "flak cannon", "pop gun", "shot cannon"]
 global.slugbods = ["shotgun", "eraser", "flak cannon", "slugger", "shot cannon"]
@@ -46,35 +42,46 @@ maketheprojectiles()
 global.flakmap = ds_map_create()
 var a = global.flakmap;
 
-global.sprShot 		  = sprite_add("sprites/sak/projectiles/sprShot.png",2,8,8);
-global.sprPsyShot   = sprite_add("sprites/sak/projectiles/sprPsyShot.png",2,8,8);
-global.sprFireShot  = sprite_add("sprites/sak/projectiles/sprFireShot.png",2,8,8);
-global.sprUltraShot = sprite_add("sprites/sak/projectiles/sprUltraShot.png",2,8,8);
-global.sprSplitShot = sprite_add("sprites/sak/projectiles/sprSplitShot.png",2,8,8);
-global.sprSuperShot      = sprite_add("sprites/sak/projectiles/sprSuperShot.png",2,12,12);
-global.sprSuperPsyShot   = sprite_add("sprites/sak/projectiles/sprSuperPsyShot.png",2,12,12);
-global.sprSuperFireShot  = sprite_add("sprites/sak/projectiles/sprSuperFireShot.png",2,12,12);
-global.sprSuperUltraShot = sprite_add("sprites/sak/projectiles/sprSuperUltraShot.png",2,12,12);
-global.sprSuperSplitShot = sprite_add("sprites/sak/projectiles/sprSuperSplitShot.png",2,12,12);
-global.sprSuperHeavyShot      = sprite_add("sprites/sak/projectiles/sprSuperHeavyShot.png",2,18,18);
-global.sprSuperHeavySplitShot = sprite_add("sprites/sak/projectiles/sprSuperHeavySplitShot.png",2,18,18);
-global.sprFlak      = sprFlakBullet
-global.sprPsyFlak   = sprite_add("sprites/sak/projectiles/sprPsyFlak.png",2,8,8);
-global.sprFireFlak  = sprite_add("sprites/sak/projectiles/sprFireFlak.png",2,8,8);
-global.sprUltraFlak = sprite_add("sprites/sak/projectiles/sprUltraFlak.png",2,8,8);
-global.sprSplitFlak = sprite_add("sprites/sak/projectiles/sprSplitFlak.png",2,8,8);
-global.sprSuperFlak      = sprite_add("sprites/sak/projectiles/sprSuperFlak.png",2,12,12);
-global.sprSuperPsyFlak   = sprite_add("sprites/sak/projectiles/sprSuperPsyFlak.png",2,12,12);
-global.sprSuperFireFlak  = sprite_add("sprites/sak/projectiles/sprSuperFireFlak.png",2,12,12);
-global.sprSuperUltraFlak = sprite_add("sprites/sak/projectiles/sprSuperUltraFlak.png",2,12,12);
-global.sprSuperSplitFlak = sprite_add("sprites/sak/projectiles/sprSuperSplitFlak.png",2,12,12);
-global.sprSuperHeavyFlak      = sprite_add("sprites/sak/projectiles/sprSuperHeavyFlak.png",2,18,18);
-global.sprSuperHeavySplitFlak = sprite_add("sprites/sak/projectiles/sprSuperHeavySplitFlak.png",2,18,18);
-global.sprFlakHit      = sprFlakHit
-global.sprPsyFlakHit   = sprite_add("sprites/sak/projectiles/sprPsyFlakHit.png",9,8,8);
-global.sprFireFlakHit  = sprite_add("sprites/sak/projectiles/sprFireFlakHit.png",9,8,8);
-global.sprUltraFlakHit = sprite_add("sprites/sak/projectiles/sprUltraFlakHit.png",9,8,8);
-global.sprSplitFlakHit = sprite_add("sprites/sak/projectiles/sprSplitFlakHit.png",9,8,8);
+a[? "shell shot"]		  = sprite_add("sprites/sak/projectiles/sprShot.png",2,8,8);
+a[? "psy shell shot"]   = sprite_add("sprites/sak/projectiles/sprPsyShot.png",2,8,8);
+a[? "flame shell shot"] = sprite_add("sprites/sak/projectiles/sprFireShot.png",2,8,8);
+a[? "ultra shell shot"] = sprite_add("sprites/sak/projectiles/sprUltraShot.png",2,8,8);
+a[? "split shell shot"] = sprite_add("sprites/sak/projectiles/sprSplitShot.png",2,8,8);
+
+a[? "super shell shot"]       = sprite_add("sprites/sak/projectiles/sprSuperShot.png",2,12,12);
+a[? "slug shot"]        = a[? "super shell shot"]
+a[? "super psy shell shot"]   = sprite_add("sprites/sak/projectiles/sprSuperPsyShot.png",2,12,12);
+a[? "super flame shell shot"] = sprite_add("sprites/sak/projectiles/sprSuperFireShot.png",2,12,12);
+a[? "super ultra shell shot"] = sprite_add("sprites/sak/projectiles/sprSuperUltraShot.png",2,12,12);
+a[? "super split shell shot"] = sprite_add("sprites/sak/projectiles/SuperSplitShot.png",2,12,12);
+a[? "split slug shot"]  = a[? "super split shell shot"]
+a[? "super heavy slug shot"] = sprite_add("sprites/sak/projectiles/SuperHeavyShot.png",2,18,18);
+a[? "super split slug shot"] = sprite_add("sprites/sak/projectiles/sprSuperHeavySplitShot.png",2,18,18);
+
+a[? "shell flak"]        = sprFlakBullet
+a[? "psy shell flak"]    = sprite_add("sprites/sak/projectiles/sprPsyFlak.png",2,8,8);
+a[? "flame shell flak"]  = sprite_add("sprites/sak/projectiles/sprFireFlak.png",2,8,8);
+a[? "ultra shell flak"]  = sprite_add("sprites/sak/projectiles/sprUltraFlak.png",2,8,8);
+a[? "split shell flak"]  = sprite_add("sprites/sak/projectiles/sprSplitFlak.png",2,8,8);
+
+a[? "super shell flak"]       = sprite_add("sprites/sak/projectiles/sprSuperFlak.png",2,12,12);
+a[? "slug flak"]        = a[? "super shell flak"]
+a[? "super psy shell flak"]   = sprite_add("sprites/sak/projectiles/sprSuperPsyFlak.png",2,12,12);
+a[? "super flame shell flak"] = sprite_add("sprites/sak/projectiles/sprSuperFireFlak.png",2,12,12);
+a[? "super ultra shell flak"] = sprite_add("sprites/sak/projectiles/sprSuperUltraFlak.png",2,12,12);
+a[? "super split shell flak"] = sprite_add("sprites/sak/projectiles/sprSuperSplitFlak.png",2,12,12);
+a[? "super heavy slug flak"] = sprite_add("sprites/sak/projectiles/SuperHeavyFlak.png",2,18,18);
+a[? "super split slug flak"] = sprite_add("sprites/sak/projectiles/SuperHeavySplitFlak.png",2,18,18);
+
+a[? "shell flak hit"]      = sprFlakHit
+a[? "slug flak hit"] = sprSuperFlakHit
+a[? "psy shell flak hit"]   = sprite_add("sprites/sak/projectiles/sprPsyFlakHit.png",8,16,16);
+a[? "flame shell flak hit"]  = sprite_add("sprites/sak/projectiles/sprFireFlakHit.png",8,16,16);
+a[? "ultra shell flak hit"] = sprite_add("sprites/sak/projectiles/sprUltraFlakHit.png",8,16,16);
+a[? "split shell flak hit"] = sprite_add("sprites/sak/projectiles/sprSplitFlakHit.png",8,16,16);
+a[? "split slug flak hit"] = sprite_add("sprites/sak/projectiles/sprSplitSuperFlakHit",8,24,24)
+
+a[? "super shell flak hit"] = sprSuperFlakHit
 
 
 #define makethegunsprites()
@@ -331,6 +338,7 @@ ds_map_destroy(global.textmap)
 ds_map_destroy(global.choicemap)
 ds_map_destroy(global.stats)
 ds_map_destroy(global.gunmap)
+ds_map_destroy(global.flakmap)
 
 #define makethechoices()
 global.choicemap = ds_map_create()
@@ -399,7 +407,7 @@ a[? "shot cannon"] = "shoot a projectile that disperses others"
 global.stats = ds_map_create()
 var a = global.stats
 
-//[ammo, reload, sound, rads]
+//[ammo*, reload*, sound, rads]
 //based off of firing a shotgun of said type (the cost of 7 projectiles)
 a[? "shell"] = [1, 1, sndShotgun, 0]
 a[? "slug"] = [7, 2, sndSlugger, 0]
@@ -410,7 +418,7 @@ a[? "psy shell"] = [2, 1.3, sndShotgun, 0]
 a[? "split shell"] = [2, 1.2, sndShotgun, 0]
 a[? "split slug"] = [4, 1.5, sndSlugger, 0]
 
-//[ammo, reload base, sound]
+//[ammo*, reload base, sound]
 a[? "shotgun"] = [1, 17, sndShotgun]
 a[? "eraser"] = [2, 20, sndEraser]
 a[? "flak cannon"] = [2, 26, sndFlakCannon]
@@ -418,7 +426,7 @@ a[? "pop gun"] = [1, 2, sndPopgun]
 a[? "slugger"] = [1/6, 11, sndSlugger]
 a[? "shot cannon"] = [4, 25, sndFlakCannon]
 
-//[ammo, reload, sound]
+//[ammo*, reload*, sound]
 a[? "double"] = [2, 1.6, sndDoubleShotgun]
 a[? "sawed-off"] = [2, 1.6, sndSawedOffShotgun]
 a[? "auto"] = [1, .4, sndPopgun]
@@ -437,12 +445,14 @@ a[? "gatling"] = [1, .3, -1]
 w.sounds = [sndWaveGun]
 #define take_pop_gun(w)
 w.type = 1
+w.rads = floor(w.rads/7)
 w.auto = 1
 #define take_assault(w)
 w.shots = 3
 w.time = 3
 #define take_rifle(w)
 w.shots = 3
+w.rads = floor(w.rads/7)
 w.auto = 1
 w.time = 2
 #define take_auto(w)
@@ -527,20 +537,20 @@ switch m{
 		for (var i = -1; i<= 1; i++){
 			with proj(p){
 				fset(23,3,i,1)
-				if "stockspeed" in self speed = stockspeed
+				speed = stockspeed
 			}
 		}
 		break
 	case "rifle":
 	    with proj(p){
 	        set(8)
-            if "stockspeed" in self speed = stockspeed
+            speed = stockspeed
 	    }
 	    break
 	default:
 		with proj(p){
 			set(4)
-			if "stockspeed" in self speed = stockspeed
+			speed = stockspeed
 			if m = "hyper" hyper_travel()
 		}
 		break
@@ -570,14 +580,14 @@ switch m {
 					image_angle = direction
 					creator = other
 					team = other.team
-					if "stockspeed" in self speed = stockspeed
+					speed = stockspeed
 				}
 				with proj(p){
 					direction = other.gunangle - 15*sin(i) *other.accuracy;
 					image_angle = direction
 					creator = other
 					team = other.team
-					if "stockspeed" in self speed = stockspeed
+					speed = stockspeed
 				}
 				wait(1)
 			}
@@ -623,18 +633,43 @@ switch m{
 #define flak_cannon(p,m)
 switch m{
 	case "super":
+	    with superflak(p){
+			set(4)
+			speed = random_range(10,11)
+			if m = "hyper"{
+				hyper = 1
+				//hyper_travel()
+			}
+		}
+		break
 	default:
-		with flak(){
-			payload = p
+		with flak(p){
 			set(3)
 			speed = random_range(11,13)
 			if m = "hyper"{
 				hyper = 1
-				hyper_travel()
+				//hyper_travel()
 			}
 		}
 }
 
+#define shot_cannon(p,m)
+switch m{
+    case "super":
+        with supershotcannon(p){
+            set(0)
+            speed = 12 + random(1)
+        }
+        break
+    default:
+        with shotcannon(p){
+            set(0)
+            speed = 15 + random(2)
+            if m = "hyper"{
+                hyper = 1
+            }
+        }
+}
 
 
 #define shotgun(p,m)
@@ -659,8 +694,8 @@ switch m{
 		repeat(7){
 			with proj(p){
 				set(20)
-				if m = "hyper" hyper_travel()
 				speed += random_range(-2,1)
+				if m = "hyper" hyper_travel()
 			}
 		}
 		break
@@ -679,11 +714,13 @@ switch thing{
 		var a = instance_create(x,y,Slug);
 		with a{
 			speed = 16
+			stockspeed = speed
 		}
 		return a
 	case "heavy slug":
 		with instance_create(x,y,HeavySlug){
 			speed = 13
+			stockspeed = speed
 			return id
 		}
 	case "flame shell":
@@ -722,32 +759,92 @@ switch thing{
 		}
 }
 
-#define flak
+#define flak(p)
 with instance_create(x,y,CustomProjectile){
-	sprite_index = sprFlakBullet
 	mask_index = mskFlakBullet
+	if string_count(p, "slug") mask_index = mskSuperFlakBullet
+	var str = p + " flak"
+	sprite_index = global.flakmap[? str]
+	spr_dead = global.flakmap[? str + " hit"]
 	on_destroy = flakpop
 	on_step = flakstep
-	damage = 8
-	payload = "shell"
+	on_draw = flakdraw
+	with proj(p){
+	    other.damage = damage * 4
+	    instance_delete(self)
+	}
+	payload = p
 	friction = .4
 	ammo = 14
 	hyper = 0
 	return id
 }
 
+#define superflak(p)
+with instance_create(x,y,CustomProjectile){
+	mask_index = SuperFlakBullet
+	var str = "super " + p + " flak"
+	sprite_index = global.flakmap[? str]
+	//spr_dead = global.flakmap[? str + " hit"]
+	on_destroy = superflakpop
+	on_step = superflakstep
+	on_draw = flakdraw
+    with proj(p){
+	    other.damage = damage * 15
+	    instance_delete(self)
+	}
+	payload = p
+	friction = .4
+	ammo = 5
+	hyper = 0
+	return id
+}
+
+
+#define flakdraw
+draw_self()
+draw_set_blend_mode(bm_add)
+draw_sprite_ext(sprite_index,image_index,x,y,image_xscale * 2, image_yscale * 2, image_angle, image_blend, image_alpha * .2)
+draw_set_blend_mode(bm_normal)
+
+#define superflakstep
+if random(100) < 40*current_time_scale instance_create(x,y,Smoke)
+flakstep()
+
 #define flakstep
+if random(100) < 40*current_time_scale instance_create(x,y,Smoke)
+image_speed = speed/10
 if speed < .01{
 	instance_destroy()
 }
 
+
+#define superflakpop
+//with instance_create(x,y,BulletHit) sprite_index = other.spr_dead
+sound_play_hit(sndSuperFlakExplode,.1)
+var ang = random(360)
+for var i = 0; i< 360; i+=360/ammo{
+	with (flak(payload)){
+		direction = ang + i
+		image_angle = direction
+		motion_set(direction, 11)
+		creator = other.creator
+		hyper = other.hyper
+		team = other.team
+		if other.hyper hyper_travel()
+	}
+}
+
+
 #define flakpop
+with instance_create(x,y,BulletHit) sprite_index = other.spr_dead
 sound_play_hit(sndFlakExplode,.1)
 if skill_get(mut_eagle_eyes){
+    var ang = random(360)
 	for var i = 0; i< 360; i+=360/ammo{
 		with (proj(payload)){
-			direction = i
-			image_angle = i
+			direction = i + ang
+			image_angle = i + ang
 			creator = other.creator
 			team = other.team
 			if other.hyper hyper_travel()
@@ -766,36 +863,182 @@ else{
 	}
 }
 
-#define super_flak
-with instance_create(x,y,CustomProjectile){}
+#define shotcannon(p)
+with instance_create(x,y,CustomProjectile) {
+	sprite_index = global.flakmap[? "shell shot"]
+	mask_index = mskFlakBullet
+	with proj(p){
+	    other.damage = damage
+	    other.force = force
+	    instance_delete(self)
+	}
+	image_speed = .4
+	timer = 16
+	ftimer = 1.5
+	time = ftimer
+	canshoot = 0
+	dirfac = random(360)
+	payload = p
+	hyper = 0
+	on_hit = script_ref_create(cannon_hit)
+	on_wall = script_ref_create(cannon_wall)
+	on_step = script_ref_create(cannon_step)
+	on_draw = script_ref_create(cannon_draw)
+	on_anim = cannon_anim
+	on_shoot = script_ref_create(shotfire)
+	
+	return id
+}
 
+#define supershotcannon(p)
+with instance_create(x,y,CustomProjectile) {
+	sprite_index = global.flakmap[? "shell shot"]
+	mask_index = mskSuperFlakBullet
+	with proj(p){
+	    other.damage = damage * 5
+	    other.force = force
+	    instance_delete(self)
+	}
+	image_speed = .4
+	timer = 7
+	ftimer = 2
+	time = ftimer
+	canshoot = 0
+	dirfac = random(360)
+	payload = p
+	hyper = 0
+	on_hit = script_ref_create(cannon_hit)
+	on_wall = script_ref_create(cannon_wall)
+	on_step = script_ref_create(cannon_step)
+	on_draw = script_ref_create(cannon_draw)
+	on_anim = cannon_anim
+	on_shoot = script_ref_create(supershotfire)
+	
+	return id
+}
+
+#define supershotfire(p)
+dirfac += 360/4.22
+var ang = dirfac
+sound_play_hit(sndShotgun, .4)
+view_shake_at(x,y,5)
+repeat(3){
+    with shotcannon(p){
+        motion_set(ang,11)
+        team = other.team
+        creator = other.creator
+        image_angle = direction
+        hyper = other.hyper
+        timer /= 4
+        ang += 360/3
+        //if other.hyper hyper_travel()
+    }
+}
+
+
+#define cannon_anim
+image_index = image_speed
+
+#define cannon_wall
+view_shake_at(x,y,12)
+sound_play_pitch(sndShotgunHitWall,.8)
+if skill_get(15){speed ++;image_index = 0}
+move_bounce_solid(1)
+speed *= .8
+repeat(irandom(1)+2){
+	with instance_create(x, y, Bullet2){
+		motion_set(random(360), random_range(8, 12))
+		projectile_init(other.team,other.creator)
+		image_angle = direction
+	}
+}
+
+#define cannon_hit
+x = xprevious
+y = yprevious
+projectile_hit_push(other,damage,force)
+script_ref_call(on_shoot,payload)
+timer -= 1;
+if timer <= 0
+{
+	instance_destroy()
+}
+
+
+#define shotfire(p)
+dirfac += 12
+var ang = dirfac
+sound_play_hit(sndShotgun, .4)
+view_shake_at(x,y,5)
+repeat(5){
+    with proj(p){
+        motion_set(ang,stockspeed-1)
+        team = other.team
+        creator = other.creator
+        image_angle = direction
+        ang += 72
+        if other.hyper hyper_travel()
+    }
+}
+
+#define cannon_step
+image_angle+=(6+speed*3)*current_time_scale
+time -= current_time_scale
+
+//if image_index >= 2.5{image_index = 1}
+
+image_xscale = clamp(image_xscale + (random_range(-.05,.05)*current_time_scale),1.2,1.4)
+image_yscale = image_xscale
+if timer = 4 ftimer = 3
+speed /= 1 + (.1*current_time_scale)
+if speed <= 1 {canshoot = 1; speed = 0}
+
+while time <= 0{
+    time += ftimer
+    if canshoot{
+        script_ref_call(on_shoot,payload)
+		timer -= 1;
+		if timer <= 0
+		{
+			instance_destroy()
+			exit
+		}
+    }
+}
+
+#define cannon_draw
+if image_index < image_speed {var i = .5}else{var i = .1}
+draw_sprite_ext(sprite_index, image_index, x, y, .7*image_xscale+i, .7*image_yscale+i, image_angle, image_blend, 1.0);
+draw_set_blend_mode(bm_add);
+draw_sprite_ext(sprite_index, image_index, x, y, 1.25*image_xscale+i*2, 1.25*image_yscale+i*2, image_angle, image_blend, i);
+draw_set_blend_mode(bm_normal);
 
 
 #define hyper_travel
-x+=lengthdir_x(sprite_width-sprite_xoffset,direction)
-y+=lengthdir_y(sprite_width-sprite_xoffset,direction)
 damage = floor(damage*1.1)
-var move = 1;
-for(var i = 0;i<=100;i++){
-	var xx = x+lengthdir_x(8 * i,direction), yy = y+lengthdir_y(8 * i,direction);
-	var man = instance_place(xx,yy,hitme);
-	if (instance_exists(man) && man.team != team) || place_meeting(xx,yy,Wall){
-		var _x = x, _y = y;
-		x += lengthdir_x(8 * i, direction);
-		y += lengthdir_y(8 * i, direction);
-		move = 0
-		xprevious += lengthdir_x(8 * (i-1), direction);
-		yprevious += lengthdir_y(8 * (i-1), direction);
-		for(var o = 0;o <= i;o++){
-			if !random(1) instance_create(_x + lengthdir_x(8 * o,direction) + random_range(-4,4), _y + lengthdir_y(8 * o,direction) + random_range(-4,4), Dust);
-		}
-		break;
-	}
+var psy = 0
+if "name" in self and self.name = "Psy Shell" psy = 1
+var xl = lengthdir_x(8, direction), yl = lengthdir_y(8, direction);
+var dir = 100
+do {
+    if psy{
+        mod_script_call_self(on_step[0], on_step[1], on_step[2])
+        if !instance_exists(self) exit
+        xl = lengthdir_x(speed/3, direction);
+        yl = lengthdir_y(speed/3, direction);
+    }
+    var man = instance_place(x, y, hitme);
+    x += xl
+    y += yl
+    if !irandom(2+psy*4) instance_create(x + random_range(-4,4), y + random_range(-4,4), Smoke);
 }
-if move{
-	x = xx
-	y = yy
-}
+until (instance_exists(man) && man.team != team) || place_meeting(x,y,Wall) || --dir <= 0
+x -= hspeed
+y -= vspeed
+xprevious = x - xl/4
+yprevious = y - yl/4
+
+
 #define fset(range,subrange,n,acc)
 direction = other.gunangle + (range*n)*(acc ? other.accuracy : 1) + random_range(-subrange,subrange)*other.accuracy
 team = other.team
@@ -852,6 +1095,10 @@ if q && !is_object(wep){
 		done: 0
 	}
 }
+if q && is_object(wep) && wep.wep = mod_current && !wep.done{
+    script_bind_draw(makemycoolgun, -17, index)
+}
+
 
 #define stats(w)
 var sts = global.stats;
@@ -866,9 +1113,10 @@ for (var i = 1; i<= 3; i++){
 //this thing is the distance between shit
 #macro gx 22
 
-#define makemycoolgun
+#define makemycoolgun(index)
+instance_destroy()
 draw_set_halign(0)
-with Player if is_object(wep) && wep.wep = mod_current && !wep.done
+with player_find(index) if is_object(wep) && wep.wep = mod_current && !wep.done
 {
 	var w = wep;
 	var tex = global.textmap;
@@ -907,7 +1155,7 @@ with Player if is_object(wep) && wep.wep = mod_current && !wep.done
 	}
 
 	var _str = "CREATE YOUR GUN"
-	draw_text_nt((_X+_x)/2-string_width(_str)/2,_y-15,_str)
+	draw_text_nt(floor((_X+_x)/2-string_width(_str)/2),_y-15,_str)
 
 	var _m_index = 0
 	/*switch w.info[2]
@@ -918,7 +1166,7 @@ with Player if is_object(wep) && wep.wep = mod_current && !wep.done
 
 	draw_set_color(c_black)
 	draw_set_alpha(.3)
-	draw_rectangle(_x+1,_Yline1,_X-1,_Yline2+2,0)
+	draw_rectangle(_x,_Yline1,_X,_Yline2+2,0)
 	draw_set_alpha(1)
 
 	draw_sprite_ext(global.sprammom,_a_index,(_x+_X)/2-18,_y-5,1,1,0,c_black,1)
@@ -929,19 +1177,19 @@ with Player if is_object(wep) && wep.wep = mod_current && !wep.done
 	draw_sprite(global.sprmodsm,_m_index,(_x+_X)/2+11,_y-6)
 
 	draw_line_width_color(_x,_Yline2+1,_X+2,_Yline2+1,1,c_black,c_black)
-	draw_line_width_color(_x-1,_Yline2,_X+1,_Yline2,1,c_white,c_white)
+	draw_line_width_color(_x-2,_Yline2,_X+1,_Yline2,1,c_white,c_white)
 
 	draw_line_width_color(_x,_Yline1+1,_X+2,_Yline1+1,1,c_black,c_black)
-	draw_line_width_color(_x-1,_Yline1,_X+1,_Yline1,1,c_white,c_white)
+	draw_line_width_color(_x-2,_Yline1,_X+1,_Yline1,1,c_white,c_white)
 
 	draw_set_color(make_color_rgb(9, 15, 25))
 
 	draw_set_color(c_white)
 	for (var i = 0; i< width; i++)
 	{
-		var x1 = _x+gx*i + 2;
+		var x1 = _x+gx*i +1;
 		var y1 = _y + 6;
-		var x2 = _x+gx*(i+1) - 2;
+		var x2 = _x+gx*(i+1) +1;
 		var y2 = y1 + 18;
 		var push = button_pressed(index,"key"+string(i+1));
 		var _btn = mskNone
@@ -965,15 +1213,15 @@ with Player if is_object(wep) && wep.wep = mod_current && !wep.done
 				case "shot cannon": _btn = global.sprmodsShotCannon break;
 			}
 		}
-		if point_in_rectangle(mouse_x[index], mouse_y[index], x1, y1, x2, y2) || push
+		if point_in_rectangle(mouse_x[index], mouse_y[index], x1, y1, x1 + 18, y1 + 18) || push
 		{
 			if !button_check(index, "fire")
 			{
-				draw_sprite(_btn,i,x1-1,y1-1)
+				draw_sprite(_btn,i,x1,y1-1)
 			}
 			else
 			{
-				draw_sprite_ext(_btn,i,x1-1,y1,1,1,0,c_ltgray,1)
+				draw_sprite_ext(_btn,i,x1,y1,1,1,0,c_ltgray,1)
 			}
 
 			var access = cho[? w.info[w.phase]][i]
@@ -1007,7 +1255,7 @@ with Player if is_object(wep) && wep.wep = mod_current && !wep.done
 				sleep(9)
 				repeat(5) instance_create(x+random_range(-5,5),y+random_range(-5,5),Dust)
 				view_shake_at(x,y,3)
-				draw_sprite_ext(_btn,i,x1-1,y1-2,1,1,0,c_white,1)
+				draw_sprite_ext(_btn,i,x1,y1-2,1,1,0,c_white,1)
 				w.info[++w.phase] = access
 				w.numbers[w.phase-1] = i
 				sound_play(sndClick)
@@ -1033,7 +1281,7 @@ with Player if is_object(wep) && wep.wep = mod_current && !wep.done
 		}
 		else
 		{
-			draw_sprite_ext(_btn,i,x1-1,y1,1,1,0,c_gray,1)
+			draw_sprite_ext(_btn,i,x1,y1,1,1,0,c_gray,1)
 		}
 	}
 }
