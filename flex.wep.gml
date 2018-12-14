@@ -12,7 +12,7 @@ return 1
 return 2
 
 #define weapon_area
-return -1
+return 20
 
 #define weapon_load
 return 2
@@ -30,91 +30,55 @@ return false
 return false
 
 #define step
-if infammo > 0 sound_play_gun(sndFootOrgSand4,9999999999999999999999,.0000001)
+//if infammo > 0 sound_play_gun(sndFootOrgSand4,9999999999999999999999,.0000001)
 
 #define weapon_fire
+var _a = (other.infammo != 0)
+var _p = random_range(.9,1.2)
+sound_play_pitchvol(sndFlakExplode,.3*_p,.5*(1-_a))
+//sound_play_pitchvol(sndMinigun,.8*_p,.8)
+sound_play_pitchvol(sndPopgun,1.2*_p,1)
+sound_play_pitchvol(sndHeavyRevoler,.8*_p,.5+.2*(1-_a))
+sound_play_pitchvol(sndTripleMachinegun,.8*_p,.5+.2*(1-_a))
+
 weapon_post(4+_a,3,5+_a*6)
-with instance_create(x,y,CustomProjectile)
-{
-  if other.infammo > 0 var _a = 0 else var _a = 1
-  var _p = random_range(.9,1.2)
-  sound_play_pitchvol(sndFlakExplode,.3*_p,.5*(1-_a))
-  //sound_play_pitchvol(sndMinigun,.8*_p,.8)
-  sound_play_pitchvol(sndPopgun,1.2*_p,1)
-  sound_play_pitchvol(sndHeavyRevoler,.8*_p,.5+.2*(1-_a))
-  sound_play_pitchvol(sndTripleMachinegun,.8*_p,.5+.2*(1-_a))
-  projectile_init(other.team,other)
-  if irandom(19) = 0 charged = 1 else charged = 0
-  mask_index   = mskBullet1
-  if other.infammo >0 var _c = 1 else var _c = 0
-  if _c = 1 sprite_index = global.sprBluellet2 else sprite_index = sprBullet2
-  motion_add(other.gunangle+random_range(-8,8)*other.accuracy,18)
-  image_angle = direction
-  image_speed = 1
-  recycle_amount = 2
-  bounce = 1
-  damage = 4
-  force  = 7
-  friction = .8 - _c * .2
-  on_hit     = b_hit
-  on_step    = b_step
-  on_wall    = b_wall
-  on_draw    = b_draw
-  on_destroy = b_destroy
+with instance_create(x,y,CustomProjectile){
+    //if irandom(19) = 0 charged = 1 else charged = 0
+    mask_index   = mskBullet1
+    sprite_index = _a ? global.sprBluellet2 : sprBullet2
+    motion_add(other.gunangle+random_range(-8,8)*other.accuracy,18)
+    projectile_init(other.team,other)
+    
+    image_angle = direction
+    image_speed = 1
+    recycle_amount = 2
+    bounce = 1
+    damage = 4
+    force  = 7
+    friction = .8 - _a * .2
+    on_hit     = b_hit
+    on_step    = b_step
+    on_wall    = b_wall
+    on_draw    = b_draw
+    on_destroy = b_destroy
 }
 
 #define b_hit
-if projectile_canhit(other)
-{
-  projectile_hit(other,damage,force,direction)
-  /*if instance_exists(creator) if recycle_amount != 0 && irandom(9) <= 5 && skill_get(16){
-  	creator.ammo[1]+=recycle_amount
-  	if creator.ammo[1] > creator.typ_amax[1] {creator.ammo[1] = creator.typ_amax[1]}
-  	sound_play_pitchvol(sndRecGlandProc, 1, 7)
-  }
-  if instance_exists(creator) if recycle_amount != 0 && skill_get("recycleglandx10"){
-  	creator.ammo[1]+= 10*recycle_amount
-  	if creator.ammo[1] > creator.typ_amax[1] {creator.ammo[1] = creator.typ_amax[1]}
-  	sound_play_pitchvol(sndRecGlandProc, 1, 7)
-  }*/
-  if other.my_health <= 0
-  {var o = other
-    if instance_exists(creator)
-    {
-      var a = max(12*other.size,3)
-      sleep(a*2)
-      with creator if infammo + a <= 90 infammo += a else infammo = 90 //limit infammo gain to 90 frames
+projectile_hit(other,damage,force,direction)
+if other.my_health <= 0{
+    var o = other
+    if instance_exists(creator){
+        var a = max(12*other.size,3)
+        sleep(a*2)
+        with creator if infammo >= 0 infammo = min(infammo + a, 90)  //limit infammo gain to 90 frames
     }
-  }
 }
 instance_destroy()
 
 #define b_wall
-if place_meeting(x+hspeed,y,Wall)
-{
-  instance_create(x,y,Smoke)
-  sound_play_pitch(sndHitWall,random_range(.8,1.2))
-  hspeed *= -1
-  bounce--
-  image_angle = direction
-}
-if place_meeting(x,y+vspeed,Wall)
-{
-  instance_create(x,y,Smoke)
-  sound_play_pitch(sndHitWall,random_range(.8,1.2))
-  vspeed *= -1
-  bounce--
-  image_angle = direction
-}
-if place_meeting(x+hspeed,y+vspeed,Wall)
-{
-  instance_create(x,y,Smoke)
-  sound_play_pitch(sndHitWall,random_range(.8,1.2))
-  vspeed *= -1
-  hspeed *= -1
-  bounce--
-  image_angle = direction
-}
+bounce--
+move_bounce_solid(0)
+image_angle = direction
 if bounce < 0 instance_destroy()
 
 #define b_draw
@@ -134,4 +98,4 @@ if speed <= friction instance_destroy()
 return global.sprInfinigun2
 
 #define weapon_text
-return choose("NEWER AND BETTER","HUNGRY","POP ROYAL")
+return choose("NEWER, BETTER")

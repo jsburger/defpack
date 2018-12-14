@@ -13,7 +13,7 @@ return global.sprExplosiveBow;
 return 3;
 
 #define weapon_auto
-return false;
+return 1;
 
 #define weapon_load
 return 8;
@@ -42,12 +42,12 @@ return global.sprHotArrowHUD;
 #define weapon_fire
 with instance_create(x,y,CustomObject)
 {
-    sound = sndAssassinAttack
-    sound_set_track_position(sound,.11)
-	name    = "bow charge"
+    sound = sndMeleeFlip
+    sound_set_track_position(sound,.0)
+	name    = "explosive bow charge"
 	creator = other
 	charge    = 0
-  maxcharge = 50
+    maxcharge = 20
 	charged = 0
 	holdtime = 5 * 30
 	depth = TopCont.depth
@@ -61,21 +61,24 @@ with instance_create(x,y,CustomObject)
 
 #define bow_step
 if !instance_exists(creator){instance_destroy();exit}
-with creator weapon_post(0,-(other.charge/2),0)
-if button_check(index,"swap"){creator.ammo[3] = min(creator.ammo[3] + weapon_cost(), creator.typ_amax[3]);instance_destroy();exit}
+with creator weapon_post(0,-(other.charge/other.maxcharge*10),0)
+if button_check(index,"swap"){creator.ammo[3] = min(creator.ammo[3] + weapon_cost(), creator.typ_amax[3]);instance_delete(self);exit}
 if btn = "fire" creator.reload = weapon_get_load(creator.wep)
-if btn = "spec" creator.breload = weapon_get_load(creator.bwep) * array_length_1d(instances_matching(instances_matching(instances_matching(CustomObject, "name", "bow charge"),"creator",creator),"btn",btn))
+if btn = "spec" creator.breload = weapon_get_load(creator.bwep) * array_length_1d(instances_matching(instances_matching(instances_matching(CustomObject, "name", "explosive bow charge"),"creator",creator),"btn",btn))
 if button_check(index,btn){
     if charge < maxcharge{
-      charge += current_time_scale;
-      charged = 0
-      sound_play_pitchvol(sound,sqr((charge/maxcharge) * 1.2) + .2,.6)
-      sound_set_track_position(sound,.15)
+        charge += current_time_scale;
+        charged = 0
+        //if charge < 20{
+            sound_play_pitchvol(sound,sqr((charge/maxcharge) * 3.5) + 6,1 - charge/maxcharge)
+            
+        //}
     }
     else{
         if current_frame mod 6 < current_time_scale creator.gunshine = 1
         charge = maxcharge;
         if charged = 0{
+            sound_play_pitch(sndHammer,5)
             instance_create(creator.x,creator.y,WepSwap);
             charged = 1
         }
@@ -113,7 +116,15 @@ else
     sound_play_pitchvol(sndShovel,2,.8)
     sound_play_pitchvol(sndUltraCrossbow,3,.8)
 }
-with instance_create(creator.x,creator.y,Bolt)
+with bolt_create(creator.x, creator.y){
+    creator = other.creator
+    team = creator.team
+    charged = other.charged
+    motion_add(creator.gunangle+random_range(-8,8)*creator.accuracy*(1-(other.charge/other.maxcharge)),16+8*other.charge/other.maxcharge)
+	damage = 12 + charged * 12
+	image_angle = direction
+}
+/*with instance_create(creator.x,creator.y,Bolt)
 {
 	sprite_index = global.sprHotArrow
 	creator = other.creator
@@ -126,7 +137,7 @@ with instance_create(creator.x,creator.y,Bolt)
 	if fork(){
 		while(instance_exists(self)){
 			image_angle = direction
-				if speed <= 0 || place_meeting(x + hspeed,y + vspeed,enemy)
+			if speed <= 0 || place_meeting(x + hspeed,y + vspeed,enemy)
 				{
 					sprite_index = mskNothing
 					if check = 0
@@ -148,7 +159,7 @@ with instance_create(creator.x,creator.y,Bolt)
 						with instance_create(x+random_range(-8,8),y+random_range(-8,8),Flame)
 						{
 							team = other.team
-              if other.charged = true motion_add(point_direction(other.x,other.y,x,y),choose(1,1,1,3,4))
+                            if other.charged = true motion_add(point_direction(other.x,other.y,x,y),choose(1,1,1,3,4))
 						}
 					}
 				}
@@ -156,4 +167,98 @@ with instance_create(creator.x,creator.y,Bolt)
 		}
 		exit
 	}
+}*/
+
+#define bolt_create(x,y)
+with instance_create(x,y,CustomProjectile){
+    sprite_index = global.sprHotArrow
+    mask_index = mskBolt
+    charged = 0
+    damage = 12
+    force = 3
+    on_step = bolt_step
+    on_end_step = bolt_end_step
+    on_hit = bolt_hit
+    on_wall = bolt_wall
+    on_destroy = bolt_destroy
+    return id
 }
+
+#define bolt_step
+if random(100) < (50 + 50*charged)*current_time_scale{
+    repeat(random(4))with instance_create(x,y,Flame){
+        team = other.team
+        creator = other.creator
+        motion_set(other.direction + random_range(-20,20), random(3)+ 3)
+    }
+}
+
+#define bolt_end_step
+var hitem = 0
+if skill_get(mut_bolt_marrow){
+    var q = mod_script_call_nc("mod","defpack tools","instance_nearest_matching_ne",x,y,hitme,"team",team)
+    if instance_exists(q) and distance_to_object(q) < 10 {
+        x = q.x - hspeed_raw
+        y = q.y - vspeed_raw
+        hitem = 1
+    }
+}
+with instance_create(x,y,BoltTrail){
+    image_xscale = point_distance(x,y,other.xprevious,other.yprevious)
+    image_angle = point_direction(x,y,other.xprevious,other.yprevious)
+    image_blend = c_red
+    if fork(){
+        while instance_exists(self){
+            image_blend = merge_color(image_blend,c_yellow,.3*current_time_scale)
+            wait(0)
+        }
+        exit
+    }
+}
+if hitem with q with other bolt_hit()
+
+#define bolt_hit
+sleep(10)
+var o = other, hp = other.my_health;
+projectile_hit(o, damage, direction, force)
+repeat(4+random(charged*10)){
+    with instance_create(x,y,Flame){
+        team = other.team
+        creator = other.creator
+        motion_set(other.direction + random_range(-20,20), random(3)+ 3)
+    }
+}
+if hp > damage/2{
+    with instance_create(x,y,BoltStick){
+        target = o
+        sprite_index = other.sprite_index
+        image_angle = point_direction(x,y,o.x,o.y)
+    }
+    instance_destroy()
+}
+
+#define bolt_wall
+if !charged{
+    with instance_create(x+hspeed,y+vspeed,CustomObject){
+        sprite_index = other.sprite_index
+        image_angle = other.image_angle
+        if fork(){
+            wait(10)
+            if instance_exists(self) instance_destroy()
+            exit
+        }
+    }
+}
+sound_play_hit(sndBoltHitWall,.1)
+instance_destroy()
+
+#define bolt_destroy
+if charged{
+    instance_create(x+hspeed,y+vspeed,Explosion)
+    sound_play(sndExplosion)
+}
+
+
+
+
+
