@@ -62,7 +62,7 @@ if timer <= 0 {
 	else closeboy = instance_nearest(x,y,enemy)
 	if instance_exists(closeboy) && collision_line(xprevious,yprevious, closeboy.x, closeboy.y, Wall, 0,0) < 0{
 	    var num = 45/2
-		direction = floor(point_direction(x,y,closeboy.x,closeboy.y)/num)*num
+		direction += angle_difference(floor(point_direction(x,y,closeboy.x,closeboy.y)/num)*num, direction)/3*current_time_scale
 		image_angle = direction
 	}
 }

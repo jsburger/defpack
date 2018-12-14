@@ -37,14 +37,9 @@ return false
 #define weapon_reloaded
 
 #define weapon_fire
-with instances_matching(CustomObject,"name","bow charge")
-{
-  instance_destroy()
-}
 with instance_create(x,y,CustomObject)
 {
-    sound = sndAssassinAttack
-    sound_set_track_position(sound,.11)
+    sound = sndMeleeFlip
 	name    = "bow charge"
 	creator = other
 	charge    = 0
@@ -62,23 +57,26 @@ with instance_create(x,y,CustomObject)
 
 #define bow_step
 if !instance_exists(creator){instance_delete(self);exit}
-with creator weapon_post(0,-(other.charge/2),0)
-if btn = "fire" && creator.wep != mod_current{instance_delete(self);exit}
-if btn = "spec" && creator.bwep != mod_current{instance_delete(self);exit}
+with creator weapon_post(0,-(other.charge/other.maxcharge*10),0)
 if button_check(index,"swap"){creator.ammo[3] = min(creator.ammo[3] + weapon_cost(), creator.typ_amax[3]);instance_destroy();exit}
 if btn = "fire" creator.reload = weapon_get_load(creator.wep)
-if btn = "spec" creator.breload = weapon_get_load(creator.bwep) * array_length_1d(instances_matching(instances_matching(instances_matching(CustomObject, "name", "bow charge"),"creator",creator),"btn",btn))
+if btn = "spec"{
+    if creator.race = "steroids"
+        creator.breload = weapon_get_load(creator.bwep)
+    else
+        creator.reload = weapon_get_load(creator.wep) * array_length_1d(instances_matching(instances_matching(instances_matching(CustomObject, "name", name),"creator",creator),"btn",btn))
+}
 if button_check(index,btn){
     if charge < maxcharge{
-      charge += current_time_scale;
-      charged = 0
-      sound_play_pitchvol(sound,sqr((charge/maxcharge) * 1.2) + .2,.6)
-      sound_set_track_position(sound,.15)
+        charge += current_time_scale;
+        charged = 0
+        sound_play_pitchvol(sound,sqr((charge/maxcharge) * 3.5) + 6,1 - charge/maxcharge)
     }
     else{
         if current_frame mod 6 < current_time_scale creator.gunshine = 1
         charge = maxcharge;
         if charged = 0{
+            sound_play_pitch(sndHammer,5)
             instance_create(creator.x,creator.y,WepSwap);
             charged = 1
         }

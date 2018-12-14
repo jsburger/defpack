@@ -43,7 +43,6 @@ return global.sprHotArrowHUD;
 with instance_create(x,y,CustomObject)
 {
     sound = sndMeleeFlip
-    sound_set_track_position(sound,.0)
 	name    = "explosive bow charge"
 	creator = other
 	charge    = 0
@@ -60,11 +59,16 @@ with instance_create(x,y,CustomObject)
 }
 
 #define bow_step
-if !instance_exists(creator){instance_destroy();exit}
+if !instance_exists(creator){instance_delete(self);exit}
 with creator weapon_post(0,-(other.charge/other.maxcharge*10),0)
-if button_check(index,"swap"){creator.ammo[3] = min(creator.ammo[3] + weapon_cost(), creator.typ_amax[3]);instance_delete(self);exit}
+if button_check(index,"swap"){creator.ammo[3] = min(creator.ammo[3] + weapon_cost(), creator.typ_amax[3]);instance_destroy();exit}
 if btn = "fire" creator.reload = weapon_get_load(creator.wep)
-if btn = "spec" creator.breload = weapon_get_load(creator.bwep) * array_length_1d(instances_matching(instances_matching(instances_matching(CustomObject, "name", "explosive bow charge"),"creator",creator),"btn",btn))
+if btn = "spec"{
+    if creator.race = "steroids"
+        creator.breload = weapon_get_load(creator.bwep)
+    else
+        creator.reload = weapon_get_load(creator.wep) * array_length_1d(instances_matching(instances_matching(instances_matching(CustomObject, "name", name),"creator",creator),"btn",btn))
+}
 if button_check(index,btn){
     if charge < maxcharge{
         charge += current_time_scale;
