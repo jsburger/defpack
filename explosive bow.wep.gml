@@ -31,7 +31,7 @@ return sndSwapHammer;
 return 6;
 
 #define weapon_text
-return "CHECK THE ROUTES";
+return choose("CHECK THE ROUTES","HOW DO I HOLD THIS");
 
 #define weapon_laser_sight
 return false;
@@ -75,14 +75,15 @@ if button_check(index,btn){
         charged = 0
         //if charge < 20{
             sound_play_pitchvol(sound,sqr((charge/maxcharge) * 3.5) + 6,1 - charge/maxcharge)
-            
+
         //}
     }
     else{
         if current_frame mod 6 < current_time_scale creator.gunshine = 1
         charge = maxcharge;
         if charged = 0{
-            sound_play_pitch(sndHammer,5)
+            sound_play_pitch(sndSnowTankCooldown,8)
+            sound_play_pitchvol(sndShielderDeflect,5,.5)
             instance_create(creator.x,creator.y,WepSwap);
             charged = 1
         }
@@ -125,7 +126,7 @@ with bolt_create(creator.x, creator.y){
     team = creator.team
     charged = other.charged
     motion_add(creator.gunangle+random_range(-8,8)*creator.accuracy*(1-(other.charge/other.maxcharge)),16+8*other.charge/other.maxcharge)
-	damage = 12 + charged * 12
+	damage = 12 + charged * 8
 	image_angle = direction
 }
 /*with instance_create(creator.x,creator.y,Bolt)
@@ -190,10 +191,10 @@ with instance_create(x,y,CustomProjectile){
 
 #define bolt_step
 if random(100) < (50 + 50*charged)*current_time_scale{
-    repeat(random(4))with instance_create(x,y,Flame){
+    repeat(random(3+charged * 6))with instance_create(x,y,Flame){
         team = other.team
         creator = other.creator
-        motion_set(other.direction + random_range(-20,20), random(3)+ 3)
+        motion_set(other.direction + choose(-30,30) * choose(0,1,1,1) + random_range(-8,8), random(3)+ 3)
     }
 }
 
@@ -261,8 +262,8 @@ if charged{
     instance_create(x+hspeed,y+vspeed,Explosion)
     sound_play(sndExplosion)
 }
-
-
-
-
-
+else
+{
+  instance_create(x+hspeed,y+vspeed,SmallExplosion)
+  sound_play(sndExplosionS)
+}

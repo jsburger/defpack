@@ -34,6 +34,7 @@ return "POTENTIAL"
 
 #define weapon_fire
 weapon_post(2,0,3)
+motion_add(gunangle-180,4)
 sound_play_pitch(sndPopgun,random_range(1,2))
 sound_play_pitchvol(sndRustyRevolver,random_range(2,3),.6)
 sound_play_pitchvol(sndNothing2Ball,random_range(2,3),.4)
