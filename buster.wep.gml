@@ -71,21 +71,8 @@ with instance_create(x,y,CustomProjectile)
 #define blaster_step
 if speed > maxspeed speed = maxspeed
 image_angle += speed * 2 * current_time_scale
+if irandom(1) < current_time_scale with instance_create(x+lengthdir_x(-sprite_get_height(sprite_index)/2.2,image_angle-90),y+lengthdir_y(-sprite_get_height(sprite_index)/2.2,image_angle-90),Smoke){image_xscale = .75;image_yscale = .75;gravity = -.12}
 //if speed = maxspeed if lifetime>0{if lifetime = 5{sound_play_pitch(sndSniperTarget,8)};lifetime -= current_time_scale}else{instance_destroy();exit}
-with instance_create(x-lengthdir_x(8+speed,other.direction),y-lengthdir_y(8+speed,other.direction),BoltTrail)
-{
-	image_blend = c_yellow
-	image_angle = other.direction
-	image_yscale = 1.5
-	image_xscale = 6+other.speed
-	if fork(){
-	    while instance_exists(self){
-	        image_blend = merge_color(image_blend,c_red,.1*current_time_scale)
-	        wait(0)
-	    }
-	    exit
-	}
-}
 if speed <= friction instance_destroy()
 
 #define blaster_hit
@@ -115,7 +102,6 @@ repeat(2)
 	repeat(4)
 	{
 		instance_create(x+lengthdir_x(j,i),y+lengthdir_y(j,i),k)
-		instance_create(x+lengthdir_x(random_range(j-12,j),i),y+lengthdir_y(random_range(j-12,j),i),GroundFlame)
 		i += 360/4
 	}
 	j += 32
@@ -123,3 +109,4 @@ repeat(2)
 }
 sleep(30)
 view_shake_at(x,y,15)
+instance_create(x,y,GroundFlame)
