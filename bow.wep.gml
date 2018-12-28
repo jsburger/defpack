@@ -39,11 +39,11 @@ return false
 #define weapon_fire
 with instance_create(x,y,CustomObject)
 {
-    sound = sndMeleeFlip
+  sound = sndMeleeFlip
 	name    = "bow charge"
 	creator = other
 	charge    = 0
-    maxcharge = 30
+  maxcharge = 30
 	charged = 0
 	holdtime = 5 * 30
 	depth = TopCont.depth
@@ -76,7 +76,8 @@ if button_check(index,btn){
         if current_frame mod 6 < current_time_scale creator.gunshine = 1
         charge = maxcharge;
         if charged = 0{
-            sound_play_pitch(sndHammer,5)
+            sound_play_pitch(sndSnowTankCooldown,8)
+            sound_play_pitchvol(sndShielderDeflect,5,.5)
             instance_create(creator.x,creator.y,WepSwap);
             charged = 1
         }
