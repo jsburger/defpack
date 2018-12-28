@@ -518,7 +518,8 @@ if is_object(w){
 				for (var i = 0; i<array_length_1d(w.sounds); i++){
 					sound_play_pitch(w.sounds[i],random_range(.8,1.2))
 				}
-				weapon_post(w.ammo * 2,w.ammo,w.ammo)
+				var num = sqrt(w.ammo + w.load)
+				weapon_post(num, num, num/2)
 				mod_script_call_self("weapon",mod_current,string_replace(w.info[2]," ","_"),w.info[1],w.info[3])
 				if w.time wait(w.time)
 			}
@@ -865,7 +866,8 @@ else{
 
 #define shotcannon(p)
 with instance_create(x,y,CustomProjectile) {
-	sprite_index = global.flakmap[? "shell shot"]
+	var str = p + " shot"
+	sprite_index = global.flakmap[? str]
 	mask_index = mskFlakBullet
 	with proj(p){
 	    other.damage = damage
@@ -892,7 +894,8 @@ with instance_create(x,y,CustomProjectile) {
 
 #define supershotcannon(p)
 with instance_create(x,y,CustomProjectile) {
-	sprite_index = global.flakmap[? "shell shot"]
+	var str = "super " + p + " shot"
+	sprite_index = global.flakmap[? str]
 	mask_index = mskSuperFlakBullet
 	with proj(p){
 	    other.damage = damage * 5
@@ -946,7 +949,7 @@ if skill_get(15){speed ++;image_index = 0}
 move_bounce_solid(1)
 speed *= .8
 repeat(irandom(1)+2){
-	with instance_create(x, y, Bullet2){
+	with proj(payload){
 		motion_set(random(360), random_range(8, 12))
 		projectile_init(other.team,other.creator)
 		image_angle = direction

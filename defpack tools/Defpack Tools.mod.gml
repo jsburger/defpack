@@ -297,6 +297,10 @@ draw_set_blend_mode(bm_add);
 draw_sprite_ext(sprite_index, image_index, x, y, 2*image_xscale, 2*image_yscale, image_angle, image_blend, 0.1);
 draw_set_blend_mode(bm_normal);
 
+#define bullet_wall
+sound_play_hit(sndHitWall,.2)
+instance_destroy()
+
 #define create_psy_bullet(_x,_y)
 var a = instance_create(_x, _y, CustomProjectile)
 with (a) {
@@ -319,6 +323,7 @@ with (a) {
 	on_hit = script_ref_create(bullet_hit)
 	on_draw = script_ref_create(bullet_draw)
 	on_anim = script_ref_create(bullet_anim)
+	on_wall = script_ref_create(bullet_wall)
 }
 return a;
 
@@ -560,6 +565,7 @@ with (c){
 	on_hit = script_ref_create(bullet_hit)
 	on_draw = script_ref_create(bullet_draw)
 	on_anim = script_ref_create(bullet_anim)
+	on_wall = script_ref_create(bullet_wall)
 }
 return c;
 
@@ -591,7 +597,6 @@ with instance_create(x,y,Lightning){
 	{
 	   image_angle = other.image_angle
 	}
-	sound_play_hit(sndHitWall,.2)
 }
 with instance_create(x,y,BulletHit){
 	direction = other.direction
@@ -615,6 +620,7 @@ with (d) {
 	on_destroy = script_ref_create(toxic_destroy)
 	on_hit = script_ref_create(bullet_hit)
 	on_draw = script_ref_create(bullet_draw)
+	on_wall = script_ref_create(bullet_wall)
 	on_anim = script_ref_create(bullet_anim)
 }
 return d;
@@ -627,7 +633,6 @@ with instance_create(x,y,BulletHit){
 	sprite_index = global.sprToxicBulletHit
 	direction = other.direction
 }
-if place_meeting(x + hspeed,y +vspeed,Wall){sound_play_hit(sndHitWall,.2)}
 
 #define create_fire_bullet(_x,_y)
 var e = instance_create(_x, _y, CustomProjectile)
@@ -646,6 +651,7 @@ with (e){
 	on_hit = script_ref_create(bullet_hit)
 	on_draw = script_ref_create(bullet_draw)
 	on_anim = script_ref_create(bullet_anim)
+	on_wall = script_ref_create(bullet_wall)
 }
 return e;
 
@@ -664,7 +670,6 @@ with instance_create(x,y,BulletHit){
 	direction = other.direction
   image_index = 1
 }
-if place_meeting(x + hspeed,y +vspeed,Wall){sound_play_hit(sndHitWall,.2)}
 
 #define create_dark_bullet(_x,_y)
 var f = instance_create(_x, _y, CustomSlash)
@@ -684,17 +689,12 @@ with (f){
 	//on_step = script_ref_create(dark_step)
 	on_projectile = script_ref_create(dark_proj)
 	on_destroy = script_ref_create(dark_destroy)
-	on_wall = script_ref_create(dark_wall)
-	on_hit = script_ref_create(bullet_hit)
+    on_wall = script_ref_create(bullet_wall)
+    on_hit = script_ref_create(bullet_hit)
 	on_draw = script_ref_create(bullet_draw)
 	on_anim = script_ref_create(bullet_anim)
 }
 return f;
-
-#define dark_step
-
-#define dark_wall
-instance_destroy()
 
 #define dark_proj
 var t = team;
@@ -746,7 +746,6 @@ with create_sonic_explosion(x,y){
 	image_speed = 0.8
 	image_blend = c_black
 }
-if place_meeting(x + hspeed,y +vspeed,Wall){sound_play_hit(sndHitWall,.2)}
 
 #define create_light_bullet(_x,_y)
 var g = instance_create(_x, _y, CustomProjectile)
@@ -767,6 +766,7 @@ with (g){
 	on_destroy = script_ref_create(light_destroy)
 	on_hit = script_ref_create(light_hit)
 	on_draw = script_ref_create(bullet_draw)
+	on_wall = script_ref_create(bullet_wall)
 	on_anim = script_ref_create(bullet_anim)
 }
 return g;
@@ -794,8 +794,6 @@ if other != lasthit{
 with instance_create(x,y,BulletHit){
 	sprite_index = global.sprLightBulletHit
 }
-if place_meeting(x + hspeed,y +vspeed,Wall){sound_play_hit(sndHitWall,.2)}
-
 
 
 #define create_sonic_explosion(_x,_y)
