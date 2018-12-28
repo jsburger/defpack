@@ -110,7 +110,7 @@ return 0
 
 #define step
 //cool iris synergies
-if skill_get("prismatic iris")
+/*if skill_get("prismatic iris")
 {
   if skill_get(21)
   {
@@ -202,6 +202,8 @@ with BouncerBullet
     }
   }
 }
+*/
+
 if global.colors[global.color] = "blind"{
     with instances_matching(WepPickup,"irischeck",null){
         irischeck = 1

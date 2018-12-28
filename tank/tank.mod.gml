@@ -1,48 +1,148 @@
 #define init
 global.tank = sprite_add("tank.png",11,16,8)
+with instances_matching(CustomHitme, "name", "tank") sprite_index = global.tank
+global.crate = sprite_add_weapon("sprTankChest.png", 16, 16)
+
+#macro tankscale 4
+#macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)
+
+#define draw_shadows
+with instances_matching(CustomHitme, "name", "tank crate"){
+    draw_circle_color(x - 1,y + 2,12 * (1 - z/zstart),c_white,c_white,0)
+}
+with instances_matching(CustomHitme, "name", "tank"){
+    for (var i = height; i < image_number; i++){
+    	draw_sprite_ext(global.tank, i , x, y + spr_shadow_y, image_xscale, image_yscale, gunangle+180, image_blend, 1);
+    }
+}
+
+#define crate_create(_x,_y)
+with instance_create(_x, _y, CustomHitme){
+    
+    sprite_index = global.crate
+    mask_index = mskNone
+    depth = -8
+    image_speed = 0
+    shinetime = 10
+    
+	z = 800
+	zspeed = 0
+	zstart = z
+    
+    my_health = 10
+    team = -10
+    size = 6
+    maxhealth = my_health
+    
+    name = "tank crate"
+    on_step = cratestep
+    on_hurt = cratehurt
+    on_draw = cratedraw
+    on_destroy = cratedie
+    
+    return id
+}
+
+#define cratestep
+if z > 1{
+    zspeed += current_time_scale
+    z = max(z - zspeed*current_time_scale, 1)
+    nexthurt = current_frame + 2
+    my_health = maxhealth
+}
+else{
+    if z = 1{
+        mask_index = sprite_index
+        depth = -2
+        z = 0
+        instance_create(x,y,PortalClear)
+        repeat(36)with instance_create(x,y,Dust) motion_set(random(360),random(1)+5)
+        sound_play(sndHyperSlugger)
+    }
+    shinetime -= current_time_scale
+    if shinetime <= 0{
+        image_speed = .4
+        shinetime = 120
+    }
+    if image_index + image_speed*current_time_scale > image_number{
+        image_speed = 0
+        image_index = 0
+    }
+    speed = 0
+}
+if my_health <= 0 instance_destroy()
+
+
+#define cratedie
+tank_create(x,y)
+repeat(40){
+    with instance_create(x,y,Dust){
+        direction = clamp(sqr(random(10)+1) * choose(-1,1), -90, 90)
+        direction += 90
+        speed = random(4) + 5
+    }
+}
+
+#define cratehurt(damage, vel, ang)
+if z = 0{
+    sound_play_hit(sndWallBreakBrick,.2)
+    my_health -= damage
+    nexthurt = current_frame + 6
+}
+
+#define cratedraw
+
+if nexthurt > current_frame + 4 d3d_set_fog(1,c_white,0,0)
+y -= z
+draw_self()
+y += z
+d3d_set_fog(0,0,0,0)
 
 #define tank_create(_x,_y)
 var tank = instance_create(_x,_y,CustomHitme);
 with tank{
+    name = "tank"
 	sprite_index = global.tank
-	mask_index = mskNone
+	image_speed = 0
+	spr_shadow_y = 3
+	depth = -2
+
 	on_step = tankstep
 	on_draw = tankdraw
 	on_hurt = tankhit
 	on_destroy = tankbreak
+	on_cleanup = tankcleanup
 	on_end_step = tankendstep
 	on_begin_step = tankbeginstep
+	
 	driver = noone
-	image_speed = 0
 	doortime = 0
-	maxspeed = 5
-	maxhealth = 300
-	my_health = maxhealth
 	reload = 0
 	breload = 0
 	gunangle = direction
-	team = -1
-	size = 2
-	friction = .2
-	depth = -8
-	z = 800
-	zspeed = 0
-	zstart = z
+	team = 2
 	portalmode = 0
-	hurt = 0
-	length = 10
 	turnspeed = 0
+
+	maxspeed = 5
+	maxhealth = 300
+	my_health = maxhealth
+	size = 6
+	height = 7
+	length = 10
+	friction = .2
+
 	ammotype = 1
 	ammocost = 2
 	sub_fire = script_ref_create(machinegun_sub)
 	sub_gun = wep_machinegun
 	main_gun = "tank cannon"
-	sf = surface_create(100,100)
+	sf = surface_create(100 * tankscale,100 * tankscale)
 }
 return tank
 
 #define dismount
-mask_index = tankthings[0]
+//mask_index = tankthings[0]
 image_alpha = tankthings[1]
 maxspeed = tankthings[2]
 spr_shadow = tankthings[3]
@@ -53,10 +153,11 @@ driving = 0
 canswap = 1
 my_health = tankthings[4]
 canspec = 1
+candie = tankthings[7]
 other.driver = noone
 
 #define mount
-tankthings = [mask_index,image_alpha,maxspeed,spr_shadow,my_health,wep,bwep]
+tankthings = [mask_index = mskNone ? mskPlayer : mask_index,image_alpha,maxspeed,spr_shadow,my_health,wep,bwep,candie]
 image_alpha = 0
 wep = other.main_gun
 bwep = other.sub_gun
@@ -64,6 +165,7 @@ spr_shadow = mskNone
 maxspeed = 10000
 driving = 1
 canspec = 0
+candie = 0
 canswap = 0
 canwalk = 0
 other.driver = id
@@ -85,21 +187,23 @@ with Player if "tankthings" in self && driving{
 
 with instances_matching(WepPickup,"roll",1) if "tankcheck" not in self && !instance_exists(Portal){
     tankcheck = 1
-    if !irandom(200){
-        tank_create(x,y)
+    if !irandom(0){
+        crate_create(x,y)
         instance_destroy()
     }
 }
 
 
 #define draw_mount(_x,_y)
-draw_tooltip(_x,_y,"DRIVE#E")
+draw_set_halign(1)
+draw_text_nt(_x,_y - 24,`DRIVE`)
+draw_sprite(sprEPickup, 0, _x, _y)
 instance_destroy()
 
 #define tankbeginstep
 if doortime > 0 {doortime -=1}
-if z = 0 && !instance_exists(driver){
-    with Player if distance_to_object(other) < 15{
+if !instance_exists(driver){
+    with Player if distance_to_object(other) < 10{
         script_bind_draw(draw_mount,-10,other.x,other.y-10)
         if "driving" not in self driving = 0
     	//ENTERING tank AND SETTING STATS(i optimized this by just making it a function)
@@ -116,20 +220,6 @@ if !instance_exists(driver) driver = noone
 //PREVENTING PEOPLE FROM DRIVING MULTIPLE tankS
 if driver != noone with instances_matching(CustomHitme,"driver",driver){
 	if id != other {driver = noone}
-}
-
-if z > 1{
-    zspeed += current_time_scale
-    z = max(z - zspeed*current_time_scale, 1)
-}
-else{
-    if z = 1{
-        mask_index = global.tank
-        depth = -2
-        z = 0
-        repeat(36)with instance_create(x,y,Dust) motion_set(random(360),random(1)+5)
-        sound_play(sndHyperSlugger)
-    }
 }
 
 //BEING DRIVEN
@@ -158,9 +248,21 @@ if instance_exists(driver) && instance_is(driver,Player){
 	}
 	image_angle = direction + 180
 	if speed > maxspeed {speed = maxspeed}
+	if speed > 3 and current_frame_active{
+	    var angle = direction + 180
+	    for (var i = -1; i<= 1; i+=2){
+	        if !irandom(2) {
+                with instance_create(x + hspeed_raw + lengthdir_x(4,angle+(90*i)) + lengthdir_x(10,angle), y + vspeed_raw + lengthdir_y(4,angle+(90*i)) + lengthdir_y(10,angle) - 2, Dust){
+                    motion_set(angle, random_range(1,3))
+                    gravity = .3
+                    gravity_direction = 90
+                }
+	        }
+        }
+	}
 	//PORTAL MODE
 	if instance_exists(Portal){
-		with driver{
+		with Player{
 			if distance_to_object(instance_nearest(x,y,Portal)) <=50 || instance_exists(BigPortal){
 				other.portalmode = 1
 			}
@@ -205,9 +307,9 @@ if instance_exists(driver) && instance_is(driver,Player){
 	persistent = 0
 }
 
-if place_meeting(x+hspeed_raw,y+vspeed_raw,Wall){
+if place_meeting(x,y,Wall){
 	//kill walls
-	with instance_nearest(x + hspeed_raw,y+vspeed_raw,Wall){
+	with Wall if place_meeting(x,y,other){
 		with instance_create(x,y,FloorExplo){
 			with Debris if place_meeting(x,y,other){
 				instance_destroy()
@@ -215,17 +317,17 @@ if place_meeting(x+hspeed_raw,y+vspeed_raw,Wall){
 		}
 		instance_destroy()
 	}
-	my_health -=1
+	my_health -= .5
 }
 
-if my_health/maxhealth < 3/4{
+if my_health/maxhealth < .5{
 	//smoke indicates damage
-	if random(2) > (my_health/maxhealth){
+	if random(2) > (my_health/maxhealth) * current_time_scale{
 		with instance_create(x-lengthdir_x(10,direction),y - lengthdir_y(10,direction),Smoke){
 			motion_set(random_range(60,120),2+random(2))
 			image_xscale = .5
 			image_yscale = .5
-			depth = other.depth
+			depth = other.depth - 1
 		}
 	}
 }
@@ -235,9 +337,9 @@ if my_health <= 0 {
 }
 
 #define tankendstep
-if floor(speed) > 0{
+if floor(speed) > 0 and current_frame_active{
 	var q = collision_circle(x+hspeed + lengthdir_x(length,direction),y+vspeed+ lengthdir_y(length,direction),5,hitme,0,1);
-	if q!= noone && q.team != team && !instance_is(q,NothingInactive) && projectile_canhit_melee(q){
+	if q!= noone && q.team != team && projectile_canhit_melee(q){
 		projectile_hit(q,floor(speed*2),speed*2,point_direction(x,y,q.x,q.y))
 		sound_play_pitchvol(sndImpWristHit,1,5)
 	}
@@ -253,50 +355,41 @@ if !portalmode && instance_exists(driver){
 //tank takes damage
 #define tankhit(damage, kb_vel, kb_dir)
 my_health -= damage;
-hurt = 1
-sound_play(sndHitMetal)
+nexthurt = current_frame + 6
+sound_play_hit(sndHitMetal,.1)
+
+#define tankcleanup
+surface_destroy(sf)
 
 #define tankbreak
+tankcleanup()
 if driver != noone with driver{
     dismount()
 }
 instance_create(x,y,Explosion)
 repeat(3) instance_create(x,y,SmallExplosion)
 sound_play(sndExplosionCar)
-surface_destroy(sf)
 
 #define tankdraw
-var col = c_black
-var alpha = .4
-with BackCont{
-    col = shadcol
-    alpha = shadalpha
-}
-draw_set_alpha(alpha)
-draw_circle_color(x-1,y+4,12*(1-(z/zstart)),col,col,0)
-draw_set_alpha(1)
-var i;
-var yoff = random_range(-.5,.5) + 5;
+var yoff = random_range(-.5,.5) + 4;
 if driver = noone{yoff = 5}
-if hurt d3d_set_fog(1,c_white,1,1)
+if nexthurt > current_frame + 4 d3d_set_fog(1,c_white,1,1)
 surface_set_target(sf)
 draw_clear_alpha(0,0)
-for (i = 0; i < 7; i++){
-	draw_sprite_ext(global.tank, i , 50, 50 + yoff - i,image_xscale, image_yscale, image_angle, image_blend, 1);
+for (var i = 0; i < height; i++){
+	draw_sprite_ext(global.tank, i , 50 * tankscale, (50 - i) * tankscale,image_xscale * tankscale, image_yscale * tankscale, image_angle, image_blend, 1);
 }
-if my_health/maxhealth < .1 draw_sprite(sprGroundFlame,current_frame*.4,50+lengthdir_x(8,image_angle),50+lengthdir_y(8,image_angle)-yoff)
-var ang = image_angle
-for (i = i; i<11; i++){
-	draw_sprite_ext(global.tank, i , 50, 50 + yoff - i,image_xscale, image_yscale, gunangle+180, image_blend, 1);
+if my_health/maxhealth < .1 draw_sprite_ext(sprGroundFlame,current_frame*.4,(50+lengthdir_x(8,image_angle)) * tankscale,(50+lengthdir_y(8,image_angle)-yoff) * tankscale, tankscale, tankscale, 0, c_white, 1)
+for (i = i; i < image_number; i++){
+	draw_sprite_ext(global.tank, i , 50 * tankscale, (50 - i) * tankscale,image_xscale * tankscale, image_yscale * tankscale, gunangle+180, image_blend, 1);
 }
 surface_reset_target()
 d3d_set_fog(1,0,0,0)
 for (var o = 0; o <360; o+=90){
-    draw_surface(sf,x-50+lengthdir_x(1,o),y-50+lengthdir_y(1,o)-z)
+    draw_surface_ext(sf,x-50 +lengthdir_x(1,o),y-50 +lengthdir_y(1,o) + yoff, 1/tankscale, 1/tankscale, 0, c_white, 1)
 }
 d3d_set_fog(0,0,0,0)
-draw_surface(sf,x-50,y-50-z)
-hurt = max(hurt-current_time_scale,0)
+draw_surface_ext(sf,x -50, y -50 + yoff, 1/tankscale, 1/tankscale, 0, c_white, 1)
 
 
 

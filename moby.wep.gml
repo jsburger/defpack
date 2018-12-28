@@ -62,11 +62,15 @@ else{
 weapon_post(5+random_range(w.charge/24,-w.charge/24),-3,2)
 sound_play_pitch(sndTripleMachinegun,.7 + w.charge/50)
 
-
+if instance_number(Shell) > 100{
+    var q = instances_matching(Shell,"speed",0)
+    if array_length(q) instance_delete(q[irandom(array_length(q)-1)])
+}
 with instance_create(x,y,Shell){motion_add(other.gunangle+other.right*100+random(80)-40,3+random(3))}
 with create_bullet(x+lengthdir_x(20,gunangle),y+ lengthdir_y(20,gunangle)){
 		on_destroy = shell_destroy
 		direction = other.gunangle + random_range(-20,20)*other.accuracy*sqrt(w.charge)/6;
+		olddirection = direction
 		image_angle = direction;
 		creator = other
 		team = other.team
@@ -93,13 +97,14 @@ with instance_create(_x,_y,CustomProjectile){
 	trailscale = 1
 	hyperspeed = 8
 	sprite_index = mskNothing
+	olddirection = 0
 	mask_index = mskBullet2
 	force = 4
 	damage = 2
 	lasthit = -4
 	dir = 0
 	recycle = (skill_get(mut_recycle_gland) && !irandom(2))
-	on_end_step 	 = sniper_step
+	on_end_step  = sniper_step
 	on_hit 		 = void
 	return id
 }
@@ -123,22 +128,43 @@ with instance_create(x,y,CustomObject)
 	image_angle = other.flashang
 }
 
-while !collision_line(x,y,x+lengthdir_x(100,direction),y+lengthdir_y(100,direction),Wall,1,1) && !collision_line(x,y,x+lengthdir_x(100,direction),y+lengthdir_y(100,direction),hitme,0,1) && dir <1000{
-    x+=lengthdir_x(100,direction)
-    y+=lengthdir_y(100,direction)
-    dir+=100
+var l = 100
+while !collision_line(x,y,x+lengthdir_x(l,direction),y+lengthdir_y(l,direction),Wall,1,1) && !collision_line(x,y,x+lengthdir_x(l,direction),y+lengthdir_y(l,direction),hitme,0,1) && dir <1000{
+    x+=lengthdir_x(l,direction)
+    y+=lengthdir_y(l,direction)
+    dir+=l
 }
+
+var _x = lengthdir_x(hyperspeed,direction), _y = lengthdir_y(hyperspeed,direction);
 
 do
 {
 	dir += hyperspeed
-	x += lengthdir_x(hyperspeed,direction)
-	y += lengthdir_y(hyperspeed,direction)
-	with instances_matching_ne([CrystalShield,PopoShield], "team", team){if place_meeting(x,y,other){with other{line()};other.team = team;other.direction = point_direction(x,y,other.x,other.y);other.image_angle = other.direction;with instance_create(other.x,other.y,Deflect){image_angle = other.direction;sound_play_pitch(sndCrystalRicochet,random_range(.9,1.1))}}}
+	x += _x
+	y += _y
+	/*with instances_matching_ne([CrystalShield,PopoShield], "team", team){if place_meeting(x,y,other){with other{line()};other.team = team;other.direction = point_direction(x,y,other.x,other.y);other.image_angle = other.direction;with instance_create(other.x,other.y,Deflect){image_angle = other.direction;sound_play_pitch(sndCrystalRicochet,random_range(.9,1.1))}}}
 	with instances_matching_ne([EnergySlash,Slash,EnemySlash,EnergyHammerSlash,BloodSlash,GuitarSlash], "team", team){if place_meeting(x,y,other){with other{line()};other.team = team;other.direction = direction ;other.image_angle = other.direction}}
 	with instances_matching_ne([Shank,EnergyShank], "team", team){if place_meeting(x,y,other){with other{instance_destroy();exit}}}
-	with instances_matching_ne(CustomSlash, "team", team){if place_meeting(x,y,other){mod_script_call(on_projectile[0],on_projectile[1],on_projectile[2]);with other{line()};}}
-	with instances_matching_ne(hitme, "team", team)
+	with instances_matching_ne(CustomSlash, "team", team){if place_meeting(x,y,other){mod_script_call(on_projectile[0],on_projectile[1],on_projectile[2]);with other{line()};}}*/
+	if direction != olddirection{
+	    olddirection = direction
+	    _x = lengthdir_x(hyperspeed,direction);
+	    _y = lengthdir_y(hyperspeed,direction);
+	}
+	var q = collision_point(x,y,hitme,0,0)
+	if instance_exists(q) and projectile_canhit_np(q) and q.mask_index != mskNone{
+	    if recycle{
+	        instance_create(x,y,RecycleGland)
+		    sound_play(sndRecGlandProc)
+		    with creator{
+		        ammo[1] = min(ammo[1]+1,typ_amax[1])
+		    }
+	    }
+	    projectile_hit(q, damage, force, direction)
+	    instance_destroy()
+	    exit
+	}
+	/*with instances_matching_ne(hitme, "team", team)
 	{
 		if distance_to_object(other) <= 4
 		{
@@ -155,7 +181,7 @@ do
 			    exit
 			}
 		}
-	}
+	}*/
   if place_meeting(x+lengthdir_x(hyperspeed,direction),y+lengthdir_y(hyperspeed,direction),Wall)
   {
     instance_destroy()
