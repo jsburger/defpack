@@ -70,9 +70,7 @@ return "delicious...."
     var w = wep;
     if p = 0 w = bwep
 
-    if(w.ammo > 1){
-        script_bind_draw(ammo_draw, -100, index, p, w.ammo, (race == "steroids"));
-    }
+    script_bind_draw(ammo_draw, -100, index, p, is_object(w) ? w.ammo : 6, (race == "steroids"));
 
 //thank you yokin, i love you
 #define ammo_draw(_index, _primary, _ammo, _steroids)

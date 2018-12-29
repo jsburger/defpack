@@ -10,6 +10,7 @@ global.reloads = [16,18,20,22,24]
 global.cursed  = [InvCrystal,InvLaserCrystal,InvSpider]
 global.uncursed= [CrystalProp,LaserCrystal,Spider]
 
+#macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)
 
 #define weapon_mergable
 return 0
@@ -34,7 +35,7 @@ return 0
 
 #define weapon_area
 if GameCont.crown = 11
-return 6
+    return 6
 return -1
 
 #define weapon_load(w)
@@ -80,7 +81,7 @@ with instance_create(x,y,CustomSlash)
 	if lv >= 3 sprite_index = sprHeavySlash
 	if lv = 5 {
 		sprite_index = sprMegaSlash
-		mask_indedx  = mskMegaSlash
+		mask_index  = mskMegaSlash
 	}
 	name = "crystal slash"
 	motion_add(other.gunangle, 1 + (skill_get(13) * 2))
@@ -116,7 +117,7 @@ walled = 1
 #define torchhit
 if projectile_canhit_melee(other){
 	projectile_hit(other,damage,lv*2,direction)
-	var cursechange = -1;
+	var cursechange = -.5;
 
     for var i = 0; i < array_length(global.cursed); i++{
         if instance_is(other,global.cursed[i]){
@@ -139,7 +140,15 @@ if projectile_canhit_melee(other){
 	}
 }
 
-#define step
+#define step(w)
+if current_frame_active{
+    var ang = gunangle + wepangle
+    if w and is_object(wep) and !irandom(15 - floor(wep.cursecharge/6)) with instance_create(x + lengthdir_x(15, ang),y + lengthdir_y(15, ang),Curse){
+        sprite_index = global.sprNegaCurse
+        depth-= 2
+        
+    }
+}
 with instances_matching(Slash,"name","crystal slash"){
 	with BigCursedChest{
 		if distance_to_object(other) <= 0{

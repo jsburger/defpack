@@ -965,7 +965,7 @@ with a{
 	dropped = 0
 	type = weapon_get_type(wep)
 	cost = weapon_get_cost(wep)
-	auto = weapon_get_auto(wep)
+	auto = 0
 	//visual things
 	rotspeed = 3
 	offspeed = 3
@@ -1694,7 +1694,7 @@ iframes = max(iframes - current_time_scale, 0)
 if speed < minspeed speed = minspeed
 if speed > 16 speed = 16
 image_angle += speed * anglefac * fac * current_time_scale
-with instance_create(x+random_range(-8,8)+lengthdir_x(sprite_width/2,direction-180),y+random_range(-8,8)+lengthdir_y(sprite_width/2,direction-180),PlasmaTrail){
+if current_frame_active with instance_create(x+random_range(-8,8)+lengthdir_x(sprite_width/2,direction-180),y+random_range(-8,8)+lengthdir_y(sprite_width/2,direction-180),PlasmaTrail){
 	image_speed = 0.35-skill_get(17)*0.05
 }
 if bounce <= 0 instance_destroy()

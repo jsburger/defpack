@@ -34,7 +34,7 @@ return "POTENTIAL"
 
 #define weapon_fire
 weapon_post(2,0,3)
-motion_add(gunangle-180,4)
+motion_add(gunangle-180,2)
 sound_play_pitch(sndPopgun,random_range(1,2))
 sound_play_pitchvol(sndRustyRevolver,random_range(2,3),.6)
 sound_play_pitchvol(sndNothing2Ball,random_range(2,3),.4)
@@ -55,7 +55,7 @@ with instance_create(x,y,CustomProjectile)
   image_angle = direction
   on_destroy = pellet_destroy
   on_wall    = pellet_wall
-  on_step    = pellet_step
+  on_anim    = pellet_step
   on_draw    = pellet_draw
 }
 
@@ -91,7 +91,8 @@ if bounce < 0 instance_destroy()
 with instance_create(x,y,BulletHit){sprite_index = global.sprPelletHit}
 
 #define pellet_step
-if image_index = 1 image_speed = 0
+image_speed = 0
+image_index = 1
 
 #define pellet_draw
 draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, image_yscale, image_angle, image_blend, 1.0);

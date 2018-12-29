@@ -13,7 +13,7 @@ return global.sprSuperAbrisLauncher;
 return 4;
 
 #define weapon_auto
-return false;
+return 1;
 
 #define weapon_load
 return 44;
@@ -68,7 +68,7 @@ repeat(8)
 }
 
 #define abris_draw_super
-if current_frame % (25 / current_time_scale) = 0 sound_play_pitch(sndVanWarning,.6)
+if current_frame % 25 <= current_time_scale sound_play_pitch(sndVanWarning,.6)
 if instance_exists(creator) && check{
 	x = creator.x
 	y = creator.y

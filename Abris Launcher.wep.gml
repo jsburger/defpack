@@ -12,7 +12,7 @@ return global.sprAbrisLauncher;
 return 4;
 
 #define weapon_auto
-return false;
+return 1;
 
 #define weapon_load
 return 26;

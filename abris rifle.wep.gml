@@ -38,6 +38,7 @@ var _strtsize = 20;
 var _endsize  = 8;
 with mod_script_call("mod","defpack tools","create_abris",self,_strtsize,_endsize,argument0){
 	accspeed = 1.07
+	auto = 1
 	payload = script_ref_create(pop)
 }
 sound_play_pitch(sndSniperTarget,1/accuracy+1)

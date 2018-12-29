@@ -136,7 +136,7 @@ return "THE HERALD"
 #define weapon_type
 return 4
 #define weapon_cost
-return 3
+return 2
 #define weapon_area
 return 16
 #define weapon_load
@@ -199,7 +199,7 @@ with a{
 	on_draw = abris_draw
 	index = creator.index
 	phase = 0
-	phasespeed = 2.5
+	phasespeed = 3
 	//accuarcy things
 	accbase = startsize
 	acc = accbase
@@ -331,7 +331,7 @@ if instance_exists(creator){
     }
     if phase >= 1 and phase < 2{
         phase += .02*current_time_scale*phasespeed
-        vigncol2 = merge_color(vigncol2,c_silver,.06*current_time_scale*phasespeed)
+        vigncol2 = merge_color(vigncol2,c_silver,.02*current_time_scale*phasespeed)
         vigncol1 = merge_color(vigncol1,c_black,.06*current_time_scale*phasespeed)
     }
     meteortime+=current_time_scale

@@ -1,14 +1,17 @@
 #define init
 global.tank = sprite_add("tank.png",11,16,8)
 with instances_matching(CustomHitme, "name", "tank") sprite_index = global.tank
-global.crate = sprite_add_weapon("sprTankChest.png", 16, 16)
+global.crate = sprite_add("sprTankChest.png", 1, 16, 16)
+global.crateshine = sprite_add_weapon("sprTankChest.png", 16, 16)
+global.cratehurt = sprite_add("sprTankChestHurt.png", 3, 16, 16)
+global.cratedead = sprite_add("sprTankChestDestroy.png", 4, 16, 16)
 
 #macro tankscale 4
 #macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)
 
 #define draw_shadows
 with instances_matching(CustomProp, "name", "tank crate"){
-    draw_circle_color(x - 1,y + 2,12 * (1 - z/zstart),c_white,c_white,0)
+    draw_circle_color(x - 1,y + 2 + z,12 * (1 - z/zstart),c_white,c_white,0)
 }
 with instances_matching(CustomHitme, "name", "tank"){
     for (var i = height; i < image_number; i++){
@@ -21,20 +24,20 @@ with instance_create(_x, _y, CustomProp){
 
     sprite_index = global.crate
     spr_idle = sprite_index
-    spr_hurt = sprite_index
+    spr_hurt = global.cratehurt
     mask_index = sprite_index
 
     depth = -8
     image_alpha = 0
-    image_speed = 0
+    image_speed = .4
     shinetime = 10
 
     snd_hurt = sndHitMetal
     snd_dead = sndExplosionS
     
-	  z = 1600
-	  zspeed = 0
-	  zstart = z
+    z = 1600
+    zspeed = 0
+    zstart = z
 
     ystart = y
 
@@ -62,12 +65,15 @@ if z > 1{
     z = max(z - zspeed*current_time_scale, 1)
     nexthurt = current_frame + 2
     my_health = maxhealth
+    y = ystart - z
 }
 else{
     if z = 1{
         mask_index = sprite_index
         depth = -2
+        if place_meeting(x,y,ChestOpen) with instance_nearest(x,y,ChestOpen) instance_destroy()
         z = 0
+        y = ystart
         view_shake_at(x,y,50)
         sleep(5)
         instance_create(x,y,PortalClear)
@@ -80,7 +86,7 @@ else{
           if fork()
           {
               while instance_exists(self)
-              wait(0)
+                wait(0)
               with other team  = -100
               exit
           }
@@ -91,21 +97,37 @@ else{
         sound_play_pitchvol(sndHitMetal,.8,.6)
     }
     shinetime -= current_time_scale
-    if shinetime <= 0{
-        image_speed = .4
+    if shinetime <= 0 and sprite_index != spr_hurt{
         shinetime = 120
-    }
-    if image_index + image_speed*current_time_scale > image_number{
-        image_speed = 0
+        spr_idle = global.crateshine
+        sprite_index = global.crateshine
         image_index = 0
+    }
+    if image_index + image_speed >= image_number{
+        spr_idle = global.crate
     }
     speed = 0
 }
-y = ystart - z
+
 if my_health <= 0 instance_destroy()
 
 
 #define cratedie
+with instance_create(x,y,ChestOpen){
+    sprite_index = global.cratedead
+    image_speed = 0
+    image_index = 0
+}
+for (var i = 1; i <= 3; i++){
+    with instance_create(x,y,Debris){
+        motion_set(random(360),random_range(6,9))
+        sprite_index = global.cratedead
+        image_index = i
+        friction += .1
+        image_angle = random(360)
+        image_speed = 0
+    }
+}
 tank_create(x,y)
 sleep(25)
 view_shake_at(x,y,20)
@@ -125,7 +147,6 @@ if z = 0{
 }
 
 #define cratedraw
-trace("1")
 if nexthurt > current_frame + 4 d3d_set_fog(1,c_white,0,0)
 y -= z
 draw_self()
@@ -221,7 +242,7 @@ with Player if "tankthings" in self && driving{
 
 with instances_matching(WepPickup,"roll",1) if "tankcheck" not in self && !instance_exists(Portal){
     tankcheck = 1
-    if !irandom(0){
+    if !irandom(200){
         crate_create(x,y)
         instance_destroy()
     }

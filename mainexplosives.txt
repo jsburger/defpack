@@ -41,7 +41,7 @@
 
 //SMART
 
-/loadwep smart bazooka
+///loadwep smart bazooka
 /loadwep finished stuff/smart nuke launcher
 
 //CANNON

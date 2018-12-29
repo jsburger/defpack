@@ -1,0 +1,7 @@
+/loadwep tsunami
+/loadwep smart bazooka
+/loadwep psy pop gun
+/loadwep double split shotgun
+/loadwep auto flak cannon
+/loadwep super heavy slugger
+/loadwep lightning orb
