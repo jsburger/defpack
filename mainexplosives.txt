@@ -52,7 +52,7 @@
 
 /loadwep chainsaw
 /loadwep claymore
-/loadwep boomerang
+/loadwep kaboomerang
 /loadwep auto grenade launcher
 /loadwep finished stuff/heavy nuke launcher
 /loadwep firestorm

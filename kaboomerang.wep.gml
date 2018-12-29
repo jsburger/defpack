@@ -2,7 +2,7 @@
 global.sprboomerang = sprite_add_weapon("sprites/sprBOOMerang.png",3,3);
 
 #define weapon_name
-return "BOOMERANG";
+return "KABOOMERANG";
 
 #define weapon_type
 return 4;

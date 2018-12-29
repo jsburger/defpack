@@ -42,11 +42,12 @@ maketheprojectiles()
 global.flakmap = ds_map_create()
 var a = global.flakmap;
 
-a[? "shell shot"]		  = sprite_add("sprites/sak/projectiles/sprShot.png",2,8,8);
+a[? "shell shot"]		    = sprite_add("sprites/sak/projectiles/sprShot.png",2,8,8);
 a[? "psy shell shot"]   = sprite_add("sprites/sak/projectiles/sprPsyShot.png",2,8,8);
 a[? "flame shell shot"] = sprite_add("sprites/sak/projectiles/sprFireShot.png",2,8,8);
 a[? "ultra shell shot"] = sprite_add("sprites/sak/projectiles/sprUltraShot.png",2,8,8);
 a[? "split shell shot"] = sprite_add("sprites/sak/projectiles/sprSplitShot.png",2,8,8);
+a[? "heavy slug shot"]  = sprite_add("sprites/sak/projectiles/sprHeavySlugShot.png",2,18,18);
 
 a[? "super shell shot"]       = sprite_add("sprites/sak/projectiles/sprSuperShot.png",2,12,12);
 a[? "slug shot"]        = a[? "super shell shot"]
@@ -55,7 +56,8 @@ a[? "super flame shell shot"] = sprite_add("sprites/sak/projectiles/sprSuperFire
 a[? "super ultra shell shot"] = sprite_add("sprites/sak/projectiles/sprSuperUltraShot.png",2,12,12);
 a[? "super split shell shot"] = sprite_add("sprites/sak/projectiles/SuperSplitShot.png",2,12,12);
 a[? "split slug shot"]  = a[? "super split shell shot"]
-a[? "super heavy slug shot"] = sprite_add("sprites/sak/projectiles/SuperHeavyShot.png",2,18,18);
+a[? "super heavy slug shot"] = sprite_add("sprites/sak/projectiles/SuperHeavyShot.png",2,23,23);
+a[? "super slug shot"] = a[? "heavy slug shot"]
 a[? "super split slug shot"] = sprite_add("sprites/sak/projectiles/sprSuperHeavySplitShot.png",2,18,18);
 
 a[? "shell flak"]        = sprFlakBullet
@@ -66,6 +68,8 @@ a[? "split shell flak"]  = sprite_add("sprites/sak/projectiles/sprSplitFlak.png"
 
 a[? "super shell flak"]       = sprite_add("sprites/sak/projectiles/sprSuperFlak.png",2,12,12);
 a[? "slug flak"]        = a[? "super shell flak"]
+a[? "heavy slug flak"]  = sprite_add("sprites/sak/projectiles/sprHeavySlugFlak.png",2,14,14);
+a[? "super slug flak"]  = a[? "heavy slug flak"]
 a[? "super psy shell flak"]   = sprite_add("sprites/sak/projectiles/sprSuperPsyFlak.png",2,12,12);
 a[? "super flame shell flak"] = sprite_add("sprites/sak/projectiles/sprSuperFireFlak.png",2,12,12);
 a[? "super ultra shell flak"] = sprite_add("sprites/sak/projectiles/sprSuperUltraFlak.png",2,12,12);
@@ -73,15 +77,18 @@ a[? "super split shell flak"] = sprite_add("sprites/sak/projectiles/sprSuperSpli
 a[? "super heavy slug flak"] = sprite_add("sprites/sak/projectiles/SuperHeavyFlak.png",2,18,18);
 a[? "super split slug flak"] = sprite_add("sprites/sak/projectiles/SuperHeavySplitFlak.png",2,18,18);
 
-a[? "shell flak hit"]      = sprFlakHit
-a[? "slug flak hit"] = sprSuperFlakHit
+a[? "shell flak hit"] = sprFlakHit
+a[? "slug flak hit"]  = sprSuperFlakHit
+a[? "heavy flak hit"] = sprSuperFlakHit
 a[? "psy shell flak hit"]   = sprite_add("sprites/sak/projectiles/sprPsyFlakHit.png",8,16,16);
 a[? "flame shell flak hit"]  = sprite_add("sprites/sak/projectiles/sprFireFlakHit.png",8,16,16);
 a[? "ultra shell flak hit"] = sprite_add("sprites/sak/projectiles/sprUltraFlakHit.png",8,16,16);
 a[? "split shell flak hit"] = sprite_add("sprites/sak/projectiles/sprSplitFlakHit.png",8,16,16);
-a[? "split slug flak hit"] = sprite_add("sprites/sak/projectiles/sprSplitSuperFlakHit",8,24,24)
+a[? "split slug flak hit"]  = sprite_add("sprites/sak/projectiles/sprSplitSuperFlakHit.png",8,24,24)
 
 a[? "super shell flak hit"] = sprSuperFlakHit
+a[? "super slug flak hit"]  = sprSuperFlakHit
+a[? "super heavy flak hit"] = sprSuperFlakHit
 
 
 #define makethegunsprites()
@@ -217,10 +224,10 @@ a[? "auto ultra shotgun"]   	 = sprite_add_weapon("sprites/sak/sprAutoUltraShotg
 a[? "assault ultra shotgun"] 	 = sprite_add_weapon("sprites/sak/sprAssaultUltraShotgun.png",3,2)//
 a[? "hyper ultra shotgun"]   	 = sprite_add_weapon("sprites/sak/sprHyperUltraShotgun.png",3,4)//
 
-a[? "ultra flak cannon"] 	     = sprite_add_weapon("sprites/sak/sprUltraFlakCannon.png",3,2)//
-a[? "super ultra flak cannon"] = sprite_add_weapon("sprites/sak/sprSuperUltraFlakCannon.png",3,1)//
+a[? "ultra flak cannon"] 	     = sprite_add_weapon("sprites/sak/sprUltraFlakCannon.png",3,3)//
+a[? "super ultra flak cannon"] = sprite_add_weapon("sprites/sak/sprSuperUltraFlakCannon.png",5,5)//
 a[? "auto ultra flak cannon"]  = sprite_add_weapon("sprites/sak/sprAutoUltraFlakCannon.png",3,2)//
-a[? "hyper ultra flak cannon"] = sprite_add_weapon("sprites/sak/sprHyperUltraFlakCannon.png",5,3)//
+a[? "hyper ultra flak cannon"] = sprite_add_weapon("sprites/sak/sprHyperUltraFlakCannon.png",6,4)//
 
 a[? "ultra shot cannon"] 	     = sprite_add_weapon("sprites/sak/sprUltraShotCannon.png",3,2)//
 a[? "super ultra shot cannon"] = sprite_add_weapon("sprites/sak/sprSuperUltraShotCannon.png",6,3)//
@@ -276,7 +283,7 @@ a[? "heavy slug shotgun"] 				  = sprite_add_weapon("sprites/sak/sprHeavySlugSho
 a[? "double heavy slug shotgun"] 		= sprite_add_weapon("sprites/sak/sprHeavyDoubleSlugShotgun.png",3,5)//
 a[? "sawed-off heavy slug shotgun"] = sprite_add_weapon("sprites/sak/sprHeavySawedOffSlugShotgun.png",3,5)//
 a[? "auto heavy slug shotgun"]      = sprite_add_weapon("sprites/sak/sprHeavyAutoSlugShotgun.png",3,1)//
-a[? "assault heavy slug shotgun"]   = sprite_add_weapon("sprites/sak/sprHeavyAssaultSlugShotgun.png",5,1)//
+a[? "assault heavy slug shotgun"]   = sprite_add_weapon("sprites/sak/sprHeavyAssaultSlugShotgun.png",5,2)//
 a[? "hyper heavy slug shotgun"]     = sprite_add_weapon("sprites/sak/sprHeavyHyperSlugShotgun.png",6,4)//
 
 a[? "heavy slug eraser"] 				 = sprite_add_weapon("sprites/sak/sprHeavySlugEraser.png",3,2)//
@@ -888,7 +895,7 @@ with instance_create(x,y,CustomProjectile) {
 	on_draw = script_ref_create(cannon_draw)
 	on_anim = cannon_anim
 	on_shoot = script_ref_create(shotfire)
-	
+
 	return id
 }
 
@@ -916,7 +923,7 @@ with instance_create(x,y,CustomProjectile) {
 	on_draw = script_ref_create(cannon_draw)
 	on_anim = cannon_anim
 	on_shoot = script_ref_create(supershotfire)
-	
+
 	return id
 }
 
