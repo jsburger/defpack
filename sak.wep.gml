@@ -519,7 +519,7 @@ if is_object(w){
 					sound_play_pitch(w.sounds[i],random_range(.8,1.2))
 				}
 				var num = sqrt(w.ammo + w.load)
-				weapon_post(num, num, num/2)
+				weapon_post(num, num, num*2)
 				mod_script_call_self("weapon",mod_current,string_replace(w.info[2]," ","_"),w.info[1],w.info[3])
 				if w.time wait(w.time)
 			}
@@ -975,7 +975,7 @@ sound_play_hit(sndShotgun, .4)
 view_shake_at(x,y,5)
 repeat(5){
     with proj(p){
-        motion_set(ang,stockspeed-1)
+        motion_set(ang,stockspeed-5)
         team = other.team
         creator = other.creator
         image_angle = direction

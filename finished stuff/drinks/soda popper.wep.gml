@@ -1,10 +1,8 @@
 #define init
 global.sprSodaPopper = sprite_add_weapon("sprSodaPopper.png",2,4)
 global.sprSodaPopperEmpty = sprite_add_weapon("sprSodaPopperEmpty.png",2,4)
-#define weapon_name(w)
-if is_object(w) && w.wep = mod_current{
-    return "SODA POPPER (" + string(w.ammo) + ")"
-}
+#define weapon_name
+return "SODA POPPER"
 #define weapon_type
 return 0
 #define weapon_cost
@@ -34,8 +32,12 @@ if is_object(w)
       sound_play_pitch(sndGunGun,1.4)
       with instance_create(x+lengthdir_x(4,gunangle),y+lengthdir_y(4,gunangle),ThrownWep)
       {
-        if skill_get(14){wep = choose("lightning blue lifting drink(tm)","extra double triple coffee","autoproductive expresso","saltshake","munitions mist","vinegar","guardian juice","sunset mayo")}
-        else {wep = choose("lightning blue lifting drink(tm)","extra double triple coffee","autoproductive expresso","saltshake","munitions mist","vinegar","guardian juice")}
+        var a = ["lightning blue lifting drink(tm)","extra double triple coffee","autoproductive expresso","saltshake","munitions mist","vinegar","guardian juice"]
+		if skill_get(14) > 0 
+		    array_push(a, "sunset mayo")
+		if array_length(instances_matching(Player, "notoxic", 0)) 
+		    array_push(a, "frog milk")
+        wep = a[irandom(array_length(a - 1))]
         sprite_index = weapon_get_sprt(wep)
         speed = 12
         creator = other
@@ -69,20 +71,16 @@ else
 
 #define weapon_sprt(w)
 var gsprite = global.sprSodaPopper
-if instance_is(self,WepPickup)
-{
-  if !is_object(w)
-  {
-    wep = {
-        wep: mod_current,
-        ammo: 6
+if instance_is(self,WepPickup){
+    if !is_object(w){
+        wep = {
+            wep: mod_current,
+            ammo: 6
+        }
     }
-  }
 }
-else
-{
-  if is_object(w)
-  {
+else{
+  if is_object(w){
     if w.ammo=0{gsprite = global.sprSodaPopperEmpty}
   }
 }
@@ -90,5 +88,38 @@ return gsprite
 
 #define weapon_load(w)
 if is_object(w){if w.ammo>0{return 32}else{return 2}}
-#define step
-if instance_exists(WepPickup){with WepPickup{if wep = 0{instance_destroy()}}}
+
+#define step(p)
+    var w = wep;
+    if p = 0 w = bwep
+
+    if(w.ammo > 1){
+        script_bind_draw(ammo_draw, -100, index, p, w.ammo, (race == "steroids"));
+    }
+
+//thank you yokin, i love you
+#define ammo_draw(_index, _primary, _ammo, _steroids)
+    instance_destroy();
+
+    var _active = 0;
+    for(var i = 0; i < maxp; i++) _active += player_is_active(i);
+
+    draw_set_visible_all(0);
+    draw_set_visible(_index, 1);
+    draw_set_projection(0);
+
+    var _x = (_primary ? 42 : 86),
+        _y = 21;
+
+    if(_active > 1) _x -= 19;
+
+    draw_set_halign(fa_left);
+    draw_set_valign(fa_top);
+    draw_set_color(c_white);
+    if(!_primary && !_steroids) draw_set_color(c_silver);
+
+    draw_text_shadow(_x, _y, string(_ammo));
+
+    draw_reset_projection();
+    draw_set_visible_all(1);
+

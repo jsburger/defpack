@@ -190,22 +190,6 @@ yn = (off+yref/size);
 draw_vertex_texture(_x,_y,xn,yn)
 
 
-#define step
-if button_pressed(index,"horn"){
-     with instance_create(x,y,CustomObject){
-            sprite = other.sprite_index
-            if "spr_hurt" in other sprite = other.spr_hurt
-            frames = sprite_get_number(sprite)
-            fall = 0
-            fallspeed = other.size
-            depth = other.depth
-            on_draw = victimdraw
-            on_step = victimstep
-            size = other.size
-            drawsize = max(other.sprite_width,other.sprite_height)
-        }
-}
-
 
 #define spacedraw
 var xref,yref,sprite;

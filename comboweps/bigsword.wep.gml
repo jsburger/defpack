@@ -1,6 +1,10 @@
 #define init
 global.sword = sprite_add_weapon("bigsword.png",4,10)
 global.slash = sprite_add("bigslash.png",4,36,36)
+while 1{
+    with Player epicstep()
+    wait(0)
+}
 #define weapon_name
 return "MEGA HAMMER"
 #define weapon_type
@@ -83,11 +87,12 @@ with creator{
 #define coolstep
 image_angle -= rotspeed*current_time_scale
 with creator{
+    nexthurt = current_frame + 2
 	wepangle = other.image_angle - 60 - other.direction - 2*other.rotspeed
 	sprite_angle = wepangle + 180
 	motion_set(other.direction,other.speed_raw)
 }
-#define step
+#define epicstep
 if "bigcooldown" in self{
     bigcooldown -= current_time_scale
     if bigcooldown <= 0 && bigsword > 0{
@@ -97,8 +102,8 @@ if "bigcooldown" in self{
         }
     }
     if bigcooldown < current_time_scale && bigcooldown >= 0{
-        if wep = mod_current wepangle = 120 * sign(wepangle)
-        if bwep = mod_current bwepangle = 120 * sign(bwepangle)
+        wepangle = 120 * sign(wepangle)
+        bwepangle = 120 * sign(bwepangle)
         sound_play(sndMeleeFlip)
     }
 }

@@ -81,6 +81,7 @@ if "extraspeed" in self && current_frame_active
 {
 	if extraspeed > 0
 	{
+	    nexthurt = current_frame + 2
 		if irandom(2) != 0{instance_create(x,y,Dust)}
 		canaim = false
 		with instance_create(x+lengthdir_x(extraspeed+20*skill_get(13),gunangle),y+lengthdir_y(extraspeed+20*skill_get(13),gunangle),Shank){

@@ -23,7 +23,8 @@ return 1;
 return sndSwapDragon;
 
 #define weapon_area
-return 13;
+if array_length(instances_matching(Player, "notoxic", 1)) return 13
+return -1;
 
 #define weapon_text
 return choose("HEY, IT'S DPS","DO THE SERPENT SWAY");

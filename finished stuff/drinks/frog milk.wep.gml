@@ -1,10 +1,9 @@
 #define init
-with instances_matching(CustomStep,"name","juicegod") instance_destroy()
-global.sprExtraDoubleTripleCoffee = sprite_add_weapon("sprExtraDoubleTripleCoffee.png",-2,1)
+global.sprFrogMilk = sprite_add_weapon("sprFrogMilk.png",-2,1)
 #define weapon_sprt
-return global.sprExtraDoubleTripleCoffee
+return global.sprFrogMilk
 #define weapon_name
-return "EXTRA DOUBLE TRIPLE COFFEE"
+return "FROG MILK"
 #define weapon_type
 return 0
 #define weapon_cost
@@ -28,19 +27,19 @@ wep = 0
 sound_play_pitch(sndHPPickup,1.4)
 sound_play_pitch(sndOasisCrabAttack,random_range(.6,.8))
 sound_play_pitch(sndToxicBoltGas,random_range(1.2,1.4))
-sound_play_pitchvol(sndMutStress,1.5,.02)
+sound_play_pitchvol(sndFrogUltraA,1.5,.1)
 repeat(7)with instance_create(x,y,Bubble){image_speed*=1.6}
-reloadspeed += .1
+notoxic = 1
 with instance_create(x,y,PopupText){
 	target = other.index
-	text = "+1 FIRE RATE"
+	text = "+TOXIC IMMUNITY"
 }
 wep = bwep;bwep = 0
 curse = bcurse
 mod_script_call("mod","sodaeffect","drink",x,y)
 
 #define weapon_text
-return "drinkz on me boiz"
+return "a rare substance, usually greener"
 
 #define step
 if instance_exists(WepPickup){with WepPickup{if wep = 0{instance_destroy()}}}

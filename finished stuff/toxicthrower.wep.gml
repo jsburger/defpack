@@ -23,11 +23,11 @@ return 1;
 return sndSwapFlame;
 
 #define weapon_area
-return 9;
+if array_length(instances_matching(Player, "notoxic", 1)) return 9
+return -1;
 
 #define weapon_text
-return "SPICY";
-
+return "FOUL REPTILE";
 
 #define weapon_fire
 sleep(6)

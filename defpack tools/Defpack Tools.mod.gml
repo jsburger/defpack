@@ -117,27 +117,24 @@ with instances_matching([Bolt,BoltStick],"name","marker bolt"){
 }
 
 #define draw_gui
-with TopCont
+with instances_matching(CustomObject,"name","sniper charge","sniper pest charge","sniper fire charge","sniper thunder charge","sniper psy charge", "sniper bouncer charge")
 {
-    with instances_matching(CustomObject,"name","sniper charge","sniper pest charge","sniper fire charge","sniper thunder charge","sniper psy charge", "sniper bouncer charge")
-    {
-        if !instance_exists(creator){draw_set_visible_all(1);instance_destroy();exit}
-        draw_set_visible_all(0)
-        draw_set_visible(creator.index,1)
-        var _pc     = player_get_color(creator.index);
-        if holdtime >= 60 {var _m = 5}else{var _m = 3}
-        if current_frame mod _m <= current_time_scale && _m = 3{sound_play_pitch(sndCursedReminder,5)}
-        if charged = 0{if (current_frame mod _m) <= current_time_scale {if _pc != c_white {_pc = c_white}else{_pc = player_get_color(creator.index)}}}
-        var _offset = charge;
-        var _vpf    = 3;
-        var _mx     = x - view_xview[creator.index];
-        var _my     = y - view_yview[creator.index];
-        draw_sprite_ext(global.sprAim,0,_mx-_vpf+_offset-100,_my-_vpf+_offset-100,1,1,0  ,_pc,.1+.9*(charge/100))
-        draw_sprite_ext(global.sprAim,0,_mx-_vpf+_offset-100,_my+_vpf-_offset+100,1,1,90 ,_pc,.1+.9*(charge/100))
-        draw_sprite_ext(global.sprAim,0,_mx+_vpf-_offset+100,_my+_vpf-_offset+100,1,1,180,_pc,.1+.9*(charge/100))
-        draw_sprite_ext(global.sprAim,0,_mx+_vpf-_offset+100,_my-_vpf+_offset-100,1,1,270,_pc,.1+.9*(charge/100))
-        draw_sprite_ext(global.sprCursorCentre,0,_mx,_my,1,1,0,_pc,1)
-    }
+    if !instance_exists(creator){draw_set_visible_all(1);instance_destroy();exit}
+    draw_set_visible_all(0)
+    draw_set_visible(creator.index,1)
+    var _pc     = player_get_color(creator.index);
+    if holdtime >= 60 {var _m = 5}else{var _m = 3}
+    if current_frame mod _m <= current_time_scale && _m = 3{sound_play_pitch(sndCursedReminder,5)}
+    if charged = 0{if (current_frame mod _m) <= current_time_scale {if _pc != c_white {_pc = c_white}else{_pc = player_get_color(creator.index)}}}
+    var _offset = charge;
+    var _vpf    = 3;
+    var _mx     = x - view_xview[creator.index];
+    var _my     = y - view_yview[creator.index];
+    draw_sprite_ext(global.sprAim,0,_mx-_vpf+_offset-100,_my-_vpf+_offset-100,1,1,0  ,_pc,.1+.9*(charge/100))
+    draw_sprite_ext(global.sprAim,0,_mx-_vpf+_offset-100,_my+_vpf-_offset+100,1,1,90 ,_pc,.1+.9*(charge/100))
+    draw_sprite_ext(global.sprAim,0,_mx+_vpf-_offset+100,_my+_vpf-_offset+100,1,1,180,_pc,.1+.9*(charge/100))
+    draw_sprite_ext(global.sprAim,0,_mx+_vpf-_offset+100,_my-_vpf+_offset-100,1,1,270,_pc,.1+.9*(charge/100))
+    draw_sprite_ext(global.sprCursorCentre,0,_mx,_my,1,1,0,_pc,1)
 }
 draw_set_visible_all(1)
 
@@ -148,25 +145,15 @@ return instances_matching_gt(instances_matching_lt(instances_matching_gt(instanc
 if array_length_1d(instances_matching(CustomProjectile,"name","Rocklet","big rocklet","huge rocklet")){
     surface_set_target(global.trailsf)
     draw_clear_alpha(0,0)
-    /*draw_set_blend_mode(bm_subtract)
-    draw_set_alpha(1)
-    draw_set_color_write_enable(0,0,0,1)
-    draw_rectangle(0,0,game_width*4,game_height*4,0)*/
-    //draw_sprite_tiled(sprScrapDecal,-1,random(game_width),random(game_height))
     draw_set_blend_mode(bm_normal)
     draw_set_alpha(1)
     draw_set_color_write_enable(1,1,1,1)
-
-    //d3d_set_fog(1,c_white,1,1)
-
 
     with instances_in(view_xview_nonsync,view_yview_nonsync,view_xview_nonsync+game_width,view_yview_nonsync+game_height,instances_matching(CustomProjectile,"name","big rocklet","huge rocklet")){
          var _x = (x - view_xview_nonsync)*4, _y = (y - view_yview_nonsync)*4, _xp = (lerp(x,xprevious,4*speed/maxspeed) - view_xview_nonsync)*4, _yp = (lerp(y,yprevious,4*speed/maxspeed) - view_yview_nonsync)*4;
         var len = ((random_nonsync(speed)/maxspeed))*16;
         var xoff = lengthdir_x(len,direction + 90), yoff = lengthdir_y(len,direction + 90);
         draw_triangle_color(_x + xoff, _y + yoff, _x - xoff, _y - yoff, _xp, _yp, c_white, c_white, c_black, 0)
-
-        //draw_sprite_ext(sprDust,round(random_nonsync(3)),(xprevious-view_xview_nonsync)*4,(yprevious-view_yview_nonsync)*4,8,((random_nonsync(speed)/(maxspeed))+.1)*4,direction,c_white,1)
     }
     with instances_in(view_xview_nonsync,view_yview_nonsync,view_xview_nonsync+game_width,view_yview_nonsync+game_height,instances_matching(CustomProjectile,"name","Rocklet")){
         var _x = (x - view_xview_nonsync)*4, _y = (y - view_yview_nonsync)*4, _xp = (lerp(x,xprevious,4*speed/maxspeed) - view_xview_nonsync)*4, _yp = (lerp(y,yprevious,4*speed/maxspeed) - view_yview_nonsync)*4;
@@ -174,11 +161,7 @@ if array_length_1d(instances_matching(CustomProjectile,"name","Rocklet","big roc
         var xoff = lengthdir_x(len,direction + 90), yoff = lengthdir_y(len,direction + 90);
         draw_triangle_color(_x + xoff, _y + yoff, _x - xoff, _y - yoff, _xp, _yp, c_white, c_white, c_black, 0)
 
-        //draw_line_width_color((xprevious-view_xview_nonsync)*4,4*(yprevious-view_yview_nonsync),(lerp(x,xprevious,4*speed/maxspeed)-view_xview_nonsync)*4,(lerp(y,yprevious,4*speed/maxspeed)-view_yview_nonsync)*4,16*(random_nonsync(speed)/maxspeed),c_white,c_black)
-        //draw_sprite_ext(sprDust,round(random_nonsync(3)),(xprevious-view_xview_nonsync)*4,4*(yprevious-view_yview_nonsync),4,4*(random_nonsync(speed)/(maxspeed*2)),direction,c_white,1)
     }
-    //d3d_set_fog(0,0,0,0)
-
     surface_reset_target()
     draw_set_blend_mode(bm_add)
     draw_surface_ext(global.trailsf,view_xview_nonsync,view_yview_nonsync,0.25,0.25,0,c_white,1)
@@ -187,6 +170,8 @@ if array_length_1d(instances_matching(CustomProjectile,"name","Rocklet","big roc
 }
 
 #define step
+with WepPickup if wep = 0 instance_destroy()
+
 with instances_matching(WepPickup,"chargecheck",null){
     chargecheck = 1
     var w = is_object(wep) ? wep.wep : wep
@@ -233,15 +218,15 @@ with SodaMachine{
 	    wait(0)
 	    if !instance_exists(self) && instance_exists(Wall) && irandom(1)=0{
     		with instance_create(_x,_y,WepPickup){
-    			if skill_get(14)=1{
-    				if irandom(99)=0{wep = "soda popper"}
-    				else{wep = choose("lightning blue lifting drink(tm)","extra double triple coffee","autoproductive expresso","saltshake","munitions mist","vinegar","guardian juice","sunset mayo")}
-    			}
-    			else{
-    				if irandom(99)=0{wep = "soda popper"}
-    				else
-    				{wep = choose("lightning blue lifting drink(tm)","extra double triple coffee","autoproductive expresso","saltshake","munitions mist","vinegar","guardian juice")}
-    			}
+    		    if !irandom(99) wep = "soda popper"
+    		    else{
+        		    var a = ["lightning blue lifting drink(tm)","extra double triple coffee","autoproductive expresso","saltshake","munitions mist","vinegar","guardian juice"]
+        			if skill_get(14) > 0 
+        			    array_push(a, "sunset mayo")
+        			if array_length(instances_matching(Player, "notoxic", 0)) 
+        			    array_push(a, "frog milk")
+                    wep = a[irandom(array_length(a - 1))]
+                }
     		}
     	}
     	exit
@@ -308,16 +293,14 @@ with (a) {
 	pattern = false
 	sprite_index = global.sprPsyBullet
 	typ = 2
-	damage = 4
+	damage = 5
 	recycle_amount = 2
 	force = -10
 	image_speed = 1
 	image_angle = direction
 	mask_index = global.mskPsyBullet
 	timer = irandom(6)+4
-	image_yscale = 1.2
-	image_xscale = 1.2
-  range = 160
+    range = 240
 	on_step = script_ref_create(psy_step)
 	on_destroy = script_ref_create(psy_destroy)
 	on_hit = script_ref_create(bullet_hit)
@@ -479,6 +462,19 @@ with (c){
 }
 return c;
 
+#define split_split
+ammo--
+image_xscale /= 1.2
+with mod_script_call("mod","defpack tools","create_split_shell",x,y){
+	creator = other.creator
+	image_xscale = other.image_xscale
+	team = other.team
+	lasthit = other.lasthit
+	ammo = other.ammo
+	motion_add(other.direction + random_range(-40,40),random_range(12,14))
+	image_angle = direction
+}
+
 #define split_wall
 fallofftime = current_frame + 2
 move_bounce_solid(true)
@@ -489,40 +485,18 @@ instance_create(x,y,Dust)
 sound_play_hit(sndShotgunHitWall,.2)
 image_angle = direction
 if ammo{
-	ammo--
-	image_xscale /= 1.2
-	with mod_script_call("mod","defpack tools","create_split_shell",x,y){
-		creator = other.creator
-		image_xscale = other.image_xscale
-		team = other.team
-		ammo = other.ammo
-		motion_add(other.direction + random_range(-40,40),random_range(12,14))
-		image_angle = direction
-	}
+    split_split()
 }
 #define mag_hit
-speed /= 1 + (.5*current_time_scale)
 if lasthit != other.id
 {
+    speed /= 1.5
+    lasthit = other.id
 	shell_hit();
-	if ammo > 0
-	{
-		ammo -= 1
-		direction = point_direction(x,y,other.x,other.y)+180
-		image_angle = direction
-		image_xscale /= 1.2
-		with mod_script_call("mod","defpack tools","create_split_shell",x,y)
-		{
-			creator = other.creator
-			image_xscale = other.image_xscale
-			team = other.team
-			ammo = other.ammo
-			motion_add(other.direction + random_range(-80,80),random_range(12,14))
-			image_angle = direction
-		}
+	if ammo > 0{
+		split_split()
 	}
 }
-lasthit = other.id
 
 #define mag_shell_step
 if ammo >= 3{sprite_index = global.sprHeavyMagPellet}
@@ -1225,6 +1199,7 @@ else
   	hitid = [sprLightningHit,"Lightning Bolt"]
   	name = "Lightning Bolt"
   	time = skill_get(17)+4
+  	timestart = time
   	create_frame = current_frame
   	colors = [c_black,c_white,c_white,merge_color(c_blue,c_white,.3),c_white]
   	wantdust = 1

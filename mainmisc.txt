@@ -45,6 +45,7 @@
 /loadwep finished stuff/drinks/extra double triple coffee
 /loadwep finished stuff/drinks/lightning blue lifting drink(tm)
 /loadwep finished stuff/drinks/guardian juice
+/loadwep finished stuff/drinks/frog milk
 /loadwep finished stuff/drinks/soda popper
 /loadmod finished stuff/drinks/sodaeffect
 /loadwep finished stuff/drinks/donut box

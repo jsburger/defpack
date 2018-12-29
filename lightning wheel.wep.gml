@@ -4,7 +4,7 @@ global.sprLightningWheelProj    = sprite_add("sprites/sprLightningWheelProj.png"
 global.sprLightningWheelProjUpg = sprite_add("sprites/sprLightningWheelProjUpg.png",2,13,13);
 
 #define weapon_name
-return "Lightning WHEEL";
+return "LIGHTNING WHEEL";
 
 #define weapon_type
 return 5;
@@ -16,7 +16,7 @@ return 1;
 return 1;
 
 #define weapon_area
-return -1;
+return 7;
 
 #define weapon_load
 return 1;//???
