@@ -34,7 +34,7 @@ with instance_create(_x, _y, CustomProp){
 
     snd_hurt = sndHitMetal
     snd_dead = sndExplosionS
-    
+
     z = 1600
     zspeed = 0
     zstart = z
@@ -46,7 +46,7 @@ with instance_create(_x, _y, CustomProp){
 
     my_health = 30
     team = 2
-    size = 100
+    size = 8
     maxhealth = my_health
 
     name = "tank crate"
@@ -130,6 +130,7 @@ for (var i = 1; i <= 3; i++){
 }
 tank_create(x,y)
 sleep(25)
+repeat(50)with instance_create(x+random_range(-22,22),y+random_range(-22,22),Smoke) depth = other.depth -1
 view_shake_at(x,y,20)
 repeat(40){
     with instance_create(x,y,Dust){

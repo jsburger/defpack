@@ -191,8 +191,10 @@ with Player
 }
 
 #define sound_play_crown()
-with instance_create(0,0,CustomObject)
+with instance_create(0,0,CustomObject)// /gml mod_script_call("crown","exchange","sound_play_crown")
 {
+sound_play_pitchvol(sndStatueDead,2,.4)
+sound_play_pitchvol(sndStatueCharge,.8,.2)
 	timer = 0
 	on_step = snd_step
 	on_destroy = snd_destroy
@@ -208,9 +210,12 @@ if timer = 23
 	sound_play_pitchvol(sndCrownLife,1,1)
 }
 if timer = 9 sound_play_pitchvol(sndSwapShotgun,.96,1)
-if timer = 25 sound_play_pitchvol(sndSwapPistol,.96,1)
-if timer = 33 sound_play_pitchvol(sndSwapEnergy,.96,1)
-if timer = 42 sound_play_pitchvol(sndSwapExplosive,.96,1)
+if timer = 20 sound_play_pitchvol(sndSwapPistol,.96,1)
+if timer = 24 sound_play_pitchvol(sndSwapExplosive,.96,1)
+if timer = 30 sound_play_pitchvol(sndSwapEnergy,.96,1)
+if timer = 34 sound_play_pitchvol(sndSwapShotgun,.96,1)
+if timer = 42 sound_play_pitchvol(sndSwapMachinegun,.96,1)
+if timer = 45 sound_play_pitchvol(sndSwapSword,1,1)
 if timer >= 100 instance_destroy()
 
 #define snd_destroy
