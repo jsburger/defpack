@@ -1,6 +1,7 @@
 #define init
 global.sprPuncher 			= sprite_add_weapon("sprites/sprPuncher.png",11,3)
 global.sprPuncherRocket = sprite_add("sprites/projectiles/sprPuncherRocket.png",0,6,6)
+#macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)
 #define weapon_name
 return "PUNCHER"
 #define weapon_type
@@ -60,6 +61,7 @@ draw_self()
 draw_sprite_ext(sprRocketFlame,-1,x,y,1,1,image_angle,c_white,image_alpha)
 
 #define puncherstep
+if current_frame_active &&irandom(1) instance_create(x,y,Smoke)
 with instance_create(x-lengthdir_x(16+speed,other.direction),y-lengthdir_y(16+speed,other.direction),BoltTrail)
 {
 	image_blend = c_yellow
@@ -75,7 +77,6 @@ with instance_create(x-lengthdir_x(16+speed,other.direction),y-lengthdir_y(16+sp
 	}
 }
 direction += extradir*current_time_scale
-if !random(2) instance_create(x,y,Smoke)
 speed += current_time_scale *.7
 image_angle = direction
 if speed >= 30 speed = 30

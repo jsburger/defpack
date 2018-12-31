@@ -523,7 +523,7 @@ if is_object(w){
 		if fork(){
 			repeat(w.shots){
 				for (var i = 0; i<array_length_1d(w.sounds); i++){
-					sound_play_pitch(w.sounds[i],random_range(.8,1.2))
+					sound_play_pitch(w.sounds[i],random_range(.8,1.2)) //XX
 				}
 				var num = sqrt(w.ammo + w.load)
 				weapon_post(num, num, num*2)
@@ -663,13 +663,17 @@ switch m{
 
 #define shot_cannon(p,m)
 switch m{
-    case "super":
+				case "super":
+				sound_play_pitchvol(sndSuperFlakExplode,random_range(.4,.6),.7)
+				sound_play_pitchvol(sndDoubleShotgun,.8,7)
         with supershotcannon(p){
             set(0)
             speed = 12 + random(1)
         }
         break
     default:
+		sound_play_pitchvol(sndFlakExplode,random_range(.4,.7),.7)
+		sound_play_pitchvol(sndDoubleShotgun,1.2,7)
         with shotcannon(p){
             set(0)
             speed = 15 + random(2)
@@ -1344,4 +1348,22 @@ w.name = string_replace(w.name, "none ", "")
 w.name = string_replace(w.name, "shell ", "")
 if w.info[2] = "slugger" w.name = string_replace(w.name, "slug ", "")
 
-#define weapon_reloaded
+#define weapon_reloaded(w)
+var b, c, d;
+if w{b = wep}else{b = bwep}
+c = weapon_get_cost(b);
+d = weapon_get_type(b);
+if b.done
+{
+	sound_play(sndShotReload)
+	weapon_post(-1,0,0)
+	var e;
+	if d = 1 e = 0 else e = 1
+	repeat(max(1,c*e))
+	{
+	with instance_create(x,y,Shell){
+	if d = 2 {if skill_get(mut_shotgun_shoulders) = false sprite_index = sprShotShell else sprite_index = sprShotShellBig}else{sprite_index = sprBulletShell}
+	motion_add(other.gunangle + (other.right * 90) + random_range(-40, 40),2 + random(2))
+	}
+	}
+}

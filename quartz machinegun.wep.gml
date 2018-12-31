@@ -51,7 +51,7 @@ with instance_create(x,y,CustomProjectile)
   force  = 4
   damage = 6
   typ = 1
-  image_speed = 1
+  image_speed = 0
   recycle_amount = 1
   motion_add(other.gunangle+random_range(-2,2)*other.accuracy,20)
   image_angle = direction
@@ -64,8 +64,7 @@ with instance_create(x,y,CustomProjectile)
 }
 
 #define quartzbullet_step
-if image_index = 1 image_speed = 0;
-
+image_index = 1
 #define quartzbullet_destroy
 repeat(3) with instance_create(x+random_range(-4,4),y+random_range(-4,4),Dust){sprite_index = sprExtraFeetDust}
 instance_create(x+lengthdir_x(sprite_width/2,direction),y+lengthdir_y(sprite_height/2,direction),WepSwap){image_angle = random(360)}

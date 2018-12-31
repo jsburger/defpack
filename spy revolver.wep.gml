@@ -50,6 +50,7 @@ with instance_create(x + lengthdir_x(6,gunangle),y + lengthdir_y(6,gunangle),Cus
 	target = -4
 	ogdirection = direction
 	handscale = 0
+	image_speed = 0
 	canstab = 1
 	stabsremaining = 3
 }

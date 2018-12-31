@@ -151,6 +151,7 @@ return 0
 return 0
 #define weapon_fire
 if instance_is(self,Player){
+		sound_play_pitch(sndStatueXP,.4)
     player_set_show_cursor(index,index,0)
     view_pan_factor[index] = 2
 	with create_abris(id,80,70,mod_current){
@@ -289,6 +290,7 @@ if z = 0 instance_destroy()
 
 #define meteor_destroy
 sound_play_hit(snd_dead,.1)
+sound_stop(sndFootOrgSand1)
 if size = 2{
     repeat(1){
         with instance_create(x+lengthdir_x(random_range(12,32),random(360)),y+lengthdir_y(random_range(12,32),random(360)),Explosion) depth = -12
@@ -316,6 +318,10 @@ if size = 2{
 #define abris_step
 if instance_exists(creator){
 	alpha = min(alpha + .01*current_time_scale*phasespeed, 1)
+	if current_frame mod 110 < current_time_scale sound_play_pitch(sndStatueCharge,choose(.5,.45,.6,.6,.6,.6,.7,.7,.8))
+	sound_play_gun(sndFootOrgSand1,1,1-alpha)
+	sound_stop(sndFootOrgSand1)
+	with creator weapon_post(other.alpha * 2,0,0)
 	runealpha = min(runealpha + .0035*current_time_scale*phasespeed, 1)
 	if runealpha = 1{
         runecolor = merge_color(runecolor,c_white,.03*current_time_scale*phasespeed)

@@ -90,7 +90,8 @@ with instance_create(x+random_range(-4,4),y+random_range(-4,4),Dust){sprite_inde
 
 #define quartzbullet_step
 if frames > 0{frames--}
-if image_index = 1 image_speed = 0;
+image_speed = 0
+image_index = 1
 if speed <= friction instance_destroy()
 
 #define quartzbullet_destroy
