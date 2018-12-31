@@ -59,7 +59,7 @@ with instance_create(x,y,CustomProjectile)
   force[1]  = 9
   typ       = 0
   friction  = .03
-  image_speed = 1
+  image_speed = 0
   image_xscale = 1.25
   image_yscale = 1.25
   pierce = 45
@@ -83,7 +83,8 @@ repeat(3)
 with instance_create(x,y,BulletHit){sprite_index = sprHeavySlugHit;image_angle = other.image_angle}
 
 #define dyn_step
-if image_index = 1{image_speed = 0;image_xscale = 1;image_yscale = 1}
+miage_index = 1
+if image_index = 1{image_xscale = 1;image_yscale = 1}
 with instances_matching_ne(hitme,"team",team)
 {
   if distance_to_object(other) <= 12 && current_frame mod 2 < current_time_scale

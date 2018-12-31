@@ -71,7 +71,7 @@ with instance_create(x,y,CustomProjectile)
 {
   sprite_index = sprEBullet3
   mask_index   = mskBullet2
-  image_speed = 1
+  image_speed = 0
   friction = .6
 	force = 50
 	damage = 1000
@@ -98,7 +98,7 @@ direction += random_range(-5,5)
 image_angle = direction
 
 #define shell_step
-if image_index = 1 image_speed = 0
+image_index = 1
 if speed < friction
 {
   with instance_create(x,y,BulletHit)

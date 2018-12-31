@@ -45,7 +45,7 @@ with instance_create(x,y,CustomProjectile)
     force = 5
     team = other.team
     creator = other
-    image_speed = 1
+    image_speed = 0
     sprite_index = global.sprLuckyBullet
     mask_index   = mskBullet1
     can_crit = 1
@@ -60,7 +60,7 @@ with instance_create(x,y,CustomProjectile)
 }
 
 #define kemosabe_step
-if image_index = 1 image_speed = 0
+if image_index = 1
 
 #define kemosabe_hit
 if projectile_canhit(other) = true

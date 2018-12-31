@@ -39,7 +39,7 @@ while 1 {
                             motion_add(d,t)
     					}
     				}
-    			
+
     			if roll{
     				angle += 40*t
     			}
@@ -106,7 +106,7 @@ while 1 {
     		}
 		}
 		global.clock = (global.clock + 30/room_speed) mod (5 + skill_get(mut_euphoria));
-		
+
 		if instance_exists(p){
 		    with p if (infammo != 0 || ammo[5] >=1) && (wep = mod_current || bwep = mod_current){
 				if infammo = 0  && !global.clock ammo[5]--
@@ -117,7 +117,7 @@ while 1 {
 		if !instance_exists(Player) || instance_exists(GenCont) || instance_exists(mutbutton){
             unfreeze()
 		}
-		
+
 	}
 	//trace(global.slowed,global.time)
 	wait(0)
@@ -181,7 +181,7 @@ return 20
 #define weapon_load
 return 5
 #define weapon_swap
-return sndSwapGold
+return sndSwapEnergy
 #define weapon_auto
 return -1
 #define weapon_melee
@@ -237,7 +237,7 @@ if !scaler && radius < 0 {instance_destroy()}
 #define blur_draw
 if back draw_sprite_ext(wepsprt, 0, x, y, 1, right, gunangle, image_blend, image_alpha)
 draw_sprite_ext(bwepsprt, 0, x-2*right, y, 1, right, 90 + 15*right, merge_color(image_blend,c_gray,.5), image_alpha)
-draw_self()	
+draw_self()
 if !back draw_sprite_ext(wepsprt, 0, x, y, 1, right, gunangle, image_blend, image_alpha)
 
 #define cleanup

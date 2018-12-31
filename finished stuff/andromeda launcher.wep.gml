@@ -172,7 +172,7 @@ draw_sprite_part(sprite,current_frame *.4 mod frames,0,0,drawsize,clamp(drawsize
 
 #define victimstep
 with creator alarm0 = max(creator.alarm0,10)
-fall += fallspeed
+fall += fallspeed*current_time_scale
 fallspeed -= current_time_scale
 if fall < -height instance_destroy()
 

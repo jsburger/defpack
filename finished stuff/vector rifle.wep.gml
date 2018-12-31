@@ -95,14 +95,14 @@ instance_destroy()
 if ammo > 0 {
 	var _s = choose(random_range(-10,-4),random_range(4,10))
 	var s_ = choose(random_range(-10,-4),random_range(4,10))
-	if irandom(5-skill_get(17)) = 0 with instance_create(x+s_,y+_s,BulletHit)
+	ammo-=current_time_scale
+	if ammo<=0{
+	if irandom(4-skill_get(17)) < current_time_scale with instance_create(x+s_,y+_s,BulletHit)
 	{
 		sprite_index = global.sprVectorBeamEnd
 		image_angle = other.image_angle
 		motion_add(other.image_angle,choose(1,2))
 	}
-    ammo-=current_time_scale
-    if ammo<=0{
         var ang = langle;
         if instance_exists(enemy){
             var near = instance_nearest(x,y,enemy);

@@ -2,7 +2,7 @@
 global.sprBlaster 		  = sprite_add_weapon("sprites/sprBlaster.png",7,5)
 global.sprBlasterBomb   = sprite_add("sprites/projectiles/sprBlasterBomb.png",4,12,12) //"ROCKET"
 return "BUSTER"
-
+#macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)
 #define weapon_sprt
 return global.sprBlaster;
 
@@ -54,7 +54,7 @@ with instance_create(x,y,CustomProjectile)
 	lifetime = 5
 	image_speed = .5
 	image_angle = direction
-	repeat(5)
+	if current_frame_active repeat(5)
 	{
 		with instance_create(x,y,Smoke)
 		{
@@ -71,7 +71,7 @@ with instance_create(x,y,CustomProjectile)
 #define blaster_step
 if speed > maxspeed speed = maxspeed
 image_angle += speed * 2 * current_time_scale
-if irandom(1) < current_time_scale with instance_create(x+lengthdir_x(-sprite_get_height(sprite_index)/2.2,image_angle-90),y+lengthdir_y(-sprite_get_height(sprite_index)/2.2,image_angle-90),Smoke){image_xscale = .75;image_yscale = .75;gravity = -.12}
+if irandom(1) && current_frame_active with instance_create(x+lengthdir_x(-sprite_get_height(sprite_index)/2.2,image_angle-90),y+lengthdir_y(-sprite_get_height(sprite_index)/2.2,image_angle-90),Smoke){image_xscale = .75;image_yscale = .75;motion_add(90,2)}
 //if speed = maxspeed if lifetime>0{if lifetime = 5{sound_play_pitch(sndSniperTarget,8)};lifetime -= current_time_scale}else{instance_destroy();exit}
 if speed <= friction instance_destroy()
 
@@ -80,13 +80,13 @@ if projectile_canhit(other) = true
 {
 	sleep(9*min(other.size,4))
 	view_shake_at(x,y,6)
-	with instance_create(x,y,Smoke){image_angle = random(360)}
+	if current_frame_active with instance_create(x,y,Smoke){image_angle = random(360)}
 	projectile_hit(other,damage,speed,direction)
 }
 
 #define blaster_wall
 sleep(12)
-repeat(3) instance_create(x,y,Smoke)
+if current_frame_active repeat(3) instance_create(x,y,Smoke)
 move_bounce_solid(false)
 speed *= .6
 sound_play_pitchvol(sndGrenadeHitWall,random_range(.5,.7),.8)

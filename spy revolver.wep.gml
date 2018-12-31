@@ -48,6 +48,7 @@ with instance_create(x + lengthdir_x(6,gunangle),y + lengthdir_y(6,gunangle),Cus
 	image_angle = direction
 	ogdirection = direction
 	handscale = 0
+	image_speed = 0
 	canstab = 1
 	stabsremaining = 3
 }
@@ -120,9 +121,7 @@ if handscale > 0 {
 motion_add(ogdirection,1)
 speed = 3
 image_angle = direction
-if image_index = 1{
-	image_speed = 0
-}
+image_index = 1
 
 #define spy_die
 with instance_create(x,y,BulletHit){
