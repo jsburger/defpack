@@ -40,12 +40,14 @@ with instance_create(x + lengthdir_x(6,gunangle),y + lengthdir_y(6,gunangle),Cus
 	motion_set(other.gunangle,3)
 	mask_index = mskBullet1
 	on_step = spy_step
+	on_anim = spy_anim
 	on_draw = spy_draw
 	on_destroy = spy_die
 	sprite_index = global.spyBullet
 	team = other.team
 	creator = other
 	image_angle = direction
+	target = -4
 	ogdirection = direction
 	handscale = 0
 	canstab = 1
@@ -58,12 +60,16 @@ return global.gun
 #define weapon_text
 return choose("oops i meant psy","damn typos","psy among us");
 
+#define spy_anim
+image_index = 1
+image_speed = 0
+
 #define spy_draw
 draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, image_yscale, image_angle, image_blend, image_alpha);
 draw_set_blend_mode(bm_add);
 draw_sprite_ext(sprite_index, image_index, x, y, 1.75*image_xscale, 1.75*image_yscale, image_angle, image_blend, image_alpha * .2);
 draw_set_blend_mode(bm_normal);
-if "target" in self && handscale > 0{
+if instance_exists(target) && handscale > 0{
 	draw_sprite_ext(global.spyArm, 0, x, y, handscale, 1, point_direction(x,y,targx,targy), image_blend, 1.0);
 	draw_sprite_ext(global.spyHand, 0, x + lengthdir_x(handscale,point_direction(x,y,targx,targy)), y + lengthdir_y(handscale,point_direction(x,y,targx,targy)), 1, 1, point_direction(x,y,targx,targy), image_blend, 1.0);
 	draw_set_blend_mode(bm_add);
@@ -73,7 +79,9 @@ if "target" in self && handscale > 0{
 }
 
 #define spy_step
-if handscale = 0 {if image_alpha -.04 = .22 instance_create(x,y,Smoke);if image_alpha > .2 image_alpha -= .04 }
+if handscale = 0 {
+    if image_alpha > .2 image_alpha -= .04 * current_time_scale
+}
 with instance_nearest(x,y,enemy) if distance_to_object(other) <= 64{
 	with other {
 		motion_add(point_direction(other.x,other.y,x,y),5/distance_to_object(other) + .1)
@@ -105,7 +113,7 @@ with instance_nearest(x,y,enemy) if distance_to_object(other) <= 64{
     		    sound_play_pitchvol(sndHammerHeadEnd,random_range(1.23,1.33),20)
     		    sound_play_pitchvol(sndBasicUltra,random_range(0.9,1.1),20)
     		    sound_play_pitch(sndCoopUltraA,random_range(3.8,4.05))
-				projectile_hit(self, my_health);
+				with other projectile_hit(other, other.my_health);
 			}
 		}
 	}
@@ -117,12 +125,9 @@ if handscale > 0 {
 		canstab = 1
 	}
 }
-motion_add(ogdirection,1)
+motion_add(ogdirection,current_time_scale)
 speed = 3
 image_angle = direction
-if image_index = 1{
-	image_speed = 0
-}
 
 #define spy_die
 with instance_create(x,y,BulletHit){

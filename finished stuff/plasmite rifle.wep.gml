@@ -36,9 +36,8 @@ repeat(2)
 	}
 	with mod_script_call("mod","defpack tools","create_plasmite",x,y)
 	{
-		speedset = 1
-		fric = random_range(.04,.05)
-		motion_set(other.gunangle+random_range(-8,8)*other.accuracy,20)
+		fric = random_range(.04,.05) + .08
+		motion_set(other.gunangle+random_range(-8,8)*other.accuracy,26)
 		projectile_init(other.team,other)
         image_angle = direction
 	}

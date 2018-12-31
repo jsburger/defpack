@@ -61,11 +61,12 @@ with instance_create(x,y,CustomObject)
 }
 
 #define snipercharge_step
+var timescale = (mod_variable_get("weapon", "stopwatch", "slowed") == 1) ? 30/room_speed : current_time_scale;
 if !instance_exists(creator){instance_destroy();exit}
 if button_check(index,"swap"){creator.ammo[1] = min(creator.ammo[1] + weapon_cost(), creator.typ_amax[1]);instance_destroy();exit}
 if btn = "fire" creator.reload = weapon_get_load(creator.wep)
 if btn = "spec" creator.breload = weapon_get_load(creator.bwep) * array_length_1d(instances_matching(instances_matching(CustomObject, "name", "sniper charge"),"creator",creator))
-charge += current_time_scale * 3.2 / acc
+charge += timescale * 3.2 / acc
 if charge > 100
 {
 	charge = 100
@@ -81,7 +82,7 @@ if charged = 0
 	{
 		motion_add(random(360),random_range(2,3))
 	}
-	holdtime -= current_time_scale
+	holdtime -= timescale
 }
 view_pan_factor[index] = 2.1+charged/10
 sound_play_pitchvol(sndFlameCannonLoop,10-charge/10,1)
@@ -161,7 +162,7 @@ do
 	with instances_matching_ne([CrystalShield,PopoShield], "team", team){if place_meeting(x,y,other){with other{line()};other.team = team;other.direction = point_direction(x,y,other.x,other.y);other.image_angle = other.direction;with instance_create(other.x,other.y,Deflect){image_angle = other.direction;sound_play_pitch(sndCrystalRicochet,random_range(.9,1.1))}}}
 	with instances_matching_ne([EnergySlash,Slash,EnemySlash,EnergyHammerSlash,BloodSlash,GuitarSlash], "team", team){if place_meeting(x,y,other){with other{line()};other.team = team;other.direction = direction ;other.image_angle = other.direction}}
 	with instances_matching_ne([Shank,EnergyShank], "team", team){if place_meeting(x,y,other){with other{instance_destroy();exit}}}
-	with instances_matching_ne(CustomSlash, "team", team){if place_meeting(x,y,other){mod_script_call(on_projectile[0],on_projectile[1],on_projectile[2]);with other{line()};}}
+	with instances_matching_ne(CustomSlash, "team", team){if place_meeting(x,y,other){script_ref_call(on_projectile);with other{line()};}}
 	if dd > 0 dd -= hyperspeed
 	if dd <= 0
 	with instances_matching_ne(hitme, "team", team)

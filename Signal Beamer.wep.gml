@@ -44,7 +44,7 @@ return sndSwapMachinegun;
 return 12;
 
 #define weapon_text
-if irandom(4)<3
+if irandom(4)<3 and instance_is(self,Player)
 {
 	if ammo[1]/typ_amax[1] >= (2/3){return "BEWARE OF @gGREEN"}
 	else
@@ -53,7 +53,7 @@ if irandom(4)<3
 		else{return "@rRED"}
 	}
 }
-else return "GUMMY BEEEEAAARS";
+else return "BULLET TRAFFICKING";
 
 #define weapon_fire
 motion_add(gunangle+180,1)

@@ -43,7 +43,7 @@ with instance_create(x,y,CustomObject)
 	name    = "bow charge"
 	creator = other
 	charge    = 0
-  maxcharge = 30
+    maxcharge = 30
 	charged = 0
 	holdtime = 5 * 30
 	depth = TopCont.depth

@@ -62,11 +62,12 @@ with instance_create(x,y,CustomObject)
 }
 
 #define snipercharge_step
+var timescale = (mod_variable_get("weapon", "stopwatch", "slowed") == 1) ? 30/room_speed : current_time_scale;
 if !instance_exists(creator){instance_destroy();exit}
 if button_check(index,"swap"){creator.ammo[1] = min(creator.ammo[1] + weapon_cost(), creator.typ_amax[1]);instance_destroy();exit}
 if btn = "fire" creator.reload = weapon_get_load(creator.wep)
 if btn = "spec" creator.breload = weapon_get_load(creator.bwep) * array_length_1d(instances_matching(instances_matching(CustomObject, "name", "sniper pest charge"),"creator",creator))
-charge += current_time_scale * 3.2 / acc
+charge += timescale * 3.2 / acc
 if charge > 100
 {
 	charge = 100
@@ -82,7 +83,7 @@ if charged = 0
 	{
 		motion_add(random(360),random_range(2,3))
 	}
-	holdtime -= current_time_scale
+	holdtime -= timescale
 }
 view_pan_factor[index] = 2.1+charged/10
 sound_play_pitchvol(sndFlameCannonLoop,10-charge/10,1)

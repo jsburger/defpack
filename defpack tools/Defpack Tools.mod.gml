@@ -225,7 +225,7 @@ with SodaMachine{
         			    array_push(a, "sunset mayo")
         			if array_length(instances_matching(Player, "notoxic", 0)) 
         			    array_push(a, "frog milk")
-                    wep = a[irandom(array_length(a - 1))]
+                    wep = a[irandom(array_length(a)-1)]
                 }
     		}
     	}
@@ -1033,14 +1033,15 @@ switch creator.race{
 
 #define abris_step
 if instance_exists(creator){
+  var timescale = (mod_variable_get("weapon", "stopwatch", "slowed") == 1) ? 30/room_speed : current_time_scale;
   var _a = other.accbase/other.accmin
-  with creator weapon_post(_a,8*_a,0)
+  with creator weapon_post(_a,5*_a,0)
 	if check = 0{
 		abris_check()
 	}
 	if !dropped{
-		image_angle += rotspeed*current_time_scale;
-		offset += offspeed*current_time_scale;
+		image_angle += rotspeed*timescale;
+		offset += offspeed*timescale;
 		if primary{
 			if popped{
 				var pops = 1;
@@ -1055,7 +1056,7 @@ if instance_exists(creator){
 		}else{
 			creator.breload = weapon_get_load(creator.bwep)
 		}
-		acc/= 1+((accspeed - 1)*current_time_scale)
+		acc/= 1+((accspeed - 1)*timescale)
 		if index <= 3{var _xx = mouse_x[index];var _yy = mouse_y[index]}else{var _xx = index.x;var _yy = index.y}
 		if collision_line(x,y,_xx,_yy,Wall,0,0) >= 0{
 			if acc < accbase{acc += abs(creator.accuracy*3)}else{acc = accbase;lasercolour=c_white}
@@ -1365,10 +1366,9 @@ with a
 	damage = 4+3*skill_get(17)
 	if skill_get(17) = false sprite_index = global.sprPlasmite else sprite_index = global.sprPlasmiteUpg
  	fric = random_range(.2,.3)
-	speedset = 0
     force = 2
     basexscale = 1
-	maxspeed = 7
+	maxspeed = 13
 	on_step 	 = plasmite_step
 	on_wall 	 = plasmite_wall
 	on_destroy   = plasmite_destroy
@@ -1378,26 +1378,17 @@ with a
 return a;
 
 #define plasmite_step
-if "speedboost" not in self{speed+=6;maxspeed+=6;speedboost = 1;fric+=.08}
 if chance(8 + 6*skill_get(17)) instance_create(x,y,PlasmaTrail)
-if speedset = 0
-{
-	speed/= 1+(fric*current_time_scale)
-	if speed < 1.00005{speedset = 1}
+
+var closeboy = instance_nearest_matching_ne(x,y,hitme,"team",team)
+if instance_exists(closeboy) && distance_to_object(closeboy) <= 24{
+	  motion_add(point_direction(x,y,closeboy.x,closeboy.y),4*current_time_scale)
+	  maxspeed+=.5*current_time_scale
 }
-else
-{
-	var closeboy = instance_nearest_matching_ne(x,y,hitme,"team",team)
-    if instance_exists(closeboy) && distance_to_object(closeboy) <= 24{
-		  motion_add(point_direction(x,y,closeboy.x,closeboy.y),4*current_time_scale)
-		  maxspeed+=.5*current_time_scale
-    }
-    image_angle = direction
-	if speed > maxspeed{speed = maxspeed}
-    //image_xscale = 1+sqr(speed/8)
-	maxspeed /= 1+(fric*current_time_scale)
-	if maxspeed <= 1+fric instance_destroy()
-}
+image_angle = direction
+if speed > maxspeed{speed = maxspeed}
+maxspeed /= 1+(fric*current_time_scale)
+if maxspeed <= 1+fric instance_destroy()
 
 #define plasmite_wall
 move_bounce_solid(false)
@@ -1613,7 +1604,8 @@ if other.team = pseudoteam || ("pseudoteam" in other and other.pseudoteam == pse
             with create_plasmite(x,y){
                 creator = other.creator
                 team = other.pseudoteam
-                motion_add(other.direction+random_range(-140,140),random_range(12,16))
+                motion_add(other.direction+random_range(-140,140),random_range(12,16)+6)
+                fric += .08
                 image_angle = direction
             }
         }
@@ -1621,7 +1613,8 @@ if other.team = pseudoteam || ("pseudoteam" in other and other.pseudoteam == pse
             with create_plasmite(x,y){
                 creator = other.creator
                 team = other.pseudoteam
-                motion_add(other.direction+random_range(-20,20),random_range(16,20))
+                motion_add(other.direction+random_range(-20,20),random_range(16,20)+6)
+                fric += .08
                 image_angle = direction
             }
         }
@@ -1973,7 +1966,7 @@ draw_sprite_ext(sprite_index, image_index, x, y, 1.75*image_xscale, 1.75*image_y
 draw_set_blend_mode(bm_normal);
 
 #define quartz_penalty(_mod) //this is for player step only stupid
-if irandom(30) <= current_time_scale
+if chance(4)
 {
   with instance_create(x+random_range(-8,8),y+random_range(-8,8),WepSwap)
   {
@@ -2097,19 +2090,23 @@ if lifetime > 0{lifetime -= current_time_scale}else{instance_destroy()}
 var  r = instance_create(_x,_y,CustomProjectile);
 with r
 {
-    team = other.team
+    name = "Mini Explosion"
     sprite_index = sprSmallExplosion
     mask_index   = mskSmallExplosion
-    image_index = 2
     image_xscale = .5
     image_yscale = .5
-    damage = 1
-    image_speed = .25
-    sound_play_pitchvol(sndExplosionS,2,.04)
+    image_speed = .4
+    damage = 3
+    force = 4
+    sound_play_pitchvol(sndExplosion,2*random_range(.8,1.2),.5)
     hitid = [sprite_index,"MINI EXPLOSION"]
     on_anim = explo_anim
+    on_hit = explo_hit
 }
 return r;
+
+#define explo_hit
+projectile_hit_push(other, damage, force)
 
 #define explo_anim
 instance_destroy()
@@ -2212,7 +2209,7 @@ if instance_exists(stuckto){
     y = stuckto.y - yoff + stuckto.vspeed_raw
     xprevious = x
     yprevious = y
-    instance_create(x,y,Dust)
+    if current_frame_active instance_create(x,y,Dust)
 }
 else if skill_get(mut_bolt_marrow){
     var q = instance_nearest_matching_ne(x,y,hitme,"team",team)
@@ -2305,14 +2302,222 @@ with instance_create(x,y,DiscDisappear){
 }
 
 #define md_hit
-if place_meeting(x,y,creator){
-    sound_play(sndDiscHit)
-    other.lasthit = hitid
-    sleep(3*other.size+4)
+if current_frame_active{
+    if place_meeting(x,y,creator){
+        sound_play(sndDiscHit)
+        other.lasthit = hitid
+        sleep(3*other.size+4)
+    }
+    x -= hspeed/2
+    y -= vspeed/2
+    projectile_hit(other,damage,0,direction)
+    sleep(other.size * 7)
+    view_shake_at(x,y,10)
+    dist++
 }
-x -= hspeed/2
-y -= vspeed/2
-projectile_hit(other,damage,0,direction)
-sleep(other.size * 7)
-view_shake_at(x,y,10)
-dist++
+
+#define create_sniper_charge(_x,_y)
+with instance_create(_x, _y, CustomObject){
+    
+    name = "sniper charge"
+    creator = other
+    index = other.index
+    maxcharge = 100
+    chargespeed = 3.2
+    acc = other.accuracy
+    charge = 0
+    ammo_cost = weapon_get_cost(other.wep)
+    spr_muzzle = sprBullet1
+    spr_dead = sprBulletHit
+    charged = 1
+    btn = other.specfiring ? "spec" : "fire"
+    hand = other.specfiring and other.race = "steroids"
+    holdtime = 150
+    
+    on_shoot = script_ref_create(sniper_shoot)
+    on_step = sniper_step
+    on_cleanup = sniper_cleanup
+    on_destroy = sniper_cleanup
+    scr_bullet = script_ref_create(create_sniper_bullet)
+    
+    return id
+}
+
+#define sniper_cleanup
+view_pan_factor[index] = undefined
+for (var i=0; i<maxp; i++){player_set_show_cursor(index,i,1)}
+
+#define sniper_step
+var timescale = (mod_variable_get("weapon", "stopwatch", "slowed") == 1) ? 30/room_speed : current_time_scale;
+if !instance_exists(creator){instance_destroy();exit}
+if button_check(index,"swap"){creator.ammo[1] = min(creator.ammo[1] + weapon_get_cost(hand ? bwep : wep), creator.typ_amax[1]);instance_destroy();exit}
+if btn = "fire" creator.reload = weapon_get_load(creator.wep)
+if btn = "spec"{
+    if hand creator.breload = weapon_get_load(creator.bwep)
+    else creator.reload = weapon_get_load(creator.wep) * array_length_1d(instances_matching(instances_matching(CustomObject, "name", "sniper charge"),"creator",creator))
+}
+charge += timescale * chargespeed / acc
+if charge > maxcharge{
+	charge = maxcharge
+	if charged > 0{
+	    charged = 0
+		sound_play_pitch(sndSniperTarget,1.2)
+	}
+}
+if charged = 0{
+	if current_frame_active with creator with instance_create(x,y,Dust){
+		motion_add(random(360),random_range(2,3))
+	}
+	holdtime -= timescale
+}
+view_pan_factor[index] = 2.1+charged/10
+sound_play_pitchvol(sndFlameCannonLoop,10-charge/10,1)
+sound_play_gun(sndFootOrgSand4,9999999999999999999,.00001)
+x = mouse_x[index]
+y = mouse_y[index]
+for (var i=0; i<maxp; i++){player_set_show_cursor(index,i,0)}
+if button_check(index, btn) = false || holdtime <= 0{
+    sound_stop(sndFlameCannonLoop)
+	sound_play_gun(sndFootOrgSand4,999999999999999999999999,1)
+	with instance_create(x,y,CustomObject)
+	{
+		move_contact_solid(other.gunangle,24)
+		depth = -1
+		sprite_index = other.spr_muzzle
+		image_speed = .4
+		on_step = muzzle_step
+		on_draw = muzzle_draw
+	}
+
+    script_ref_call(on_shoot)
+    if instance_exists(self) instance_destroy()
+    
+}
+
+
+#define create_sniper_bullet(_x,_y)
+with instance_create(x,y,CustomProjectile){
+	move_contact_solid(other.gunangle,18)
+	typ = 1
+	image_yscale = .5
+	hyperspeed = 8
+	sprite_index = mskNothing
+	mask_index = mskBullet2
+	trailscale = 1
+	trailcolor = c_yellow
+	force = 7
+	lines = 0
+	ammo_cost = 0
+	damage = 10
+	lasthit = -4
+	spr_dead = sprBulletHit
+	dir = 0
+	recycleset = (irandom(2) = 0) 
+	image_angle = other.gunangle
+	direction = other.gunangle
+	scr_fly = script_ref_create(sniper_bullet_fly)
+	on_end_step = sniper_bullet_step
+	on_destroy  = sniper_bullet_destroy
+	
+	return id
+}
+
+#define sniper_bullet_destroy
+with instance_create(x,y,BulletHit) sprite_index = other.spr_dead
+line()
+
+#define line()
+var dis = point_distance(x,y,xstart,ystart) + 1;
+var num = 20;
+for var i = 0; i <= num; i++{
+    with instance_create(xstart+lengthdir_x(dis/num * i,direction),ystart + lengthdir_y(dis/num * i,direction),BoltTrail){
+        image_blend = other.trailcolor
+        image_angle = other.direction
+        image_yscale = other.trailscale * (i/num + other.lines)
+        image_xscale = dis/num
+    }
+}
+lines++
+xstart = x
+ystart = y
+
+
+#define sniper_bullet_fly
+dir += hyperspeed
+x += lengthdir_x(hyperspeed,direction)
+y += lengthdir_y(hyperspeed,direction)
+//redoing reflection code since the collision event of the reflecters doesnt work in substeps (still needs slash reflection)
+with instances_matching_ne([CrystalShield,PopoShield], "team", team){if place_meeting(x,y,other){with other{line()};other.team = team;other.direction = point_direction(x,y,other.x,other.y);other.image_angle = other.direction;with instance_create(other.x,other.y,Deflect){image_angle = other.direction;sound_play_pitch(sndCrystalRicochet,random_range(.9,1.1))}}}
+with instances_matching_ne([EnergySlash,Slash,EnemySlash,EnergyHammerSlash,BloodSlash,GuitarSlash], "team", team){if place_meeting(x,y,other){with other{line()};other.team = team;other.direction = direction ;other.image_angle = other.direction}}
+with instances_matching_ne([Shank,EnergyShank], "team", team){if place_meeting(x,y,other){with other{instance_destroy();exit}}}
+with instances_matching_ne(CustomSlash, "team", team){if place_meeting(x,y,other){script_ref_call(on_projectile);with other{line()};}}
+with instances_matching_ne(hitme, "team", team)
+{
+	if distance_to_object(other) <= other.trailscale * 3
+	{
+		if other.lasthit != self
+		{
+			with other
+			{
+			    projectile_hit(other,damage,force,direction)
+				lasthit = other
+				view_shake_at(x,y,12)
+				sleep(20)
+				if skill_get(16) = true && recycleset = 0{
+				    recycleset = 1;
+				    instance_create(creator.x,creator.y,RecycleGland);
+				    sound_play(sndRecGlandProc);
+				    creator.ammo[1] = min(creator.ammo[1] + ammocost, creator.typ_amax[1])
+			    }
+			}
+		}
+	}
+}
+if place_meeting(x,y,Wall){instance_destroy()}
+
+
+#define sniper_bullet_step
+do
+{
+    script_ref_call(scr_fly)
+}
+while instance_exists(self) and dir < 1000
+instance_destroy()
+
+
+#define sniper_shoot
+var _ptch = random_range(-.5,.5)
+sound_play_pitch(sndHeavyRevoler,.7-_ptch/3)
+sound_play_pitch(sndSawedOffShotgun,1.8-_ptch)
+sound_play_pitch(sndSniperFire,random_range(.6,.8))
+sound_play_pitch(sndHeavySlugger,1.3+_ptch/2)
+var _c = charge
+with creator
+{
+	weapon_post(12,2,158)
+	motion_add(gunangle -180,_c / 20)
+	sleep(120)
+	with script_ref_call(scr_bullet,x+lengthdir_x(10,gunangle), y+lengthdir_y(10,gunangle)){
+	    creator = other
+	    team = other.team
+    	trailscale = 1 + (_c/110)
+    	trailcolor = c_yellow
+        damage = 12 + round(28*(_c/100))
+        ammocost = weapon_get_cost(other.wep)
+        spr_dead = other.spr_dead
+	}
+}
+sleep(charge*3)
+
+#define muzzle_step
+if image_index + image_speed*current_time_scale > 1{instance_destroy()}
+
+#define muzzle_draw
+draw_sprite_ext(sprite_index, image_index, x, y, 2*image_xscale, 2*image_yscale, image_angle, image_blend, 1.0);
+draw_set_blend_mode(bm_add);
+draw_sprite_ext(sprite_index, image_index, x, y, 3*image_xscale, 3*image_yscale, image_angle, image_blend, 0.3);
+draw_set_blend_mode(bm_normal);
+
+
+
+

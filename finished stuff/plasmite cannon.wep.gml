@@ -135,9 +135,8 @@ repeat(ammo)
 {
 	with mod_script_call("mod","defpack tools","create_plasmite",x,y)
 	{
-		speedset = 1
-		fric = random_range(.06,.08)
-		motion_set(i+random_range(-12,21)*other.accuracy,10)
+		fric = random_range(.06,.08) + .08
+		motion_set(i+random_range(-12,21)*other.accuracy,16)
 		projectile_init(other.team,other.creator)
 		image_angle = direction
 	}

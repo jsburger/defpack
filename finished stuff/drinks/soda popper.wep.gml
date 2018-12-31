@@ -37,7 +37,7 @@ if is_object(w)
 		    array_push(a, "sunset mayo")
 		if array_length(instances_matching(Player, "notoxic", 0)) 
 		    array_push(a, "frog milk")
-        wep = a[irandom(array_length(a - 1))]
+        wep = a[irandom(array_length(a)-1)]
         sprite_index = weapon_get_sprt(wep)
         speed = 12
         creator = other
@@ -93,9 +93,7 @@ if is_object(w){if w.ammo>0{return 32}else{return 2}}
     var w = wep;
     if p = 0 w = bwep
 
-    if(w.ammo > 1){
-        script_bind_draw(ammo_draw, -100, index, p, w.ammo, (race == "steroids"));
-    }
+    script_bind_draw(ammo_draw, -100, index, p, is_object(w) ? w.ammo : 6, (race == "steroids"));
 
 //thank you yokin, i love you
 #define ammo_draw(_index, _primary, _ammo, _steroids)

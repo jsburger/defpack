@@ -2,11 +2,6 @@
 global.sprClaymore   = sprite_add_weapon("sprites/Claymore.png", 4, 4);
 global.sprLunatic 	 = sprite_add_weapon("sprites/sprLunatic.png", 1, 13);
 
-trace("Thanks to Wonderis_ for putting a ton of time testing all this");
-trace("Also Jsburg did a bunch of work polishing the mod")
-trace("Many thanks to Xefs and Yokin for code help, much appreciated lads :)")
-trace("karm sucks lol")
-
 #define weapon_name
 if instance_is(self,Player)
 {
@@ -74,12 +69,15 @@ with instance_create(x,y,Slash)
 	flip = -sign(other.wepangle)
 	if fork(){
 		wait(3)
+		if !instance_exists(self) exit
 		sound_play(sndExplosionS)
 		instance_create(x+lengthdir_x(40,direction-20*flip),y+lengthdir_y(40,direction-20*flip),SmallExplosion)
 		wait(1)
+		if !instance_exists(self) exit
 		sound_play(sndExplosionS)
 		instance_create(x+lengthdir_x(45,direction),y+lengthdir_y(45,direction),Explosion)
 		wait(1)
+		if !instance_exists(self) exit
 		sound_play(sndExplosionS)
 		instance_create(x+lengthdir_x(40,direction+20*flip),y+lengthdir_y(40,direction+20*flip),SmallExplosion)
 		exit

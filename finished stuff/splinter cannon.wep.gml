@@ -29,6 +29,97 @@ motion_add(gunangle-180,3)
 sound_play_pitch(sndHeavyCrossbow,.8)
 sound_play_pitch(sndSuperSplinterGun,.7)
 sound_play_pitch(sndSplinterPistol,.6)
+
+with instance_create(x,y,CustomProjectile){
+    motion_set(other.gunangle + random_range(-2,2) * other.accuracy, 14)
+    projectile_init(other.team, other)
+    damage = 35
+    sprite_index = global.sprSuperSplinter
+    mask_index = mskHeavyBolt
+    image_angle = direction
+    wall = 0
+    on_hit = bolt_hit
+    on_end_step = bolt_end_step
+    on_wall = bolt_wall
+    on_destroy = bolt_destroy
+}
+
+#define bolt_destroy
+view_shake_max_at(x,y,34)
+repeat(12){
+    with instance_create(x,y,Splinter){
+        team = other.team
+        creator = other.creator
+        motion_set(other.wall ? other.direction + 180 + random_range(-45,45) : random(360), random_range(14,18))
+        image_angle = direction
+    }
+}
+
+#define bolt_wall
+repeat(8) with instance_create(x+random_range(-5,5),y+random_range(-5,5),Dust){
+    motion_add(other.direction-180+random_range(-20,20),random_range(1,7))
+}
+
+wall = 1
+with other {
+    instance_create(x,y,FloorExplo)
+    instance_destroy()
+}
+repeat(3){
+    with instance_create(x,y,Shell){
+        image_index = choose(3,4);
+        image_speed = 0;
+        sprite_index = sprTutorialSplinter
+        motion_add(random(360),random_range(3,6))
+    }
+}
+sound_play_pitch(sndBoltHitWall,.7)
+sound_play_pitch(sndExplosionS,random_range(.4,.6))
+instance_destroy()
+
+
+#define bolt_hit
+sleep(10)
+var o = other, hp = other.my_health;
+projectile_hit(o, damage, direction, force)
+if hp > damage/2{
+    with instance_create(x,y,BoltStick){
+        target = o
+        sprite_index = other.sprite_index
+        image_angle = point_direction(x,y,o.x,o.y)
+    }
+    instance_destroy()
+}
+else {
+    repeat(irandom_range(3, 5)){
+        with instance_create(x,y,Splinter){
+            team = other.team
+            creator = other.creator
+            motion_set(random(360), random_range(14,18))
+            image_angle = direction
+        }
+    }
+}
+
+
+#define bolt_end_step
+var hitem = 0
+if skill_get(mut_bolt_marrow){
+    var q = mod_script_call_nc("mod","defpack tools","instance_nearest_matching_ne",x,y,hitme,"team",team)
+    if instance_exists(q) and distance_to_object(q) < 10 {
+        x = q.x - hspeed_raw
+        y = q.y - vspeed_raw
+        hitem = 1
+    }
+}
+with instance_create(x,y,BoltTrail){
+    image_xscale = point_distance(x,y,other.xprevious,other.yprevious)
+    image_angle = point_direction(x,y,other.xprevious,other.yprevious)
+    image_yscale++
+}
+if hitem with q with other bolt_hit()
+
+#define weapon_fire_old
 with instance_create(x,y,HeavyBolt)
 {
   creator = other

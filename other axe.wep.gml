@@ -23,7 +23,7 @@ return 0;
 return sndSwapSword;
 
 #define weapon_area
-return -1;
+return 9;
 
 #define weapon_text
 return "BE BRAVE";
@@ -57,16 +57,16 @@ with instance_create(x,y,CustomSlash)
 		sound_play_pitchvol(sndImpWristHit,.8,1)
 		sound_play_pitchvol(sndImpWristKill,.8,1)
 		view_shake_at(x,y,other.size * 4)
-		sleep(other.size * 15)
+		sleep(min(other.size, 4) * 15)
 		creator.gunshine = 12
 	}
-	on_step = s_step
+	on_anim = s_anim
 	on_hit  = s_hit
 }
 motion_add(gunangle,5)
 
-#define s_step
-if image_index = 3 instance_destroy()
+#define s_anim
+instance_destroy()
 
 #define s_hit
 if projectile_canhit_melee(other) = true
