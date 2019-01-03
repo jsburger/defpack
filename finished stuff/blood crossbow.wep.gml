@@ -32,7 +32,7 @@ return 7;
 return choose("BONE LAUNCHER","THE BONE ZONE");
 
 #define weapon_fire
-if infammo <= 0{
+if infammo = 0{
 	if ammo[3] - 1 < 0{
 		ammo[3] = 0;
 		sprite_index = spr_hurt;
@@ -45,11 +45,11 @@ if infammo <= 0{
 	else
 	{
 		ammo[3] -= 1
-		var _p = random_range(.8,1.2)
-		sound_play_pitchvol(sndHeavyCrossbow,.8*_p,.6)
-		sound_play_pitchvol(sndBloodHammer,1.2*_p,.6)
 	}
 }
+var _p = random_range(.8,1.2)
+sound_play_pitchvol(sndHeavyCrossbow,.8*_p,.6)
+sound_play_pitchvol(sndBloodHammer,1.2*_p,.6)
 weapon_post(5,-40,0)
 with instance_create(x,y,CustomProjectile)
 {
@@ -57,46 +57,34 @@ with instance_create(x,y,CustomProjectile)
 	check = 0
 	creator = other
 	motion_add(other.gunangle,20)
+	image_angle = direction
 	sprite_index = global.sprBloodBolt
-	mask_index   = mskBullet1
+	mask_index   = mskBolt
 	damage = 17
 	with instance_create(x+hspeed*1.5,y+vspeed*1.5,BloodStreak){image_angle = other.direction}
-	on_step    = b_step
+	on_end_step    = b_step
 	on_wall    = b_wall
 	on_hit     = b_hit
 	on_destroy = b_destroy
 }
 
 #define b_hit
-with other
-{
-	if "my_health" in self
-	{
-		var h = my_health;
-		var i = self;
-		if h > 0
-		{
-			projectile_hit(self,other.damage,4,other.direction)
-			with other if h > damage
-			{
-				with instance_create(i.x,i.y,BoltStick)
-				{
-					target = i
-					sprite_index = other.sprite_index
-					image_angle = other.image_angle
-				}
-				instance_destroy()
-			}
-		}
-	}
+var i = other
+projectile_hit(other, damage, 4, direction)
+if other.my_health > damage {
+    with instance_create(x,y,BoltStick){
+        target = i
+        sprite_index = other.sprite_index
+        image_angle = other.image_angle
+    }
+    instance_destroy()
 }
 
 #define b_wall
 var i = other;
-with instance_create(x,y,CustomObject)
+with instance_create(x+hspeed,y+vspeed,CustomObject)
 {
 	sound_play(sndBoltHitWall)
-	target = 1
 	instance_create(x,y,Dust)
 	sprite_index = other.sprite_index
 	image_angle = other.image_angle
@@ -109,37 +97,22 @@ instance_destroy()
 if life > 0 life -= current_time_scale else instance_destroy()
 
 #define b_destroy
-sound_play(sndBloodLauncherExplo)
+sound_play_hit(sndBloodLauncherExplo,.1)
 with instance_create(x,y,MeatExplosion) team = other.team
 
 #define b_step
-with instance_create(x-hspeed- lengthdir_x(10,other.direction),y-vspeed- lengthdir_y(10,other.direction),BoltTrail)
-{
-image_blend = c_red
-y += other.vspeed
-x += other.hspeed
-image_angle = point_direction(xprevious,yprevious,x,y)
-image_xscale = point_distance(xprevious,yprevious,x,y)
-image_yscale = 1.5
+var hitem = 0
+if skill_get(mut_bolt_marrow){
+    var q = mod_script_call_nc("mod","defpack tools","instance_nearest_matching_ne",x,y,hitme,"team",team)
+    if instance_exists(q) and distance_to_object(q) < 10 {
+        x = q.x - hspeed_raw
+        y = q.y - vspeed_raw
+        hitem = 1
+    }
 }
-if skill_get(mut_bolt_marrow) = true
-{
-	with instances_matching_ne(hitme,"team",other.team)
-	{
-		var m = self;
-		if distance_to_object(other) < 16
-		with other
-		{
-			with instance_create(x+hspeed/2,y+vspeed/2,BoltTrail)
-			{
-				image_blend = c_red
-				image_angle = point_direction(x,y,m.x-other.hspeed/2,m.y-other.vspeed/2)
-				image_xscale = point_distance(x,y,m.x-other.hspeed/2,m.y-other.vspeed/2)
-				image_yscale = 1.5
-			}
-			x = other.x-hspeed
-			y = other.y-vspeed
-		}
-	}
+with instance_create(x,y,BoltTrail){
+    image_xscale = point_distance(x,y,other.xprevious,other.yprevious)
+    image_angle = point_direction(x,y,other.xprevious,other.yprevious)
+    image_blend = c_red
 }
-image_angle = direction
+if hitem with q with other b_hit()

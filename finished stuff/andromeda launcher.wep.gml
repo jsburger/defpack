@@ -117,6 +117,24 @@ with instances_in(x-succ,y-succ/2,x+succ,y+succ/2,[Debris,ScorchTop,Scorch]){
     }
 }
 
+if random(100) < 50*current_time_scale{
+    if abs(wantsucc - succ) > 1 repeat(random(10)){
+        var ang = random(360)
+        with instance_create(x+lengthdir_x(succ,ang), y+lengthdir_y(succ/2,ang), FireFly){
+            sprite_index = sprLightning
+            gravity = -random_range(.05,.15)
+            motion_add(270,gravity)
+            image_index = 1
+            image_speed = 0
+            image_blend = merge_color(merge_color(c_fuchsia, c_navy, random(1)), c_white, random(.7))
+            if fork(){
+                wait(10+irandom(6))
+                if instance_exists(self) instance_destroy()
+                exit
+            }
+        }
+    }
+}
 
 var me = id;
 with instances_in(x-succ,y-succ/2,x+succ,y+succ/2,instances_matching_ne([hitme,Corpse],"team",team)){
@@ -139,7 +157,8 @@ with instances_in(x-succ,y-succ/2,x+succ,y+succ/2,instances_matching_ne([hitme,C
             drawsize = max(other.sprite_width,other.sprite_height)
             var n = drawsize + fall
         }
-        if !instance_is(self,Corpse){
+        if "on_cleanup" in self mod_script_call_self(on_cleanup[0], on_cleanup[1], on_cleanup[2])
+        if !instance_is(self,Corpse) and other.wantobject != Portal{
             if instance_is(self,Nothing) || instance_is(self,NothingInactive){
                 if instance_exists(Generator) || instance_exists(GeneratorInactive){
                     other.wantobject = SitDown
@@ -150,8 +169,12 @@ with instances_in(x-succ,y-succ/2,x+succ,y+succ/2,instances_matching_ne([hitme,C
                 if instance_is(self,Nothing2){
                     other.wantobject = BigPortal
                 }
-                else if instance_is(self,enemy) || instance_is(self,becomenemy){
-                    if instance_number(enemy) + instance_number(becomenemy) = 1{
+                if instance_is(self, CarVenusFixed) || instance_is(self, CarVenus2){
+                    other.wantobject = object_index
+                }
+                if instance_is(self,enemy) || instance_is(self,becomenemy){
+                    if instance_is(self, Salamander) sound_stop(sndSalamanderFireLoop)
+                    if instance_number(enemy) + instance_number(becomenemy) - instance_number(WantVan) <= 1{
                         other.wantobject = Portal
                     }
                 }

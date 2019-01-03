@@ -16,7 +16,7 @@ return global.sprSniperFireRifle;
 return 1;
 
 #define weapon_auto
-return false;
+return 1;
 
 #define weapon_load
 return 21;
@@ -58,6 +58,7 @@ with instance_create(x,y,CustomObject)
 	index = creator.index
 	undef = view_pan_factor[index]
 	on_step 	 = snipercharge_step
+	on_cleanup = snipercharge_destroy
 	on_destroy = snipercharge_destroy
 	btn = other.specfiring ? "spec" : "fire"
 }
@@ -153,7 +154,6 @@ if button_check(index, btn) = false || holdtime <= 0
 
 #define snipercharge_destroy
 view_pan_factor[index] = undefined
-//stealing from burg like a cool kid B)
 for (var i=0; i<maxp; i++){player_set_show_cursor(index,i,1)}
 
 #define void
@@ -170,8 +170,6 @@ do
 	with instances_matching_ne([EnergySlash,Slash,EnemySlash,EnergyHammerSlash,BloodSlash,GuitarSlash], "team", team){if place_meeting(x,y,other){with other{line()};other.team = team;other.direction = direction ;other.image_angle = other.direction}}
 	with instances_matching_ne([Shank,EnergyShank], "team", team){if place_meeting(x,y,other){with other{instance_destroy();exit}}}
 	with instances_matching_ne(CustomSlash, "team", team){if place_meeting(x,y,other){mod_script_call(on_projectile[0],on_projectile[1],on_projectile[2]);with other{line()};}}
-	if dd > 0 dd -= hyperspeed
-	if dd <= 0
 	with instances_matching_ne(hitme, "team", team)
 	{
 		if distance_to_object(other) <= other.trailscale * 3
@@ -182,7 +180,6 @@ do
 				{
 				    projectile_hit(other,damage,force,direction)
 					lasthit = other
-					dd += 20
 					view_shake_at(x,y,12)
 					sleep(20)
 					if skill_get(16) = true && recycleset = 0{
@@ -205,7 +202,7 @@ var dis = point_distance(x,y,xstart,ystart) + 1;
 var num = 20;
 for var i = 0; i <= num; i++{
     with instance_create(xstart+lengthdir_x(dis/num * i,direction),ystart + lengthdir_y(dis/num * i,direction),BoltTrail){
-        image_blend = c_white
+        image_blend = merge_color(c_red, c_orange, i/num)
         image_angle = other.direction
         image_yscale = other.trailscale * (i/num)
         image_xscale = dis/num

@@ -71,7 +71,7 @@ with instance_create(x,y,CustomProjectile)
 {
   sprite_index = sprEBullet3
   mask_index   = mskBullet2
-  image_speed = 0
+  image_speed = 1
   friction = .6
 	force = 50
 	damage = 1000
@@ -86,8 +86,13 @@ with instance_create(x,y,CustomProjectile)
   on_step    = shell_step
   on_draw    = shell_draw
   on_hit     = shell_hit
+  on_anim    = shell_anim
   on_destroy = shell_destroy
 }
+
+#define shell_anim
+image_index = 1
+image_speed = 0
 
 #define shell_wall
 speed *= (.8+skill_get(15)*.2)
@@ -98,7 +103,6 @@ direction += random_range(-5,5)
 image_angle = direction
 
 #define shell_step
-image_index = 1
 if speed < friction
 {
   with instance_create(x,y,BulletHit)
@@ -114,7 +118,7 @@ if speed < friction
 #define shell_hit
 if projectile_canhit(other) = true
 {
-  mod_script_call("mod","defpack tools","crit")
+  mod_script_call_self("mod","defpack tools","crit")
   sleep(200)
   projectile_hit(other,damage,force,direction)
 }

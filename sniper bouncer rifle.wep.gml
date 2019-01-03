@@ -55,6 +55,7 @@ with instance_create(x,y,CustomObject)
 	undef = view_pan_factor[index]
 	on_step 	 = snipercharge_step
 	on_destroy = snipercharge_destroy
+	on_cleanup = snipercharge_destroy
 	btn = other.specfiring ? "spec" : "fire"
 }
 
@@ -147,25 +148,7 @@ if button_check(index, btn) = false || holdtime <= 0
 
 #define snipercharge_destroy
 view_pan_factor[index] = undefined
-//stealing from burg like a cool kid B)
 for (var i=0; i<maxp; i++){player_set_show_cursor(index,i,1)}
-
-/*
-with instance_create(x+lengthdir_x(10,gunangle),y+lengthdir_y(10,gunangle),CustomProjectile)
-{
-	sleep(40)
-
-}
-with instance_create(x,y,CustomObject)
-{
-	move_contact_solid(other.gunangle,24)
-	depth = -1
-	sprite_index = sprBouncerBullet
-	image_speed = .4
-	on_step = muzzle_step
-	on_draw = muzzle_draw
-}
-*/
 
 #define void
 
@@ -195,8 +178,6 @@ do
 	with instances_matching_ne([EnergySlash,Slash,EnemySlash,EnergyHammerSlash,BloodSlash,GuitarSlash], "team", team){if place_meeting(x,y,other){with other{line()};other.team = team;other.direction = direction ;other.image_angle = other.direction}}
 	with instances_matching_ne([Shank,EnergyShank], "team", team){if place_meeting(x,y,other){with other{instance_destroy();exit}}}
 	with instances_matching_ne(CustomSlash, "team", team){if place_meeting(x,y,other){mod_script_call(on_projectile[0],on_projectile[1],on_projectile[2]);with other{line()};}}
-	if dd > 0 dd -= hyperspeed
-	if dd <= 0
 	with instances_matching_ne(hitme, "team", team)
 	{
 		if distance_to_object(other) <= 5
@@ -207,7 +188,6 @@ do
 				{
 				    projectile_hit(other,damage,force,direction)
 					lasthit = other
-					dd += 20
 					view_shake_at(x,y,12)
 					sleep(20)
 					if skill_get(16) = true && recycleset = 0{

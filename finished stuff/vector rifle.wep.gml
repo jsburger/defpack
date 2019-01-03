@@ -97,12 +97,12 @@ if ammo > 0 {
 	var s_ = choose(random_range(-10,-4),random_range(4,10))
 	ammo-=current_time_scale
 	if ammo<=0{
-	if irandom(4-skill_get(17)) < current_time_scale with instance_create(x+s_,y+_s,BulletHit)
-	{
-		sprite_index = global.sprVectorBeamEnd
-		image_angle = other.image_angle
-		motion_add(other.image_angle,choose(1,2))
-	}
+        if irandom(4-skill_get(17)) < current_time_scale with instance_create(x+s_,y+_s,BulletHit)
+        {
+            sprite_index = global.sprVectorBeamEnd
+            image_angle = other.image_angle
+            motion_add(other.image_angle,choose(1,2))
+        }
         var ang = langle;
         if instance_exists(enemy){
             var near = instance_nearest(x,y,enemy);

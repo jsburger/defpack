@@ -45,34 +45,31 @@ with instance_create(x,y,CustomProjectile)
     force = 5
     team = other.team
     creator = other
-    image_speed = 0
     sprite_index = global.sprLuckyBullet
     mask_index   = mskBullet1
     can_crit = 1
-    recycle_amount = 2
+    recycle_amount = 1
     move_contact_solid(other.gunangle,2)
-	  motion_add(other.gunangle+random_range(-14,14)*other.accuracy,20)
+	motion_add(other.gunangle+random_range(-14,14)*other.accuracy,20)
     image_angle = direction
-    on_step    = kemosabe_step
+    on_anim    = kemosabe_anim
     on_draw    = kemosabe_draw
     on_hit     = kemosabe_hit
     on_destroy = kemosabe_destroy
 }
 
-#define kemosabe_step
-if image_index = 1
+#define kemosabe_anim
+image_speed = 0
+image_index = 1
 
 #define kemosabe_hit
-if projectile_canhit(other) = true
+if irandom(25-(skill_get(mut_lucky_shot)*5)) = 0 && can_crit = 1
 {
-  if irandom(34-(skill_get(6)*5)) = 0 && can_crit = 1
-  {
     can_crit = 0
     mod_script_call("mod","defpack tools","crit")
-  }
-  projectile_hit(other,damage,force,direction)
-  instance_destroy()
 }
+projectile_hit(other,damage,force,direction)
+instance_destroy()
 
 #define kemosabe_destroy
 with instance_create(x,y,BulletHit){sprite_index = sprEnemyBulletHit}
