@@ -16,7 +16,7 @@ return global.sprSniperThunderRifle ;
 return 1;
 
 #define weapon_auto
-return false;
+return 1;
 
 #define weapon_load
 return 52;
@@ -61,6 +61,7 @@ with instance_create(x,y,CustomObject)
 	undef = view_pan_factor[index]
 	on_step 	 = snipercharge_step
 	on_destroy = snipercharge_destroy
+	on_cleanup = snipercharge_destroy
 	btn = other.specfiring ? "spec" : "fire"
 }
 
@@ -159,7 +160,6 @@ if (button_check(index, btn) = false || holdtime <= 0) && !fired
 
 #define snipercharge_destroy
 view_pan_factor[index] = undefined
-//stealing from burg like a cool kid B)
 for (var i=0; i<maxp; i++){player_set_show_cursor(index,i,1)}
 
 #define void

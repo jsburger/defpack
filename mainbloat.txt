@@ -1,7 +1,9 @@
 /loadwep tsunami
 /loadwep smart bazooka
 /loadwep psy pop gun
-/loadwep double split shotgun
+/loadwep heavy split shotgun
 /loadwep auto flak cannon
 /loadwep super heavy slugger
 /loadwep lightning orb
+/loadwep bullak machinegun
+/loadwep hot crossbow

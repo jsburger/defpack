@@ -1,5 +1,5 @@
 #define init
-global.stuff = []
+global.stuff = [["mod","defpermissions","menuopen","Config on Launch",1,0]]
 global.menuopen = 1
 global.scroll = [0,0,0,0]
 global.paletteopen = [0,0,0,0]
@@ -68,7 +68,7 @@ if fork(){
 
 var t = file_load("data/defpermissions.mod/defconfig.txt")
 if t wait(t)
-if !file_exists("data/defpermissions.mod/defconfig.txt") string_save("[]","defconfig.txt")
+if !file_exists("data/defpermissions.mod/defconfig.txt") string_save('[["mod","defpermissions","menuopen","Config on Launch",1,0]]',"defconfig.txt")
 else global.stuff = json_decode(string_load("data/defpermissions.mod/defconfig.txt"))
 
 
@@ -369,7 +369,7 @@ if global.menuopen{
                     }
                     else mouse = 0
                     var pal = global.palettes[u]
-                    draw_rectangle_c(sleft + 1, sy + 1, sleft + sheight + 1, sy + sheight + 1, global.palettes[0] = u ? c_white : pal.celloutline)
+                    draw_rectangle_c(sleft + 1, sy + 1, sleft + sheight + 1, sy + sheight + 1, global.palettes[0] = u ? c_white : c_black)
                     draw_rectangle_c(sleft, sy, sleft + sheight, sy + sheight, mouse and mousex > sleft ? pal.cellhighlight : pal.cellcolor)
                     if u != 1{
                         //RED X

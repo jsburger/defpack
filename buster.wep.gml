@@ -25,7 +25,7 @@ return sndSwapExplosive;
 return 11;
 
 #define weapon_text
-return choose("WOOMY");
+return "WOOMY";
 
 #define weapon_fire
 var _p = random_range(.8,1.2)
@@ -76,17 +76,16 @@ if irandom(1) && current_frame_active with instance_create(x+lengthdir_x(-sprite
 if speed <= friction instance_destroy()
 
 #define blaster_hit
-if projectile_canhit(other) = true
-{
+if current_frame_active {
 	sleep(9*min(other.size,4))
 	view_shake_at(x,y,6)
-	if current_frame_active with instance_create(x,y,Smoke){image_angle = random(360)}
+	with instance_create(x,y,Smoke){image_angle = random(360)}
 	projectile_hit(other,damage,speed,direction)
 }
 
 #define blaster_wall
 sleep(12)
-if current_frame_active repeat(3) instance_create(x,y,Smoke)
+repeat(3) instance_create(x,y,Smoke)
 move_bounce_solid(false)
 speed *= .6
 sound_play_pitchvol(sndGrenadeHitWall,random_range(.5,.7),.8)

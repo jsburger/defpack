@@ -15,7 +15,7 @@ return global.sprSniperPsyRifle;
 return 1;
 
 #define weapon_auto
-return false;
+return 1;
 
 #define weapon_load
 return 54;
@@ -56,6 +56,7 @@ with instance_create(x,y,CustomObject)
 	index = creator.index
 	undef = view_pan_factor[index]
 	on_step 	 = snipercharge_step
+	on_cleanup = snipercharge_destroy
 	on_destroy = snipercharge_destroy
 	btn = other.specfiring ? "spec" : "fire"
 }
@@ -147,7 +148,6 @@ if button_check(index, btn) = false || holdtime <= 0
 
 #define snipercharge_destroy
 view_pan_factor[index] = undefined
-//stealing from burg like a cool kid B)
 for (var i=0; i<maxp; i++){player_set_show_cursor(index,i,1)}
 
 #define void
@@ -189,7 +189,6 @@ do
 	    array_push(trails,id)
 	}
 
-	if dd <= 0
 	with instances_matching_ne(hitme, "team", team)
 	{
 		if distance_to_object(other) <= other.trailscale * 3
@@ -200,7 +199,6 @@ do
 				{
 				    projectile_hit(other,damage,force,direction)
 					lasthit = other
-					dd += 20
 					view_shake_at(x,y,12)
 					sleep(20)
 					if skill_get(16) = true && recycleset = 0{
