@@ -27,7 +27,7 @@ return sndSwapBow;
 return 10;
 
 #define weapon_text
-return choose("FILL THE AIR WITH CHLORINE GOODNESS","PROBABLY NOT A GOOD IDEA");
+return choose("FILL THE AIR WITH GREEN GOODNESS","PROBABLY NOT A GOOD IDEA");
 
 #define weapon_fire
 weapon_post(10,-25,6)

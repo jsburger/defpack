@@ -6,6 +6,8 @@ global.sprBeamStart    = sprite_add("sprites/projectiles/sprBeamStart.png",1,12,
 global.sprBeamCharge   = sprite_add("sprites/projectiles/sprBeamCharge.png",1,16,16);
 global.sprBeamEnd      = sprite_add("sprites/projectiles/sprBeamEnd.png",1,10,12);
 
+#macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)
+
 #define weapon_name
 return "BEAMER"
 
@@ -195,6 +197,14 @@ with instances_matching_ne(hitme,"team",other.team)
 			sleep(20*size)
 			view_shake_at(other.creator.x,other.creator.y,5*size)
 		}
+	}
+}
+with instances_matching(CustomSlash,"name","square")
+{
+	if place_meeting(x,y,other)
+	{
+		motion_add(other.direction,4 * current_time_scale)
+		if current_frame_active with instance_create(x + lengthdir_x(random(sprite_width/2),random(360)),y+lengthdir_y(random(sprite_height/2),random(360)),PlasmaImpact) {image_speed *= random_range(.4,.6);image_xscale = random_range(.6,.8);image_yscale = image_xscale}
 	}
 }
 with instances_matching_ne(prop,"team",other.team){if place_meeting(x,y,other){speed = 0}}//5000 iq workaround

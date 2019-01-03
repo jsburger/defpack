@@ -53,7 +53,7 @@ with instance_create(x,y,Slash){
 	team = other.team
 	creator = other
 	repeat(4){
-		if other.ammo[1] >=2 {
+		if other.ammo[1] >=3 {
 			sound_play_pitch(sndUltraPistol,1.2)
 			with instance_create(x,y,UltraShell){
 				motion_set(other.direction + random_range(-20,20)*other.creator.accuracy, 18)

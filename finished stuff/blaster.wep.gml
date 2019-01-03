@@ -17,7 +17,7 @@ return false;
 return 34;
 
 #define weapon_cost
-return 1;
+return 2;
 
 #define weapon_melee
 return 0;

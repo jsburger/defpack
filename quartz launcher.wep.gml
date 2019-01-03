@@ -2,7 +2,7 @@
 global.sprQuartzLauncher = sprite_add_weapon("sprites/sprQuartzLauncher.png", 7, 4);
 global.sprQuartzGrenade  = sprite_add("sprites/projectiles/sprQuartzGrenade.png",0,4,4);
 global.sprHud = sprite_add("sprites/sprQuartzLauncherHud.png", 1, 7, 4)
-
+global.sprGlassShard = sprite_add("defpack tools/sprGlassShard.png",5,4,4)
 
 #define weapon_name
 return "QUARTZ LAUNCHER";
@@ -132,6 +132,13 @@ if place_meeting(x,y,Shank){instance_destroy()}
 if lifetime <= 0{instance_destroy();exit}
 
 #define quartznade_destroy
+repeat(8) with instance_create(x,y,Feather)
+{
+	motion_add(random(360),random_range(3,6))
+	sprite_index = global.sprGlassShard
+	image_speed = random_range(.4,.7)
+	image_index = irandom(5)
+}
 var i = random(360);
 sleep(20)
 view_shake_at(x,y,15)

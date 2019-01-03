@@ -221,9 +221,9 @@ with SodaMachine{
     		    if !irandom(99) wep = "soda popper"
     		    else{
         		    var a = ["lightning blue lifting drink(tm)","extra double triple coffee","autoproductive expresso","saltshake","munitions mist","vinegar","guardian juice"]
-        			if skill_get(14) > 0 
+        			if skill_get(14) > 0
         			    array_push(a, "sunset mayo")
-        			if array_length(instances_matching(Player, "notoxic", 0)) 
+        			if array_length(instances_matching(Player, "notoxic", 0))
         			    array_push(a, "frog milk")
                     wep = a[irandom(array_length(a)-1)]
                 }
@@ -2318,7 +2318,7 @@ if current_frame_active{
 
 #define create_sniper_charge(_x,_y)
 with instance_create(_x, _y, CustomObject){
-    
+
     name = "sniper charge"
     creator = other
     index = other.index
@@ -2333,13 +2333,13 @@ with instance_create(_x, _y, CustomObject){
     btn = other.specfiring ? "spec" : "fire"
     hand = other.specfiring and other.race = "steroids"
     holdtime = 150
-    
+
     on_shoot = script_ref_create(sniper_shoot)
     on_step = sniper_step
     on_cleanup = sniper_cleanup
     on_destroy = sniper_cleanup
     scr_bullet = script_ref_create(create_sniper_bullet)
-    
+
     return id
 }
 
@@ -2391,7 +2391,7 @@ if button_check(index, btn) = false || holdtime <= 0{
 
     script_ref_call(on_shoot)
     if instance_exists(self) instance_destroy()
-    
+
 }
 
 
@@ -2412,13 +2412,13 @@ with instance_create(x,y,CustomProjectile){
 	lasthit = -4
 	spr_dead = sprBulletHit
 	dir = 0
-	recycleset = (irandom(2) = 0) 
+	recycleset = (irandom(2) = 0)
 	image_angle = other.gunangle
 	direction = other.gunangle
 	scr_fly = script_ref_create(sniper_bullet_fly)
 	on_end_step = sniper_bullet_step
 	on_destroy  = sniper_bullet_destroy
-	
+
 	return id
 }
 
@@ -2517,7 +2517,3 @@ draw_sprite_ext(sprite_index, image_index, x, y, 2*image_xscale, 2*image_yscale,
 draw_set_blend_mode(bm_add);
 draw_sprite_ext(sprite_index, image_index, x, y, 3*image_xscale, 3*image_yscale, image_angle, image_blend, 0.3);
 draw_set_blend_mode(bm_normal);
-
-
-
-

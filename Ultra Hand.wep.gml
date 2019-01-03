@@ -136,6 +136,11 @@ else {
             image_angle = point_direction(x, y, other.trailx, other.traily)
             other.trailx = x
             other.traily = y
+            if irandom(8-skill_get(mut_long_arms)*2)<current_time_scale with instance_create(x+random_range(-3,3),y+random_range(-3,3),Wind)
+            {
+            sprite_index = sprEatRad
+            if !irandom(4) sprite_index = sprEatBigRad
+            }
             image_blend = c_yellow
             if fork(){
                 while instance_exists(self){
@@ -153,7 +158,8 @@ else {
 if projectile_canhit_melee(other){
     sound_play_pitch(sndHammerHeadProc,.6)
     sound_play_pitchvol(sndImpWristKill,.7,.9)
-    sleep(100)
+    sleep(150)
+    view_shake_at(x,y,30)
     projectile_hit(other, damage, 1000, image_angle)
     var _x = x, _y = y, dir = image_angle - 90 * flip, leng = 90, dirfac = 11*flip, t = team;
     if fork(){

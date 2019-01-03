@@ -29,7 +29,7 @@ return sndSwapExplosive;
 return 11;
 
 #define weapon_text
-return "AT HIS MERCY";
+return "AT ITS MERCY";
 
 #define weapon_fire
 sound_play_pitch(sndNukeFire,random_range(1.1,1.3))

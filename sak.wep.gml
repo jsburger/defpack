@@ -74,6 +74,7 @@ a[? "super psy shell flak"]   = sprite_add("sprites/sak/projectiles/sprSuperPsyF
 a[? "super flame shell flak"] = sprite_add("sprites/sak/projectiles/sprSuperFireFlak.png",2,12,12);
 a[? "super ultra shell flak"] = sprite_add("sprites/sak/projectiles/sprSuperUltraFlak.png",2,12,12);
 a[? "super split shell flak"] = sprite_add("sprites/sak/projectiles/sprSuperSplitFlak.png",2,12,12);
+a[? "split slug flak"] = sprite_add("sprites/sak/projectiles/sprSuperSplitFlak.png",2,12,12);
 a[? "super heavy slug flak"] = sprite_add("sprites/sak/projectiles/SuperHeavyFlak.png",2,18,18);
 a[? "super split slug flak"] = sprite_add("sprites/sak/projectiles/SuperHeavySplitFlak.png",2,18,18);
 
@@ -84,7 +85,8 @@ a[? "psy shell flak hit"]   = sprite_add("sprites/sak/projectiles/sprPsyFlakHit.
 a[? "flame shell flak hit"]  = sprite_add("sprites/sak/projectiles/sprFireFlakHit.png",8,16,16);
 a[? "ultra shell flak hit"] = sprite_add("sprites/sak/projectiles/sprUltraFlakHit.png",8,16,16);
 a[? "split shell flak hit"] = sprite_add("sprites/sak/projectiles/sprSplitFlakHit.png",8,16,16);
-a[? "split slug flak hit"]  = sprite_add("sprites/sak/projectiles/sprSplitSuperFlakHit.png",8,24,24)
+a[? "split slug flak hit"]  = sprite_add("sprites/sak/projectiles/sprSplitSuperFlakHit.png",8,24,24);
+a[? "super split slug flak hit"] = a[? "split slug flak hit"];
 
 a[? "super shell flak hit"] = sprSuperFlakHit
 a[? "super slug flak hit"]  = sprSuperFlakHit
