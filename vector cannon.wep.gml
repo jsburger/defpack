@@ -80,7 +80,7 @@ if instance_exists(creator){
     with creator weapon_post(5,05,0)
 	sound_set_track_position(sndEnergyHammerUpg,.3)
 	sound_play_pitch(sndEnergyHammerUpg,.5)
-	
+
     time -= current_time_scale
     if time <= 0 {instance_destroy(); exit}
     x = creator.x + creator.hspeed_raw + lengthdir_x(16,creator.gunangle)
@@ -90,7 +90,7 @@ if instance_exists(creator){
     image_xscale = 1
     direction = creator.gunangle
     image_angle = direction
-    
+
     var _x = lengthdir_x(2,direction), _y = lengthdir_y(2,direction)
     var dir = 0
     do {
@@ -140,12 +140,12 @@ with other{
 }
 #define beam_draw
 draw_sprite_ext(sprite_index, image_index, xstart, ystart, image_xscale, image_yscale, image_angle, image_blend, 1.0);
-	draw_sprite_ext(global.sprVectorBeamStart, 0, xstart, ystart, 1, image_yscale, image_angle-180, image_blend, 1.0);
-	draw_sprite_ext(global.sprVectorHead, 0, x, y, 2, image_yscale*2, image_angle-45, image_blend, 1.0);
+	if x != xstart draw_sprite_ext(global.sprVectorBeamStart, 0, xstart, ystart, 1, image_yscale, image_angle-180, image_blend, 1.0);
+	if x != xstart draw_sprite_ext(global.sprVectorHead, 0, x, y, 2, image_yscale*2, image_angle-45, image_blend, 1.0);
 draw_set_blend_mode(bm_add);
 draw_sprite_ext(sprite_index, image_index, xstart, ystart, image_xscale, 1.5*image_yscale, image_angle, image_blend, 0.15+skill_get(17)*.05);
-	draw_sprite_ext(global.sprVectorBeamStart, 0, xstart, ystart, 1.5, image_yscale*1.5, image_angle-180, image_blend, .15+skill_get(17)*.05);
-	draw_sprite_ext(global.sprVectorHead, 0, x, y, 2.5, image_yscale*2.5, image_angle-45, image_blend, .15+skill_get(17)*.05);
+	if x != xstart draw_sprite_ext(global.sprVectorBeamStart, 0, xstart, ystart, 1.5, image_yscale*1.5, image_angle-180, image_blend, .15+skill_get(17)*.05);
+	if x != xstart draw_sprite_ext(global.sprVectorHead, 0, x, y, 2.5, image_yscale*2.5, image_angle-45, image_blend, .15+skill_get(17)*.05);
 draw_set_blend_mode(bm_normal);
 
 #define beam_destroy

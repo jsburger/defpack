@@ -1,0 +1,196 @@
+(Please not that the following changes do not include any VFX/SFX/Game-feel changes, those changes affecting
+mechanics and/or measurable stats.)
+
+GENERAL CHANGES:
+- Abris Weapons:
+	- If there is a wall between the player and the mouse, the abris circle will now stop at the wall
+	  instead of being destroyed
+- Extra Guns:
+	- Some guns have been chosen to be extra guns, wich have to be loaded seperately into the game.
+	  These guns are either unfinished, boring, broken to the core or just plain dumb. These guns should
+	  only be loaded if the desire for more surpasses the expectation of quality.
+- Prismatic Iris:
+	- Defpack 4.0 features a custom Mutation called "Prismatic Iris". Upon picking it, the Player will be
+	  prompted to change the "type" of bullet weapons to gain from a selection of 1 out of 5 or
+	  to not find any bullet weapons at all.
+	  The following guns are affected by this are as followed:
+	  - In-Game guns:
+		- Revolver
+		- Machinegun
+		- SMG
+		- Smart Gun
+		- Triple Machinegun
+		- Quadruple Machinegun
+		- Minigun
+		- Double Minigun
+	  - Defpack 4.0 guns:
+		- Bullet Cannon
+		- Bullak Cannon
+		- Sniper Rifle
+
+WEAPON CHANGES:
+- IDPD Weapons are Gone.
+- Abris Launcher
+- Abris Pistol
+- Andromeda Launcher:
+	- Now deletes all Enemies standing on Top of its field effect.
+	- New cool visuals.
+	- Decreased ammo cost (from 12 -> 4).
+- Apergig Tanat:
+	- Now deletes all enemy projectiles on hit in a certain radius.
+	- Damage changed (from 1026 -> 1000 + 30).
+	- Now creates a hurtful cartridge on reload.
+	- Decreased ammo cost (from 40 -> 25).
+- Assault Sonic Launcher
+	- Grenades now deal damage of their own, and sonic explosion damage has been reduced.
+	  Overall deals less damage but deals damage more consistently.
+	- Is now automatic.
+	- Now drops later (Palace 7-1 -> Frozen City 5-1).
+	- Decreased ammo cost (from 3 -> 2).
+- Auto Abris Launcher
+- Auto Bullak Cannon
+	- Is now an Extra Gun.
+	- Rebranded to "Bullak Machinegun".
+	- Increased ammo cost (from 4 -> 10).
+	- Increased rate of fire (from 9 -> 8).
+- Auto Grenade Launcher
+	- Now drops sooner (Frozen City 5-2 -> Frozen City 5-1).
+	- Increased rate of fire (from 16 -> 12).
+- Auto Screwdriver
+	- Using it for too long will gradually decrease accuracy and rate of fire.
+	  Not using it will garually revert these changes.
+	- Decreased damage (from 8 -> 4).
+- Bullak Cannon:
+	- Increased ammo cost (from 6 -> 10).
+- Bullet Cannon:
+	- Instead of creating a projectile wich circularly dispenses bullets, now creates
+	  a Burst of bullets.
+	- Now drops sooner (Frozen City 5-3 -> Scrapyard 3-2).
+	- Decreased ammo cost (from 55 -> 7).
+	- Increased rate of fire (from 75 -> 32).
+- Chris Knife:
+	- Extra effect now deletes all enemy projectiles on hit in a certain radius.
+	- Increased chance of extra effect (from 1/31 -> 1/20).
+	- Decreased damage (from 10 -> 8).
+- Claymore:
+	- Now drops later (Scrapyard 3-3 -> Crystal Caves 4-1).
+	- Decreased damage (from 22 -> 12).
+- Defender:
+	- Instead of creating Horrors active abillity projectiles, it creates a spread of 5 custom projectiles
+	wich delete all enemy projectiles they come in contact with and have limited range.
+	- Decreased rad cost (from 12 -> 3).
+	- Increased rate of fire (from 3 -> 21).
+- SPAM Gun, Fire SPAM Gun and Ultra SPAM Gun:
+	- Sread is now affected by accuracy
+- Flak Shotgun:
+	- Fixed a bug where the projectile spread would be favoured towards the counter-clockwise direction a bit.
+- Gunhammer:
+	- Now drops sooner (Scrapyard 3-3 -> Scrapyard 3-1).
+- Heavy Blood Crossbow:
+	- Is now an extra gun.
+- Heavy Gunhammer:
+	- Decreased rate of fire (from 23 -> 38).
+- Heavy Laser Flak Cannon:
+- Now creates twice the amount of lasers on impact.
+	- Decreased rate of fire (from 38 -> 44).
+- Heavy Nuke Launcher:
+	- Projectile is now remote detonated upon releasing the fire button.
+	- More Explosions!
+	- The main projectile deals now (80) damage.
+	- Decreased rad cost (from 7 -> 6).
+- Heavy Toxic Crossbow:
+	- Isn't automatic anymore.
+	- Now drops later (Frozen City 5-2 -> Crystal Caves 4-1).
+- Hot Crossbow:
+	- Is now an extra gun.
+- Hot Shot Cannon:
+	- Now creates projectiles on impact.
+	- Main projectile deals damage and doesnt phase through enemies.
+	- Main projectile disappears earlier.
+	- Decreased ammo cost (from 15 -> 8).
+- Hyper Crossbow:
+	- Instead of creating one bolt that creates splinters on impact it now shoots a burst of 5 bolts
+	- Increased ammo cost (from 2 -> 5)
+	- Decreased rate of fire (from 8 -> 14)
+	- Now drops later (Frozen City 3-1 -> Palace 7-1).
+- Laser Flak Cannon:
+	- Now deals impact (8) damage.
+	- Now creates 5 less lasers.
+	- Increased ammo cost (from 3 -> 4)
+- Lucky Machinegun:
+	- Is now a golden weapon.
+- Antiprism:
+	- Is now an extra gun (for now).
+- Rainbow Machinegun:
+	- All bullets are now fire at the same speed.
+	- Increased rate of fire (from 5-> 4)
+- Screecher:
+	- Instead of a Devastator-like projectile it now creates 3 sonic explosions ahead of you.
+	- Increased rate of fire (from 22 -> 39)
+	- Increased ammo cost (from 3 -> 2)
+	- Now drops sooner (Palace 7-2 -> Crystal Caves 4-1).
+- Shot Cannon:
+	- Now creates projectiles on impact.
+	- Main projectile deals damage and doesnt phase through enemies.
+	- Main projectile disappears earlier.
+	- Decreased ammo cost (from 8 -> 6).
+- Signal Beamer:
+	- Decreased rate of fire (from 8 -> 10)
+- Smart Bazooka:
+	- Is now an extra gun.
+- Smart Nuke Launcher:
+	- Now visualizes its chosen target.
+	- Less explosions, more fire, roughly the same damage.
+	- Decreased ammo cost (from 5 -> 3).
+	- Decreased impact dmaage (from 60 -> 20).
+- Sonic Launcher:
+	- Grenade now deal damage of their own, and sonic explosion damage has been reduced.
+	Overall deals less damage but deals damage more consistently.
+	- Now drops sooner (Scrapyard 3-3 -> Scrapyard 3-1).
+- Psy Revolver:
+	- Now can only Kill up to 3 enemies.
+	- Increased ammo cost (from 2 -> 4).
+- Super Abris Launcher:
+	- Now drops sooner (Palace 7-3 -> Labs 6-1).
+- Supersonic Launcher:
+	- Increased ammo cost (from 3 -> 4).
+  - Increased impact damage (from 12 -> 70).
+- Toothbrush:
+  - Chance to appear in a run reduced (from 1/2 -> 1/3).
+- Toxic Cannon:
+	- Increased rate of fire (from 95 -> 43).
+	- Decreased ammo cost (from 8 -> 3).
+- Ultra Gunhammer:
+	- Now drops later (Sewers 2-1 L1 -> Crystal Caves 4-1 L1).
+	- Now creates 4 ultra shells instead of 3 ultra bullets.
+
+WEAPONS REMOVED:
+	- Auto Splinter Gun
+	- Bolt Gun
+	- Bullet Machingun
+	- Energy Gun
+	- Gatling Smart Bazooka
+	- Golden Abris Pistol
+	- Golden Bouncer Pistol
+	- Golden Bullak Cannon
+	- Golden Gunhammer
+	- Heavy Bullak Cannon
+	- Heavy Claymore
+	- Heavy Abris Launcher
+	- Hot Flare Gun
+	- Hot Flamethrower
+	- Hot Dragon
+	- Heavy Minigun
+	- Inquisitor
+	- Lightning Abris Luncher
+	- Plasma Abris Launcher
+	- Super Heavy Slugger
+	- Super Flame Cannon
+	- Super Toxic Cannon
+	- Triple Laser Pistol
+	- Triple Laser Rifel
+	- Ultra Bullet Cannon
+	- (Ultra Shot Cannon)
+
+WEAPONS ADDED:
+EXTRA WEAPONS:

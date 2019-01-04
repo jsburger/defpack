@@ -9,7 +9,7 @@ return "TOXIC CARRONADER"
 #define weapon_type
 return 4
 #define weapon_cost
-return 3
+return 2
 #define weapon_area
 return 4
 #define weapon_load

@@ -17,7 +17,7 @@ return false;
 return 30;
 
 #define weapon_cost
-return 30;
+return 25;
 
 #define weapon_swap
 return sndSwapPistol

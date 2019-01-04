@@ -141,7 +141,7 @@ if phase = 0 //move regularly
 {
   if speed <= friction
   {
-    if button_check(creator.index,btn) && creator.mask_index != 268
+    if instance_exists(creator) if button_check(creator.index,btn) && creator.mask_index != 268
     {
       speed = 0
       ang += 10

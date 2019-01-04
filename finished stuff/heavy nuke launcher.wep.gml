@@ -1,6 +1,6 @@
 #define init
 global.sprHeavyNuke 				  = sprite_add("sprHeavyNuke.png",0, 8, 6);
-global.sprHeavyNukeLauncher   = sprite_add_weapon("sprHeavyNukeLauncher.png", 9, 10);
+global.sprHeavyNukeLauncher   = sprite_add_weapon("sprHeavyNukeLauncher.png", 20, 8);
 global.sprSmallGreenExplosion = sprite_add("GreenExplosionS.png",7,12,12)
 global.sprHeavyNukeFlame 			= sprite_add("sprHeavyNukeFlame.png",3,36,12)
 global.sprUltraFire 					= sprite_add("sprUltraFire.png",7,8,8);
@@ -13,11 +13,14 @@ return global.sprHeavyNukeLauncher;
 #define weapon_type
 return 4;
 
+#define weapon_chrg
+return 1;
+
 #define weapon_auto
 return false;
 
 #define weapon_load
-return 75;
+return 60;
 
 #define weapon_cost
 return 6;
@@ -40,17 +43,18 @@ sleep(40)
 motion_add(gunangle,-5)
 with instance_create(x,y,CustomProjectile){
 	friction = .18
-	motion_set(other.gunangle, 5)
+	motion_set(other.gunangle, 7)
 	team = other.team
 	creator = other
 	sprite_index = global.sprHeavyNuke
 	index = other.index
 	accuracy = other.accuracy
 	typ = 2
-	timer = 25
+	timer = 30
 	damage = 100
 	fimage_index = 0
 	soundcheck = 0
+	btn = other.specfiring ? "spec" : "fire"
 	on_step = script_ref_create(nuke_step)
 	on_destroy = script_ref_create(nuke_pop)
 	on_draw = script_ref_create(nuke_draw)
@@ -63,6 +67,23 @@ with instance_create(x,y,CustomProjectile){
 sleep(70)
 
 #define nuke_step
+if instance_exists(creator)
+{
+	if btn = "fire" && button_check(creator.index,btn){creator.reload = weapon_get_load(creator.wep)}else{creator.breload = weapon_get_load(creator.bwep)}
+}
+if soundcheck = 1
+{
+	if !instance_exists(creator){instance_destroy();exit}
+	if !button_check(creator.index,btn)
+	{
+		instance_destroy()
+		exit
+	}
+	else
+	{
+		if btn = "fire"{creator.reload = weapon_get_load(creator.wep)}else{creator.breload = weapon_get_load(creator.bwep)}
+	}
+}
 if timer > 0{timer -= 1}
 else
 {
@@ -96,7 +117,7 @@ if timer <= 0
 			damage = 8
 		}
 	}
-	if speed < 6{friction = -.4}
+	if speed < 6{friction = -.35}
 	else{speed = 6}
 	with instance_create(x- hspeed*2, y - vspeed*2, Smoke) {
 		motion_set(other.direction+random_range(-8,8)-180,2+random(2))

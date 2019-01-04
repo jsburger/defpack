@@ -157,6 +157,7 @@ do
 	{
 		with mod_script_call("mod","defpack tools","create_sonic_explosion",other.x,other.y)
 		{
+			if !place_meeting(x,y,Floor){instance_destroy()}
 			var scalefac = 1;
 			image_xscale = scalefac
 			image_yscale = scalefac
@@ -169,6 +170,7 @@ do
 		}
 		with mod_script_call("mod","defpack tools","create_sonic_explosion",other.x,other.y)
 		{
+			if !place_meeting(x,y,Floor){instance_destroy()}
 			var scalefac = 0.8;
 			image_xscale = scalefac
 			image_yscale = scalefac
@@ -181,6 +183,7 @@ do
 		}
 		with mod_script_call("mod","defpack tools","create_sonic_explosion",other.x,other.y)
 		{
+			if !place_meeting(x,y,Floor){instance_destroy()}
 			var scalefac = 0.5;
 			image_xscale = scalefac
 			image_yscale = scalefac
@@ -205,7 +208,7 @@ do
 			image_speed = 1
 			team = other.team
 
-			repeat(scalefac*10){ with instance_create(x,y,Dust) {motion_add(random(360),3)}}
+			if !place_meeting(x,y,Floor){instance_destroy()}else{repeat(scalefac*10){ with instance_create(x,y,Dust) {motion_add(random(360),3)}}}
 		}
 		with mod_script_call("mod","defpack tools","create_sonic_explosion",other.x+lengthdir_x(60,360/6*Ring1Amount+ringoffset),other.y+lengthdir_y(60,360/6*Ring1Amount+ringoffset))
 		{
@@ -217,7 +220,7 @@ do
 			image_speed = 0.8
 			team = other.team
 
-			repeat(scalefac*10){ with instance_create(x,y,Dust) {motion_add(random(360),3)}}
+			if !place_meeting(x,y,Floor){instance_destroy()}else{repeat(scalefac*10){ with instance_create(x,y,Dust) {motion_add(random(360),3)}}}
 		}
 	}
 	repeat(Ring2Amount)
@@ -234,7 +237,7 @@ do
 			team = other.team
 
 
-			repeat(scalefac*10){ with instance_create(x,y,Dust) {motion_add(random(360),3)}}
+			if !place_meeting(x,y,Floor){instance_destroy()}else{repeat(scalefac*10){ with instance_create(x,y,Dust) {motion_add(random(360),3)}}}
 		}
 	}
 	}
