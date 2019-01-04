@@ -52,7 +52,7 @@ while 1 {
     			}
     			var ang = gunangle;
     			gunangle = point_direction(view_xview[index], view_yview[index], x-game_width/2, y-game_height/2)
-    			weapon_post(0,floor(point_distance(view_xview[index], view_yview[index], x-game_width/2, y-game_height/2)/5),0)
+    			weapon_post(0,floor(point_distance(view_xview[index], view_yview[index], x-game_width/2, y-game_height/2)/2),0)
     			gunangle = ang
     			var spr = weapon_get_sprt(wep)
     			var bspr = weapon_get_sprt(bwep)
@@ -154,7 +154,7 @@ UberCont.opt_shake = global.shake
 draw_set_visible_all(0)
 draw_set_visible(index,1)
 draw_set_blend_mode(bm_subtract)
-draw_ellipse_color(x+game_width,y+game_height,x-game_width,y-game_height,c_black,c_silver,0)
+draw_ellipse_color(view_xview_nonsync-game_width/2,view_yview_nonsync-game_height/2,view_xview_nonsync+game_width*3/2,view_yview_nonsync+game_height*3/2,c_black,c_white,0)
 draw_set_visible_all(1)
 draw_set_blend_mode(bm_normal)
 instance_destroy()

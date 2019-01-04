@@ -322,8 +322,7 @@ if timer <= 0{
 		dir = point_direction(x, y, closeboy.x, closeboy.y);
 		spd = speed * 5 * current_time_scale
 
-    var _f = .3;
-    if timer = -500 _f = 1
+        var _f = .3;
 		direction -= clamp(angle_difference(image_angle, dir) * _f * current_time_scale, -spd, spd); //Smoothly rotate to aim position.
 		image_angle = direction
 	}
@@ -420,11 +419,9 @@ with (c){
 	lasthit = -4
 	recycle_amount = 0
 	image_speed = 1
-	damage = 4
-	falloff = 1
+	damage = 7
+	falloff = 2
 	fallofftime = current_frame + 2
-	timer = 5 + irandom(4)
-	og_timer = timer
 	on_hit = script_ref_create(mag_hit)
 	on_draw = script_ref_create(mag_shell_draw)
 	on_step = script_ref_create(mag_shell_step)
@@ -451,8 +448,6 @@ with (c){
 	damage = 3
 	falloff = 1
 	fallofftime = current_frame + 2
-	timer = 5 + irandom(4)
-	og_timer = timer
 	on_hit = script_ref_create(mag_hit)
 	on_draw = script_ref_create(mag_shell_draw)
 	on_step = script_ref_create(mag_shell_step)

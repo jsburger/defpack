@@ -665,9 +665,9 @@ switch m{
 
 #define shot_cannon(p,m)
 switch m{
-				case "super":
-				sound_play_pitchvol(sndSuperFlakExplode,random_range(.4,.6),.7)
-				sound_play_pitchvol(sndDoubleShotgun,.8,7)
+	case "super":
+    	sound_play_pitchvol(sndSuperFlakExplode,random_range(.4,.6),.7)
+    	sound_play_pitchvol(sndDoubleShotgun,.8,7)
         with supershotcannon(p){
             set(0)
             speed = 12 + random(1)

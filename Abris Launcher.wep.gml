@@ -15,7 +15,7 @@ return 4;
 return 1;
 
 #define weapon_load
-return 26;
+return 22;
 
 #define weapon_cost
 return 2;
@@ -31,14 +31,14 @@ weapon_post(-1,-3,0)
 sound_play_pitchvol(sndNadeReload,1.4,.6)
 
 #define weapon_text
-return "HIDE AND KILL";
+return "ready to bloom";
 
 #define weapon_fire
 var _strtsize = 50;//never thought id have to nerf eagle eyes im so proud of you
 var _endsize  = 30;
 var _accspeed = 1.2;
 with mod_script_call("mod","defpack tools","create_abris",self,_strtsize,_endsize,argument0){
-	accspeed = 1.2
+	accspeed = 1.15
 	payload = script_ref_create(pop)
 }
 sound_play_pitch(sndSniperTarget,1/accuracy+.5)
@@ -50,6 +50,6 @@ sound_play(sndExplosion)
 with creator weapon_post(6,25,35)
 repeat(6)
 {
-	with instance_create(explo_x+lengthdir_x(acc+30,offset),explo_y+lengthdir_y(acc+30,offset),SmallExplosion){hitid = [sprite_index,"small explosion"]}
+	with instance_create(explo_x+lengthdir_x(acc+accmin,offset),explo_y+lengthdir_y(acc+accmin,offset),SmallExplosion){hitid = [sprite_index,"small explosion"]}
 	offset += 360/6
 }

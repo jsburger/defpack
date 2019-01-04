@@ -67,7 +67,6 @@ with instance_create(x,y,CustomProjectile)
 }
 #define mega_hit
 if current_frame_active{
-    trace(1)
     frames--
     repeat(3) instance_create(x+random_range(-8,8),y+random_range(-8,8),Smoke)
     projectile_hit(other,damage,force,direction)

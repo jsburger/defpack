@@ -363,6 +363,7 @@ if instance_exists(driver) && instance_is(driver,Player){
 	persistent = 0
 }
 
+
 if place_meeting(x,y,Wall){
 	//kill walls
 	with Wall if place_meeting(x,y,other){
@@ -375,6 +376,9 @@ if place_meeting(x,y,Wall){
 	}
 	my_health -= .5
 }
+
+if !place_meeting(x+hspeed_raw, y, Floor) hspeed = 0
+if !place_meeting(x, y + vspeed_raw, Floor) vspeed = 0
 
 if my_health/maxhealth < .5{
 	//smoke indicates damage

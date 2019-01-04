@@ -53,13 +53,11 @@ with instance_create(x,y,CustomProjectile)
   motion_add(other.gunangle+random_range(-4,4)*other.accuracy,6)
   maxspeed = speed
   image_angle = direction
-  damage[0] = 3
-  damage[1] = 2
-  force[0]  = 6
-  force[1]  = 9
+  damage = 2
+  force  = 6
   typ       = 0
   friction  = .03
-  image_speed = 0
+  image_speed = 1
   image_xscale = 1.25
   image_yscale = 1.25
   pierce = 45
@@ -68,7 +66,14 @@ with instance_create(x,y,CustomProjectile)
   on_wall = dyn_wall
   on_draw = dyn_draw
   on_hit  = dyn_hit
+  on_anim = dyn_anim
 }
+#define dyn_anim
+image_xscale = 1
+image_yscale = 1
+image_speed = 0
+image_index = 1
+
 #define dyn_destroy
 repeat(3)
 {
@@ -83,11 +88,9 @@ repeat(3)
 with instance_create(x,y,BulletHit){sprite_index = sprHeavySlugHit;image_angle = other.image_angle}
 
 #define dyn_step
-miage_index = 1
-if image_index = 1{image_xscale = 1;image_yscale = 1}
-with instances_matching_ne(hitme,"team",team)
+if current_frame mod 2 < current_time_scale with instances_matching_ne(hitme,"team",team)
 {
-  if distance_to_object(other) <= 12 && current_frame mod 2 < current_time_scale
+  if distance_to_object(other) <= 12 
   {
     var _id = id;
     with other
@@ -95,11 +98,12 @@ with instances_matching_ne(hitme,"team",team)
       x -= hspeed*3/4
       y -= vspeed*3/4
       other.direction = direction
-      projectile_hit(_id,damage[image_index],min(0,force[image_index]-other.size/4),direction)
+      projectile_hit(_id,damage + 1 - floor(image_index),min(0,force + 3 * (1 - floor(image_index)) -other.size/4),direction)
       speed *= .95 + skill_get(15)*.1
-      sleep(5*other.size)
-      view_shake_at(x,y,2*other.size)
-      if other.my_health <= 0{sleep(16*other.size);view_shake_at(x,y,8*other.size);speed += 2}
+      var s = min(other.size,4)
+      sleep(5*s)
+      view_shake_at(x,y,2*s)
+      if other.my_health <= 0{sleep(16*s);view_shake_at(x,y,8*s);speed += 2}
       if speed > maxspeed speed = maxspeed
       if --pierce <= 0{instance_destroy();exit}
     }

@@ -68,7 +68,12 @@ var timescale = (mod_variable_get("weapon", "stopwatch", "slowed") == 1) ? 30/ro
 if !instance_exists(creator){instance_destroy();exit}
 if button_check(index,"swap"){creator.ammo[1] = min(creator.ammo[1] + weapon_cost(), creator.typ_amax[1]);instance_destroy();exit}
 if btn = "fire" creator.reload = weapon_get_load(creator.wep)
-if btn = "spec" creator.breload = weapon_get_load(creator.bwep) * array_length_1d(instances_matching(instances_matching(CustomObject, "name", "sniper fire charge"),"creator",creator))
+if btn = "spec"{
+    if creator.race = "steroids"
+        creator.breload = weapon_get_load(creator.bwep)
+    else
+        creator.reload = max(weapon_get_load(creator.wep) * array_length_1d(instances_matching(instances_matching(instances_matching(CustomObject, "name", name),"creator",creator),"btn",btn)), creator.reload)
+}
 charge += timescale * 3.2 / acc
 if charge > 100
 {
@@ -213,16 +218,7 @@ ystart = y
 
 #define sniper_destroy
 with instance_create(x,y,BulletHit){sprite_index = global.sprFireBulletHit}
-var dis = point_distance(x,y,xstart,ystart) + 1;
-var num = 20;
-for var i = 0; i <= num; i++{
-    with instance_create(xstart+lengthdir_x(dis/num * i,direction),ystart + lengthdir_y(dis/num * i,direction),BoltTrail){
-        image_blend = c_white
-        image_angle = other.direction
-        image_yscale = other.trailscale * (i/num)
-        image_xscale = dis/num
-    }
-}
+line()
 
 #define muzzle_step
 if image_index > 1{instance_destroy()}

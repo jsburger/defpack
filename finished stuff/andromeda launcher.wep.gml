@@ -82,6 +82,7 @@ with instance_create(x,y,CustomObject){
     on_destroy = spacedestroy
     alarm0 = 30
     wantobject = -1
+    name = "Andromeda Pool"
 }
 instance_destroy()
 
@@ -174,7 +175,7 @@ with instances_in(x-succ,y-succ/2,x+succ,y+succ/2,instances_matching_ne([hitme,C
                 }
                 if instance_is(self,enemy) || instance_is(self,becomenemy){
                     if instance_is(self, Salamander) sound_stop(sndSalamanderFireLoop)
-                    if instance_number(enemy) + instance_number(becomenemy) - instance_number(WantVan) <= 1{
+                    if instance_number(enemy) + instance_number(becomenemy) - instance_number(WantVan) - instance_number(Van) <= 1 and !instance_exists(Portal){
                         other.wantobject = Portal
                     }
                 }
@@ -231,6 +232,26 @@ if instance_exists(Player){
 
         var sides = 18
         var int = 360/sides
+        
+        var xs = [0], ys = [0]
+        for var i = 0; i <= 360; i+= int{
+            array_push(xs, lengthdir_x(succ, i))
+            array_push(ys, lengthdir_y(succ/2, i))
+        }
+        
+        var sizes = [size, size, size, 128],
+            textures = [tex3, tex2, tex, tex4],
+            scales = [1, 1.5, 2, 3];
+            
+        for var o = 0; o <= 3; o++{
+            draw_primitive_begin_texture(pr_trianglefan, textures[o])
+            for var i = 0; i <= sides+1; i++{
+                drawmyshit(x + xs[i], y+ys[i], scales[o], sizes[o], 0)
+            }
+            draw_primitive_end()
+        }
+        
+        /*
 		draw_primitive_begin_texture(pr_trianglefan, tex3);
 		drawmyshit(x,y,1,size,0)
 		for (var i = 0; i<= 360; i+=int){
@@ -258,6 +279,7 @@ if instance_exists(Player){
 			drawmyshit(x+lengthdir_x(succ,i),y+lengthdir_y(succ/2,i),3,128,0)
 		}
 		draw_primitive_end();
+		*/
 	}
 }
 draw_set_color(c_white);
