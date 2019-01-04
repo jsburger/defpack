@@ -38,4 +38,10 @@ sound_play_pitch(sndQuadMachinegun,random_range(1.4,1.6))
 sound_play_pitch(sndFlakCannon,random_range(.6,.8))
 sound_play_pitch(sndHeavyNader,random_range(1.6,1.8))
 sound_play_pitchvol(sndFlameCannon,random_range(1.8,2.2),.8)
-mod_script_call("mod", "defpack tools 2","create_flak",0,21,13,0,1,10,id)
+with mod_script_call_self("mod", "defpack tools 2", "create_fire_bullak", x, y){
+    accuracy = other.accuracy
+    creator = other
+    team = other.team
+    motion_set(other.gunangle+random_range(3,3) * other.accuracy, 16)
+    image_angle = direction
+}

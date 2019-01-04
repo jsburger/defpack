@@ -15,10 +15,10 @@ return 4;
 return true;
 
 #define weapon_load
-return 12;
+return 4;
 
 #define weapon_cost
-return 2;
+return 1;
 
 #define weapon_swap
 return sndSwapExplosive;
@@ -31,7 +31,7 @@ weapon_post(-1,-3,0)
 sound_play_pitchvol(sndNadeReload,1.4,.6)
 
 #define weapon_text
-return "DISTANT ADMIRATION";
+return "FASTER, FASTER";
 
 #define weapon_fire
 var _strtsize = 20;

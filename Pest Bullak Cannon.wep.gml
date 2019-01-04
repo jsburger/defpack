@@ -40,6 +40,10 @@ sound_play_pitch(sndHeavyNader,random_range(1.6,1.8))
 sound_play_pitch(sndToxicBoltGas,random_range(.8,.85))
 sound_play_pitch(sndMinigun,random_range(.7,.9))
 weapon_post(6,-4,21)
-with mod_script_call("mod", "defpack tools 2","create_flak",0,5,13,0,2,10,id){
-	speed += 2
+with mod_script_call_self("mod", "defpack tools 2", "create_toxic_bullak", x, y){
+    accuracy = other.accuracy
+    creator = other
+    team = other.team
+    motion_set(other.gunangle+random_range(3,3) * other.accuracy, 18)
+    image_angle = direction
 }

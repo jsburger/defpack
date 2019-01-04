@@ -39,4 +39,10 @@ sound_play_pitch(sndFlakCannon,random_range(.6,.8))
 sound_play_pitch(sndHeavyNader,random_range(1.6,1.8))
 sound_play_pitch(sndCursedReminder,random_range(.6,.8))
 weapon_post(6,-4,21)
-mod_script_call("mod", "defpack tools 2","create_flak",0,5,13,0,4,10,id)
+with mod_script_call_self("mod", "defpack tools 2", "create_psy_bullak", x, y){
+    accuracy = other.accuracy
+    creator = other
+    team = other.team
+    motion_set(other.gunangle+random_range(3,3) * other.accuracy, 8)
+    image_angle = direction
+}

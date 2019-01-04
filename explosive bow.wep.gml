@@ -60,6 +60,7 @@ with instance_create(x,y,CustomObject)
 
 #define bow_step
 if !instance_exists(creator){instance_delete(self);exit}
+var timescale = (mod_variable_get("weapon", "stopwatch", "slowed") == 1) ? 30/room_speed : current_time_scale;
 with creator weapon_post(0,-(other.charge/other.maxcharge*10),0)
 if button_check(index,"swap"){creator.ammo[3] = min(creator.ammo[3] + weapon_cost(), creator.typ_amax[3]);instance_destroy();exit}
 if btn = "fire" creator.reload = weapon_get_load(creator.wep)
@@ -67,11 +68,11 @@ if btn = "spec"{
     if creator.race = "steroids"
         creator.breload = weapon_get_load(creator.bwep)
     else
-        creator.reload = weapon_get_load(creator.wep) * array_length_1d(instances_matching(instances_matching(instances_matching(CustomObject, "name", name),"creator",creator),"btn",btn))
+        creator.reload = max(weapon_get_load(creator.wep) * array_length_1d(instances_matching(instances_matching(instances_matching(CustomObject, "name", name),"creator",creator),"btn",btn)), creator.reload)
 }
 if button_check(index,btn){
     if charge < maxcharge{
-        charge += current_time_scale;
+        charge += timescale;
         charged = 0
         //if charge < 20{
             sound_play_pitchvol(sound,sqr((charge/maxcharge) * 3.5) + 6,1 - charge/maxcharge)

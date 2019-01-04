@@ -64,7 +64,12 @@ var timescale = (mod_variable_get("weapon", "stopwatch", "slowed") == 1) ? 30/ro
 if !instance_exists(creator){instance_destroy();exit}
 if button_check(index,"swap"){creator.ammo[1] = min(creator.ammo[1] + weapon_cost(), creator.typ_amax[1]);instance_destroy();exit}
 if btn = "fire" creator.reload = weapon_get_load(creator.wep)
-if btn = "spec" creator.breload = weapon_get_load(creator.bwep) * array_length_1d(instances_matching(instances_matching(CustomObject, "name", "sniper bouncer charge"),"creator",creator))
+if btn = "spec"{
+    if creator.race = "steroids"
+        creator.breload = weapon_get_load(creator.bwep)
+    else
+        creator.reload = max(weapon_get_load(creator.wep) * array_length_1d(instances_matching(instances_matching(instances_matching(CustomObject, "name", name),"creator",creator),"btn",btn)), creator.reload)
+}
 charge += timescale * 1.6 / acc
 if charge > 100
 {

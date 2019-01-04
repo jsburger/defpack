@@ -36,13 +36,14 @@ if fork(){
 				team = other.team
 				creator = other
 				damage = 15
-				extradir = random_range(-.2,.2)*creator.accuracy*i
-				motion_set(other.gunangle + random_range(-5,5)*i,1)
+				motion_set(other.gunangle + random_range(-4-i,4+i) * other.accuracy,1)
+				extradir = random_range(.15,.25) * sign(other.gunangle - direction) * other.accuracy * i
 				repeat(2){with instance_create(x,y,Smoke){speed = random_range(3,5);direction = other.direction+random_range(-5,5)}}
 				image_angle = direction
 				on_destroy  = puncherdie
-				on_step 		= puncherstep
-				on_draw 		= puncherdraw
+				on_step 	= puncherstep
+				on_end_step = puncherendstep
+				on_draw 	= puncherdraw
 			}
 			wait(3)
 		}
@@ -54,20 +55,19 @@ if fork(){
 return global.sprPuncher
 
 #define weapon_text
-return "god bless bazookas"
+return "breaking through"
 
 #define puncherdraw
 draw_self()
 draw_sprite_ext(sprRocketFlame,-1,x,y,1,1,image_angle,c_white,image_alpha)
 
-#define puncherstep
-if current_frame_active &&irandom(1) instance_create(x,y,Smoke)
-with instance_create(x-lengthdir_x(16+speed,other.direction),y-lengthdir_y(16+speed,other.direction),BoltTrail)
+#define puncherendstep
+with instance_create(x,y,BoltTrail)
 {
 	image_blend = c_yellow
-	image_angle = other.direction
+	image_angle = point_direction(x,y,other.xprevious, other.yprevious)
+	image_xscale = point_distance(x,y,other.xprevious, other.yprevious)
 	image_yscale = 1.4
-	image_xscale = 12+other.speed
 	if fork(){
 	    while instance_exists(self){
 	        image_blend = merge_color(image_blend,c_red,.1*current_time_scale)
@@ -76,6 +76,9 @@ with instance_create(x-lengthdir_x(16+speed,other.direction),y-lengthdir_y(16+sp
 	    exit
 	}
 }
+
+#define puncherstep
+if current_frame_active && !irandom(2) instance_create(x,y,Smoke)
 direction += extradir*current_time_scale
 speed += current_time_scale *.7
 image_angle = direction
@@ -84,10 +87,10 @@ if speed >= 30 speed = 30
 #define puncherdie
 sound_play(sndExplosion)
 instance_create(x,y,Explosion)
-for (var i = 1;i < 3; i++){
-	instance_create(x+lengthdir_x(16*i,direction),y+lengthdir_y(16*i,direction),SmallExplosion)
+for (var i = 1;i <= 3; i++){
+	instance_create(x+lengthdir_x(18*i,direction),y+lengthdir_y(18*i,direction),SmallExplosion)
 }
-instance_create(x+lengthdir_x(16*4,direction),y+lengthdir_y(16*4,direction),SmallExplosion)
+//instance_create(x+lengthdir_x(16*4,direction),y+lengthdir_y(16*4,direction),SmallExplosion)
 /*instance_create(x+lengthdir_x(16,direction),y+lengthdir_y(16,direction),SmallExplosion)
 instance_create(x+lengthdir_x(-16,direction),y+lengthdir_y(16,direction),SmallExplosion)
 instance_create(x+lengthdir_x(16,direction),y+lengthdir_y(-16,direction),SmallExplosion)

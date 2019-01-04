@@ -17,7 +17,7 @@ return false;
 return 43;
 
 #define weapon_cost
-return 2;
+return 3;
 
 #define weapon_swap
 return sndSwapExplosive;
@@ -35,16 +35,24 @@ sound_play_pitch(sndShotgun,1.5)
 sound_play_pitch(sndDoubleShotgun,1.5)
 sound_play_pitch(sndSuperSlugger,1.5)
 weapon_post(7,-40,5)
-with mod_script_call("mod", "defpack tools 2","create_flak",0,2,8,0,"split",35,id){ //god damn im spooked, i tested this but fuck man its gonna go wrong
-	ammo = 1
-	image_xscale += .5
-	image_yscale += .5
+with mod_script_call_self("mod", "defpack tools 2", "create_split_flak", x, y){
+    motion_set(other.gunangle + random_range(-2, 2) * other.accuracy, 16)
+    image_xscale += .5
+    image_yscale += .5
+    heavy = 1
+    projectile_init(other.team,other)
+    image_angle = direction
+    accuracy = other.accuracy
 }
-with mod_script_call("mod", "defpack tools 2","create_flak",0,2,8,0,"split",22,id){ //god damn im spooked, i tested this but fuck man its gonna go wrong
-	ammo = 1
-	direction += 20 * other.accuracy
+with mod_script_call_self("mod", "defpack tools 2", "create_split_flak", x, y){
+    motion_set(other.gunangle - 20 * other.accuracy, 16)
+    projectile_init(other.team,other)
+    image_angle = direction
+    accuracy = other.accuracy
 }
-with mod_script_call("mod", "defpack tools 2","create_flak",0,2,8,0,"split",22,id){ //god damn im spooked, i tested this but fuck man its gonna go wrong
-	ammo = 1
-	direction -= 20 * other.accuracy
+with mod_script_call_self("mod", "defpack tools 2", "create_split_flak", x, y){
+    motion_set(other.gunangle + 20 * other.accuracy, 16)
+    projectile_init(other.team,other)
+    image_angle = direction
+    accuracy = other.accuracy
 }
