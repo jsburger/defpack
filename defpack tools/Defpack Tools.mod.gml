@@ -220,7 +220,7 @@ with SodaMachine{
     		with instance_create(_x,_y,WepPickup){
     		    if !irandom(99) wep = "soda popper"
     		    else{
-        		    var a = ["lightning blue lifting drink(tm)","extra double triple coffee","autoproductive expresso","saltshake","munitions mist","vinegar","guardian juice"]
+        		    var a = ["lightning blue lifting drink(tm)","extra double triple coffee","expresso","saltshake","munitions mist","vinegar","guardian juice"]
         			if skill_get(14) > 0
         			    array_push(a, "sunset mayo")
         			if array_length(instances_matching(Player, "notoxic", 0))

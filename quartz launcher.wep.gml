@@ -132,6 +132,7 @@ if place_meeting(x,y,Shank){instance_destroy()}
 if lifetime <= 0{instance_destroy();exit}
 
 #define quartznade_destroy
+sound_play_pitchvol(sndLaserCrystalHit,1.4,.2)
 repeat(8) with instance_create(x,y,Feather)
 {
 	motion_add(random(360),random_range(3,6))

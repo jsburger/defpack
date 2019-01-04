@@ -41,7 +41,7 @@
 /loadwep finished stuff/drinks/munitions mist
 /loadwep finished stuff/drinks/sunset mayo
 /loadwep finished stuff/drinks/saltshake
-/loadwep finished stuff/drinks/autoproductive expresso
+/loadwep finished stuff/drinks/expresso
 /loadwep finished stuff/drinks/extra double triple coffee
 /loadwep finished stuff/drinks/lightning blue lifting drink(tm)
 /loadwep finished stuff/drinks/guardian juice

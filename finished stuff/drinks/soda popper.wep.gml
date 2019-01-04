@@ -32,10 +32,10 @@ if is_object(w)
       sound_play_pitch(sndGunGun,1.4)
       with instance_create(x+lengthdir_x(4,gunangle),y+lengthdir_y(4,gunangle),ThrownWep)
       {
-        var a = ["lightning blue lifting drink(tm)","extra double triple coffee","autoproductive expresso","saltshake","munitions mist","vinegar","guardian juice"]
-		if skill_get(14) > 0 
+        var a = ["lightning blue lifting drink(tm)","extra double triple coffee","expresso","saltshake","munitions mist","vinegar","guardian juice"]
+		if skill_get(14) > 0
 		    array_push(a, "sunset mayo")
-		if array_length(instances_matching(Player, "notoxic", 0)) 
+		if array_length(instances_matching(Player, "notoxic", 0))
 		    array_push(a, "frog milk")
         wep = a[irandom(array_length(a)-1)]
         sprite_index = weapon_get_sprt(wep)
@@ -120,4 +120,3 @@ if is_object(w){if w.ammo>0{return 32}else{return 2}}
 
     draw_reset_projection();
     draw_set_visible_all(1);
-

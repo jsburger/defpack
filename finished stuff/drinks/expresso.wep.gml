@@ -3,7 +3,7 @@ global.sprAutoproductiveExpresso = sprite_add_weapon("sprAutoproductiveExpresso.
 #define weapon_sprt
 return global.sprAutoproductiveExpresso
 #define weapon_name
-return "AUTOPRODUCTIVE EXPRESSO"
+return "EXPRESSO"
 #define weapon_type
 return 0
 #define weapon_cost
