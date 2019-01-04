@@ -1,5 +1,6 @@
 #define init
-global.smacker = sprite_add_weapon("sprites/sprultrahand.png",-6,5)
+global.smacker    = sprite_add_weapon("sprites/sprultrahand.png",-6,5)
+global.smackerOff = sprite_add_weapon("sprites/sprultrahandoff.png",-6,5)
 
 #define weapon_name
 return "ULTRA HAND"
@@ -136,7 +137,7 @@ else {
             image_angle = point_direction(x, y, other.trailx, other.traily)
             other.trailx = x
             other.traily = y
-            if irandom(8-skill_get(mut_long_arms)*2)<current_time_scale with instance_create(x+random_range(-3,3),y+random_range(-3,3),Wind)
+            if random(100)<((12+skill_get(mut_long_arms)*3)*current_time_scale) with instance_create(x+random_range(-3,3),y+random_range(-3,3),Wind)
             {
             sprite_index = sprEatRad
             if !irandom(4) sprite_index = sprEatBigRad
@@ -185,6 +186,6 @@ if projectile_canhit_melee(other){
 return global.smacker
 #define weapon_sprt
 if instance_is(self,Player) if array_length(instances_matching(instances_matching(CustomObject, "name", "Ultra Hand"), "creator", id)) return mskNone
-return global.smacker
+if GameCont.rad >= 8 return global.smacker else return global.smackerOff
 #define weapon_text
 return "THE POWER OF INFINITY"

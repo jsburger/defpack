@@ -1,10 +1,11 @@
-(Please not that the following changes do not include any VFX/SFX/Game-feel changes, those changes affecting
-mechanics and/or measurable stats.)
+(Please note that the following changes do not include any VFX/SFX/Game-feel changes, meaning only those changes affecting
+mechanics and/or measurable stats are listed below.)
 
 GENERAL CHANGES:
 - Abris Weapons:
 	- If there is a wall between the player and the mouse, the abris circle will now stop at the wall
-	  instead of being destroyed
+	  instead of being destroyed.
+	- Abris circles will now redeploy automatically after reloading if the firing button is being held down.
 - Extra Guns:
 	- Some guns have been chosen to be extra guns, wich have to be loaded seperately into the game.
 	  These guns are either unfinished, boring, broken to the core or just plain dumb. These guns should
@@ -27,36 +28,34 @@ GENERAL CHANGES:
 		- Bullet Cannon
 		- Bullak Cannon
 		- Sniper Rifle
+- Hold and charge:
+	- Some weapons have alternative bahaviours while holding the fire button. These guns have a designated
+	 	"charging battery" symbol right next to their name.
 
 WEAPON CHANGES:
-- IDPD Weapons are Gone.
-- Abris Launcher
-- Abris Pistol
+- Abris Launcher:
+	- Increased rate of fire (from 24 -> 22).
+- Abris Pistol:
+	- Now drops sooner (Scrapyard 3-1 -> Desert 1-3).
+	- Increased rate of fire (from 13 -> 21).
 - Andromeda Launcher:
 	- Now deletes all Enemies standing on Top of its field effect.
-	- New cool visuals.
 	- Decreased ammo cost (from 12 -> 4).
 - Apergig Tanat:
 	- Now deletes all enemy projectiles on hit in a certain radius.
-	- Damage changed (from 1026 -> 1000 + 30).
 	- Now creates a hurtful cartridge on reload.
+	- Damage changed (from 1026 -> 1000 + 30).
 	- Decreased ammo cost (from 40 -> 25).
-- Assault Sonic Launcher
+- Assault Sonic Launcher:
 	- Grenades now deal damage of their own, and sonic explosion damage has been reduced.
 	  Overall deals less damage but deals damage more consistently.
 	- Is now automatic.
 	- Now drops later (Palace 7-1 -> Frozen City 5-1).
 	- Decreased ammo cost (from 3 -> 2).
-- Auto Abris Launcher
-- Auto Bullak Cannon
-	- Is now an Extra Gun.
-	- Rebranded to "Bullak Machinegun".
-	- Increased ammo cost (from 4 -> 10).
-	- Increased rate of fire (from 9 -> 8).
-- Auto Grenade Launcher
+- Auto Grenade Launcher:
 	- Now drops sooner (Frozen City 5-2 -> Frozen City 5-1).
 	- Increased rate of fire (from 16 -> 12).
-- Auto Screwdriver
+- Auto Screwdriver:
 	- Using it for too long will gradually decrease accuracy and rate of fire.
 	  Not using it will garually revert these changes.
 	- Decreased damage (from 8 -> 4).
@@ -86,8 +85,6 @@ WEAPON CHANGES:
 	- Fixed a bug where the projectile spread would be favoured towards the counter-clockwise direction a bit.
 - Gunhammer:
 	- Now drops sooner (Scrapyard 3-3 -> Scrapyard 3-1).
-- Heavy Blood Crossbow:
-	- Is now an extra gun.
 - Heavy Gunhammer:
 	- Decreased rate of fire (from 23 -> 38).
 - Heavy Laser Flak Cannon:
@@ -101,8 +98,6 @@ WEAPON CHANGES:
 - Heavy Toxic Crossbow:
 	- Isn't automatic anymore.
 	- Now drops later (Frozen City 5-2 -> Crystal Caves 4-1).
-- Hot Crossbow:
-	- Is now an extra gun.
 - Hot Shot Cannon:
 	- Now creates projectiles on impact.
 	- Main projectile deals damage and doesnt phase through enemies.
@@ -119,8 +114,6 @@ WEAPON CHANGES:
 	- Increased ammo cost (from 3 -> 4)
 - Lucky Machinegun:
 	- Is now a golden weapon.
-- Antiprism:
-	- Is now an extra gun (for now).
 - Rainbow Machinegun:
 	- All bullets are now fire at the same speed.
 	- Increased rate of fire (from 5-> 4)
@@ -136,8 +129,6 @@ WEAPON CHANGES:
 	- Decreased ammo cost (from 8 -> 6).
 - Signal Beamer:
 	- Decreased rate of fire (from 8 -> 10)
-- Smart Bazooka:
-	- Is now an extra gun.
 - Smart Nuke Launcher:
 	- Now visualizes its chosen target.
 	- Less explosions, more fire, roughly the same damage.
@@ -191,6 +182,112 @@ WEAPONS REMOVED:
 	- Triple Laser Rifel
 	- Ultra Bullet Cannon
 	- (Ultra Shot Cannon)
+	- All IDPD Weapons
 
 WEAPONS ADDED:
+- Abris Rifle
+- Airstrike
+- Beamer
+- Bone
+- Big Bone
+- Big Hammer
+- Big Iron
+- Big Shotgun
+- Bouncer Disc Gun
+- Bow
+- Blaster
+- Buster
+- Chainsaw
+- Cobra
+- Crystal Torch
+- Drill Launcher
+- Explosive Bow
+- Rapier
+- Firestorm
+- Flechette Bazooka
+- Flechette Rifle
+- Flechette Shotgun
+- Flex
+- Infinipistol
+- Ionizer
+- Kaboomerang
+- Kemosabe
+- Marker
+- Mega Disc Gun
+- Mega Drill Launcher
+- Mega Revolver
+- Millimata
+- Moby
+- Nail Gun
+- Other Axe
+- Plasmite Cannon
+- Plasmite Pistol
+- Plasmite Rifle
+- Plasmite Shotgun
+- Popper
+- Pulser
+- Puncher
+- Punisher
+- Quartz Crossbow
+- Quartz Laser
+- Quartz Launcher
+- Quartz Machinegun
+- Quartz Shotgun
+- Record Dealer
+- Rocklet Cannon
+- Rocklet Minigun
+- Rocklet Pistol
+- Rocklet Rifle
+- SAK
+- Shard
+- Smart Nuke Launcher
+- Sniper Rifle
+- Soda Popper
+- Splinter Cannon
+- Split Shotgun
+- Square Cannon
+- Square Gun
+- Square Rifle
+- Steel Diver
+- Sticky Disc Gun
+- Stopwatch
+- Super Rocklet Cannon
+- Tempest Blade
+- Thundercrash
+- Toxic Carronader
+- Toxicthrower
+- Ultra Hand
+- Vector Cannon
+- Vector Rifle
+- Vector Shotgun
+- Wide Slugger
+- Wondersword
++ Just a bit more extra
+
 EXTRA WEAPONS:
+- Antiprism (for now)
+- Auto Flak Cannon
+- Bullak Machinegun (Auto Bullak Cannon)
+- Heavy Blood Crossbow
+- Heavy Split Shotgun
+- Hot Crossbow
+- Lightning Orb
+- Plasma Charger
+- Psy Pop Gun
+- Rocklet Shotgun
+- Smart Bazooka
+- Super Heavy Slugger
+- Tsunami
+
+SPECIAL THANKS TO:
+- THX
+- Peas
+- Yokin
+- Nebula
+- Xefs
+- Wonderis
+- Menu
+- Smash Brothers
+- Sometimes opens Gamemaker
+- Triklin
+love you guys <3

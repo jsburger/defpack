@@ -59,7 +59,7 @@ with instance_create(x,y,CustomProjectile){
 	on_destroy = script_ref_create(nuke_pop)
 	on_draw = script_ref_create(nuke_draw)
 	repeat(12)
-	with instance_create(x+lengthdir_x(speed,direction),y+lengthdir_y(speed,direction),Smoke)
+	if irandom(100) < 100*current_time_scale with instance_create(x+lengthdir_x(speed,direction),y+lengthdir_y(speed,direction),Smoke)
 	{
 		motion_add(other.direction+random_range(-30,30)*other.creator.accuracy,2+random(2))
 	}
@@ -84,7 +84,7 @@ if soundcheck = 1
 		if btn = "fire"{creator.reload = weapon_get_load(creator.wep)}else{creator.breload = weapon_get_load(creator.bwep)}
 	}
 }
-if timer > 0{timer -= 1}
+if timer > 0{timer -= current_time_scale}
 else
 {
 	if fimage_index < 2{fimage_index += .5}
@@ -96,7 +96,7 @@ else
 var _x = mouse_x[index]
 var _y = mouse_y[index]
 if instance_exists(creator) {
-	if timer <= 0 && speed >= 3{motion_add(point_direction(x,y,_x,_y),.6)}
+	if timer <= 0 && speed >= 3{motion_add(point_direction(x,y,_x,_y),.6*current_time_scale)}
 	image_angle = direction
 }
 if timer <= 0
@@ -119,7 +119,7 @@ if timer <= 0
 	}
 	if speed < 6{friction = -.35}
 	else{speed = 6}
-	with instance_create(x- hspeed*2, y - vspeed*2, Smoke) {
+	if irandom(100)*current_time_scale with instance_create(x- hspeed*2, y - vspeed*2, Smoke) {
 		motion_set(other.direction+random_range(-8,8)-180,2+random(2))
 	}
 }
@@ -157,7 +157,7 @@ sound_play_pitch(sndDoubleShotgun,.6)
 sound_play_pitch(sndSuperSlugger,.7)
 sound_play_pitch(sndStatueXP,.09) //sound_play_pitch(sndStatueCharge,.2) for the gunsoleum, statue sound in general
 #define nuke_draw
-if timer <= 0{draw_sprite_ext(global.sprHeavyNukeFlame,fimage_index,x,y,.75,.75,direction,c_white,1)}
+if timer <= 0{draw_sprite_ext(global.sprHeavyNukeFlame,fimage_index*current_time_scale,x,y,.75,.75,direction,c_white,1)}
 draw_self()
 
 #define freeze_step

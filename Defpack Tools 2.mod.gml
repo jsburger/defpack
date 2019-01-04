@@ -261,9 +261,13 @@ with genbullak(_x, _y){
     image_xscale = 1.5
     image_yscale = 1.5
     on_wall = bouncer_bullak_wall
+		on_step = bouncer_bullak_step
     bounces = 2
     return id
 }
+
+#define bouncer_bullak_step
+image_angle += 6
 
 #define bouncer_bullak_wall
 move_bounce_solid(0)
@@ -412,4 +416,3 @@ with script_execute("create_" + choose("split_flak", "fire_bullak", "toxic_bulla
 	team = other.team
 	image_angle = direction
 }
-

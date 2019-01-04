@@ -84,6 +84,8 @@ if charge > 100
 }
 if charged = 0
 {
+	if holdtime >= 60 {var _m = 5}else{var _m = 3}
+  if current_frame mod _m < current_time_scale creator.gunshine = 1
 	with creator with instance_create(x,y,Dust)
 	{
 		motion_add(random(360),random_range(2,3))

@@ -50,7 +50,7 @@ with instance_create(x + lengthdir_x(6,gunangle),y + lengthdir_y(6,gunangle),Cus
 	target = -4
 	ogdirection = direction
 	handscale = 0
-	image_speed = 0
+	image_speed = -1
 	canstab = 1
 	stabsremaining = 3
 }
@@ -62,7 +62,6 @@ return global.gun
 return choose("oops i meant psy","damn typos","psy among us");
 
 #define spy_anim
-image_index = 1
 image_speed = 0
 
 #define spy_draw

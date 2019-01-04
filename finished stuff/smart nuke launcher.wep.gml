@@ -62,16 +62,16 @@ if fimage_index <= 2{fimage_index += 1}else{fimage_index = 0}
 if !timer
 {
 	maxspeed = 5
-	with instance_create(x- hspeed, y - vspeed, Flame){
+	if random(100) <= 100*current_time_scale with instance_create(x- hspeed, y - vspeed, Flame){
 	image_xscale *= .75
 	image_yscale = image_xscale
 	sprite_index = sprFireLilHunter
 	team = other.team
 }
 }
-else{instance_create(x- hspeed, y - vspeed, Smoke)}
+else{if random(100) <= 100*current_time_scale instance_create(x- hspeed, y - vspeed, Smoke)}
 var aa = 1;
-if timer {timer -= 1}
+if timer {timer -= current_time_scale}
 if timer = 1{repeat(12){with instance_create(x+random_range(-12,12),y+random_range(-12,12),Smoke){depth = other.depth -3}}}
 if instance_exists(enemy) && !timer{
 	friction = -.3
@@ -82,7 +82,7 @@ if instance_exists(enemy) && !timer{
 	var _y = closeboy.y;
 	if !collision_line(x,y,_x,_y,Wall,0,0){
 		if !dinged {instance_create(x,y,AssassinNotice);dinged = 1}
-		motion_add(point_direction(x,y,_x,_y),1.4)
+		motion_add(point_direction(x,y,_x,_y),1.4*current_time_scale)
 		image_angle = direction
 		maxspeed = 7
 		aa = 0
@@ -92,7 +92,7 @@ if speed > maxspeed{speed = maxspeed}
 if aa && instance_exists(creator){
 	var _x = mouse_x[index];
 	var _y = mouse_y[index];
-	motion_add(point_direction(x,y,_x,_y),.4)
+	motion_add(point_direction(x,y,_x,_y),.4*current_time_scale)
 	image_angle = direction
 	speed = 4
 }
@@ -130,7 +130,7 @@ repeat(4){
 sound_play(sndNukeExplosion)
 
 #define rocket_draw
-if timer <= 0{draw_sprite_ext(global.sprSmartNukeFlame,fimage_index,x,y,.75,.75,direction,c_white,1)}
+if timer <= 0{draw_sprite_ext(global.sprSmartNukeFlame,fimage_index*current_time_scale,x,y,.75,.75,direction,c_white,1)}
 if friction != 0 && instance_exists(enemy)
 {
 	var closeboy = instance_nearest(mouse_x[creator.index],mouse_y[creator.index],enemy)

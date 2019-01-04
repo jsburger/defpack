@@ -91,7 +91,7 @@ with instances_matching_ne(projectile,"team",other.team)
   }
 }
 if curse = true{instance_create(x+random_range(-2,2),y+random_range(-2,2),Curse)}
-ang += 20
+ang += 20*current_time_scale
 if phase = 0 //move regularly
 {
   if speed <= friction

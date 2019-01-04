@@ -11,6 +11,9 @@ return 5
 #define weapon_cost
 return 1
 
+#define wepaon_chrg
+return 1
+
 #define weapon_area
 return -1
 

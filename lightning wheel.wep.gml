@@ -64,6 +64,8 @@ with instance_create(x,y,CustomObject)
   friction = 1.2
   check = 0
   ang = 0
+  timer[0] = 12 //ammo timer
+  timer[1] = 3-skill_get(17) //hit timer
   btn = [button_check(other.index,"fire"),button_check(other.index,"spec"),other.swapmove]
   btn = "fire"
   check = other.specfiring ? 2 : 1;
@@ -84,7 +86,7 @@ if speed <= friction
   if irandom(5-skill_get(17)*2) = 0
   {
     sound_play_pitchvol(sndLightningReload,random_range(.8,1.2),.2*(1-distance_to_object(creator)/200))
-    with instance_create(x,y,Lightning)
+    if irandom(100) < 100 * current_time_scale with instance_create(x,y,Lightning)
     {
       image_angle = random(360)
       team = other.team
@@ -98,7 +100,7 @@ if speed <= friction
 }
 var _d = random(360)
 var _s = random_range(4,9)
-if irandom(3) = 0 with instance_create(x+lengthdir_x(_s,_d),y+lengthdir_y(_s,_d),LightningSpawn){image_angle = _d}
+if irandom(100) < 3 * current_time_scale with instance_create(x+lengthdir_x(_s,_d),y+lengthdir_y(_s,_d),LightningSpawn){image_angle = _d}
 if instance_exists(creator)
 {
   if current_frame mod 6 = 0
@@ -108,23 +110,26 @@ if instance_exists(creator)
     sound_play_pitchvol(sndGrenadeHitWall,.1,.15*(1-distance_to_object(creator)/200))
   }
 }
-with instances_matching_ne(hitme,"team",other.team)
+if timer[1] > 0 timer[1] -= current_time_scale else
 {
-  if current_frame mod (3-skill_get(17)) = 0
-  if distance_to_object(other) <= 7+skill_get(17)*2
+  timer[1] = 3-skill_get(17)
+  with instances_matching_ne(hitme,"team",other.team)
   {
-    if projectile_canhit(other) = true
+    if distance_to_object(other) <= 7+skill_get(17)*2
     {
-      with other
+      if projectile_canhit(other) = true
       {
-        view_shake_at(x,y,7)
-        sleep(other.size*6)
-        var _k = direction;
-        if speed <= 0 _k = point_direction(other.x,other.y,x,y)
-        projectile_hit(other,3,speed,_k)
+        with other
+        {
+          view_shake_at(x,y,7)
+          sleep(other.size*6)
+          var _k = direction;
+          if speed <= 0 _k = point_direction(other.x,other.y,x,y)
+          projectile_hit(other,3,speed,_k)
+        }
+        x -= (hspeed*(skill_get(17)+1))/(2+skill_get(17))
+        x -= (vspeed*(skill_get(17)+1))/(2+skill_get(17))
       }
-      x -= (hspeed*(skill_get(17)+1))/(2+skill_get(17))
-      x -= (vspeed*(skill_get(17)+1))/(2+skill_get(17))
     }
   }
 }
@@ -136,7 +141,7 @@ with instances_matching_ne(projectile,"team",other.team)
   }
 }
 if curse = true{instance_create(x+random_range(-5,5),y+random_range(-5,5),Curse)}
-ang += 16
+ang += 16*current_time_scale
 if phase = 0 //move regularly
 {
   if speed <= friction
@@ -144,24 +149,28 @@ if phase = 0 //move regularly
     if instance_exists(creator) if button_check(creator.index,btn) && creator.mask_index != 268
     {
       speed = 0
-      ang += 10
+      ang += 10*current_time_scale
       mask_index = sprMapDot
-      if creator.infammo <= 0
+      if timer[0] > 0 timer[0] -= current_time_scale else
       {
-        if creator.ammo[5] > 0{if current_frame mod 12 = 0 creator.ammo[5]--}
-        else
+        timer[0] = 12
+        if creator.infammo <= 0
         {
-          with instance_create(x,y,ThrownWep)
+          if creator.ammo[5] > 0{creator.ammo[5]--}
+          else
           {
-            sprite_index = global.sprLightningWheel
-            wep = mod_current
-            curse = other.curse
-            motion_add(random(360),2)
-            team = other.team
-            creator = other.creator
+            with instance_create(x,y,ThrownWep)
+            {
+              sprite_index = global.sprLightningWheel
+              wep = mod_current
+              curse = other.curse
+              motion_add(random(360),2)
+              team = other.team
+              creator = other.creator
+            }
+            instance_destroy()
+            exit
           }
-          instance_destroy()
-          exit
         }
       }
     }

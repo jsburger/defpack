@@ -47,8 +47,8 @@ with instance_create(x,y,CustomObject)
 }
 
 #define airstrike_step
-j+= current_time_scale * 12
-if j % 48 = 0
+j += speed
+if (j % 48) = 0
 {
 	ammo--
 	with instance_create(x + random_range(-8,8) * accuracy,y + random_range(-8,8) * accuracy,CustomProjectile)
@@ -82,7 +82,7 @@ repeat(ammo)
 
 #define fakeabris_step
 image_angle += 7 * current_time_scale * radiusmin/radius
-if radiusmin < radius{radius /= (1 + .06/acc) * current_time_scale}
+if radiusmin < radius{radius /= (1 + .06/acc*current_time_scale)}
 else{instance_destroy()}
 #define fakeabris_hit
 

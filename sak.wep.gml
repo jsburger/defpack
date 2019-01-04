@@ -86,11 +86,15 @@ a[? "flame shell flak hit"]  = sprite_add("sprites/sak/projectiles/sprFireFlakHi
 a[? "ultra shell flak hit"] = sprite_add("sprites/sak/projectiles/sprUltraFlakHit.png",8,16,16);
 a[? "split shell flak hit"] = sprite_add("sprites/sak/projectiles/sprSplitFlakHit.png",8,16,16);
 a[? "split slug flak hit"]  = sprite_add("sprites/sak/projectiles/sprSplitSuperFlakHit.png",8,24,24);
-a[? "super split slug flak hit"] = a[? "split slug flak hit"];
 
+a[? "super ultra shell flak hit"]  = sprite_add("sprites/sak/projectiles/sprUltraSuperFlakHit.png",9,24,24);
+a[? "super flame shell flak hit"]  = sprite_add("sprites/sak/projectiles/sprFireSuperFlakHit.png",9,24,24);
+a[? "super psy shell flak hit"]  = sprite_add("sprites/sak/projectiles/sprPsySuperFlakHit.png",9,24,24);
+a[? "super split shell flak hit"]  = sprite_add("sprites/sak/projectiles/sprSplitSuperFlakHit.png",8,24,24);
 a[? "super shell flak hit"] = sprSuperFlakHit
 a[? "super slug flak hit"]  = sprSuperFlakHit
-a[? "super heavy flak hit"] = sprSuperFlakHit
+a[? "super heavy slug flak hit"] = sprSuperFlakHit
+a[? "super split slug flak hit"] = a[? "super split shell flak hit"];
 
 
 #define makethegunsprites()
@@ -775,7 +779,7 @@ switch thing{
 
 #define flak(p)
 with instance_create(x,y,CustomProjectile){
-	mask_index = mskFlakBullet
+	mask_index = 835
 	if string_count(p, "slug") mask_index = mskSuperFlakBullet
 	var str = p + " flak"
 	sprite_index = global.flakmap[? str]
@@ -796,10 +800,10 @@ with instance_create(x,y,CustomProjectile){
 
 #define superflak(p)
 with instance_create(x,y,CustomProjectile){
-	mask_index = SuperFlakBullet
+	mask_index = 835
 	var str = "super " + p + " flak"
 	sprite_index = global.flakmap[? str]
-	//spr_dead = global.flakmap[? str + " hit"]
+	spr_dead = global.flakmap[? str + " hit"]
 	on_destroy = superflakpop
 	on_step = superflakstep
 	on_draw = flakdraw
@@ -834,14 +838,15 @@ if speed < .01{
 
 
 #define superflakpop
-//with instance_create(x,y,BulletHit) sprite_index = other.spr_dead
+with instance_create(x,y,BulletHit) sprite_index = other.spr_dead
+view_shake_at(x,y,12)
 sound_play_hit(sndSuperFlakExplode,.1)
 var ang = random(360)
 for var i = 0; i< 360; i+=360/ammo{
 	with (flak(payload)){
 		direction = ang + i
 		image_angle = direction
-		motion_set(direction, 11)
+		motion_set(direction, 12)
 		creator = other.creator
 		hyper = other.hyper
 		team = other.team
@@ -853,6 +858,7 @@ for var i = 0; i< 360; i+=360/ammo{
 #define flakpop
 with instance_create(x,y,BulletHit) sprite_index = other.spr_dead
 sound_play_hit(sndFlakExplode,.1)
+view_shake_at(x,y,6)
 if skill_get(mut_eagle_eyes){
     var ang = random(360)
 	for var i = 0; i< 360; i+=360/ammo{

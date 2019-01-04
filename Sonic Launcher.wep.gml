@@ -62,7 +62,7 @@ weapon_post(6,-6,4)
 #define sonic_launcher_step
 if dt > -1 dt--
 if dt = 0 repeat(4)with instance_create(x,y,Dust){motion_add(random(359),random_range(0,2))}
-image_angle += anglefac * speed/1.5
+image_angle += anglefac * speed/1.5 * current_time_scale
 if place_meeting(x + hspeed,y,Wall){
 	instance_create(x,y,Dust)
 	hspeed *= -1
