@@ -30,14 +30,14 @@ GENERAL CHANGES:
 		- Sniper Rifle
 - Hold and charge:
 	- Some weapons have alternative bahaviours while holding the fire button. These guns have a designated
-	 	"charging battery" symbol right next to their name.
+	  "charging battery" symbol right next to their name.
 
 WEAPON CHANGES:
 - Abris Launcher:
 	- Increased rate of fire (from 24 -> 22).
 - Abris Pistol:
 	- Now drops sooner (Scrapyard 3-1 -> Desert 1-3).
-	- Increased rate of fire (from 13 -> 21).
+	- Decreased rate of fire (from 13 -> 21).
 - Andromeda Launcher:
 	- Now deletes all Enemies standing on Top of its field effect.
 	- Decreased ammo cost (from 12 -> 4).
