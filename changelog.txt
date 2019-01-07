@@ -45,7 +45,7 @@ WEAPON CHANGES:
 	- Now deletes all enemy projectiles on hit in a certain radius.
 	- Now creates a hurtful cartridge on reload.
 	- Damage changed (from 1026 -> 1000 + 30).
-	- Decreased ammo cost (from 40 -> 25).
+	- Decreased ammo cost (from 40 -> 20).
 - Assault Sonic Launcher:
 	- Grenades now deal damage of their own, and sonic explosion damage has been reduced.
 	  Overall deals less damage but deals damage more consistently.

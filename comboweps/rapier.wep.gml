@@ -52,7 +52,7 @@ if rapiers != 1
 else
 {
 	sound_play_pitch(sndBlackSwordMega,random_range(1.4,1.7))
-	extraspeed = 12
+	extraspeed = 12+4*skill_get(13)
 	wepangle = .1*wepflip
 	weapon_post(-10 - 20*skill_get(13),15,2)
 	move_contact_solid(gunangle,6)

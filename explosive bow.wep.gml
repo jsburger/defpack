@@ -19,7 +19,7 @@ return 1;
 return 8;
 
 #define weapon_cost
-return 1;
+return 2;
 
 #define weapon_chrg
 return 1;

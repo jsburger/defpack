@@ -293,7 +293,7 @@ with (a) {
 	pattern = false
 	sprite_index = global.sprPsyBullet
 	typ = 2
-	damage = 5
+	damage = 4
 	recycle_amount = 2
 	force = -10
 	image_speed = 1

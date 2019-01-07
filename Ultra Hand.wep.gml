@@ -23,7 +23,7 @@ return 0
 #define weapon_reloaded
 
 #define weapon_rads
-return 8
+return 28
 
 #define weapon_fire
 

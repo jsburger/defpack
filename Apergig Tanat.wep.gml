@@ -17,7 +17,7 @@ return false;
 return 30;
 
 #define weapon_cost
-return 25;
+return 20;
 
 #define weapon_swap
 return sndSwapPistol
@@ -60,11 +60,12 @@ return choose("CHOOSE YOUR TARGET WISELY","THIS IS THE @yWAY");
 
 #define weapon_fire
 
-sound_play(sndGoldShotgun)
-sound_play(sndGoldPistol)
-sound_play(sndGoldTankShoot)
-sound_play_pitch(sndSlugger,2)
-sound_play_pitch(sndFlakCannon,.8)
+var r = random_range(.8,1.2);
+sound_play_pitch(sndGoldShotgun,r)
+sound_play_pitch(sndGoldPistol,r)
+sound_play_pitch(sndGoldTankShoot,r)
+sound_play_pitch(sndSlugger,2*r)
+sound_play_pitch(sndFlakCannon,.8*r)
 motion_set(gunangle-180,4)
 weapon_post(9,-30,24)
 with instance_create(x,y,CustomProjectile)
