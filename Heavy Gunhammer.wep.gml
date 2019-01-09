@@ -16,7 +16,7 @@ return 1;
 return false;
 
 #define weapon_load
-return 38;
+return 28;
 
 #define weapon_cost
 return 0;
@@ -34,18 +34,25 @@ return 1;
 return "ADVANCED HAMMERING";
 
 #define weapon_fire
-sound_play_pitch(sndHammer,random_range(.8,.92))
-sound_play_pitch(sndShovel,random_range(.9,1))
-weapon_post(8,7,44)
+var p = random_range(.8,1.2)
+sound_play_pitchvol(sndHammer,p,.7)
+sound_play_pitch(sndShovel,.5*p)
+sound_play_pitch(sndHitMetal,.8*p)
+sound_play_pitch(sndAssassinAttack,1.2*p)
+sleep(20)
+if ammo[1] >=2 var r = 1 else var r = 0
+weapon_post(9,35,20*(r*2+1))
 with instance_create(x,y,Slash){
-	damage = 6
+	damage = 15
+	force = 12
 	image_xscale *= 1.3
-
 	image_yscale *= 1.3
 	motion_add(other.gunangle, 2 + (skill_get(13) * 3))
 	if other.ammo[1] >=2
 	{
 		sprite_index = global.sprGunhammerSlash
+		damage = 30
+		force = 20
 	}else{
 		sprite_index = sprHeavySlash
 	}
@@ -56,9 +63,13 @@ with instance_create(x,y,Slash){
 	image_angle = direction
 	team = other.team
 	creator = other
-	repeat(3){
+	repeat(4){
 		if other.ammo[1] >=2 {
 			instance_create(x+lengthdir_x(sprite_width,direction),y+lengthdir_y(sprite_width,direction),Smoke)
+			sound_play_pitchvol(sndSawedOffShotgun,.7*p,.7)
+			sound_play_pitchvol(sndDoubleShotgun,.6*p,.7)
+			sound_play_pitchvol(sndQuadMachinegun,.7*p,.7)
+			sound_play_pitchvol(sndFlakExplode,.5*p,.4)
 			sound_play_pitch(sndHeavyRevoler,random_range(0.8,1.2))
 			with instance_create(x,y,HeavyBullet){
 				motion_set(other.direction + random_range(-20,20)*other.creator.accuracy, 16)

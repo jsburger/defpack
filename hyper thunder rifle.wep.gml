@@ -30,7 +30,7 @@ return "ITS A LONG ONE";
 
 #define weapon_fire
 
-repeat (12)
+repeat (10)
 {
 	if (!instance_exists(self)) break;
 	mod_script_call("mod","defpack tools", "shell_yeah", 180, 25, 2+random(3), c_navy)

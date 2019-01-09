@@ -6,6 +6,7 @@ global.brush[3] = sprite_add_weapon("sprites/purpletoothbrush.png",0,0)
 global.brush[4] = sprite_add_weapon("sprites/bluetoothbrush.png",0,0)
 global.brush[5] = sprite_add_weapon("sprites/boothtrush.png",0,0)
 global.brush[6] = sprite_add_weapon("sprites/yellowtoothbrush.png",0,0)
+global.mskbrush = sprite_add_weapon("sprites/mskToothbrushUpg.png",0,0)
 #define weapon_name
 return "TOOTHBRUSH"
 #define weapon_type
@@ -31,7 +32,7 @@ weapon_post(-6 - (20*skill_get(13)),6,0)
 with instance_create(x+lengthdir_x(6+(20*skill_get(13)),gunangle),y+lengthdir_y(6+(20*skill_get(13)),gunangle),Shank){
 	sprite_index = mskNone
 	canfix = false
-	mask_index = global.brush
+	if skill_get(13) mask_index = global.mskbrush else mask_index = global.brush
 	creator = other
 	team = other.team
 	image_angle = other.gunangle

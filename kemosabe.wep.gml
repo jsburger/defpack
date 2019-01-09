@@ -63,7 +63,7 @@ image_speed = 0
 image_index = 1
 
 #define kemosabe_hit
-if irandom(25-(skill_get(mut_lucky_shot)*5)) = 0 && can_crit = 1
+if irandom(21-(skill_get(mut_lucky_shot)*5)) = 0 && can_crit = 1
 {
     can_crit = 0
     mod_script_call("mod","defpack tools","crit")

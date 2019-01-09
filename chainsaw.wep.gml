@@ -1,5 +1,6 @@
 #define init
 global.sprChainsaw = sprite_add_weapon("sprites/sprChainsaw.png",0,3)
+global.mskChainsaw = sprite_add_weapon("sprites/mskChainsawUpg.png",0,3)
 global.sprMiniAmmo = sprite_add("sprites/sprMiniAmmo.png",7,3,3)
 #macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)
 
@@ -59,7 +60,7 @@ if ammo > 0 && current_frame_active
 		canfix = false
 		force = 0
 		damage = 1
-		mask_index = global.sprChainsaw
+		if skill_get(13) = true mask_index = global.mskChainsaw else mask_index = global.sprChainsaw
 		image_xscale = 1.33
 		image_yscale = 1.25
 		creator = other

@@ -29,7 +29,7 @@ return "bizarre looking weaponry";
 
 #define weapon_fire
 
-repeat(6)
+repeat(5)
 {
 	weapon_post(3,0,7)
 	sound_play_pitch(sndHyperRifle,random_range(1.2,1.3))
@@ -44,4 +44,5 @@ repeat(6)
 		image_angle = direction - 90
 	}
 	wait(2)
+	if !instance_exists(self) exit
 }

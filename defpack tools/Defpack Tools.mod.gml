@@ -2093,7 +2093,7 @@ with r
     image_speed = .4
     damage = 3
     force = 4
-    sound_play_pitchvol(sndExplosion,2*random_range(.8,1.2),.5)
+    sound_play_pitchvol(sndExplosion,2*random_range(.8,1.2),.2)
     hitid = [sprite_index,"MINI EXPLOSION"]
     on_anim = explo_anim
     on_hit = explo_hit
@@ -2306,7 +2306,7 @@ if current_frame_active{
     x -= hspeed/2
     y -= vspeed/2
     projectile_hit(other,damage,0,direction)
-    sleep(other.size * 7)
-    view_shake_at(x,y,10)
+    sleep(other.size)
+    view_shake_at(x,y,8)
     dist++
 }

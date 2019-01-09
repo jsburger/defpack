@@ -21,13 +21,14 @@ return 0
 #define weapon_laser_sight
 return 0
 #define weapon_fire
+var r = random_range(.8,1.2);
 if fork(){
 	for (var i = 0;i < 3; i++){
 		if instance_exists(self){
 			sleep(12);
-			sound_play_pitchvol(sndHeavySlugger,random_range(.7,.8),1)
-			sound_play_pitchvol(sndSuperSlugger,random_range(.7,.8),1)
-			sound_play_pitchvol(sndNukeFire,.8,1)
+			sound_play_pitchvol(sndHeavySlugger,.75*r,1)
+			sound_play_pitchvol(sndSuperSlugger,.75*r,1)
+			sound_play_pitchvol(sndNukeFire,.8*r,1)
 			weapon_post(6,7,22)
 			with instance_create(x,y,CustomProjectile){
 				move_contact_solid(other.gunangle,8)

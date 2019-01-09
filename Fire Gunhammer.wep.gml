@@ -34,11 +34,17 @@ return "THE BURNING TORCH";
 
 #define weapon_fire
 
-sound_play_pitch(sndHammer,random_range(.8,.92))
-weapon_post(8,8,4)
+if ammo[1] >=2 var r = 1 else var r = 0
+var p = random_range(.8,1.2)
+sound_play_pitchvol(sndHammer,p,.7)
+sound_play_pitch(sndShovel,.5*p)
+sound_play_pitch(sndHitMetal,.8*p)
+sound_play_pitch(sndAssassinAttack,1.2*p)
+weapon_post(8,20,12	*(r*2+1))
 
 with instance_create(x,y,Slash){
-	damage = 5
+	damage = 10
+	force = 7
 	motion_add(other.gunangle+random_range(-8,8*other.accuracy), 2 + (skill_get(13) * 3))
 	if skill_get(13) {
 		x += 4 *hspeed;
@@ -50,12 +56,16 @@ with instance_create(x,y,Slash){
 	team = other.team
 	creator = other
 	right = other.right
-	repeat(3){
+	repeat(4){
 		if other.ammo[1] >=2 {
-			sound_play_pitch(sndMachinegun,1.2)
-			sound_play_pitch(sndFlameCannon,random_range(3.8,4.1))
+			sound_play_pitchvol(sndSawedOffShotgun,.9*p,.7)
+			sound_play_pitchvol(sndDoubleFireShotgun,.8*p,.7)
+			sound_play_pitchvol(sndTripleMachinegun,.8*p,.7)
+			sound_play_pitchvol(sndFlameCannon,3.8*p,.7)
 			 mod_script_call("mod","defpack tools", "shell_yeah", -180, 35, random_range(3,5), c_red)
 			sprite_index = global.sprFireGunhammerSlash
+			damage = 20
+			force = 15
 			repeat(2)with instance_create(x+lengthdir_x(sprite_width,direction)+random_range(-2,2),y+lengthdir_y(sprite_width,direction)+random_range(-2,2),Smoke)motion_set(other.direction + random_range(-8,8), 1+random(3))
 			with mod_script_call("mod","defpack tools","create_fire_bullet",x,y){
 				motion_set(other.direction + random_range(-30,30)*other.creator.accuracy, 16)
