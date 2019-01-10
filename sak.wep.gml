@@ -429,7 +429,7 @@ a[? "flame shell"] = [1, 1.2, sndFireShotgun, 0]
 a[? "ultra shell"] = [3, .7, sndUltraShotgun, 9]
 a[? "psy shell"] = [2, 1.3, sndShotgun, 0]
 a[? "split shell"] = [2.8, 1.2, sndShotgun, 0]
-a[? "split slug"] = [4, 1.5, sndSlugger, 0]
+a[? "split slug"] = [5.5, 1.2, sndSlugger, 0]
 
 //[ammo*, reload base, sound]
 a[? "shotgun"] = [1, 17, sndShotgun]
