@@ -1,5 +1,6 @@
 #define init
 global.sprBone = sprite_add_weapon("sprites/sprMegaBone.png",8,6)
+global.mskBone = sprite_add_weapon("sprites/mskMegaBoneUpg.png",8,6)
 
 #define weapon_name
 return "BIG BONE"
@@ -28,7 +29,7 @@ with instance_create(x+lengthdir_x(length,gunangle),y+lengthdir_y(length,gunangl
 	sprite_index = sprShank
 	image_alpha = 0
 	damage = 146
-	mask_index = global.sprBone
+	if skill_get(13) = true mask_index = global.mskBone else mask_index = global.sprBone
 	image_speed = .4
 	creator = other
 	team = other.team

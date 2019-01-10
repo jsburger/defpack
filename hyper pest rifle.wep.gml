@@ -30,7 +30,7 @@ return "replace me please";
 
 #define weapon_fire
 
-repeat(6)
+repeat(5)
 {
   weapon_post(5,-3,4)
   sound_play_pitch(sndHyperRifle,random_range(1.2,1.5))
@@ -44,4 +44,5 @@ repeat(6)
   	image_angle = direction
   }
   wait(1)
+  if !instance_exists(self) exit
 }

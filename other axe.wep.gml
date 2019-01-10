@@ -43,7 +43,7 @@ with instance_create(x,y,CustomSlash)
 {
 	image_speed = 1/3
 	creator = other
-	motion_add(other.gunangle, 1 + (skill_get(13)))
+	motion_add(other.gunangle, 1 + (skill_get(13)*2))
 	image_angle = direction
 	team = other.team
 	if skill_get(13) {

@@ -46,7 +46,7 @@ with instance_create(x,y,CustomProjectile)
 {
 	typ = 1
 	sprite_index = global.sprQuartzGrenade
-	damage = 12
+	damage = 14
 	force = 3
 	friction = 1
 	motion_add(other.gunangle+random_range(-4,4)*other.accuracy,24)
@@ -83,7 +83,7 @@ if projectile_canhit_melee(other) = true && lasthit != other
 		creator = other.creator
 		repeat(5){ with instance_create(x,y,Dust) {motion_add(random(360),3);sprite_index = sprExtraFeetDust}}
 	}
-	if other.my_health-6 > 0 {instance_destroy();exit}
+	if other.my_health > 0 {instance_destroy();exit}
 }
 if pierce < 0{instance_destroy()}
 

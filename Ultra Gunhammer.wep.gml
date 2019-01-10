@@ -8,7 +8,7 @@ return "ULTRA GUNHAMMER";
 #define weapon_sprt
 with(GameCont)
 {
-	if "rad" in self && rad >= 20 {return global.sprUltraGunhammer};
+	if "rad" in self && rad >= 24 {return global.sprUltraGunhammer};
 }
 return global.sprUltraGunhammerOff
 #define weapon_type
@@ -35,14 +35,21 @@ return 24;
 #define weapon_text
 return "UNBELIEVABLE POWER";
 #define weapon_rads
-return 20
+return 24
 
 #define weapon_fire
-sound_play_pitch(sndHammer,random_range(.6,.7))
+var p = random_range(.8,1.2)
+sound_play_pitchvol(sndHammer,p,.7)
+sound_play_pitch(sndShovel,.5*p)
+sound_play_pitch(sndHitMetal,.8*p)
+sound_play_pitch(sndAssassinAttack,1.2*p)
 sound_play_pitch(sndUltraShovel,random_range(.8,.9))
-weapon_post(8,8,8)
+if ammo[1] >=3 var r = 1 else var r = 0
+weapon_post(8,35,22*(r*2+1))
+
 with instance_create(x,y,Slash){
-	damage = 20
+	damage = 15
+	force = 12
 	sprite_index = sprUltraSlash
 	motion_add(other.gunangle, 2 + (skill_get(13) * 3))
 	if skill_get(13) {
@@ -54,7 +61,12 @@ with instance_create(x,y,Slash){
 	creator = other
 	repeat(4){
 		if other.ammo[1] >=3 {
-			sound_play_pitch(sndUltraPistol,1.2)
+			damage = 30
+			force = 20
+			sound_play_pitchvol(sndUltraPistol,1.,.7)
+			sound_play_pitchvol(sndSawedOffShotgun,.9*p,.7)
+			sound_play_pitchvol(sndDoubleShotgun,.8*p,.7)
+			sound_play_pitchvol(sndTripleMachinegun,.8*p,.7)
 			with instance_create(x,y,UltraShell){
 				motion_set(other.direction + random_range(-20,20)*other.creator.accuracy, 18)
 				image_angle = direction

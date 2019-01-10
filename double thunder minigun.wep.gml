@@ -51,4 +51,5 @@ repeat(3)
 		creator = other
 	}
 	wait 3
+	if !instance_exists(self)exit
 }

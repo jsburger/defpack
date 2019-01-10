@@ -15,10 +15,10 @@ return 4;
 return false;
 
 #define weapon_load
-return 40;
+return 32;
 
 #define weapon_cost
-return 4;
+return 2;
 
 #define weapon_swap
 return sndSwapExplosive;
@@ -41,20 +41,20 @@ with instance_create(x,y,CustomObject)
 	accuracy = other.accuracy
 	j = 0
 	direction = other.gunangle + random_range(-7,7)
-	speed = 12
-	ammo = 6
+	speed = 9
+	ammo = 9
 	on_step = airstrike_step
 }
 
 #define airstrike_step
 j += speed
-if (j % 48) = 0
+if (j % (speed * 4)) = 0
 {
 	ammo--
 	with instance_create(x + random_range(-8,8) * accuracy,y + random_range(-8,8) * accuracy,CustomProjectile)
 	{
 		team    = other.team
-		acc 		= other.accuracy
+		acc 		= other.accuracy/1.35
 		sprite_index = mskNone
 		image_speed = 0
 		radiusmin = 12

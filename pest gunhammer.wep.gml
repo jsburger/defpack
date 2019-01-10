@@ -34,12 +34,18 @@ return 1
 
 #define weapon_fire
 
-sound_play_pitchvol(sndHammer,random_range(.5,.6),.7)
-sound_play_pitch(sndShovel,random_range(1.4,1.5))
-weapon_post(8,8,8)//xd
+if ammo[1] >=1 var r = 1 else var r = 0
+var p = random_range(.8,1.2)
+sound_play_pitchvol(sndHammer,p,.7)
+sound_play_pitch(sndShovel,.5*p)
+sound_play_pitch(sndHitMetal,.8*p)
+sound_play_pitch(sndAssassinAttack,1.2*p)
+weapon_post(8,20,12	*(r*2+1))
+
 var shell = 0;
 with instance_create(x,y,Slash){
-	damage = 7
+	damage = 10
+	force = 7
 	motion_add(other.gunangle, 2 + (skill_get(13) * 3))
 	if skill_get(13) {
 		x += 4 *hspeed;
@@ -49,8 +55,13 @@ with instance_create(x,y,Slash){
 	image_angle = direction
 	team = other.team
 	creator = other
-	repeat(3){
+	repeat(4){
 		if other.ammo[1] >=1 {
+			damage = 20
+			force = 15
+			sound_play_pitchvol(sndSawedOffShotgun,.9*p,.7)
+			sound_play_pitchvol(sndDoubleShotgun,.8*p,.7)
+			sound_play_pitchvol(sndTripleMachinegun,.8*p,.7)
 			sound_play_pitch(sndMinigun,random_range(1.2,1.6))
 			sound_play_pitch(sndToxicBoltGas,1.3)
 			sprite_index = global.slash

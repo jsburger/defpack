@@ -34,17 +34,29 @@ return 1;
 
 #define weapon_fire
 
-weapon_post(8,0,15)
+if ammo[1] >=3 var r = 1 else var r = 0
+var p = random_range(.8,1.2)
+sound_play_pitchvol(sndHammer,p,.7)
+sound_play_pitch(sndShovel,.5*p)
+sound_play_pitch(sndHitMetal,.8*p)
+sound_play_pitch(sndAssassinAttack,1.2*p)
+weapon_post(8,20,12	*(r*2+1))
 var shell = 0;
 with instance_create(x,y,Slash)
 {
 	creator = other
 	sprite_index = sprHeavySlash
+	damage = 10
+	force = 7
 	if other.ammo[1] >=3
 	{
-		sound_play_pitch(sndLightningHammer,random_range(.97,1.03))
-		sound_play_pitch(sndPistol,1.2)
+		sound_play_pitchvol(sndSawedOffShotgun,.9*p,.7)
+		sound_play_pitchvol(sndDoubleShotgun,.8*p,.7)
+		sound_play_pitchvol(sndTripleMachinegun,.8*p,.7)
+		sound_play_pitchvol(sndLightningHammer,.8*p,.7)
 		sprite_index = global.sprThunderGunhammerSlash
+		damage = 20
+		force = 15
 	}
 	else{sound_play_pitch(sndHammer,random_range(.97,1.03))}
 	direction = other.gunangle

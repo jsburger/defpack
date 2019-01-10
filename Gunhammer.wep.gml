@@ -34,17 +34,24 @@ return "BULLET BASHING";
 
 #define weapon_fire
 
-sound_play_pitchvol(sndHammer,random_range(.97,1.03),.7)
-sound_play_pitch(sndShovel,random_range(1.2,1.23))
-weapon_post(8,10,4)
+var p = random_range(.8,1.2)
+sound_play_pitchvol(sndHammer,p,.7)
+sound_play_pitch(sndShovel,.5*p)
+sound_play_pitch(sndHitMetal,.8*p)
+sound_play_pitch(sndAssassinAttack,1.2*p)
+if ammo[1] >=1 var r = 1 else var r = 0
+weapon_post(8,25,15*(r*2+1))
 
 with instance_create(x,y,Slash){
-	damage = 6
-	if other.ammo[1] >=1
+	if r = true
 	{
 		sprite_index = global.sprGunhammerSlash
+		damage = 20
+		force = 15
 	}else{
 		sprite_index = sprHeavySlash
+		damage = 10
+		force = 7
 	}
 	motion_add(other.gunangle, 2 + (skill_get(13) * 3))
 	if skill_get(13) {
@@ -54,14 +61,16 @@ with instance_create(x,y,Slash){
 	image_angle = direction
 	team = other.team
 	creator = other
-	repeat(3){
+	repeat(4){
 		if other.ammo[1] >=1 {
 			//sound_play_pitch(sndLilHunterSniper,.3) nice energy sound
 			//sound_play_pitch(sndFlakExplode,2) nice sharp swing
 			//sound_play_pitch(sndFlakExplode,.6) also cool
 			//sound_play_pitch(sndSuperFlakCannon,2) good shovel like swing
 			//sound_play_pitch(sndDevastator,3) lazor
-			sound_play_pitch(sndMachinegun,1)
+			sound_play_pitchvol(sndSawedOffShotgun,.9*p,.7)
+			sound_play_pitchvol(sndDoubleShotgun,.8*p,.7)
+			sound_play_pitchvol(sndTripleMachinegun,.8*p,.7)
 			instance_create(x+lengthdir_x(sprite_width,direction),y+lengthdir_y(sprite_width,direction),Smoke)
 			with instance_create(x,y,Bullet1){
 				motion_set(other.direction + random_range(-20,20)*other.creator.accuracy, 20)

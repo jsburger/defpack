@@ -34,12 +34,17 @@ return 1
 
 #define weapon_fire
 
-sound_play_pitch(sndShovel,random_range(1.2,1.23))
-sound_play_pitch(sndHammer,random_range(.97,1.03))
-weapon_post(8,8,4)
+if ammo[1] >=2 var r = 1 else var r = 0
+var p = random_range(.8,1.2)
+sound_play_pitchvol(sndHammer,p,.7)
+sound_play_pitch(sndShovel,.5*p)
+sound_play_pitch(sndHitMetal,.8*p)
+sound_play_pitch(sndAssassinAttack,1.2*p)
+weapon_post(8,20,12	*(r*2+1))
 var shell = 0;
 with instance_create(x,y,Slash){
-	damage = 9
+	damage = 10
+	force = 7
 	motion_add(other.gunangle, 2 + (skill_get(13) * 3))
 	if skill_get(13) {
 		x += 4 *hspeed;
@@ -49,11 +54,15 @@ with instance_create(x,y,Slash){
 	image_angle = direction
 	team = other.team
 	creator = other
-	repeat(3){
+	repeat(4){
 		if other.ammo[1] >=2 {
+			damage = 20
+			force = 15
 			sound_play_pitch(sndAssassinPretend,random_range(.5,.55))
 			sound_play_pitch(sndSwapCursed,.4)
-			sound_play_pitch(sndMachinegun,1.2)
+			sound_play_pitchvol(sndSawedOffShotgun,.9*p,.7)
+			sound_play_pitchvol(sndDoubleShotgun,.8*p,.7)
+			sound_play_pitchvol(sndTripleMachinegun,.8*p,.7)
 			sprite_index = global.slash
 			with mod_script_call("mod","defpack tools","create_psy_bullet",x,y){
 				motion_set(other.direction + random_range(-20,20)*other.creator.accuracy, 8)
