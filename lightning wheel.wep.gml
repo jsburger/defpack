@@ -90,10 +90,10 @@ if speed <= friction
     {
       image_angle = random(360)
       team = other.team
-  		creator = other.creator
+  	  creator = other.creator
       ammo = choose(2,4)+skill_get(17)*2
-  		alarm0 = 1
-  		visible = 0
+  	  alarm0 = 1
+  	  visible = 0
       with instance_create(x,y,LightningHit){image_angle = other.image_angle}
     }
   }
@@ -103,7 +103,7 @@ var _s = random_range(4,9)
 if irandom(100) < 3 * current_time_scale with instance_create(x+lengthdir_x(_s,_d),y+lengthdir_y(_s,_d),LightningSpawn){image_angle = _d}
 if instance_exists(creator)
 {
-  if current_frame mod 6 = 0
+  if current_frame mod 6 < current_time_scale
   {
     if skill_get(17){sound_play_pitchvol(sndPlasmaBigExplodeUpg,1,.1*(1-distance_to_object(creator)/200))}
     sound_play_pitchvol(sndBouncerBounce,.1,(1-distance_to_object(creator)/200))
@@ -122,13 +122,13 @@ if timer[1] > 0 timer[1] -= current_time_scale else
         with other
         {
           view_shake_at(x,y,7)
-          sleep(other.size*6)
+          sleep(min(other.size, 4)*6)
           var _k = direction;
           if speed <= 0 _k = point_direction(other.x,other.y,x,y)
           projectile_hit(other,3,speed,_k)
         }
-        x -= (hspeed*(skill_get(17)+1))/(2+skill_get(17))
-        x -= (vspeed*(skill_get(17)+1))/(2+skill_get(17))
+        x -= (hspeed_raw*(skill_get(17)+1))/(2+skill_get(17))
+        x -= (vspeed_raw*(skill_get(17)+1))/(2+skill_get(17))
       }
     }
   }
@@ -151,12 +151,31 @@ if phase = 0 //move regularly
       speed = 0
       ang += 10*current_time_scale
       mask_index = sprMapDot
-      if timer[0] > 0 timer[0] -= current_time_scale else
-      {
+      if timer[0] > 0 timer[0] -= current_time_scale
+      else{
         timer[0] = 12
-        if creator.infammo <= 0
+        if creator.infammo = 0
         {
-          if creator.ammo[5] > 0{creator.ammo[5]--}
+          if creator.ammo[5] > 0{
+                creator.ammo[5]--
+                var angl = point_direction(creator.x, creator.y, x, y)
+                if fork(){
+                    repeat(irandom_range(1,4)){
+                        if !instance_exists(self) || !instance_exists(creator) exit
+                        with mod_script_call_self("mod", "defparticles", "create_spark", creator.x+random_range(-4,4), creator.y+random_range(-4,4)){
+                            color = c_blue
+                            fadecolor = c_aqua
+                            gravity = 0
+                            var n = irandom_range(5,9)
+                            fadespeed = .2 + random(.4)
+                            age = n
+                            motion_set(angl, point_distance(x,y,other.x,other.y)/n)
+                        }
+                        wait(1)
+                    }
+                    exit
+                }
+          }
           else
           {
             with instance_create(x,y,ThrownWep)

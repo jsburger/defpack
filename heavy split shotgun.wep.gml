@@ -17,7 +17,7 @@ return false;
 return 23;
 
 #define weapon_cost
-return 2;
+return 4;
 
 #define weapon_swap
 return sndSwapShotgun;
@@ -26,18 +26,18 @@ return sndSwapShotgun;
 return 11;
 
 #define weapon_text
-return "THE SEVERAL BEAT THE MANY";
+return "THE HORDE BEATS THE MANY";
 
 #define weapon_fire
 
 weapon_post(7,0,27)
 sound_play_pitch(sndShotgun,random_range(1.3,1.5))
 sound_play_pitch(sndSuperSlugger,random_range(1.3,1.5))
-repeat(4){
-	with mod_script_call("mod","defpack tools","create_split_shell",x,y){
+sound_play_pitch(sndLaser, random_range(.8, 1))
+repeat(5){
+	with mod_script_call("mod","defpack tools","create_heavy_split_shell",x,y){
 		creator = other
 		team = other.team
-		ammo++
 		motion_add(other.gunangle + random_range(-20,20)*other.accuracy,random_range(14,18))
 		image_angle = direction
 	}

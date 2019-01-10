@@ -43,7 +43,7 @@ with instance_create(x,y,CustomObject)
 	name    = "bow charge"
 	creator = other
 	charge    = 0
-    maxcharge = 30
+    maxcharge = 25
 	charged = 0
 	holdtime = 5 * 30
 	depth = TopCont.depth
@@ -55,10 +55,11 @@ with instance_create(x,y,CustomObject)
 	btn = other.specfiring ? "spec" : "fire"
 }
 
+
 #define bow_step
 if !instance_exists(creator){instance_delete(self);exit}
 var timescale = (mod_variable_get("weapon", "stopwatch", "slowed") == 1) ? 30/room_speed : current_time_scale;
-with creator weapon_post(0,-(other.charge/other.maxcharge*10),0)
+with creator weapon_post(0,-(min(other.charge/other.maxcharge*10, point_distance(x,y,mouse_x[index],mouse_y[index]))) * timescale,0)
 if button_check(index,"swap"){creator.ammo[3] = min(creator.ammo[3] + weapon_cost(), creator.typ_amax[3]);instance_destroy();exit}
 if btn = "fire" creator.reload = weapon_get_load(creator.wep)
 if btn = "spec"{
@@ -79,7 +80,9 @@ if button_check(index,btn){
         if charged = 0{
             sound_play_pitch(sndSnowTankCooldown,8)
             sound_play_pitchvol(sndShielderDeflect,5,.5)
-            instance_create(creator.x,creator.y,WepSwap);
+            with instance_create(creator.x,creator.y,WepSwap){
+                creator = other.creator
+            };
             charged = 1
         }
     }
@@ -141,6 +144,10 @@ else
 }
 
 #define weapon_sprt
+if instance_is(self,Player) with instances_matching(instances_matching(CustomObject, "name", "bow charge"),"creator", id){
+    var yoff = (creator.race = "steroids" and btn = "spec") ? -1 : 1
+    with creator draw_sprite_ext(global.sprArrow, 0, x - lengthdir_x(other.charge/other.maxcharge * 4 - 1, gunangle), y - lengthdir_y(other.charge/other.maxcharge * 4 - 1, gunangle) + yoff, 1, 1, gunangle, c_white, 1)
+}
 return global.sprBow
 
 #define weapon_sprt_hud

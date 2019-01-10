@@ -87,13 +87,15 @@ with instance_create(_x,_y,CustomProjectile){
 }
 
 #define burst(p, c, spread)
-var a = random(360),
-    d = 360/c;
-for var i = 0; i < 360; i += d{
-    with proj(p){
-        direction = i + random_range(-d/2, d/2) * spread
-        projectile_init(other.team, other.creator)
-        image_angle = direction
+if c > 0{
+    var a = random(360),
+        d = 360/c;
+    for var i = 0; i < 360; i += d{
+        with proj(p){
+            direction = i + random_range(-d/2, d/2) * spread
+            projectile_init(other.team, other.creator)
+            image_angle = direction
+        }
     }
 }
 
@@ -390,6 +392,7 @@ with(a){
 	typ = 1
 	damage = 32
 	mask_index = mskFlakBullet
+	accuracy = 1
 	friction = 0
 	on_draw = flak_draw
 	on_destroy = loop_pop
@@ -410,9 +413,10 @@ with create_recursive_flak(x,y){
 	team = other.team
 	image_angle = direction
 }
-with script_execute("create_" + choose("split_flak", "fire_bullak", "toxic_bullak", "lightning_bullak", "bullak", "psy_bullak", "bouncer_bullak", "flameshell_flak"), x, y){
+with script_execute(script_get_index("create_" + choose("split_flak", "fire_bullak", "toxic_bullak", "lightning_bullak", "bullak", "psy_bullak", "bouncer_bullak", "flameshell_flak", "recursive_flak")), x, y){
 	motion_set(random(360),12+random(2))
 	creator = other.creator
 	team = other.team
 	image_angle = direction
+	accuracy = other.accuracy
 }

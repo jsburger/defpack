@@ -1,5 +1,6 @@
 #define init
 global.sprMoby = sprite_add_weapon("sprites/sprMoby.png", 7, 2);
+global.yellow = merge_color(c_yellow, c_white, .4)
 
 while 1{
     with Player{
@@ -40,13 +41,12 @@ return 14;
 return "HEAVY OCEAN";
 
 #define weapon_fire(w)
-sound_play(sndMinigun)
-
 if !is_object(w){
     w = {
         wep: mod_current,
         charge : 1,
-        persist : 0
+        persist : 0,
+        canbloom : 1
     }
 }
 else{
@@ -57,34 +57,65 @@ else{
     else{
         w.charge = 1
         w.persist = 5
+        w.canbloom = 1
     }
 }
-weapon_post(5+random_range(w.charge/24,-w.charge/24),-3,2)
-sound_play_pitch(sndTripleMachinegun,.7 + w.charge/50)
 
-if instance_number(Shell) > 100{
-    var q = instances_matching(Shell,"speed",0)
-    if array_length(q) instance_delete(q[irandom(array_length(q)-1)])
-}
 with instance_create(x,y,Shell){motion_add(other.gunangle+other.right*100+random(80)-40,3+random(3))}
 with create_bullet(x+lengthdir_x(20,gunangle),y+ lengthdir_y(20,gunangle)){
-		on_destroy = shell_destroy
-		direction = other.gunangle + random_range(-20,20)*other.accuracy*sqrt(w.charge)/6;
-		olddirection = direction
-		image_angle = direction;
-		creator = other
-		team = other.team
-		flashang = other.gunangle
+	on_destroy = shell_destroy
+	direction = other.gunangle + random_range(-20,20)*other.accuracy*sqrt(w.charge)/6;
+	olddirection = direction
+	image_angle = direction;
+	creator = other
+	team = other.team
+	flashang = other.gunangle
+}
+if w.canbloom {
+    with instance_create(x+lengthdir_x(20,gunangle),y+ lengthdir_y(20,gunangle),CustomObject){
+    	depth = -1
+    	sprite_index = sprBullet1
+    	image_speed = .8
+    	on_step = muzzle_step
+    	on_draw = muzzle_draw
+    	image_yscale = .5
+    	image_angle = other.gunangle
+    }
+    w.canbloom = 0
+    weapon_post(5+random_range(w.charge * .04,-w.charge * .04),-3,2)
+    sound_play_pitch(sndTripleMachinegun,.7 + w.charge * .02)
+    sound_play(sndMinigun)
+
 }
 wep = w
 
+#define step
+if instance_number(Shell) > 100{
+    var q = instances_matching(Shell,"speed",0)
+    var l = array_length(q)
+    var r = random_range(11, l)
+    if l > 10 repeat(10){
+        instance_delete(q[(--r)])
+    }
+}
+if instance_number(BulletHit) > 100{
+    var q = instances_matching(BulletHit,"speed",0)
+    var l = array_length(q)
+    var r = random_range(11, l)
+    if l > 10 repeat(10){
+        instance_delete(q[(--r)])
+    }
+}
+
+
 #define goodstep(w)
+w.canbloom = 1
 if w.persist > 0{
     w.persist-= current_time_scale
 }
 else if w.charge > 1{
-    if random(100)<50* current_time_scale with instance_create(x+lengthdir_x(16,gunangle),y+lengthdir_y(16,gunangle),Smoke) {vspeed -= random(1); image_xscale/=2;image_yscale/=2; hspeed/=2}
-    w.charge = max (w.charge - current_time_scale, 1)
+    if random(100) <= 50 * current_time_scale with instance_create(x+lengthdir_x(16,gunangle),y+lengthdir_y(16,gunangle),Smoke) {vspeed -= random(1); image_xscale/=2;image_yscale/=2; hspeed/=2}
+    w.charge = max (w.charge - current_time_scale*.5, 1)
 }
 
 
@@ -94,7 +125,6 @@ with instance_create(_x,_y,CustomProjectile){
 	creator = other
 	team  = other.team
 	image_yscale = .5
-	trailscale = 1
 	hyperspeed = 8
 	sprite_index = mskNothing
 	olddirection = 0
@@ -111,46 +141,46 @@ with instance_create(_x,_y,CustomProjectile){
 
 
 #define shell_destroy
-x += lengthdir_x(hyperspeed,direction)
-y += lengthdir_y(hyperspeed,direction)
 instance_create(x,y,BulletHit)
 line()
 
 #define sniper_step
-with instance_create(x,y,CustomObject)
-{
-	depth = -1
-	sprite_index = sprBullet1
-	image_speed = .9
-	on_step = muzzle_step
-	on_draw = muzzle_draw
-	image_yscale = .5
-	image_angle = other.flashang
-}
-
+var dist = 0
 var l = 100
-while !collision_line(x,y,x+lengthdir_x(l,direction),y+lengthdir_y(l,direction),Wall,1,1) && !collision_line(x,y,x+lengthdir_x(l,direction),y+lengthdir_y(l,direction),hitme,0,1) && dir <1000{
-    x+=lengthdir_x(l,direction)
-    y+=lengthdir_y(l,direction)
-    dir+=l
+var _x = lengthdir_x(l, direction), _y = lengthdir_y(l, direction)
+while !collision_line(x,y,x+_x,y+_y,Wall,1,1) && !collision_line(x,y,x+_x,y+_y,hitme,0,1) && dist <1000{
+    x += _x
+    y += _y
+    dir += l
+    dist += l
 }
 
 var _x = lengthdir_x(hyperspeed,direction), _y = lengthdir_y(hyperspeed,direction);
+var shields = instances_matching_ne([CrystalShield,PopoShield], "team", team),
+    slashes = instances_matching_ne([EnergySlash,Slash,EnemySlash,EnergyHammerSlash,BloodSlash,GuitarSlash], "team", team),
+    shanks = instances_matching_ne([Shank,EnergyShank], "team", team),
+    customslashes = instances_matching_ne(CustomSlash, "team", team)
 
 do
 {
-	dir += hyperspeed
+    dir += hyperspeed
+	dist += hyperspeed
 	x += _x
 	y += _y
-	/*with instances_matching_ne([CrystalShield,PopoShield], "team", team){if place_meeting(x,y,other){with other{line()};other.team = team;other.direction = point_direction(x,y,other.x,other.y);other.image_angle = other.direction;with instance_create(other.x,other.y,Deflect){image_angle = other.direction;sound_play_pitch(sndCrystalRicochet,random_range(.9,1.1))}}}
-	with instances_matching_ne([EnergySlash,Slash,EnemySlash,EnergyHammerSlash,BloodSlash,GuitarSlash], "team", team){if place_meeting(x,y,other){with other{line()};other.team = team;other.direction = direction ;other.image_angle = other.direction}}
-	with instances_matching_ne([Shank,EnergyShank], "team", team){if place_meeting(x,y,other){with other{instance_destroy();exit}}}
-	with instances_matching_ne(CustomSlash, "team", team){if place_meeting(x,y,other){mod_script_call(on_projectile[0],on_projectile[1],on_projectile[2]);with other{line()};}}*/
+	with shields {if place_meeting(x,y,other){with other{line()};other.team = team;other.direction = point_direction(x,y,other.x,other.y);other.image_angle = other.direction;with instance_create(other.x,other.y,Deflect){image_angle = other.direction;sound_play_pitch(sndCrystalRicochet,random_range(.9,1.1))}}}
+	with slashes {if place_meeting(x,y,other){with other{line()};other.team = team;other.direction = direction ;other.image_angle = other.direction}}
+	with shanks {if place_meeting(x,y,other){with other{instance_destroy();exit}}}
+	with customslashes {if place_meeting(x,y,other){with other{line()};mod_script_call(on_projectile[0],on_projectile[1],on_projectile[2]);}}
 	if direction != olddirection{
 	    olddirection = direction
 	    _x = lengthdir_x(hyperspeed,direction);
 	    _y = lengthdir_y(hyperspeed,direction);
+	    var shields = instances_matching_ne([CrystalShield,PopoShield], "team", team),
+            slashes = instances_matching_ne([EnergySlash,Slash,EnemySlash,EnergyHammerSlash,BloodSlash,GuitarSlash], "team", team),
+            shanks = instances_matching_ne([Shank,EnergyShank], "team", team),
+            customslashes = instances_matching_ne(CustomSlash, "team", team)
 	}
+
 	var q = collision_point(x,y,hitme,0,0)
 	if instance_exists(q) and projectile_canhit_np(q) and q.mask_index != mskNone{
 	    if recycle{
@@ -182,19 +212,33 @@ do
 			}
 		}
 	}*/
-  if place_meeting(x+lengthdir_x(hyperspeed,direction),y+lengthdir_y(hyperspeed,direction),Wall)
-  {
-    instance_destroy()
-    exit
-  }
+    if place_meeting(x+_x,y+_y,Wall){
+        instance_destroy()
+        exit
+    }
 }
-while instance_exists(self) and dir < 1000
+while instance_exists(self) and dist < 1000
 instance_destroy()
 
 #define void
 
 #define line()
-var dis = point_distance(x,y,xstart,ystart) + 1;
+var w = floor((random_range(.34,1))*3)/3
+with instance_create(xstart,ystart,BoltTrail){
+    image_xscale = other.dir/random_range(1.75, 4)
+    image_angle = other.direction
+    image_yscale = w/2
+}
+xstart = x
+ystart = y
+with instance_create(x,y,BoltTrail){
+    image_xscale = -other.dir/random_range(3,5)
+    image_angle = other.direction
+    image_yscale = w
+
+}
+dir = 0
+/*var dis = point_distance(x,y,xstart,ystart) + 1;
 var num = 20;
 for var i = 0; i <= num; i++{
     
@@ -203,12 +247,10 @@ for var i = 0; i <= num; i++{
         image_yscale = floor(random(other.trailscale)*3)/3 * (i/num)
         image_xscale = dis/num
     }
-}
-xstart = x
-ystart = y
+}*/
 
 #define muzzle_step
-if image_index > 1{instance_destroy()}
+if image_index+.01 >= 1{instance_destroy()}
 
 #define muzzle_draw
 draw_set_blend_mode(bm_add);

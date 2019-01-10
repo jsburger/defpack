@@ -4,7 +4,7 @@ global.colors = ["stock", "pest", "fire", "psy", "thunder", "blind", "bouncer"] 
 global.names = ["prismatic iris", "pestilent gaze", "blazing visage", "all-seeing eye", "clouded stare", "filtered lens", "quivering sight"]     //sub mutation names
 global.customs = ["sniper rifle", "bullet cannon", "bullak cannon", "gunhammer"]                                                                 //custom guns that need coloring too, make sure to add to the converter switch
 global.order = [-1,2,0,4,3,5,1]                                                                                              //the code goes through the colors array in order, assigning the subpick to the slot numbered here
-global.descriptions = ["h", "@gTOXIC", "@rFLAMING", "@pHOMING", "@bCHARGED", "@wSOMETHING NEW", "@yBOUNCY"]                                       //shit thats appended to the subpick description
+global.descriptions = ["h", "@gTOXIC", "@rFLAMING", "@pHOMING", "@bCHARGED", "@wSOMETHING ELSE", "@yBOUNCY"]                                      //shit thats appended to the subpick description
 global.colorcount = array_length_1d(global.colors)-1
 global.icons = []
 global.icon = sprite_add("sprMutPrismaticIris0.png",1,12,16)
@@ -110,6 +110,7 @@ return 0
 
 #define step
 //cool iris synergies
+//what the fuck is this karm
 /*if skill_get("prismatic iris")
 {
   if skill_get(21)
@@ -204,22 +205,24 @@ with BouncerBullet
 }
 */
 
-if global.colors[global.color] = "blind"{
+if global.colors[global.color] = "blind" and instance_exists(Player){
     with instances_matching(WepPickup,"irischeck",null){
-        irischeck = 1
-        if weapon_get_type(wep) = 1{
-            var weps = []
-            with Player{
-                array_push(weps,wep)
-                array_push(weps,bwep)
+        if distance_to_object(instance_nearest(x,y,Player)) < 100{
+            irischeck = 1
+            if weapon_get_type(wep) = 1{
+                var weps = []
+                with instance_nearest(x,y,Player) if race != "steroids"{
+                    array_push(weps,wep)
+                    array_push(weps,bwep)
+                }
+                scrGimmeWep(x,y,0,GameCont.hard,curse,weps)
+                with instance_create(x,y,ImpactWrists){
+                    sprite_index = global.effect
+                    sound_play_pitchvol(sndStatueXP,.5*random_range(.8,1.2),.4)
+                    image_angle = 0
+                }
+                instance_destroy()
             }
-            scrGimmeWep(x,y,0,GameCont.hard,curse,weps)
-            with instance_create(x,y,ImpactWrists){
-                sprite_index = global.effect
-                sound_play_pitchvol(sndStatueXP,.5*random_range(.8,1.2),.4)
-                image_angle = 0
-            }
-            instance_destroy()
         }
     }
 }

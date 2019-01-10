@@ -136,7 +136,7 @@ return "THE HERALD"
 #define weapon_type
 return 4
 #define weapon_cost
-return 2
+return 1
 #define weapon_area
 return 16
 #define weapon_load
@@ -289,7 +289,7 @@ z = max(z - zspeed*current_time_scale,0)
 if z = 0 instance_destroy()
 
 #define meteor_destroy
-sound_play_hit(snd_dead,.1)
+sound_play_gun(snd_dead,.1, .1)
 sound_stop(sndFootOrgSand1)
 if size = 2{
     repeat(1){

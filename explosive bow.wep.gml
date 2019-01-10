@@ -7,6 +7,10 @@ global.sprHotArrowHUD  	 = sprite_add_weapon("sprites/projectiles/sprFireArrow.p
 return "EXPLOSIVE BOW"
 
 #define weapon_sprt
+if instance_is(self,Player) with instances_matching(instances_matching(CustomObject, "name", "explosive bow charge"),"creator", id){
+    var yoff = (creator.race = "steroids" and btn = "spec") ? -1 : 2
+    with creator draw_sprite_ext(global.sprHotArrow, 0, x - lengthdir_x(other.charge/other.maxcharge * 4 - 3, gunangle), y - lengthdir_y(other.charge/other.maxcharge * 4 - 3, gunangle) + yoff, 1, 1, gunangle, c_white, 1)
+}
 return global.sprExplosiveBow;
 
 #define weapon_type
@@ -19,7 +23,7 @@ return 1;
 return 8;
 
 #define weapon_cost
-return 1;
+return 2;
 
 #define weapon_chrg
 return 1;
@@ -61,7 +65,7 @@ with instance_create(x,y,CustomObject)
 #define bow_step
 if !instance_exists(creator){instance_delete(self);exit}
 var timescale = (mod_variable_get("weapon", "stopwatch", "slowed") == 1) ? 30/room_speed : current_time_scale;
-with creator weapon_post(0,-(other.charge/other.maxcharge*10),0)
+with creator weapon_post(0,-(min(other.charge/other.maxcharge*10, point_distance(x,y,mouse_x[index],mouse_y[index]))) * timescale,0)
 if button_check(index,"swap"){creator.ammo[3] = min(creator.ammo[3] + weapon_cost(), creator.typ_amax[3]);instance_destroy();exit}
 if btn = "fire" creator.reload = weapon_get_load(creator.wep)
 if btn = "spec"{
@@ -191,8 +195,8 @@ with instance_create(x,y,CustomProjectile){
 }
 
 #define bolt_step
-if random(100) < (50 + 50*charged)*current_time_scale{
-    repeat(random(3+charged * 6))with instance_create(x,y,Flame){
+if random(100) < (50 + 25*charged)*current_time_scale{
+    repeat(random(3+charged * 4))with instance_create(x,y,Flame){
         team = other.team
         creator = other.creator
         motion_set(other.direction + choose(-30,30) * choose(0,1,1,1) + random_range(-8,8), random(3)+ 3)

@@ -45,7 +45,7 @@ with instance_create(x+lengthdir_x(20*skill_get(13),direction),y+lengthdir_y(20*
 	damage = 4
 	if other.tempest = 2{
 	    sleep(100)
-	    with mod_script_call("mod","defpack tools", "create_lightning",x+lengthdir_x(40,direction),y+lengthdir_y(40,direction)){
+	    with mod_script_call("mod","defpack tools", "create_lightning",x+lengthdir_x(30,direction),y+lengthdir_y(30,direction)){
             team = other.team
             motion_set(other.direction,other.speed)
             image_xscale/=1.5

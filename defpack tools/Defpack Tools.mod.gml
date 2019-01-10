@@ -406,30 +406,14 @@ draw_sprite_ext(sprite_index, image_index, x, y, 2*image_xscale, 2*image_yscale,
 draw_set_blend_mode(bm_normal);
 
 #define create_heavy_split_shell(_x,_y)
-var c = instance_create(_x, _y, CustomProjectile)
-with (c){
-	name = "Split Shell"
-	sprite_index = global.sprMagPellet
-	friction = .475
-	image_angle = direction
-	mask_index = mskBullet2
-	wallbounce = skill_get(15) * 4 + (skill_get("shotgunshouldersx10")*40)
-	force = 5
-	ammo = 3
-	lasthit = -4
-	recycle_amount = 0
-	image_speed = 1
-	damage = 7
-	falloff = 2
-	fallofftime = current_frame + 2
-	on_hit = script_ref_create(mag_hit)
-	on_draw = script_ref_create(mag_shell_draw)
-	on_step = script_ref_create(mag_shell_step)
-	on_destroy = script_ref_create(mag_shell_destroy)
-	on_anim = script_ref_create(bullet_anim)
-	on_wall = script_ref_create(split_wall)
+with create_split_shell(_x,_y){
+    sprite_index = global.sprHeavyMagPellet
+    force = 5
+    ammo = 3
+    damage = 7
+    falloff = 2
+    return id
 }
-return c;
 
 #define create_split_shell(_x,_y)
 var c = instance_create(_x, _y, CustomProjectile)
@@ -437,12 +421,12 @@ with (c){
 	name = "Split Shell"
 	sprite_index = global.sprMagPellet
 	friction = .475
-	image_angle = direction
 	mask_index = mskBullet2
 	wallbounce = skill_get(15) * 4 + (skill_get("shotgunshouldersx10")*40)
 	force = 4
 	ammo = 2
 	lasthit = -4
+	typ = 1
 	recycle_amount = 0
 	image_speed = 1
 	damage = 3
@@ -457,18 +441,29 @@ with (c){
 }
 return c;
 
+
 #define split_split
 ammo--
 image_xscale /= 1.2
-with mod_script_call("mod","defpack tools","create_split_shell",x,y){
+image_yscale /= 1.2
+if ammo = 2{
+    sprite_index = global.sprMagPellet
+    image_xscale = 1
+    image_yscale = 1
+}
+var ang = random_range(10, 30) * choose(-1,1)
+var a = ammo >= 3 ? "create_heavy_split_shell" : "create_split_shell"
+with mod_script_call("mod","defpack tools", a,x,y){
 	creator = other.creator
 	image_xscale = other.image_xscale
+	image_yscale = other.image_yscale
 	team = other.team
-	lasthit = other.lasthit
 	ammo = other.ammo
-	motion_add(other.direction + random_range(-40,40),random_range(12,14))
+	motion_set(other.direction + ang,random_range(12,14))
 	image_angle = direction
 }
+direction -= ang
+image_angle = direction
 
 #define split_wall
 fallofftime = current_frame + 2
@@ -483,7 +478,7 @@ if ammo{
     split_split()
 }
 #define mag_hit
-if lasthit != other.id
+if lasthit != other.id || projectile_canhit_melee(other)
 {
     speed /= 1.5
     lasthit = other.id
@@ -494,9 +489,6 @@ if lasthit != other.id
 }
 
 #define mag_shell_step
-if ammo >= 3{sprite_index = global.sprHeavyMagPellet}
-else{sprite_index = global.sprMagPellet}
-image_yscale = image_xscale
 if speed < 2{instance_destroy()}
 
 #define mag_shell_destroy
@@ -511,7 +503,7 @@ with instance_create(x,y,BulletHit){
 }
 
 #define mag_shell_draw
-draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, image_yscale, image_angle, image_blend, 1.0);
+draw_self()
 draw_set_blend_mode(bm_add);
 draw_sprite_ext(sprite_index, image_index, x, y, 2*image_xscale, 2*image_yscale, image_angle, image_blend, 0.2);
 draw_set_blend_mode(bm_normal);
@@ -636,8 +628,8 @@ if chance(8){
 create_miniexplosion(x,y)
 with instance_create(x,y,BulletHit){
 	sprite_index = global.sprFireBulletHit
-	direction = other.direction
-  image_index = 1
+    direction = other.direction
+    image_index = 1
 }
 
 #define create_dark_bullet(_x,_y)
@@ -878,21 +870,7 @@ with instance_create(x, y, Shell){
 		case c_black : image_index = 6;break
 	}
 }
-//old function that i changed the name of because i didnt want to comment it out for some reason, used the american spelling so karm wouldnt accidentally use it
-#define draw_circle_width_color(precision,radius,width,offset,xcenter,ycenter,col,alpha)
-//offset = angle btw
-//precision = amount of edges(doesnt work well <4, values of 2^n create "perfect" circles, multiple of 2 create regular patterns, others are weird), radius = circle radius, col = circle colour, width = circle thiccness, x/y center = x/y coordinates of the center
-precmax = precision
-repeat(precision)
-{
-	draw_set_alpha(alpha)
-	draw_line_width_colour(xcenter+lengthdir_x(radius,offset+(360*precision/precmax)+precmax),ycenter+lengthdir_y(radius,offset+(360*precision/precmax)+precmax),xcenter+lengthdir_x(radius,offset+(360*(precision+1)/precmax)+precmax),ycenter+lengthdir_y(radius,offset+(360*(precision+1)/precmax)+precmax),width,col,col)
-	draw_set_alpha(1)
-	offset += 360*precision/precmax
-	precision -= 1
-}
 
-//new function with the same purpose as the last one, it just doesnt have that weird power of 2 thing going on
 #define draw_circle_width_colour(precision,radius,width,offset,xcenter,ycenter,col,alpha)
 var int = 360/precision;
 draw_set_alpha(alpha);
@@ -955,7 +933,6 @@ with a{
 	//other things
 	wep = weapon
 	check = 0 //the button it checks, 0 is undecided, 1 is fire, 2 is specs, should only be 0 on creation, never step
-	btn = [button_check(index,"fire"),button_check(index,"spec"),other.swapmove]
 	popped = 0
 	dropped = 0
 	type = weapon_get_type(wep)
@@ -1029,7 +1006,7 @@ switch creator.race{
 #define abris_step
 if instance_exists(creator){
   var timescale = (mod_variable_get("weapon", "stopwatch", "slowed") == 1) ? 30/room_speed : current_time_scale;
-  var _a = other.accbase/other.accmin
+  var _a = accbase/accmin
   with creator weapon_post(_a,5*_a,0)
 	if check = 0{
 		abris_check()
@@ -2101,7 +2078,9 @@ with r
 return r;
 
 #define explo_hit
-projectile_hit(other, damage, force, point_direction(x,y,other.x,other.y))
+var dmg = damage
+if instance_is(other,Player) and skill_get(mut_boiling_veins) dmg = max(min(other.my_health - other.boilcap, damage), 0)
+projectile_hit(other, dmg, force, point_direction(x,y,other.x,other.y))
 
 #define explo_anim
 instance_destroy()

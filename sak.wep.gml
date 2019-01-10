@@ -147,7 +147,7 @@ a[? "hyper psy flak cannon"] = sprite_add_weapon("sprites/sak/sprHyperPsyFlakCan
 
 a[? "psy shot cannon"]			 = sprite_add_weapon("sprites/sak/sprPsyShotCannon.png",4,2)//
 a[? "super psy shot cannon"] = sprite_add_weapon("sprites/sak/sprSuperPsyShotCannon.png",4,2)//
-a[? "auto psy shot can non"] = sprite_add_weapon("sprites/sak/sprAutoPsyShotCannon.png",3,1)//
+a[? "auto psy shot cannon"] = sprite_add_weapon("sprites/sak/sprAutoPsyShotCannon.png",3,1)//
 a[? "hyper psy shot cannon"] = sprite_add_weapon("sprites/sak/sprHyperPsyShotCannon.png",4,2)//
 
 a[? "psy eraser"]         = sprite_add_weapon("sprites/sak/sprPsyEraser.png",2,1)//
@@ -428,7 +428,7 @@ a[? "heavy slug"] = [13, 1.8, sndHeavySlugger, 0]
 a[? "flame shell"] = [1, 1.2, sndFireShotgun, 0]
 a[? "ultra shell"] = [3, .7, sndUltraShotgun, 9]
 a[? "psy shell"] = [2, 1.3, sndShotgun, 0]
-a[? "split shell"] = [2, 1.2, sndShotgun, 0]
+a[? "split shell"] = [2.8, 1.2, sndShotgun, 0]
 a[? "split slug"] = [4, 1.5, sndSlugger, 0]
 
 //[ammo*, reload base, sound]
@@ -442,7 +442,7 @@ a[? "shot cannon"] = [4, 25, sndFlakCannon]
 //[ammo*, reload*, sound]
 a[? "double"] = [2, 1.6, sndDoubleShotgun]
 a[? "sawed-off"] = [2, 1.6, sndSawedOffShotgun]
-a[? "auto"] = [1, .4, sndPopgun]
+a[? "auto"] = [1, .2, sndPopgun]
 a[? "assault"] = [3, 2, -1]
 a[? "hyper"] = [1, 1, sndHyperSlugger]
 a[? "none"] = [1, 1, -1]
@@ -1095,9 +1095,6 @@ with instances_matching_ne(projectile,"birdspeed",null){
 }
 
 #define step(q)
-if button_pressed(index,"horn")&&q{
-	wep = mod_current
-}
 if q && !is_object(wep){
 	wep = {
 		wep: mod_current,
@@ -1361,7 +1358,7 @@ var b, c, d;
 if w{b = wep}else{b = bwep}
 c = weapon_get_cost(b);
 d = weapon_get_type(b);
-if b.done
+if is_object(b) && b.done
 {
 	sound_play(sndShotReload)
 	weapon_post(-1,0,0)

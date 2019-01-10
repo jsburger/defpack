@@ -17,7 +17,7 @@ return false;
 return 38;
 
 #define weapon_cost
-return 2;
+return 4;
 
 #define weapon_swap
 return sndSwapShotgun;
@@ -29,11 +29,11 @@ return 9;
 return "THE MANY BEAT THE FEW";
 
 #define weapon_fire
-
 weapon_post(7,0,26)
 sound_play_pitch(sndDoubleShotgun,random_range(1.3,1.5))
 sound_play_pitch(sndSlugger,random_range(1.3,1.5))
-repeat(4){
+sound_play_pitch(sndLaser, random_range(1, 1.3))
+repeat(5){
 	with mod_script_call("mod","defpack tools","create_split_shell",x,y){
 		creator = other
 		team = other.team
@@ -41,7 +41,7 @@ repeat(4){
 		image_angle = direction
 	}
 }
-repeat(4){
+repeat(5){
 	with mod_script_call("mod","defpack tools","create_split_shell",x,y){
 		creator = other
 		team = other.team

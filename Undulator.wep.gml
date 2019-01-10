@@ -60,7 +60,7 @@ if instance_exists(creator)
 	x = creator.x+lengthdir_x(15,gunangle)
 	y = creator.y+lengthdir_y(15,gunangle)
 	with creator weapon_post(7,-6,16)
-time -= 1
+time -= current_time_scale
 if time = 0
 {
 	time = 2
@@ -70,14 +70,14 @@ if time = 0
 	    team = other.team
 	    motion_set(other.gunangle-4*(other.ammo_origin-other.ammo)+random_range(-2,2)*other.accuracy,13+other.ammo)
 		image_angle = direction
-		damage = 12
+		damage = 6
 	}
 	with mod_script_call("mod", "defpack tools", "create_light_bullet",x+lengthdir_x(-10,gunangle),y+lengthdir_y(-10,gunangle)){
 	    creator = other.creator
 	    team = other.team
 	    motion_set(other.gunangle+4*(other.ammo_origin-other.ammo)+random_range(-2,2)*other.accuracy,13+other.ammo)
 		image_angle = direction
-		damage = 12
+		damage = 6
 	}
 	ammo -= 1
 }
