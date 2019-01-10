@@ -83,10 +83,10 @@ return a
 
 #define nothing
 with instance_create(x+lengthdir_x(-12,image_angle),y+lengthdir_y(-12,image_angle),PlasmaImpact){
-		sound_play(sndPlasmaHit)
-		creator = other.creator
-		team = other.team
-		sprite_index = global.sprVectorImpact
+	sound_play(sndPlasmaHit)
+	creator = other.creator
+	team = other.team
+	sprite_index = global.sprVectorImpact
 }
 repeat(irandom_range(6,8)){instance_create(x+lengthdir_x(random_range(1,5),image_angle-180),y,Smoke)}
 instance_destroy()
@@ -148,8 +148,8 @@ if ammo > 0
 }
 
 #define laserhit
-pierce -= other.size
 if projectile_canhit_melee(other){
+    pierce -= other.size
     instance_create(other.x,other.y,Smoke)
     projectile_hit(other,damage,lspeed/other.size,image_angle)
 }

@@ -1,6 +1,6 @@
 #define init
 global.sprBone = sprite_add_weapon("sprites/sprBone.png",0,2)
-global.mskBone = sprite_add_weapon("sprites/mskBoneUpg.png",0,2)
+global.mskBone = sprite_add_weapon("sprites/mskBoneUpg.png",20,2)
 
 #define weapon_name
 return "BONE"

@@ -52,7 +52,7 @@ global.editingpalette = p1
 
 global.palettes = [1 , lq_clone(p1)]
 
-global.sprButtons = sprite_add("sprites/sprButtons.png",3,5,1);
+global.sprButtons = sprite_add("sprites/sprButtons.png",6,5,1);
 global.sprButtonX = sprite_add("sprites/sprX.png",0,8,8);
 global.sprArrow   = sprite_add("sprites/sprArrow.png",0,3,2);
 //trace(global.palettes)
@@ -227,7 +227,7 @@ for (var i = 0; i < maxp; i++) if player_is_active(i){
     draw_set_visible(i,1)
     //menu width, menu height, scroll bar width
     var mw = 80, mh = 100, sw = 6, sh = 8;
-    var _x =  - mw - 4 - sw + game_width, _y = 40;
+    var _x =  -mw*global.buttonsopen[i] - 4 - sw + game_width, _y = 40;
     //cell width, cell height
     var cw = mw, ch = 20;
     //maximum displayable cells
@@ -276,32 +276,29 @@ for (var i = 0; i < maxp; i++) if player_is_active(i){
         }
         else mouse = 0
         draw_sprite_ext(sprDailyArrowSplat,2,xx-xw/2,xy+5,1,1,0,c_black,1)
-        draw_sprite_ext(global.sprButtons,0,xx-xw/2,xy,1,1,0,mouse ? p.textcolor : c_ltgray,1)
+        draw_sprite_ext(global.sprButtons,4,xx-xw/2,xy,1,1,0,mouse ? p.textcolor : c_ltgray,1)
         if mouse draw_text_shadow(xx - 34, xy + 10, "Config Menu")
-        //draw_text_c(xx-1-xw/2,xy-1,"x",p.xcolor)
         if mouse && released{
             click(0)
             global.configopen[i] = !global.configopen[i]
         }
         xx -= (1.5 * xw + 2) * global.buttonsopen[i]
+        
         //drawing palette button
         if !found{
             mouse = point_in_rectangle(mousex,mousey,xx-xw,xy,xx,xy+xw)
             found = mouse
         }
         else mouse = 0
-        //draw_rectangle_c(px-pw,py,px,py+pw,mouse ? p.sidehighlight : p.sidebutton)
-        //draw_rectangle_co(px-pw,py,px,py+pw,p.sideoutline)
         draw_sprite_ext(sprDailyArrowSplat,2,xx-xw/2,xy+5,1,1,180,c_black,1)
         draw_sprite_ext(global.sprButtons,1,xx-1-xw/2,xy,1,1,0,mouse ? p.textcolor : c_ltgray,1)
         if mouse draw_text_shadow(xx - 34, xy + 10, "Palette Menu")
-    
         if mouse && released{
             global.paletteopen[i] = !global.paletteopen[i]
             click(0)
         }
         
-        
+        //button wrapper
         var bright = xx - xw*3/2, btop = xy - xw + 4.5
         draw_line_width_color(game_width - xw + 3, btop, bright, btop, 1, c_white, c_white)
         draw_line_width_color(bright, btop, bright - 3, btop + 3, 1, c_white, c_white)

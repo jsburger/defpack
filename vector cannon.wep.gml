@@ -66,18 +66,22 @@ with instance_create(x,y,CustomProjectile){
     on_wall = beam_wall
 	on_draw = beam_draw
 	on_hit  = beam_hit
-	on_destroy = beam_destroy
+	on_cleanup = beam_cleanup
 
-    time = weapon_load() + 1
+    time = weapon_load() + current_time_scale
     image_speed = 0
 }
 
 
-
+#define beam_cleanup
+sound_set_track_position(sndEnergyHammerUpg,0)
+sound_set_track_position(sndLaserUpg,0)
+sound_set_track_position(sndLaser,0)
+sound_stop(sndEnergyHammerUpg)
 
 #define beam_step
 if instance_exists(creator){
-    with creator weapon_post(5,05,0)
+    with creator weapon_post(5,5*current_time_scale,0)
 	sound_set_track_position(sndEnergyHammerUpg,.3)
 	sound_play_pitch(sndEnergyHammerUpg,.5)
 
@@ -104,19 +108,12 @@ if instance_exists(creator){
 
     image_xscale = dir/2
     if current_frame_active{
-        with instance_create(x+random_range(-12,12),y+random_range(-12,12),BulletHit)
-        {
-        	sprite_index = global.sprVectorBeamEnd
-        	image_angle = other.direction
-        	speed = 0
-        }
         var _r = random_range(0,image_xscale*2+12)
-        with instance_create(x-lengthdir_x(_r,direction)+random_range(-5,5),y-lengthdir_y(_r,direction)+random_range(-5,5)	,BulletHit)
+        with instance_create(x-lengthdir_x(_r,direction)+random_range(-5,5),y-lengthdir_y(_r,direction)+random_range(-5,5),BulletHit)
         {
         	sprite_index = global.sprVectorBeamEnd
         	image_angle = other.direction
-        	speed = 0
-        	motion_add(other.direction,choose(1,2))
+        	motion_set(other.direction,choose(1,2))
         }
     }
     image_yscale = 1 * random_range(.9,1.1)
@@ -129,14 +126,19 @@ else instance_destroy()
 #define beam_wall
 
 #define beam_hit
-with other motion_set(other.direction,max((4+skill_get(17)*2-size/2),1))
-view_shake_at(other.x,other.y,other.size/2)
-projectile_hit(other,1,1,direction)
-with other{
-    if place_meeting(x+lengthdir_x(speed+1,other.direction)+hspeed,y+lengthdir_y(speed+1,other.direction)+vspeed,Wall){
-	    with other projectile_hit(other,other.speed ,1,direction)
-		view_shake_at(x,y,6*size)
-	}
+if current_frame_active{
+    with other motion_set(other.direction,max((4+skill_get(17)*2-size/2),1))
+    view_shake_at(other.x,other.y,min(other.size,4))
+    projectile_hit(other,1,1,direction)
+    with other{
+        if place_meeting(x+lengthdir_x(speed+1,other.direction)+hspeed,y+lengthdir_y(speed+1,other.direction)+vspeed,Wall){
+    	    with other projectile_hit(other,other.speed ,1,direction)
+    		view_shake_at(x,y,6*min(size,4))
+    	}
+    }
+    if other.my_health <= 0{
+        sleep(min(other.size, 4) * 10)
+    }
 }
 #define beam_draw
 draw_sprite_ext(sprite_index, image_index, xstart, ystart, image_xscale, image_yscale, image_angle, image_blend, 1.0);
@@ -147,5 +149,3 @@ draw_sprite_ext(sprite_index, image_index, xstart, ystart, image_xscale, 1.5*ima
 	if x != xstart draw_sprite_ext(global.sprVectorBeamStart, 0, xstart, ystart, 1.5, image_yscale*1.5, image_angle-180, image_blend, .15+skill_get(17)*.05);
 	if x != xstart draw_sprite_ext(global.sprVectorHead, 0, x, y, 2.5, image_yscale*2.5, image_angle-45, image_blend, .15+skill_get(17)*.05);
 draw_set_blend_mode(bm_normal);
-
-#define beam_destroy

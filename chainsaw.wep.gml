@@ -1,6 +1,6 @@
 #define init
 global.sprChainsaw = sprite_add_weapon("sprites/sprChainsaw.png",0,3)
-global.mskChainsaw = sprite_add_weapon("sprites/mskChainsawUpg.png",0,3)
+global.mskChainsaw = sprite_add_weapon("sprites/mskChainsawUpg.png",20,3)
 global.sprMiniAmmo = sprite_add("sprites/sprMiniAmmo.png",7,3,3)
 #macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)
 

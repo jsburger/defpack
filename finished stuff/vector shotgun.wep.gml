@@ -5,6 +5,7 @@ global.sprVector	      = sprite_add("sprVector.png",0,1,3)
 global.sprVectorImpact  = sprite_add("sprVectorImpact.png",7,16,16)
 global.sprVectorBeamEnd = sprite_add("sprVectorBeamEnd.png",3,5,5);
 
+#define weapon_name
 return "VECTOR SHOTGUN"
 #define weapon_type
 return 5
@@ -26,7 +27,7 @@ if !button_check(index,"fire")
 	sound_play_pitchvol(sndIDPDNadeAlmost,.5,.2)
 	sound_play_pitchvol(sndPlasmaReload,1.4,.4)
 }
-return -1
+
 #define weapon_fire
 motion_add(gunangle-180,4)
 repeat(3)instance_create(x,y,Smoke)
@@ -47,6 +48,7 @@ else
 	sound_play_pitch(sndEnergyScrewdriverUpg,1.5*_pitch)
 	sound_play_pitch(sndPlasmaHit,random_range(1.4,1.6)*_pitch)
 }
+var ang = gunangle + random_range(-9,9) * accuracy
 for var i = -1; i <= 1; i++
 {
 	with create_psy_laser(x+lengthdir_x(10,gunangle),y+lengthdir_y(10,gunangle)){
@@ -55,39 +57,22 @@ for var i = -1; i <= 1; i++
 		lspeed = random_range(7,9)
 		team = other.team
 		creator = other
-		image_angle = other.gunangle-30*i+random_range(-9,9)*creator.accuracy
+		image_angle = ang-30*i*creator.accuracy
+		langle = image_angle
 		image_xscale = lspeed/2
 	}
-	wait(1)
 }
-/*with create_psy_laser(x,y){
-	team = other.team
-	creator = other
-	image_angle = other.gunangle+(random_range(-6,6)+20)*creator.accuracy
-}
-with create_psy_laser(x,y){
-	team = other.team
-	creator = other
-	image_angle = other.gunangle+(random_range(-6,6)-20)*creator.accuracy
-}*/
-
 #define weapon_sprt
 return global.sprVectorShotgun
 #define weapon_text
 return "pointy"
-
-return a
-
-
-#define hyperwall
-done = 1
-
 #define create_psy_laser(_x,_y)
 var a = instance_create(_x,_y,CustomProjectile)
 with a{
-	loss = .07-skill_get(17)*.03
+	loss = .08-skill_get(17)*.04
 	pierce = 1
-	damage = 4
+	damage = 3
+    langle = 0
 	lspeed = 10-skill_get(17)*4
 	sprite_index = global.sprVector
 	mask_index = mskLaser
@@ -102,44 +87,46 @@ return a
 
 #define nothing
 with instance_create(x+lengthdir_x(-12,image_angle),y+lengthdir_y(-12,image_angle),PlasmaImpact){
-		sound_play(sndPlasmaHit)
-		creator = other.creator
-		team = other.team
-		sprite_index = global.sprVectorImpact
+	sound_play(sndPlasmaHit)
+	creator = other.creator
+	team = other.team
+	sprite_index = global.sprVectorImpact
 }
 repeat(irandom_range(6,8)){instance_create(x+lengthdir_x(random_range(1,5),image_angle-180),y,Smoke)}
 instance_destroy()
 
 #define laserstep
 if ammo > 0 {
-    ammo-=current_time_scale
-    if ammo<=0{
-		var _s = choose(random_range(-10,-4),random_range(4,10))
-		var s_ = choose(random_range(-10,-4),random_range(4,10))
-		if !irandom(4-skill_get(17)) with instance_create(x+s_,y+_s,BulletHit){
-			sprite_index = global.sprVectorBeamEnd
-			image_angle = other.image_angle
-			speed = 0
-			motion_add(other.image_angle,choose(1,2))
-		}
-        var ang = image_angle;
+	var _s = choose(random_range(-10,-4),random_range(4,10))
+	var s_ = choose(random_range(-10,-4),random_range(4,10))
+	ammo-=current_time_scale
+	if ammo<=0{
+        if irandom(4-skill_get(17)) < current_time_scale with instance_create(x+s_,y+_s,BulletHit)
+        {
+            sprite_index = global.sprVectorBeamEnd
+            image_angle = other.image_angle
+            motion_add(other.image_angle,choose(1,2))
+        }
+        var ang = langle;
         if instance_exists(enemy){
             var near = instance_nearest(x,y,enemy);
             //consider removing the distance cap, it wasnt in the original, but it helps with the projectile being aimable
             if distance_to_object(near) < 120 && !collision_line(x,y,near.x,near.y,Wall,0,0){
                 var dir = angle_difference(ang,point_direction(x,y,near.x,near.y));
                 //i also changed this
-                var cap = lspeed;
-                ang -= clamp(dir,-cap,cap)
+                if abs(dir) < 45{
+                    var cap = 45;
+                    ang -= clamp(dir,-cap,cap)
+                }
             }
         }
         var _x = x+lengthdir_x(lspeed,ang), _y = y+lengthdir_y(lspeed,ang);
         with create_psy_laser(_x,_y){
-					loss = other.loss
             lspeed = other.lspeed
             image_xscale = lspeed/2
             pierce = other.pierce
             creator = other.creator
+            langle = other.langle
             team = other.team
             image_angle = ang
             if place_meeting(x,y,Wall) ammo = 0
@@ -165,8 +152,8 @@ if ammo > 0
 }
 
 #define laserhit
-pierce -= other.size
 if projectile_canhit_melee(other){
+    pierce -= other.size
     instance_create(other.x,other.y,Smoke)
     projectile_hit(other,damage,lspeed/other.size,image_angle)
 }

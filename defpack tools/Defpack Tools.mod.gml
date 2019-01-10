@@ -1530,7 +1530,7 @@ sound_play_pitch(sndPlasmaHit,random_range(.9,1.1))
 with instance_create(x,y,PlasmaImpact){team = other.pseudoteam;}
 
 #define square_hit
-if other.team != pseudoteam{
+if other.team != pseudoteam and current_frame_active{
     with other motion_add(point_direction(other.x,other.y,x,y),other.size)
     if speed > minspeed && projectile_canhit_melee(other) = true{projectile_hit(other, round(2*damage + speed), force, direction)}else{projectile_hit(other, damage, force, direction)};
 }

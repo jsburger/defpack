@@ -127,8 +127,8 @@ if timer[1] > 0 timer[1] -= current_time_scale else
           if speed <= 0 _k = point_direction(other.x,other.y,x,y)
           projectile_hit(other,3,speed,_k)
         }
-        x -= (hspeed_raw*(skill_get(17)+1))/(2+skill_get(17))
-        x -= (vspeed_raw*(skill_get(17)+1))/(2+skill_get(17))
+        x -= (hspeed*(skill_get(17)+1))/(2+skill_get(17))
+        x -= (vspeed*(skill_get(17)+1))/(2+skill_get(17))
       }
     }
   }
@@ -284,9 +284,6 @@ return global.sprLightningWheel
 
 #define weapon_text
 return choose("HOLD FIRE TO HOLD THE SPIN","TESLA DISC")
-
-#define step
-with WepPickup if wep = 0 instance_delete(self)
 
 #define boom_draw
 draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, image_yscale, ang, image_blend, 1.0);
