@@ -39,6 +39,7 @@ gunangle = ang;
 aimDirection = ang;
 if fork(){
     wait(0)
+    if !instance_exists(self) exit
     if!instance_exists(self) exit
     gunangle = ang;
     aimDirection = ang;

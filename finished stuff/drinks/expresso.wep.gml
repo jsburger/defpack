@@ -38,9 +38,7 @@ with instance_create(x,y,PopupText){
 wep = bwep;bwep = 0
 curse = bcurse
 mod_script_call("mod","sodaeffect","drink",x,y)
+reload = max(breload,2)
 
 #define weapon_text
 return "a rare substance, usually greener"
-
-#define step
-if instance_exists(WepPickup){with WepPickup{if wep = 0{instance_destroy()}}}

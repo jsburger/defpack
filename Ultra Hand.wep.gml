@@ -186,6 +186,6 @@ if projectile_canhit_melee(other){
 return global.smacker
 #define weapon_sprt
 if instance_is(self,Player) if array_length(instances_matching(instances_matching(CustomObject, "name", "Ultra Hand"), "creator", id)) return mskNone
-if GameCont.rad >= 8 return global.smacker else return global.smackerOff
+if GameCont.rad >= weapon_rads() return global.smacker else return global.smackerOff
 #define weapon_text
 return "THE POWER OF INFINITY"
