@@ -767,12 +767,9 @@ switch thing{
 			return id
 		}
 	case "split slug":
-		with mod_script_call("mod", "defpack tools", "create_split_shell",x,y){
+		with mod_script_call("mod", "defpack tools", "create_heavy_split_shell",x,y){
 			speed = random_range(17,20)
 			stockspeed = 19
-			ammo = 3
-			damage = 7
-			falloff = 2
 			return id
 		}
 }

@@ -51,11 +51,10 @@ repeat(5) with instance_create(x,y,CustomProjectile)
   team    = other.team
   creator = other
   force  = 4
-  damage[0] = 4
-  damage[1] = 6
+  damage = 6
+  falloff = 2
+  fallofftime = current_frame + 2 + skill_get(15) * 2
   typ = 1
-  maxframes = 2 + skill_get(15) * 2
-  frames    = maxframes
   friction = random_range(.6,2)
   image_speed = 1
   wallbounce = 3 + skill_get(15) * 5;
@@ -68,30 +67,30 @@ repeat(5) with instance_create(x,y,CustomProjectile)
   on_draw    = quartzbullet_draw
   on_destroy = quartzbullet_destroy
   on_wall    = quartzbullet_wall
+  on_anim    = quartzbullet_anim
 }
+
+#define quartzbullet_anim
+image_speed = 0
+image_index = 1
 
 #define quartzbullet_wall
 move_bounce_solid(false)
 direction += random_range(-4,4)
 image_angle = direction
 speed *= .9
-if speed + wallbounce > 26
-{
+if speed + wallbounce > 26{
   speed = 26
 }
-else
-{
+else{
   speed += wallbounce
 }
 wallbounce *= .9
-frames = maxframes
+fallofftime = current_frame + 2 + skill_get(15) * 2
 sound_play_pitchvol(sndHitWall,random_range(.8,1.2),.5)
 with instance_create(x+random_range(-4,4),y+random_range(-4,4),Dust){sprite_index = sprExtraFeetDust}
 
 #define quartzbullet_step
-if frames > 0{frames--}
-image_speed = 0
-image_index = 1
 if speed <= friction instance_destroy()
 
 #define quartzbullet_destroy
@@ -101,22 +100,22 @@ view_shake_at(x,y,2)
 sleep(1)
 
 #define quartzbullet_hit
-if projectile_canhit(other) = true && lasthit != other
-{
-  sleep(damage[image_index])
-  view_shake_at(x,y,damage[image_index])
-  projectile_hit(other,damage[min(frames,1)],force,direction)
+if projectile_canhit_melee(other) || lasthit != other{
+  var dmg = fallofftime >= current_frame ? damage : damage - falloff
+  sleep(dmg)
+  view_shake_at(x,y,dmg)
+  projectile_hit(other,dmg,force,direction)
   pierce--
   lasthit = other
 }
 if pierce < 0{instance_destroy()}
 
 #define quartzbullet_draw
-var _f = min(frames,1);
+var _f = fallofftime >= current_frame
 draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, image_yscale, image_angle, image_blend, 1.0);
 draw_set_blend_mode(bm_add);
 draw_sprite_ext(sprite_index, image_index, x, y, 2*image_xscale, 2*image_yscale, image_angle, image_blend, 0.1+_f*.2);
 draw_set_blend_mode(bm_normal);
 
 #define step
-mod_script_call("mod","defpack tools","quartz_penalty",mod_current)
+mod_script_call_self("mod","defpack tools","quartz_penalty",mod_current)

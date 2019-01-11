@@ -158,7 +158,6 @@ with instances_in(x-succ,y-succ/2,x+succ,y+succ/2,instances_matching_ne([hitme,C
             drawsize = max(other.sprite_width,other.sprite_height)
             var n = drawsize + fall
         }
-        if "on_cleanup" in self mod_script_call_self(on_cleanup[0], on_cleanup[1], on_cleanup[2])
         if !instance_is(self,Corpse) and other.wantobject != Portal{
             if instance_is(self,Nothing) || instance_is(self,NothingInactive){
                 if instance_exists(Generator) || instance_exists(GeneratorInactive){

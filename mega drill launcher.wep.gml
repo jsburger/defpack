@@ -3,6 +3,7 @@
 global.sprMegaDrillLauncher = sprite_add_weapon("sprites/sprBigDrillLauncher.png",15,10)
 global.sprMegaDrill = sprite_add("sprites/projectiles/sprBigDrill.png",4,15,10)
 global.explosive = 0 //boolean, try turning it off
+#macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)
 #define weapon_name
 return "MEGA DRILL LAUNCHER"
 #define weapon_type
@@ -52,7 +53,7 @@ with instance_create(x,y,CustomProjectile){
     friction = -.6
     image_speed = .4
     maxspeed = 12
-    damage = 6 - 2*global.explosive
+    damage = 7 - 2*global.explosive
     sprite_index = global.sprMegaDrill
     lasthit = -4
     hits = 0
@@ -132,33 +133,34 @@ else
 }
 
 #define drill_hit
-sleep(5)
-view_shake_at(x,y,7*min(other.size,4))
-walls = 6
-sound_play_drill(.4)
-x = xprevious
-y = yprevious
-other.speed = 0
-//sleep(20)
-view_shake_at(x,y,7)
-projectile_hit(other,damage)
-var mans = other;
-if other = lasthit{
-    if ++hits > 30{
-        with instance_create(x,y,BoltStick){
-            sprite_index = other.sprite_index
-            target = mans
-            image_angle = other.image_angle
+if current_frame_active {
+    sleep(5)
+    view_shake_at(x,y,7*min(other.size,4))
+    walls = 8 + (skill_get(mut_bolt_marrow) * 6 * !global.explosive)
+    sound_play_drill(.4)
+    x = lerp(xprevious, x, .2)
+    y = lerp(yprevious, y, .2)
+    other.speed = 0
+    //sleep(20)
+    view_shake_at(x,y,7)
+    projectile_hit(other,damage)
+    var mans = other;
+    if other = lasthit{
+        if ++hits > 30{
+            with instance_create(x,y,BoltStick){
+                sprite_index = other.sprite_index
+                target = mans
+                image_angle = other.image_angle
+            }
+            instance_destroy()
+            exit
         }
-        instance_destroy()
-        exit
+    }
+    else{
+        lasthit = other
+        hits = 0
     }
 }
-else{
-    lasthit = other
-    hits = 0
-}
-
 #define drill_explo
 var _meetx = (x + other.x)/2;
 var _meety = (y + other.y)/2;
@@ -182,7 +184,7 @@ if fork(){
         //sound_play_pitchvol(sndFlakExplode,1,_vol)
         //sound_play_pitchvol(sndHyperRifle,.6,_vol)
         //sound_play_pitchvol(sndDiscHit,1.5,_vol)
-        wait(0)
+        wait(1)
     }
     sound_set_track_position(sndFlakExplode,0)
     exit

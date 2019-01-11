@@ -13,9 +13,18 @@ while 1 {
 	    current_time_scale = t
 		var p = global.user
 		if instance_exists(p){
+            if instance_number(BoltTrail) > 100{
+                var q = instances_matching(BoltTrail,"",null)
+                var l = array_length(q)
+                var r = random_range(11, l)
+                if l > 10 repeat(10){
+                    instance_delete(q[(--r)])
+                }
+            }
     		with instances_matching(Player,"team",p.team){
     		    event_perform(ev_step,ev_step_begin)
     		    event_perform(ev_step,ev_step_normal)
+    		    if !instance_exists(self) continue
     		    if button_pressed(index,"swap") && canswap scrSwap()
     		    clicked = 0
     		    speed -= min(friction * t, speed);
@@ -23,6 +32,7 @@ while 1 {
     			y += vspeed * t;
     			image_index += image_speed * t;
     		    event_perform(ev_step,ev_step_end)
+    		    if !instance_exists(self) continue
     			/*if reload > 0{
     				reload -= t
     				if skill_get(mut_stress) reload -= (1 - my_health/maxhealth) * t
@@ -76,29 +86,31 @@ while 1 {
     				on_draw = blur_draw;
     			}
     		}
-    		with instances_matching(Ally,"team",p.team){
-    		    event_perform(ev_step,ev_step_begin)
-    		    event_perform(ev_step,ev_step_normal)
-    		    speed -= min(friction * t, speed);
-    		    x += hspeed * t;
-    			y += vspeed * t;
-    			alarm1-=t
-    			alarm2-=t
-    			if alarm1 < 0 event_perform(ev_alarm,1)
-    			if alarm2 < 0 event_perform(ev_alarm,2)
-    			image_index += image_speed * t;
-    			if image_index >= image_number && sprite_index = sprAllyAppear {spr_idle = sprAllyIdle; image_index = 0}
-    		    event_perform(ev_step,ev_step_end)
-    		}
-    		with PopupText {
-    		    event_perform(ev_step,ev_step_begin)
-    		    event_perform(ev_step,ev_step_normal)
-    		    speed -= min(friction * t, speed);
-    		    x += hspeed * t;
-    			y += vspeed * t;
-    			alarm1-=t
-    			if alarm1 < 0 event_perform(ev_alarm,1)
-    		    if instance_exists(self) event_perform(ev_step,ev_step_end)
+    		if instance_exists(p){
+        		with instances_matching(Ally,"team",p.team){
+        		    event_perform(ev_step,ev_step_begin)
+        		    event_perform(ev_step,ev_step_normal)
+        		    speed -= min(friction * t, speed);
+        		    x += hspeed * t;
+        			y += vspeed * t;
+        			alarm1-=t
+        			alarm2-=t
+        			if alarm1 < 0 event_perform(ev_alarm,1)
+        			if alarm2 < 0 event_perform(ev_alarm,2)
+        			image_index += image_speed * t;
+        			if image_index >= image_number && sprite_index = sprAllyAppear {spr_idle = sprAllyIdle; image_index = 0}
+        		    event_perform(ev_step,ev_step_end)
+        		}
+        		with PopupText {
+        		    event_perform(ev_step,ev_step_begin)
+        		    event_perform(ev_step,ev_step_normal)
+        		    speed -= min(friction * t, speed);
+        		    x += hspeed * t;
+        			y += vspeed * t;
+        			alarm1-=t
+        			if alarm1 < 0 event_perform(ev_alarm,1)
+        		    if instance_exists(self) event_perform(ev_step,ev_step_end)
+        		}
     		}
     		current_time_scale = ts
     		with instances_matching([WepSwap,CrystalShield,CrystalShieldDisappear],"visible",1){
@@ -109,7 +121,7 @@ while 1 {
 
 		if instance_exists(p){
 		    with p if (infammo != 0 || ammo[5] >=1) && (wep = mod_current || bwep = mod_current){
-				if infammo = 0  && !global.clock ammo[5]--
+				if infammo = 0  && global.clock < 30/room_speed ammo[5]--
 			}
 			else unfreeze()
 		}

@@ -42,10 +42,10 @@ with instance_create(x,y,CustomProjectile)
 	creator = other
 	typ = 1
 	damage = 2
-	if other.object_index = Player{
-		var _x = mouse_x[other.index]+random_range(-16,16)*other.accuracy;
-		var _y = mouse_y[other.index]+random_range(-16,16)*other.accuracy;
-		motion_add(point_direction(x,y,_x,_y),max(sqrt(point_distance(_x,_y,x,y)),10,sqrt(point_distance(_x,_y,x,y))))
+	if instance_is(other, Player){
+		var _x = mouse_x[other.index];
+		var _y = mouse_y[other.index];
+		motion_add(point_direction(x,y,_x,_y) + random_range(-5,5) * other.accuracy,max(sqrt(point_distance(_x,_y,x,y)),10))
 	}else{
 		motion_add(other.gunangle,10)
 	}

@@ -130,7 +130,9 @@ motion_add(gunangle-180,4)
     image_angle = direction;
 
      // Stretch:
-    move_contact_solid(direction, 8 + random(4));
+    var length = 8 + random(4)
+    x+= lengthdir_x(length, direction)
+    y+= lengthdir_y(length, direction)
     image_xscale = -point_distance(x, y, xprevious, yprevious) / 2;
 
      // Bounce:

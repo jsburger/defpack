@@ -23,7 +23,7 @@ return 0
 #define weapon_fire
 sound_play_pitch(sndHammer,random_range(1.3,1.6))
 sound_play_pitch(sndBloodHammer,random_range(1,1.6))
-var length = 20 + 20*skill_get(13)
+var length = 14 + 20*skill_get(13)
 weapon_post(-length,6,0)
 with instance_create(x+lengthdir_x(length,gunangle),y+lengthdir_y(length,gunangle)+2,CustomSlash){
 	sprite_index = sprShank

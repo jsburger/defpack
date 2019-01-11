@@ -46,6 +46,7 @@ with instance_create(x,y,CustomProjectile){
 	motion_set(other.gunangle, 7)
 	team = other.team
 	creator = other
+	name = "Heavy Nuke"
 	sprite_index = global.sprHeavyNuke
 	index = other.index
 	accuracy = other.accuracy
@@ -59,37 +60,33 @@ with instance_create(x,y,CustomProjectile){
 	on_destroy = script_ref_create(nuke_pop)
 	on_draw = script_ref_create(nuke_draw)
 	repeat(12)
-	if irandom(100) < 100*current_time_scale with instance_create(x+lengthdir_x(speed,direction),y+lengthdir_y(speed,direction),Smoke)
-	{
-		motion_add(other.direction+random_range(-30,30)*other.creator.accuracy,2+random(2))
-	}
+    	with instance_create(x+lengthdir_x(speed,direction),y+lengthdir_y(speed,direction),Smoke){
+    		motion_add(other.direction+random_range(-30,30)*other.creator.accuracy,2+random(2))
+    	}
 }
 sleep(70)
 
 #define nuke_step
-if instance_exists(creator)
-{
-	if btn = "fire" && button_check(creator.index,btn){creator.reload = weapon_get_load(creator.wep)}else{creator.breload = weapon_get_load(creator.bwep)}
+if instance_exists(creator){
+    if btn = "fire" creator.reload = weapon_get_load(creator.wep)
+    if btn = "spec"{
+        if creator.race = "steroids"
+            creator.breload = weapon_get_load(creator.bwep)
+        else
+            creator.reload = max(weapon_get_load(creator.wep) * array_length_1d(instances_matching(instances_matching(instances_matching(CustomProjectile, "name", name),"creator",creator),"btn",btn)), creator.reload)
+    }
 }
-if soundcheck = 1
-{
+if soundcheck = 1{
 	if !instance_exists(creator){instance_destroy();exit}
-	if !button_check(creator.index,btn)
-	{
+	if !button_check(creator.index,btn){
 		instance_destroy()
 		exit
 	}
-	else
-	{
-		if btn = "fire"{creator.reload = weapon_get_load(creator.wep)}else{creator.breload = weapon_get_load(creator.bwep)}
-	}
 }
 if timer > 0{timer -= current_time_scale}
-else
-{
-	if fimage_index < 2{fimage_index += .5}
-	else
-	{
+else{
+	if fimage_index < 2{fimage_index += .5*current_time_scale}
+	else{
 		fimage_index = 0
 	}
 }
@@ -99,16 +96,13 @@ if instance_exists(creator) {
 	if timer <= 0 && speed >= 3{motion_add(point_direction(x,y,_x,_y),.6*current_time_scale)}
 	image_angle = direction
 }
-if timer <= 0
-{
-	if !soundcheck
-	{
+if timer <= 0{
+	if !soundcheck{
 		soundcheck = 1
 		view_shake_at(x,y,32)
 		sound_play(sndNukeFire)
 		repeat(22)
-		with instance_create(x- hspeed*2, y - vspeed*2, Flame)
-		{
+		with instance_create(x- hspeed*2, y - vspeed*2, Flame){
 			team = other.team
 			sprite_index = global.sprUltraFire
 			motion_add(other.direction-180+random_range(-4,4),random_range(1,5))
@@ -119,7 +113,7 @@ if timer <= 0
 	}
 	if speed < 6{friction = -.35}
 	else{speed = 6}
-	if irandom(100)*current_time_scale with instance_create(x- hspeed*2, y - vspeed*2, Smoke) {
+	if random(100) <= 80*current_time_scale with instance_create(x- hspeed*2, y - vspeed*2, Smoke) {
 		motion_set(other.direction+random_range(-8,8)-180,2+random(2))
 	}
 }
@@ -130,17 +124,14 @@ if place_meeting(x, y, Explosion){
 #define nuke_pop
 var i = random(360);
 //with instance_create(x + random_range(-10,10) * accuracy, y + random_range(-10,10) * accuracy, GreenExplosion){hitid = [sprite_index,"green#Explosion"]}
-repeat(8)
-{
+repeat(8){
 	repeat(22) with instance_create(x,y,Smoke){motion_add(i+random_range(-5,5),random_range(4,	12))}
 	with instance_create(x + lengthdir_x(17,i) + random_range(-10,10) * accuracy, y  + lengthdir_y(17,i) + random_range(-10,10) * accuracy, GreenExplosion){hitid = [sprite_index,"green#Explosion"]}
 	i += 360/8
 }
-repeat(16)
-{
+repeat(16){
 	repeat(16) with instance_create(x,y,Smoke){motion_add(i+random_range(-16,16),random_range(4,																																																																																																																																																																																																																																																																																																																																																													7))}
-	with instance_create(x + lengthdir_x(80,i) + random_range(-40,40), y + lengthdir_y(80,i) + random_range(-10,10) * accuracy, SmallExplosion)
-	{
+	with instance_create(x + lengthdir_x(80,i) + random_range(-40,40), y + lengthdir_y(80,i) + random_range(-10,10) * accuracy, SmallExplosion){
 		damage = 12
 		image_speed = .3
 		sprite_index = global.sprSmallGreenExplosion
@@ -157,7 +148,7 @@ sound_play_pitch(sndDoubleShotgun,.6)
 sound_play_pitch(sndSuperSlugger,.7)
 sound_play_pitch(sndStatueXP,.09) //sound_play_pitch(sndStatueCharge,.2) for the gunsoleum, statue sound in general
 #define nuke_draw
-if timer <= 0{draw_sprite_ext(global.sprHeavyNukeFlame,fimage_index*current_time_scale,x,y,.75,.75,direction,c_white,1)}
+if timer <= 0{draw_sprite_ext(global.sprHeavyNukeFlame,fimage_index,x,y,.75,.75,direction,c_white,1)}
 draw_self()
 
 #define freeze_step

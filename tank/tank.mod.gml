@@ -377,8 +377,10 @@ if place_meeting(x,y,Wall){
 	my_health -= .5
 }
 
-if !place_meeting(x+hspeed_raw, y, Floor) hspeed = 0
-if !place_meeting(x, y + vspeed_raw, Floor) vspeed = 0
+if instance_exists(SpiralCont){
+    if !place_meeting(x+hspeed_raw, y, Floor) hspeed = 0
+    if !place_meeting(x, y + vspeed_raw, Floor) vspeed = 0
+}
 
 if my_health/maxhealth < .5{
 	//smoke indicates damage
@@ -408,7 +410,7 @@ if !portalmode && instance_exists(driver){
     //machineguns
     if button_check(driver.index,"spec") && (driver.ammo[ammotype] >= ammocost || driver.infammo != 0) && breload <= 0{
     	if driver.infammo = 0 driver.ammo[ammotype]-=ammocost
-    	mod_script_call(sub_fire[0],sub_fire[1],sub_fire[2])
+    	mod_script_call_self(sub_fire[0],sub_fire[1],sub_fire[2])
     }
 }
 
@@ -426,8 +428,8 @@ tankcleanup()
 if driver != noone with driver{
     dismount()
 }
-instance_create(x,y,Explosion)
-repeat(3) instance_create(x,y,SmallExplosion)
+with instance_create(x,y,Explosion) hitid = [sprite_index, "TANK EXPLOSION"]
+repeat(3) instance_create(x,y,SmallExplosion) hitid = [sprite_index, "TANK EXPLOSION"]
 sound_play(sndExplosionCar)
 
 #define tankdraw

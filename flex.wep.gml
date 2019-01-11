@@ -51,20 +51,28 @@ with instance_create(x,y,CustomProjectile){
     
     image_angle = direction
     image_speed = 1
-    recycle_amount = 2
     bounce = 1
     damage = 4
+    falloff = 1
+    fallofftime = current_frame + 2
     force  = 7
+    wallbounce = 5 * skill_get(mut_shotgun_shoulders)
     friction = .8 - _a * .2
     on_hit     = b_hit
     on_step    = b_step
+    on_anim    = b_anim
     on_wall    = b_wall
     on_draw    = b_draw
     on_destroy = b_destroy
 }
 
+#define b_anim
+image_speed = 0
+image_index = 1
+
 #define b_hit
-projectile_hit(other,damage,force,direction)
+var dmg = fallofftime >= current_frame ? damage : damage - falloff
+projectile_hit(other,dmg,force,direction)
 if other.my_health <= 0{
     var o = other
     if instance_exists(creator){
@@ -76,22 +84,27 @@ if other.my_health <= 0{
 instance_destroy()
 
 #define b_wall
-bounce--
-move_bounce_solid(0)
+move_bounce_solid(false)
+direction += random_range(-4,4)
 image_angle = direction
-if bounce < 0 instance_destroy()
+speed *= .9
+speed = min(speed + wallbounce, 18)
+wallbounce *= .9
+fallofftime = current_frame + 2 + skill_get(15) * 2
+sound_play_hit(sndShotgunHitWall,.2)
+instance_create(x+random_range(-4,4),y+random_range(-4,4),Dust)
 
 #define b_draw
+var _f = fallofftime >= current_frame
 draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, image_yscale, image_angle, image_blend, 1.0);
 draw_set_blend_mode(bm_add);
-draw_sprite_ext(sprite_index, image_index, x, y, 2*image_xscale, 2*image_yscale, image_angle, image_blend, 0.1);
+draw_sprite_ext(sprite_index, image_index, x, y, 2*image_xscale, 2*image_yscale, image_angle, image_blend, 0.1 + _f*.2);
 draw_set_blend_mode(bm_normal);
 
 #define b_destroy
 with instance_create(x,y,BulletHit){if other.sprite_index = global.sprBluellet2 sprite_index = sprIDPDBulletHit else sprite_index = sprBulletHit}
 
 #define b_step
-if image_index = 1 image_speed = 0
 if speed <= friction instance_destroy()
 
 #define weapon_sprt

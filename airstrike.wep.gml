@@ -47,8 +47,8 @@ with instance_create(x,y,CustomObject)
 }
 
 #define airstrike_step
-j += speed
-if (j % (speed * 4)) = 0
+j += speed_raw
+if (j % (speed * 4)) < current_time_scale
 {
 	ammo--
 	with instance_create(x + random_range(-8,8) * accuracy,y + random_range(-8,8) * accuracy,CustomProjectile)

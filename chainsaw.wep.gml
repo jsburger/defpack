@@ -72,10 +72,13 @@ if ammo > 0 && current_frame_active
 		}
 		on_hit        = chainsawshank_hit
 		on_step       = chainsawshank_step
+		on_wall       = nothing
 		on_anim       = anim_destroy
 	}
 	if ammo <= 0{instance_destroy();exit}
 }
+
+#define nothing
 
 #define chainsawshank_hit
 if projectile_canhit(other) = true

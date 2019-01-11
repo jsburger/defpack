@@ -51,20 +51,22 @@ with instance_create(x,y,CustomProjectile)
   force  = 4
   damage = 6
   typ = 1
-  image_speed = 0
+  image_speed = 1
   recycle_amount = 1
   motion_add(other.gunangle+random_range(-2,2)*other.accuracy,20)
   image_angle = direction
   pierce  = 2
   lasthit = -4
   on_hit     = quartzbullet_hit
-  on_step    = quartzbullet_step
+  on_anim   = quartzbullet_anim
   on_draw    = quartzbullet_draw
   on_destroy = quartzbullet_destroy
 }
 
-#define quartzbullet_step
+#define quartzbullet_anim
 image_index = 1
+image_speed = 0
+
 #define quartzbullet_destroy
 repeat(3) with instance_create(x+random_range(-4,4),y+random_range(-4,4),Dust){sprite_index = sprExtraFeetDust}
 instance_create(x+lengthdir_x(sprite_width/2,direction),y+lengthdir_y(sprite_height/2,direction),WepSwap){image_angle = random(360)}
@@ -72,7 +74,7 @@ view_shake_at(x,y,2)
 sleep(1)
 
 #define quartzbullet_hit
-if projectile_canhit_melee(other) = true && lasthit != other
+if projectile_canhit_melee(other) = true || lasthit != other
 {
   sleep(5)
   view_shake_at(x,y,6)

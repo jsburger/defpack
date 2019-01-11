@@ -33,7 +33,7 @@ sound_play_pitchvol(sndBloodCannon,1.3+random(.1),.7)
 sound_play_pitch(sndExplosionL,2)
 sound_play_pitch(sndDoubleShotgun,.8)
 sleep(120)
-projectile_hit(self,1)
+if infammo = 0 projectile_hit(self,1)
 lasthit = [global.gun, weapon_name()]
 sleep(120)
 var _x = x + lengthdir_x(14, gunangle), _y = y + lengthdir_y(14, gunangle);
@@ -135,7 +135,8 @@ return found
     image_angle = direction;
 
      // Stretch:
-    move_contact_solid(direction, length);
+    x+= lengthdir_x(length, direction)
+    y+= lengthdir_y(length, direction)
     image_xscale = -point_distance(x, y, xprevious, yprevious) / 2;
 
      // Bounce:
