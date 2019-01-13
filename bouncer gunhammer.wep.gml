@@ -15,7 +15,7 @@ return 1;
 return false;
 
 #define weapon_load
-return 28;
+return 21;
 
 #define weapon_cost
 return 0;
@@ -34,16 +34,24 @@ return "FEELS LIKE BASEBALL";
 
 #define weapon_fire
 
-sound_play_pitchvol(sndHammer,random_range(.97,1.03),.7)
-sound_play_pitch(sndShovel,random_range(1.2,1.23))
-weapon_post(8,10,4)
+var p = random_range(.8,1.2)
+sound_play_pitchvol(sndHammer,p,.7)
+sound_play_pitch(sndShovel,.5*p)
+sound_play_pitch(sndHitMetal,.8*p)
+sound_play_pitch(sndAssassinAttack,1.2*p)
+if ammo[1] >=1 var r = 1 else var r = 0
+weapon_post(8,32,18*(r*2+1))
 
 with instance_create(x,y,Slash){
 	damage = 8
 	if other.ammo[1] >=1
 	{
+		damage = 20
+		force = 15
 		sprite_index = global.sprGunhammerSlash
 	}else{
+	damage = 10
+	force = 7
 		sprite_index = sprHeavySlash
 	}
 	motion_add(other.gunangle, 2 + (skill_get(13) * 3))
@@ -54,7 +62,7 @@ with instance_create(x,y,Slash){
 	image_angle = direction
 	team = other.team
 	creator = other
-	repeat(3){
+	repeat(4){
 		if other.ammo[1] >=1 {
 			//sound_play_pitch(sndLilHunterSniper,.3) nice energy sound
 			//sound_play_pitch(sndFlakExplode,2) nice sharp swing
@@ -63,6 +71,9 @@ with instance_create(x,y,Slash){
 			//sound_play_pitch(sndDevastator,3) lazor
 			sound_play_pitch(sndBouncerShotgun,random_range(1.4,1.6))
 			sound_play_pitch(sndBouncerBounce,random_range(.7,.9))
+			sound_play_pitchvol(sndSawedOffShotgun,.9*p,.7)
+			sound_play_pitchvol(sndDoubleShotgun,.8*p,.7)
+			sound_play_pitchvol(sndTripleMachinegun,.8*p,.7)
 			instance_create(x+lengthdir_x(sprite_width,direction),y+lengthdir_y(sprite_width,direction),Smoke)
 			with instance_create(x,y,BouncerBullet){
 				motion_set(other.direction + random_range(-30,30)*other.creator.accuracy, 10)

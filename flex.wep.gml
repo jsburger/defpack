@@ -48,7 +48,7 @@ with instance_create(x,y,CustomProjectile){
     sprite_index = _a ? global.sprBluellet2 : sprBullet2
     motion_add(other.gunangle+random_range(-8,8)*other.accuracy,18)
     projectile_init(other.team,other)
-    
+
     image_angle = direction
     image_speed = 1
     bounce = 1
@@ -76,9 +76,9 @@ projectile_hit(other,dmg,force,direction)
 if other.my_health <= 0{
     var o = other
     if instance_exists(creator){
-        var a = max(12*other.size,3)
+        var a = max(16*other.size,6)
         sleep(a*2)
-        with creator if infammo >= 0 infammo = min(infammo + a, 90)  //limit infammo gain to 90 frames
+        with creator if infammo >= 0 infammo = min(infammo + a, 120)  //limit infammo gain to 120 frames
     }
 }
 instance_destroy()
