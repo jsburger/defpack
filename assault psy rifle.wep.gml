@@ -1,5 +1,5 @@
 #define init
-global.sprAssaultPsyRifle = sprite_add_weapon("sprites/sprAssaultPsyRifle.png", -1, 1);
+global.sprAssaultPsyRifle = sprite_add_weapon("sprites/sprAssaultPsyRifle.png", 3, 2);
 
 #define weapon_name
 return "ASSAULT PSY RIFLE";
@@ -14,10 +14,10 @@ return 1;
 return false;
 
 #define weapon_load
-return 25;
+return 20;
 
 #define weapon_cost
-return 6;
+return 3;
 
 #define weapon_swap
 return sndSwapMachinegun;

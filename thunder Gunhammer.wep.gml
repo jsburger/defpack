@@ -34,7 +34,7 @@ return 1;
 
 #define weapon_fire
 
-if ammo[1] >=3 var r = 1 else var r = 0
+if ammo[1] >=2 var r = 1 else var r = 0
 var p = random_range(.8,1.2)
 sound_play_pitchvol(sndHammer,p,.7)
 sound_play_pitch(sndShovel,.5*p)
@@ -69,7 +69,7 @@ with instance_create(x,y,Slash)
 	image_angle = direction
 	team = other.team
 	damage = 16
-	if other.ammo[1] >=3{
+	if other.ammo[1] >=2{
 		if other.infammo = 0 {other.ammo[1] -= 4}
 		with mod_script_call("mod", "defpack tools", "create_lightning_bullet",x+lengthdir_x(5,other.gunangle),y+lengthdir_y(5,other.gunangle)){
 				creator = other.creator

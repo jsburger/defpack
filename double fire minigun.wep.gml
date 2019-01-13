@@ -16,7 +16,7 @@ return true;
 return 1;
 
 #define weapon_cost
-return 4;
+return 2;
 
 #define weapon_swap
 return sndSwapMachinegun;

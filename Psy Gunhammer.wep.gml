@@ -34,7 +34,7 @@ return 1
 
 #define weapon_fire
 
-if ammo[1] >=2 var r = 1 else var r = 0
+if ammo[1] >=1 var r = 1 else var r = 0
 var p = random_range(.8,1.2)
 sound_play_pitchvol(sndHammer,p,.7)
 sound_play_pitch(sndShovel,.5*p)
@@ -55,7 +55,7 @@ with instance_create(x,y,Slash){
 	team = other.team
 	creator = other
 	repeat(4){
-		if other.ammo[1] >=2 {
+		if other.ammo[1] >=1 {
 			damage = 20
 			force = 15
 			sound_play_pitch(sndAssassinPretend,random_range(.5,.55))
@@ -72,7 +72,7 @@ with instance_create(x,y,Slash){
 				team = other.team
 				timer -= 5
 			}
-			if other.infammo = 0 {other.ammo[1] -= 2}
+			if other.infammo = 0 {other.ammo[1] -= 1}
 			shell += 1
 		}
 	}

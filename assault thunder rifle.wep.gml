@@ -17,7 +17,7 @@ return false;
 return 17;
 
 #define weapon_cost
-return 6;
+return 4;
 
 #define weapon_swap
 return sndSwapMachinegun;
@@ -45,5 +45,3 @@ repeat(4){
     wait(3)
     if !instance_exists(self)exit
 }
-
-

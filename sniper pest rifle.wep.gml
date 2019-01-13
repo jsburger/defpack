@@ -18,10 +18,10 @@ return 1;
 return true;
 
 #define weapon_load
-return 43;
+return 20;
 
 #define weapon_cost
-return 15;
+return 20;
 
 #define weapon_swap
 return sndSwapMachinegun;
@@ -32,8 +32,9 @@ return false;
 
 #define weapon_reloaded
 with mod_script_call("mod","defpack tools", "shell_yeah_long", 100, 8, 3+random(2),c_green)
-sound_play_pitchvol(sndSwapPistol,2,.4)
-sound_play_pitchvol(sndRecGlandProc,1.4,1)
+var _r = random_range(.8,1.2)
+sound_play_pitchvol(sndSwapPistol,2*_r,.4)
+sound_play_pitchvol(sndRecGlandProc,1.4*_r,1)
 weapon_post(-2,-4,5)
 return -1;
 

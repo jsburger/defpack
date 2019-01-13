@@ -13,10 +13,10 @@ return 1;
 return false;
 
 #define weapon_load
-return 5;
+return 4;
 
 #define weapon_cost
-return 10;
+return 5;
 
 #define weapon_swap
 return sndSwapMachinegun;

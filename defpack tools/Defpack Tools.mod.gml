@@ -604,7 +604,7 @@ with (e){
 	typ = 1
 	force = -5
 	mask_index = mskBullet1
-	damage = 4
+	damage = 3
 	recycle_amount = 2
 	image_speed = 1
 	on_step = script_ref_create(fire_step)
@@ -2068,8 +2068,9 @@ with r
     image_xscale = .5
     image_yscale = .5
     image_speed = .4
-    damage = 3
+    damage = 2
     force = 4
+    team = other.team
     sound_play_pitchvol(sndExplosion,2*random_range(.8,1.2),.2)
     hitid = [sprite_index,"MINI EXPLOSION"]
     on_anim = explo_anim
