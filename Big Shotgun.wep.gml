@@ -68,7 +68,7 @@ repeat(interfacepop){
 }
 
 #define slugstep
-timer--
+timer -= current_time_scale
 if timer <= 0 instance_destroy()
 
 #define slugdraw
@@ -78,8 +78,9 @@ draw_sprite_ext(sprite_index, image_index, x, y, 3*image_xscale, 3*image_yscale,
 draw_set_blend_mode(bm_normal);
 
 #define weapon_fire
-sound_play_pitchvol(sndSlugger,.6,.8)
-weapon_post(15,-320,60)
+//sound_play_pitchvol(sndSlugger,.6,.8)
+sound_play_pitch(sndEmpty,1.25)
+weapon_post(15,-120,30)
 var AP = 0
 with instance_create(x+lengthdir_x(20,gunangle),y+lengthdir_y(20,gunangle),CustomObject)
 {
@@ -152,4 +153,4 @@ if fork(){
 #define weapon_sprt
 return global.sprite
 #define weapon_text
-return "LARGENESS OVERWHELMING"
+return choose("LARGENESS OVERWHELMING", "WOAH MAMA")

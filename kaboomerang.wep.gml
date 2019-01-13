@@ -45,7 +45,7 @@ with instance_create(x,y,CustomObject)
   friction = 1
   lasthit = -4
   motion_add(other.gunangle,18)
-  on_step = boom_step
+  on_end_step = boom_step
   on_draw = boom_draw
   with instance_create(x,y,MeleeHitWall){image_angle = other.direction-180}
 }
@@ -57,13 +57,13 @@ with Pickup
   if distance_to_object(other) <= 4 && ("rang" not in self || ("rang" in self && rang != other.id)){rang = other.id}
   if "rang" in self{if instance_exists(rang){x = rang.x;y = rang.y}}
 }
-with chestprop
+with instances_matching([AmmoChest, RadChest, WeaponChest, RogueChest, GoldChest], "rang", null, id)
 {
-  if self != GiantAmmoChest && self != GiantWeaponChest && self != BigCursedChest && self != BigWeaponChest
   if distance_to_object(other) <= 4 && ("rang" not in self || ("rang" in self && rang != other.id)){rang = other.id}
-  if "rang" in self{if instance_exists(rang){x = rang.x;y = rang.y}}
+  x = rang.x
+  y = rang.y
 }
-with instances_matching_ne(hitme,"team",other.team)
+with instances_matching_ne(hitme,"team",team)
 {
   if distance_to_object(other) <= 4
   {
@@ -90,7 +90,7 @@ with instances_matching_ne(projectile,"team",other.team)
     with other if other.team != team with other instance_destroy()
   }
 }
-if curse = true{instance_create(x+random_range(-2,2),y+random_range(-2,2),Curse)}
+if curse = true and current_frame < floor(current_frame) + current_time_scale {instance_create(x+random_range(-2,2),y+random_range(-2,2),Curse)}
 ang += 20*current_time_scale
 if phase = 0 //move regularly
 {
@@ -106,7 +106,7 @@ else//return to player
   if instance_exists(creator)
   {
     var _d = point_direction(x,y,creator.x,creator.y)
-    if phase = 1 motion_add(_d,8)
+    if phase = 1 motion_add(_d,8*current_time_scale)
     if distance_to_object(creator) <= 9+skill_get(17)*3
     {
       if creator.wep  = 0{sleep(30);sound_play(sndSwapHammer);instance_create(x,y,WepSwap);creator.wep = mod_current;instance_destroy();exit}
@@ -170,8 +170,6 @@ return global.sprboomerang
 #define weapon_text
 return choose("WATCH OUT FOR THAT 'RANG","BOOM OF RANGE")
 
-#define step
-with WepPickup if wep = 0 instance_delete(self)
 
 #define boom_draw
 draw_sprite_ext(global.sprboomerang,image_index,x,y, image_xscale, image_yscale, ang, image_blend, image_alpha);

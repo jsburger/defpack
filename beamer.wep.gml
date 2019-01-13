@@ -213,20 +213,20 @@ with other{
 #define beam_hit
 if current_frame_active{
     with other motion_set(other.direction,2+skill_get(mut_laser_brain))
-    view_shake_at(other.x,other.y,min(other.size,4))
+    view_shake_max_at(other.x,other.y,min(other.size,4))
     projectile_hit(other,4 + skill_get(mut_laser_brain)*2,1,direction)
     if other.my_health <= 0{
         sleep(min(other.size, 4) * 20)
-        view_shake_at(creator.x,creator.y,5*min(4, other.size))
+        view_shake_max_at(creator.x,creator.y,5*min(4, other.size))
     }
 }
 #define beam_draw
-draw_sprite_ext(sprite_index, image_index, xstart, ystart, image_xscale, image_yscale, image_angle, image_blend, 1.0);
+draw_sprite_ext(sprite_index, image_index, xstart + lengthdir_x(12, image_angle), ystart + lengthdir_y(12, image_angle), image_xscale - 16, image_yscale, image_angle, image_blend, 1.0);
 	if x != xstart draw_sprite_ext(global.sprBeamStart, 0, xstart, ystart, 1, image_yscale, image_angle, image_blend, 1.0);
 	if x != xstart draw_sprite_ext(global.sprBeamEnd, 0, x, y, 1, image_yscale*1, image_angle, image_blend, 1.0);
 draw_set_blend_mode(bm_add);
-draw_sprite_ext(sprite_index, image_index, xstart, ystart, image_xscale, 1.5*image_yscale, image_angle, image_blend, 0.15+skill_get(17)*.05);
-	if x != xstart draw_sprite_ext(global.sprBeamStart, 0, xstart, ystart, 1.5, image_yscale*1.5, image_angle, image_blend, .15+skill_get(17)*.05);
+draw_sprite_ext(sprite_index, image_index, xstart + lengthdir_x(12, image_angle), ystart + lengthdir_y(12, image_angle), image_xscale - 27, 1.5*image_yscale, image_angle, image_blend, 0.15+skill_get(17)*.05);
+	if x != xstart draw_sprite_ext(global.sprBeamStart, 0, xstart, ystart, 1, image_yscale*1.5, image_angle, image_blend, .15+skill_get(17)*.05);
 	if x != xstart draw_sprite_ext(global.sprBeamEnd, 0, x, y, 1.5, image_yscale*1.5, image_angle, image_blend, .15+skill_get(17)*.05);
 draw_set_blend_mode(bm_normal);
 

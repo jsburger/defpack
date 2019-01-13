@@ -18,9 +18,8 @@ return
 return
 #define weapon_laser_sight
 return
-#define weapon_fire
-
 #define weapon_sprt
 return
 #define weapon_text
 return
+#define weapon_fire

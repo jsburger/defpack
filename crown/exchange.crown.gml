@@ -22,22 +22,24 @@ with Player
 		repeat(5)
 		{
 			i++
-			typ_ammo[i] /= 2
+			typ_ammo[i] = ceil(typ_ammo[i]/2)
 		}
 		HasEx = "
 		_____\    _______
-   /      \  |      /\
-  /_______/  |_____/  \
- |   \   /        /   /
-  \   \         \/   /
-   \  /          \__/_
-    \/ ____    /\
-      /  \    /  \
-     /\   \  /   /
-    \   \/   /
-        \___\__/
+       /      \  |      /\
+      /_______/  |_____/  \
+     |   \   /        /   /
+      \   \         \/   /
+       \  /          \__/_
+        \/ ____    /\
+          /  \    /  \
+         /\   \  /   /
+           \   \/   /
+            \___\__/
 		"
 	}
+	//if wep != 0 wep = wep_check(wep)
+	//if bwep != 0 bwep = wep_check(bwep)
 	if "meleeammo" not in self meleeammo = 4
 	var _w = weapon_get_type(wep);
 	var _c = weapon_get_cost(wep);
@@ -45,16 +47,16 @@ with Player
 	{
 		wep = determine_wep()
 		reload = 1
-		if weapon_get_type(wep) != 0
+		if weapon_is_melee(wep) != 0
 		{
-			meleeammo = 4
-			with instance_create(x,y,AmmoPickup){num = 2}
+			meleeammo = 6
+			ammo[_w] += max(typ_ammo[_w], 2*weapon_get_cost(_c))
 		}
 		else
 		{
 			if meleeammo <= 0
 			{
-				meleeammo = 4
+				meleeammo = 6
 				wep = determine_wep()
 			}
 		}
@@ -63,9 +65,7 @@ with Player
 	{
 		if reload <= 0
 		{
-			var _t = button_check(index,"fire");
-			if race = ("skeleton"||"venuz"){var _t = button_check(index,"spec")}
-			if button_pressed(index,"fire")
+			if button_pressed(index,"fire") || ((race == "skeleton" || race = "venuz") and button_check(index,"spec"))
 			{
 				meleeammo--
 			}
@@ -74,37 +74,37 @@ with Player
 	//atcive shooters
 	if race = ("steroids")
 	{
-	if "bmeleeammo" not in self bmeleeammo = 4
-	var _w = weapon_get_type(bwep);
-	var _c = weapon_get_cost(bwep);
-	if ammo[_w] < _c || (_w = 0 && bmeleeammo <= 0)
-	{
-		bwep = determine_wep()
-		breload = 1
-		if weapon_get_type(bwep) != 0
-		{
-			bmeleeammo = 4
-			with instance_create(x,y,AmmoPickup){num = 2}
-		}
-		else
-		{
-			if bmeleeammo <= 0
-			{
-				bmeleeammo = 4
-				bwep = determine_wep()
-			}
-		}
-	}
-	if weapon_get_type(bwep) = 0
-	{
-		if breload <= 0
-		{
-			if button_pressed(index,"spec")
-			{
-				bmeleeammo--
-			}
-		}
-	}
+    	if "bmeleeammo" not in self bmeleeammo = 4
+    	var _w = weapon_get_type(bwep);
+    	var _c = weapon_get_cost(bwep);
+    	if ammo[_w] < _c || (_w = 0 && bmeleeammo <= 0)
+    	{
+    		bwep = determine_wep()
+    		breload = 1
+    		if weapon_get_type(bwep) != 0
+    		{
+    			bmeleeammo = 6
+    			ammo[_w] += max(typ_ammo[_w], 2*weapon_get_cost(_c))
+    		}
+    		else
+    		{
+    			if bmeleeammo <= 0
+    			{
+    				bmeleeammo = 6
+    				bwep = determine_wep()
+    			}
+    		}
+    	}
+    	if weapon_get_type(bwep) = 0
+    	{
+    		if breload <= 0
+    		{
+    			if button_pressed(index,"spec")
+    			{
+    				bmeleeammo--
+    			}
+    		}
+    	}
 	}
 	/*if bwep != 0
 	{
@@ -116,6 +116,25 @@ with Player
 		bwep = 0
 	}*/
 }
+
+#define wep_check(w)
+if !is_object(w) or w.wep != "wrapper" return {
+    wep : "wrapper",
+    wrapped : w,
+    meleeammo : 60
+}
+if w.meleeammo <= 0 or ammo[weapon_get_type(w)] < weapon_get_cost(w){
+    var e = {
+        wep : w.wep,
+        wrapped : determine_wep(),
+        meleeammo : 60
+    }
+    var t = weapon_get_type(e)
+    if t != 0 ammo[t] += max(typ_ammo[t], 2*weapon_get_cost(e))
+    return e
+}
+return w
+
 #define game_start
 
 #define crown_name // Crown Name
@@ -133,7 +152,7 @@ if(GameCont.loops <= 0) return 1;
 #define determine_wep()
 var _i = 0
 var _l = ds_list_create();
-weapon_get_list(_l, max(GameCont.areanum,2), GameCont.areanum+1);
+weapon_get_list(_l, clamp(GameCont.areanum,2, 10), GameCont.areanum+1);
 ds_list_shuffle(_l);
 _i = ds_list_find_value(_l,1);
 sound_play( weapon_get_swap(_i));
@@ -141,7 +160,7 @@ instance_create(x,y,WepSwap)
 ds_list_destroy(_l);
 with instance_create(x,y,PopupText)
 {
-	text   = weapon_get_name(_i);
+	text   = weapon_get_name(_i) + "!";
 	target = other.index
 	with instance_create(x,y,CustomObject)
 	{
@@ -169,15 +188,6 @@ instance_destroy()
 
 #define crown_take
 sound_play_crown()
-with Player
-{
-	var i = 0;
-	repeat(5)
-	{
-		i++
-		typ_ammo[i] /= 2
-	}
-}
 
 #define crown_lose
 with Player
@@ -197,11 +207,11 @@ sound_play_pitchvol(sndStatueDead,2,.4)
 sound_play_pitchvol(sndStatueCharge,.8,.2)
 	timer = 0
 	on_step = snd_step
-	on_destroy = snd_destroy
+	on_cleanup = snd_destroy
 }
 
 #define snd_step
-timer++
+timer += current_time_scale
 // /gml mod_script_call("crown","exchange","sound_play_crown")
 if timer = 1  sound_play_pitchvol(sndCrownLife,1,1)
 if timer = 23

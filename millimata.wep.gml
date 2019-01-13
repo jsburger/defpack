@@ -40,7 +40,7 @@ repeat(7)
 	sound_play_pitchvol(sndSplinterGun,.7*p,.5)
 	sound_play_pitchvol(sndHeavyCrossbow,.5*p,.5)
 	sound_play_pitchvol(sndDoubleMinigun,.8*p,.5)
-	weapon_post(7,21,24)
+	weapon_post(7,6,8)
 	with instance_create(x,y,Splinter)
 	{
 		move_contact_solid(point_direction(x,y,x+lengthdir_x(1,other.gunangle+40),y+lengthdir_y(1,other.gunangle+40)),6)

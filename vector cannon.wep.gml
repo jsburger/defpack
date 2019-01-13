@@ -133,7 +133,7 @@ if current_frame_active{
     with other{
         if place_meeting(x+lengthdir_x(speed+1,other.direction)+hspeed,y+lengthdir_y(speed+1,other.direction)+vspeed,Wall){
     	    with other projectile_hit(other,other.speed ,1,direction)
-    		view_shake_at(x,y,6*min(size,4))
+    		view_shake_at(x,y,4*min(size,4))
     	}
     }
     if other.my_health <= 0{

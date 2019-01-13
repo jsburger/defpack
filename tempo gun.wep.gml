@@ -2,8 +2,10 @@
 global.sprTempoGun = sprite_add_weapon("sprites/sprTempoGun.png",2,3);
 #macro maxcombo 4
 
+//Credit to Smash Brothers (aka matt on the discord) for this gun
+
 #define weapon_name             return "TEMPO GUN";
-#define weapon_text             return ["TO THE RYTHM"];
+#define weapon_text             return ["TO THE RHYTHM"];
 
 #define weapon_sprt             return global.sprTempoGun;
 #define weapon_swap             return sndSwapPistol;
@@ -27,8 +29,8 @@ global.sprTempoGun = sprite_add_weapon("sprites/sprTempoGun.png",2,3);
 #define step(_pwep)
 
 #define weapon_fire(_pwep)
-    if ("coolguncharge" not in self){
-        coolguncharge = 0;
+    if ("tempogun" not in self){
+        tempogun = 0;
     }
 
     for (var i = -1; i <= 1; i += 2){
@@ -39,7 +41,7 @@ global.sprTempoGun = sprite_add_weapon("sprites/sprTempoGun.png",2,3);
             yy = y + lengthdir_y(l, d);
 
          // max combo
-        if coolguncharge mod maxcombo == maxcombo - 1{
+        if tempogun mod maxcombo == maxcombo - 1{
             sound_play_gun(sndSlugger, 0.3, 0.6);
             weapon_post(8, 4, 12);
 
@@ -62,9 +64,9 @@ global.sprTempoGun = sprite_add_weapon("sprites/sprTempoGun.png",2,3);
                 team =      other.team;
 
                 direction = other.gunangle;
-                speed =     10;
+                speed =     12;
             }
         }
     }
 
-    coolguncharge++;
+    tempogun++;
