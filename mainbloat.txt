@@ -2,7 +2,7 @@
 /loadwep auto flak cannon
 /loadwep bullak machinegun
 /loadwep heavy split shotgun
-/loadwep heavy blood crossbow
+/loadwep finished stuff/heavy blood crossbow
 /loadwep hot crossbow
 /loadwep huge shotgun
 /loadwep lightning orb

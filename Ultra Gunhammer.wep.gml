@@ -1,6 +1,6 @@
 #define init
 global.sprUltraGunhammer = sprite_add_weapon("sprites/sprUltraGunhammer.png", 0, 9);
-global.sprUltraGunhammerOff = sprite_add_weapon("sprites/sprUltraGunhammerOff.png", 6, 5);
+global.sprUltraGunhammerOff = sprite_add_weapon("sprites/sprUltraGunhammerOff.png",0, 9);
 
 #define weapon_name
 return "ULTRA GUNHAMMER";
@@ -18,7 +18,7 @@ return 1;
 return false;
 
 #define weapon_load
-return 9;
+return 16;
 
 #define weapon_cost
 return 0;
@@ -61,7 +61,7 @@ with instance_create(x,y,Slash){
 	creator = other
 	repeat(4){
 		if other.ammo[1] >=3 {
-			damage = 30
+			damage = 22
 			force = 20
 			sound_play_pitchvol(sndUltraPistol,1.,.7)
 			sound_play_pitchvol(sndSawedOffShotgun,.9*p,.7)

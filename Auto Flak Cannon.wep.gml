@@ -1,5 +1,5 @@
 #define init
-global.sprAFC = sprite_add_weapon("sprites/Auto Flak Cannon.png", 2, 2);
+global.sprAFC = sprite_add_weapon("sprites/sak/sprAutoFlakCannon.png", 2, 2);
 
 #define weapon_name
 return "AUTO FLAK CANNON";

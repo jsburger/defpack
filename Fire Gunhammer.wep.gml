@@ -15,7 +15,7 @@ return 1;
 return false;
 
 #define weapon_load
-return 16;
+return 22;
 
 #define weapon_cost
 return 0;
@@ -64,7 +64,7 @@ with instance_create(x,y,Slash){
 			sound_play_pitchvol(sndFlameCannon,3.8*p,.7)
 			 mod_script_call("mod","defpack tools", "shell_yeah", -180, 35, random_range(3,5), c_red)
 			sprite_index = global.sprFireGunhammerSlash
-			damage = 20
+			damage = 15
 			force = 15
 			repeat(2)with instance_create(x+lengthdir_x(sprite_width,direction)+random_range(-2,2),y+lengthdir_y(sprite_width,direction)+random_range(-2,2),Smoke)motion_set(other.direction + random_range(-8,8), 1+random(3))
 			with mod_script_call("mod","defpack tools","create_fire_bullet",x,y){

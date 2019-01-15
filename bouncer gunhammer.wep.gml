@@ -46,7 +46,7 @@ with instance_create(x,y,Slash){
 	damage = 8
 	if other.ammo[1] >=1
 	{
-		damage = 20
+		damage = 15
 		force = 15
 		sprite_index = global.sprGunhammerSlash
 	}else{
