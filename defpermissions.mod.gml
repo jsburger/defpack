@@ -6,6 +6,7 @@ global.buttonsopen = [0,0,0,0]
 global.wantbutton = [0,0,0,0]
 global.paletteopen = [0,0,0,0]
 global.wasscrolling = [0,0,0,0]
+global.maxpalettes = 10
 //global.sprSave = sprite_add("sprSave.png",1,5,5)
 //global.sprTrash = sprite_add("sprTrash.png",1,5,5)
 
@@ -16,7 +17,7 @@ var p1 = {
     //sideoutline : c_black,
     sidebutton : c_dkgray,
     sidehighlight : c_gray,
-    xcolor : c_white,
+    tabcolor : c_white,
     arrowcolor : c_white,
     scrollbg : c_dkgray,
     scrollcolor : c_white,
@@ -25,6 +26,10 @@ var p1 = {
     cellfadetop : c_gray,
     cellfadebottom : c_gray,
     cellhighlight : merge_color(c_white,c_black,.2),
+    cellbar : c_dkgray,
+    palettebody : c_gray,
+    palettebutton : c_gray,
+    palettehighlight : c_ltgray,
     //celloutline : c_black,
     togglecolor : c_white,
     toggleon : merge_color(c_blue,c_gray,.4),
@@ -57,14 +62,19 @@ global.sprButtonX = sprite_add("sprites/sprX.png",0,8,8);
 global.sprArrow   = sprite_add("sprites/sprArrow.png",0,3,2);
 //trace(global.palettes)
 
-chat_comp_add("defconfig","Toggles the defpack configuration menu")
 chat_comp_add("defclearcache","Clears out the defpack config of unused variables")
+chat_comp_add("palette","Renames the current defpack config palette")
+chat_comp_add("pimport","Imports a palette of the given file name")
+chat_comp_add("pexport","Exports a palette to an importable text file")
 
 if fork(){
     var b = file_load("data/defpermissions.mod/palettes.txt")
     if b wait(b)
     if !file_exists("data/defpermissions.mod/palettes.txt") string_save(json_encode(global.palettes),"palettes.txt")
     else global.palettes = json_decode(string_load("data/defpermissions.mod/palettes.txt"))
+    for var i = 1; i < array_length(global.palettes); i++{
+        global.palettes[i] = palette_update(global.palettes[i])
+    }
     exit
 }
 
@@ -76,7 +86,13 @@ if !file_exists("data/defpermissions.mod/defconfig.txt"){
 }
 else global.stuff = json_decode(string_load("data/defpermissions.mod/defconfig.txt"))
 
-
+#define palette_update(pal)
+var e = lq_clone(global.editingpalette)
+for var i = 0; i < lq_size(e); i++{
+    var k = lq_get_key(e, i)
+    lq_set(e, k, lq_defget(pal, k, lq_get(e, k)))
+}
+return e
 
 #define save
 string_save(json_encode(global.stuff),"defconfig.txt")
@@ -146,6 +162,29 @@ if cmd = "palette"{
     else trace_color("Could not rename the current palette because it doesn't exist!", c_red)
     return 1
 }
+if cmd = "pexport"{
+    string_save(json_encode(global.palettes[global.palettes[0]]), global.palettes[global.palettes[0]].name + ".pal.txt")
+    trace_color("Exported " + global.palettes[global.palettes[0]].name + " to data/defpermissions.mod", c_lime)
+    return 1
+}
+if cmd = "pimport"{
+    if array_length(global.palettes) > global.maxpalettes{
+        trace_color("Could not import palette! Not enough room!", c_red)
+        return 1
+    }
+    if fork(){
+        wait(file_load("data/defpermissions.mod/" + arg + ".pal.txt")+1)
+        if !file_exists("data/defpermissions.mod/" + arg + ".pal.txt") trace_color("Could not import palette! File "+arg+" could not be found!", c_red)
+        else{
+            array_push(global.palettes, palette_update(json_decode(string_load("data/defpermissions.mod/" + arg + ".pal.txt"))))
+            file_unload("data/defpermissions.mod/" + arg + ".pal.txt")
+            trace_color("Successfully imported " + arg, c_lime)
+        }
+        exit
+    }
+    return 1
+}
+
 
 #define clear_cache()
 for var o = 0; o < array_length_1d(global.stuff); o++{
@@ -261,7 +300,7 @@ for (var i = 0; i < maxp; i++) if player_is_active(i){
     else mouse = 0
     draw_roundrect_c(game_width - xw, xy - xw + 4, game_width + 10, xy + xw + 4, mouse ? p.cellhighlight : p.cellfadetop)
     draw_tri(game_width - xw/2 +.5, xy + 5, 3, 5, global.buttonsopen[i] > 0 ? 0 : 180, c_black)
-    draw_tri(game_width - xw/2 +.5, xy + 4, 3, 5, global.buttonsopen[i] > 0 ? 0 : 180, p.xcolor)
+    draw_tri(game_width - xw/2 +.5, xy + 4, 3, 5, global.buttonsopen[i] > 0 ? 0 : 180, p.tabcolor)
     if mouse and released{
         click(.2)
         global.wantbutton[i] = global.buttonsopen[i] > 0 ? -.4 : .4
@@ -310,7 +349,7 @@ for (var i = 0; i < maxp; i++) if player_is_active(i){
         var pmw = 62, pmh = 95
         var pmx = _x - 9
         draw_rectangle_c(pmx - pmw + 1, _y + 1, pmx + 1, _y + pmh + 1,c_black)
-        draw_rectangle_c(pmx - pmw, _y, pmx, _y + pmh,c_gray)
+        draw_rectangle_c(pmx - pmw, _y, pmx, _y + pmh, p.palettebody)
         //draw_rectangle_co(pmx - pmw, _y, pmx, _y + pmh,c_black)
 
         var edit = global.paletteeditor
@@ -346,7 +385,7 @@ for (var i = 0; i < maxp; i++) if player_is_active(i){
         var copyx = cx - 10, copyw = 30, copyy = cy + radius + 20, copyh = 12
         var mouse = point_in_rectangle(mousex,mousey,copyx,copyy,copyx+copyw,copyy+copyh)
         draw_rectangle_c(copyx+6,copyy+1,copyx+copyw+1,copyy+copyh+1,c_black)
-        draw_rectangle_c(copyx+5,copyy,copyx+copyw,copyy+copyh,mouse ? c_white : c_ltgray)
+        draw_rectangle_c(copyx+5,copyy,copyx+copyw,copyy+copyh,mouse ? p.palettehighlight : p.palettebutton)
         //draw_rectangle_co(copyx,copyy,copyx+copyw,copyy+copyh,c_black)
         draw_text_c(copyx + 8, copyy-1, "copy", p.textcolor)
 
@@ -361,7 +400,7 @@ for (var i = 0; i < maxp; i++) if player_is_active(i){
              click(0)
          }
         draw_rectangle_c(copyx+6,copyy + copyh + 3,copyx+copyw+1,copyy+copyh*2 + 3,c_black)
-        draw_rectangle_c(copyx+5,copyy + copyh + 2,copyx+copyw,copyy+copyh*2 + 2,mouse ? c_white : c_ltgray)
+        draw_rectangle_c(copyx+5,copyy + copyh + 2,copyx+copyw,copyy+copyh*2 + 2,mouse ? p.palettehighlight : p.palettebutton)
         //draw_rectangle_co(copyx,copyy + copyh + 2,copyx+copyw,copyy+copyh*2 + 2,c_black)
         draw_text_c(copyx + 6, copyy + copyh + 1, "paste", p.textcolor)
 
@@ -397,19 +436,20 @@ for (var i = 0; i < maxp; i++) if player_is_active(i){
 
 
         var tleft = pmx - pmw*2 - 5, tright = pmx - pmw - 2
-        var theight = 8, tgap = 2
+        var theight = 8, tgap = 2, ttop = _y - (lq_size(p) - 23) * (theight+tgap)
 
+        
         var moused = 0
-        if mousex > tleft and mousex < tright moused = ceil((mousey - _y + tgap)/(theight))
+        if mousex > tleft and mousex < tright moused = ceil((mousey - ttop + tgap)/(theight))
 
         for var q = 1+edit.scroll; q < lq_size(p); q++{
-            var ty = _y + theight*(q - 1);
+            var ty = ttop + theight*(q - 1);
 
             draw_rectangle_c(tleft - 8, ty, tright, ty + theight - tgap + 1, c_black)
-            draw_rectangle_c(tright, ty, tleft-4, ty + theight - tgap, q = moused || edit.selected = q ? c_ltgray : c_gray)
+            draw_rectangle_c(tright, ty, tleft-4, ty + theight - tgap, q = moused || edit.selected = q ? p.palettehighlight : p.palettebutton)
             draw_rectangle_c(tleft - 9, ty, tleft - 5, ty + theight - tgap, lq_get_value(p,q))
             //draw_rectangle_co(tleft - 4, ty, tleft - 1, ty + theight - tgap, 0)
-            draw_text_c(tleft + 2, ty - 3, lq_get_key(p,q), c_white)
+            draw_text_c(tleft, ty - 3, lq_get_key(p,q), c_white)
             if q = moused and released{
                 click(1)
                 edit.selected = q
@@ -419,7 +459,7 @@ for (var i = 0; i < maxp; i++) if player_is_active(i){
 
         var found = moused
 
-        var sleft = tleft - 34, sheight = 16, sgap = 4
+        var sleft = tleft - 34, sheight = 12, sgap = 4
 
         for var u = 1; u <= array_length(global.palettes); u++{
             var sy = _y + (sheight + sgap) * (u - .5)
@@ -432,7 +472,7 @@ for (var i = 0; i < maxp; i++) if player_is_active(i){
                 var pal = global.palettes[u]
                 draw_rectangle_c(sleft + 1, sy + 1, sleft + sheight + 1, sy + sheight + 1, global.palettes[0] == u ? c_white : c_black)
                 draw_rectangle_c(sleft, sy, sleft + sheight, sy + sheight, mouse and mousex > sleft ? pal.cellhighlight : pal.cellcolor)
-                if u != 1{
+                if u != 1 and mouse{
                     //RED X
                     var xcol = (mouse and mousex < sleft - 2) ? c_white : c_ltgray
                     draw_sprite_ext(global.sprButtonX,0,sleft-11,sy +2 + sheight/2,1,1,0,c_black,1)
@@ -441,7 +481,7 @@ for (var i = 0; i < maxp; i++) if player_is_active(i){
                 }
                 if mouse{
                     if u != 1 and mousex < sleft - 2{
-                        draw_tooltip(sleft - sheight*3/4, sy, "Delete this palette")
+                        draw_tooltip(sleft - sheight*3/4, sy, "Delete " + global.palettes[u].name)
                         if released {
                             global.palettes = array_clone(array_index_delete(global.palettes, u))
                             if u == global.palettes[0] global.palettes[0] = 1
@@ -470,7 +510,7 @@ for (var i = 0; i < maxp; i++) if player_is_active(i){
                     }
                 }
             }
-            else if u <= 7{
+            else if u <= global.maxpalettes{
                 if !found{
                     mouse = point_in_rectangle(mousex,mousey,sleft, sy, sleft + sheight, sy + sheight)
                     found = mouse
@@ -485,6 +525,7 @@ for (var i = 0; i < maxp; i++) if player_is_active(i){
                     if released{
                         array_push(global.palettes,lq_clone(global.editingpalette))
                         global.palettes[0] = u
+                        global.palettes[u].name = "Palette " + string(u)
                         edit.selected = 0
                         click(0)
                     }
@@ -572,7 +613,7 @@ for (var i = 0; i < maxp; i++) if player_is_active(i){
             draw_rectangle_c(_x+1,_y3+2,_x2+1,_y4,c_black);
             draw_line_width_color(_x+6,_y4+2,_x2-5,_y4+2,1,c_black,c_black)
             draw_line_width_color(_x+6,_y4+1,_x2-5,_y4+1,1,c_black,c_black)
-            draw_line_width_color(_x+5,_y4+1,_x2-6,_y4+1,1,p.sidehighlight,p.sidehighlight)
+            draw_line_width_color(_x+5,_y4+1,_x2-6,_y4+1,1,p.cellbar,p.cellbar)
             draw_rectangle_c(_x,_y3+1,_x2,_y4-1,mouse ? p.cellhighlight : col);
             //draw_rectangle_co(_x,_y3,_x2,_y4,p.celloutline);
             draw_text_c(_x+2,_y3,global.stuff[h+o][3],p.textcolor);
