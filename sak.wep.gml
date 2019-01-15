@@ -1112,7 +1112,7 @@ if q && !is_object(wep){
 	}
 }
 if q && is_object(wep) && wep.wep = mod_current && !wep.done{
-    script_bind_draw(makemycoolgun, -17, index)
+    script_bind_draw(makemycoolgun, -17, index, wep)
 }
 
 
@@ -1129,12 +1129,11 @@ for (var i = 1; i<= 3; i++){
 //this thing is the distance between shit
 #macro gx 22
 
-#define makemycoolgun(index)
+#define makemycoolgun(index, wep)
 instance_destroy()
 draw_set_halign(0)
-with player_find(index) if is_object(wep) && wep.wep = mod_current && !wep.done
-{
-	var w = wep;
+with player_find(index){
+    var w = wep
 	var tex = global.textmap;
 	var cho = global.choicemap;
 	var width = array_length_1d(cho[? w.info[w.phase]]);
@@ -1363,9 +1362,9 @@ if is_object(b) && b.done
 	if d = 1 e = 0 else e = 1
 	repeat(max(1,c*e))
 	{
-	with instance_create(x,y,Shell){
-	if d = 2 {if skill_get(mut_shotgun_shoulders) = false sprite_index = sprShotShell else sprite_index = sprShotShellBig}else{sprite_index = sprBulletShell}
-	motion_add(other.gunangle + (other.right * 90) + random_range(-40, 40),2 + random(2))
-	}
-	}
+    	with instance_create(x,y,Shell){
+        	if d = 2 {if skill_get(mut_shotgun_shoulders) = false sprite_index = sprShotShell else sprite_index = sprShotShellBig}else{sprite_index = sprBulletShell}
+        	motion_add(other.gunangle + (other.right * 90) + random_range(-40, 40),2 + random(2))
+    	}
+    }
 }

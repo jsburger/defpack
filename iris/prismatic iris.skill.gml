@@ -292,12 +292,7 @@ switch wep{
 }
 
 #define color(wp,col)
-var str = wp;
-var obj = 0
-while is_object(str){
-    obj++
-    str = str.wep
-}
+var str = weapon_find(wp);
 if is_real(str) || array_index_exists(global.customs,str){
     str = string_replace(convert(str),"x ", `${global.colors[col]} `)
 }
@@ -307,18 +302,37 @@ else{
     }
 }
 str = reverse(str)
-if (is_real(str) || mod_exists("weapon",str)) && str != wp{
-   if obj with wep set_nest(wep,str)
-   else wep = str
-   return 1
+if (mod_exists("weapon",str)) && str != weapon_find(wp){
+    if is_object(wp){
+        weapon_set(wp,str)
+    }
+    else wep = str
+    return 1
 }
 return 0
 
-#define set_nest(destination,payload)
-if is_object(destination){
-    with destination set_nest(destination,payload)
+#define weapon_find(w)
+if is_object(w){
+    if is_string(w.wep){
+        if mod_script_exists("weapon",w.wep,"weapon_wep") return weapon_find(lq_get(w, mod_script_call_nc("weapon", w.wep, "weapon_wep", w)))
+    }
+    return weapon_find(w.wep)
 }
-else destination = payload
+return w
+
+
+#define weapon_set(w, val)
+if is_string(w.wep){
+    if mod_script_exists("weapon",w.wep,"weapon_wep"){
+        lq_set(w, mod_script_call_nc("weapon", w.wep, "weapon_wep", w), val)
+        exit
+    }
+}
+if is_object(w.wep){
+    weapon_set(w.wep, val)
+    exit
+}
+w.wep = val
 
 //thanks YOKIN you are truly my greatest ally
 // Spawns a Random WepPickup & Takes Into Account More Spawn Conditions: `with(Player) scrGimmeWep(x, y, 0, GameCont.hard, curse, [wep, bwep]);`

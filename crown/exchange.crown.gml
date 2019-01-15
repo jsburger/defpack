@@ -40,17 +40,20 @@ with Player
 	}
 	//if wep != 0 wep = wep_check(wep)
 	//if bwep != 0 bwep = wep_check(bwep)
+	var re = reload, be = breload
+	wait(0)
+	if !instance_exists(self) continue
 	if "meleeammo" not in self meleeammo = 4
 	var _w = weapon_get_type(wep);
 	var _c = weapon_get_cost(wep);
-	if ammo[_w] < _c || (_w = 0 && meleeammo <= 0)
+	if ammo[_w] < _c || (_w = 0 && meleeammo <= 0) || (_c == 0 and ammo[_w] == 0)
 	{
 		wep = determine_wep()
 		reload = 1
-		if weapon_is_melee(wep) != 0
+		if weapon_get_type(wep) != 0
 		{
 			meleeammo = 6
-			ammo[_w] += max(typ_ammo[_w], 2*weapon_get_cost(_c))
+			ammo[weapon_get_type(wep)] += max(2*typ_ammo[weapon_get_type(wep)], 2*weapon_get_cost(wep))
 		}
 		else
 		{
@@ -63,13 +66,8 @@ with Player
 	}
 	if weapon_get_type(wep) = 0
 	{
-		if reload <= 0
-		{
-			if button_pressed(index,"fire") || ((race == "skeleton" || race = "venuz") and button_check(index,"spec"))
-			{
-				meleeammo--
-			}
-		}
+		if reload > re
+			meleeammo--
 	}
 	//atcive shooters
 	if race = ("steroids")
@@ -77,14 +75,14 @@ with Player
     	if "bmeleeammo" not in self bmeleeammo = 4
     	var _w = weapon_get_type(bwep);
     	var _c = weapon_get_cost(bwep);
-    	if ammo[_w] < _c || (_w = 0 && bmeleeammo <= 0)
+    	if ammo[_w] < _c || (_w = 0 && bmeleeammo <= 0) || (_c == 0 and ammo[_w] == 0)
     	{
     		bwep = determine_wep()
     		breload = 1
     		if weapon_get_type(bwep) != 0
     		{
     			bmeleeammo = 6
-    			ammo[_w] += max(typ_ammo[_w], 2*weapon_get_cost(_c))
+    			ammo[weapon_get_type(bwep)] += max(typ_ammo[weapon_get_type(bwep)], 2*weapon_get_cost(bwep))
     		}
     		else
     		{
@@ -95,15 +93,9 @@ with Player
     			}
     		}
     	}
-    	if weapon_get_type(bwep) = 0
-    	{
-    		if breload <= 0
-    		{
-    			if button_pressed(index,"spec")
-    			{
-    				bmeleeammo--
-    			}
-    		}
+    	if weapon_get_type(bwep) = 0{
+    		if breload > be
+    		    bmeleeammo--
     	}
 	}
 	/*if bwep != 0
@@ -117,20 +109,39 @@ with Player
 	}*/
 }
 
-#define wep_check(w)
-if !is_object(w) or w.wep != "wrapper" return {
+#define wrap(w)
+return {
     wep : "wrapper",
     wrapped : w,
-    meleeammo : 60
+    meleeammo : 90
 }
-if w.meleeammo <= 0 or ammo[weapon_get_type(w)] < weapon_get_cost(w){
-    var e = {
-        wep : w.wep,
-        wrapped : determine_wep(),
-        meleeammo : 60
+
+#define wep_check(w)
+if !is_object(w) or w.wep != "wrapper" return wrap(w)
+if w.meleeammo <= 0 or ammo[weapon_get_type(w)] < weapon_get_cost(w.wrapped) or GameCont.rad < weapon_get_rads(w.wrapped) or (weapon_get_cost(w.wrapped) == 0 and ammo[weapon_get_type(w.wrapped)] == 0){
+    var q = get_wep()
+    if q == w.wrapped w = get_wep()
+    var e = wrap(q)
+    var t = weapon_get_type(q)
+    if t != 0 ammo[t] += max(2*typ_ammo[t], 2*weapon_get_cost(q))
+    sound_play( weapon_get_swap(q));
+    instance_create(x,y,WepSwap)
+    with instance_create(x,y,PopupText)
+    {
+    	text   = weapon_get_name(q) + "!";
+    	target = other.index
+    	with instance_create(x,y,CustomObject)
+    	{
+    		if fork()
+    		{
+    			wait(2)
+    			if !instance_exists(self) exit
+    			target  = other.target
+    			on_step = text_step
+    			exit
+    		}
+    	}
     }
-    var t = weapon_get_type(e)
-    if t != 0 ammo[t] += max(typ_ammo[t], 2*weapon_get_cost(e))
     return e
 }
 return w
@@ -149,15 +160,20 @@ return "A FAIR DEAL";
 #define crown_avail // L1+
 if(GameCont.loops <= 0) return 1;
 
-#define determine_wep()
+#define get_wep()
 var _i = 0
 var _l = ds_list_create();
-weapon_get_list(_l, clamp(GameCont.areanum,2, 10), GameCont.areanum+1);
+var dif = GameCont.areanum + 2*array_length(instances_matching(Player,"race","robot"))
+weapon_get_list(_l, clamp(dif - 2, 0, 8), dif + 1);
 ds_list_shuffle(_l);
 _i = ds_list_find_value(_l,1);
+ds_list_destroy(_l);
+return _i
+
+#define determine_wep()
+var _i = get_wep()
 sound_play( weapon_get_swap(_i));
 instance_create(x,y,WepSwap)
-ds_list_destroy(_l);
 with instance_create(x,y,PopupText)
 {
 	text   = weapon_get_name(_i) + "!";

@@ -20,8 +20,9 @@ return 0
 #define weapon_laser_sight
 return 0
 #define weapon_fire
-reload -= weapon_load()
-
+if instance_is(self,Player){
+    if ammo[weapon_type()] >= 1 or infammo != 0 reload -= weapon_load()
+}
 #define shoot(_x,_y,angle)
 weapon_post(0,0,5)
 sound_play_gun(sndSmartgun,.1,.7)
@@ -45,13 +46,13 @@ if w && reload <= 0 && (ammo[1] || infammo != 0){
 	var ang = gunangle;
     if instance_exists(enemy){
 		var target = instance_nearest(_truex,_truey,enemy);
-		if !collision_line(_truex,_truey,target.x,target.y,Wall,0,0){
+		if !collision_line(_truex,_truey,target.x,target.y,Wall,0,0) and !collision_line(_truex,_truey,target.x,target.y,PopoShield,0,0){
 		    _canshoot = 1
 		    ang = point_direction(_truex,_truey,target.x+target.hspeed,target.y+target.vspeed);
 		}
     }
     if _canshoot {
-        wkick = 1
+        wkick = 2
         reload = weapon_load()
         shoot(_truex,_truey,ang)
     }
@@ -64,13 +65,13 @@ if !w && breload <= 0 && (ammo[1] || infammo != 0){
 	var ang = gunangle;
     if instance_exists(enemy){
 		var target = instance_nearest(_truex,_truey,enemy);
-		if !collision_line(_truex,_truey,target.x,target.y,Wall,0,0){
+		if !collision_line(_truex,_truey,target.x,target.y,Wall,0,0) and !collision_line(_truex,_truey,target.x,target.y,PopoShield,0,0){
 		    _canshoot = 1
 		    ang = point_direction(_truex,_truey,target.x+target.hspeed,target.y+target.vspeed);
 		}
     }
     if _canshoot {
-        bwkick = 1
+        bwkick = 2
         breload = weapon_load()
         shoot(_truex,_truey,ang)
     }
@@ -87,18 +88,16 @@ if !w && race != "steroids" && breload > 0{
 }
 
 
-
-
 #define weapon_sprt_hud
 return global.sprSmarterGunHUD
 
-#define weapon_sprt
+#define weapon_sprt(w)
 if instance_is(self,Player)
 {
-	if wep = mod_current{
+	if wep = w{
 		draw_sprite_ext(global.sprSmarterGun,0,x+sprite_get_width(sprite_index)/2-wkick*right,y-8+sin(current_frame/10)*5,right,1,0,c_white,1)
 	}
-	if bwep = mod_current
+	if bwep = w
 	{
 		draw_sprite_ext(global.sprSmarterGun,0,x-sprite_get_width(sprite_index)/2-bwkick*right,y-8+sin(current_frame/-10)*5,right,1,0,c_white,1)
 	}

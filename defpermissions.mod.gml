@@ -259,7 +259,7 @@ for (var i = 0; i < maxp; i++) if player_is_active(i){
         found = mouse
     }
     else mouse = 0
-    draw_roundrect_c(game_width - xw, xy - xw + 4, game_width + 10, xy + xw + 4, mouse ? p.textcolor : p.cellfadetop)
+    draw_roundrect_c(game_width - xw, xy - xw + 4, game_width + 10, xy + xw + 4, mouse ? p.cellhighlight : p.cellfadetop)
     draw_tri(game_width - xw/2 +.5, xy + 5, 3, 5, global.buttonsopen[i] > 0 ? 0 : 180, c_black)
     draw_tri(game_width - xw/2 +.5, xy + 4, 3, 5, global.buttonsopen[i] > 0 ? 0 : 180, p.xcolor)
     if mouse and released{
@@ -430,7 +430,7 @@ for (var i = 0; i < maxp; i++) if player_is_active(i){
                 }
                 else mouse = 0
                 var pal = global.palettes[u]
-                draw_rectangle_c(sleft + 1, sy + 1, sleft + sheight + 1, sy + sheight + 1, global.palettes[0] = u ? c_white : c_black)
+                draw_rectangle_c(sleft + 1, sy + 1, sleft + sheight + 1, sy + sheight + 1, global.palettes[0] == u ? c_white : c_black)
                 draw_rectangle_c(sleft, sy, sleft + sheight, sy + sheight, mouse and mousex > sleft ? pal.cellhighlight : pal.cellcolor)
                 if u != 1{
                     //RED X
@@ -444,8 +444,8 @@ for (var i = 0; i < maxp; i++) if player_is_active(i){
                         draw_tooltip(sleft - sheight*3/4, sy, "Delete this palette")
                         if released {
                             global.palettes = array_clone(array_index_delete(global.palettes, u))
-                            if u >= array_length_1d(global.palettes)-1 global.palettes[0] = 2
-                            global.palettes[0]--
+                            if u == global.palettes[0] global.palettes[0] = 1
+                            else if u < global.palettes[0] global.palettes[0]--
                             edit.selected = 0
                             click(1)
                             //break

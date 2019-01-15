@@ -2,15 +2,6 @@
 global.sprMoby = sprite_add_weapon("sprites/sprMoby.png", 7, 2);
 global.yellow = merge_color(c_yellow, c_white, .4)
 
-while 1{
-    with Player{
-        if is_object(wep) && wep.wep = mod_current goodstep(wep)
-        if is_object(bwep) && bwep.wep = mod_current goodstep(bwep)
-    }
-    wait(0)
-}
-
-
 #define weapon_name
 return "MOBY";
 
@@ -28,7 +19,7 @@ if is_object(w) return 5-w.charge/5
 return 5;
 
 #define weapon_cost(w)
-if is_object(w) && w.charge > 20 && ammo[1] > 1 return irandom(1)
+if is_object(w) && w.charge > 20 && (!instance_is(self,Player) || ammo[1] > 1) return irandom(1)
 return 1;
 
 #define weapon_swap
@@ -43,7 +34,7 @@ return "HEAVY OCEAN";
 #define weapon_fire(w)
 if !is_object(w){
     w = {
-        wep: mod_current,
+        wep: w,
         charge : 1,
         persist : 0,
         canbloom : 1
@@ -89,7 +80,10 @@ if w.canbloom {
 }
 wep = w
 
-#define step
+#define step(w)
+if w && is_object(wep) && wep.wep = mod_current goodstep(wep)
+else if !w && is_object(bwep) && bwep.wep = mod_current goodstep(bwep)
+
 if instance_number(Shell) > 100{
     var q = instances_matching(Shell,"speed",0)
     var l = array_length(q)

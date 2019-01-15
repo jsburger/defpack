@@ -56,7 +56,7 @@ return 0
 #define weapon_fire(w)
 if !is_object(w){
     wep = {
-        wep: mod_current,
+        wep: w,
         cursecharge: 0,
         torchid: irandom(10000)
     }
@@ -149,7 +149,7 @@ if current_frame_active{
         
     }
 }
-with instances_matching(Slash,"name","crystal slash"){
+with instances_matching(CustomSlash,"name","crystal slash"){
 	with BigCursedChest{
 		if distance_to_object(other) <= 0{
 			instance_create(x,y,BigWeaponChest)
