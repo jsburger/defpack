@@ -43,4 +43,5 @@ repeat(3)
 		image_angle = direction
 	}
 	wait(2)
+	if !instance_exists(self){exit}
 }

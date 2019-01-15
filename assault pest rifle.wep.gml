@@ -26,7 +26,7 @@ return sndSwapMachinegun;
 return -1;
 
 #define weapon_text
-return "replace me please";
+return "TRIPLE CAPSULE TANK";
 
 #define weapon_fire
 
@@ -45,4 +45,5 @@ repeat(3)
   	image_angle = direction
   }
   wait(2)
+  if !instance_exists(self){exit}
 }

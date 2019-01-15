@@ -27,7 +27,7 @@ return sndSwapEnergy;
 return 12;
 
 #define weapon_text
-return "replace me please";
+return choose("SO STRANGE", "SO STRONG", "SO... GREEN");
 
 #define weapon_fire
 weapon_post(15,14,20)

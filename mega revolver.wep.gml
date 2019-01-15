@@ -30,7 +30,7 @@ return 0;
 return 14;
 
 #define weapon_text
-return "replace me please"
+return "TOO BIG FOR THE HOLSTER"
 
 #define weapon_fire
 weapon_post(7,0,28)

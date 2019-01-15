@@ -27,7 +27,7 @@ return sndSwapExplosive;
 return 12;
 
 #define weapon_text
-return "replace me please";
+return "CALLING IN A STRIKE";
 
 #define weapon_fire
 sound_play(snd_lowa)
