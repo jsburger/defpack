@@ -38,17 +38,19 @@ return "BLESS WALLS";
 var _strtsize = 100-skill_get(13)*15;
 var _endsize  = 72;
 with mod_script_call("mod","defpack tools","create_abris",self,100,72,argument0){
-sound_set_track_position(sndVanWarning,1.2)
-accspeed = 1.04
-payload = script_ref_create(pop)
-on_draw = abris_draw_super
-image_speed = .55
+    sound_set_track_position(sndVanWarning,1.2)
+    accspeed = 1.04
+    payload = script_ref_create(pop)
+    damage = 10
+    maxdamage = 26
+    on_draw = abris_draw_super
+    image_speed = .55
 }
 //nonono this isnt working no no no
 sound_play_pitch(sndSniperTarget,exp((_strtsize-_endsize)/room_speed/current_time_scale/accuracy*(1.07))/12)
 
 #define pop
-sound_set_track_position(sndVanWarning,0.1)
+sound_set_track_position(sndVanWarning,0)
 sound_play_pitch(sndVanWarning,1000)
 sound_play_pitch(sndGrenadeShotgun,random_range(.5,.8))
 sound_play_pitch(sndGrenadeRifle,random_range(.5,.8))

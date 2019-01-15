@@ -40,11 +40,6 @@ sound_play_pitch(sndSniperTarget,1/accuracy+1.5)
 if ammo[4] >= 2 || infammo != 0
 {
 	if infammo = 0 ammo[4] -= 2
-	cost = 1
-	with mod_script_call("mod","defpack tools","create_abris",self,_strtsize,_endsize,argument0){
-		accspeed = 1.33
-		payload = script_ref_create(pop)
-	}
 }
 else
 {
@@ -57,13 +52,16 @@ else
 	sound_play(snd_hurt);
 	sound_play(sndBloodLauncher)
 	sound_play(sndBloodLauncherExplo)
-	cost = 1
-	with mod_script_call("mod","defpack tools","create_abris",self,_strtsize,_endsize,argument0){
-		with creator weapon_post(5,12,45)
-		accspeed = 1.33
-		payload = script_ref_create(pop)
-	}
 }
+with mod_script_call("mod","defpack tools","create_abris",self,_strtsize,_endsize,argument0){
+	with creator weapon_post(5,12,45)
+	accspeed = 1.33
+	cost = 2
+	damage = 2
+    maxdamage = 6
+	payload = script_ref_create(pop)
+}
+
 
 #define pop
 with instance_create(x,y,BloodStreak){image_angle = other.creator.gunangle}

@@ -41,6 +41,8 @@ with mod_script_call("mod","defpack tools","create_abris",self,_strtsize,_endsiz
 	accspeed = 1.2
 	payload = script_ref_create(pop)
 	auto = 1
+	damage = 3
+	maxdamage = 7
 }
 sound_play_pitch(sndSniperTarget,1/accuracy+3)
 

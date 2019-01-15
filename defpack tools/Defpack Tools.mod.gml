@@ -931,6 +931,8 @@ with a{
 	accspeed = 1.2
 	accset = false
 	//other things
+	damage = 2
+	maxdamage = 8
 	wep = weapon
 	check = 0 //the button it checks, 0 is undecided, 1 is fire, 2 is specs, should only be 0 on creation, never step
 	popped = 0
@@ -1028,7 +1030,7 @@ if instance_exists(creator){
 		}else{
 			creator.breload = weapon_get_load(creator.bwep)
 		}
-		acc/= 1+((accspeed - 1)*timescale)
+		acc /= 1+((accspeed - 1)*timescale)
 		if index <= 3{var _xx = mouse_x[index];var _yy = mouse_y[index]}else{var _xx = index.x;var _yy = index.y}
 		if collision_line(x,y,_xx,_yy,Wall,0,0) >= 0{
 			if acc < accbase{acc += abs(creator.accuracy*3)}else{acc = accbase;lasercolour=c_white}
@@ -1049,6 +1051,23 @@ if instance_exists(creator){
 				explo_y = _yy
 			}
 			if fork(){
+			    with instance_create(explo_x, explo_y, CustomProjectile){
+			        sprite_index = sprGammaBlast
+			        image_alpha = 0
+			        team = other.creator.team
+			        var size = 2 * (other.acc+other.accmin)/(sprite_width)
+			        damage = ceil(other.damage + (other.maxdamage - other.damage)*(1 - (other.acc/other.accbase)))
+			        image_xscale = size
+			        image_yscale = size
+			        on_wall = nothing
+			        on_hit = abris_hit
+			        if fork(){
+			            wait(0)
+			            if !instance_exists(self) exit
+			            instance_destroy()
+			            exit
+			        }
+			    }
 				on_destroy = payload
 				instance_destroy()
 				exit
@@ -1057,6 +1076,9 @@ if instance_exists(creator){
 	}
 }
 else{instance_destroy()}
+
+#define abris_hit
+projectile_hit(other,damage,0,0)
 
 #define abris_draw
 if instance_exists(creator) && check{
