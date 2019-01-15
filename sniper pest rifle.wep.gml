@@ -42,7 +42,7 @@ return -1;
 return -1;
 
 #define weapon_text
-return choose("replace me please");
+return choose("@gGreen @sLINES");
 
 #define weapon_fire
 

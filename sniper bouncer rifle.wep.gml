@@ -39,7 +39,7 @@ weapon_post(-3,0,3)
 return -1;
 
 #define weapon_text
-return choose("replace me please");
+return choose("BEWARE THE RICOCHET");
 
 #define weapon_fire
 
