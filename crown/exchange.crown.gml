@@ -46,7 +46,7 @@ with Player
 	if "meleeammo" not in self meleeammo = 4
 	var _w = weapon_get_type(wep);
 	var _c = weapon_get_cost(wep);
-	if ammo[_w] < _c || (_w = 0 && meleeammo <= 0) || (_c == 0 and ammo[_w] == 0)
+	if ammo[_w] < _c || (_w = 0 && meleeammo <= 0) || (_c == 0 and ammo[_w] == 0) or GameCont.rad < weapon_get_rads(wep)
 	{
 		wep = determine_wep()
 		reload = 1
@@ -75,7 +75,7 @@ with Player
     	if "bmeleeammo" not in self bmeleeammo = 4
     	var _w = weapon_get_type(bwep);
     	var _c = weapon_get_cost(bwep);
-    	if ammo[_w] < _c || (_w = 0 && bmeleeammo <= 0) || (_c == 0 and ammo[_w] == 0)
+    	if ammo[_w] < _c || (_w = 0 && bmeleeammo <= 0) || (_c == 0 and ammo[_w] == 0) or GameCont.rad < weapon_get_rads(bwep)
     	{
     		bwep = determine_wep()
     		breload = 1
