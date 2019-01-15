@@ -57,11 +57,13 @@ with Pickup
   if distance_to_object(other) <= 4 && ("rang" not in self || ("rang" in self && rang != other.id)){rang = other.id}
   if "rang" in self{if instance_exists(rang){x = rang.x;y = rang.y}}
 }
-with instances_matching([AmmoChest, RadChest, WeaponChest, RogueChest, GoldChest], "rang", null, id)
+with instances_matching([AmmoChest, RadChest, WeaponChest, RogueChest, GoldChest], "", null)
 {
   if distance_to_object(other) <= 4 && ("rang" not in self || ("rang" in self && rang != other.id)){rang = other.id}
-  x = rang.x
-  y = rang.y
+  if "rang" in self and instance_exists(rang){
+      x = rang.x
+      y = rang.y
+  }
 }
 with instances_matching_ne(hitme,"team",team)
 {

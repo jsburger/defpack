@@ -17,7 +17,7 @@
 /loadwep finished stuff/sticky disc gun
 /loadwep mega disc gun
 /loadwep record dealer
-
+/loadwep disc spam gun
 
 //BOWS
 /loadwep bow

@@ -2,7 +2,7 @@
     global.bonusparticles = 0
     mod_script_call("mod","defpermissions","permission_register","mod",mod_current,"bonusparticles","Extra Particles")
     global.particlelimit = 0
-    mod_script_call("mod","defpermissions","permission_register_range","mod",mod_current,"particlelimit","Particle Limit",0,200)
+    mod_script_call("mod","defpermissions","permission_register_range","mod",mod_current,"particlelimit","Particle Limit",[0, 200],["No Limit", "200"])
 
 #macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)
 

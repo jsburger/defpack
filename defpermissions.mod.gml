@@ -481,7 +481,7 @@ for (var i = 0; i < maxp; i++) if player_is_active(i){
                 }
                 if mouse{
                     if u != 1 and mousex < sleft - 2{
-                        draw_tooltip(sleft - sheight*3/4, sy, "Delete " + global.palettes[u].name)
+                        draw_tooltip(round(sleft - sheight*3/4), sy, "Delete " + global.palettes[u].name)
                         if released {
                             global.palettes = array_clone(array_index_delete(global.palettes, u))
                             if u == global.palettes[0] global.palettes[0] = 1
@@ -501,7 +501,7 @@ for (var i = 0; i < maxp; i++) if player_is_active(i){
                         }
                     }*/
                     else{
-                        draw_tooltip(sleft + sheight/2, sy, "Load "+pal.name)
+                        draw_tooltip(round(sleft + sheight/2), sy, "Load "+pal.name)
                         if released{
                             global.palettes[0] = u
                             edit.selected = 0
@@ -521,7 +521,7 @@ for (var i = 0; i < maxp; i++) if player_is_active(i){
                 draw_text_c(sleft + 7, sy + 2, "+", c_white)
                 //draw_rectangle_co(sleft, sy, sleft + sheight, sy + sheight, c_black)
                 if mouse{
-                    draw_tooltip(sleft + sheight/2, sy, "Create new palette")
+                    draw_tooltip(round(sleft + sheight/2), sy, "Create new palette")
                     if released{
                         array_push(global.palettes,lq_clone(global.editingpalette))
                         global.palettes[0] = u
@@ -644,7 +644,7 @@ for (var i = 0; i < maxp; i++) if player_is_active(i){
             }
             //bar style permissions
             else if typ = 1{
-                var mn = global.stuff[h+o][6], mx = global.stuff[h+o][7];
+                var mn = global.stuff[h+o][6][0], mx = global.stuff[h+o][6][1];
                 //bar padding, bar width, bar x start, bar ystart, bar height, bar x end
                 var pd = 2, bw = cw - 2*pd - 10, bx = _x + 2, by = _y4 - 6, bh = 7, bxe = bx + bw * ((v - mn)/(mx - mn))
                 var r = mx - mn
@@ -655,7 +655,10 @@ for (var i = 0; i < maxp; i++) if player_is_active(i){
                 draw_line_width_color(bxe, by+1, bxe+3, by+1, bh + 2, c_black, c_black)
                 draw_line_width_color(bxe, by, bxe+2, by, bh + 2, p.bartip, p.bartip)
                 draw_set_halign(1)
-                draw_text_c(bx + bw/2, by - 5, string(v), p.bartext)
+                var tex = string(v)
+                if v == global.stuff[h+o][6][0] tex = global.stuff[h+o][7][0]
+                if v == global.stuff[h+o][6][1] tex = global.stuff[h+o][7][1]
+                draw_text_c(bx + bw/2, by - 5, tex, p.bartext)
                 draw_set_halign(0)
                 if mouse && check && !global.wasscrolling[i]{
                     var a = array_clone(global.stuff[h+o]);

@@ -64,7 +64,7 @@ global.sprMegaDiscBounce = sprite_add("sprMegaDiscBounce.png",4,12,12);
 global.sprCharge = sprite_add("sprHoldIcon.png",0,5,5)
 
 global.SAKmode = 0
-mod_script_call("mod","defpermissions","permission_register","mod",mod_current,"SAKmode","SAK Mode")
+//mod_script_call("mod","defpermissions","permission_register","mod",mod_current,"SAKmode","SAK Mode")
 
 global.sprShard      = sprite_add_weapon("sprShard.png",0,3);
 global.sprGlassShard = sprite_add("sprGlassShard.png",5,4,4)
@@ -84,6 +84,20 @@ global.lightningformat = vertex_format_end()
 
 //thanks yokin
 #macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)
+
+#define chat_command(cmd,arg,ind)
+if cmd = "sakcity"{
+    global.SAKmode = !global.SAKmode
+    if global.SAKmode{
+        trace_color("You just took a one way ticket to SAK CITY, BABY", c_gray)
+        trace_color("(Weapons become randomly generated shotguns)", c_gray)
+    }
+    else{
+        trace_color("Evidently the ticket wasn't one way.", c_gray)
+        trace_color("(Weapon drops are restored)", c_gray)
+    }
+    return 1
+}
 
 #define cleanup
 with global.traildrawer instance_destroy()
