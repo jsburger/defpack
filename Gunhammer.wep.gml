@@ -46,7 +46,7 @@ with instance_create(x,y,Slash){
 	if r = true
 	{
 		sprite_index = global.sprGunhammerSlash
-		damage = 20
+		damage = 15
 		force = 15
 	}else{
 		sprite_index = sprHeavySlash

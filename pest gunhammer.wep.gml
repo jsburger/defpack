@@ -57,7 +57,7 @@ with instance_create(x,y,Slash){
 	creator = other
 	repeat(4){
 		if other.ammo[1] >=1 {
-			damage = 20
+			damage = 15
 			force = 15
 			sound_play_pitchvol(sndSawedOffShotgun,.9*p,.7)
 			sound_play_pitchvol(sndDoubleShotgun,.8*p,.7)

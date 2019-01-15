@@ -57,7 +57,7 @@ for var i = -1; i <= 1; i++
 		lspeed = random_range(7,9)
 		team = other.team
 		creator = other
-		image_angle = ang-30*i*creator.accuracy
+		image_angle = ang-40*i*creator.accuracy
 		langle = image_angle
 		image_xscale = lspeed/2
 	}
@@ -69,7 +69,7 @@ return "pointy"
 #define create_psy_laser(_x,_y)
 var a = instance_create(_x,_y,CustomProjectile)
 with a{
-	loss = .08-skill_get(17)*.04
+	loss = .14-skill_get(17)*.04
 	pierce = 1
 	damage = 3
     langle = 0

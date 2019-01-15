@@ -74,7 +74,7 @@ repeat(1)
   {
     move_contact_solid(other.gunangle,6)
     name = "lightning orb"
-    damage = 5
+    damage = 2
     friction = .08
     sprite_index = global.sprUmbrellaOrb
     image_speed = .5

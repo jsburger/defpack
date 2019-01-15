@@ -55,7 +55,7 @@ with instance_create(x,y,Slash)
 		sound_play_pitchvol(sndTripleMachinegun,.8*p,.7)
 		sound_play_pitchvol(sndLightningHammer,.8*p,.7)
 		sprite_index = global.sprThunderGunhammerSlash
-		damage = 20
+		damage = 15
 		force = 15
 	}
 	else{sound_play_pitch(sndHammer,random_range(.97,1.03))}
