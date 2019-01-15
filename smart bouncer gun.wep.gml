@@ -26,7 +26,7 @@ return sndSwapMachinegun;
 return -1;
 
 #define weapon_text
-return "replace me please";
+return "DIVERGENCY IS NOT PERMITTED";
 
 #define weapon_fire
 var ang = point_direction(x,y,mouse_x[index],mouse_y[index]);

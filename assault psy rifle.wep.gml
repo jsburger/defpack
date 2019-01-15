@@ -26,7 +26,7 @@ return sndSwapMachinegun;
 return -1;
 
 #define weapon_text
-return "YOU, YOU, AND YOU";
+return "NO ESCAPE";
 
 #define weapon_fire
 

@@ -26,7 +26,7 @@ return sndSwapMachinegun;
 return -1;
 
 #define weapon_text
-return "replace me please";
+return "KEEP THE CLOUDS AWAY";
 
 #define weapon_fire
 

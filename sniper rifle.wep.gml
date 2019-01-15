@@ -40,7 +40,7 @@ return -1;
 return 9;
 
 #define weapon_text
-return choose("replace me please");
+return choose("ONE SHOT");
 
 #define weapon_fire
 

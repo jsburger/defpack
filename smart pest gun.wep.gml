@@ -26,7 +26,7 @@ return sndSwapMachinegun;
 return -1;
 
 #define weapon_text
-return "HIGH ACCURACY SPRAY";
+return "thoughts of @gregret";
 
 #define weapon_fire
 var ang = point_direction(x,y,mouse_x[index],mouse_y[index]);
