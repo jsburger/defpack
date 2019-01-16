@@ -1023,7 +1023,7 @@ switch creator.race{
 if instance_exists(creator){
   var timescale = (mod_variable_get("weapon", "stopwatch", "slowed") == 1) ? 30/room_speed : current_time_scale;
   var _a = accbase/accmin
-  with creator weapon_post(_a,5*_a,0)
+  with creator weapon_post(_a,5*_a*current_time_scale,0)
 	if check = 0{
 		abris_check()
 	}

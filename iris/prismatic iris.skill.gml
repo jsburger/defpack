@@ -302,7 +302,7 @@ else{
     }
 }
 str = reverse(str)
-if (mod_exists("weapon",str)) && str != weapon_find(wp){
+if (is_real(str) || mod_exists("weapon",str)) && str != weapon_find(wp){
     if is_object(wp){
         weapon_set(wp,str)
     }

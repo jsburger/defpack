@@ -91,6 +91,10 @@ if instance_exists(creator)
 	y = creator.y+creator.vspeed + lengthdir_y(26,creator.gunangle)
 	image_angle = creator.gunangle
 }
+else {
+    instance_destroy()
+    exit
+}
 xprevious = x
 yprevious = y
 ammo -= current_time_scale;

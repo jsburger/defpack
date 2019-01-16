@@ -80,7 +80,7 @@ with instance_create(x,y,CustomObject){
     creator = other.creator
     on_step = spacestep
     on_destroy = spacedestroy
-    alarm0 = 30
+    timer = 30
     wantobject = -1
     name = "Andromeda Pool"
 }
@@ -98,9 +98,9 @@ draw_set_alpha(1)
 
 #define spacestep
 succ += (wantsucc - succ)*current_time_scale/3
-if alarm0 > 0 alarm0 -= current_time_scale
-if alarm0 <= 0{
-    alarm0 = -1
+if timer > 0 timer -= current_time_scale
+if timer <= 0{
+    timer = -1
     wantsucc = 0
 }
 
@@ -174,9 +174,11 @@ with instances_in(x-succ,y-succ/2,x+succ,y+succ/2,instances_matching_ne([hitme,C
                 }
                 if instance_is(self,enemy) || instance_is(self,becomenemy){
                     if instance_is(self, Salamander) sound_stop(sndSalamanderFireLoop)
-                    if instance_number(enemy) + instance_number(becomenemy) - instance_number(WantVan) - instance_number(Van) <= 1 and !instance_exists(Portal){
+                    instance_delete(self)
+                    if instance_number(enemy) + instance_number(becomenemy) - instance_number(WantBoss) - instance_number(WantVan) - instance_number(Van) < 1 and !instance_exists(Portal){
                         other.wantobject = Portal
                     }
+                    continue
                 }
             }
         }
@@ -194,7 +196,7 @@ else if wantobject > 0 instance_create(x,y,wantobject)
 draw_sprite_part(sprite,current_frame *.4 mod frames,0,0,drawsize,clamp(drawsize+fall-height,0,drawsize),x-xoff,y-fall-height)
 
 #define victimstep
-with creator alarm0 = max(creator.alarm0,10)
+with creator timer = max(timer,10)
 fall += fallspeed*current_time_scale
 fallspeed -= current_time_scale
 if fall < -height instance_destroy()

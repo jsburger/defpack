@@ -49,17 +49,18 @@ with Player
 	if ammo[_w] < _c || (_w = 0 && meleeammo <= 0) || (_c == 0 and ammo[_w] == 0) or GameCont.rad < weapon_get_rads(wep)
 	{
 		wep = determine_wep()
+		if skill_get("prismatic iris") > 0 mod_script_call_self("skill", "prismatic iris", "color", wep, mod_variable_get("skill", "prismatic iris", "color"))
 		reload = 1
 		if weapon_get_type(wep) != 0
 		{
-			meleeammo = 6
+			meleeammo = 12
 			ammo[weapon_get_type(wep)] += max(2*typ_ammo[weapon_get_type(wep)], 2*weapon_get_cost(wep))
 		}
 		else
 		{
 			if meleeammo <= 0
 			{
-				meleeammo = 6
+				meleeammo = 12
 				wep = determine_wep()
 			}
 		}
@@ -79,16 +80,25 @@ with Player
     	{
     		bwep = determine_wep()
     		breload = 1
+			if skill_get("prismatic iris") > 0{
+			    var w = wep
+			    var q = mod_script_call_self("skill", "prismatic iris", "color", bwep, mod_variable_get("skill", "prismatic iris", "color"))
+			    if q{
+			        bwep = wep;
+			        wep = w
+			    }
+			}
+			
     		if weapon_get_type(bwep) != 0
     		{
-    			bmeleeammo = 6
+    			bmeleeammo = 12
     			ammo[weapon_get_type(bwep)] += max(typ_ammo[weapon_get_type(bwep)], 2*weapon_get_cost(bwep))
     		}
     		else
     		{
     			if bmeleeammo <= 0
     			{
-    				bmeleeammo = 6
+    				bmeleeammo = 12
     				bwep = determine_wep()
     			}
     		}
@@ -165,8 +175,19 @@ var _i = 0
 var _l = ds_list_create();
 var dif = GameCont.areanum + 2*array_length(instances_matching(Player,"race","robot"))
 weapon_get_list(_l, clamp(dif - 2, 0, 8), dif + 1);
-ds_list_shuffle(_l);
-_i = ds_list_find_value(_l,1);
+if mod_variable_get("skill", "prismatic iris", "color") == 5{
+    var n = 0
+    ds_list_shuffle(_l);
+    _i = ds_list_find_value(_l,1);
+    while ds_list_size(_l) > 1 and weapon_get_type(_i) == 1{
+        ds_list_delete(_l, 1);
+        _i = ds_list_find_value(_l,1);
+    }
+}
+else{
+    ds_list_shuffle(_l);
+    _i = ds_list_find_value(_l,1);
+}
 ds_list_destroy(_l);
 return _i
 

@@ -63,17 +63,17 @@ if !timer
 {
 	maxspeed = 5
 	if random(100) <= 100*current_time_scale with instance_create(x- hspeed, y - vspeed, Flame){
-	image_xscale *= .75
-	image_yscale = image_xscale
-	sprite_index = sprFireLilHunter
-	team = other.team
-}
+    	image_xscale *= .75
+    	image_yscale = image_xscale
+    	sprite_index = sprFireLilHunter
+    	team = other.team
+    }
 }
 else{if random(100) <= 100*current_time_scale instance_create(x- hspeed, y - vspeed, Smoke)}
 var aa = 1;
 if timer {timer -= current_time_scale}
 if timer = 1{repeat(12){with instance_create(x+random_range(-12,12),y+random_range(-12,12),Smoke){depth = other.depth -3}}}
-if instance_exists(enemy) && !timer{
+if instance_exists(enemy) && !timer and instance_exists(creator){
 	friction = -.3
 	var closeboy = instance_nearest(mouse_x[creator.index],mouse_y[creator.index],enemy)
 	if _closeboy != closeboy{aimoffset = 60;if collision_line(x,y,closeboy.x,closeboy.y,Wall,0,0) = noone{sound_play_pitch(sndSniperTarget,2)}}
