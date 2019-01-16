@@ -230,7 +230,7 @@ with SodaMachine{
 	if fork(){
 	    var _x = x, _y = y
 	    wait(0)
-	    if !instance_exists(self) && instance_exists(Wall) && irandom(1)=0{
+	    if !instance_exists(self) && instance_exists(Wall){
     		with instance_create(_x,_y,WepPickup){
     		    if !irandom(99) wep = "soda popper"
     		    else{

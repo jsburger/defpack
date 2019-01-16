@@ -22,12 +22,14 @@ GENERAL CHANGES:
 		- Smart Gun
 		- Triple Machinegun
 		- Quadruple Machinegun
+		- Hyper Rifle
 		- Minigun
 		- Double Minigun
 	  - Defpack 4.0 guns:
 		- Bullet Cannon
 		- Bullak Cannon
 		- Sniper Rifle
+		- Gunhammer
 - Hold and charge:
 	- Some weapons have alternative bahaviours while holding the fire button. These guns have a designated
 	  "charging battery" symbol right next to their name.
@@ -80,7 +82,7 @@ WEAPON CHANGES:
 	- Decreased rad cost (from 12 -> 3).
 	- Increased rate of fire (from 3 -> 21).
 - SPAM Gun, Fire SPAM Gun and Ultra SPAM Gun:
-	- Sread is now affected by accuracy
+	- Spread is now affected by accuracy
 - Flak Shotgun:
 	- Fixed a bug where the projectile spread would be favoured towards the counter-clockwise direction a bit.
 - Gunhammer:

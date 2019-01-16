@@ -34,7 +34,7 @@ if instance_is(self, Player){
             yy += _y
         }
         until --n = 0 or collision_point(xx, yy, Wall, 0, 0)
-        draw_line_width_color(x, y, xx, yy, 1, c_purple, c_purple)
+        draw_line_width_color(x, y, xx, yy, 1, c_red, c_red)
         i++
     }
 }

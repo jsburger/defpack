@@ -59,6 +59,7 @@ global.palettes = [1 , lq_clone(p1)]
 
 global.sprButtons = sprite_add("sprites/sprButtons.png",6,5,1);
 global.sprButtonX = sprite_add("sprites/sprX.png",0,8,8);
+global.sprButtonO = sprite_add("sprites/sprO.png",0,8,8);
 global.sprArrow   = sprite_add("sprites/sprArrow.png",0,3,2);
 //trace(global.palettes)
 
@@ -173,11 +174,12 @@ if cmd = "pimport"{
         return 1
     }
     if fork(){
-        wait(file_load("data/defpermissions.mod/" + arg + ".pal.txt")+1)
-        if !file_exists("data/defpermissions.mod/" + arg + ".pal.txt") trace_color("Could not import palette! File "+arg+" could not be found!", c_red)
+        var e = arg + ".pal.txt"
+        wait(file_load(e)+1)
+        if !file_exists(e) trace_color("Could not import palette! File "+arg+" could not be found!", c_red)
         else{
-            array_push(global.palettes, palette_update(json_decode(string_load("data/defpermissions.mod/" + arg + ".pal.txt"))))
-            file_unload("data/defpermissions.mod/" + arg + ".pal.txt")
+            array_push(global.palettes, palette_update(json_decode(string_load(e))))
+            file_unload(e)
             trace_color("Successfully imported " + arg, c_lime)
         }
         exit
@@ -472,23 +474,30 @@ for (var i = 0; i < maxp; i++) if player_is_active(i){
                 var pal = global.palettes[u]
                 draw_rectangle_c(sleft + 1, sy + 1, sleft + sheight + 1, sy + sheight + 1, global.palettes[0] == u ? c_white : c_black)
                 draw_rectangle_c(sleft, sy, sleft + sheight, sy + sheight, mouse and mousex > sleft ? pal.cellhighlight : pal.cellcolor)
-                if u != 1 and mouse{
+                if mouse{
                     //RED X
+                    var spr = u = 1 ? global.sprButtonO : global.sprButtonX;
                     var xcol = (mouse and mousex < sleft - 2) ? c_white : c_ltgray
-                    draw_sprite_ext(global.sprButtonX,0,sleft-11,sy +2 + sheight/2,1,1,0,c_black,1)
-                    draw_sprite_ext(global.sprButtonX,0,sleft-12,sy +1 + sheight/2,1,1,0,xcol,1)
+                    draw_sprite_ext(spr,0,sleft-11,sy +2 + sheight/2,1,1,0,c_black,1)
+                    draw_sprite_ext(spr,0,sleft-12,sy +1 + sheight/2,1,1,0,xcol,1)
                     //draw_line_width_color(sleft - 4, sy +sheight - 2, sleft - sheight, sy + 2, 2, xcol, xcol)
                 }
                 if mouse{
-                    if u != 1 and mousex < sleft - 2{
-                        draw_tooltip(round(sleft - sheight*3/4), sy, "Delete " + global.palettes[u].name)
-                        if released {
+                    if mousex < sleft - 2{
+                        if u != 1 draw_tooltip(round(sleft - sheight*3/4), sy, "Delete " + global.palettes[u].name)
+                        else draw_tooltip(round(sleft - sheight*3/4), sy, "Reset " + global.palettes[u].name)
+                        if released and u != 1{
                             global.palettes = array_clone(array_index_delete(global.palettes, u))
                             if u == global.palettes[0] global.palettes[0] = 1
                             else if u < global.palettes[0] global.palettes[0]--
                             edit.selected = 0
                             click(1)
                             //break
+                        }
+                        if released and u = 1{
+                            click(1)
+                            global.palettes[1] = lq_clone(global.editingpalette)
+                            edit.selected = 0
                         }
                     }
                     /*else if u != 1 and mousex < sleft{
