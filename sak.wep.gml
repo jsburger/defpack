@@ -420,7 +420,7 @@ a[? "shot cannon"] = "shoot a projectile that disperses others"
 global.stats = ds_map_create()
 var a = global.stats
 
-//[ammo*, reload*, sound, rads]
+//[ammo*, reload*, sound, rads*]
 //based off of firing a shotgun of said type (the cost of 7 projectiles)
 a[? "shell"] = [1, 1, sndShotgun, 0]
 a[? "slug"] = [7, 2, sndSlugger, 0]
@@ -429,7 +429,7 @@ a[? "flame shell"] = [1, 1.2, sndFireShotgun, 0]
 a[? "ultra shell"] = [3, .7, sndUltraShotgun, 9]
 a[? "psy shell"] = [2, 1.3, sndShotgun, 0]
 a[? "split shell"] = [2.8, 1.2, sndShotgun, 0]
-a[? "split slug"] = [5.5, 1.2, sndSlugger, 0]
+a[? "split slug"] = [5.6, 1.2, sndSlugger, 0]
 
 //[ammo*, reload base, sound]
 a[? "shotgun"] = [1, 17, sndShotgun]
@@ -444,7 +444,7 @@ a[? "double"] = [2, 1.6, sndDoubleShotgun]
 a[? "sawed-off"] = [2, 1.6, sndSawedOffShotgun]
 a[? "auto"] = [1, .2, sndPopgun]
 a[? "assault"] = [3, 2, -1]
-a[? "hyper"] = [1, 1, sndHyperSlugger]
+a[? "hyper"] = [1.2, 1, sndHyperSlugger]
 a[? "none"] = [1, 1, -1]
 a[? "bird"] = [1, 1.2, -1]
 a[? "wave"] = [1, 1.2, sndWaveGun]
@@ -458,14 +458,13 @@ a[? "gatling"] = [1, .3, -1]
 w.sounds = [sndWaveGun]
 #define take_pop_gun(w)
 w.type = 1
-w.rads = floor(w.rads/7)
+w.rads = ceil(w.rads/7)
 w.auto = 1
 #define take_assault(w)
 w.shots = 3
 w.time = 3
 #define take_rifle(w)
 w.shots = 3
-w.rads = floor(w.rads/7)
 w.auto = 1
 w.time = 2
 #define take_auto(w)
@@ -540,9 +539,14 @@ if is_object(w){
 		}
 	}
 }else{
-	wep = wep_shotgun
-	player_fire()
-	wep = w
+    sound_play_gun(sndShotgun,.1,.8)
+    repeat(7){
+        with instance_create(x,y,Shell){
+            motion_set(other.gunangle + random_range(-20,20), 12 + random(4))
+            projectile_init(other.team,other)
+            image_angle = direction
+        }
+    }
 }
 
 #define pop_gun(p,m)
@@ -638,7 +642,7 @@ switch m{
 		break
 	default:
 		with proj(p){
-			set(5)
+			set(m == "auto" ? 8 : 5)
 			if m = "hyper" hyper_travel()
 		}
 		break
@@ -658,6 +662,7 @@ switch m{
 		break
 	default:
 		with flak(p){
+		    if m == "auto" ammo -= 3
 			set(3)
 			speed = random_range(11,13)
 			if m = "hyper"{
@@ -675,6 +680,18 @@ switch m{
         with supershotcannon(p){
             set(0)
             speed = 12 + random(1)
+        }
+        break
+    case "auto":
+		sound_play_pitchvol(sndFlakExplode,random_range(.4,.7),.7)
+		sound_play_pitchvol(sndDoubleShotgun,1.4,7)
+        with shotcannon(p){
+            set(2)
+            timer -= 2
+            speed = 14 + random(2)
+            if m = "hyper"{
+                hyper = 1
+            }
         }
         break
     default:
@@ -1035,17 +1052,9 @@ draw_set_blend_mode(bm_normal);
 
 #define hyper_travel
 damage = floor(damage*1.1)
-var psy = 0
-if "name" in self and self.name = "Psy Shell" psy = 1
 var xl = lengthdir_x(8, direction), yl = lengthdir_y(8, direction);
 var dir = 100
 do {
-    if psy{
-        mod_script_call_self(on_step[0], on_step[1], on_step[2])
-        if !instance_exists(self) exit
-        xl = lengthdir_x(speed/3, direction);
-        yl = lengthdir_y(speed/3, direction);
-    }
     var man = instance_place(x, y, hitme);
     x += xl
     y += yl
@@ -1091,36 +1100,46 @@ with instances_matching_ne(projectile,"birdspeed",null){
 	image_angle = direction
 }
 
+#define draw_text_ext_shadow(x, y, str, sep, width)
+draw_set_color(c_black)
+draw_text_ext(x + 1, y + 1, str, sep, width)
+draw_text_ext(x + 1, y, str, sep, width)
+draw_text_ext(x, y + 1, str, sep, width)
+draw_set_color(c_white)
+draw_text_ext(x, y, str, sep, width)
+
+#define get_blank()
+return {
+	wep: mod_current,
+	ammo: 1,
+	type: 2,
+	load: 1,
+	shots: 1,
+	sounds: [],
+	rads: 0,
+	sprite: sprShotgun,
+	auto: 0,
+	time: 0,
+	info: [-1,0,0],
+	numbers: [0,0,0],
+	name: "Custom Shotgun!",
+	phase: 0,
+	done: 0
+}
+
 #define step(q)
-if q && !is_object(wep){
-	wep = {
-		wep: mod_current,
-		ammo: 1,
-		type: 2,
-		load: 1,
-		shots: 1,
-		sounds: [],
-		rads: 0,
-		sprite: sprShotgun,
-		auto: 0,
-		time: 0,
-		info: [-1,0,0],
-		numbers: [0,0,0],
-		name: "Custom Shotgun!",
-		phase: 0,
-		done: 0
-	}
+if q && (!is_object(wep) || button_pressed(index, "horn")){
+	wep = get_blank()
 }
 if q && is_object(wep) && wep.wep = mod_current && !wep.done{
     script_bind_draw(makemycoolgun, -17, index, wep)
 }
 
-
 #define stats(w)
 var sts = global.stats;
 w.load = floor(sts[? w.info[2]][1] * sts[? w.info[1]][1] * sts[? w.info[3]][1])
 w.ammo = floor(sts[? w.info[2]][0] * sts[? w.info[1]][0] * sts[? w.info[3]][0])
-w.rads = sts[? w.info[1]][3]
+w.rads = floor(sts[? w.info[1]][3] * sts[? w.info[2]][0])
 for (var i = 1; i<= 3; i++){
 	array_push(w.sounds,sts[? w.info[i]][2])
 	if mod_script_exists("weapon", mod_current, "take_"+string_replace(w.info[i]," ","_")) mod_script_call("weapon", mod_current, "take_"+string_replace(w.info[i]," ","_"),w)
@@ -1136,23 +1155,24 @@ with player_find(index){
     var w = wep
 	var tex = global.textmap;
 	var cho = global.choicemap;
+	var sts = global.stats;
 	var width = array_length_1d(cho[? w.info[w.phase]]);
 	var height = 50;
-	var _x 			= view_xview[index]+game_width/2 - width*gx/2;
-	var _X 			= view_xview[index]+game_width/2 + width*gx/2-3;
-	var _y 			= view_yview[index] + 50;
+	var _x 		= view_xview[index]+game_width/2 - width*gx/2;
+	var _X 		= view_xview[index]+game_width/2 + width*gx/2-3;
+	var _y 		= view_yview[index] + 50;
 	var _Yline1 = view_yview[index] + 75;
 	var _Yline2 = view_yview[index] + 53;
 
 	var _a_index = 0
 	switch w.info[1]
 	{
-		case "shell" 			  : _a_index = 1 break;
-		case "slug"  			  : _a_index = 2 break;
+		case "shell" 	    : _a_index = 1 break;
+		case "slug"  	    : _a_index = 2 break;
 		case "heavy slug"   : _a_index = 3 break;
 		case "flame shell"  : _a_index = 4 break;
 		case "ultra shell"  : _a_index = 5 break;
-		case "psy shell"	  : _a_index = 6 break;
+		case "psy shell"    : _a_index = 6 break;
 		case "split shell"  : _a_index = 7 break;
 		case "split slug"   : _a_index = 8 break;
 		default : _a_index = 0 break;
@@ -1160,8 +1180,8 @@ with player_find(index){
 	var _b_index = 0
 	switch w.info[2]
 	{
-		case "shotgun" 		 : _b_index = 1 break;
-		case "eraser"  		 : _b_index = 2 break;
+		case "shotgun" 	   : _b_index = 1 break;
+		case "eraser"  	   : _b_index = 2 break;
 		case "flak cannon" : _b_index = 3 break;
 		case "pop gun"     : _b_index = 4 break;
 		case "shot cannon" : _b_index = 5 break;
@@ -1224,8 +1244,8 @@ with player_find(index){
 				case "pop gun"		: _btn = global.sprmodsPopGun break;
 				case "slugger"		: _btn = global.sprmodsSlugger break;
 				case "eraser" 		: _btn = global.sprmodsEraser break;
-				case "flak cannon": _btn = global.sprmodsFlakCannon break;
-				case "shot cannon": _btn = global.sprmodsShotCannon break;
+				case "flak cannon"  : _btn = global.sprmodsFlakCannon break;
+				case "shot cannon"  : _btn = global.sprmodsShotCannon break;
 			}
 		}
 		if point_in_rectangle(mouse_x[index], mouse_y[index], x1, y1, x1 + 18, y1 + 18) || push
@@ -1254,13 +1274,18 @@ with player_find(index){
 			draw_text_nt(_x+1,y2+5,p+access)
 
 			draw_set_font(fntSmall)
-
-			draw_set_color(c_black)
-			draw_text_ext(_x+1,y2+17,tex[? access], 6, 22*width)
-			draw_text_ext(_x+2,y2+17,tex[? access], 6, 22*width)
-			draw_text_ext(_x+2,y2+16,tex[? access], 6, 22*width)
-			draw_set_color(c_white)
-			draw_text_ext(_x+1,y2+16,tex[? access], 6, 22*width)
+            
+            var rel = sts[? access][1]
+            var cost = sts[? access][0]
+            for var o = w.phase; o > 0; o--{
+                rel *= sts[? w.info[o]][1]
+                cost *= sts[? w.info[o]][0]
+            }
+            var t = tex[? access]
+            t += "#Reload: " + string(w.phase = 0 ? rel : floor(rel))
+            t += "#Cost: " + string(floor(cost))
+            
+            draw_text_ext_shadow(_x+1, y2+16, t, 6, 22*width)
 
 			draw_set_font(fntM)
 
@@ -1306,23 +1331,7 @@ draw_set_halign(1)
 w.sprite = global.gunmap[? w.name]
 
 #define make_gun_random
-var w = {
-	wep: mod_current,
-	ammo: 1,
-	type: 2,
-	load: 1,
-	shots: 1,
-	sounds: [],
-	rads: 0,
-	sprite: sprShotgun,
-	auto: 0,
-	time: 0,
-	info: [-1,0,0],
-	numbers: [0,0,0],
-	name: "Custom Shotgun!",
-	phase: 0,
-	done: 0
-}
+var w = get_blank()
 var cho = global.choicemap;
 for (var i = 0; i< 3; i+=0){
 	var n = irandom(array_length_1d(cho[? w.info[i]]) -1);
@@ -1334,6 +1343,13 @@ stats(w)
 name(w)
 sprite(w)
 return w
+
+#define multsum()
+var n = argument[0]
+for var i = 1; i < argument_count; i++{
+    n *= argument[i]
+}
+return floor(n)
 
 #define name(w)
 w.name = `${w.info[3]} ${w.info[1]} ${w.info[2]}`

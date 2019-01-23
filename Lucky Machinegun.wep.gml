@@ -75,7 +75,7 @@ if lucky{
     with creator{
         sound_play(sndLuckyShotProc)
         with instance_create(x,y,SteroidsTB) sprite_index = sprLuckyShot
-        var t = irandom_range(1,5), am = ceil(typ_ammo[t]/2);
+        var t = irandom_range(1,array_length(ammo)-1), am = ceil(typ_ammo[t]/2);
         ammo[t] = min(ammo[t] + am, typ_amax[t])
         with instance_create(x,y,PopupText){
             target = other.index

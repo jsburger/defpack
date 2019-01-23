@@ -2,8 +2,11 @@
 global.sprSniperPsyRifle = sprite_add_weapon("sprites/sprSniperPsyRifle.png", 5, 3);
 global.sprPsyBullet 		 = sprite_add("defpack tools/Psy Bullet.png", 2, 8, 8);
 global.sprPsyBulletHit   = sprite_add("defpack tools/Psy Bullet Hit.png", 4, 8, 8);
+global.epic = 1
+mod_script_call_nc("mod","defpermissions","permission_register","weapon",mod_current,"epic","Homing Psy Sights")
+
 #define weapon_name
-return "SNIPER PSY RIFLE"
+return "PSY SNIPER RIFLE"
 
 #define weapon_chrg
 return true;
@@ -27,6 +30,70 @@ return 20;
 return sndSwapMachinegun;
 
 #define weapon_laser_sight
+if global.epic{
+    with instance_create(x,y,CustomObject){
+        sprite_index = mskBullet2
+        image_angle = other.gunangle
+        direction = image_angle
+        team = other.direction
+        hyperspeed = 8
+        trailscale = 2
+        bangle = image_angle
+        lasthit = -4
+        image_yscale = .5
+        
+        var shields = instances_matching_ne([CrystalShield,PopoShield], "team", team),
+            slashes = instances_matching_ne([EnergySlash,Slash,EnemySlash,EnergyHammerSlash,BloodSlash,GuitarSlash], "team", team),
+            shanks = instances_matching_ne([Shank,EnergyShank], "team", team),
+            customslashes = instances_matching_ne(CustomSlash, "team", team),
+            olddirection = direction;
+        var dir = 0
+        do
+        {
+            var _x = x; var _y = y
+        	dir += hyperspeed
+        	x += lengthdir_x(hyperspeed,direction)
+        	y += lengthdir_y(hyperspeed,direction)
+        	olddirection = direction
+        	with shields {if place_meeting(x,y,other){other.team = team;other.direction = point_direction(x,y,other.x,other.y);other.image_angle = other.direction}}
+        	with slashes {if place_meeting(x,y,other){other.team = team;other.direction = direction ;other.image_angle = other.direction}}
+        	with shanks  {if place_meeting(x,y,other){with other{instance_destroy();exit}}}
+        	with customslashes {if place_meeting(x,y,other){mod_script_call_self(on_projectile[0],on_projectile[1],on_projectile[2]);}}
+        	if direction != olddirection{
+        	    bangle = direction
+                var shields = instances_matching_ne([CrystalShield,PopoShield], "team", team),
+                    slashes = instances_matching_ne([EnergySlash,Slash,EnemySlash,EnergyHammerSlash,BloodSlash,GuitarSlash], "team", team),
+                    shanks = instances_matching_ne([Shank,EnergyShank], "team", team),
+                    customslashes = instances_matching_ne(CustomSlash, "team", team);
+        	}
+    	    draw_line_width_color(x, y, _x, _y, 1, c_red, c_red)
+    
+        	var q = instance_nearest_matching_ne(x,y,hitme,"team",team);
+        	var reset = 1;
+            var cap = 3*hyperspeed;
+        	if instance_exists(q){
+        	    if !collision_line(x - lengthdir_x(hyperspeed,direction),y - lengthdir_y(hyperspeed,direction),q.x,q.y,Wall,1,1){
+                    var ang1 = point_direction(x,y,q.x,q.y),
+                        ang2 = angle_difference(direction,ang1);
+                    if abs(ang2) < 90{
+                        direction -= clamp(ang2,-cap,cap)
+                        reset = 0
+                    }
+        	    }
+        	}
+        	if reset{
+        	    direction -= clamp(angle_difference(direction,bangle),-cap,cap)
+        	}
+    
+        	if place_meeting(x,y,Wall){instance_destroy()}
+        }
+        while instance_exists(self) and dir < 500
+        if instance_exists(self)
+            instance_destroy()
+    
+    }
+    return false;
+}
 return true;
 
 #define weapon_reloaded
@@ -86,9 +153,8 @@ if charge > 100
 if charged = 0
 {
 	if holdtime >= 60 {var _m = 5}else{var _m = 3}
-  if current_frame mod _m < current_time_scale creator.gunshine = 1
-	with creator with instance_create(x,y,Dust)
-	{
+    if current_frame mod _m < current_time_scale creator.gunshine = 1
+	with creator with instance_create(x,y,Dust){
 		motion_add(random(360),random_range(2,3))
 	}
 	holdtime -= timescale
@@ -132,7 +198,6 @@ if button_check(index, btn) = false || holdtime <= 0
 				dir = 0
 				dd = 0
 				recycleset = 0
-				if irandom(2)=0 recycleset = 1
 				image_angle = other.gunangle
 				direction = other.gunangle
 				bangle = direction
@@ -162,17 +227,32 @@ for (var i=0; i<maxp; i++){player_set_show_cursor(index,i,1)}
 
 #define sniper_step
 var trails = [];
+var shields = instances_matching_ne([CrystalShield,PopoShield], "team", team),
+    slashes = instances_matching_ne([EnergySlash,Slash,EnemySlash,EnergyHammerSlash,BloodSlash,GuitarSlash], "team", team),
+    shanks = instances_matching_ne([Shank,EnergyShank], "team", team),
+    customslashes = instances_matching_ne(CustomSlash, "team", team),
+    enemies = instances_matching_ne(hitme, "team", team),
+    olddirection = direction;
+
 do
 {
 	dir += hyperspeed
 	x += lengthdir_x(hyperspeed,direction)
 	y += lengthdir_y(hyperspeed,direction)
-	//redoing reflection code since the collision event of the reflecters doesnt work in substeps (still needs slash reflection)
-	with instances_matching_ne([CrystalShield,PopoShield], "team", team){if place_meeting(x,y,other){other.team = team;other.direction = point_direction(x,y,other.x,other.y);other.image_angle = other.direction;with instance_create(other.x,other.y,Deflect){image_angle = other.direction;sound_play_pitch(sndCrystalRicochet,random_range(.9,1.1))}}}
-	with instances_matching_ne([EnergySlash,Slash,EnemySlash,EnergyHammerSlash,BloodSlash,GuitarSlash], "team", team){if place_meeting(x,y,other){other.team = team;other.direction = direction ;other.image_angle = other.direction}}
-	with instances_matching_ne([Shank,EnergyShank], "team", team){if place_meeting(x,y,other){with other{instance_destroy();exit}}}
-	with instances_matching_ne(CustomSlash, "team", team){if place_meeting(x,y,other){mod_script_call(on_projectile[0],on_projectile[1],on_projectile[2]);}}
-	if dd > 0 dd -= hyperspeed
+	olddirection = direction
+	with shields {if place_meeting(x,y,other){other.team = team;other.direction = point_direction(x,y,other.x,other.y);other.image_angle = other.direction;with instance_create(other.x,other.y,Deflect){image_angle = other.direction;sound_play_pitch(sndCrystalRicochet,random_range(.9,1.1))}}}
+	with slashes {if place_meeting(x,y,other){other.team = team;other.direction = direction ;other.image_angle = other.direction}}
+	with shanks  {if place_meeting(x,y,other){with other{instance_destroy();exit}}}
+	with customslashes {if place_meeting(x,y,other){mod_script_call_self(on_projectile[0],on_projectile[1],on_projectile[2]);}}
+	if direction != olddirection{
+	    bangle = direction
+        var shields = instances_matching_ne([CrystalShield,PopoShield], "team", team),
+            slashes = instances_matching_ne([EnergySlash,Slash,EnemySlash,EnergyHammerSlash,BloodSlash,GuitarSlash], "team", team),
+            shanks = instances_matching_ne([Shank,EnergyShank], "team", team),
+            customslashes = instances_matching_ne(CustomSlash, "team", team),
+            enemies = instances_matching_ne(hitme, "team", team);
+	}
+	
 	var q = instance_nearest_matching_ne(x,y,hitme,"team",team);
 	var reset = 1;
     var cap = 3*hyperspeed;
@@ -197,25 +277,19 @@ do
 	    array_push(trails,id)
 	}
 
-	with instances_matching_ne(hitme, "team", team)
-	{
-		if distance_to_object(other) <= other.trailscale * 3
-		{
-			if other.lasthit != self
-			{
-				with other
-				{
-				    projectile_hit(other,damage,force,direction)
-					lasthit = other
-					view_shake_at(x,y,12)
-					sleep(20)
-					if skill_get(16) = true && recycleset = 0{
-					    recycleset = 1;
-					    instance_create(creator.x,creator.y,RecycleGland);
-					    sound_play(sndRecGlandProc);
-					    creator.ammo[1] = min(creator.ammo[1] + weapon_cost(), creator.typ_amax[1])
-				    }
-				}
+	with enemies{
+		if mask_index != mskNone and distance_to_object(other) <= other.trailscale * 3 and other.lasthit != id{
+			with other{
+                projectile_hit(other,damage,force,direction)
+                lasthit = other
+                view_shake_at(x,y,12)
+                sleep(20)
+                if skill_get(16) = true && recycleset < weapon_cost() and !irandom(1){
+				    recycleset += 3;
+				    instance_create(x,y,RecycleGland);
+				    sound_play(sndRecGlandProc);
+				    creator.ammo[1] = min(creator.ammo[1] + 3, creator.typ_amax[1])
+			    }
 			}
 		}
 	}
@@ -238,13 +312,13 @@ var num = instance_number(obj),
     mans = [],
     n = 0,
     found = -4;
-if instance_exists(man){
-    while ++n <= num && variable_instance_get(man,varname) = value || instance_is(man,prop){
+if instance_exists(obj){
+    while ++n <= num && variable_instance_get(man,varname) = value || (instance_is(man,prop) && !instance_is(man,Generator)){
         man.x += 10000
         array_push(mans,man)
         man = instance_nearest(_x,_y,obj)
     }
-    if variable_instance_get(man,varname) != value && !instance_is(man,prop) found = man
+    if variable_instance_get(man,varname) != value && (!instance_is(man,prop) || instance_is(man,Generator)) found = man
     with mans x-= 10000
 }
 return found

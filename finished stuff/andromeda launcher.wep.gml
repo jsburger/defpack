@@ -82,6 +82,7 @@ with instance_create(x,y,CustomObject){
     on_destroy = spacedestroy
     timer = 30
     wantobject = -1
+    hit = 0
     name = "Andromeda Pool"
 }
 instance_destroy()
@@ -141,6 +142,7 @@ var me = id;
 with instances_in(x-succ,y-succ/2,x+succ,y+succ/2,instances_matching_ne([hitme,Corpse],"team",team)){
     //thank you stackexchange for teaching me ellipse math
     if (sqr(x - other.x))/sqr(other.succ) + (sqr(y-other.y))/sqr(other.succ/2) <= 1{
+        other.hit = 1
         with instance_create(x,y,CustomObject){
             sprite = other.sprite_index
             creator = me
@@ -191,6 +193,7 @@ if succ < .5  && wantsucc = 0 instance_destroy()
 #define spacedestroy
 if wantobject = SitDown with instance_create(x,y,wantobject){with instance_create(x,y,CustomObject){sprite_index = sprChair;image_speed = 0}}
 else if wantobject > 0 instance_create(x,y,wantobject)
+else if hit and instance_number(enemy) + instance_number(becomenemy) - instance_number(WantVan) - instance_number(Van) <= 0 and !instance_exists(Portal) and !instance_exists(Carpet) and !instance_exists(CrownPed) instance_create(x,y,Portal)
 
 #define victimdraw
 draw_sprite_part(sprite,current_frame *.4 mod frames,0,0,drawsize,clamp(drawsize+fall-height,0,drawsize),x-xoff,y-fall-height)

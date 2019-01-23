@@ -3,7 +3,7 @@ global.sprSniperPestRifle = sprite_add_weapon("sprites/sprSniperPestRifle.png", 
 global.sprToxicBullet 		= sprite_add("defpack tools/Toxic Bullet.png", 2, 8, 8)
 global.sprToxicBulletHit  = sprite_add("defpack tools/Toxic Bullet Hit.png", 4, 8, 8)
 #define weapon_name
-return "SNIPER PEST RIFLE"
+return "PEST SNIPER RIFLE"
 
 #define weapon_chrg
 return true;

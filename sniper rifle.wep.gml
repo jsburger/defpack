@@ -132,7 +132,6 @@ if button_check(index, btn) = false || holdtime <= 0
 				dir = 0
 				dd = 0
 				recycleset = 0
-				if irandom(2)=0 recycleset = 1
 				image_angle = other.gunangle
 				direction = other.gunangle
 				on_end_step 	 = sniper_step
@@ -160,38 +159,46 @@ for (var i=0; i<maxp; i++){player_set_show_cursor(index,i,1)}
 #define void
 
 #define sniper_step
+var _x = lengthdir_x(hyperspeed,direction), _y = lengthdir_y(hyperspeed,direction);
+var shields = instances_matching_ne([CrystalShield,PopoShield], "team", team),
+    slashes = instances_matching_ne([EnergySlash,Slash,EnemySlash,EnergyHammerSlash,BloodSlash,GuitarSlash], "team", team),
+    shanks = instances_matching_ne([Shank,EnergyShank], "team", team),
+    customslashes = instances_matching_ne(CustomSlash, "team", team),
+    enemies = instances_matching_ne(hitme, "team", team),
+    olddirection = direction
+
 do
 {
-	dir += hyperspeed
-	x += lengthdir_x(hyperspeed,direction)
-	y += lengthdir_y(hyperspeed,direction)
-	//redoing reflection code since the collision event of the reflecters doesnt work in substeps (still needs slash reflection)
-	with instances_matching_ne([CrystalShield,PopoShield], "team", team){if place_meeting(x,y,other){with other{line()};other.team = team;other.direction = point_direction(x,y,other.x,other.y);other.image_angle = other.direction;with instance_create(other.x,other.y,Deflect){image_angle = other.direction;sound_play_pitch(sndCrystalRicochet,random_range(.9,1.1))}}}
-	with instances_matching_ne([EnergySlash,Slash,EnemySlash,EnergyHammerSlash,BloodSlash,GuitarSlash], "team", team){if place_meeting(x,y,other){with other{line()};other.team = team;other.direction = direction ;other.image_angle = other.direction}}
-	with instances_matching_ne([Shank,EnergyShank], "team", team){if place_meeting(x,y,other){with other{instance_destroy();exit}}}
-	with instances_matching_ne(CustomSlash, "team", team){if place_meeting(x,y,other){script_ref_call(on_projectile);with other{line()};}}
-	if dd > 0 dd -= hyperspeed
-	if dd <= 0
-	with instances_matching_ne(hitme, "team", team)
-	{
-		if distance_to_object(other) <= other.trailscale * 3
-		{
-			if other.lasthit != self
-			{
-				with other
-				{
-				    projectile_hit(other,damage,force,direction)
-					lasthit = other
-					dd += 20
-					view_shake_at(x,y,12)
-					sleep(20)
-					if skill_get(16) = true && recycleset = 0{
-					    recycleset = 1;
-					    instance_create(creator.x,creator.y,RecycleGland);
-					    sound_play(sndRecGlandProc);
-					    creator.ammo[1] = min(creator.ammo[1] + weapon_cost(), creator.typ_amax[1])
-				    }
-				}
+    dir += hyperspeed
+	x += _x
+	y += _y
+	with shields {if place_meeting(x,y,other){with other{line()};other.team = team;other.direction = point_direction(x,y,other.x,other.y);other.image_angle = other.direction;with instance_create(other.x,other.y,Deflect){image_angle = other.direction;sound_play_pitch(sndCrystalRicochet,random_range(.9,1.1))}}}
+	with slashes {if place_meeting(x,y,other){with other{line()};other.team = team;other.direction = direction ;other.image_angle = other.direction}}
+	with shanks {if place_meeting(x,y,other){with other{instance_destroy();exit}}}
+	with customslashes {if place_meeting(x,y,other){with other{line()};mod_script_call_self(on_projectile[0],on_projectile[1],on_projectile[2]);}}
+	if direction != olddirection{
+	    _x = lengthdir_x(hyperspeed,direction);
+	    _y = lengthdir_y(hyperspeed,direction);
+        var shields = instances_matching_ne([CrystalShield,PopoShield], "team", team),
+            slashes = instances_matching_ne([EnergySlash,Slash,EnemySlash,EnergyHammerSlash,BloodSlash,GuitarSlash], "team", team),
+            shanks = instances_matching_ne([Shank,EnergyShank], "team", team),
+            customslashes = instances_matching_ne(CustomSlash, "team", team),
+            enemies = instances_matching_ne(hitme, "team", team),
+            olddirection = direction
+	}
+	with enemies{
+		if mask_index != mskNone and distance_to_object(other) <= other.trailscale * 3 and other.lasthit != id{
+			with other{
+			    projectile_hit(other,damage,force,direction)
+				lasthit = other
+				view_shake_at(x,y,12)
+				sleep(20)
+				if skill_get(16) = true && recycleset < weapon_cost() and !irandom(1){
+				    recycleset += 2;
+				    instance_create(x,y,RecycleGland);
+				    sound_play(sndRecGlandProc);
+				    creator.ammo[1] = min(creator.ammo[1] + 2, creator.typ_amax[1])
+			    }
 			}
 		}
 	}

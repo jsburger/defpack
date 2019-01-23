@@ -7,7 +7,7 @@ global.sprFireBulletHit   = sprite_add("defpack tools/Fire Bullet Hit.png", 4, 8
 return true;
 
 #define weapon_name
-return "SNIPER FIRE RIFLE"
+return "FIRE SNIPER RIFLE"
 
 #define weapon_sprt
 return global.sprSniperFireRifle;

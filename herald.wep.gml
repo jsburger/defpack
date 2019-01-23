@@ -30,79 +30,7 @@ mod_script_call("mod","defpermissions","permission_register","weapon",mod_curren
 
 //defpermissions should have set the proper value after the script call
 if global.canshader = 1{
-    //shader in brackets so i can hide it{
-    global.sh = shader_create(
-    	"/// Vertex Shader ///
-
-    	struct VertexShaderInput
-    	{
-    		float4 vPosition : POSITION;
-    		float2 vTexcoord : TEXCOORD0;
-    	};
-
-    	struct VertexShaderOutput
-    	{
-    		float4 vPosition : SV_POSITION;
-    		float2 vTexcoord : TEXCOORD0;
-    	};
-
-    	uniform float4x4 matrix_world_view_projection;
-
-    	VertexShaderOutput main(VertexShaderInput INPUT)
-    	{
-    		VertexShaderOutput OUT;
-
-    		OUT.vPosition = mul(matrix_world_view_projection, INPUT.vPosition); // (x,y,z,w)
-    		OUT.vTexcoord = INPUT.vTexcoord;
-
-    		return OUT;
-    	}
-    	",
-
-
-    	"/// Fragment/Pixel Shader ///
-
-
-    	struct PixelShaderInput
-    	{
-    		float2 vTexcoord : TEXCOORD0;
-    	};
-
-    	sampler2D s0; // Get Sprite Being Drawn
-
-
-    	float4 main(PixelShaderInput INPUT) : SV_TARGET
-    	{
-    		 // Get Pixel's Color:
-    		float4 MyColor = tex2D(s0, INPUT.vTexcoord); // (r,g,b,a)
-
-    		 // Break Down MyColor:
-    		float R = MyColor.r; // Red   (0.0 - 1.0)
-    		float G = MyColor.g; // Green (0.0 - 1.0)
-    		float B = MyColor.b; // Blue  (0.0 - 1.0)
-            float L = (0.299 * R + 0.587 * G + 0.114 * B);
-            float tolerance = .9;
-
-    		// bloom
-    		{
-
-    			float ill = 0;
-
-        		float Radius = 10.0;
-        		float Precision = 0.05;
-        		float num = Radius/Precision;
-    			for(float dist = 1.0; dist < Radius; dist += Precision){
-    			    float4 nCol = tex2D(s0, INPUT.vTexcoord + float2((floor(dist) * cos((dist - floor(dist)) * 2 * 3.14159))/" + string(game_width) + ".0, (floor(dist) * sin((dist - floor(dist)) * 2 * 3.14159))/" + string(game_height) + ".0));
-    			    if(nCol.r == 0.0){
-    			        ill += (1-sqrt(INPUT.vTexcoord.y))*10;
-    			    };
-    			}
-
-    			  return float4(R,G,B,min(MyColor.a,1-ill/num));
-    		}
-    	}
-    ");
-    //}
+    global.sh = make_shader()
 }
 
 if fork(){
@@ -121,10 +49,86 @@ if fork(){
             	name = mod_current
             }
         }
+        if global.canshader = 1 and !mod_variable_exists("weapon", mod_current, "sh"){
+            global.sh = make_shader()
+        }
         wait(0)
     }
     exit
 }
+
+#define make_shader
+return shader_create(
+	"/// Vertex Shader ///
+
+	struct VertexShaderInput
+	{
+		float4 vPosition : POSITION;
+		float2 vTexcoord : TEXCOORD0;
+	};
+
+	struct VertexShaderOutput
+	{
+		float4 vPosition : SV_POSITION;
+		float2 vTexcoord : TEXCOORD0;
+	};
+
+	uniform float4x4 matrix_world_view_projection;
+
+	VertexShaderOutput main(VertexShaderInput INPUT)
+	{
+		VertexShaderOutput OUT;
+
+		OUT.vPosition = mul(matrix_world_view_projection, INPUT.vPosition); // (x,y,z,w)
+		OUT.vTexcoord = INPUT.vTexcoord;
+
+		return OUT;
+	}
+	",
+
+
+	"/// Fragment/Pixel Shader ///
+
+
+	struct PixelShaderInput
+	{
+		float2 vTexcoord : TEXCOORD0;
+	};
+
+	sampler2D s0; // Get Sprite Being Drawn
+
+
+	float4 main(PixelShaderInput INPUT) : SV_TARGET
+	{
+		 // Get Pixel's Color:
+		float4 MyColor = tex2D(s0, INPUT.vTexcoord); // (r,g,b,a)
+
+		 // Break Down MyColor:
+		float R = MyColor.r; // Red   (0.0 - 1.0)
+		float G = MyColor.g; // Green (0.0 - 1.0)
+		float B = MyColor.b; // Blue  (0.0 - 1.0)
+        float L = (0.299 * R + 0.587 * G + 0.114 * B);
+        float tolerance = .9;
+
+		// bloom
+		{
+
+			float ill = 0;
+
+    		float Radius = 10.0;
+    		float Precision = 0.05;
+    		float num = Radius/Precision;
+			for(float dist = 1.0; dist < Radius; dist += Precision){
+			    float4 nCol = tex2D(s0, INPUT.vTexcoord + float2((floor(dist) * cos((dist - floor(dist)) * 2 * 3.14159))/" + string(game_width) + ".0, (floor(dist) * sin((dist - floor(dist)) * 2 * 3.14159))/" + string(game_height) + ".0));
+			    if(nCol.r == 0.0){
+			        ill += (1-sqrt(INPUT.vTexcoord.y))*10;
+			    };
+			}
+
+			  return float4(R,G,B,min(MyColor.a,1-ill/num));
+		}
+	}
+");
 
 #define weapon_chrg
 return true;
@@ -272,6 +276,7 @@ draw_circle(x-_x,y-_y-z,size*10,0)
 surface_reset_target()
 
 #define meteordraw
+
 if global.canshader{
     shader_set(global.sh);
     shader_set_vertex_constant_f(0, matrix_multiply(matrix_multiply(matrix_get(matrix_world), matrix_get(matrix_view)), matrix_get(matrix_projection)));

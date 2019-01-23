@@ -131,7 +131,7 @@ sound_play(sndNukeExplosion)
 
 #define rocket_draw
 if timer <= 0{draw_sprite_ext(global.sprSmartNukeFlame,fimage_index*current_time_scale,x,y,.75,.75,direction,c_white,1)}
-if friction != 0 && instance_exists(enemy)
+if friction != 0 && instance_exists(enemy) and instance_exists(creator)
 {
 	var closeboy = instance_nearest(mouse_x[creator.index],mouse_y[creator.index],enemy)
 	var _x = closeboy.x;

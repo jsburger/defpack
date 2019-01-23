@@ -308,7 +308,7 @@ with (a) {
 	sprite_index = global.sprPsyBullet
 	typ = 2
 	damage = 4
-	recycle_amount = 2
+	recycle_amount = 1
 	force = -10
 	image_speed = 1
 	image_angle = direction
@@ -434,7 +434,7 @@ var c = instance_create(_x, _y, CustomProjectile)
 with (c){
 	name = "Split Shell"
 	sprite_index = global.sprMagPellet
-	friction = .475
+	friction = .55
 	mask_index = mskBullet2
 	wallbounce = skill_get(15) * 4 + (skill_get("shotgunshouldersx10")*40)
 	force = 4
@@ -458,8 +458,8 @@ return c;
 
 #define split_split
 ammo--
-image_xscale /= 1.2
-image_yscale /= 1.2
+image_xscale *= .8
+image_yscale *= .8
 if ammo = 2{
     sprite_index = global.sprMagPellet
     image_xscale = 1
@@ -482,7 +482,7 @@ image_angle = direction
 #define split_wall
 fallofftime = current_frame + 2
 move_bounce_solid(true)
-speed /= 1.5
+speed *= .66
 speed = min(speed+wallbounce,14)
 wallbounce /= 1.05
 instance_create(x,y,Dust)
@@ -494,12 +494,13 @@ if ammo{
 #define mag_hit
 if lasthit != other.id || projectile_canhit_melee(other)
 {
-    speed /= 1.5
+    speed *= .66
     lasthit = other.id
 	shell_hit();
 	if ammo > 0{
 		split_split()
 	}
+	else instance_destroy()
 }
 
 #define mag_shell_step
@@ -588,7 +589,7 @@ with (d) {
 	force = 8
 	mask_index = mskBullet1
 	damage = 2
-	recycle_amount = 2
+	recycle_amount = 1
 	image_speed = 1
 	image_angle = direction
 	//on_step = script_ref_create(bullet_step)
@@ -619,7 +620,7 @@ with (e){
 	force = -5
 	mask_index = mskBullet1
 	damage = 3
-	recycle_amount = 2
+	recycle_amount = 1
 	image_speed = 1
 	on_step = script_ref_create(fire_step)
 	on_destroy = script_ref_create(fire_destroy)
@@ -656,8 +657,8 @@ with (f){
 	mask_index =global.mskDarkBullet
 	damage = 8
 	force = 7
-	offset = random(359)
-	ringang = random(359)
+	offset = random(360)
+	ringang = random(360)
 	recycle_amount = 1
 	image_speed = 1
 	image_angle = direction
@@ -675,7 +676,7 @@ return f;
 var t = team;
 with other{
 	if typ >= 1 {
-		var ringang = random(359);
+		var ringang = random(360);
 		with create_sonic_explosion(x,y){
 			var scalefac = random_range(0.26,0.3);
 			image_xscale = scalefac
@@ -960,7 +961,7 @@ with a{
 	lasercolour1 = c_red
 	lasercolour = c_red
 	lasercolour2 = c_maroon
-	offset = random(359)
+	offset = random(360)
 
 	primary = 1
 	//god bless YAL
@@ -2063,7 +2064,7 @@ with instance_create(x+lengthdir_x(sprite_get_width(sprite_index),image_angle),y
         on_wall       = nothing
         on_hit        = nothing
     }
-    image_angle = random(359)
+    image_angle = random(360)
     depth = other.depth -1
     image_speed = .6
     sprite_index = global.sprKillslash
@@ -2128,8 +2129,8 @@ with a{
     typ = 1
     dist = 0
     damage = 2
+    lastteam = -1
     image_speed = .5
-    teamswap = 1
     name = "Bouncer Disc"
     sprite_index = global.sprBouncerDisc
     on_step = bouncerdisc_step
@@ -2143,14 +2144,14 @@ return a;
 #define bouncerdisc_step
 if speed > 0 && current_frame_active {instance_create(x,y,DiscTrail)}
 dist += current_time_scale
-if instance_exists(creator) && teamswap && !place_meeting(x,y,creator){
-    teamswap = 0
+if instance_exists(creator) && team != -1 && !place_meeting(x,y,creator){
+    lastteam = team
     team = -1
 }
 if skill_get(mut_bolt_marrow){
-    var q = instance_nearest_matching_ne(x,y,hitme,"team",team)
+    var q = instance_nearest_matching_ne(x,y,hitme,"team",lastteam)
     if instance_exists(q){
-        if distance_to_object(q) < 30 && q != creator{
+        if distance_to_object(q) < 30{
             var dir = point_direction(x,y,q.x,q.y)
             x += lengthdir_x(current_time_scale,dir)
             y += lengthdir_y(current_time_scale,dir)
@@ -2195,7 +2196,7 @@ with a
     sprite_index = global.sprStickyDisc
     mask_index = mskDisc
     stuckto = -4
-    teamswap = 1
+    lastteam = -1
     orspeed = 0
     hitid = [sprite_index,name]
     depth = -3
@@ -2210,8 +2211,8 @@ return a;
 if speed > 0 && current_frame_active {instance_create(x,y,DiscTrail)}
 dist += current_time_scale
 if dist > 200{instance_destroy();exit}
-if instance_exists(creator) && teamswap && !place_meeting(x,y,creator){
-    teamswap = 0
+if instance_exists(creator) && team != -1 && !place_meeting(x,y,creator){
+    lastteam = team
     team = -1
 }
 
@@ -2223,8 +2224,8 @@ if instance_exists(stuckto){
     if current_frame_active instance_create(x,y,Dust)
 }
 else if skill_get(mut_bolt_marrow){
-    var q = instance_nearest_matching_ne(x,y,hitme,"team",team)
-    if instance_exists(q) && distance_to_object(q) < 30 && q != creator
+    var q = instance_nearest_matching_ne(x,y,hitme,"team",lastteam)
+    if instance_exists(q) && distance_to_object(q) < 30
         motion_add(point_direction(x,y,q.x,q.y),.25*current_time_scale)
 }
 
@@ -2264,8 +2265,8 @@ with a
     sprite_index = global.sprMegaDisc
     dist = 0
     damage = 2
-    teamswap = 1
-    image_speed = .5
+    image_speed = .4
+    lastteam = -1
     maxspeed = speed
     hitid = [sprite_index,"MEGA DISC"]
     on_step    = md_step
@@ -2280,14 +2281,14 @@ dist += current_time_scale
 if current_frame_active with instance_create(x,y,DiscTrail){
     sprite_index = global.sprMegaDiscTrail
 }
-if instance_exists(creator) && teamswap && !place_meeting(x,y,creator){
-    teamswap = 0
+if instance_exists(creator) && team != -1 && !place_meeting(x,y,creator){
+    lastteam = team
     team = -1
 }
 
-if skill_get(21){
-    var q = instance_nearest_matching_ne(x,y,hitme,"team",team)
-    if instance_exists(q) && distance_to_object(q) <= 40 && q != creator{
+if skill_get(21) and instance_exists{
+    var q = instance_nearest_matching_ne(x,y,hitme,"team",lastteam)
+    if instance_exists(q) && distance_to_object(q) <= 40{
         motion_add(point_direction(x,y,q.x,q.y),.5*current_time_scale)
         speed = maxspeed
     }

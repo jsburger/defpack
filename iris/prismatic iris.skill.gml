@@ -88,6 +88,9 @@ if fork(){
     exit
 }
 
+#define skill_wepspec
+return 1
+
 #define skill_name
 return "PRISMATIC IRIS"
 
@@ -291,7 +294,7 @@ switch wep{
         return weapon_get_name(wep)
 }
 
-#define color(wp,col)
+#define get_colored(wp, col)
 var str = weapon_find(wp);
 if is_real(str) || array_index_exists(global.customs,str){
     str = string_replace(convert(str),"x ", `${global.colors[col]} `)
@@ -302,11 +305,15 @@ else{
     }
 }
 str = reverse(str)
-if (is_real(str) || mod_exists("weapon",str)) && str != weapon_find(wp){
+return [str, str != weapon_find(wp)]
+
+#define color(wp,col)
+var str = get_colored(wp, col)
+if (is_real(str[0]) || mod_exists("weapon",str[0])) && str[1]{
     if is_object(wp){
-        weapon_set(wp,str)
+        weapon_set(wp,str[0])
     }
-    else wep = str
+    else wep = str[0]
     return 1
 }
 return 0

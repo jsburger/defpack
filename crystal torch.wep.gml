@@ -161,7 +161,7 @@ with instances_matching(CustomSlash,"name","crystal slash"){
             	        wep.cursecharge = clamp(wep.cursecharge + cursechange, 0, 50)
             	    }
             	    if is_object(bwep) && bwep.wep = mod_current && bwep.torchid = other.torchid{
-            	        bwep.cursecharge = clamp(bwep.cursecharge + cursecharge, 0, 50)
+            	        bwep.cursecharge = clamp(bwep.cursecharge + cursechange, 0, 50)
             	    }
         	    }
 		    }
@@ -177,7 +177,7 @@ with instances_matching(CustomSlash,"name","crystal slash"){
             	        wep.cursecharge = clamp(wep.cursecharge + cursechange, 0, 50)
             	    }
             	    if is_object(bwep) && bwep.wep = mod_current && bwep.torchid = other.torchid{
-            	        bwep.cursecharge = clamp(bwep.cursecharge + cursecharge, 0, 50)
+            	        bwep.cursecharge = clamp(bwep.cursecharge + cursechange, 0, 50)
             	    }
         	    }
 		    }

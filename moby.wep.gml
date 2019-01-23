@@ -188,24 +188,6 @@ do
 	    instance_destroy()
 	    exit
 	}
-	/*with instances_matching_ne(hitme, "team", team)
-	{
-		if distance_to_object(other) <= 4
-		{
-			if other.recycle{
-			    instance_create(x,y,RecycleGland)
-			    sound_play(sndRecGlandProc)
-			    with other.creator{
-			        ammo[1] = min(ammo[1]+1,typ_amax[1])
-			    }
-			}
-			with other{
-			    projectile_hit(other,damage,force,direction)
-			    instance_destroy()
-			    exit
-			}
-		}
-	}*/
     if place_meeting(x+_x,y+_y,Wall){
         instance_destroy()
         exit

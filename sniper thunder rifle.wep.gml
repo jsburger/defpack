@@ -7,7 +7,7 @@ global.sprLightningBulletHit = sprite_add("defpack tools/Lightning Bullet Hit.pn
 return true;
 
 #define weapon_name
-return "SNIPER THUNDER RIFLE"
+return "THUNDER SNIPER RIFLE"
 
 #define weapon_sprt
 return global.sprSniperThunderRifle ;
