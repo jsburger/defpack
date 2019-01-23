@@ -15,7 +15,7 @@ return "BEAMER"
 return 5;
 
 #define weapon_cost
-return 12;
+return 810;
 
 #define weapon_area
 return 14;
@@ -83,7 +83,7 @@ if current_frame_active{
         view_shake_at(x,y,3*min(4,other.size))
     }
 }
-    
+
 #define sphere_step
 if instance_exists(creator)
 {
@@ -119,7 +119,7 @@ if floor(ammo) < current_time_scale and floor(ammo) >= 0
 	on_hit  = beam_hit
 	on_square = script_ref_create(beam_square)
 
-    time = 24
+    time = 28
     image_speed = 0
 }
 
@@ -130,7 +130,7 @@ if ammo < -2
 	if !skill_get(17){sound_play_pitch(sndLaserCannon,.7*p)}else{sound_play_pitch(sndLaserCannonUpg,.6*p);sound_play_pitch(sndLaserCannon,2*p)}
 	sleep(30)
 	sound_play_pitchvol(sndDevastatorExplo,5,.7)
-	view_shake_at(x,y,40)
+	view_shake_at(x,y,100)
 	with creator weapon_post(-20,100,40)
 	repeat(15)
 	{
@@ -161,7 +161,8 @@ if instance_exists(creator){
         weapon_post(5,20*current_time_scale,0)
         motion_add(gunangle, -2*current_time_scale)
     }
-
+		sound_play_gun(sndClickBack,1,.2-skill_get(mut_laser_brain)*.2)
+		sound_stop(sndClickBack)
     time -= current_time_scale
     if time <= 0 {instance_destroy(); exit}
     x = creator.x + creator.hspeed_raw + lengthdir_x(26,creator.gunangle)
@@ -216,9 +217,11 @@ with other{
 
 #define beam_hit
 if current_frame_active{
+		sleep(5)
+		view_shake_at(x,y,2)
     with other motion_set(other.direction,2+skill_get(mut_laser_brain))
     view_shake_max_at(other.x,other.y,min(other.size,4))
-    projectile_hit(other,4 + skill_get(mut_laser_brain)*2,1,direction)
+    projectile_hit(other,3 + skill_get(mut_laser_brain)*2,1,direction)
     if other.my_health <= 0{
         sleep(min(other.size, 4) * 20)
         view_shake_max_at(creator.x,creator.y,5*min(4, other.size))
@@ -275,6 +278,3 @@ sound_play_pitch(snd,random_range(.8,1.2))
 
 #define sound_cleanup
 sound_set_track_position(snd,0)
-
-
-

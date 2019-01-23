@@ -40,6 +40,8 @@ sound_play_pitchvol(sndHammer,p,.7)
 sound_play_pitch(sndShovel,.5*p)
 sound_play_pitch(sndHitMetal,.8*p)
 sound_play_pitch(sndAssassinAttack,1.2*p)
+sound_play_gun(sndClickBack,1,.6)
+sound_stop(sndClickBack)
 weapon_post(8,20,12	*(r*2+1))
 var shell = 0;
 with instance_create(x,y,Slash)

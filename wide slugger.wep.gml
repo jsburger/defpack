@@ -54,9 +54,9 @@ with instance_create(x,y,CustomProjectile)
   maxspeed = speed
   image_angle = direction
   damage = 2
-  force  = 6
+  force  = 8
   typ       = 0
-  friction  = .03
+  friction  = 0
   image_speed = 1
   image_xscale = 1.25
   image_yscale = 1.25
@@ -90,7 +90,7 @@ with instance_create(x,y,BulletHit){sprite_index = sprHeavySlugHit;image_angle =
 #define dyn_step
 if current_frame mod 2 < current_time_scale with instances_matching_ne(hitme,"team",team)
 {
-  if distance_to_object(other) <= 12 
+  if distance_to_object(other) <= 12
   {
     var _id = id;
     with other
@@ -99,10 +99,10 @@ if current_frame mod 2 < current_time_scale with instances_matching_ne(hitme,"te
       y -= vspeed*3/4
       other.direction = direction
       projectile_hit(_id,damage + 1 - floor(image_index),min(0,force + 3 * (1 - floor(image_index)) -other.size/4),direction)
-      speed *= .95 + skill_get(15)*.1
+      //speed *= .95 + skill_get(15)*.1
       var s = min(other.size,4)
       sleep(5*s)
-      view_shake_at(x,y,2*s)
+      view_shake_at(x,y,4*s)
       if other.my_health <= 0{sleep(16*s);view_shake_at(x,y,8*s);speed += 2}
       if speed > maxspeed speed = maxspeed
       if --pierce <= 0{instance_destroy();exit}

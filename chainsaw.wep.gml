@@ -42,7 +42,9 @@ if ammo > 0 && current_frame_active
 	with creator
 	{
 		sound_play_pitch(sndJackHammer,random_range(.4,.6))
-		sound_play_pitchvol(sndSwapMotorized,1,.8)
+		sound_play_pitchvol(sndSwapMotorized,1,.6)
+		sound_play_gun(sndClickBack,1,.8)
+		sound_stop(sndClickBack)
 		weapon_post(0,6,0)
 		if other.bwep{
 			bwkick = -6 - 6*skill_get(13) + random_range(-1,1)

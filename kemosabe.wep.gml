@@ -33,8 +33,9 @@ weapon_post(5,-5,5)
 sleep(10)
 var _pitch = random_range(.8,1.2);
 sound_play_pitch(sndMachinegun,.7*_pitch)
-sound_play_pitch(sndSnowTankShoot,1.3*_pitch)
-sound_play_pitch(sndPopgun,1.4*_pitch)
+sound_play_pitch(sndSnowTankShoot,1.5*_pitch)
+sound_play_pitch(sndPopgun,.8*_pitch)
+sound_play_pitch(sndMinigun,.45*_pitch)
 with instance_create(x,y,Shell){
 	motion_add(other.gunangle+other.right*100+random(50)-25,2+random(3))
 }

@@ -35,12 +35,15 @@ return false
 #define weapon_fire
 var _a = (other.infammo != 0)
 var _p = random_range(.9,1.2)
-sound_play_pitchvol(sndFlakExplode,.3*_p,.5*(1-_a))
+sound_play_pitchvol(sndFlakExplode,.3*_p,.5*_a)
+sound_play_pitchvol(sndSuperFlakExplode,.2*_p,.5*_a)
+sound_play_pitchvol(sndSawedOffShotgun,.6*_p,.5*_a)
 //sound_play_pitchvol(sndMinigun,.8*_p,.8)
 sound_play_pitchvol(sndPopgun,1.2*_p,1)
-sound_play_pitchvol(sndHeavyRevoler,.8*_p,.5+.2*(1-_a))
-sound_play_pitchvol(sndTripleMachinegun,.8*_p,.5+.2*(1-_a))
-
+sound_play_pitchvol(sndHeavyRevoler,.8*_p,.5+.2*_a)
+sound_play_pitchvol(sndTripleMachinegun,.8*_p,.5+.2*_a)
+sound_play_gun(sndClickBack,1,.4*_a)
+sound_stop(sndClickBack)
 weapon_post(4+_a,3,5+_a*6)
 with instance_create(x,y,CustomProjectile){
     //if irandom(19) = 0 charged = 1 else charged = 0
@@ -75,6 +78,7 @@ var dmg = fallofftime >= current_frame ? damage : damage - falloff
 projectile_hit(other,dmg,force,direction)
 if other.my_health <= 0{
     var o = other
+    sleep(6)
     if instance_exists(creator){
         var a = max(16*other.size,6)
         sleep(a*2)

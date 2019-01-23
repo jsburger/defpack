@@ -33,12 +33,13 @@ return 14;
 return "TOO BIG FOR THE HOLSTER"
 
 #define weapon_fire
-weapon_post(7,0,28)
-sleep(5)
+weapon_post(9,-40,30)
 motion_add(gunangle-180,3)
 mod_script_call("mod","defpack tools", "shell_yeah_big", 100, 12, 4+random(1), c_yellow)
 sound_play_pitch(sndSawedOffShotgun,random_range(.6,.7))
 sound_play_pitch(sndHeavySlugger,random_range(.7,.9))
+sound_play_gun(sndClickBack,1,0)
+sound_stop(sndClickBack)
 with instance_create(x,y,CustomProjectile)
 {
     typ = 1
@@ -47,7 +48,7 @@ with instance_create(x,y,CustomProjectile)
     recycle_amount = 5
     damage = 6
     team = other.team
-    force = 16
+    force = 18
     frames = 6
     image_speed = 1
     creator = other
@@ -70,7 +71,7 @@ if current_frame_active{
     frames--
     repeat(3) instance_create(x+random_range(-8,8),y+random_range(-8,8),Smoke)
     projectile_hit(other,damage,force,direction)
-    sleep(30)
+    sleep(5)
     view_shake_at(x,y,12)
     if frames <= 0 instance_destroy()
 }
@@ -86,8 +87,11 @@ with instance_create(x,y,BulletHit){sprite_index = sprSlugHit;image_index = 1}
 #define mega_anim
 image_index = 1
 image_speed = 0
+sleep(40)
 
 #define mega_draw
+sound_play_gun(sndClickBack,1,.8)
+sound_stop(sndClickBack)
 draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, image_yscale, image_angle, image_blend, 1.0);
 draw_set_blend_mode(bm_add);
 draw_sprite_ext(sprite_index, image_index, x, y, 2*image_xscale, 2*image_yscale, image_angle, image_blend, 0.1);
