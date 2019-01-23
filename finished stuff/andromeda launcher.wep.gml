@@ -215,8 +215,9 @@ yn = (off+yref/size);
 draw_vertex_texture(_x,_y,xn,yn)
 
 
-
 #define spacedraw
+sound_play_gun(sndClickBack,1,.4)
+sound_stop(sndClickBack)
 var xref,yref,sprite;
 sprite = global.space
 var tex,tex2,tex3,tex4,w,h,xn,yn;
@@ -233,17 +234,17 @@ if instance_exists(Player){
 
         var sides = 18
         var int = 360/sides
-        
+
         var xs = [0], ys = [0]
         for var i = 0; i <= 360; i+= int{
             array_push(xs, lengthdir_x(succ, i))
             array_push(ys, lengthdir_y(succ/2, i))
         }
-        
+
         var sizes = [size, size, size, 128],
             textures = [tex3, tex2, tex, tex4],
             scales = [1, 1.5, 2, 3];
-            
+
         for var o = 0; o <= 3; o++{
             draw_primitive_begin_texture(pr_trianglefan, textures[o])
             for var i = 0; i <= sides+1; i++{
@@ -251,7 +252,7 @@ if instance_exists(Player){
             }
             draw_primitive_end()
         }
-        
+
         /*
 		draw_primitive_begin_texture(pr_trianglefan, tex3);
 		drawmyshit(x,y,1,size,0)

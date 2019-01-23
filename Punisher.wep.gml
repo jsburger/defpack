@@ -28,10 +28,15 @@ draw_set_blend_mode(bm_normal)
 */
 return 0
 #define weapon_fire
-weapon_post(7,-13,7)
-sound_play_pitchvol(sndBloodCannon,1.3+random(.1),.7)
-sound_play_pitch(sndExplosionL,2)
-sound_play_pitch(sndDoubleShotgun,.8)
+weapon_post(8,-13,32)
+var _p = random_range(.8,1.2)
+sound_play_pitchvol(sndBloodCannon,1.3*_p,.7)
+sound_play_pitch(sndExplosionL,2*_p)
+sound_play_pitch(sndDoubleShotgun,.8*_p)
+sound_play_pitchvol(sndBloodCannonLoop,3*_p,.2)
+sound_play_pitch(sndBloodLauncherExplo,.5*_p);
+sound_play_gun(sndClickBack,1,.2)
+sound_stop(sndClickBack)
 sleep(120)
 if infammo = 0 projectile_hit(self,1)
 lasthit = [global.gun, weapon_name()]
@@ -81,7 +86,7 @@ return found
 #define lightning_create(_x, _y, _ammo, _direction)
     with(instance_create(_x, _y, CustomProjectile)){
         name = "Punisher Bolt";
-        
+
         sprite_index = global.proj;
         mask_index = mskLaser;
         image_alpha = 1
@@ -97,7 +102,7 @@ return found
         ammo = _ammo;
         typ = 0;
         explo = 1
-        
+
         on_step = lightning_step;
         on_draw = lightning_draw;
         on_hit = lightning_hit;
@@ -131,7 +136,7 @@ return found
         var ang = angle_difference(direction,point_direction(_x,_y,q.x+8,q.y+8))
         if distance_to_object(q) < 25 and abs(ang) < 80 direction += ang/4
     }
-    
+
     image_angle = direction;
 
      // Stretch:
@@ -190,11 +195,15 @@ return found
    // if(projectile_canhit_melee(other)){
          // Hit:
         projectile_hit(other, damage, force, image_angle);
-    
+
          // Effects:
         instance_create(x, y, Smoke);
         if explo{
-            sound_play_pitch(sndBloodLauncherExplo,1.7);
+            sound_play_pitch(sndBloodLauncherExplo,1.5);
+            sound_play_gun(sndClickBack,1,0)
+            sound_stop(sndClickBack)
+            sleep(7)
+            view_shake_at(x,y,3)
             with instance_create(x,y,MeatExplosion) team = other.team
             explo = 0
         }

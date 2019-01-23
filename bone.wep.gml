@@ -23,7 +23,7 @@ return 0
 #define weapon_fire
 sound_play_pitch(sndScrewdriver,random_range(.6,.8))
 sound_play_pitch(sndBloodHammer,random_range(1.6,2.2))
-weapon_post(-12 - (20*skill_get(13)),6,0)
+weapon_post(-12 - (20*skill_get(13)),10,0)
 with instance_create(x+lengthdir_x(12+(20*skill_get(13)),gunangle),y+lengthdir_y(12+(20*skill_get(13)),gunangle),CustomSlash){
 	sprite_index = sprShank
 	image_alpha = 0
@@ -76,8 +76,11 @@ sound_play_pitchvol(sndHammerHeadEnd,random_range(1.23,1.33),20)
 sound_play_pitch(sndGruntHurtF,.8)
 sound_play_pitchvol(sndCursedPickup,2,20)
 projectile_hit(other,damage,12,direction)
-sleep(100)
+sleep(150)
+view_shake_at(x,y,150)
 for (var i = 1; i <= 3; i++){
+	sound_play_gun(sndClickBack,1,.4)
+	sound_stop(sndClickBack)
     with instance_create(x+lengthdir_x(18*i, direction),y+lengthdir_y(18*i, direction), MeatExplosion){
         creator = other.creator
         team = other.team

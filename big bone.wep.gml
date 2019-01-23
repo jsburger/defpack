@@ -24,7 +24,7 @@ return 0
 sound_play_pitch(sndHammer,random_range(1.3,1.6))
 sound_play_pitch(sndBloodHammer,random_range(1,1.6))
 var length = 14 + 20*skill_get(13)
-weapon_post(-length,6,0)
+weapon_post(-length,25,0)
 with instance_create(x+lengthdir_x(length,gunangle),y+lengthdir_y(length,gunangle)+2,CustomSlash){
 	sprite_index = sprShank
 	image_alpha = 0
@@ -62,6 +62,7 @@ speed = 0
 if !hit with creator if instance_is(self,hitme){
     projectile_hit(self,4)
     lasthit = [global.sprBone,"BIG BONE"]
+		sleep(70)
 }
 
 #define bone_projectile
@@ -80,7 +81,7 @@ sound_play_pitch(sndGruntHurtF,.8)
 sound_play_pitch(sndBigDogHit,2)
 sound_play_pitchvol(sndCursedPickup,2,20)
 projectile_hit(other,damage,40,direction)
-view_shake_at(x,y,100)
+view_shake_at(x,y,200)
 sleep(300)
 sound_play_pitch(sndBloodCannon,1.2+random(.1))
 repeat(200){
@@ -98,6 +99,8 @@ for (var o = -3; o <= 3; o++){
             team = other.team
             if !place_meeting(x,y,Floor) instance_destroy()
         }
+				sound_play_gun(sndClickBack,1,0)
+				sound_stop(sndClickBack)
     }
 }
 instance_destroy()

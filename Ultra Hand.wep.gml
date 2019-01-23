@@ -157,10 +157,14 @@ else {
 
 #define hand_hit
 if projectile_canhit_melee(other){
-    sound_play_pitch(sndHammerHeadProc,.6)
-    sound_play_pitchvol(sndImpWristKill,.7,.9)
-    sleep(150)
-    view_shake_at(x,y,30)
+  var p = random_range(.8,1.2)
+    sound_play_pitch(sndHammerHeadProc,.6*p)
+    sound_play_pitch(sndBasicUltra,2*p)
+    sound_play_pitch(sndCoopUltraA,4.3*p)
+    sleep(200)
+    sound_play_gun(sndClickBack,1,.6)
+    sound_stop(sndClickBack)
+    view_shake_at(x,y,70)
     projectile_hit(other, damage, 1000, image_angle)
     var _x = x, _y = y, dir = image_angle - 90 * flip, leng = 90, dirfac = 11*flip, t = team;
     if fork(){

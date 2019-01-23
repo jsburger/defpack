@@ -10,11 +10,11 @@ return "VECTOR SHOTGUN"
 #define weapon_type
 return 5
 #define weapon_cost
-return 4
+return 3
 #define weapon_area
 return 11
 #define weapon_load
-return 24
+return 32
 #define weapon_swap
 return sndSwapEnergy
 #define weapon_auto
@@ -71,7 +71,7 @@ var a = instance_create(_x,_y,CustomProjectile)
 with a{
 	loss = .14-skill_get(17)*.04
 	pierce = 1
-	damage = 3
+	damage = 5
     langle = 0
 	lspeed = 10-skill_get(17)*4
 	sprite_index = global.sprVector

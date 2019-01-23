@@ -39,6 +39,8 @@ sound_play_pitchvol(sndHammer,p,.7)
 sound_play_pitch(sndShovel,.5*p)
 sound_play_pitch(sndHitMetal,.8*p)
 sound_play_pitch(sndAssassinAttack,1.2*p)
+sound_play_gun(sndClickBack,1,.6)
+sound_stop(sndClickBack)
 if ammo[1] >=1 var r = 1 else var r = 0
 weapon_post(8,32,18*(r*2+1))
 

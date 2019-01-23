@@ -59,7 +59,7 @@ with instance_create(x,y,CustomProjectile)
 {
 	typ  = 1
 	name = "mega lightning bullet"
-	motion_add(other.gunangle+random_range(-7,7)*other.accuracy,26)
+	motion_add(other.gunangle+random_range(-1,1)*other.accuracy,26)
 	projectile_init(other.team,other)
 	sprite_index = global.sprUmbrella
     mask_index   = global.mskUmbrella

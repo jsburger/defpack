@@ -65,7 +65,7 @@ with instance_create(x,y,CustomObject){
     ang = 0
     image_alpha = 0
     friction = 1.2
-    timer[0] = 12 //ammo timer
+    timer[0] = 15 //ammo timer
     timer[1] = 3-skill_get(mut_laser_brain)
     btn = other.specfiring ? "spec" : "fire"
     damage = 3
@@ -73,12 +73,23 @@ with instance_create(x,y,CustomObject){
     motion_add(other.gunangle, 14)
     grabbed = 0
     walled = 0
-    
+    with instances_matching_ne(hitme, "team", team){
+        if distance_to_object(other) <=14+speed+skill_get(mut_laser_brain)*6{
+            direction = other.direction
+            sleep(20)
+            view_shake_at(x,y,5)
+            with other{
+                projectile_hit(other, damage, force, point_direction(x,y,other.x,other.y))
+            x -= hspeed*2/3
+            y -= vspeed*2/3
+          }
+        }
+    }
     on_end_step = lring_step
     on_draw = boom_draw
     on_destroy = lring_destroy
 
-    with instance_create(x,y,MeleeHitWall) image_angle = other.direction + 180  
+    with instance_create(x,y,MeleeHitWall) image_angle = other.direction + 180
 }
 
 #define chance(percent)
@@ -101,7 +112,7 @@ if !instance_exists(creator){
     exit
 }
 if speed <= friction and chance(17 + 5*skill_get(mut_laser_brain)){
-    sound_play_pitchvol(sndLightningReload,random_range(.8,1.2),.2*(1-distance_to_object(creator)/200)) 
+    sound_play_pitchvol(sndLightningReload,random_range(.8,1.2),.2*(1-distance_to_object(creator)/200))
     if chance(100) {
         with instance_create(x,y,Lightning){
             image_angle = random(360)
@@ -115,11 +126,13 @@ if speed <= friction and chance(17 + 5*skill_get(mut_laser_brain)){
         }
     }
 }
+var _m = 0
+if speed > friction _m = 3 else _m = 6
 var _d = random(360)
 var _s = random_range(4,9)
 if chance(3) with instance_create(x+lengthdir_x(_s, _d), y+lengthdir_y(_s, _d), LightningSpawn) image_angle = _d
 
-if current_frame mod 6 < current_time_scale{
+if current_frame mod _m < current_time_scale{
     if skill_get(17){sound_play_pitchvol(sndPlasmaBigExplodeUpg,1,.1*(1-distance_to_object(creator)/200))}
     sound_play_pitchvol(sndBouncerBounce,.1,(1-distance_to_object(creator)/200))
     sound_play_pitchvol(sndGrenadeHitWall,.1,.15*(1-distance_to_object(creator)/200))
@@ -127,14 +140,18 @@ if current_frame mod 6 < current_time_scale{
 
 if timer[1] > 0 timer[1] -= current_time_scale
 else{
-    timer[1] = 3 - skill_get(mut_laser_brain)
+    timer[1] = _m
     with instances_matching_ne(hitme, "team", team){
-        if distance_to_object(other) <=7+skill_get(mut_laser_brain)*2{
+        if distance_to_object(other) <=14+speed+skill_get(mut_laser_brain)*6{
+            direction = other.direction
+            sleep(20)
+            view_shake_at(x,y,5)
             with other{
+                if _m = 3 damage = 2 else damage = 3
                 projectile_hit(other, damage, force, point_direction(x,y,other.x,other.y))
-                x -= (hspeed*(skill_get(17)+1))/(2+skill_get(17))
-                y -= (vspeed*(skill_get(17)+1))/(2+skill_get(17))
-            }
+            x -= hspeed*2/3
+            y -= vspeed*2/3
+          }
         }
     }
 }
@@ -145,7 +162,7 @@ with instances_matching_ne(projectile, "team", team){
 }
 
 if curse and current_frame_active instance_create(x + random_range(-5,5), y + random_range(-5, 5), Curse)
-ang += 16 * current_time_scale
+ang += 18 * current_time_scale
 
 if phase = 0 and speed <= friction{
     if button_check(creator.index, btn) and creator.mask_index != mskNone{
@@ -153,7 +170,7 @@ if phase = 0 and speed <= friction{
         ang += 10 * current_time_scale
         if timer[0] > 0 timer[0] -= current_time_scale
         else{
-            timer[0] = 12
+            timer[0] = 10
             if creator.infammo = 0{
                 if creator.ammo[5] > 0{
                     creator.ammo[5]--
@@ -217,7 +234,7 @@ with other if typ{
 return global.sprLightningWheel
 
 #define weapon_text
-return choose("HOLD FIRE TO HOLD THE SPIN","TESLA DISC")
+return choose("HOLD FIRE TO HOLD THE SPIN","TESLA COIL")
 
 #define boom_draw
 draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, image_yscale, ang, image_blend, 1.0);

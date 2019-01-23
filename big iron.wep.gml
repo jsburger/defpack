@@ -30,13 +30,15 @@ return "BIG SNEEZE";
 
 #define weapon_fire
 weapon_post(7,30,52)
-sleep(24)
+sleep(30)
 var _p = random_range(.7,1.3)
-sound_play_pitch(sndSlugger,1.2*_p)
-sound_play_pitch(sndDoubleShotgun,.8*_p)
-sound_play_pitch(sndShotgun,.8*_p)
-sound_play_pitch(sndHeavyNader,1.3*_p)
-sound_play_pitch(sndMachinegun,.6*_p)
+sound_play_pitchvol(sndSlugger,1.2*_p,.6)
+sound_play_pitchvol(sndDoubleShotgun,.8*_p,.6)
+sound_play_pitchvol(sndShotgun,.8*_p,.6)
+sound_play_pitchvol(sndHeavyNader,1.3*_p,.6)
+sound_play_pitchvol(sndMachinegun,.6*_p,.6)
+sound_play_pitchvol(sndSawedOffShotgun,.8*_p,.6)
+sound_play_pitchvol(sndSuperSlugger,.7*_p,.6)
 repeat(6)
 {
 with instance_create(x,y,Shell){motion_add(other.gunangle+90+random_range(-40,40),2+random(2))}
@@ -115,6 +117,10 @@ do
                     with instance_create(x,y,RecycleGland) image_speed *= random_range(.8,1.2)
                 }
                 projectile_hit_np(other,damage,force,20)
+                sleep(12)
+                view_shake_at(x,y,4)
+                sound_play_gun(sndEmpty,1,.5)
+                sound_stop(sndEmpty)
                 if other.my_health >= damage*3 || --damage <= 0{
                     instance_destroy()
                     exit
