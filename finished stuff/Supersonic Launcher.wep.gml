@@ -29,10 +29,13 @@ return choose("A TRUE BOOMBURST","SHIFT SOME SMOKE","CLOSE COMBAT INFUSION");
 
 #define weapon_fire
 sleep(12)
+var p = random_range(.8,1.2)
 //sound_play_pitch(sndDiscgun,1.6) good pest sound
 //sound_play_pitch(sndPortalAppear,3) ancient gunnery
-sound_play_pitch(sndUltraShotgun,1.7)
-sound_play_pitch(sndHyperLauncher,random_range(.5,.7))
+sound_play_pitch(sndUltraShotgun,1.7*p)
+sound_play_pitch(sndHyperLauncher,.6*p)
+sound_play_gun(sndClickBack,1,.2)
+sound_stop(sndClickBack)
 weapon_post(12,-16,23)
 motion_add(gunangle -180,6)
 with instance_create(x,y,CustomProjectile)
@@ -52,7 +55,7 @@ with instance_create(x,y,CustomProjectile)
 		instance_create(x,y,Smoke)
 		repeat(30){with instance_create(x,y,Dust){motion_add(other.direction-random_range(-60,60),random_range(2,5));growspeed = random_range(0.1,0.005)}}
 		direction = other.gunangle+random_range(-2,2)*other.accuracy
-		if place_meeting(x,y,enemy) || place_meeting(x,y,Wall) //haha yes
+		if place_meeting(x,y,enemy) || place_meeting(x,y,Wall) || place_meeting(x,y,prop) //haha yes
 		{
 			with mod_script_call("mod","defpack tools","create_sonic_explosion",other.x,other.y)
 			{
@@ -153,7 +156,7 @@ do
 {
 	dir += 1 x += lengthdir_x(1,direction) y += lengthdir_y(1,direction)
 	if irandom(1) = 0 with instance_create(x,y,Dust){motion_add(other.direction-random_range(-80,80),random_range(2,7));growspeed = random_range(0.1,0.005)}
-	if place_meeting(x,y,enemy) || place_meeting(x,y,Wall)
+	if place_meeting(x,y,enemy) || place_meeting(x,y,Wall) || place_meeting(x,y,prop)
 	{
 		with mod_script_call("mod","defpack tools","create_sonic_explosion",other.x,other.y)
 		{
@@ -242,7 +245,7 @@ do
 	}
 	}
 }
-while instance_exists(self) and !place_meeting(x,y,Wall) and !place_meeting(x,y,enemy) and dir < 1000
+while instance_exists(self) and !place_meeting(x,y,Wall) and !place_meeting(x,y,enemy) and !place_meeting(x,y,prop) and dir < 1000
 speed = other.speed+1
 mask_index = other.mask_index
 repeat(8){with instance_nearest(x,y,Wall){if distance_to_object(other)<= 32{instance_create(x,y,FloorExplo);instance_destroy()}}}

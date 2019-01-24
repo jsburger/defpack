@@ -1,11 +1,15 @@
  #define init
-global.sprEnergyGun = sprite_add_weapon("sprites/Energy Gun.png", 6, 4);
+global.sprEnergyGun    = sprite_add_weapon("sprites/Energy Gun.png", 6, 4);
+global.sprEnergyGunHUD = sprite_add_weapon("sprites/Energy Gun.png", 8, 5);
 
 #define weapon_name
 return "IONIZER"
 
 #define weapon_sprt
 return global.sprEnergyGun;
+
+#define weapon_sprt_hud
+return global.sprEnergyGunHUD;
 
 #define weapon_type
 return 5;
@@ -42,7 +46,9 @@ else
   sound_play_pitch(sndUltraLaserUpg,1.5*_p)
   sound_play_pitch(sndPlasmaUpg,.7*_p)
 }
-weapon_post(9,-10,16)
+sound_play_gun(sndClickBack,1,.6)
+sound_stop(sndClickBack)
+weapon_post(8,-10,16)
 with lightning_create(x,y,12,gunangle+random_range(-10,10)){
     team = other.team
     creator = other

@@ -1,10 +1,15 @@
 #define init
-global.sprHyperBouncerRifle = sprite_add_weapon("sprites/sprHyperBouncerRifle.png", 6, 7);
+global.sprHyperBouncerRifle    = sprite_add_weapon("sprites/sprHyperBouncerRifle.png", 6, 7);
+global.sprHyperBouncerRifleHUD = sprite_add_weapon("sprites/sprHyperBouncerRifle.png", 16, 6);
+
 #define weapon_name
 return "HYPER BOUNCER RIFLE";
 
 #define weapon_sprt
 return global.sprHyperBouncerRifle;
+
+#define weapon_sprt_hud
+return global.sprHyperBouncerRifleHUD;
 
 #define weapon_type
 return 1;

@@ -1,8 +1,9 @@
 #define init
-global.sprThundercrash = sprite_add_weapon("sprites/sprThundercrash.png", 10, 5);
-global.sprUmbrella     = sprite_add("defpack tools/sprRainDisk.png",2,14,14);
-global.mskUmbrella     = sprite_add("defpack tools/mskRainDisk.png",0,14,14);
-global.sprUmbrellaOrb  = sprite_add("sprites/projectiles/sprRainOrb.png",2,9,9);
+global.sprThundercrash    = sprite_add_weapon("sprites/sprThundercrash.png", 10, 5);
+global.sprThundercrashHUD = sprite_add_weapon("sprites/sprThundercrash.png", 17, 6);
+global.sprUmbrella        = sprite_add("defpack tools/sprRainDisk.png",2,14,14);
+global.mskUmbrella        = sprite_add("defpack tools/mskRainDisk.png",0,14,14);
+global.sprUmbrellaOrb     = sprite_add("sprites/projectiles/sprRainOrb.png",2,9,9);
 
 while 1{
     if instance_exists(GenCont) || instance_exists(mutbutton) with instances_matching(CustomProjectile,"name","mega lightning bullet","lightning orb") instance_delete(self)
@@ -14,6 +15,9 @@ return "THUNDERCRASH"
 
 #define weapon_sprt
 return global.sprThundercrash;
+
+#define weapon_sprt_hud
+return global.sprThundercrashHUD;
 
 #define weapon_type
 return 5;

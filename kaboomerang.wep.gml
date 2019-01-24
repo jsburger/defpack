@@ -1,11 +1,15 @@
 #define init
-global.sprboomerang = sprite_add_weapon("sprites/sprBOOMerang.png",3,3);
+global.sprboomerang    = sprite_add_weapon("sprites/sprBOOMerang.png",3,3);
+global.sprboomerangHUD = sprite_add_weapon("sprites/sprBOOMerang.png",-1,3);
 
 #define weapon_name
 return "KABOOMERANG";
 
 #define weapon_type
 return 4;
+
+#define weapon_sprt_hud
+return global.sprboomerangHUD;
 
 #define weapon_cost
 return 1;
@@ -14,7 +18,7 @@ return 1;
 return 4;
 
 #define weapon_load
-return 1;//???
+return 6;//!!!
 
 #define weapon_swap
 return sndSwapHammer;
@@ -38,6 +42,7 @@ with instance_create(x,y,CustomObject)
   mask_index   = sprMapDot
   image_speed = 0
   curse = other.curse
+  other.curse = 0
   other.wep = 0
   maxspeed = 14 + skill_get(13)*4
   phase = 0
@@ -109,16 +114,17 @@ else//return to player
   {
     var _d = point_direction(x,y,creator.x,creator.y)
     if phase = 1 motion_add(_d,8*current_time_scale)
+    var _r = weapon_get_load(mod_current)
     if distance_to_object(creator) <= 9+skill_get(17)*3
     {
-      if creator.wep  = 0{sleep(30);sound_play(sndSwapHammer);instance_create(x,y,WepSwap);creator.wep = mod_current;instance_destroy();exit}
-      if creator.bwep = 0{sleep(30);sound_play(sndSwapHammer);instance_create(x,y,WepSwap);creator.bwep = mod_current;instance_destroy();exit}
+      if creator.wep  = 0{creator.reload += _r;sleep(30);creator.curse = curse;sound_play(sndSwapHammer);instance_create(x,y,WepSwap);creator.wep = mod_current;instance_destroy();exit}
+      if creator.bwep = 0{creator.breload += _r;sleep(30);creator.bcurse = curse;sound_play(sndSwapHammer);instance_create(x,y,WepSwap);creator.bwep = mod_current;instance_destroy();exit}
       //zphase = 2//not homing anymore
     }
     if creator.mask_index = 268 && place_meeting(x,y,Portal)
     {
-      if creator.wep  = 0{sleep(30);sound_play(sndSwapHammer);instance_create(x,y,WepSwap);creator.wep = mod_current;instance_destroy();exit}
-      if creator.bwep = 0{sleep(30);sound_play(sndSwapHammer);instance_create(x,y,WepSwap);creator.bwep = mod_current;instance_destroy();exit}
+      if creator.wep  = 0{creator.reload += _r;sleep(30);creator.curse = curse;sound_play(sndSwapHammer);instance_create(x,y,WepSwap);creator.wep = mod_current;instance_destroy();exit}
+      if creator.bwep = 0{creator.breload += _r;sleep(30);creator.bcurse = curse;sound_play(sndSwapHammer);instance_create(x,y,WepSwap);creator.bwep = mod_current;instance_destroy();exit}
       //zphase = 2//not homing anymore
     }
     if creator.wep != 0 && creator.bwep != 0

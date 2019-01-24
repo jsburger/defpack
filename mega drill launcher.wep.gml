@@ -1,6 +1,7 @@
 #define init
 //global.gun
 global.sprMegaDrillLauncher = sprite_add_weapon("sprites/sprBigDrillLauncher.png",15,10)
+global.sprMegaDrillLauncherHUD = sprite_add_weapon("sprites/sprBigDrillLauncher.png",37,5)
 global.sprMegaDrill = sprite_add("sprites/projectiles/sprBigDrill.png",4,15,10)
 global.explosive = 0 //boolean, try turning it off
 #macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)
@@ -24,6 +25,8 @@ return 0
 return 1
 #define weapon_sprt
 return global.sprMegaDrillLauncher
+#define weapon_sprt_hud
+return global.sprMegaDrillLauncherHUD
 #define weapon_text
 //how could you not
 return "PIERCE THE HEAVENS"

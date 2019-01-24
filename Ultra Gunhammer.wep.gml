@@ -1,6 +1,7 @@
 #define init
-global.sprUltraGunhammer = sprite_add_weapon("sprites/sprUltraGunhammer.png", 0, 9);
-global.sprUltraGunhammerOff = sprite_add_weapon("sprites/sprUltraGunhammerOff.png",0, 9);
+global.sprUltraGunhammer 	    = sprite_add_weapon("sprites/sprUltraGunhammer.png", 0, 9);
+global.sprUltraGunhammerHUD 	= sprite_add_weapon("sprites/sprUltraGunhammer.png", 8, 6);
+global.sprUltraGunhammerOff   = sprite_add_weapon("sprites/sprUltraGunhammerOff.png",0, 9);
 
 #define weapon_name
 return "ULTRA GUNHAMMER";
@@ -13,6 +14,9 @@ with(GameCont)
 return global.sprUltraGunhammerOff
 #define weapon_type
 return 1;
+
+#define weapon_sprt_hud
+return global.sprUltraGunhammerHUD;
 
 #define weapon_auto
 return false;

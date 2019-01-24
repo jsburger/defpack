@@ -1,5 +1,6 @@
 #define init
-global.sprGunhammer = sprite_add_weapon("sprites/sprGunhammer.png", 0, 8);
+global.sprGunhammer 		 = sprite_add_weapon("sprites/sprGunhammer.png", 0, 8);
+global.sprGunhammerHUD 	 = sprite_add_weapon("sprites/sprGunhammer.png", 11, 5);
 global.sprGunhammerSlash = sprite_add("sprites/projectiles/Gunhammer Slash.png",3,0,24)
 
 #define weapon_name
@@ -7,6 +8,9 @@ return "GUNHAMMER";
 
 #define weapon_sprt
 return global.sprGunhammer;
+
+#define weapon_sprt_hud
+return global.sprGunhammerHUD;
 
 #define weapon_type
 return 1;

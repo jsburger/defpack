@@ -1,6 +1,7 @@
 #define init
-global.sprBone = sprite_add_weapon("sprites/sprMegaBone.png",8,6)
-global.mskBone = sprite_add_weapon("sprites/mskMegaBoneUpg.png",28,6)
+global.sprBone    = sprite_add_weapon("sprites/sprMegaBone.png",8,6)
+global.sprBoneHUD = sprite_add_weapon("sprites/sprMegaBone.png",6,8)
+global.mskBone 		= sprite_add_weapon("sprites/mskMegaBoneUpg.png",28,6)
 
 #define weapon_name
 return "BIG BONE"
@@ -51,6 +52,9 @@ with instance_create(x+lengthdir_x(length,gunangle),y+lengthdir_y(length,gunangl
 
 #define weapon_sprt
 return global.sprBone
+
+#define weapon_sprt_hud
+return global.sprBoneHUD
 
 #define weapon_text
 return "UNHOLY"

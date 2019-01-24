@@ -1,5 +1,6 @@
 #define init
 global.sprLightningWheel        = sprite_add_weapon("sprites/sprLightningWheel.png",9,8);
+global.sprLightningWheelHUD     = sprite_add_weapon("sprites/sprLightningWheel.png",3,5);
 global.sprLightningWheelProj    = sprite_add("sprites/sprLightningWheelProj.png",2,10,10);
 global.sprLightningWheelProjUpg = sprite_add("sprites/sprLightningWheelProjUpg.png",2,13,13);
 
@@ -7,6 +8,9 @@ global.sprLightningWheelProjUpg = sprite_add("sprites/sprLightningWheelProjUpg.p
 
 #define weapon_name
 return "LIGHTNING WHEEL";
+
+#define weapon_sprt_hud
+return global.sprLightningWheelHUD;
 
 #define weapon_type
 return 5;
@@ -18,10 +22,10 @@ return 1;
 return 1;
 
 #define weapon_area
-return 7;
+return 2;
 
 #define weapon_load
-return 1;//???
+return 16;//???
 
 #define weapon_swap
 return sndSwapHammer;
@@ -39,6 +43,8 @@ return false;
 var _p = random_range(.8,1.2);
 sound_play_pitch(sndChickenThrow,_p)
 sound_play_pitch(sndAssassinHit,1.2*_p)
+sound_play_gun(sndClickBack,1,.4)
+sound_stop(sndClickBack)
 if !skill_get(17)
 {
   sound_play_pitch(sndLightningShotgun,2*_p)
@@ -127,7 +133,7 @@ if speed <= friction and chance(17 + 5*skill_get(mut_laser_brain)){
     }
 }
 var _m = 0
-if speed > friction _m = 3 else _m = 6
+if speed > friction _m = 1 else _m = 6
 var _d = random(360)
 var _s = random_range(4,9)
 if chance(3) with instance_create(x+lengthdir_x(_s, _d), y+lengthdir_y(_s, _d), LightningSpawn) image_angle = _d
@@ -207,11 +213,27 @@ if phase = 0 and speed <= friction{
 if phase = 1{
     motion_add(point_direction(x, y, creator.x, creator.y), 14*current_time_scale)
     if point_distance(creator.x, creator.y, x, y) < 24 + 6*skill_get(mut_long_arms){
-        if creator.wep  = 0{grabbed = 1;sleep(30);sound_play(sndSwapHammer);instance_create(x,y,WepSwap);creator.wep = mod_current;instance_destroy();exit}
-        if creator.bwep = 0{grabbed = 1;sleep(30);sound_play(sndSwapHammer);instance_create(x,y,WepSwap);creator.bwep = mod_current;instance_destroy();exit}
+      grabbed = true
+      var _r = weapon_get_load(mod_current)
+      if creator.wep  = 0{creator.reload += _r;sleep(30);creator.curse = curse;sound_play(sndSwapHammer);instance_create(x,y,WepSwap);creator.wep = mod_current;instance_destroy();exit}
+      if creator.bwep = 0{creator.breload += _r;sleep(30);creator.bcurse = curse;sound_play(sndSwapHammer);instance_create(x,y,WepSwap);creator.bwep = mod_current;instance_destroy();exit}
         else if creator.wep = 0{
             instance_destroy()
             exit
+        }
+        if creator.wep != 0 && creator.bwep != 0
+        {
+          with instance_create(x,y,ThrownWep)
+          {
+            sprite_index = global.sprLightningWheel
+            wep = mod_current
+            curse = other.curse
+            motion_add(other.direction-180+random_range(-30,30),2)
+            team = other.team
+            creator = other.creator
+          }
+          instance_destroy()
+          exit
         }
     }
 }

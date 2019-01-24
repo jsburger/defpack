@@ -1,5 +1,6 @@
 #define init
 global.sprHeavyNuke 				  = sprite_add("sprHeavyNuke.png",0, 8, 6);
+global.mskHeavyNuke 				  = sprite_add("mskHeavyNuke.png",0, 8, 6);
 global.sprHeavyNukeLauncher   = sprite_add_weapon("sprHeavyNukeLauncher.png", 20, 8);
 global.sprSmallGreenExplosion = sprite_add("GreenExplosionS.png",7,12,12)
 global.sprHeavyNukeFlame 			= sprite_add("sprHeavyNukeFlame.png",3,36,12)
@@ -41,13 +42,14 @@ sound_play_pitch(sndHeavySlugger,.6)
 weapon_post(15,-146,82)
 sleep(40)
 motion_add(gunangle,-5)
-with instance_create(x,y,CustomProjectile){
+with instance_create(x+lengthdir_x(4,gunangle),y+lengthdir_y(4,gunangle)-1,CustomProjectile){
 	friction = .18
 	motion_set(other.gunangle, 7)
 	team = other.team
 	creator = other
 	name = "Heavy Nuke"
 	sprite_index = global.sprHeavyNuke
+	mask_index = global.mskHeavyNuke
 	index = other.index
 	accuracy = other.accuracy
 	typ = 2

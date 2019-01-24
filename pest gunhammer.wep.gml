@@ -1,12 +1,16 @@
 #define init
-global.sprPestGunhammer = sprite_add_weapon("sprites/sprPestGunhammer.png", 0, 10);
-global.slash = sprite_add("sprites/projectiles/sprHeavyPestSlash.png",3,0,24);
+global.sprPestGunhammer    = sprite_add_weapon("sprites/sprPestGunhammer.png", 0, 10);//FOD THIS SPRITE FUCKIN SUCKS REMAKE THAT MF
+global.sprPestGunhammerHUD = sprite_add_weapon("sprites/sprPestGunhammer.png", 11, 8);
+global.slash 							 = sprite_add("sprites/projectiles/sprHeavyPestSlash.png",3,0,24);
 
 #define weapon_name
 return "PEST GUNHAMMER";
 
 #define weapon_sprt
 return global.sprPestGunhammer;
+
+#define weapon_sprt_hud
+return global.sprPestGunhammerHUD;
 
 #define weapon_type
 return 1;
