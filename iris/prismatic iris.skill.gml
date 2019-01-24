@@ -233,7 +233,7 @@ else{
     if global.color > 0 && instance_exists(Player){
         with instances_matching(WepPickup,"irischeck",null){
             if distance_to_object(instance_nearest(x,y,Player)) < 100{
-                irischeck = 1
+                irischeck = 1;
                 if color(wep,global.color){
                     sprite_index = weapon_get_sprt(wep)
                     name = weapon_get_name(wep)
