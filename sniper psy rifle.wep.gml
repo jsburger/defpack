@@ -5,6 +5,8 @@ global.sprPsyBulletHit   = sprite_add("defpack tools/Psy Bullet Hit.png", 4, 8, 
 global.epic = 1
 mod_script_call_nc("mod","defpermissions","permission_register","weapon",mod_current,"epic","Homing Psy Sights")
 
+#macro lasercolor 14074
+
 #define weapon_name
 return "PSY SNIPER RIFLE"
 
@@ -33,14 +35,15 @@ return sndSwapMachinegun;
 with instances_matching(instances_matching(CustomObject, "name", "sniper psy charge"),"creator",self){
     with other
     if global.epic{
-        with instance_create(x,y,CustomObject){
+        with instance_create(x+lengthdir_x(10,gunangle),y+lengthdir_y(10,gunangle),CustomObject){
+            move_contact_solid(other.gunangle,18)
+            draw_line_width_color(other.x, other.y, x, y, 1, lasercolor, lasercolor)
             typ = 1
             sprite_index = mskBullet2
             image_angle = other.gunangle
             direction = image_angle
-            team = other.direction
+            team = other.team
             hyperspeed = 8
-            trailscale = 2
             bangle = image_angle
             lasthit = -4
             image_yscale = .5
@@ -69,7 +72,7 @@ with instances_matching(instances_matching(CustomObject, "name", "sniper psy cha
                         shanks = instances_matching_ne([Shank,EnergyShank], "team", team),
                         customslashes = instances_matching_ne(CustomSlash, "team", team);
             	}
-        	    draw_line_width_color(x, y, _x, _y, 1, c_red, c_red)
+        	    draw_line_width_color(x, y, _x, _y, 1, lasercolor, lasercolor)
         
             	var q = instance_nearest_matching_ne(x,y,hitme,"team",team);
             	var reset = 1;

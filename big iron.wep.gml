@@ -50,16 +50,19 @@ with instance_create(x+lengthdir_x(24,gunangle),y+ lengthdir_y(24,gunangle),Cust
 	image_angle = other.gunangle
 }
 
-repeat(6)
-{
-with instance_create(x,y,Shell){motion_add(other.gunangle+90+random_range(-40,40),2+random(2))}
-  with create_bullet(x+lengthdir_x(24,gunangle),y+ lengthdir_y(24,gunangle)){
-      on_destroy = shell_destroy
-      direction = other.gunangle + random_range(-14,14)*other.accuracy;
-      image_angle = direction;
-      creator = other
-      team = other.team
-  }
+repeat(3){
+    repeat(2){
+        with instance_create(x,y,Shell){motion_add(other.gunangle+90+random_range(-40,40),2+random(2))}
+        with create_bullet(x+lengthdir_x(24,gunangle),y+ lengthdir_y(24,gunangle)){
+            on_destroy = shell_destroy
+            direction = other.gunangle + random_range(-14,14)*other.accuracy;
+            image_angle = direction;
+            creator = other
+            team = other.team
+        }
+    }
+    wait(1)
+    if !instance_exists(self) exit
 }
 
 #define create_bullet(_x,_y)
@@ -82,12 +85,36 @@ with instance_create(_x,_y,CustomProjectile){
 	return id
 }
 
+#define make_trail(range,direction)
+var num = random_range(20,40)
+var _x = lengthdir_x(range,direction), _y = lengthdir_y(range,direction)
+with instance_create(x-random(_x),y-random(_y),Dust){
+    motion_set(direction + num*choose(-1,1),3+random(1))
+    x+=hspeed
+    y+=vspeed
+}
 
 #define shell_destroy
+with instance_create(x+lengthdir_x(hyperspeed,direction),y+lengthdir_y(hyperspeed,direction),MeleeHitWall){
+    image_angle = other.direction
+    image_speed *= 2
+    image_index++
+}
+sound_play_hit(sndShotgunHitWall,.1)
 x += lengthdir_x(hyperspeed,direction)
 y += lengthdir_y(hyperspeed,direction)
-instance_create(x,y,BulletHit)
+
 line()
+if mod_exists("mod","defparticles") repeat(random(2)+2) with mod_script_call_nc("mod","defparticles","create_spark",x,y){
+    motion_set(random(360),random(3)+1)
+    gravity = 0
+    age /= 2
+    depth = -5
+    color = merge_color(c_yellow,c_white,.5)
+    fadecolor = c_white
+}
+
+//line()
 
 #define sniper_step
 
@@ -156,14 +183,26 @@ instance_destroy()
 #define void
 
 #define line()
-var dis = point_distance(x,y,xstart,ystart);
-var ang = point_direction(x,y,xstart,ystart)+180;
-var num = 20;
-for var i = 0; i <= num; i++{
-    with instance_create(xstart+lengthdir_x(dis/num * i,direction),ystart + lengthdir_y(dis/num * i,direction),BoltTrail){
-        image_angle = other.direction
-        image_yscale = other.trailscale * (i/num)
-        image_xscale = dis/num
+var num = 25
+var length = irandom_range(4,6)
+var width = random_range(.7, 1.2)
+var pivot = num - length - irandom((num - 2*length)/1.5)
+var dist = point_distance(x,y,xstart,ystart)
+var tolerance = 150
+var _x = lengthdir_x(dist/num,direction), _y = lengthdir_y(dist/num,direction)
+
+var xscale = dist/num, spd = (dist*((pivot)/num) / width * .2)
+
+for (var i = 1; i <= num; i++){
+    var yscale = 1 - (min(abs(pivot - i), length)/(length))
+    if yscale > 0{
+        with instance_create(x - _x * i, y - _y * i, BoltTrail){
+            image_xscale = xscale
+            image_angle = other.direction
+            image_yscale = yscale * width
+            motion_set(image_angle,spd)
+            if i < num - 2 && !irandom(7) make_trail(image_xscale, image_angle + 180)
+        }
     }
 }
 xstart = x

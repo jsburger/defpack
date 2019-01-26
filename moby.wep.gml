@@ -2,6 +2,8 @@
 global.sprMoby = sprite_add_weapon("sprites/sprMoby.png", 7, 2);
 global.yellow = merge_color(c_yellow, c_white, .4)
 
+#macro maxcharge 24
+
 #define weapon_name
 return "MOBY";
 
@@ -42,7 +44,7 @@ if !is_object(w){
 }
 else{
     if "charge" in w{
-        w.charge = min(w.charge + 2/w.charge, 24)
+        w.charge = min(w.charge + 2/w.charge, maxcharge)
         w.persist = 5
     }
     else{
@@ -74,9 +76,10 @@ if w.canbloom {
     }
     w.canbloom = 0
     weapon_post(5+random_range(w.charge * .04,-w.charge * .04),-3,2)
-    sound_play_pitch(sndTripleMachinegun,.7 + w.charge * .02)
+    sound_play_pitch(sndTripleMachinegun,(.7 + w.charge * .02)*random_range(.95,1.05))
     sound_play(sndMinigun)
-
+    sound_play_gun(sndClickBack, 0, 1 - (w.charge/(maxcharge*1.5)))
+    sound_stop(sndClickBack)
 }
 wep = w
 
@@ -124,7 +127,7 @@ with instance_create(_x,_y,CustomProjectile){
 	olddirection = 0
 	mask_index = mskBullet2
 	force = 4
-	damage = 2
+	damage = 3
 	lasthit = -4
 	dir = 0
 	recycle = (skill_get(mut_recycle_gland) && !irandom(2))
@@ -176,7 +179,7 @@ do
 	}
 
 	var q = collision_point(x,y,hitme,0,0)
-	if instance_exists(q) and projectile_canhit_np(q) and q.mask_index != mskNone{
+	if instance_exists(q) and projectile_canhit_np(q) and q.mask_index != mskNone and q.my_health > 0{
 	    if recycle{
 	        instance_create(x,y,RecycleGland)
 		    sound_play(sndRecGlandProc)
@@ -214,16 +217,6 @@ with instance_create(x,y,BoltTrail){
 
 }
 dir = 0
-/*var dis = point_distance(x,y,xstart,ystart) + 1;
-var num = 20;
-for var i = 0; i <= num; i++{
-    
-    with instance_create(xstart+lengthdir_x(dis/num * i,direction),ystart + lengthdir_y(dis/num * i,direction),BoltTrail){
-        image_angle = other.direction
-        image_yscale = floor(random(other.trailscale)*3)/3 * (i/num)
-        image_xscale = dis/num
-    }
-}*/
 
 #define muzzle_step
 if image_index+.01 >= 1{instance_destroy()}
