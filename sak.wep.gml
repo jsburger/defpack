@@ -1058,7 +1058,7 @@ do {
     var man = instance_place(x, y, hitme);
     x += xl
     y += yl
-    if !irandom(2+psy*4) instance_create(x + random_range(-4,4), y + random_range(-4,4), Smoke);
+    if !irandom(2) instance_create(x + random_range(-4,4), y + random_range(-4,4), Smoke);
 }
 until (instance_exists(man) && man.team != team) || place_meeting(x,y,Wall) || --dir <= 0
 x -= hspeed
