@@ -18,8 +18,8 @@ global.sprammom          = sprite_add("sprites/sprSAKammoMini.png",9,0,0)
 global.sprbodyShell      = sprite_add("sprites/sprSAKbodyShell.png",6,0,0)
 global.sprbodySlug       = sprite_add("sprites/sprSAKbodySlug.png",6,0,0)
 global.sprbodym          = sprite_add("sprites/sprSAKbodyMini.png",7,0,0)
-global.sprmods  	     = sprite_add("sprites/sprSAKmods.png",10,0,0)
-global.sprmodsm  	     = sprite_add("sprites/sprSAKmodsm.png",11,0,0)
+global.sprmods  	       = sprite_add("sprites/sprSAKmods.png",10,0,0)
+global.sprmodsm  	       = sprite_add("sprites/sprSAKmodsm.png",11,0,0)
 global.sprmodsShotgun    = sprite_add("sprites/sprSAKmodsShotgun.png",10,0,0)
 global.sprmodsPopGun     = sprite_add("sprites/sprSAKmodsPop.png",10,0,0)
 global.sprmodsEraser     = sprite_add("sprites/sprSAKmodsEraser.png",10,0,0)
@@ -1274,7 +1274,7 @@ with player_find(index){
 			draw_text_nt(_x+1,y2+5,p+access)
 
 			draw_set_font(fntSmall)
-            
+
             var rel = sts[? access][1]
             var cost = sts[? access][0]
             for var o = w.phase; o > 0; o--{
@@ -1282,10 +1282,10 @@ with player_find(index){
                 cost *= sts[? w.info[o]][0]
             }
             var t = tex[? access]
-            t += "#Reload: " + string(w.phase = 0 ? rel : floor(rel))
-            t += "#Cost: " + string(floor(cost))
-            
-            draw_text_ext_shadow(_x+1, y2+16, t, 6, 22*width)
+            t += "#@sReload@w: " + string(w.phase = 0 ? rel : floor(rel))
+            t += "#@sCost@w: " + string(floor(cost))
+
+            draw_text_nt(_x+1, y2+16, t)
 
 			draw_set_font(fntM)
 
