@@ -133,7 +133,7 @@ if speed <= friction and chance(17 + 5*skill_get(mut_laser_brain)){
     }
 }
 var _m = 0
-if speed > friction _m = 1 else _m = 6
+if speed > friction _m = 1 else _m = 7
 var _d = random(360)
 var _s = random_range(4,9)
 if chance(3) with instance_create(x+lengthdir_x(_s, _d), y+lengthdir_y(_s, _d), LightningSpawn) image_angle = _d
@@ -173,10 +173,10 @@ ang += 18 * current_time_scale
 if phase = 0 and speed <= friction{
     if button_check(creator.index, btn) and creator.mask_index != mskNone{
         speed = 0
-        ang += 10 * current_time_scale
+        ang += 12 * current_time_scale
         if timer[0] > 0 timer[0] -= current_time_scale
         else{
-            timer[0] = 10
+            timer[0] = 15
             if creator.infammo = 0{
                 if creator.ammo[5] > 0{
                     creator.ammo[5]--
