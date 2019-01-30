@@ -1282,8 +1282,8 @@ with player_find(index){
                 cost *= sts[? w.info[o]][0]
             }
             var t = tex[? access]
-            t += "#@sReload@w: " + string(w.phase = 0 ? rel : floor(rel))
-            t += "#@sCost@w: " + string(floor(cost))
+            t += "#@sReload:@w " + string(w.phase = 0 ? rel : floor(rel))
+            t += "#@sCost:@w " + string(floor(cost))
 
             draw_text_nt(_x+1, y2+16, t)
 
