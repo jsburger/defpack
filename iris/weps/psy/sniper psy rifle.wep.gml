@@ -1,7 +1,7 @@
 #define init
 global.sprSniperPsyRifle = sprite_add_weapon("sprites/sprSniperPsyRifle.png", 5, 3);
-global.sprPsyBullet 		 = sprite_add("defpack tools/Psy Bullet.png", 2, 8, 8);
-global.sprPsyBulletHit   = sprite_add("defpack tools/Psy Bullet Hit.png", 4, 8, 8);
+global.sprPsyBullet 		 = sprite_add("sprites/projectiles/sprPsyMuzzle.png", 1, 8, 8);
+global.sprPsyBulletHit   = sprite_add("sprites/projectiles/sprPsyBulletHit.png", 4, 8, 8);
 global.epic = 1
 mod_script_call_nc("mod","defpermissions","permission_register","weapon",mod_current,"epic","Homing Psy Sights")
 
@@ -47,7 +47,7 @@ with instances_matching(instances_matching(CustomObject, "name", "sniper psy cha
             bangle = image_angle
             lasthit = -4
             image_yscale = .5
-            
+
             var shields = instances_matching_ne([CrystalShield,PopoShield], "team", team),
                 slashes = instances_matching_ne([EnergySlash,Slash,EnemySlash,EnergyHammerSlash,BloodSlash,GuitarSlash], "team", team),
                 shanks = instances_matching_ne([Shank,EnergyShank], "team", team),
@@ -73,7 +73,7 @@ with instances_matching(instances_matching(CustomObject, "name", "sniper psy cha
                         customslashes = instances_matching_ne(CustomSlash, "team", team);
             	}
         	    draw_line_width_color(x, y, _x, _y, 1, lasercolor, lasercolor)
-        
+
             	var q = instance_nearest_matching_ne(x,y,hitme,"team",team);
             	var reset = 1;
                 var cap = 3*hyperspeed;
@@ -90,13 +90,13 @@ with instances_matching(instances_matching(CustomObject, "name", "sniper psy cha
             	if reset{
             	    direction -= clamp(angle_difference(direction,bangle),-cap,cap)
             	}
-        
+
             	if place_meeting(x,y,Wall){instance_destroy()}
             }
             while instance_exists(self) and dir < 500
             if instance_exists(self)
                 instance_destroy()
-        
+
         }
         return false;
     }
@@ -212,13 +212,14 @@ if button_check(index, btn) = false || holdtime <= 0
 				on_destroy = sniper_destroy
 				on_hit 		 = void
 		}
-		with instance_create(x,y,CustomObject)
+		with instance_create(x,y,CustomProjectile)
 		{
 			move_contact_solid(other.gunangle,24)
 			depth = -1
 			sprite_index = global.sprPsyBullet
+      mask_index   = mskNone
 			image_speed = .4
-			on_step = muzzle_step
+			on_step = muzzle_anim
 			on_draw = muzzle_draw
 		}
 	}
@@ -259,7 +260,7 @@ do
             customslashes = instances_matching_ne(CustomSlash, "team", team),
             enemies = instances_matching_ne(hitme, "team", team);
 	}
-	
+
 	var q = instance_nearest_matching_ne(x,y,hitme,"team",team);
 	var reset = 1;
     var cap = 3*hyperspeed;
@@ -334,8 +335,8 @@ return found
 #define sniper_destroy
 with instance_create(x,y,BulletHit) sprite_index = global.sprPsyBulletHit
 
-#define muzzle_step
-if image_index > 1{instance_destroy()}
+#define muzzle_anim
+instance_destroy()
 
 #define muzzle_draw
 draw_sprite_ext(sprite_index, image_index, x, y, 2*image_xscale, 2*image_yscale, image_angle, image_blend, 1.0);
