@@ -15,7 +15,7 @@ return "BEAMER"
 return 5;
 
 #define weapon_cost
-return 810;
+return 10;
 
 #define weapon_area
 return 14;

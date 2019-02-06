@@ -14,25 +14,24 @@ return 0;
 return true;
 
 #define weapon_load
-with instances_matching(CustomObject,"name","autoscrewtimer")
-{
-	if creator = other
-	{
-		if timer <= 0
-		{
-			return count+1
-		}
-		else
-		{
-			return 2;
-		}
-	}
-	else
-	{
-		return 2;//sorry karm, but a 1 frame reload is just too fast
-		//frick you
-	}
+if !skill_get("screwdriver mastery"){
+    with instances_matching(CustomObject,"name","autoscrewtimer"){
+    	if creator = other{
+    		if timer <= 0{
+    			return count+1
+    		}
+    		else{
+    			return 2;
+    		}
+    	}
+    	else{
+    		return 2;
+    		//sorry karm, but a 1 frame reload is just too fast
+    		//frick you
+    	}
+    }
 }
+return 2
 #define weapon_cost
 return 0;
 
@@ -50,7 +49,8 @@ weapon_post(-8,2,5)
 sound_play_pitch(sndScrewdriver,random_range(.9,1.2))
 wepangle = -wepangle
 motion_add(gunangle, 4)
-with instance_create(x,y,Shank)
+var l = 20 * skill_get(mut_long_arms)
+with instance_create(x + lengthdir_x(l, gunangle), y + lengthdir_y(l, gunangle), Shank)
 {
 	damage = 4
 	creator = other
@@ -58,19 +58,12 @@ with instance_create(x,y,Shank)
 	motion_add(other.gunangle, 2 + (skill_get(13) * 3))
 	image_angle = direction
 	team = other.team
-	image_xscale *= 1.1
-	image_yscale *= 1.3
 	name = "autoslash"
-	if skill_get(13)
-	{
-		x += 4 *hspeed;
-		y += 4 *vspeed;
-	}
 	with instance_create(x,y,CustomObject)
 	{
 		count = 1
-		timer  = room_speed*1.5
-		timer2 = room_speed
+		timer  = 45
+		timer2 = 30
 		on_step = autoscrew_step
 		creator = other.creator
 		with instances_matching(CustomObject,"name","autoscrewtimer")
@@ -104,6 +97,6 @@ if timer2 <= 0
 {
 	timer2=0
 	timer++
-	if timer > room_speed*1.5{timer = room_speed*1.5}
+	if timer > 45{timer = 45}
 	if count > 0{count--}
 }

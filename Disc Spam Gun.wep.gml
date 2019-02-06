@@ -10,7 +10,7 @@ return 3
 return 1
 #define weapon_area
 if instance_is(other, WeaponChest) || instance_is(other, BigCursedChest){
-    if curse > 0 return 6
+    if other.curse > 0 return 6
 }
 return -1
 #define weapon_load

@@ -5,9 +5,10 @@ global.slowed = 0
 global.user = -1
 global.clock = 1
 global.shake = UberCont.opt_shake
+global.pausetime = 0
 
 while 1 {
-	if global.slowed{
+	if global.slowed and global.pausetime = 0{
 		var t = ((30 / room_speed) - current_time_scale);
 	    var ts = current_time_scale;
 	    current_time_scale = t
@@ -93,8 +94,8 @@ while 1 {
         		    speed -= min(friction * t, speed);
         		    x += hspeed * t;
         			y += vspeed * t;
-        			alarm1-=t
-        			alarm2-=t
+        			alarm1 -= t
+        			alarm2 -= t
         			if alarm1 < 0 event_perform(ev_alarm,1)
         			if alarm2 < 0 event_perform(ev_alarm,2)
         			image_index += image_speed * t;
@@ -107,7 +108,7 @@ while 1 {
         		    speed -= min(friction * t, speed);
         		    x += hspeed * t;
         			y += vspeed * t;
-        			alarm1-=t
+        			alarm1 -= t
         			if alarm1 < 0 event_perform(ev_alarm,1)
         		    if instance_exists(self) event_perform(ev_step,ev_step_end)
         		}
@@ -127,10 +128,11 @@ while 1 {
 		}
 		else unfreeze()
 		if !instance_exists(Player) || instance_exists(GenCont) || instance_exists(mutbutton){
-            unfreeze()
+		    unfreeze()
 		}
 
 	}
+	global.pausetime = 0
 	//trace(global.slowed,global.time)
 	wait(0)
 }
@@ -138,13 +140,7 @@ while 1 {
 #define unfreeze
 global.user = -4
 global.slowed = 0
-var t = global.time
-current_time_scale = t
-if fork(){
-    wait(0)
-    current_time_scale = t
-    exit
-}
+current_time_scale = global.time
 UberCont.opt_shake = global.shake
 
 //big thankie yokin

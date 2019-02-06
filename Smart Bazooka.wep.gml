@@ -45,6 +45,7 @@ with instance_create(x,y,CustomProjectile){
 	friction = -.4
 	timer = 5
 	damage = 10
+	immuneToDistortion = 1
 	sprite_index = global.sprSmartRocket
 	image_angle = direction
 	on_step = script_ref_create(rocket_step)

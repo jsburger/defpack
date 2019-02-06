@@ -86,7 +86,7 @@ repeat(3){
         with instance_create(x,y,MeleeHitWall){
             image_angle = other.direction + 180
             image_speed *= 4
-            image_blend = merge_color(merge_color(c_white,c_yellow,.1 + random(.2)), c_orange, .1+random(.2))
+            image_blend = merge_color(c_white,c_yellow,.1 + random(.2))
             motion_set(other.direction,2)
         }
         
