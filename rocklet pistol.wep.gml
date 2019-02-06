@@ -50,6 +50,6 @@ if fork(){
             motion_add(other.gunangle+random_range(-30,30)*creator.accuracy,2)
             image_angle = direction
         }
-        wait(2)
+        wait(3)
     }
 }

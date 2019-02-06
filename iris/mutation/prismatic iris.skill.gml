@@ -12,6 +12,10 @@ global.effect = sprite_add("sprites/sprIrisEffect.png",8,16,11)
 for var i = 0; i <= global.colorcount; i++{
     array_push(global.icons,sprite_add(`sprites/sprMutPrismaticIcon${i}.png`,1,8,7))
 }
+
+global.forcecolor = 0
+mod_script_call_nc("mod", "defpermissions", "permission_register", "skill", mod_current, "forcecolor", "Force Iris Bullets")
+
 #define game_start
 global.color = 0
 
@@ -248,6 +252,33 @@ else{
     }
 }
 
+if global.forcecolor{
+    if global.color <= 4{
+        var str = "create_"+global.colors[global.color]+"_bullet" 
+        with Bullet1 {
+            with mod_script_call_self("mod", "defpack tools", str, x, y){
+                creator = other.creator
+                team = other.team
+                speed = other.speed
+                direction = other.direction
+                image_angle = other.direction
+            }
+            instance_delete(self)
+        }
+    }
+    else if global.color = 6{
+        with Bullet1 {
+            with instance_create(x, y, BouncerBullet){
+                creator = other.creator
+                team = other.team
+                speed = other.speed
+                direction = other.direction
+                image_angle = other.direction
+            }
+            instance_delete(self)
+        }
+    }
+}
 
 
 #define reverse(wep)

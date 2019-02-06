@@ -35,6 +35,7 @@ if fork(){
 				name = "Puncher Rocket"
 				sprite_index = global.sprPuncherRocket
 				team = other.team
+				immuneToDistortion = 1
 				creator = other
 				damage = 15
 				motion_set(other.gunangle + random_range(-4-(i),4+(i)) * other.accuracy,1)

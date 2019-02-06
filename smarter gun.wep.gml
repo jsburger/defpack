@@ -6,7 +6,7 @@ return "SMARTER GUN"
 #define weapon_type
 return 1
 #define weapon_cost
-return 0
+return 1
 #define weapon_area
 return 15
 #define weapon_load
@@ -19,61 +19,86 @@ return 1
 return 0
 #define weapon_laser_sight
 return 0
+#define weapon_iris
+return "smarter x gun"
 #define weapon_fire
-if instance_is(self,Player){
-    if ammo[weapon_type()] >= 1 or infammo != 0 reload -= weapon_load()
+var hand = specfiring and race = "steroids"
+if shoot( 1 - 2*hand, 1- 2*hand, hand, 1, 0){
+    weapon_post(1, 0, 0)
 }
-#define shoot(_x,_y,angle)
-weapon_post(0,0,5)
-sound_play_gun(sndSmartgun,.1,.7)
-sound_play_gun(sndHitMetal,1.7,.1)
-sound_play_pitch(sndGruntFire,random_range(1.2,1.4))
-with instance_create(_x,_y,Bullet1)
-{
-	sprite_index = sprIDPDBullet
-	creator = other
-	team = other.team
-	motion_set(angle,16)
-	image_angle = direction
+
+#define shoot(xm, ym, hand, manual, justcoords)
+var xw = (sprite_get_width(sprite_index)/1.5 + (2 * (hand ? breload: reload)/weapon_load() * right)) * xm;
+var yw = -8+(sin(current_frame/10)*4 * ym);
+
+/*var _tx = x + lengthdir_x(xw, gunangle + 90),
+    _ty = y + lengthdir_y(xw, gunangle + 90) + yw
+*/
+var _tx = x + xw, _ty = y + yw;
+
+if justcoords return [_tx, _ty]
+
+var angle = gunangle, _canshoot = 0
+
+if !manual {
+    var target = mod_script_call_nc("mod", "defpack tools", "instance_nearest_matching_ne", _tx, _ty, hitme, "team", team)
+    if instance_exists(target){
+        var oldtarget = -4, targets = [], n = 0
+        while ++n <= 3 and target != oldtarget and !_canshoot and instance_exists(target){
+            if collision_line(_tx,_ty,target.x,target.y,Wall,0,0) or collision_line(_tx,_ty,target.x,target.y,PopoShield,0,0) {
+                //with instance_create(target.x, target.y - 6*n, WepSwap) image_blend = merge_color(c_red, c_yellow, (n-1)/2)
+                target.x += 10000
+                target.y += 10000
+                oldtarget = target
+                targets[n-1] = target
+                target = mod_script_call_nc("mod", "defpack tools", "instance_nearest_matching_ne", _tx, _ty, hitme, "team", team)
+            }
+            else _canshoot = 1
+        }
+        with targets {
+            x -= 10000   
+            y -= 10000
+        }
+        if _canshoot {
+            //with target with instance_create(x, y, WepSwap) image_blend = c_lime
+            //var d = point_distance(_tx, _ty, target.x, target.y)/16
+            angle = point_direction(_tx, _ty, target.x + target.hspeed, target.y + target.vspeed)
+        }
+    }
 }
-if infammo = 0 ammo[1]--
+
+if manual or _canshoot {
+    weapon_post(0,3,6)
+    var _r = random_range(.9, 1.1)
+    sound_play_pitchvol(sndSmartgun, .9 * _r, .8)
+    sound_play_pitch(sndGruntFire, .8 * _r)
+    with instance_create(_tx,_ty,Bullet1)
+    {
+    	sprite_index = sprIDPDBullet
+    	spr_dead = sprIDPDBulletHit
+    	creator = other
+    	team = other.team
+    	motion_set(angle,16)
+    	image_angle = direction
+    }
+    return 1
+}
+return 0
 
 #define step(w)
-if w && reload <= 0 && (ammo[1] || infammo != 0){
-    var _truex = x+sprite_get_width(sprite_index)/2-wkick*right;
-	var _truey = y-8+sin(current_frame/10)*5;
-	var _canshoot = button_check(index,"fire");
-	var ang = gunangle;
-    if instance_exists(enemy){
-		var target = instance_nearest(_truex,_truey,enemy);
-		if !collision_line(_truex,_truey,target.x,target.y,Wall,0,0) and !collision_line(_truex,_truey,target.x,target.y,PopoShield,0,0){
-		    _canshoot = 1
-		    ang = point_direction(_truex,_truey,target.x+target.hspeed,target.y+target.vspeed);
-		}
+
+if ammo[1] >= weapon_cost() or infammo != 0 {
+    if w and reload <= 0 and !button_check(index, "fire"){
+        if shoot(1, 1, 0, 0, 0){
+            reload = weapon_load()
+            ammo[1] -= weapon_cost()
+        }
     }
-    if _canshoot {
-        wkick = 2
-        reload = weapon_load()
-        shoot(_truex,_truey,ang)
-    }
-}
-if !w && breload <= 0 && (ammo[1] || infammo != 0){
-    var _truex = x-sprite_get_width(sprite_index)/2-bwkick*right;
-	var _truey = y-8-sin(current_frame/10)*5;
-	var _canshoot = 0;
-	if race = "steroids" _canshoot = button_check(index,"spec")
-	var ang = gunangle;
-    if instance_exists(enemy){
-		var target = instance_nearest(_truex,_truey,enemy);
-		if !collision_line(_truex,_truey,target.x,target.y,Wall,0,0) and !collision_line(_truex,_truey,target.x,target.y,PopoShield,0,0){
-		    _canshoot = 1
-		    ang = point_direction(_truex,_truey,target.x+target.hspeed,target.y+target.vspeed);
-		}
-    }
-    if _canshoot {
-        bwkick = 2
-        breload = weapon_load()
-        shoot(_truex,_truey,ang)
+    if !w and breload <= 0 and !(button_check(index, "spec") and race = "steroids"){
+        if shoot(-1, -1, 1, 0, 0){
+            breload = weapon_load()
+            ammo[1] -= weapon_cost()
+        }
     }
 }
 
@@ -95,11 +120,13 @@ return global.sprSmarterGunHUD
 if instance_is(self,Player)
 {
 	if wep = w{
-		draw_sprite_ext(global.sprSmarterGun,0,x+sprite_get_width(sprite_index)/2-wkick*right,y-8+sin(current_frame/10)*5,right,1,0,c_white,1)
+	    var q = shoot(1, 1, 0, 0, 1)
+		draw_sprite_ext(global.sprSmarterGun, 0, q[0], q[1], right, 1, 0, c_white, 1)
 	}
 	if bwep = w
 	{
-		draw_sprite_ext(global.sprSmarterGun,0,x-sprite_get_width(sprite_index)/2-bwkick*right,y-8+sin(current_frame/-10)*5,right,1,0,c_white,1)
+	    var q = shoot(-1, -1, 1, 0, 1)
+		draw_sprite_ext(global.sprSmarterGun, 0, q[0], q[1], right, 1, 0, c_white, 1)
 	}
 	return mskNothing
 }

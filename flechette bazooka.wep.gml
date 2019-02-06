@@ -40,7 +40,7 @@ sound_play_pitch(sndUltraCrossbow,2.3*_p)
 sound_play_pitch(sndRocket,.5*_p)
 sound_play_pitch(sndRocketFly,1.5)
 sound_play_pitchvol(sndNukeFire,2*_p,.3)
-with instance_create(x,y,CustomProjectile){
+with instance_create(x+lengthdir_x(6, gunangle),y + lengthdir_y(6, gunangle),CustomProjectile){
 	move_contact_solid(other.gunangle,6)
 	sprite_index = global.sprFlechetteRocket
 	team 		 = other.team
@@ -50,6 +50,7 @@ with instance_create(x,y,CustomProjectile){
 	image_speed = .5
 	maxspeed    = 28
 	damage      = 8
+	immuneToDistortion = 1
 	motion_set(other.gunangle + random_range(-3,3), 1)
 	image_angle = direction
 	on_destroy = script_ref_create(flare_destroy)

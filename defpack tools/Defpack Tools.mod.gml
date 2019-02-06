@@ -174,6 +174,9 @@ with instances_matching(CustomObject,"name","sniper charge","sniper pest charge"
 }
 draw_set_visible_all(1)
 
+#define draw_pause
+mod_variable_set("weapon", "stopwatch", "pausetime", 1)
+
 #define instances_in(left,top,right,bottom,obj)
 return instances_matching_gt(instances_matching_lt(instances_matching_gt(instances_matching_lt(obj,"y",bottom),"y",top),"x",right),"x",left)
 
@@ -1958,6 +1961,7 @@ with instance_create(_x,_y,CustomProjectile){
     damage = 3
     name = "Rocklet"
     maxspeed = 14
+    immuneToDistortion = 1
     typ = 1
     depth = -1
     direction_goal = 0
@@ -1973,7 +1977,6 @@ with instance_create(_x,_y,CustomProjectile){
 direction -= (angle_difference(direction,direction_goal)*current_time_scale)/8
 if speed > maxspeed{speed = maxspeed}
 image_angle = direction
-
 
 #define rocket_destroy
 sound_play_pitch(sndExplosionS,1.5)
