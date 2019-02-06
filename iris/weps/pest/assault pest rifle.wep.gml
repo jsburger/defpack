@@ -37,7 +37,7 @@ repeat(3)
   sound_play_pitch(sndMinigun,random_range(1.2,1.5))
   sound_play_pitch(sndPistol,random_range(.6,.8))
   sound_play_pitch(sndToxicBoltGas,random_range(3,3.8))
-  mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, random_range(3,5), c_green)
+  mod_script_call("mod","defpack tools", "shell_yeah", 180, 25, random_range(2,4), c_green)
   with mod_script_call("mod", "defpack tools", "create_toxic_bullet",x+lengthdir_x(8,gunangle),y+lengthdir_y(8,gunangle)){
       creator = other
       team = other.team

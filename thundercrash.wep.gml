@@ -74,7 +74,6 @@ with instance_create(x,y,CustomProjectile)
 	friction = 0
     force = 30
     image_speed = 1
-	on_draw = bloom_draw
     on_anim = stop_anim
     on_wall = lightningcluster_wall
     on_hit  = lightningcluster_hit
@@ -145,7 +144,6 @@ for var i = 0; i< 3; i++
     persistent = 1
     on_step = fric_step
     on_wall = bounce_wall
-    on_draw = bloom_draw_nade
     on_destroy = lightningnade_destroy
   }
 }
@@ -164,16 +162,3 @@ if skill_get(17){
 else{
 	sound_play_pitchvol(sndLightningRifle,.7*_pitch,.6)
 }
-
-
-#define bloom_draw
-draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, image_yscale, image_angle, image_blend, 1.0);
-draw_set_blend_mode(bm_add);
-draw_sprite_ext(sprite_index, image_index, x, y, 2*image_xscale+(1-image_index)*2, 2*image_yscale+(1-image_index)*2, image_angle, image_blend, 0.2+(1-image_index)*.4);
-draw_set_blend_mode(bm_normal);
-
-#define bloom_draw_nade
-draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, image_yscale, image_angle, image_blend, 1.0);
-draw_set_blend_mode(bm_add);
-draw_sprite_ext(sprite_index, image_index, x, y, 2*image_xscale, 2*image_yscale, image_angle, image_blend, 0.2);
-draw_set_blend_mode(bm_normal);

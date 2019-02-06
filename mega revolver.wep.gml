@@ -42,6 +42,7 @@ sound_play_gun(sndClickBack,1,0)
 sound_stop(sndClickBack)
 with instance_create(x,y,CustomProjectile)
 {
+    name = "mega bullet"
     typ = 1
     sprite_index = global.sprMegaBullet
     mask_index = mskHeavyBullet
@@ -58,7 +59,6 @@ with instance_create(x,y,CustomProjectile)
     on_destroy = mega_destroy
     on_wall    = mega_wall
     on_anim    = mega_anim
-    on_draw    = mega_draw
     on_hit     = mega_hit
     repeat(4)with instance_create(x+lengthdir_x(5,direction),y+lengthdir_y(5,direction),Smoke){
         gravity = -.1
@@ -87,12 +87,4 @@ with instance_create(x,y,BulletHit){sprite_index = sprSlugHit;image_index = 1}
 #define mega_anim
 image_index = 1
 image_speed = 0
-sleep(40)
-
-#define mega_draw
-sound_play_gun(sndClickBack,1,.8)
-sound_stop(sndClickBack)
-draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, image_yscale, image_angle, image_blend, 1.0);
-draw_set_blend_mode(bm_add);
-draw_sprite_ext(sprite_index, image_index, x, y, 2*image_xscale, 2*image_yscale, image_angle, image_blend, 0.1);
-draw_set_blend_mode(bm_normal);
+sleep(15)

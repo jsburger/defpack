@@ -1,20 +1,39 @@
 #define init
-global.sprPsyBullet = sprite_add("Psy Bullet.png", 2, 8, 8);
-global.mskPsyBullet = sprite_add("Psy Bullet Mask.png", 0, 7, 3);
-global.sprPsyBulletHit = sprite_add("Psy Bullet Hit.png", 4, 8, 8);
+global.sprFireBullet         = sprite_add("Fire Bullet.png", 2, 8, 8);
+global.sprFireBulletHit      = sprite_add("Fire Bullet Hit.png", 4, 8, 8);
+global.sprHeavyFireBullet    = sprite_add("sprHeavyFireBullet.png", 2, 12, 12);
+global.sprHeavyFireBulletHit = sprite_add("sprHeavyFireBulletHit.png", 4, 12, 12);
+
+global.sprHeavyBouncerBullet = sprite_add("sprHeavyBouncerBullet.png", 2, 12, 12);
+
+global.sprToxicBullet         = sprite_add("Toxic Bullet.png", 2, 8, 8);
+global.sprToxicBulletHit      = sprite_add("Toxic Bullet Hit.png", 4, 8, 8);
+global.sprHeavyToxicBullet    = sprite_add("sprHeavyPestBullet.png", 2, 12, 12);
+global.sprHeavyToxicBulletHit = sprite_add("sprHeavyPestBulletHit.png", 4, 12, 12);
+
+global.sprPsyBullet         = sprite_add("Psy Bullet.png", 2, 8, 8);
+global.mskPsyBullet         = sprite_add("Psy Bullet Mask.png", 0, 7, 3);
+global.sprPsyBulletHit      = sprite_add("Psy Bullet Hit.png", 4, 8, 8);
+global.sprHeavyPsyBullet    = sprite_add("sprHeavyPsyBullet.png", 2, 12, 12);
+global.sprHeavyPsyBulletHit = sprite_add("sprHeavyPsyBulletHit.png", 4, 12, 12);
+
+global.sprLightningBullet         = sprite_add("Lightning Bullet.png", 2, 8, 8);
+global.sprLightningBulletUpg      = sprite_add("sprThunderBulletUpg.png", 2, 8, 8);
+global.sprLightningBulletHit      = sprite_add("Lightning Bullet Hit.png", 4, 8, 8);
+global.sprHeavyLightningBullet    = sprite_add("sprHeavyThunderBullet.png", 2, 12, 12);
+global.sprHeavyLightningBulletUpg = sprite_add("sprHeavyThunderBulletUpg.png", 2, 12, 12);
+global.sprHeavyLightningBulletHit = sprite_add("sprHeavyThunderBulletHit.png", 4, 12, 12);
+
 global.sprPsyPellet = sprite_add("Psy Pellet.png", 2, 8, 8);
 global.sprPsyPelletDisappear = sprite_add("Psy Pellet Disappear.png", 5, 8, 8);
+
 global.sprMagPellet = sprite_add("Magnet Pellet.png", 2, 8, 8);
 global.sprMagPelletDisappear = sprite_add("Magnet Pellet Dissapear.png", 5, 8, 8);
+
 global.sprHeavyMagPellet = sprite_add("Heavy Magnet Pellet.png", 2, 9, 9);
 global.sprHeavyMagPelletDisappear = sprite_add("Heavy Magnet Pellet Dissapear.png", 5, 9, 8);
-global.sprLightningBullet = sprite_add("Lightning Bullet.png", 2, 8, 8);
-global.sprLightningBulletUpg = sprite_add("sprThunderBulletUpg.png", 2, 8, 8);
-global.sprLightningBulletHit = sprite_add("Lightning Bullet Hit.png", 4, 8, 8);
-global.sprToxicBullet = sprite_add("Toxic Bullet.png", 2, 8, 8);
-global.sprToxicBulletHit = sprite_add("Toxic Bullet Hit.png", 4, 8, 8);
-global.sprFireBullet = sprite_add("Fire Bullet.png", 2, 8, 8);
-global.sprFireBulletHit = sprite_add("Fire Bullet Hit.png", 4, 8, 8);
+
+
 global.sprDarkBullet = sprite_add("Dark Bullet.png", 2, 8, 8);
 global.mskDarkBullet = sprite_add("Dark Bullet Mask.png", 0, 2.5, 4.5);
 global.sprDarkBulletHit = sprite_add("Dark Bullet Hit.png", 4, 8, 8);
@@ -32,6 +51,7 @@ global.mskSonicExplosion = sprite_add("mskSonicExplosion_strip9.png",9,32,32);
 
 global.sprGenShell      = sprite_add("sprGenShell.png",7, 2, 2);
 global.sprGenShellLong  = sprite_add("sprGenShellL.png",7, 2, 3);
+global.sprGenShellHeavy = sprite_add("sprGenShellH.png",7, 2, 3);
 global.sprGenShellBig   = sprite_add("sprGenShellXL.png",7, 3, 3);
 global.stripes = sprite_add("BIGstripes.png",1,1,1);
 
@@ -81,7 +101,9 @@ vertex_format_begin()
 vertex_format_add_position()
 global.lightningformat = vertex_format_end()
 
-
+global.sprVectorHead 	  = sprite_add("sprVectorHead.png",0,5,5)
+global.sprWaterBeam       = sprite_add("sprWaterBeam.png",1,0,6);
+global.sprVectorBeamStart = sprite_add("sprVectorBeamStart.png",0,8,8);
 //thanks yokin
 #macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)
 
@@ -290,15 +312,81 @@ projectile_hit(other, (current_frame < fallofftime? damage : (damage - falloff))
 #define chance(percentage)
 return random(100) <= percentage*current_time_scale
 
+
+#define draw_bloom
+with instances_matching(CustomProjectile,"name","Heavy Bouncer Bullet","Psy Bullet","Heavy Psy Bullet","Psy Shell","Split Shell","Lightning Bullet","Heavy Lightning Bullet","Toxic Bullet","Heavy Toxic Bullet","Fire Bullet","Heavy Fire Bullet","Dark Bullet","Light Bullet","Square","Triangle","Plasmite","sudden death bullet","crit bullet","quartz bullet","wide slug","mega bullet"){draw_sprite_ext(sprite_index, image_index, x, y, 2*image_xscale, 2*image_yscale, image_angle, image_blend, 0.1);}
+with instances_matching(CustomSlash,"name","Defender Bullet"){draw_sprite_ext(sprite_index, image_index, x, y, 2*image_xscale, 2*image_yscale, image_angle, image_blend, 0.1);}
+with instances_matching(CustomProjectile,"name","vector")
+{
+	draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, 2.5*image_yscale, image_angle, image_blend, 0.1+skill_get(17)*.025);
+	if ammo > 0{draw_sprite_ext(global.sprVectorHead, 0, x, y, 3, 3, image_angle-45, image_blend, 0.1+skill_get(17)*.025)}
+}
+with instances_matching(CustomProjectile,"name","vector beam")
+{
+  draw_sprite_ext(sprite_index, image_index, xstart, ystart, image_xscale, 1.5*image_yscale, image_angle, image_blend, 0.15+skill_get(17)*.05);
+	if x != xstart draw_sprite_ext(global.sprVectorBeamStart, 0, xstart, ystart, 1.5, image_yscale*1.5, image_angle, image_blend, .15+skill_get(17)*.05);
+	if x != xstart draw_sprite_ext(global.sprVectorHead, 0, x, y, 2.5, image_yscale*2.5, image_angle-45, image_blend, .15+skill_get(17)*.05);
+}
+with instances_matching(CustomProjectile,"name","plasmite cannon","Laser Flak","Heavy Laser Flak","lightning orb"){draw_sprite_ext(sprite_index, image_index, x, y,  (1.5+skill_get(17))*image_xscale, (1.5+skill_get(17))*image_yscale, image_angle, image_blend, 0.1+skill_get(17)*.025)}
+with instances_matching(CustomProjectile,"name","quartz shell","flex bullet"){draw_sprite_ext(sprite_index, image_index, x, y, 2*image_xscale, 2*image_yscale, image_angle, image_blend, 0.1+_f*.2)}
+with instances_matching(CustomProjectile,"name","mega lightning bullet")
+{
+  draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, image_yscale, image_angle, image_blend, 1.0);
+  draw_set_blend_mode(bm_add);
+  draw_sprite_ext(sprite_index, image_index, x, y, 2*image_xscale+(1-image_index)*2, 2*image_yscale+(1-image_index)*2, image_angle, image_blend, 0.2+(1-image_index)*.4);
+  draw_set_blend_mode(bm_normal);
+}
 #define bullet_draw
-draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, image_yscale, image_angle, image_blend, 1.0);
-draw_set_blend_mode(bm_add);
-draw_sprite_ext(sprite_index, image_index, x, y, 2*image_xscale, 2*image_yscale, image_angle, image_blend, 0.1);
-draw_set_blend_mode(bm_normal);
+draw_self()
 
 #define bullet_wall
 sound_play_hit(sndHitWall,.2)
 instance_destroy()
+
+#define create_heavy_bouncer_bullet(_x,_y)
+var a = instance_create(_x, _y, CustomProjectile)
+with (a) {
+	name = "Heavy Bouncer Bullet"
+	pattern = false
+	sprite_index = global.sprHeavyBouncerBullet
+	typ = 1
+	damage = 9
+	recycle_amount = 2
+	force = 8
+	image_speed = 1
+	image_angle = direction
+	mask_index = mskHeavyBullet
+	bounce = 2
+  turn = choose(-1,1)
+	on_step = script_ref_create(bouncer_step)
+	on_destroy = script_ref_create(bouncer_destroy)
+	on_hit = script_ref_create(bullet_hit)
+	on_draw = script_ref_create(bullet_draw)
+	on_anim = script_ref_create(bullet_anim)
+	on_wall = script_ref_create(bouncer_wall)
+}
+return a;
+
+#define bouncer_step
+image_angle += 6*turn
+
+#define bouncer_destroy
+with instance_create(x,y,BulletHit){
+	sprite_index = sprHeavyBulletHit
+	image_angle = other.direction + 180
+}
+if place_meeting(x + hspeed,y +vspeed,Wall){sound_play_hit(sndHitWall,.2)}
+
+#define bouncer_wall
+if bounce > 0
+{
+  bounce--
+  instance_create(x,y,Dust)
+  sound_play_pitchvol(sndBouncerBounce,random_range(.7,.8),.7)
+  move_bounce_solid(false)
+  direction += random_range(6,6)
+}
+else instance_destroy()
 
 #define create_psy_bullet(_x,_y)
 var a = instance_create(_x, _y, CustomProjectile)
@@ -306,7 +394,7 @@ with (a) {
 	name = "Psy Bullet"
 	pattern = false
 	sprite_index = global.sprPsyBullet
-	typ = 2
+	typ = 1
 	damage = 4
 	recycle_amount = 1
 	force = -10
@@ -314,9 +402,35 @@ with (a) {
 	image_angle = direction
 	mask_index = global.mskPsyBullet
 	timer = irandom(6)+4
-    range = 240
+  range = 70
+  turnspeed = .3
 	on_step = script_ref_create(psy_step)
 	on_destroy = script_ref_create(psy_destroy)
+	on_hit = script_ref_create(bullet_hit)
+	on_draw = script_ref_create(bullet_draw)
+	on_anim = script_ref_create(bullet_anim)
+	on_wall = script_ref_create(bullet_wall)
+}
+return a;
+
+#define create_heavy_psy_bullet(_x,_y)
+var a = instance_create(_x, _y, CustomProjectile)
+with (a) {
+	name = "Heavy Psy Bullet"
+	pattern = false
+	sprite_index = global.sprHeavyPsyBullet
+	typ = 1
+	damage = 8
+	recycle_amount = 2
+	force = -20
+	image_speed = 1
+	image_angle = direction
+	mask_index = global.mskPsyBullet
+	timer = irandom(4)+3
+  range = 130
+  turnspeed = .42
+	on_step = script_ref_create(psy_step)
+	on_destroy = script_ref_create(heavy_psy_destroy)
 	on_hit = script_ref_create(bullet_hit)
 	on_draw = script_ref_create(bullet_draw)
 	on_anim = script_ref_create(bullet_anim)
@@ -330,14 +444,13 @@ if timer > 0{
 }
 if timer <= 0{
 	var closeboy = instance_nearest_matching_ne(x,y,hitme,"team",team)
-	if instance_exists(closeboy) && distance_to_object(closeboy) < 160 && collision_line(x,y,closeboy.x,closeboy.y,Wall,0,0) < 0{
+	if instance_exists(closeboy) && distance_to_object(closeboy) < range && collision_line(x,y,closeboy.x,closeboy.y,Wall,0,0) < 0{
 		var dir, spd;
 
 		dir = point_direction(x, y, closeboy.x, closeboy.y);
 		spd = speed * 5 * current_time_scale
 
-        var _f = .3;
-		direction -= clamp(angle_difference(image_angle, dir) * _f * current_time_scale, -spd, spd); //Smoothly rotate to aim position.
+		direction -= clamp(angle_difference(image_angle, dir) * turnspeed * current_time_scale, -spd, spd); //Smoothly rotate to aim position.
 		image_angle = direction
 	}
 }
@@ -345,6 +458,13 @@ if timer <= 0{
 #define psy_destroy
 with instance_create(x,y,BulletHit){
 	sprite_index = global.sprPsyBulletHit
+	image_angle = other.direction + 180
+}
+if place_meeting(x + hspeed,y +vspeed,Wall){sound_play_hit(sndHitWall,.2)}
+
+#define heavy_psy_destroy
+with instance_create(x,y,BulletHit){
+	sprite_index = global.sprHeavyPsyBulletHit
 	image_angle = other.direction + 180
 }
 if place_meeting(x + hspeed,y +vspeed,Wall){sound_play_hit(sndHitWall,.2)}
@@ -519,9 +639,6 @@ with instance_create(x,y,BulletHit){
 
 #define mag_shell_draw
 draw_self()
-draw_set_blend_mode(bm_add);
-draw_sprite_ext(sprite_index, image_index, x, y, 2*image_xscale, 2*image_yscale, image_angle, image_blend, 0.2);
-draw_set_blend_mode(bm_normal);
 
 #define create_lightning_bullet(_x,_y)
 var c =instance_create(_x, _y, CustomProjectile)
@@ -544,6 +661,62 @@ with (c){
 	on_wall = script_ref_create(bullet_wall)
 }
 return c;
+
+#define create_heavy_lightning_bullet(_x,_y)
+var c =instance_create(_x, _y, CustomProjectile)
+with (c){
+	name = "Heavy Lightning Bullet"
+	pattern = false
+	if skill_get(17)=1{sprite_index = global.sprHeavyLightningBullet}else{sprite_index=global.sprHeavyLightningBulletUpg}//its supposed to be like that burg
+	typ = 2
+	mask_index = mskBullet1
+	force = 10
+	damage = 4
+	recycle_amount = 2
+	image_speed = 1
+	image_angle = direction
+	on_step = script_ref_create(heavy_thunder_step)
+	on_destroy = script_ref_create(heavy_thunder_destroy)
+	on_hit = script_ref_create(bullet_hit)
+	on_draw = script_ref_create(bullet_draw)
+	on_anim = script_ref_create(bullet_anim)
+	on_wall = script_ref_create(bullet_wall)
+}
+return c;
+
+#define heavy_thunder_step
+if chance(12){
+	with instance_create(x,y,Lightning){
+      	image_angle = random(360)
+      	team = other.team
+		creator = other.creator
+      	ammo = 2
+		alarm0 = 1
+		visible = 0
+      	with instance_create(x,y,LightningSpawn)
+        {
+      	   image_angle = other.image_angle
+        }
+    }
+}
+
+#define heavy_thunder_destroy
+repeat(2) with instance_create(x,y,Lightning){
+	image_angle = random(360)
+	creator = other.creator
+	team = other.team
+	ammo = 4
+	alarm0 = 1
+	visible = 0
+	with instance_create(x,y,LightningSpawn)
+	{
+	   image_angle = other.image_angle
+	}
+}
+with instance_create(x,y,BulletHit){
+	direction = other.direction
+	sprite_index = global.sprHeavyLightningBulletHit
+}
 
 #define thunder_step
 if chance(5){
@@ -601,12 +774,43 @@ with (d) {
 }
 return d;
 
+#define create_heavy_toxic_bullet(_x,_y)
+var d = instance_create(_x, _y, CustomProjectile)
+with (d) {
+	name = "Heavy Toxic Bullet"
+	pattern = false
+	sprite_index = global.sprHeavyToxicBullet
+	typ = 1
+	force = 11
+	mask_index = mskBullet1
+	damage = 5
+	recycle_amount = 2
+	image_speed = 1
+	image_angle = direction
+	//on_step = script_ref_create(bullet_step)
+	on_destroy = script_ref_create(heavy_toxic_destroy)
+	on_hit = script_ref_create(bullet_hit)
+	on_draw = script_ref_create(bullet_draw)
+	on_wall = script_ref_create(bullet_wall)
+	on_anim = script_ref_create(bullet_anim)
+}
+return d;
+
 #define toxic_destroy
 repeat(2){
 	instance_create(x,y,ToxicGas)
 }
 with instance_create(x,y,BulletHit){
 	sprite_index = global.sprToxicBulletHit
+	direction = other.direction
+}
+
+#define heavy_toxic_destroy
+repeat(3){
+	with instance_create(x,y,ToxicGas){motion_add(random(360),1)}
+}
+with instance_create(x,y,BulletHit){
+	sprite_index = global.sprHeavyToxicBulletHit
 	direction = other.direction
 }
 
@@ -631,6 +835,27 @@ with (e){
 }
 return e;
 
+#define create_heavy_fire_bullet(_x,_y)
+var e = instance_create(_x, _y, CustomProjectile)
+with (e){
+	name = "Heavy Fire Bullet"
+	pattern = false
+	sprite_index = global.sprHeavyFireBullet
+	typ = 1
+	force = -5
+	mask_index = mskBullet1
+	damage = 4
+	recycle_amount = 1
+	image_speed = 1
+	on_step = script_ref_create(fire_step)
+	on_destroy = script_ref_create(heavy_fire_destroy)
+	on_hit = script_ref_create(bullet_hit)
+	on_draw = script_ref_create(bullet_draw)
+	on_anim = script_ref_create(bullet_anim)
+	on_wall = script_ref_create(bullet_wall)
+}
+return e;
+
 #define fire_step
 if chance(8){
 	with instance_create(x,y,Flame){
@@ -645,6 +870,14 @@ with instance_create(x,y,BulletHit){
 	sprite_index = global.sprFireBulletHit
     direction = other.direction
     image_index = 1
+}
+
+#define heavy_fire_destroy
+instance_create(x,y,SmallExplosion)
+sound_play_pitchvol(sndExplosionS,2,.3)
+with instance_create(x,y,BulletHit){
+	sprite_index = global.sprHeavyFireBulletHit
+    direction = other.direction
 }
 
 #define create_dark_bullet(_x,_y)
@@ -857,6 +1090,23 @@ with instance_create(x, y, Shell){
 	image_speed = 0
 	motion_add(other.gunangle + (other.right * _angle) + random_range(-_spread, _spread), _speed);
 	sprite_index = global.sprGenShellBig
+	switch _color
+	{
+		case c_yellow: image_index = 0;break
+		case c_red   : image_index = 1;break
+		case c_purple: image_index = 2;break
+		case c_green : image_index = 3;break
+		case c_navy  : image_index = 4;break
+		case c_white : image_index = 5;break
+		case c_black : image_index = 6;break
+	}
+}
+
+#define shell_yeah_heavy(_angle, _spread, _speed, _color)
+with instance_create(x, y, Shell){
+	image_speed = 0
+	motion_add(other.gunangle + (other.right * _angle) + random_range(-_spread, _spread), _speed);
+	sprite_index = global.sprGenShellHeavy
 	switch _color
 	{
 		case c_yellow: image_index = 0;break
@@ -1478,7 +1728,7 @@ var a = instance_create(_x,_y,CustomProjectile);
 with a
 {
     typ = 1
-    name = "triangle"
+    name = "Triangle"
     size = 1
     friction = 1.3
     damage = 5
@@ -1517,7 +1767,7 @@ repeat(3){
 var a = instance_create(_x,_y,CustomSlash);
 with a{
     typ = 0
-    name = "square"
+    name = "Square"
     size = 1
     pseudoteam = -1
     friction = .3

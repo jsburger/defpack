@@ -142,10 +142,5 @@ if current_frame_active{
 }
 #define beam_draw
 draw_sprite_ext(sprite_index, image_index, xstart, ystart, image_xscale, image_yscale, image_angle, image_blend, 1.0);
-	if x != xstart draw_sprite_ext(global.sprVectorBeamStart, 0, xstart, ystart, 1, image_yscale, image_angle-180, image_blend, 1.0);
+	if x != xstart draw_sprite_ext(global.sprVectorBeamStart, 0, xstart, ystart, 1, image_yscale, image_angle, image_blend, 1.0);
 	if x != xstart draw_sprite_ext(global.sprVectorHead, 0, x, y, 2, image_yscale*2, image_angle-45, image_blend, 1.0);
-draw_set_blend_mode(bm_add);
-draw_sprite_ext(sprite_index, image_index, xstart, ystart, image_xscale, 1.5*image_yscale, image_angle, image_blend, 0.15+skill_get(17)*.05);
-	if x != xstart draw_sprite_ext(global.sprVectorBeamStart, 0, xstart, ystart, 1.5, image_yscale*1.5, image_angle-180, image_blend, .15+skill_get(17)*.05);
-	if x != xstart draw_sprite_ext(global.sprVectorHead, 0, x, y, 2.5, image_yscale*2.5, image_angle-45, image_blend, .15+skill_get(17)*.05);
-draw_set_blend_mode(bm_normal);

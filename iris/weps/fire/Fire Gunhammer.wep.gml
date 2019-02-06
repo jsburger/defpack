@@ -62,8 +62,8 @@ with instance_create(x,y,Slash){
 	team = other.team
 	creator = other
 	right = other.right
+	if other.ammo[1] >=1 {
 	repeat(4){
-		if other.ammo[1] >=1 {
 			sound_play_pitchvol(sndSawedOffShotgun,.9*p,.7)
 			sound_play_pitchvol(sndDoubleFireShotgun,.8*p,.7)
 			sound_play_pitchvol(sndTripleMachinegun,.8*p,.7)
@@ -81,6 +81,8 @@ with instance_create(x,y,Slash){
 			}
 			if other.infammo = 0 {other.ammo[1] -= 1}
 		}
+		sound_play_gun(sndClickBack,1,.6)
+		sound_stop(sndClickBack)
 	}
 }
 wepangle = -wepangle

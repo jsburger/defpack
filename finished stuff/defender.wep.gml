@@ -58,6 +58,7 @@ repeat(3)
 		sleep(2)
 		with instance_create(x,y,CustomSlash)
 		{
+			name = "Defender Bullet"
 			move_contact_solid(other.gunangle,2)
 			team     = other.team
 			creator  = other
@@ -72,7 +73,6 @@ repeat(3)
 			on_projectile = def_projectile
 			on_destroy 		= def_destroy
 			on_step 			= def_step
-			on_draw 			= def_draw
 			on_wall 			= def_wall
 			on_hit 			  = def_hit
 		}
@@ -112,9 +112,3 @@ if place_meeting(x + hspeed,y +vspeed,Wall){sound_play_hit(sndHitWall,.2)}
 view_shake_at(x,y,8)
 projectile_hit(other, damage, force, direction)
 instance_destroy()
-
-#define def_draw
-draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, image_yscale, image_angle, image_blend, 1.0);
-draw_set_blend_mode(bm_add);
-draw_sprite_ext(sprite_index, image_index, x, y, 2*image_xscale+(1-image_index)*.5, 2*image_yscale, image_angle+(1-image_index)*.5, image_blend, 0.1+(1-image_index)*1.6);
-draw_set_blend_mode(bm_normal);

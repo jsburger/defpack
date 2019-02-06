@@ -35,7 +35,7 @@ repeat(3)
 	sound_play(sndMachinegun)
 	sound_play_pitch(sndSwapFlame,.7)
 	sound_play_pitch(sndIncinerator,.9)
-	mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, 2+random(3), c_red)
+	mod_script_call("mod","defpack tools", "shell_yeah", 180, 25, 2+random(2), c_red)
 	with mod_script_call("mod", "defpack tools", "create_fire_bullet",x,y){
 		creator = other
 		team = other.team

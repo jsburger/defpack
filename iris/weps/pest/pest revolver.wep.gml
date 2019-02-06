@@ -11,7 +11,7 @@ return global.sprPestPistol;
 return 1;
 
 #define weapon_auto
-return true;
+return false;
 
 #define weapon_load
 return 6;

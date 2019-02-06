@@ -25,7 +25,7 @@ return sndSwapMachinegun;
 return -1;
 
 #define weapon_text
-return "WAVES OF POWER";
+return choose("WAVES OF POWER","QUADRUPOLE");
 
 #define sound(n)
 weapon_post(7,-5,5)

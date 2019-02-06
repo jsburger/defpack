@@ -14,7 +14,7 @@ return 1;
 return true;
 
 #define weapon_load
-return 3;
+return 4;
 
 #define weapon_cost
 return 2;
@@ -29,10 +29,11 @@ return 2;
 return "TAC TAC TAC";
 
 #define weapon_fire
-sound_play_pitchvol(sndSplinterGun,random_range(1.3,1.6),.7)
+sound_play_pitchvol(sndSplinterGun,random_range(1.3,1.6),.4)
+sound_play_pitchvol(sndRustyRevolver,random_range(1.5,1.8),.4)
 sound_play_pitchvol(sndCrossbow,random_range(1.3,1.6),.7)
 sound_play_pitchvol(sndPopgun,random_range(1.3,1.6),.7)
-weapon_post(1,0,4)
+weapon_post(2,2,0)
 with instance_create(x,y,Splinter)
 {
 	team = other.team

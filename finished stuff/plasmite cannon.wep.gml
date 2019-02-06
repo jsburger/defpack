@@ -54,7 +54,6 @@ with instance_create(x,y,CustomProjectile)
 	on_step 	 = atom_step
 	on_wall 	 = mb_wall
 	on_destroy   = atom_destroy
-	on_draw 	 = atom_draw
 	on_square    = script_ref_create(atom_square)
 	repeat(6){create_electron()}
 }
@@ -117,13 +116,6 @@ if irandom(9) = 1
 if irandom(4-skill_get(17))=1{with instance_create(x+random_range(-12,12),y+random_range(-12,12),GunGun){image_index=2-skill_get(17)}}
 speed /= fric
 if speed < 1.00005{instance_destroy()}
-
-#define atom_draw
-
-draw_self()
-draw_set_blend_mode(bm_add)
-draw_sprite_ext(sprite_index, image_index, x, y,  (1.5+skill_get(17))*image_xscale, (1.5+skill_get(17))*image_yscale, image_angle, image_blend, 0.1+skill_get(17)*.025);
-draw_set_blend_mode(bm_normal)
 
 #define atom_destroy
 sleep(50)

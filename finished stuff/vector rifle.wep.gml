@@ -65,6 +65,7 @@ return a
 #define create_psy_laser(_x,_y)
 var a = instance_create(_x,_y,CustomProjectile)
 with a{
+	name = "vector"
 	loss = .08-skill_get(17)*.04
 	pierce = 1
 	damage = 5
@@ -136,16 +137,7 @@ if image_yscale <= 0 instance_destroy()
 
 #define hyperdraw
 draw_self()
-draw_set_blend_mode(bm_add)
-draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, 2.5*image_yscale, image_angle, image_blend, 0.1+skill_get(17)*.025);
-draw_set_blend_mode(bm_normal)
-if ammo > 0
-{
-	draw_sprite_ext(global.sprVectorHead, 0, x, y, 2, 2, image_angle-45, image_blend, 1);
-	draw_set_blend_mode(bm_add)
-	draw_sprite_ext(global.sprVectorHead, 0, x, y, 3, 3, image_angle-45, image_blend, 0.1+skill_get(17)*.025);
-	draw_set_blend_mode(bm_normal)
-}
+if ammo > 0{draw_sprite_ext(global.sprVectorHead, 0, x, y, 2, 2, image_angle-45, image_blend, 1)}
 
 #define laserhit
 if projectile_canhit_melee(other){

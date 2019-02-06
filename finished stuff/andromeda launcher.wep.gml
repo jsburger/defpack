@@ -24,6 +24,9 @@ return global.sprAndromedaLauncher;
 #define weapon_type
 return 4;
 
+#define weapon_rads
+return 50;
+
 #define weapon_auto
 return true;
 
@@ -54,6 +57,7 @@ sound_play_pitchvol(sndStatueHurt,.4*p,1)
 sound_play_pitchvol(sndLilHunterSniper,.3*p,.5)
 sound_play_pitchvol(sndPlasmaRifle,.3*p,.8)
 with instance_create(x,y,CustomProjectile){
+  repeat(3){with instance_create(x+lengthdir_x(12,other.gunangle),y+lengthdir_y(12,other.gunangle),PortalL){image_angle = random(360)}}
     name = "Andromeda Bullet";
     disgoal = distance_to_point(mouse_x[other.index],mouse_y[other.index]);
     motion_set(other.gunangle,disgoal/5)

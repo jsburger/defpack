@@ -46,6 +46,7 @@ sound_play_pitch(sndSlugger,random_range(.7,.8))
 sound_play_pitch(sndLaserCrystalHit,random_range(1.4,1.7))
 repeat(5) with instance_create(x,y,CustomProjectile)
 {
+  name = "quartz shell"
   sprite_index = global.sprQuartzBullet2
   mask_index   = mskBullet2
   team    = other.team
@@ -62,9 +63,9 @@ repeat(5) with instance_create(x,y,CustomProjectile)
   image_angle = direction
   pierce  = 2
   lasthit = -4
+  _f = fallofftime >= current_frame
   on_hit     = quartzbullet_hit
   on_step    = quartzbullet_step
-  on_draw    = quartzbullet_draw
   on_destroy = quartzbullet_destroy
   on_wall    = quartzbullet_wall
   on_anim    = quartzbullet_anim
@@ -91,6 +92,7 @@ sound_play_pitchvol(sndHitWall,random_range(.8,1.2),.5)
 with instance_create(x+random_range(-4,4),y+random_range(-4,4),Dust){sprite_index = sprExtraFeetDust}
 
 #define quartzbullet_step
+_f = fallofftime >= current_frame
 if speed <= friction instance_destroy()
 
 #define quartzbullet_destroy
@@ -109,13 +111,6 @@ if projectile_canhit_melee(other) || lasthit != other{
   lasthit = other
 }
 if pierce < 0{instance_destroy()}
-
-#define quartzbullet_draw
-var _f = fallofftime >= current_frame
-draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, image_yscale, image_angle, image_blend, 1.0);
-draw_set_blend_mode(bm_add);
-draw_sprite_ext(sprite_index, image_index, x, y, 2*image_xscale, 2*image_yscale, image_angle, image_blend, 0.1+_f*.2);
-draw_set_blend_mode(bm_normal);
 
 #define step
 mod_script_call_self("mod","defpack tools","quartz_penalty",mod_current)
