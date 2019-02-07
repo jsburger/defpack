@@ -526,6 +526,9 @@ draw_set_blend_mode(bm_add);
 draw_sprite_ext(sprite_index, image_index, x, y, 2*image_xscale, 2*image_yscale, image_angle, image_blend, 0.2);
 draw_set_blend_mode(bm_normal);
 
+#define create_thunder_bullet(_x,_y)
+return create_lightning_bullet(_x,_y)
+
 #define create_lightning_bullet(_x,_y)
 var c =instance_create(_x, _y, CustomProjectile)
 with (c){
@@ -582,6 +585,9 @@ with instance_create(x,y,BulletHit){
 	sprite_index = global.sprLightningBulletHit
 }
 
+#define create_pest_bullet(x,y)
+return create_toxic_bullet(x,y)
+
 #define create_toxic_bullet(_x,_y)
 var d = instance_create(_x, _y, CustomProjectile)
 with (d) {
@@ -612,6 +618,9 @@ with instance_create(x,y,BulletHit){
 	sprite_index = global.sprToxicBulletHit
 	direction = other.direction
 }
+
+#define create_flame_bullet(x,y)
+return create_fire_bullet(x,y)
 
 #define create_fire_bullet(_x,_y)
 var e = instance_create(_x, _y, CustomProjectile)

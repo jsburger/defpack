@@ -1,16 +1,16 @@
 #define init
-global.sprSmarterGun 	  = sprite_add_weapon("sprites/sprSmarterGun.png",9,7)
-global.sprSmarterGunHUD = sprite_add_weapon("sprites/sprSmarterGun.png",1,4)
+global.sprSmarterGun 	  = sprite_add_weapon("sprites/sprSmarterBouncerGun.png",9,7)
+global.sprSmarterGunHUD = sprite_add_weapon("sprites/sprSmarterBouncerGun.png",1,4)
 #define weapon_name
-return "SMARTER GUN"
+return "SMARTER BOUNCER GUN"
 #define weapon_type
 return 1
 #define weapon_cost
 return 1
 #define weapon_area
-return 15
+return -1
 #define weapon_load
-return 4
+return 4.5
 #define weapon_swap
 return sndSwapMachinegun
 #define weapon_auto
@@ -75,13 +75,11 @@ if manual or _canshoot {
     var _r = random_range(.9, 1.1), _v = manual ? 1 : .8
     sound_play_pitchvol(sndSmartgun, .9 * _r, .8 * _v)
     sound_play_pitchvol(sndGruntFire, .8 * _r, _v)
-    with instance_create(_tx,_ty,Bullet1)
+    with instance_create(_tx,_ty,BouncerBullet)
     {
-    	sprite_index = sprIDPDBullet
-    	spr_dead = sprIDPDBulletHit
     	creator = other
     	team = other.team
-    	motion_set(angle,16)
+    	motion_set(angle,8)
     	image_angle = direction
     }
     return 1

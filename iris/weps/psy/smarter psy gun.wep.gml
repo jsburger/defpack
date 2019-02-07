@@ -1,16 +1,16 @@
 #define init
-global.sprSmarterGun 	  = sprite_add_weapon("sprites/sprSmarterGun.png",9,7)
-global.sprSmarterGunHUD = sprite_add_weapon("sprites/sprSmarterGun.png",1,4)
+global.sprSmarterGun 	  = sprite_add_weapon("sprites/sprSmarterPsyGun.png",6,7)
+global.sprSmarterGunHUD = sprite_add_weapon("sprites/sprSmarterPsyGun.png",1,4)
 #define weapon_name
-return "SMARTER GUN"
+return "SMARTER PSY GUN"
 #define weapon_type
 return 1
 #define weapon_cost
 return 1
 #define weapon_area
-return 15
+return -1
 #define weapon_load
-return 4
+return 6
 #define weapon_swap
 return sndSwapMachinegun
 #define weapon_auto
@@ -19,6 +19,29 @@ return 1
 return 0
 #define weapon_laser_sight
 return 0
+#define weapon_sprt_hud
+return global.sprSmarterGunHUD
+
+#define weapon_sprt(w)
+if instance_is(self,Player)
+{
+	if wep = w{
+	    var q = shoot(1, 1, 0, 0, 1)
+		draw_sprite_ext(global.sprSmarterGun, 0, q[0], q[1], right, 1, 0, c_white, 1)
+	}
+	if bwep = w
+	{
+	    var q = shoot(-1, -1, 1, 0, 1)
+		draw_sprite_ext(global.sprSmarterGun, 0, q[0], q[1], right, 1, 0, c_white, 1)
+	}
+	return mskNothing
+}
+else{return global.sprSmarterGun}
+
+
+#define weapon_text
+return "massive brain"
+
 #define weapon_iris
 return "smarter x gun"
 #define weapon_fire
@@ -75,13 +98,11 @@ if manual or _canshoot {
     var _r = random_range(.9, 1.1), _v = manual ? 1 : .8
     sound_play_pitchvol(sndSmartgun, .9 * _r, .8 * _v)
     sound_play_pitchvol(sndGruntFire, .8 * _r, _v)
-    with instance_create(_tx,_ty,Bullet1)
+    with mod_script_call_nc("mod", "defpack tools", "create_psy_bullet", _tx,_ty)
     {
-    	sprite_index = sprIDPDBullet
-    	spr_dead = sprIDPDBulletHit
     	creator = other
     	team = other.team
-    	motion_set(angle,16)
+    	motion_set(angle,7)
     	image_angle = direction
     }
     return 1
@@ -114,27 +135,3 @@ if !w && race != "steroids" && breload > 0{
 		if ultra_get(race,1) breload -= .4 * current_time_scale
 	}
 }
-
-
-#define weapon_sprt_hud
-return global.sprSmarterGunHUD
-
-#define weapon_sprt(w)
-if instance_is(self,Player)
-{
-	if wep = w{
-	    var q = shoot(1, 1, 0, 0, 1)
-		draw_sprite_ext(global.sprSmarterGun, 0, q[0], q[1], right, 1, 0, c_white, 1)
-	}
-	if bwep = w
-	{
-	    var q = shoot(-1, -1, 1, 0, 1)
-		draw_sprite_ext(global.sprSmarterGun, 0, q[0], q[1], right, 1, 0, c_white, 1)
-	}
-	return mskNothing
-}
-else{return global.sprSmarterGun}
-
-
-#define weapon_text
-return "massive brain"
