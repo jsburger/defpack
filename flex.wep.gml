@@ -42,7 +42,7 @@ sound_play_pitchvol(sndSawedOffShotgun,.6*_p,.5*_a)
 sound_play_pitchvol(sndPopgun,1.2*_p,1)
 sound_play_pitchvol(sndHeavyRevoler,.8*_p,.5+.2*_a)
 sound_play_pitchvol(sndTripleMachinegun,.8*_p,.5+.2*_a)
-sound_play_gun(sndClickBack,1,.4*_a)
+sound_play_gun(sndClickBack,1,.4*(1-_a))
 sound_stop(sndClickBack)
 weapon_post(4+_a,3,5+_a*6)
 with instance_create(x,y,CustomProjectile){
@@ -51,7 +51,7 @@ with instance_create(x,y,CustomProjectile){
     sprite_index = _a ? global.sprBluellet2 : sprBullet2
     motion_add(other.gunangle+random_range(-8,8)*other.accuracy,18)
     projectile_init(other.team,other)
-
+    name = "flex bullet" //not sponsored i swear
     image_angle = direction
     image_speed = 1
     bounce = 1
@@ -61,11 +61,11 @@ with instance_create(x,y,CustomProjectile){
     force  = 7
     wallbounce = 5 * skill_get(mut_shotgun_shoulders)
     friction = .8 - _a * .2
+     _f = fallofftime >= current_frame
     on_hit     = b_hit
     on_step    = b_step
     on_anim    = b_anim
     on_wall    = b_wall
-    on_draw    = b_draw
     on_destroy = b_destroy
 }
 
@@ -98,17 +98,11 @@ fallofftime = current_frame + 2 + skill_get(15) * 2
 sound_play_hit(sndShotgunHitWall,.2)
 instance_create(x+random_range(-4,4),y+random_range(-4,4),Dust)
 
-#define b_draw
-var _f = fallofftime >= current_frame
-draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, image_yscale, image_angle, image_blend, 1.0);
-draw_set_blend_mode(bm_add);
-draw_sprite_ext(sprite_index, image_index, x, y, 2*image_xscale, 2*image_yscale, image_angle, image_blend, 0.1 + _f*.2);
-draw_set_blend_mode(bm_normal);
-
 #define b_destroy
 with instance_create(x,y,BulletHit){if other.sprite_index = global.sprBluellet2 sprite_index = sprIDPDBulletHit else sprite_index = sprBulletHit}
 
 #define b_step
+ _f = fallofftime >= current_frame
 if speed <= friction instance_destroy()
 
 #define weapon_sprt

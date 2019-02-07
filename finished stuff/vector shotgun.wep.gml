@@ -69,6 +69,7 @@ return "pointy"
 #define create_psy_laser(_x,_y)
 var a = instance_create(_x,_y,CustomProjectile)
 with a{
+	name = "vector"
 	loss = .14-skill_get(17)*.04
 	pierce = 1
 	damage = 5

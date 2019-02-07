@@ -46,6 +46,7 @@ sound_play_pitch(sndSuperSlugger,1.4*_p)
 
 with instance_create(x,y,CustomProjectile)
 {
+  name = "wide slug"
   team    = other.team
   creator = other
   sprite_index = global.sprWideSlug
@@ -64,7 +65,6 @@ with instance_create(x,y,CustomProjectile)
   on_destroy = dyn_destroy
   on_end_step = dyn_step
   on_wall = dyn_wall
-  on_draw = dyn_draw
   on_hit  = dyn_hit
   on_anim = dyn_anim
 }
@@ -123,12 +123,6 @@ if image_index = 0
 else instance_destroy()
 sound_play_pitchvol(sndFlakExplode,1.3,.2)
 sound_play_pitchvol(sndHitWall,1.3,.5)
-
-#define dyn_draw
-draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, image_yscale, image_angle, image_blend, 1.0);
-draw_set_blend_mode(bm_add);
-draw_sprite_ext(sprite_index, image_index, x, y, 2*image_xscale, 2*image_yscale, image_angle, image_blend, 0.15);
-draw_set_blend_mode(bm_normal);
 
 #define dyn_hit
 /*

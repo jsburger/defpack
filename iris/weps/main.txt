@@ -15,7 +15,12 @@
 /loadwep fire/fire bullet cannon
 /loadwep fire/fire bullak cannon
 /loadwep fire/sniper fire rifle
-
+/loadwep fire/heavy fire revolver
+/loadwep fire/heavy fire machinegun
+/loadwep fire/heavy assault fire rifle
+/loadwep fire/heavy smart fire gun
+/loadwep fire/heavy fire gunhammer
+/loadwep fire/fire shotgun
 
 //BOUNCER BULLET
 
@@ -33,6 +38,12 @@
 /loadwep bouncer/bouncer bullet cannon
 /loadwep bouncer/bouncer bullak cannon
 /loadwep bouncer/sniper bouncer rifle
+/loadwep bouncer/heavy bouncer revolver
+/loadwep bouncer/heavy bouncer machinegun
+/loadwep bouncer/heavy assault bouncer rifle
+/loadwep bouncer/heavy smart bouncer gun
+/loadwep bouncer/heavy bouncer gunhammer
+//loadwep bouncer/bouncer shotgun
 
 //PEST BULLET
 
@@ -51,6 +62,12 @@
 /loadwep pest/pest bullet cannon
 /loadwep pest/pest bullak cannon
 /loadwep pest/sniper pest rifle
+/loadwep pest/heavy pest revolver
+/loadwep pest/heavy pest machinegun
+/loadwep pest/heavy assault pest rifle
+/loadwep pest/heavy smart pest gun
+/loadwep pest/heavy pest gunhammer
+/loadwep pest/pest shotgun
 
 //THUNDER BULLET
 
@@ -69,6 +86,12 @@
 /loadwep thunder/thunder bullet cannon
 /loadwep thunder/thunder bullak cannon
 /loadwep thunder/sniper thunder rifle
+/loadwep thunder/heavy thunder revolver
+/loadwep thunder/heavy thunder machinegun
+/loadwep thunder/heavy assault thunder rifle
+/loadwep thunder/heavy smart thunder gun
+/loadwep thunder/heavy thunder gunhammer
+/loadwep thunder/thunder shotgun
 
 //PSY BULLET
 
@@ -87,3 +110,9 @@
 /loadwep psy/psy bullet cannon
 /loadwep psy/psy bullak cannon
 /loadwep psy/sniper psy rifle
+/loadwep psy/heavy psy revolver
+/loadwep psy/heavy psy machinegun
+/loadwep psy/heavy assault psy rifle
+/loadwep psy/heavy smart psy gun
+/loadwep psy/heavy psy gunhammer
+/loadwep psy/psy shotgun

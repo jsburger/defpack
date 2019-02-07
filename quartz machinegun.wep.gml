@@ -45,6 +45,7 @@ sound_play_pitch(sndHeavyRevoler,random_range(1,1.1))
 sound_play_pitch(sndLaserCrystalHit,random_range(1.7,2.1))
 with instance_create(x,y,CustomProjectile)
 {
+  name = "quartz bullet"
   sprite_index = global.sprQuartzBullet
   mask_index   = mskHeavyBullet
   projectile_init(other.team,other)
@@ -59,7 +60,6 @@ with instance_create(x,y,CustomProjectile)
   lasthit = -4
   on_hit     = quartzbullet_hit
   on_anim   = quartzbullet_anim
-  on_draw    = quartzbullet_draw
   on_destroy = quartzbullet_destroy
 }
 
@@ -84,12 +84,6 @@ if projectile_canhit_melee(other) = true || lasthit != other
   recycle_amount = 0
 }
 if pierce < 0{instance_destroy()}
-
-#define quartzbullet_draw
-draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, image_yscale, image_angle, image_blend, 1.0);
-draw_set_blend_mode(bm_add);
-draw_sprite_ext(sprite_index, image_index, x, y, 2*image_xscale, 2*image_yscale, image_angle, image_blend, 0.1);
-draw_set_blend_mode(bm_normal);
 
 #define step
 mod_script_call("mod","defpack tools","quartz_penalty",mod_current)

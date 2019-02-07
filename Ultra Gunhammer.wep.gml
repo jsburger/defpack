@@ -65,8 +65,8 @@ with instance_create(x,y,Slash){
 	image_angle = direction
 	team = other.team
 	creator = other
+	if other.ammo[1] >=3 {
 	repeat(4){
-		if other.ammo[1] >=3 {
 			damage = 22
 			force = 20
 			sound_play_pitchvol(sndUltraPistol,1.,.7)
@@ -85,6 +85,8 @@ with instance_create(x,y,Slash){
 			}
 			if other.infammo = 0 {other.ammo[1] -= 3}
 		}
+		sound_play_gun(sndClickBack,1,.6)
+		sound_stop(sndClickBack)
 	}
 }
 wepangle = -wepangle

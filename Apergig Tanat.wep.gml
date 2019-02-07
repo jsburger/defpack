@@ -70,6 +70,7 @@ motion_set(gunangle-180,4)
 weapon_post(9,-30,24)
 with instance_create(x,y,CustomProjectile)
 {
+  name = "sudden death bullet"
   sprite_index = sprEBullet3
   mask_index   = mskBullet2
   image_speed = 1
@@ -85,7 +86,6 @@ with instance_create(x,y,CustomProjectile)
   image_angle = direction
   on_wall    = shell_wall
   on_step    = shell_step
-  on_draw    = shell_draw
   on_hit     = shell_hit
   on_anim    = shell_anim
   on_destroy = shell_destroy
@@ -133,9 +133,3 @@ with instance_create(x,y,BulletHit)
 instance_destroy()
 
 #define shell_destroy
-
-#define shell_draw
-draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, image_yscale, image_angle, image_blend, 1.0);
-draw_set_blend_mode(bm_add);
-draw_sprite_ext(sprite_index, image_index, x, y, 1.75*image_xscale, 1.75*image_yscale, image_angle, image_blend, 0.15);
-draw_set_blend_mode(bm_normal);

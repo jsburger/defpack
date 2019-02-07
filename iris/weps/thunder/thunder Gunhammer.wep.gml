@@ -44,8 +44,6 @@ sound_play_pitchvol(sndHammer,p,.7)
 sound_play_pitch(sndShovel,.5*p)
 sound_play_pitch(sndHitMetal,.8*p)
 sound_play_pitch(sndAssassinAttack,1.2*p)
-sound_play_gun(sndClickBack,1,.6)
-sound_stop(sndClickBack)
 weapon_post(8,20,12	*(r*2+1))
 var shell = 0;
 with instance_create(x,y,Slash)
@@ -76,6 +74,8 @@ with instance_create(x,y,Slash)
 	team = other.team
 	damage = 16
 	if other.ammo[1] >=2{
+		sound_play_gun(sndClickBack,1,.6)
+		sound_stop(sndClickBack)
 		if other.infammo = 0 {other.ammo[1] -= 4}
 		with mod_script_call("mod", "defpack tools", "create_lightning_bullet",x+lengthdir_x(5,other.gunangle),y+lengthdir_y(5,other.gunangle)){
 				creator = other.creator

@@ -1,6 +1,7 @@
 #define init
 global.sprSmartNukeLauncher = sprite_add_weapon("sprSmartNukeLauncher.png", 5, 5);
 global.sprSmartNuke 				= sprite_add("sprSmartNuke.png",0, 7, 5);
+global.mskSmartNuke 				= sprite_add("sprSmartNuke.png",0, 7, 5);
 global.sprBlueExplosion 		= sprite_add("sprSmartExplosionS.png",7,12,12)
 global.sprSmartNukeFlame 		= sprite_add("sprSmartNukeFlame.png",3,32,12)
 global.sprSmartAim 					= sprite_add("sprSmartAim.png",0,9,9)
@@ -44,6 +45,7 @@ with instance_create(x,y,CustomProjectile){
 	damage = 60
 	ang = random(359)
 	sprite_index = global.sprSmartNuke
+	mask_index   = global.mskSmartNuke
 	index = other.index
 	fimage_index = 0
 	timer = 20

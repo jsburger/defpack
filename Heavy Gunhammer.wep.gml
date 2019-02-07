@@ -43,8 +43,6 @@ sound_play_pitchvol(sndHammer,p,.7)
 sound_play_pitch(sndShovel,.5*p)
 sound_play_pitch(sndHitMetal,.8*p)
 sound_play_pitch(sndAssassinAttack,1.2*p)
-sound_play_gun(sndClickBack,1,.3)
-sound_stop(sndClickBack)
 sleep(20)
 if ammo[1] >=2 var r = 1 else var r = 0
 weapon_post(9,35,20*(r*2+1))
@@ -69,8 +67,8 @@ with instance_create(x,y,Slash){
 	image_angle = direction
 	team = other.team
 	creator = other
+	if other.ammo[1] >=2 {
 	repeat(4){
-		if other.ammo[1] >=2 {
 			instance_create(x+lengthdir_x(sprite_width,direction),y+lengthdir_y(sprite_width,direction),Smoke)
 			sound_play_pitchvol(sndSawedOffShotgun,.7*p,.7)
 			sound_play_pitchvol(sndDoubleShotgun,.6*p,.7)
@@ -92,6 +90,8 @@ with instance_create(x,y,Slash){
 			}
 			if other.infammo = 0 {other.ammo[1] -= 2}
 		}
+		sound_play_gun(sndClickBack,1,.3)
+		sound_stop(sndClickBack)
 	}
 }
 wepangle = -wepangle

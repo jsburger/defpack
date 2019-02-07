@@ -43,8 +43,6 @@ sound_play_pitchvol(sndHammer,p,.7)
 sound_play_pitch(sndShovel,.5*p)
 sound_play_pitch(sndHitMetal,.8*p)
 sound_play_pitch(sndAssassinAttack,1.2*p)
-sound_play_gun(sndClickBack,1,.6)
-sound_stop(sndClickBack)
 if ammo[1] >=1 var r = 1 else var r = 0
 weapon_post(8,25,15*(r*2+1))
 
@@ -67,8 +65,8 @@ with instance_create(x,y,Slash){
 	image_angle = direction
 	team = other.team
 	creator = other
+	if other.ammo[1] >=1 {
 	repeat(4){
-		if other.ammo[1] >=1 {
 			//sound_play_pitch(sndLilHunterSniper,.3) nice energy sound
 			//sound_play_pitch(sndFlakExplode,2) nice sharp swing
 			//sound_play_pitch(sndFlakExplode,.6) also cool
@@ -89,6 +87,8 @@ with instance_create(x,y,Slash){
 			}
 			if other.infammo = 0 {other.ammo[1] -= 1}
 		}
+		sound_play_gun(sndClickBack,1,.6)
+		sound_stop(sndClickBack)
 	}
 }
 wepangle = -wepangle

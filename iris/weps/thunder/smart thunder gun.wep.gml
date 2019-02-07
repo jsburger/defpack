@@ -23,10 +23,11 @@ return 2;
 return sndSwapMachinegun;
 
 #define weapon_area
-return -1;
+return -1sound_play_pitchvol(sndGammaGutsKill,1.4,.3+skill_get(17)*.2)
+if !skill_get(17)sound_play_pitch(sndLightningRifle,random_range(1.3,1.5))else sound_play_pitch(sndLightningRifleUpg,random_range(1.3,1.5))
 
 #define weapon_text
-return "PRECISION PERCUSSION";
+return "ACTIVE NEURONS";
 
 #define weapon_fire
 var ang = point_direction(x,y,mouse_x[index],mouse_y[index]);
@@ -52,7 +53,6 @@ repeat(2)
     	var mydude = instance_nearest(mouse_x[index],mouse_y[index],enemy);
     	ang = point_direction(x,y,mydude.x,mydude.y)
     }
-
 	sound_play_pitch(sndSmartgun,random_range(.8,1.2))
 	sound_play_pitchvol(sndGammaGutsKill,1.6,.3+skill_get(17)*.2)
 	if !skill_get(17)sound_play_pitch(sndLightningRifle,random_range(1.4,1.6))else sound_play_pitch(sndLightningRifleUpg,random_range(1.6,1.8))

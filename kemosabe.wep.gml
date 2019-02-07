@@ -41,9 +41,10 @@ with instance_create(x,y,Shell){
 }
 with instance_create(x,y,CustomProjectile)
 {
-	typ = 1
+		typ = 1
+		name = "crit bullet"
     damage = 3
-    force = 5
+    force = 7
     team = other.team
     creator = other
     sprite_index = global.sprLuckyBullet
@@ -51,10 +52,9 @@ with instance_create(x,y,CustomProjectile)
     can_crit = 1
     recycle_amount = 1
     move_contact_solid(other.gunangle,2)
-	motion_add(other.gunangle+random_range(-14,14)*other.accuracy,20)
+		motion_add(other.gunangle+random_range(-14,14)*other.accuracy,20)
     image_angle = direction
     on_anim    = kemosabe_anim
-    on_draw    = kemosabe_draw
     on_hit     = kemosabe_hit
     on_destroy = kemosabe_destroy
 }
@@ -74,9 +74,3 @@ instance_destroy()
 
 #define kemosabe_destroy
 with instance_create(x,y,BulletHit){sprite_index = sprEnemyBulletHit}
-
-#define kemosabe_draw
-draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, image_yscale, image_angle, image_blend, 1.0);
-draw_set_blend_mode(bm_add);
-draw_sprite_ext(sprite_index, image_index, x, y, 1.75*image_xscale, 1.75*image_yscale, image_angle, image_blend, 0.15);
-draw_set_blend_mode(bm_normal);
