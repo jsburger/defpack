@@ -25,6 +25,9 @@ return sndSwapMachinegun;
 #define weapon_area
 return 5;
 
+#define weapon_iris
+return "x bullak cannon"
+
 #define weapon_text
 return " 90/100";
 

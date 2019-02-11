@@ -33,6 +33,9 @@ return 7;
 #define weapon_melee
 return 1
 
+#define weapon_iris
+return "x gunhammer"
+
 #define weapon_text
 return "BULLET BASHING";
 

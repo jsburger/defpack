@@ -51,13 +51,18 @@ with instance_create(x,y,CustomProjectile){
     sprite_index = _a ? global.sprBluellet2 : sprBullet2
     motion_add(other.gunangle+random_range(-8,8)*other.accuracy,18)
     projectile_init(other.team,other)
-    name = "flex bullet" //not sponsored i swear
+    name = "Flex Bullet" //not sponsored i swear
     image_angle = direction
     image_speed = 1
     bounce = 1
     damage = 4
     falloff = 1
     fallofftime = current_frame + 2
+    defbloom = {
+        xscale : 2,
+        yscale : 2,
+        alpha : .2
+    }
     force  = 7
     wallbounce = 5 * skill_get(mut_shotgun_shoulders)
     friction = .8 - _a * .2
@@ -89,6 +94,7 @@ instance_destroy()
 
 #define b_wall
 move_bounce_solid(false)
+defbloom.alpha = .2
 direction += random_range(-4,4)
 image_angle = direction
 speed *= .9
@@ -102,7 +108,7 @@ instance_create(x+random_range(-4,4),y+random_range(-4,4),Dust)
 with instance_create(x,y,BulletHit){if other.sprite_index = global.sprBluellet2 sprite_index = sprIDPDBulletHit else sprite_index = sprBulletHit}
 
 #define b_step
- _f = fallofftime >= current_frame
+if fallofftime < current_frame defbloom.alpha = .1
 if speed <= friction instance_destroy()
 
 #define weapon_sprt

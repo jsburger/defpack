@@ -22,6 +22,9 @@ return 43;
 #define weapon_cost
 return 12;
 
+#define weapon_iris
+return "x sniper rifle"
+
 #define weapon_swap
 return sndSwapMachinegun;
 

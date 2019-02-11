@@ -28,36 +28,31 @@ if !is_object(w){
     w = wep
 }
 if w.ammo > 0{
-    if skill_get(9) = true{var _hp = 2}else{var _hp = 1}//second stomach synergy
-    if my_health <= maxhealth - _hp
-    {
-      my_health+=_hp;w.ammo--
-      if _hp = 1
-      {
-        with instance_create(x,y,PopupText){target = other.index;text = "+1 HEALTH"}
+    var _hp = 1+skill_get(mut_second_stomach)
+    var str = "MAX HEALTH"
+    if my_health + 1 <= maxhealth{
+        w.ammo -= 1
+        my_health = min(my_health + _hp, maxhealth)
+        if my_health != maxhealth str = `+${_hp} HEALTH`
         sound_play_pitch(sndHPPickup,random_range(.8,1.2)+.2)
-      }
-      else
-      {
-        with instance_create(x,y,PopupText){target = other.index;text = "+2 HEALTH"}
-        sound_play_pitch(sndHPPickupBig,random_range(.8,1.2)+.2)
-      }
     }
-    else{with instance_create(x,y,PopupText){target = other.index;text = "MAX HEALTH"}}
-}else
-{
+    with instance_create(x, y, PopupText){
+        target = other.index
+        text = str
+    }
+}
+else{
     sound_play_pitch(sndEnemySlash,random_range(1,1.3))
-    with instance_create(x,y,ThrownWep)
-    {
-      sprite_index = global.sprDonutBoxEmpty
-      speed = 4
-      wep = other.wep
-      creator = other
-      team = other.team
-      pet = other.index
-      direction = other.gunangle
-      other.wep = other.bwep
-      other.bwep = 0
+    with instance_create(x,y,ThrownWep){
+        sprite_index = global.sprDonutBoxEmpty
+        speed = 4
+        wep = other.wep
+        creator = other
+        team = other.team
+        direction = other.gunangle
+        other.wep = other.bwep
+        other.bwep = 0
+        other.curse = other.bcurse
     }
 }
 

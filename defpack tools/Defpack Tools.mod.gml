@@ -290,34 +290,14 @@ if instance_exists(obj){
 return found
 
 
-#define bullet_hit
-if name = "Psy Bullet"{with other{motion_add(point_direction(x,y,other.x,other.y),5)}}
-projectile_hit(other, damage, force, direction);
-if instance_exists(creator) if recycle_amount != 0 && irandom(9) <= 5 && skill_get(16){
-	creator.ammo[1]+=recycle_amount
-	if creator.ammo[1] > creator.typ_amax[1] {creator.ammo[1] = creator.typ_amax[1]}
-	sound_play_pitchvol(sndRecGlandProc, 1, 7)
-}
-if instance_exists(creator) if recycle_amount != 0 && skill_get("recycleglandx10"){
-	creator.ammo[1]+= 10*recycle_amount
-	if creator.ammo[1] > creator.typ_amax[1] {creator.ammo[1] = creator.typ_amax[1]}
-	sound_play_pitchvol(sndRecGlandProc, 1, 7)
-}
-instance_destroy()
-
-#define bullet_anim
-image_index = 1
-image_speed = 0
-
-#define shell_hit
-projectile_hit(other, (current_frame < fallofftime? damage : (damage - falloff)), force, direction);
-
 #define chance(percentage)
 return random(100) <= percentage*current_time_scale
 
 
 #define draw_bloom
-with instances_matching(CustomProjectile,"name","Heavy Bouncer Bullet","Psy Bullet","Heavy Psy Bullet","Psy Shell","Split Shell","Lightning Bullet","Heavy Lightning Bullet","Toxic Bullet","Heavy Toxic Bullet","Fire Bullet","Heavy Fire Bullet","Dark Bullet","Light Bullet","Square","Triangle","Plasmite","sudden death bullet","crit bullet","quartz bullet","wide slug","mega bullet"){draw_sprite_ext(sprite_index, image_index, x, y, 2*image_xscale, 2*image_yscale, image_angle, image_blend, 0.1);}
+with instances_matching_ne(CustomProjectile, "defbloom", undefined) draw_sprite_ext(sprite_index, image_index, x, y, defbloom.xscale * image_xscale, defbloom.yscale * image_yscale, image_angle, image_blend, defbloom.alpha * image_alpha)
+
+//with instances_matching(CustomProjectile,"name","Square","Triangle","Plasmite","sudden death bullet","crit bullet","wide slug","mega bullet"){draw_sprite_ext(sprite_index, image_index, x, y, 2*image_xscale, 2*image_yscale, image_angle, image_blend, 0.1);}
 with instances_matching(CustomSlash,"name","Defender Bullet"){draw_sprite_ext(sprite_index, image_index, x, y, 2*image_xscale, 2*image_yscale, image_angle, image_blend, 0.1);}
 with instances_matching(CustomProjectile,"name","vector")
 {
@@ -331,14 +311,12 @@ with instances_matching(CustomProjectile,"name","vector beam")
 	if x != xstart draw_sprite_ext(global.sprVectorHead, 0, x, y, 2.5, image_yscale*2.5, image_angle-45, image_blend, .15+skill_get(17)*.05);
 }
 with instances_matching(CustomProjectile,"name","plasmite cannon","Laser Flak","Heavy Laser Flak","lightning orb"){draw_sprite_ext(sprite_index, image_index, x, y,  (1.5+skill_get(17))*image_xscale, (1.5+skill_get(17))*image_yscale, image_angle, image_blend, 0.1+skill_get(17)*.025)}
-with instances_matching(CustomProjectile,"name","quartz shell","flex bullet"){draw_sprite_ext(sprite_index, image_index, x, y, 2*image_xscale, 2*image_yscale, image_angle, image_blend, 0.1+_f*.2)}
+//with instances_matching(CustomProjectile,"name","quartz shell","flex bullet"){draw_sprite_ext(sprite_index, image_index, x, y, 2*image_xscale, 2*image_yscale, image_angle, image_blend, 0.1+_f*.2)}
 with instances_matching(CustomProjectile,"name","mega lightning bullet")
 {
-  draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, image_yscale, image_angle, image_blend, 1.0);
-  draw_set_blend_mode(bm_add);
   draw_sprite_ext(sprite_index, image_index, x, y, 2*image_xscale+(1-image_index)*2, 2*image_yscale+(1-image_index)*2, image_angle, image_blend, 0.2+(1-image_index)*.4);
-  draw_set_blend_mode(bm_normal);
 }
+
 #define bullet_draw
 draw_self()
 
@@ -346,100 +324,145 @@ draw_self()
 sound_play_hit(sndHitWall,.2)
 instance_destroy()
 
-#define create_heavy_bouncer_bullet(_x,_y)
-var a = instance_create(_x, _y, CustomProjectile)
-with (a) {
-	name = "Heavy Bouncer Bullet"
-	pattern = false
-	sprite_index = global.sprHeavyBouncerBullet
-	typ = 1
-	damage = 9
-	recycle_amount = 2
-	force = 8
-	image_speed = 1
-	image_angle = direction
-	mask_index = mskHeavyBullet
-	bounce = 2
-  turn = choose(-1,1)
-	on_step = script_ref_create(bouncer_step)
-	on_destroy = script_ref_create(bouncer_destroy)
-	on_hit = script_ref_create(bullet_hit)
-	on_draw = script_ref_create(bullet_draw)
-	on_anim = script_ref_create(bullet_anim)
-	on_wall = script_ref_create(bouncer_wall)
+#define bullet_hit
+projectile_hit(other, damage, force, direction);
+if recycle_amount != 0{
+    with creator{
+        var num = (skill_get(mut_recycle_gland) * (irandom(9) < 5)) + 10*skill_get("recycleglandx10")
+        if num{
+            ammo[1] = min(ammo[1] + other.recycle_amount * num, typ_amax[1])
+            instance_create(other.x, other.y, RecycleGland)
+            sound_play(sndRecGlandProc)
+        }
+    }
 }
-return a;
+instance_destroy()
+
+#define bullet_destroy
+with instance_create(x,y,BulletHit) sprite_index = other.spr_dead
+instance_create(x,y,Dust)
+
+#define bullet_anim
+image_index = 1
+image_speed = 0
+
+#define shell_hit
+projectile_hit(other, (current_frame < fallofftime? damage : (damage - falloff)), force, direction);
+
+#define create_bullet(x, y)
+with instance_create(x, y, CustomProjectile){
+    name = "Bullet"
+
+    sprite_index = sprBullet1
+    spr_dead = sprBulletHit
+    mask_index = mskBullet1
+    image_speed = 1
+    
+    defbloom = {
+        xscale : 2,
+        yscale : 2,
+        alpha : .1
+    }
+
+    recycle_amount = 1
+    force = 8
+    damage = 3
+    typ = 1
+
+    on_anim = bullet_anim
+    on_wall = bullet_wall
+    on_hit = bullet_hit
+    on_destroy = bullet_destroy
+    
+    return id
+}
+
+#define create_heavy_bullet(x, y)
+with create_bullet(x, y){
+    name = "Heavy Bullet"
+    
+    sprite_index = sprHeavyBullet
+    spr_dead = sprHeavyBulletHit
+    mask_index = mskHeavyBullet
+    
+    recycle_amount = 2
+    force = 12
+    damage = 7
+    
+    return id
+}
+
+#define create_heavy_bouncer_bullet(x, y)
+with create_heavy_bullet(x, y){
+    name = "Heavy Bouncer Bullet"
+    sprite_index = global.sprHeavyBouncerBullet
+    damage = 9
+    turn = choose(-1, 1)
+    bounce = 2
+    
+    on_step = bouncer_step
+    on_wall = bouncer_wall
+    
+    return id
+}
 
 #define bouncer_step
-image_angle += 6*turn
-
-#define bouncer_destroy
-with instance_create(x,y,BulletHit){
-	sprite_index = sprHeavyBulletHit
-	image_angle = other.direction + 180
-}
-if place_meeting(x + hspeed,y +vspeed,Wall){sound_play_hit(sndHitWall,.2)}
+image_angle += 6*turn * current_time_scale
 
 #define bouncer_wall
 if bounce > 0
 {
-  bounce--
-  instance_create(x,y,Dust)
-  sound_play_pitchvol(sndBouncerBounce,random_range(.7,.8),.7)
-  move_bounce_solid(false)
-  direction += random_range(6,6)
+    bounce--
+    instance_create(x,y,Dust)
+    sound_play_pitchvol(sndBouncerBounce,random_range(.7,.8),.7)
+    move_bounce_solid(false)
+    direction += random_range(6,6)
 }
 else instance_destroy()
 
-#define create_psy_bullet(_x,_y)
-var a = instance_create(_x, _y, CustomProjectile)
-with (a) {
-	name = "Psy Bullet"
-	pattern = false
-	sprite_index = global.sprPsyBullet
-	typ = 1
-	damage = 4
-	recycle_amount = 1
-	force = -10
-	image_speed = 1
-	image_angle = direction
-	mask_index = global.mskPsyBullet
-	timer = irandom(6)+4
-  range = 70
-  turnspeed = .3
-	on_step = script_ref_create(psy_step)
-	on_destroy = script_ref_create(psy_destroy)
-	on_hit = script_ref_create(bullet_hit)
-	on_draw = script_ref_create(bullet_draw)
-	on_anim = script_ref_create(bullet_anim)
-	on_wall = script_ref_create(bullet_wall)
+#define create_psy_bullet(x, y)
+with create_bullet(x,y){
+    name = "Psy Bullet"
+    sprite_index = global.sprPsyBullet
+    mask_index = global.mskPsyBullet
+    spr_dead = global.sprPsyBulletHit
+    
+    damage = 4
+    typ = 2
+    force = -10
+    
+    timer = irandom(6)+4
+    range = 70
+    turnspeed = .3
+    on_step = psy_step
+    on_hit = psy_hit
+    
+    return id
 }
-return a;
 
-#define create_heavy_psy_bullet(_x,_y)
-var a = instance_create(_x, _y, CustomProjectile)
-with (a) {
-	name = "Heavy Psy Bullet"
-	pattern = false
-	sprite_index = global.sprHeavyPsyBullet
-	typ = 1
-	damage = 8
-	recycle_amount = 2
-	force = -20
-	image_speed = 1
-	image_angle = direction
-	mask_index = global.mskPsyBullet
-	timer = irandom(4)+3
-  range = 130
-  turnspeed = .42
-	on_step = script_ref_create(psy_step)
-	on_destroy = script_ref_create(heavy_psy_destroy)
-	on_hit = script_ref_create(bullet_hit)
-	on_draw = script_ref_create(bullet_draw)
-	on_anim = script_ref_create(bullet_anim)
-	on_wall = script_ref_create(bullet_wall)
+#define create_heavy_psy_bullet(x, y)
+with create_heavy_bullet(x, y){
+    name = "Heavy Psy Bullet"
+    sprite_index = global.sprHeavyPsyBullet
+    mask_index = global.mskPsyBullet
+    spr_dead = global.sprHeavyPsyBulletHit
+    
+    damage = 8
+    force = -20
+    timer = irandom(4) + 3
+    range = 130
+    turnspeed = .42
+    
+    on_step = psy_step
+    on_hit = psy_hit
+    
+    return id
 }
-return a;
+
+#define psy_hit()
+with other
+    motion_add(point_direction(x,y,other.x,other.y),5)
+bullet_hit()
 
 #define psy_step
 if timer > 0{
@@ -458,24 +481,10 @@ if timer <= 0{
 	}
 }
 
-#define psy_destroy
-with instance_create(x,y,BulletHit){
-	sprite_index = global.sprPsyBulletHit
-	image_angle = other.direction + 180
-}
-if place_meeting(x + hspeed,y +vspeed,Wall){sound_play_hit(sndHitWall,.2)}
+//shells{
 
-#define heavy_psy_destroy
-with instance_create(x,y,BulletHit){
-	sprite_index = global.sprHeavyPsyBulletHit
-	image_angle = other.direction + 180
-}
-if place_meeting(x + hspeed,y +vspeed,Wall){sound_play_hit(sndHitWall,.2)}
-
-
-#define create_psy_shell(_x,_y)
-var b = instance_create(_x, _y, CustomProjectile)
-with (b){
+#define create_psy_shell(x, y)
+with instance_create(x, y, CustomProjectile){
 	name = "Psy Shell"
 	sprite_index = global.sprPsyPellet
 	friction = .6
@@ -483,20 +492,24 @@ with (b){
 	mask_index = mskBullet2
 	wallbounce = skill_get(15) * 5 + (skill_get("shotgunshouldersx10")*50)
 	force = 4
-	recycle_amount = 0
 	image_speed = 1
 	damage = 4
+	defbloom = {
+	    xscale : 2,
+	    yscale : 2,
+	    alpha : .2
+	}
 	falloff = 1
 	fallofftime = current_frame + 2
 	timer = 5 + irandom(4)
-	on_hit = script_ref_create(psy_shell_hit)
-	on_draw = script_ref_create(psy_shell_draw)
-	on_step = script_ref_create(psy_shell_step)
-	on_wall = script_ref_create(psy_shell_wall)
-	on_destroy = script_ref_create(psy_shell_destroy)
-	on_anim = script_ref_create(bullet_anim)
+	on_hit = psy_shell_hit
+	on_step = psy_shell_step
+	on_wall = psy_shell_wall
+	on_destroy = psy_shell_destroy
+	on_anim = bullet_anim
+	
+	return id
 }
-return b;
 
 #define psy_shell_hit
 shell_hit()
@@ -514,12 +527,14 @@ if timer <= 0{
 		image_angle = direction
 	}
 }
+if fallofftime < current_frame defbloom.alpha = .1
 if speed < 3{
 	instance_destroy()
 }
 
 #define psy_shell_wall
 fallofftime = current_frame + 2
+defbloom.alpha = .2
 move_bounce_solid(true)
 speed /= 1.25
 speed = min(speed+wallbounce,14)
@@ -564,13 +579,16 @@ with (c){
 	ammo = 2
 	lasthit = -4
 	typ = 1
-	recycle_amount = 0
 	image_speed = 1
+	defbloom = {
+	    xscale : 2,
+	    yscale : 2,
+	    alpha : .2
+	}
 	damage = 3
 	falloff = 1
 	fallofftime = current_frame + 2
 	on_hit = script_ref_create(mag_hit)
-	on_draw = script_ref_create(mag_shell_draw)
 	on_step = script_ref_create(mag_shell_step)
 	on_destroy = script_ref_create(mag_shell_destroy)
 	on_anim = script_ref_create(bullet_anim)
@@ -604,6 +622,7 @@ image_angle = direction
 
 #define split_wall
 fallofftime = current_frame + 2
+defbloom.alpha = .2
 move_bounce_solid(true)
 speed *= .66
 speed = min(speed+wallbounce,14)
@@ -627,6 +646,7 @@ if lasthit != other.id || projectile_canhit_melee(other)
 }
 
 #define mag_shell_step
+if fallofftime < current_frame defbloom.alpha = .1
 if speed < 2{instance_destroy()}
 
 #define mag_shell_destroy
@@ -640,233 +660,147 @@ with instance_create(x,y,BulletHit){
 	image_angle = direction
 }
 
-#define mag_shell_draw
-draw_self()
+//}
 
-#define create_thunder_bullet(_x,_y)
-return create_lightning_bullet(_x,_y)
+#define create_thunder_bullet(x, y)
+return create_lightning_bullet(x, y)
 
-#define create_lightning_bullet(_x,_y)
-var c =instance_create(_x, _y, CustomProjectile)
-with (c){
-	name = "Lightning Bullet"
-	pattern = false
-	if skill_get(17)=0{sprite_index = global.sprLightningBullet}else{sprite_index=global.sprLightningBulletUpg}
-	typ = 2
-	mask_index = mskBullet1
-	force = 7
-	damage = 2
-	recycle_amount = 1
-	image_speed = 1
-	image_angle = direction
-	on_step = script_ref_create(thunder_step)
-	on_destroy = script_ref_create(thunder_destroy)
-	on_hit = script_ref_create(bullet_hit)
-	on_draw = script_ref_create(bullet_draw)
-	on_anim = script_ref_create(bullet_anim)
-	on_wall = script_ref_create(bullet_wall)
+#define create_lightning_bullet(x, y)
+with create_bullet(x, y){
+    name = "Lightning Bullet"
+    sprite_index = skill_get(mut_laser_brain) ? global.sprLightningBulletUpg : global.sprLightningBullet
+    spr_dead = global.sprLightningBulletHit
+    
+    force = 7
+    damage = 2
+    typ = 2
+    
+    on_step = thunder_step
+    on_destroy = thunder_destroy
+    
+    return id
 }
-return c;
 
-#define create_heavy_lightning_bullet(_x,_y)
-var c =instance_create(_x, _y, CustomProjectile)
-with (c){
-	name = "Heavy Lightning Bullet"
-	pattern = false
-	if skill_get(17)=1{sprite_index = global.sprHeavyLightningBullet}else{sprite_index=global.sprHeavyLightningBulletUpg}//its supposed to be like that burg
-	typ = 2
-	mask_index = mskBullet1
-	force = 10
-	damage = 4
-	recycle_amount = 2
-	image_speed = 1
-	image_angle = direction
-	on_step = script_ref_create(heavy_thunder_step)
-	on_destroy = script_ref_create(heavy_thunder_destroy)
-	on_hit = script_ref_create(bullet_hit)
-	on_draw = script_ref_create(bullet_draw)
-	on_anim = script_ref_create(bullet_anim)
-	on_wall = script_ref_create(bullet_wall)
+#define create_heavy_lightning_bullet(x, y)
+with create_heavy_bullet(x, y){
+    name = "Heavy Lightning Bullet"
+    sprite_index = skill_get(mut_laser_brain) ? global.sprHeavyLightningBulletUpg : global.sprHeavyLightningBullet
+    spr_dead = global.sprHeavyLightningBulletHit
+    
+    typ = 2
+    damage = 4
+
+    on_step = heavy_thunder_step
+    on_destroy = heavy_thunder_destroy
+    
+    return id
 }
-return c;
 
-#define heavy_thunder_step
-if chance(12){
-	with instance_create(x,y,Lightning){
-      	image_angle = random(360)
-      	team = other.team
-		creator = other.creator
-      	ammo = 2
-		alarm0 = 1
-		visible = 0
-      	with instance_create(x,y,LightningSpawn)
-        {
-      	   image_angle = other.image_angle
-        }
+#define quick_lightning(a)
+with instance_create(x,y,Lightning){
+  	image_angle = random(360)
+  	team = other.team
+	creator = other.creator
+  	ammo = a
+	alarm0 = 1
+	visible = 0
+  	with instance_create(x,y,LightningSpawn){
+  	   image_angle = other.image_angle
     }
 }
 
-#define heavy_thunder_destroy
-repeat(2) with instance_create(x,y,Lightning){
-	image_angle = random(360)
-	creator = other.creator
-	team = other.team
-	ammo = 4
-	alarm0 = 1
-	visible = 0
-	with instance_create(x,y,LightningSpawn)
-	{
-	   image_angle = other.image_angle
-	}
-}
-with instance_create(x,y,BulletHit){
-	direction = other.direction
-	sprite_index = global.sprHeavyLightningBulletHit
+#define heavy_thunder_step
+if chance(12){
+    quick_lightning(2)
 }
 
 #define thunder_step
 if chance(5){
-	with instance_create(x,y,Lightning){
-      	image_angle = random(360)
-      	team = other.team
-		creator = other.creator
-      	ammo = choose(1,2)
-		alarm0 = 1
-		visible = 0
-      	with instance_create(x,y,LightningSpawn)
-        {
-      	   image_angle = other.image_angle
-        }
-    }
+    quick_lightning(choose(1,2))
 }
 
+#define heavy_thunder_destroy
+quick_lightning(4)
+thunder_destroy()
+
 #define thunder_destroy
-with instance_create(x,y,Lightning){
-	image_angle = random(360)
-	creator = other.creator
-	team = other.team
-	ammo = 4
-	alarm0 = 1
-	visible = 0
-	with instance_create(x,y,LightningSpawn)
-	{
-	   image_angle = other.image_angle
-	}
-}
-with instance_create(x,y,BulletHit){
-	direction = other.direction
-	sprite_index = global.sprLightningBulletHit
-}
+quick_lightning(4)
+bullet_destroy()
 
 #define create_pest_bullet(x,y)
 return create_toxic_bullet(x,y)
 
-#define create_toxic_bullet(_x,_y)
-var d = instance_create(_x, _y, CustomProjectile)
-with (d) {
-	name = "Toxic Bullet"
-	pattern = false
-	sprite_index = global.sprToxicBullet
-	typ = 1
-	force = 8
-	mask_index = mskBullet1
-	damage = 2
-	recycle_amount = 1
-	image_speed = 1
-	image_angle = direction
-	//on_step = script_ref_create(bullet_step)
-	on_destroy = script_ref_create(toxic_destroy)
-	on_hit = script_ref_create(bullet_hit)
-	on_draw = script_ref_create(bullet_draw)
-	on_wall = script_ref_create(bullet_wall)
-	on_anim = script_ref_create(bullet_anim)
+#define create_toxic_bullet(x, y)
+with create_bullet(x, y){
+    name = "Toxic Bullet"
+    sprite_index = global.sprToxicBullet
+    spr_dead = global.sprToxicBulletHit
+    
+    force = 8
+    damage = 2
+    
+    on_destroy = toxic_destroy
+    
+    return id
 }
-return d;
 
-#define create_heavy_toxic_bullet(_x,_y)
-var d = instance_create(_x, _y, CustomProjectile)
-with (d) {
-	name = "Heavy Toxic Bullet"
-	pattern = false
-	sprite_index = global.sprHeavyToxicBullet
-	typ = 1
-	force = 11
-	mask_index = mskBullet1
-	damage = 5
-	recycle_amount = 2
-	image_speed = 1
-	image_angle = direction
-	//on_step = script_ref_create(bullet_step)
-	on_destroy = script_ref_create(heavy_toxic_destroy)
-	on_hit = script_ref_create(bullet_hit)
-	on_draw = script_ref_create(bullet_draw)
-	on_wall = script_ref_create(bullet_wall)
-	on_anim = script_ref_create(bullet_anim)
+#define create_heavy_toxic_bullet(x, y)
+with create_heavy_bullet(x, y){
+    name = "Heavy Toxic Bullet"
+    sprite_index = global.sprHeavyToxicBullet
+    spr_dead = global.sprHeavyToxicBulletHit
+    
+    damage = 5
+    force = 11
+    
+    on_destroy = heavy_toxic_destroy
+    
+    return id
 }
-return d;
+
 
 #define toxic_destroy
 repeat(2){
 	instance_create(x,y,ToxicGas)
 }
-with instance_create(x,y,BulletHit){
-	sprite_index = global.sprToxicBulletHit
-	direction = other.direction
-}
-
-#define create_flame_bullet(x,y)
-return create_fire_bullet(x,y)
+bullet_destroy()
 
 #define heavy_toxic_destroy
 repeat(3){
 	with instance_create(x,y,ToxicGas){motion_add(random(360),1)}
 }
-with instance_create(x,y,BulletHit){
-	sprite_index = global.sprHeavyToxicBulletHit
-	direction = other.direction
+bullet_destroy()
+
+#define create_flame_bullet(x,y)
+return create_fire_bullet(x,y)
+
+#define create_fire_bullet(x,y)
+with create_bullet(x,y){
+    name = "Fire Bullet"
+    sprite_index = global.sprFireBullet
+    spr_dead = global.sprFireBulletHit
+    
+    damage = 3
+
+    on_step = fire_step
+    on_destroy = fire_destroy
+    
+    return id
 }
 
-#define create_fire_bullet(_x,_y)
-var e = instance_create(_x, _y, CustomProjectile)
-with (e){
-	name = "Fire Bullet"
-	pattern = false
-	sprite_index = global.sprFireBullet
-	typ = 1
-	force = -5
-	mask_index = mskBullet1
-	damage = 3
-	recycle_amount = 1
-	image_speed = 1
-	on_step = script_ref_create(fire_step)
-	on_destroy = script_ref_create(fire_destroy)
-	on_hit = script_ref_create(bullet_hit)
-	on_draw = script_ref_create(bullet_draw)
-	on_anim = script_ref_create(bullet_anim)
-	on_wall = script_ref_create(bullet_wall)
+#define create_heavy_fire_bullet(x,y)
+with create_heavy_bullet(x, y){
+    name = "Heavy Fire Bullet"
+    sprite_index = global.sprHeavyFireBullet
+    spr_dead = global.sprHeavyFireBulletHit
+    
+    damage = 4
+    
+    on_step = fire_step
+    on_destroy = heavy_fire_destroy
+    
+    return id
 }
-return e;
-
-#define create_heavy_fire_bullet(_x,_y)
-var e = instance_create(_x, _y, CustomProjectile)
-with (e){
-	name = "Heavy Fire Bullet"
-	pattern = false
-	sprite_index = global.sprHeavyFireBullet
-	typ = 1
-	force = -5
-	mask_index = mskBullet1
-	damage = 4
-	recycle_amount = 1
-	image_speed = 1
-	on_step = script_ref_create(fire_step)
-	on_destroy = script_ref_create(heavy_fire_destroy)
-	on_hit = script_ref_create(bullet_hit)
-	on_draw = script_ref_create(bullet_draw)
-	on_anim = script_ref_create(bullet_anim)
-	on_wall = script_ref_create(bullet_wall)
-}
-return e;
 
 #define fire_step
 if chance(8){
@@ -879,43 +813,39 @@ if chance(8){
 #define fire_destroy
 create_miniexplosion(x,y)
 with instance_create(x,y,BulletHit){
-	sprite_index = global.sprFireBulletHit
-    direction = other.direction
+	sprite_index = other.spr_dead
     image_index = 1
 }
 
 #define heavy_fire_destroy
 instance_create(x,y,SmallExplosion)
 sound_play_pitchvol(sndExplosionS,2,.3)
-with instance_create(x,y,BulletHit){
-	sprite_index = global.sprHeavyFireBulletHit
-    direction = other.direction
-}
+bullet_destroy()
 
-#define create_dark_bullet(_x,_y)
-var f = instance_create(_x, _y, CustomSlash)
-with (f){
+
+#define create_dark_bullet(x,y)
+with instance_create(x, y, CustomSlash){
 	name = "Dark Bullet"
-	pattern = false
 	sprite_index = global.sprDarkBullet
+	mask_index = global.mskDarkBullet
+	spr_dead = global.sprDarkBulletHit
+	
 	typ = 0
-	mask_index =global.mskDarkBullet
 	damage = 8
 	force = 7
 	offset = random(360)
 	ringang = random(360)
 	recycle_amount = 1
 	image_speed = 1
-	image_angle = direction
-	//on_step = script_ref_create(dark_step)
-	on_projectile = script_ref_create(dark_proj)
-	on_destroy = script_ref_create(dark_destroy)
-    on_wall = script_ref_create(bullet_wall)
-    on_hit = script_ref_create(bullet_hit)
-	on_draw = script_ref_create(bullet_draw)
-	on_anim = script_ref_create(bullet_anim)
+
+	on_projectile = dark_proj
+	on_destroy = dark_destroy
+    on_wall = bullet_wall
+    on_hit = bullet_hit
+	on_anim = bullet_anim
+	
+	return id
 }
-return f;
 
 #define dark_proj
 var t = team;
@@ -952,10 +882,6 @@ with other{
 }
 
 #define dark_destroy
-with instance_create(x,y,BulletHit){
-	sprite_index = global.sprDarkBulletHit
-	image_angle = other.direction + 180
-}
 with create_sonic_explosion(x,y){
 	team = other.team
 	var scalefac = random_range(0.37,0.4);
@@ -967,55 +893,44 @@ with create_sonic_explosion(x,y){
 	image_speed = 0.8
 	image_blend = c_black
 }
+bullet_destroy()
 
-#define create_light_bullet(_x,_y)
-var g = instance_create(_x, _y, CustomProjectile)
-with (g){
-	name = "Light Bullet"
-	pattern = false
-	sprite_index = global.sprLightBullet
-	typ = 0
-	mask_index = mskBullet1
-	force = 2
-	damage = 3
-	recycle_amount = 1
-	lasthit = -4
-	pierces = 6
-	image_speed = 1
-	image_angle = direction
-	//on_step = script_ref_create(light_step)
-	on_destroy = script_ref_create(light_destroy)
-	on_hit = script_ref_create(light_hit)
-	on_draw = script_ref_create(bullet_draw)
-	on_wall = script_ref_create(bullet_wall)
-	on_anim = script_ref_create(bullet_anim)
+#define create_light_bullet(x, y)
+with create_bullet(x, y){
+    name = "Light Bullet"
+    typ = 0
+    sprite_index = global.sprLightBullet
+    spr_dead = global.sprLightBulletHit
+    
+    force = 4
+    lasthit = -4
+    pierces = 6
+    
+    on_hit = light_hit
+    
+    
+    return id
 }
-return g;
 
 #define light_hit
 if other != lasthit{
 	projectile_hit(other, damage, force, direction);
 	lasthit = other
 	pierces -= 1
-	if irandom(5) = 5 && skill_get(16){
-    	creator.ammo[1]+=recycle_amount
-    	if creator.ammo[1] > creator.typ_amax[1] {creator.ammo[1] = creator.typ_amax[1]}
-    	sound_play_pitchvol(sndRecGlandProc, 1, 7)
-    }
-    if !irandom(1) && skill_get("recycleglandx10"){
-    	creator.ammo[1]+=10*recycle_amount
-    	if creator.ammo[1] > creator.typ_amax[1] {creator.ammo[1] = creator.typ_amax[1]}
-    	sound_play_pitchvol(sndRecGlandProc, 1, 7)
+    if recycle_amount != 0{
+        with creator{
+            var num = (skill_get(mut_recycle_gland) * (irandom(9) < 5)) + 10*skill_get("recycleglandx10")
+            if num{
+                ammo[1] = min(ammo[1] + other.recycle_amount * num, typ_amax[1])
+                instance_create(other.x, other.y, RecycleGland)
+                sound_play(sndRecGlandProc)
+            }
+        }
     }
     if pierces = 0{
     	instance_destroy()
     }
 }
-#define light_destroy
-with instance_create(x,y,BulletHit){
-	sprite_index = global.sprLightBulletHit
-}
-
 
 #define create_sonic_explosion(_x,_y)
 var a = instance_create(_x,_y,CustomSlash)
@@ -1094,59 +1009,25 @@ with instance_create(x, y, Shell){
 		case c_white : image_index = 5;break
 		case c_black : image_index = 6;break
 	}
+	return id
 }
 
 //im not feeling like rewriting every weapon using shell_yeah
 #define shell_yeah_big(_angle, _spread, _speed, _color)
-with instance_create(x, y, Shell){
-	image_speed = 0
-	motion_add(other.gunangle + (other.right * _angle) + random_range(-_spread, _spread), _speed);
-	sprite_index = global.sprGenShellBig
-	switch _color
-	{
-		case c_yellow: image_index = 0;break
-		case c_red   : image_index = 1;break
-		case c_purple: image_index = 2;break
-		case c_green : image_index = 3;break
-		case c_navy  : image_index = 4;break
-		case c_white : image_index = 5;break
-		case c_black : image_index = 6;break
-	}
+with shell_yeah(_angle, _spread, _speed, _color){
+    sprite_index = global.sprGenShellBig
 }
 
 #define shell_yeah_heavy(_angle, _spread, _speed, _color)
-with instance_create(x, y, Shell){
-	image_speed = 0
-	motion_add(other.gunangle + (other.right * _angle) + random_range(-_spread, _spread), _speed);
-	sprite_index = global.sprGenShellHeavy
-	switch _color
-	{
-		case c_yellow: image_index = 0;break
-		case c_red   : image_index = 1;break
-		case c_purple: image_index = 2;break
-		case c_green : image_index = 3;break
-		case c_navy  : image_index = 4;break
-		case c_white : image_index = 5;break
-		case c_black : image_index = 6;break
-	}
+with shell_yeah(_angle, _spread, _speed, _color){
+    sprite_index = global.sprGenShellHeavy
 }
 
 #define shell_yeah_long(_angle, _spread, _speed, _color)
-with instance_create(x, y, Shell){
-	image_speed = 0
-	motion_add(other.gunangle + (other.right * _angle) + random_range(-_spread, _spread), _speed);
-	sprite_index = global.sprGenShellLong
-	switch _color
-	{
-		case c_yellow: image_index = 0;break
-		case c_red   : image_index = 1;break
-		case c_purple: image_index = 2;break
-		case c_green : image_index = 3;break
-		case c_navy  : image_index = 4;break
-		case c_white : image_index = 5;break
-		case c_black : image_index = 6;break
-	}
+with shell_yeah(_angle, _spread, _speed, _color){
+    sprite_index = global.sprGenShellLong
 }
+
 
 #define draw_circle_width_colour(precision,radius,width,offset,xcenter,ycenter,col,alpha)
 var int = 360/precision;
@@ -1243,53 +1124,11 @@ with a{
 }
 return a;
 
-//hahahahah fuck this
-#define abris_check()
-if index > 3 return 1;
-switch creator.race{
-	case "steroids":
-		if creator.wep = wep var we = 1;
-		if creator.bwep = wep var be = 1;
-		if be && !we{
-			check = 2
-		}
-		if we && !be{
-			check = 1
-		}
-		if we && be{
-			if btn[2]{
-				check = 2
-			}
-			else check = 1
-		}
-		break
-	case "venuz":
-		if btn[1] {
-			check = 2;
-			++popped
-		}
-		else {check = 1}
-		break
-	case "skeleton":
-		if btn[1]{
-			check = 2
-		}else{
-			check = 1
-		}
-		break
-	default:
-		check = 1
-		break
-}
-
 #define abris_step
 if instance_exists(creator){
   var timescale = (mod_variable_get("weapon", "stopwatch", "slowed") == 1) ? 30/room_speed : current_time_scale;
   var _a = accbase/accmin
   with creator weapon_post(_a,5*_a*current_time_scale,0)
-	if check = 0{
-		abris_check()
-	}
 	if !dropped{
 		image_angle += rotspeed*timescale;
 		offset += offspeed*timescale;
@@ -1498,8 +1337,6 @@ with other{
 }
 
 #define lightning_draw
-//if random(100) <= 25*current_time_scale lightning_refresh()
-//lightning_refresh()
 d3d_set_fog(1,colors[min((current_frame - create_frame),array_length_1d(colors)-1)], 0,0)
 vertex_submit(vbuf, pr_trianglestrip)
 d3d_set_fog(0,0,0,0)
@@ -1507,13 +1344,6 @@ for (var i = 0; i < array_length_1d(ypoints); i++){
 	draw_sprite(sprLightningHit,1+irandom(2),xpoints[i],ypoints[i])
 	//draw_line_width(xpoints[i],ypoints[i],xpoints[i-1],ypoints[i-1],i/10)
 }
-//trace(array_length(ypoints))
-//var yy = ypoints[array_length_1d(ypoints)-1];
-/*draw_set_color(c_white)
-draw_set_blend_mode(bm_max)
-draw_triangle_color(xmax,yy,xmin,yy,x,y,c_white,c_white,c_black,0)
-draw_set_blend_mode(bm_normal)
-*/
 #define lightning_hit
 if projectile_canhit(other) && current_frame_active{
 	projectile_hit_push(other,damage,force)
@@ -1547,24 +1377,9 @@ while yy > y - 2*game_height{
         array_push(xpoints,xx)
         array_push(ypoints,yy)
     }
-
-    //ang = random_range(50,130)
-
-
-	/*xx += random_range(-6,6)
-	yy -= random_range(-2,8)
-	array_push(xpoints,xx)
-	array_push(ypoints,yy)
-
-	var m = slope(x,xx,y,yy)
-	if m < 0.01 && abs(m) < abs(mmin) {mmin = m}
-	if  m > 0.01 && m < mmax {mmax = m} */
 }
 vertex_end(vbuf)
-/*var y1 = y - 2*game_height;
-xmax = x+(y1 - y)/mmin
-xmin = x+(y1 - y)/mmax
-*/
+
 #define slope(x1,x2,y1,y2)
 return((y2-y1)/(x2-x1))
 
@@ -1678,7 +1493,6 @@ for (var i = 0; i < 360; i+= int){
     }
 }
 
-//instance_destroy()
 
 #define plasmite_draw
 var _x = image_xscale
@@ -1705,35 +1519,6 @@ with create_square(_x,_y){
 
 	return id
 }
-
-/*var a = instance_create(_x,_y,CustomProjectile);
-with a
-{
-	typ = 1
-	name = "square"
-	size = 4
-	friction = .3
-	bounce = 5+skill_get(17)*2
-	damage = 2
-	image_xscale = 1+skill_get(17)*.3
-	image_yscale = 1+skill_get(17)*.3
-	force = 12
-	iframes = 0
-	minspeed = 2
-	anglefac = random_range(0.6,2)
-	fac = choose(1,-1)
-	sprite_index = global.sprSuperSquare
-	mask_index 	 = global.mskSuperSquare
-	hitframes = 0
-	lifetime = room_speed * 7
-	on_step    = square_step
-	on_hit     = square_hit
-	on_wall    = square_wall
-	on_draw    = square_draw
-	on_destroy = square_destroy
-}
-return a;
-*/
 
 #define create_triangle(_x,_y)
 var a = instance_create(_x,_y,CustomProjectile);
@@ -2114,27 +1899,6 @@ with instance_create(x-lengthdir_x(speed,direction),y-lengthdir_y(speed,directio
     image_yscale = other.size / 3
     image_xscale = other.speed
 }
-/*with instances_matching(CustomSlash,"name","Spikeball")
-{
-  if bounce>0 and other.bounce>0
-  {
-    if place_meeting(x,y,other)
-    {
-      sleep(size*2)
-      view_shake_at(x,y,3*size)
-      motion_set(point_direction(other.x,other.y,x,y),speed)
-      repeat(size)instance_create(x,y,Dust)
-      sound_play_pitch(sndHitRock,random_range(.6,.8))
-      sound_play_pitch(sndHitMetal,random_range(1.3,1.5))
-      sound_play_pitch(sndGrenadeHitWall,random_range(1.7,2.5))
-      var _spd = (speed + other.speed)/2;
-      speed = _spd
-      with other{speed = _spd}
-      with instance_create((x+other.x)/2,(y+other.y)/2,MeleeHitWall){image_angle += other.direction+90}
-    }
-  }
-}*/
-
 #define spike_projectile
 //with other if typ > 0 instance_destroy()
 
@@ -2550,7 +2314,7 @@ if instance_exists(creator) && team != -1 && !place_meeting(x,y,creator){
     team = -1
 }
 
-if skill_get(21) and instance_exists{
+if skill_get(21){
     var q = instance_nearest_matching_ne(x,y,hitme,"team",lastteam)
     if instance_exists(q) && distance_to_object(q) <= 40{
         motion_add(point_direction(x,y,q.x,q.y),.5*current_time_scale)

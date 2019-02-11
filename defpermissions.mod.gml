@@ -107,6 +107,7 @@ savepalette()
 file_unload("data/defpermissions.mod/palettes.txt")
 file_unload("data/defpermissions.mod/defconfig.txt")
 
+#macro labellength 18
 
 #define permission_register(type,name,variable,desc)
 while !file_exists("data/defpermissions.mod/defconfig.txt") {wait(0)}
@@ -228,6 +229,23 @@ draw_roundrect_color(x1,y1,x2,y2,color,color,0)
 draw_set_color(col)
 draw_text_shadow(x,y,str)
 draw_set_color(c_white)
+
+#define draw_text_scrolling(x,y,str,col,alpha,shadow,len,scroll)
+var l = string_length(str);
+var s = str
+if l > len{
+    repeat(3) s+= " "
+    s += s
+    var m = scroll mod (l+3)
+    s = string_delete(s, 1, m)
+    s = string_delete(s, len, 100)
+    if scroll > 0{
+        x -= 3*frac(scroll)
+        x += 3
+    }
+}
+if shadow draw_text_c(x,y,s,col)
+else draw_text_color(x,y,s,col,col,col,col,alpha)
 
 #define draw_tri(x,y,xradius,yradius,angle,color)
 draw_primitive_begin(pr_trianglelist)
@@ -624,8 +642,8 @@ for (var i = 0; i < maxp; i++) if player_is_active(i){
             draw_line_width_color(_x+6,_y4+1,_x2-5,_y4+1,1,c_black,c_black)
             draw_line_width_color(_x+5,_y4+1,_x2-6,_y4+1,1,p.cellbar,p.cellbar)
             draw_rectangle_c(_x,_y3+1,_x2,_y4-1,mouse ? p.cellhighlight : col);
-            //draw_rectangle_co(_x,_y3,_x2,_y4,p.celloutline);
-            draw_text_c(_x+2,_y3,global.stuff[h+o][3],p.textcolor);
+            draw_text_scrolling(_x+2, _y3, global.stuff[h+o][3], p.textcolor, 1, 1, labellength, mouse ? current_frame/5 : 0)
+            //draw_text_c(_x+2,_y3,global.stuff[h+o][3],p.textcolor);
             var v = global.stuff[h+o][4];
             var typ = global.stuff[h+o][5];
             //toggle style permissions
@@ -636,7 +654,8 @@ for (var i = 0; i < maxp; i++) if player_is_active(i){
                 draw_circle_color(_x +3 + iw/4 + iw*v/2, _y4 - 3 -ih/2, ih/2, p.togglecolor, p.togglecolor,0)
                 var c = p.modlabel
                 //draw mod name
-                draw_text_color(_x + 6 + iw, _y4 - 11,string_delete(global.stuff[h+o][1],15,100000),c,c,c,c,.6)
+                draw_text_scrolling(_x + 6 + iw, _y4 - 11, global.stuff[h+o][1], c, .6, false, 14, mouse ? current_frame/5 : 0)
+                //draw_text_color(_x + 6 + iw, _y4 - 11,string_delete(global.stuff[h+o][1],15,100000),c,c,c,c,.6)
                 //making the button work
                 if mouse && released{
                     var a = array_clone(global.stuff[h+o]);

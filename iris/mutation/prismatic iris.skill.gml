@@ -253,33 +253,23 @@ else{
 }
 
 if global.forcecolor{
-    if global.color <= 4{
-        var str = "create_"+global.colors[global.color]+"_bullet" 
-        with Bullet1 {
-            with mod_script_call_self("mod", "defpack tools", str, x, y){
-                creator = other.creator
-                team = other.team
-                speed = other.speed
-                direction = other.direction
-                image_angle = other.direction
-            }
-            instance_delete(self)
+    with Bullet1 {
+        with bullet_color(){
+            creator = other.creator
+            team = other.team
+            speed = other.speed
+            direction = other.direction
+            image_angle = other.direction
         }
-    }
-    else if global.color = 6{
-        with Bullet1 {
-            with instance_create(x, y, BouncerBullet){
-                creator = other.creator
-                team = other.team
-                speed = other.speed
-                direction = other.direction
-                image_angle = other.direction
-            }
-            instance_delete(self)
-        }
+        instance_delete(self)
     }
 }
 
+#define bullet_color
+if global.color <= 4
+    return mod_script_call_nc("mod", "defpack tools", "create_"+global.colors[global.color]+"_bullet", x, y)
+if global.color = 6
+    return instance_create(x, y, BouncerBullet)
 
 #define reverse(wep)
 switch wep{
@@ -290,6 +280,7 @@ switch wep{
 }
 
 #define convert(wep)
+if is_string(wep) return mod_script_call_nc("weapon", "weapon_iris", wep)
 switch wep{
     case wep_revolver:
         return "x revolver"
@@ -313,25 +304,17 @@ switch wep{
         return "smart x gun"
     case wep_hyper_rifle:
         return "hyper x rifle"
-    case "sniper rifle":
-        return "sniper x rifle"
-    case "bullet cannon":
-        return "x bullet cannon"
-    case "bullak cannon":
-        return "x bullak cannon"
-    case "gunhammer":
-        return "x gunhammer"
     default:
         return weapon_get_name(wep)
 }
 
 #define get_colored(wp, col)
 var str = weapon_find(wp);
-if is_real(str) || array_index_exists(global.customs,str){
+if is_real(str) or (is_string(str) and mod_script_exists("weapon", "weapon_iris", str)){
     str = string_replace(convert(str),"x ", `${global.colors[col]} `)
 }
 else{
-    for var i = 1; i < array_length_1d(global.colors); i++;{
+    for var i = 1; i < array_length(global.colors); i++;{
         str = string_replace(str, global.colors[i], global.colors[col])
     }
 }
