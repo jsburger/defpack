@@ -60,6 +60,7 @@ if team != other.team{with other{instance_destroy()}}
 #define knifeshank_hit
 if projectile_canhit_melee(other)
 {
+  sleep(20)
   if irandom(19-(skill_get(6)*5)) = 0 && can_crit = 1
   {
     can_crit = 0

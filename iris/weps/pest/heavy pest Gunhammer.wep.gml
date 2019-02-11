@@ -43,7 +43,7 @@ var _p = random_range(.8,1.2)
 sound_play_pitchvol(sndHammer,_p,.7)
 sound_play_pitch(sndShovel,.5*_p)
 sound_play_pitch(sndHitMetal,.8*_p)
-sound_play_pitch(sndAssassinAttack,1.2*_p)s
+sound_play_pitch(sndAssassinAttack,1.2*_p)
 sleep(20)
 weapon_post(8,20,12	*(r*2+1))
 var shell = 0;

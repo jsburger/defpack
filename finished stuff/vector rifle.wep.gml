@@ -50,7 +50,7 @@ with create_psy_laser(x+lengthdir_x(10,gunangle),y+lengthdir_y(10,gunangle)){
 	lspeed = 12
 	team = other.team
 	creator = other
-	image_angle = other.gunangle+random_range(-9,9)*creator.accuracy
+	image_angle = other.gunangle+random_range(-1,1)*creator.accuracy
 	langle = image_angle
 	image_xscale = lspeed/2
 }
