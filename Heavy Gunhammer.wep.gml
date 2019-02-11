@@ -34,6 +34,9 @@ return 13;
 #define weapon_melee
 return 1;
 
+#define weapon_iris
+return "heavy x gunhammer"
+
 #define weapon_text
 return "ADVANCED HAMMERING";
 

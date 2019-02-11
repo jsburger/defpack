@@ -46,29 +46,34 @@ sound_play_pitch(sndSlugger,random_range(.7,.8))
 sound_play_pitch(sndLaserCrystalHit,random_range(1.4,1.7))
 repeat(5) with instance_create(x,y,CustomProjectile)
 {
-  name = "quartz shell"
-  sprite_index = global.sprQuartzBullet2
-  mask_index   = mskBullet2
-  team    = other.team
-  creator = other
-  force  = 4
-  damage = 6
-  falloff = 2
-  fallofftime = current_frame + 2 + skill_get(15) * 2
-  typ = 1
-  friction = random_range(.6,2)
-  image_speed = 1
-  wallbounce = 3 + skill_get(15) * 5;
-  motion_add(other.gunangle+random_range(-9,9)*other.accuracy,26)
-  image_angle = direction
-  pierce  = 2
-  lasthit = -4
-  _f = fallofftime >= current_frame
-  on_hit     = quartzbullet_hit
-  on_step    = quartzbullet_step
-  on_destroy = quartzbullet_destroy
-  on_wall    = quartzbullet_wall
-  on_anim    = quartzbullet_anim
+    name = "Quartz Shell"
+    sprite_index = global.sprQuartzBullet2
+    mask_index   = mskBullet2
+    team    = other.team
+    creator = other
+    force  = 4
+    damage = 6
+    falloff = 2
+    fallofftime = current_frame + 2 + skill_get(15) * 2
+    typ = 1
+    friction = random_range(.6,2)
+    image_speed = 1
+    wallbounce = 3 + skill_get(15) * 5;
+    motion_add(other.gunangle+random_range(-9,9)*other.accuracy,26)
+    image_angle = direction
+    defbloom = {
+        xscale : 2,
+        yscale : 2,
+        alpha : .2
+    }
+    pierce  = 2
+    lasthit = -4
+    _f = fallofftime >= current_frame
+    on_hit     = quartzbullet_hit
+    on_step    = quartzbullet_step
+    on_destroy = quartzbullet_destroy
+    on_wall    = quartzbullet_wall
+    on_anim    = quartzbullet_anim
 }
 
 #define quartzbullet_anim
@@ -77,6 +82,7 @@ image_index = 1
 
 #define quartzbullet_wall
 move_bounce_solid(false)
+defbloom.alpha = .2
 direction += random_range(-4,4)
 image_angle = direction
 speed *= .9
@@ -92,7 +98,7 @@ sound_play_pitchvol(sndHitWall,random_range(.8,1.2),.5)
 with instance_create(x+random_range(-4,4),y+random_range(-4,4),Dust){sprite_index = sprExtraFeetDust}
 
 #define quartzbullet_step
-_f = fallofftime >= current_frame
+if fallofftime < current_frame defbloom.alpha = .1
 if speed <= friction instance_destroy()
 
 #define quartzbullet_destroy
@@ -103,12 +109,12 @@ sleep(1)
 
 #define quartzbullet_hit
 if projectile_canhit_melee(other) || lasthit != other{
-  var dmg = fallofftime >= current_frame ? damage : damage - falloff
-  sleep(dmg)
-  view_shake_at(x,y,dmg)
-  projectile_hit(other,dmg,force,direction)
-  pierce--
-  lasthit = other
+    var dmg = fallofftime >= current_frame ? damage : damage - falloff
+    sleep(dmg)
+    view_shake_at(x,y,dmg)
+    projectile_hit(other,dmg,force,direction)
+    pierce--
+    lasthit = other
 }
 if pierce < 0{instance_destroy()}
 

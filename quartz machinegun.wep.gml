@@ -45,22 +45,29 @@ sound_play_pitch(sndHeavyRevoler,random_range(1,1.1))
 sound_play_pitch(sndLaserCrystalHit,random_range(1.7,2.1))
 with instance_create(x,y,CustomProjectile)
 {
-  name = "quartz bullet"
-  sprite_index = global.sprQuartzBullet
-  mask_index   = mskHeavyBullet
-  projectile_init(other.team,other)
-  force  = 4
-  damage = 6
-  typ = 1
-  image_speed = 1
-  recycle_amount = 1
-  motion_add(other.gunangle+random_range(-2,2)*other.accuracy,20)
-  image_angle = direction
-  pierce  = 2
-  lasthit = -4
-  on_hit     = quartzbullet_hit
-  on_anim   = quartzbullet_anim
-  on_destroy = quartzbullet_destroy
+    name = "Quartz Bullet"
+    sprite_index = global.sprQuartzBullet
+    mask_index   = mskHeavyBullet
+    projectile_init(other.team,other)
+    force  = 4
+    damage = 6
+    typ = 1
+    image_speed = 1
+    recycle_amount = 1
+    
+    defbloom = {
+        xscale : 2,
+        yscale : 2,
+        alpha : .1
+    }
+
+    motion_add(other.gunangle+random_range(-2,2)*other.accuracy,20)
+    image_angle = direction
+    pierce  = 2
+    lasthit = -4
+    on_hit     = quartzbullet_hit
+    on_anim   = quartzbullet_anim
+    on_destroy = quartzbullet_destroy
 }
 
 #define quartzbullet_anim

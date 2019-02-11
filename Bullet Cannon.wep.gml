@@ -24,6 +24,9 @@ return sndSwapPistol;
 #define weapon_area
 return 6;
 
+#define weapon_iris
+return "x bullet cannon"
+
 #define weapon_text
 return "GLASSY CANNON";
 
