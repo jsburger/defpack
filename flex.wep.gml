@@ -1,6 +1,7 @@
 #define init
-global.sprInfinigun2 = sprite_add_weapon("sprites/sprPelletPistol2.png",8,4)
-global.sprBluellet2  = sprite_add("sprites/projectiles/sprIDPDBullet2.png",2,8,8)
+global.sprInfinigun2   = sprite_add_weapon("sprites/sprPelletPistol2.png",8,4)
+global.sprBluellet2    = sprite_add("sprites/projectiles/sprFlexBullet.png",2,12,12)
+global.sprBluellet2Hit = sprite_add("sprites/projectiles/sprFlexBulletHit.png",6,12,12)
 
 #define weapon_name
 return "FLEX"
@@ -105,11 +106,11 @@ sound_play_hit(sndShotgunHitWall,.2)
 instance_create(x+random_range(-4,4),y+random_range(-4,4),Dust)
 
 #define b_destroy
-with instance_create(x,y,BulletHit){if other.sprite_index = global.sprBluellet2 sprite_index = sprIDPDBulletHit else sprite_index = sprBulletHit}
+with instance_create(x,y,BulletHit){image_angle = other.direction;if other.sprite_index = global.sprBluellet2 sprite_index = global.sprBluellet2Hit else sprite_index = sprBullet2Disappear}
 
 #define b_step
 if fallofftime < current_frame defbloom.alpha = .1
-if speed <= friction instance_destroy()
+if speed <= friction * 2 instance_destroy()
 
 #define weapon_sprt
 return global.sprInfinigun2

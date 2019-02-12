@@ -22,6 +22,7 @@
 /loadwep fire/heavy fire gunhammer
 /loadwep fire/fire shotgun
 /loadwep fire/smarter fire gun
+/loadwep fire/mega fire revolver
 
 //BOUNCER BULLET
 
@@ -46,6 +47,7 @@
 /loadwep bouncer/heavy bouncer gunhammer
 //loadwep bouncer/bouncer shotgun
 /loadwep bouncer/smarter bouncer gun
+/loadwep bouncer/mega bouncer revolver
 
 //PEST BULLET
 
@@ -71,6 +73,7 @@
 /loadwep pest/heavy pest gunhammer
 /loadwep pest/pest shotgun
 /loadwep pest/smarter pest gun
+/loadwep pest/mega pest revolver
 
 //THUNDER BULLET
 
@@ -96,6 +99,7 @@
 /loadwep thunder/heavy thunder gunhammer
 /loadwep thunder/thunder shotgun
 /loadwep thunder/smarter thunder gun
+/loadwep thunder/mega thunder revolver
 
 //PSY BULLET
 
@@ -121,3 +125,5 @@
 /loadwep psy/heavy psy gunhammer
 /loadwep psy/psy shotgun
 /loadwep psy/smarter psy gun
+/loadwep psy/mega psy revolver
+

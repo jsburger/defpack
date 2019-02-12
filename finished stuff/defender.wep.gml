@@ -46,8 +46,8 @@ sound_play_pitch(sndUltraShotgun,1.3*_p)
 sound_play_pitch(sndDogGuardianLand,.4*_p)
 sound_play_pitch(sndGuardianFire,.7*_p)
 sound_play_pitch(sndBasicUltra,2*_p)
-sound_play_pitch(sndSuperSlugger,.8*p)
-sound_play_pitch(sndDoubleShotgun,.8*p)
+sound_play_pitch(sndSlugger,.8*_p)
+sound_play_pitch(sndDoubleShotgun,.8*_p)
 weapon_post(8,-25,26)
 var i = 1;
 var j = 1;
