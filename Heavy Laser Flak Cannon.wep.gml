@@ -53,11 +53,6 @@ else
 }
 with mod_script_call("mod","defpack tools","create_laser_flak",x,y)
 {
-    defbloom = {
-        xscale = 1.5+skill_get(mut_laser_brain),
-        yscale = xscale,
-        alpha = .1 + skill_get(mut_laser_brain) * .025
-    }
 	name = "Heavy Laser Flak"
 	creator = other
 	move_contact_solid(other.gunangle,8)

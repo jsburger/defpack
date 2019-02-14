@@ -96,10 +96,11 @@ else {
 if manual or _canshoot {
     weapon_post(0,3,6)
     var _r = random_range(.9, 1.1), _v = manual ? 1 : .8
-		sound_play_pitchvol(sndSmartgun, .8 * _r, .8 * _v)
+	sound_play_pitchvol(sndSmartgun, .8 * _r, .8 * _v)
     sound_play_pitchvol(sndGruntFire, 1.2 * _r, _v)
     sound_play_pitchvol(sndServerBreak, 1.4 * _r, _v * .5)
-		sound_play_pitchvol(sndCursedReminder, .4 * _r, _v)
+	sound_play_pitchvol(sndCursedReminder, .4 * _r, _v)
+	for var i = -1; i <= 1; i+=2
     with mod_script_call_nc("mod", "defpack tools", "create_psy_bullet", _tx,_ty)
     {
     	creator = other

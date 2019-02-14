@@ -1924,9 +1924,9 @@ with a
 	on_destroy  = laserflak_destroy
 	on_square   = script_ref_create(lflak_square)
 	defbloom = {
-        xscale = 1.5+skill_get(mut_laser_brain),
-        yscale = xscale,
-        alpha = .1 + skill_get(mut_laser_brain) * .025
+        xscale : 1.5+skill_get(mut_laser_brain),
+        yscale : xscale,
+        alpha : .1 + skill_get(mut_laser_brain) * .025
     }
 
 }

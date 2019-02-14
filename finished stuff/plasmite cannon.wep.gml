@@ -51,9 +51,9 @@ with instance_create(x,y,CustomProjectile)
 	speedset = 0
 	ammo = 8
 	defbloom = {
-        xscale = 1.5+skill_get(mut_laser_brain),
-        yscale = xscale,
-        alpha = .1 + skill_get(mut_laser_brain) * .025
+        xscale : 1.5+skill_get(mut_laser_brain),
+        yscale : xscale,
+        alpha : .1 + skill_get(mut_laser_brain) * .025
     }
 	accuracy = other.accuracy
 	on_step 	 = atom_step

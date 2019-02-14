@@ -301,7 +301,7 @@ if global.color = 6
 switch wep{
     case "bouncer smg":
         return wep_bouncer_smg
-    case "bouncer shotgun"
+    case "bouncer shotgun":
         return wep_bouncer_shotgun
     default:
         return wep

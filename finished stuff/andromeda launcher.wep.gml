@@ -154,19 +154,24 @@ with instances_in(x-succ,y-succ/2,x+succ,y+succ/2,instances_matching_ne([hitme,C
             frames = sprite_get_number(sprite)
             if "snd_hurt" in other sound_play(other.snd_hurt)
             if instance_is(other, YungCuz){
-                fallspeed = 6
+                fallspeed = 12
+                sprite = sprMutant16Hurt
+                size = 4
             }
-            else fallspeed = other.size*3
+            else {
+                fallspeed = other.size*3
+                size = other.size
+            }
             depth = -8
             on_draw = victimdraw
             on_step = victimstep
             height = sprite_get_yoffset(sprite)
             fall = height
             xoff = sprite_get_xoffset(sprite)
-            size = other.size
+            
             drawsize = max(other.sprite_width,other.sprite_height)
         }
-        if !instance_is(self,Corpse) and other.wantobject != Portal{
+        if !instance_is(self,Corpse) and other.wantobject != Portal {
             if instance_is(self, YungCuz){
                 sound_stop(sndCuzCry)
                 sound_play(sndMutant16Dead)
@@ -203,7 +208,12 @@ if succ < .5  && wantsucc = 0 instance_destroy()
 #define spacedestroy
 if wantobject = SitDown with instance_create(x,y,wantobject){with instance_create(x,y,CustomObject){sprite_index = sprChair;image_speed = 0}}
 else if wantobject > 0 instance_create(x,y,wantobject)
-else if hit and instance_number(enemy) + instance_number(becomenemy) - instance_number(WantVan) - instance_number(Van) <= 0 and !instance_exists(Portal) and !instance_exists(Carpet) and !instance_exists(CrownPed) instance_create(x,y,Portal)
+else if hit and instance_number(enemy) + instance_number(becomenemy) - instance_number(WantVan) - instance_number(Van) <= 0 and !instance_exists(Portal) and !instance_exists(Carpet) and !compare(GameCont.area, 103, 107) instance_create(x,y,Portal)
+
+#define compare()
+for var i = 1; i < argument_count; i++
+    if argument[0] == argument[i] return 1
+return 0
 
 #define victimdraw
 draw_sprite_part(sprite,current_frame *.4 mod frames,0,0,drawsize,clamp(drawsize+fall-height,0,drawsize),x-xoff,y-fall-height)
