@@ -23,7 +23,7 @@ return 1;
 return sndSwapPistol;
 
 #define weapon_area
-return 8;
+return 7;
 
 #define weapon_text
 return choose("DOING NOBODY A FAVOUR","STALE");

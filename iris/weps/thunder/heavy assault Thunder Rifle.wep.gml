@@ -1,7 +1,7 @@
 #define init
 global.sprHeavyAssaultThunderRifle = sprite_add_weapon("sprites/sprHeavyThunderAssaultRifle.png", 4, 4);
 #define weapon_name
-return "HEAVY ASSAULT THUNDER RIFLE";
+return "HEAVY THUNDER ASSAULT RIFLE";
 
 #define weapon_sprt
 return global.sprHeavyAssaultThunderRifle;

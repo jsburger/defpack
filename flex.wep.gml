@@ -13,7 +13,7 @@ return 1
 return 2
 
 #define weapon_area
-return 20
+return 13
 
 #define weapon_load
 return 2

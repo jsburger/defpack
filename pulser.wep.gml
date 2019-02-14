@@ -24,7 +24,7 @@ return 12;
 return sndSwapEnergy;
 
 #define weapon_area
-return 12;
+return 14;
 
 #define weapon_text
 return choose("SO STRANGE", "SO STRONG", "SO... GREEN");

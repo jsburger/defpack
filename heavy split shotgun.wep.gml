@@ -23,7 +23,7 @@ return 4;
 return sndSwapShotgun;
 
 #define weapon_area
-return 11;
+return 9;
 
 #define weapon_text
 return "THE HORDE BEATS THE MANY";

@@ -4,7 +4,7 @@ global.sprMegaRealFist = sprite_add("sprites/mega impact fist fist.png", 1, 0, 1
 global.sprMegaRealFistUpg = sprite_add("sprites/big mega impact fist fist.png", 1, 0, 13);
 
 #define weapon_name
-return "IMPACT FIST"
+return "MEGA IMPACT FIST"
 
 #define weapon_sprt
 return global.sprMegaImpactFist;
@@ -31,7 +31,7 @@ return 0;
 return sndSwapShotgun;
 
 #define weapon_area
-return 12;
+return 9;
 
 #define weapon_fire()
 with instance_create(x,y,CustomSlash) {
@@ -40,7 +40,7 @@ with instance_create(x,y,CustomSlash) {
     team = other.team
     direction = other.gunangle
     image_angle = direction
-    damage = 96
+    damage = 34
     image_xscale = 1.5
     lifespan = 0
     on_end_step = fiststep

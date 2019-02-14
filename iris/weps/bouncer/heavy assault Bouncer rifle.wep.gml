@@ -2,7 +2,7 @@
 global.sprHeavyBouncerRifle = sprite_add_weapon("sprites/sprHeavyBouncerAssaultRifle.png", 4, 2);
 
 #define weapon_name
-return "HEAVY ASSAULT BOUNCER RIFLE"
+return "HEAVY BOUNCER ASSAULT RIFLE"
 
 #define weapon_sprt
 return global.sprHeavyBouncerRifle;

@@ -41,7 +41,7 @@ return 2;
 return sndSwapMachinegun;
 
 #define weapon_area
-return 12;
+return 7;
 
 #define weapon_text
 if irandom(4)<3 and instance_is(self,Player)

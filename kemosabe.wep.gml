@@ -23,7 +23,7 @@ return 1;
 return sndSwapMachinegun;
 
 #define weapon_area
-return 12;
+return 6;
 
 #define weapon_text
 return choose("SO CLEAN FOR#SUCH DIRTY WORK", "LIL FRIEND");

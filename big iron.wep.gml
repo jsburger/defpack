@@ -23,7 +23,7 @@ return 10;
 return sndSwapPistol;
 
 #define weapon_area
-return 13;
+return 11;
 
 #define weapon_text
 return "BIG SNEEZE";

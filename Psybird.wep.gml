@@ -23,7 +23,7 @@ return 2;
 return sndSwapShotgun;
 
 #define weapon_area
-return 13;
+return 11;
 
 #define weapon_text
 return choose("STRAFE FROM","QUETZAL STOMP","@p\|/","K'AW");

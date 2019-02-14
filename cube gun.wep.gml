@@ -83,7 +83,7 @@ return 5
 #define weapon_cost
 return 1
 #define weapon_rads
-return 6
+return 8
 #define weapon_area
 return 24
 #define weapon_load

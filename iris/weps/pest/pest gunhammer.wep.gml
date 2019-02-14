@@ -38,7 +38,7 @@ return 1
 
 #define weapon_fire
 
-if ammo[1] >=1 var r = 1 else var r = 0
+var r = ammo[1] >= 1
 var p = random_range(.8,1.2)
 sound_play_pitchvol(sndHammer,p,.7)
 sound_play_pitch(sndShovel,.5*p)
@@ -49,39 +49,38 @@ sound_stop(sndClickBack)
 weapon_post(8,20,12	*(r*2+1))
 
 var shell = 0;
-with instance_create(x,y,Slash){
+var l = 20* skill_get(mut_long_arms)
+with instance_create(x + lengthdir_x(l, gunangle),y + lengthdir_y(l, gunangle),Slash){
 	damage = 10
 	force = 7
 	motion_add(other.gunangle, 2 + (skill_get(13) * 3))
-	if skill_get(13) {
-		x += 4 *hspeed;
-		y += 4 *vspeed
-	}
 	sprite_index = sprHeavySlash
 	image_angle = direction
 	team = other.team
 	creator = other
-	repeat(4){
-		if other.ammo[1] >=1 {
-			damage = 15
-			force = 15
-			sound_play_pitchvol(sndSawedOffShotgun,.9*p,.7)
-			sound_play_pitchvol(sndDoubleShotgun,.8*p,.7)
-			sound_play_pitchvol(sndTripleMachinegun,.8*p,.7)
-			sound_play_pitch(sndMinigun,random_range(1.2,1.6))
-			sound_play_pitch(sndToxicBoltGas,1.3)
-			sprite_index = global.slash
-			instance_create(x+lengthdir_x(sprite_width,direction),y+lengthdir_y(sprite_width,direction),Smoke)
-			with mod_script_call("mod","defpack tools","create_toxic_bullet",x,y){
-				motion_set(other.direction + random_range(-9,9)*other.creator.accuracy, 10)
-				image_angle = direction
-				creator = other.creator
-				team = other.team
-			}
-			if other.infammo = 0 {other.ammo[1] -= 1}
-			shell += 1
-		}
-	}
+	if r {
+	    damage = 15
+		force = 15
+		sound_play_pitchvol(sndSawedOffShotgun,.9*p,.7)
+		sound_play_pitchvol(sndDoubleShotgun,.8*p,.7)
+		sound_play_pitchvol(sndTripleMachinegun,.8*p,.7)
+		sound_play_pitch(sndMinigun,random_range(1.2,1.6))
+		sound_play_pitch(sndToxicBoltGas,1.3)
+		sprite_index = global.slash
+	    repeat(4){
+    		if other.ammo[1] >=1 {
+    			instance_create(x+lengthdir_x(sprite_width,direction),y+lengthdir_y(sprite_width,direction),Smoke)
+    			with mod_script_call("mod","defpack tools","create_toxic_bullet",x,y){
+    				motion_set(other.direction + random_range(-9,9)*other.creator.accuracy, 10)
+    				image_angle = direction
+    				creator = other.creator
+    				team = other.team
+    			}
+    			if other.infammo = 0 {other.ammo[1] -= 1}
+    			shell += 1
+    		}
+    	}
+    }
 }
 if shell repeat(shell) mod_script_call("mod","defpack tools", "shell_yeah", -180, 18, random_range(3,5), c_green)
 wepangle = -wepangle

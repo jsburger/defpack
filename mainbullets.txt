@@ -44,5 +44,6 @@
 /loadwep spy revolver
 /loadwep flechette rifle
 /loadwep flex
+/loadwep rifle
 
 /loadtext mainshells

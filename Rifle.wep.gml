@@ -10,7 +10,8 @@ return 1
 #define weapon_cost
 return 3
 #define weapon_area
-return 24
+if GameCont.crown = crwn_guns return 19
+return -1
 #define weapon_load
 return 8
 #define weapon_swap

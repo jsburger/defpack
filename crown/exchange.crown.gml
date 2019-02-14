@@ -13,7 +13,7 @@ sprite_index = global.spr_icon;
 
 #define step
 
-with Player
+with instances_matching_ne(Player, "driving", 1)
 {
 	//detect run start
 	if  "HasEx" not in self

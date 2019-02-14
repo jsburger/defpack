@@ -23,7 +23,7 @@ return 3;
 return sndSwapEnergy;
 
 #define weapon_area
-return 9;
+return 8;
 
 #define weapon_text
 return choose("NO HIDING NOW","LOOK AT THIS NERD");

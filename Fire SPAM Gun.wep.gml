@@ -23,10 +23,10 @@ return 1;
 return sndSwapPistol;
 
 #define weapon_area
-return 12;
+return 9;
 
 #define weapon_text
-return choose("BURN THEM TO THE BOILING BOTTOM","STALE & STEAMING","TO MELT EVERYONE");
+return choose("BURN THEM TO THE BOILING BOTTOM","STALE & STEAMING");
 
 #define weapon_fire
 weapon_post(0,0,6)

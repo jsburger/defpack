@@ -4,7 +4,7 @@ global.sprHeavyPsyGunhammerHUD  = sprite_add_weapon("sprites/sprHeavyPsyGunhamme
 global.slash 							      = sprite_add("sprites/projectiles/sprPsyGunhammerSlash.png",3,0,24);
 
 #define weapon_name
-return "PSY GUNHAMMER";
+return "HEAVY PSY GUNHAMMER";
 
 #define weapon_sprt
 return global.sprHeavyPsyGunhammer;
@@ -38,7 +38,7 @@ return 1
 
 #define weapon_fire
 
-if ammo[1] >=1 var r = 1 else var r = 0
+var r = ammo[1] >= 2
 var p = random_range(.8,1.2)
 var p = random_range(.8,1.2)
 sound_play_pitchvol(sndHammer,p,.7)
@@ -49,44 +49,43 @@ sound_play_pitch(sndAssassinAttack,1.2*p)
 sleep(20)
 weapon_post(8,20,12	*(r*2+1))
 var shell = 0;
-with instance_create(x,y,Slash){
+var l = 20* skill_get(mut_long_arms)
+with instance_create(x + lengthdir_x(l, gunangle),y + lengthdir_y(l, gunangle),Slash){
 	image_xscale *= 1.3
 	image_yscale *= 1.3
 	damage = 15
 	force = 7
 	motion_add(other.gunangle, 2 + (skill_get(13) * 3))
-	if skill_get(13) {
-		x += 4 *hspeed;
-		y += 4 *vspeed
-	}
 	sprite_index = sprHeavySlash
 	image_angle = direction
 	team = other.team
 	creator = other
-	if other.ammo[1] >=2 {
-	repeat(4){
-			damage = 25
-			force = 15
-			sound_play_pitch(sndAssassinPretend,random_range(.5,.55))
-			sound_play_pitch(sndSwapCursed,.4)
-			sound_play_pitch(sndCursedReminder,.7)
-			sound_play_pitchvol(sndSawedOffShotgun,.9*p,.7)
-			sound_play_pitchvol(sndDoubleShotgun,.8*p,.7)
-			sound_play_pitchvol(sndTripleMachinegun,.8*p,.7)
-			sprite_index = global.slash
-			with mod_script_call("mod","defpack tools","create_heavy_psy_bullet",x,y){
-				motion_set(other.direction + random_range(-20,20)*other.creator.accuracy, 12)
-				image_angle = direction
-				maxspeed = 12
-				creator = other.creator
-				team = other.team
-				timer -= 5
-			}
-			if other.infammo = 0 {other.ammo[1] -= 2}
-			shell += 1
-		}
+	if r{
+	    damage = 25
+		force = 15
+		sound_play_pitch(sndAssassinPretend,random_range(.5,.55))
+		sound_play_pitch(sndSwapCursed,.4)
+		sound_play_pitch(sndCursedReminder,.7)
+		sound_play_pitchvol(sndSawedOffShotgun,.9*p,.7)
+		sound_play_pitchvol(sndDoubleShotgun,.8*p,.7)
+		sound_play_pitchvol(sndTripleMachinegun,.8*p,.7)
+		sprite_index = global.slash
 		sound_play_gun(sndClickBack,1,.3)
-		sound_stop(sndClickBack)
+    	sound_stop(sndClickBack)
+    	repeat(4){
+        	if other.ammo[1] >=2 {
+    			
+    			with mod_script_call("mod","defpack tools","create_heavy_psy_bullet",x,y){
+    				motion_set(other.direction + random_range(-20,20)*other.creator.accuracy, 12)
+    				image_angle = direction
+    				creator = other.creator
+    				team = other.team
+    				timer -= 5
+    			}
+    			if other.infammo = 0 {other.ammo[1] -= 2}
+    			shell += 1
+    		}
+    	}
 	}
 }
 if shell repeat(shell) mod_script_call("mod","defpack tools", "shell_yeah_heavy", -180, 35, random_range(3,5), c_purple)

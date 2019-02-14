@@ -29,7 +29,7 @@ return true;
 return sndSwapBow;
 
 #define weapon_area
-return 14;
+return 12;
 
 #define weapon_text
 return "TERROR ABSOLUTE";

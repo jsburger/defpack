@@ -24,7 +24,7 @@ return 6;
 return sndSwapShotgun;
 
 #define weapon_area
-return 7;
+return 12;
 
 #define weapon_text
 return "VORTEX-SHAPED DESTRUCTION";

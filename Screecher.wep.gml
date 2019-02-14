@@ -17,13 +17,13 @@ return true;
 return 22;
 
 #define weapon_cost
-return 2;
+return 1;
 
 #define weapon_swap
 return sndSwapExplosive;
 
 #define weapon_area
-return 8;
+return 9;
 
 #define weapon_melee
 return 0;

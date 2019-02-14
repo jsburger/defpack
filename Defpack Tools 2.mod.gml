@@ -58,6 +58,11 @@ if speed <= friction instance_destroy()
 
 #define genbullak(_x,_y)
 with instance_create(_x,_y,CustomProjectile){
+    defbloom = {
+        xscale : 2,
+        yscale : 2,
+        alpha : .1
+    }
     mask_index = mskFlakBullet
     payload = Bullet1
     image_speed = 1
@@ -66,13 +71,17 @@ with instance_create(_x,_y,CustomProjectile){
     on_hit = bullak_hit
     on_destroy = flak_pop
     on_step = bullak_step
-    on_draw = flak_draw
     on_anim = bullak_anim
     return id
 }
 
 #define genflak(_x,_y)
 with instance_create(_x,_y,CustomProjectile){
+    defbloom = {
+        xscale : 2,
+        yscale : 2,
+        alpha : .1
+    }
     mask_index = mskFlakBullet
     payload = Bullet2
     ammo = 12
@@ -80,7 +89,6 @@ with instance_create(_x,_y,CustomProjectile){
     accuracy = 1
     damage = 12
     typ = 1
-    on_draw = flak_draw
     on_step = flak_step
     on_destroy = flak_pop
     return id

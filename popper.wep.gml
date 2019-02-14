@@ -22,7 +22,7 @@ return 3;
 return sndSwapPistol;
 
 #define weapon_area
-return 3;
+return 4;
 
 #define weapon_text
 return "POP POP";

@@ -23,7 +23,7 @@ return 1;
 return sndSwapMachinegun;
 
 #define weapon_area
-return 8;
+return 6;
 
 #define weapon_text
 return choose("/CANDELA","0/10 USES TOXIC");
@@ -40,7 +40,18 @@ sound_play(sndMachinegun)
 sound_play_pitchvol(sndTripleMachinegun,random_range(1.3,1.6),.5)
 sound_play_pitchvol(sndCrossReload,random_range(1.5,1.9),.5)
 weapon_post(5,-2,3)
-switch rainbow_cycle{
+var b = ["fire", BouncerBullet, "toxic", "lightning", "psy"], c = [c_red, c_yellow, c_green, c_navy, c_purple], a;
+if is_string(b[rainbow_cycle]) a = mod_script_call_nc("mod", "defpack tools", `create_${b[rainbow_cycle]}_bullet`,x, y)
+else a = instance_create(x, y, b[rainbow_cycle])
+with a {
+    creator = other
+    team = other.team
+    motion_add(other.gunangle + random_range(-10, 10) * other.accuracy, 12)
+    image_angle = direction
+}
+mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, random_range(2,5), c[rainbow_cycle])
+
+/*switch rainbow_cycle{
 	case 0:
 		mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, random_range(2,5), c_red)
 		with mod_script_call("mod", "defpack tools", "create_fire_bullet",x,y){
@@ -91,5 +102,5 @@ switch rainbow_cycle{
 			timer = 0
 		}
 		break
-}
+}*/
 rainbow_cycle = ++rainbow_cycle mod 5

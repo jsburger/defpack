@@ -15,6 +15,7 @@
 /loadwep wondersword
 /loadwep crystal torch
 /loadwep shard
+/loadwep impact fist
 
 
 ///GOLD///

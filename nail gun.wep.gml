@@ -23,7 +23,7 @@ return 2;
 return sndSwapBow;
 
 #define weapon_area
-return 2;
+return 3;
 
 #define weapon_text
 return "TAC TAC TAC";

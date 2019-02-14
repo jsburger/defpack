@@ -28,7 +28,7 @@ return true;
 return sndSwapBow;
 
 #define weapon_area
-return 14;
+return 8;
 
 #define weapon_text
 return "ANTI-PERSONELL WATER GUN";

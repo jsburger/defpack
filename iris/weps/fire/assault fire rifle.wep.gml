@@ -1,7 +1,7 @@
 #define init
 global.sprAssaultFireRifle = sprite_add_weapon("sprites/sprAssaultFireRifle.png", 6, 2);
 #define weapon_name
-return "ASSAULT FIRE RIFLE";
+return "FIRE ASSAULT RIFLE";
 
 #define weapon_sprt
 return global.sprAssaultFireRifle;

@@ -23,7 +23,7 @@ return 10;
 return sndSwapMachinegun;
 
 #define weapon_area
-return 5;
+return 7;
 
 #define weapon_iris
 return "x bullak cannon"

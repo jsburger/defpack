@@ -280,7 +280,7 @@ switch wep{
 }
 
 #define convert(wep)
-if is_string(wep) return mod_script_call_nc("weapon", "weapon_iris", wep)
+if is_string(wep) return mod_script_call_nc("weapon", wep, "weapon_iris")
 switch wep{
     case wep_revolver:
         return "x revolver"
@@ -310,8 +310,10 @@ switch wep{
 
 #define get_colored(wp, col)
 var str = weapon_find(wp);
-if is_real(str) or (is_string(str) and mod_script_exists("weapon", "weapon_iris", str)){
-    str = string_replace(convert(str),"x ", `${global.colors[col]} `)
+if is_real(str) or (is_string(str) and mod_script_exists("weapon", str, "weapon_iris")){
+    var q = convert(str)
+    if q = str return [str, 1]
+    str = string_replace(q, "x ", `${global.colors[col]} `)
 }
 else{
     for var i = 1; i < array_length(global.colors); i++;{

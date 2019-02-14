@@ -31,8 +31,7 @@ return 2;
 return sndSwapMachinegun;
 
 #define weapon_area
-if GameCont.loops >= 1 return 7;
-return -1
+return 20
 
 #define weapon_text
 return choose("GET LUCKY","THE RICH GET RICHER");

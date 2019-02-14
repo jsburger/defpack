@@ -22,7 +22,7 @@ return 7;
 return sndSwapPistol;
 
 #define weapon_area
-return 6;
+return 7;
 
 #define weapon_iris
 return "x bullet cannon"

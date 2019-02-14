@@ -38,21 +38,23 @@ return 1;
 
 #define weapon_fire
 
-if ammo[1] >=2 var r = 1 else var r = 0
+var r = ammo[1] >= 1
 var p = random_range(.8,1.2)
 sound_play_pitchvol(sndHammer,p,.7)
 sound_play_pitch(sndShovel,.5*p)
 sound_play_pitch(sndHitMetal,.8*p)
 sound_play_pitch(sndAssassinAttack,1.2*p)
 weapon_post(8,20,12	*(r*2+1))
-var shell = 0;
-with instance_create(x,y,Slash)
-{
+var shells = 0
+var l = 20* skill_get(mut_long_arms)
+with instance_create(x + lengthdir_x(l, gunangle),y + lengthdir_y(l, gunangle),Slash){
 	creator = other
+	team = other.team
 	sprite_index = sprHeavySlash
 	damage = 10
 	force = 7
-	if other.ammo[1] >=3
+	motion_set(other.gunangle,2+(skill_get(13)*3))
+	if r
 	{
 		sound_play_pitchvol(sndSawedOffShotgun,.9*p,.7)
 		sound_play_pitchvol(sndDoubleShotgun,.8*p,.7)
@@ -63,45 +65,23 @@ with instance_create(x,y,Slash)
 		force = 15
 	}
 	else{sound_play_pitch(sndHammer,random_range(.97,1.03))}
-	direction = other.gunangle
-	if instance_exists(Player)
-	motion_add(other.gunangle,2+(skill_get(13)*3))
-	if skill_get(13) {
-		x += 4 *hspeed;
-		y += 4 *vspeed
-	}
 	image_angle = direction
-	team = other.team
-	damage = 16
-	if other.ammo[1] >=2{
+	if r{
 		sound_play_gun(sndClickBack,1,.6)
 		sound_stop(sndClickBack)
-		if other.infammo = 0 {other.ammo[1] -= 4}
-		with mod_script_call("mod", "defpack tools", "create_lightning_bullet",x+lengthdir_x(5,other.gunangle),y+lengthdir_y(5,other.gunangle)){
-				creator = other.creator
-				team = other.team
-				motion_set(other.creator.gunangle +random_range(12,20)* other.creator.accuracy,10)
-				image_angle = direction
-		}with mod_script_call("mod", "defpack tools", "create_lightning_bullet",x+lengthdir_x(5,other.gunangle),y+lengthdir_y(5,other.gunangle)){
-				creator = other.creator
-				team = other.team
-				motion_set(other.creator.gunangle -random_range(12,20)* other.creator.accuracy,10)
-				image_angle = direction
-		}with mod_script_call("mod", "defpack tools", "create_lightning_bullet",x+lengthdir_x(5,other.gunangle),y+lengthdir_y(5,other.gunangle)){
-				creator = other.creator
-				team = other.team
-				motion_set(other.creator.gunangle +random_range(24,40)* other.creator.accuracy,10)
-				image_angle = direction
-		}with mod_script_call("mod", "defpack tools", "create_lightning_bullet",x+lengthdir_x(5,other.gunangle),y+lengthdir_y(5,other.gunangle)){
-				creator = other.creator
-				team = other.team
-				motion_set(other.creator.gunangle -random_range(24,40)* other.creator.accuracy,10)
-				image_angle = direction
-		}
-		shell = 1
+    	repeat(8){
+        	if other.ammo[1] >= 1 {
+    			with mod_script_call("mod","defpack tools","create_lightning_bullet",x,y){
+    				motion_set(other.direction + random_range(-32,32)*other.creator.accuracy, 10)
+    				image_angle = direction
+    				creator = other.creator
+    				team = other.team
+    			}
+    			if other.infammo = 0 {other.ammo[1] -= 1}
+    			shells++
+    		}
+    	}
 	}
 }
-if shell repeat(4){
-	mod_script_call("mod","defpack tools", "shell_yeah", -180, 35, random_range(3,5), c_navy)
-}
+if shells repeat(shells) mod_script_call("mod","defpack tools", "shell_yeah", -180, 35, random_range(3,5), c_navy)
 wepangle = -wepangle

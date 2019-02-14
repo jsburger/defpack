@@ -17,13 +17,13 @@ return false;
 return 43;
 
 #define weapon_cost
-return 3;
+return 10;
 
 #define weapon_swap
 return sndSwapExplosive;
 
 #define weapon_area
-return -1;
+return 12;
 
 #define weapon_text
 return "TAKE A DIVE";

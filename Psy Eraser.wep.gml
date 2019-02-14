@@ -23,7 +23,7 @@ return 4;
 return sndSwapShotgun;
 
 #define weapon_area
-return 12;
+return 10;
 
 #define weapon_text
 return "STEP AWAY";

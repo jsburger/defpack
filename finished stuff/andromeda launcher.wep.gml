@@ -143,7 +143,7 @@ if random(100) < 50*current_time_scale{
 }
 
 var me = id;
-with instances_in(x-succ,y-succ/2,x+succ,y+succ/2,instances_matching_ne([hitme,Corpse],"team",team)){
+with instances_in(x-succ,y-succ/2,x+succ,y+succ/2,instances_matching_ne([hitme,Corpse,YungCuz],"team",team)){
     //thank you stackexchange for teaching me ellipse math
     if (sqr(x - other.x))/sqr(other.succ) + (sqr(y-other.y))/sqr(other.succ/2) <= 1{
         other.hit = 1
@@ -162,9 +162,12 @@ with instances_in(x-succ,y-succ/2,x+succ,y+succ/2,instances_matching_ne([hitme,C
             xoff = sprite_get_xoffset(sprite)
             size = other.size
             drawsize = max(other.sprite_width,other.sprite_height)
-            var n = drawsize + fall
         }
         if !instance_is(self,Corpse) and other.wantobject != Portal{
+            if instance_is(self, YungCuz){
+                sound_stop(sndCuzCry)
+                sound_play(sndMutant16Dead)
+            }
             if instance_is(self,Nothing) || instance_is(self,NothingInactive){
                 if instance_exists(Generator) || instance_exists(GeneratorInactive){
                     other.wantobject = SitDown
@@ -223,8 +226,6 @@ draw_vertex_texture(_x,_y,xn,yn)
 
 
 #define spacedraw
-sound_play_gun(sndClickBack,1,.4)
-sound_stop(sndClickBack)
 var xref,yref,sprite;
 sprite = global.space
 var tex,tex2,tex3,tex4,w,h,xn,yn;

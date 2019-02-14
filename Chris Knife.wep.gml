@@ -24,7 +24,7 @@ return 0;
 return sndSwapSword;
 
 #define weapon_area
-return 12;
+return 5;
 
 #define weapon_text
 return choose("IS IT STATTRACK","CRITICAL");

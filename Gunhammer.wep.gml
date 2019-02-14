@@ -48,8 +48,8 @@ sound_play_pitch(sndHitMetal,.8*p)
 sound_play_pitch(sndAssassinAttack,1.2*p)
 if ammo[1] >=1 var r = 1 else var r = 0
 weapon_post(8,25,15*(r*2+1))
-
-with instance_create(x,y,Slash){
+var l = 20* skill_get(mut_long_arms)
+with instance_create(x + lengthdir_x(l, gunangle),y + lengthdir_y(l, gunangle),Slash){
 	if r = true
 	{
 		sprite_index = global.sprGunhammerSlash
@@ -61,10 +61,6 @@ with instance_create(x,y,Slash){
 		force = 7
 	}
 	motion_add(other.gunangle, 2 + (skill_get(13) * 3))
-	if skill_get(13) {
-		x += 4 *hspeed;
-		y += 4 *vspeed
-	}
 	image_angle = direction
 	team = other.team
 	creator = other

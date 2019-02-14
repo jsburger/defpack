@@ -2,7 +2,7 @@
 global.sprAssaultPsyRifle = sprite_add_weapon("sprites/sprAssaultPsyRifle.png", 3, 2);
 
 #define weapon_name
-return "ASSAULT PSY RIFLE";
+return "PSY ASSAULT RIFLE";
 
 #define weapon_sprt
 return global.sprAssaultPsyRifle;

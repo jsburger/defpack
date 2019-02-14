@@ -39,7 +39,7 @@ return 0;
 return sndSwapSword;
 
 #define weapon_area
-return 13;
+return 12;
 
 #define weapon_text
 return choose("SWINGING THIS GETS TIRING","PAPER DRILL");

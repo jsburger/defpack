@@ -26,7 +26,7 @@ return 0;
 return sndSwapBow;
 
 #define weapon_area
-return 7;
+return 10;
 
 #define weapon_text
 return choose("BONE LAUNCHER","THE BONE ZONE");

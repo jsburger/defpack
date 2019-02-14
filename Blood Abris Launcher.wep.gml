@@ -28,7 +28,7 @@ weapon_post(-1,-3,0)
 sound_play_pitchvol(sndNadeReload,1.4,.6)
 
 #define weapon_area
-return 7;
+return 10;
 
 #define weapon_text
 return "PROTECTION AT ALL COSTS";

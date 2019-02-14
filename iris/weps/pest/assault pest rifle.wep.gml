@@ -2,7 +2,7 @@
 global.sprAssaultPestRifle = sprite_add_weapon("sprites/sprAssaultPestRifle.png", 4, 3);
 
 #define weapon_name
-return "ASSAULT PEST RIFLE";
+return "PEST ASSAULT RIFLE";
 
 #define weapon_sprt
 return global.sprAssaultPestRifle;
