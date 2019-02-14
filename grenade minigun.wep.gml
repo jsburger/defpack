@@ -70,7 +70,8 @@ if ammotime <= 0 and (creator.ammo[weapon_type()] >= weapon_cost() or creator.in
             ammo[weapon_type()] -= weapon_cost()
         }
     }
-    else{
+    else
+    {
         creator.gunshine = 1
     }
     ammotime = ammobase

@@ -98,6 +98,13 @@ if timer > 0{
 	timer -= current_time_scale
 }
 if timer <= 0{
+  with mod_script_call("mod","defpack tools","instance_nearest_matching_ne",x,y,hitme,"team",team)
+  {
+    if distance_to_object(other) < other.range*2
+    {
+      motion_add(point_direction(x,y,other.x,other.y),1)
+    }
+  }
 	var closeboy = mod_script_call("mod","defpack tools","instance_nearest_matching_ne",x,y,hitme,"team",team)
 	if instance_exists(closeboy) && distance_to_object(closeboy) < range && collision_line(x,y,closeboy.x,closeboy.y,Wall,0,0) < 0{
 		var dir, spd;
