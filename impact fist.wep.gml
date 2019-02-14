@@ -1,7 +1,7 @@
 #define init
 global.sprMegaImpactFist = sprite_add_weapon("sprites/mega impact fist.png", 4, 8);
-global.sprMegaRealFist = sprite_add("sprites/mega impact fist fist.png", 1, 0, 13);
-global.sprMegaRealFistUpg = sprite_add("sprites/big mega impact fist fist.png", 1, 0, 13);
+global.sprMegaRealFist = sprite_add("sprites/mega impact fist fist.png", 4, 0, 13);
+global.sprMegaRealFistUpg = sprite_add("sprites/big mega impact fist fist.png", 4, 0, 13);
 
 #define weapon_name
 return "MEGA IMPACT FIST"
@@ -42,6 +42,10 @@ with instance_create(x,y,CustomSlash) {
     image_angle = direction
     damage = 34
     image_xscale = 1.5
+    image_speed = 0
+    if GameCont.crown = crwn_death image_index = 1
+    if GameCont.crown = crwn_destiny image_index = 2
+    if skill_get(mut_last_wish) image_index = 3
     lifespan = 0
     on_end_step = fiststep
     on_hit = fisthit

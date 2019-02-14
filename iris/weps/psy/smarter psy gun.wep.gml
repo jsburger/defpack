@@ -6,11 +6,11 @@ return "SMARTER PSY GUN"
 #define weapon_type
 return 1
 #define weapon_cost
-return 1
+return 3
 #define weapon_area
 return -1
 #define weapon_load
-return 6
+return 13
 #define weapon_swap
 return sndSwapMachinegun
 #define weapon_auto
@@ -51,7 +51,7 @@ if shoot( 1 - 2*hand, 1- 2*hand, hand, 1, 0){
 }
 
 #define shoot(xm, ym, hand, manual, justcoords)
-var xw = (sprite_get_width(sprite_index)/1.5 + (2 * (hand ? breload: reload)/weapon_load() * right)) * xm;
+var xw = (sprite_get_width(sprite_index)/1.5 - (4 * (hand ? breload: reload)/weapon_load() * right)) * xm;
 var yw = -8+(sin(current_frame/10)*4 * ym);
 
 /*var _tx = x + lengthdir_x(xw, gunangle + 90),
@@ -100,14 +100,15 @@ if manual or _canshoot {
     sound_play_pitchvol(sndGruntFire, 1.2 * _r, _v)
     sound_play_pitchvol(sndServerBreak, 1.4 * _r, _v * .5)
 	sound_play_pitchvol(sndCursedReminder, .4 * _r, _v)
-	for var i = -1; i <= 1; i+=2
-    with mod_script_call_nc("mod", "defpack tools", "create_psy_bullet", _tx,_ty)
-    {
-    	creator = other
-    	team = other.team
-    	motion_set(angle,7)
-    	image_angle = direction
-    }
+	for var i = -1; i <= 1; i++{
+        with mod_script_call_nc("mod", "defpack tools", "create_psy_bullet", _tx,_ty)
+        {
+        	creator = other
+        	team = other.team
+        	motion_set(angle + 20 * i,7)
+        	image_angle = direction
+        }
+	}
     return 1
 }
 return 0

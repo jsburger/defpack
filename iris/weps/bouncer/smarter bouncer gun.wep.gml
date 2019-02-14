@@ -22,13 +22,13 @@ return 0
 #define weapon_iris
 return "smarter x gun"
 #define weapon_fire
-var hand = specfiring and race = "steroids"
+var hand = specfiring and race = "steroids";
 if shoot( 1 - 2*hand, 1- 2*hand, hand, 1, 0){
     weapon_post(1, 0, 0)
 }
 
 #define shoot(xm, ym, hand, manual, justcoords)
-var xw = (sprite_get_width(sprite_index)/1.5 + (2 * (hand ? breload: reload)/weapon_load() * right)) * xm;
+var xw = (sprite_get_width(sprite_index)/1.5 - (2 * (hand ? breload: reload)/weapon_load() * right)) * xm;
 var yw = -8+(sin(current_frame/10)*4 * ym);
 
 /*var _tx = x + lengthdir_x(xw, gunangle + 90),

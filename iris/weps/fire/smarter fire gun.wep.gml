@@ -51,7 +51,7 @@ if shoot( 1 - 2*hand, 1- 2*hand, hand, 1, 0){
 }
 
 #define shoot(xm, ym, hand, manual, justcoords)
-var xw = (sprite_get_width(sprite_index)/1.5 + (2 * (hand ? breload: reload)/weapon_load() * right)) * xm;
+var xw = (sprite_get_width(sprite_index)/1.5 - (2 * (hand ? breload: reload)/weapon_load() * right)) * xm;
 var yw = -8+(sin(current_frame/10)*4 * ym);
 
 /*var _tx = x + lengthdir_x(xw, gunangle + 90),
@@ -68,7 +68,7 @@ if !manual {
     if instance_exists(target){
         var oldtarget = -4, targets = [], n = 0
         while ++n <= 4 and target != oldtarget and !_canshoot and instance_exists(target){
-            if (collision_line(_tx,_ty,target.x,target.y,Wall,0,0) or collision_line(_tx,_ty,target.x,target.y,PopoShield,0,0) or collision_line(_tx,_ty,target.x,target.y,ProtoStatue,0,0)) or irandom(1) = 0{
+            if irandom(2) > 0 or (collision_line(_tx,_ty,target.x,target.y,Wall,0,0) or collision_line(_tx,_ty,target.x,target.y,PopoShield,0,0) or collision_line(_tx,_ty,target.x,target.y,ProtoStatue,0,0)){
                 //with instance_create(target.x, target.y - 6*n, WepSwap) image_blend = merge_color(c_red, c_yellow, (n-1)/2)
                 target.x += 10000
                 target.y += 10000
@@ -96,11 +96,11 @@ else {
 if manual or _canshoot {
     weapon_post(0,3,6)
     var _r = random_range(.9, 1.1), _v = manual ? 1 : .8
-		sound_play_pitchvol(sndSmartgun, .8 * _r, .8 * _v)
+	sound_play_pitchvol(sndSmartgun, .8 * _r, .8 * _v)
     sound_play_pitchvol(sndGruntFire, 1.2 * _r, _v)
     sound_play_pitchvol(sndServerBreak, 1.4 * _r, _v * .5)
-		sound_play_pitchvol(sndIncinerator, .8 * _r, _v)
-		sound_play_pitchvol(sndFireShotgun, 1.2 * _r, _v)
+	sound_play_pitchvol(sndIncinerator, .8 * _r, _v)
+	sound_play_pitchvol(sndFireShotgun, 1.2 * _r, _v)
     with mod_script_call_nc("mod", "defpack tools", "create_fire_bullet", _tx,_ty)
     {
     	creator = other
