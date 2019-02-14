@@ -82,9 +82,19 @@ if button_check(index,btn){
         charge = maxcharge;
         if charged = 0{
             sound_play_pitch(sndSnowTankCooldown,8)
-            sound_play_pitchvol(sndShielderDeflect,5,.5)
-            with instance_create(creator.x,creator.y,WepSwap){
+            sound_play_pitchvol(sndShielderDeflect,4,.5)
+            sound_play_pitchvol(sndBigCursedChest,20,.1)
+            sound_play_pitchvol(sndCursedChest,12,.2)
+            with instance_create(creator.x+lengthdir_x(12,creator.gunangle),creator.y+lengthdir_y(12,creator.gunangle),ChickenB)
+            {
                 creator = other.creator
+                image_xscale = .5
+                image_yscale = .5
+                with instance_create(x,y,ChickenB)
+                {
+                    creator = other.creator
+                    image_speed = .75
+                };
             };
             charged = 1
         }
@@ -148,7 +158,7 @@ else
 }
 
 #define weapon_sprt
-if instance_is(self,Player){ 
+if instance_is(self,Player){
     with instances_matching(instances_matching(CustomObject, "name", "bow charge"),"creator", id){
         var yoff = (creator.race = "steroids" and btn = "spec") ? -1 : 1
         with creator
