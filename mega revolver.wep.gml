@@ -32,6 +32,9 @@ return 14;
 #define weapon_text
 return "TOO BIG FOR THE HOLSTER"
 
+#define weapon_iris
+return "mega x revolver"
+
 #define weapon_fire
 weapon_post(9,-40,30)
 motion_add(gunangle-180,3)
@@ -52,6 +55,11 @@ with instance_create(x,y,CustomProjectile)
     force = 18
     frames = 6
     image_speed = 1
+    defbloom = {
+        xscale : 2,
+        yscale : 2,
+        alpha : .1
+    }
     creator = other
     move_contact_solid(other.gunangle,12)
     motion_add(other.gunangle+random_range(-3,3)*other.accuracy,20)
@@ -69,6 +77,12 @@ with instance_create(x,y,CustomProjectile)
 #define mega_hit
 if current_frame_active{
     frames--
+    if skill_get(mut_recycle_gland) and recycle_amount > 0 and irandom(9) < 5{
+        instance_create(x, y, RecycleGland)
+        sound_play(sndRecGlandProc)
+        recycle_amount -= 1
+        with creator ammo[1] = min(ammo[1] + 1, typ_amax[1])
+    }
     repeat(3) instance_create(x+random_range(-8,8),y+random_range(-8,8),Smoke)
     projectile_hit(other,damage,force,direction)
     sleep(5)

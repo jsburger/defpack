@@ -52,32 +52,37 @@ repeat(2)
   sound_stop(sndClickBack)
   with instance_create(x,y,CustomProjectile)
   {
-      name = "mega thunder bullet"
-      typ = 1
-      sprite_index = global.sprMegaThunderBullet
-      if _s sprite_index = global.sprMegaThunderBulletUpg
-      mask_index = mskHeavyBullet
-      recycle_amount = 2
-      damage = 2
-      team = other.team
-      force = 18
-      frames = 8
-      image_speed = 1
-      creator = other
-      move_contact_solid(other.gunangle,12)
-      motion_add(other.gunangle+random_range(-8,8)*other.accuracy,14)
-      with instance_create(x,y,LightningSpawn){image_angle = other.direction}
-      image_angle = direction
-      on_destroy = mega_destroy
-      on_wall    = mega_wall
-      on_anim    = mega_anim
-      on_step    = mega_step
-      on_hit     = mega_hit
-      repeat(4)with instance_create(x+lengthdir_x(5,direction),y+lengthdir_y(5,direction),Smoke){
-          gravity = -.1
-          image_xscale /=2
-          image_yscale/=2
-      }
+    name = "mega thunder bullet"
+    typ = 1
+    sprite_index = global.sprMegaThunderBullet
+    if _s sprite_index = global.sprMegaThunderBulletUpg
+    mask_index = mskHeavyBullet
+    recycle_amount = 2
+    damage = 2
+    team = other.team
+    force = 18
+    frames = 8
+    defbloom = {
+        xscale : 2,
+        yscale : 2,
+        alpha : .1
+    }
+    image_speed = 1
+    creator = other
+    move_contact_solid(other.gunangle,12)
+    motion_add(other.gunangle+random_range(-8,8)*other.accuracy,14)
+    with instance_create(x,y,LightningSpawn){image_angle = other.direction}
+    image_angle = direction
+    on_destroy = mega_destroy
+    on_wall    = mega_wall
+    on_anim    = mega_anim
+    on_step    = mega_step
+    on_hit     = mega_hit
+    repeat(4)with instance_create(x+lengthdir_x(5,direction),y+lengthdir_y(5,direction),Smoke){
+        gravity = -.1
+        image_xscale /=2
+        image_yscale/=2
+    }
   }
   wait(9)
   if !instance_exists(self) exit
@@ -85,6 +90,13 @@ repeat(2)
 #define mega_hit
 if current_frame_active{
     frames--
+    if skill_get(mut_recycle_gland) and recycle_amount > 0 and irandom(9) < 5{
+        instance_create(x, y, RecycleGland)
+        sound_play(sndRecGlandProc)
+        recycle_amount -= 1
+        with creator ammo[1] = min(ammo[1] + 1, typ_amax[1])
+    }
+
     repeat(3) instance_create(x+random_range(-8,8),y+random_range(-8,8),Smoke)
     projectile_hit(other,damage,force,direction)
     sleep(5)

@@ -44,29 +44,33 @@ sound_play_pitch(sndSlugger,.7*_p)
 sound_play_pitch(sndDoubleShotgun,.7*_p)
 sound_play_pitch(sndSuperSlugger,1.4*_p)
 
-with instance_create(x,y,CustomProjectile)
-{
-  name = "wide slug"
-  team    = other.team
-  creator = other
-  sprite_index = global.sprWideSlug
-  mask_index = global.mskWideSlug
-  motion_add(other.gunangle+random_range(-4,4)*other.accuracy,6)
-  maxspeed = speed
-  image_angle = direction
-  damage = 2
-  force  = 8
-  typ       = 0
-  friction  = 0
-  image_speed = 1
-  image_xscale = 1.25
-  image_yscale = 1.25
-  pierce = 45
-  on_destroy = dyn_destroy
-  on_end_step = dyn_step
-  on_wall = dyn_wall
-  on_hit  = dyn_hit
-  on_anim = dyn_anim
+with instance_create(x,y,CustomProjectile){
+    defbloom = {
+        xscale : 2,
+        yscale : 2,
+        alpha : .1
+    }
+    name = "wide slug"
+    team    = other.team
+    creator = other
+    sprite_index = global.sprWideSlug
+    mask_index = global.mskWideSlug
+    motion_add(other.gunangle+random_range(-4,4)*other.accuracy,6)
+    maxspeed = speed
+    image_angle = direction
+    damage = 2
+    force  = 8
+    typ       = 0
+    friction  = 0
+    image_speed = 1
+    image_xscale = 1.25
+    image_yscale = 1.25
+    pierce = 45
+    on_destroy = dyn_destroy
+    on_end_step = dyn_step
+    on_wall = dyn_wall
+    on_hit  = dyn_hit
+    on_anim = dyn_anim
 }
 #define dyn_anim
 image_xscale = 1

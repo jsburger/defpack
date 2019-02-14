@@ -135,6 +135,11 @@ for var i = 0; i< 3; i++
     name = "lightning orb"
     damage = 8
     friction = .075
+    defbloom = {
+        xscale = 1.5+skill_get(mut_laser_brain),
+        yscale = xscale,
+        alpha = .1 + skill_get(mut_laser_brain) * .025
+    }
     sprite_index = global.sprUmbrellaOrb
     image_speed = .5
     mask_index = mskDebris

@@ -297,23 +297,16 @@ return random(100) <= percentage*current_time_scale
 #define draw_bloom
 with instances_matching_ne(CustomProjectile, "defbloom", undefined) draw_sprite_ext(sprite_index, image_index, x, y, defbloom.xscale * image_xscale, defbloom.yscale * image_yscale, image_angle, image_blend, defbloom.alpha * image_alpha)
 
-//with instances_matching(CustomProjectile,"name","Square","Triangle","Plasmite","sudden death bullet","crit bullet","wide slug","mega bullet"){draw_sprite_ext(sprite_index, image_index, x, y, 2*image_xscale, 2*image_yscale, image_angle, image_blend, 0.1);}
-with instances_matching(CustomSlash,"name","Defender Bullet"){draw_sprite_ext(sprite_index, image_index, x, y, 2*image_xscale, 2*image_yscale, image_angle, image_blend, 0.1);}
-with instances_matching(CustomProjectile,"name","vector")
-{
+with instances_matching(CustomProjectile,"name","vector"){
 	draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, 2.5*image_yscale, image_angle, image_blend, 0.1+skill_get(17)*.025);
 	if ammo > 0{draw_sprite_ext(global.sprVectorHead, 0, x, y, 3, 3, image_angle-45, image_blend, 0.1+skill_get(17)*.025)}
 }
-with instances_matching(CustomProjectile,"name","vector beam")
-{
+with instances_matching(CustomProjectile,"name","vector beam"){
   draw_sprite_ext(sprite_index, image_index, xstart, ystart, image_xscale, 1.5*image_yscale, image_angle, image_blend, 0.15+skill_get(17)*.05);
 	if x != xstart draw_sprite_ext(global.sprVectorBeamStart, 0, xstart, ystart, 1.5, image_yscale*1.5, image_angle, image_blend, .15+skill_get(17)*.05);
 	if x != xstart draw_sprite_ext(global.sprVectorHead, 0, x, y, 2.5, image_yscale*2.5, image_angle-45, image_blend, .15+skill_get(17)*.05);
 }
-with instances_matching(CustomProjectile,"name","plasmite cannon","Laser Flak","Heavy Laser Flak","lightning orb"){draw_sprite_ext(sprite_index, image_index, x, y,  (1.5+skill_get(17))*image_xscale, (1.5+skill_get(17))*image_yscale, image_angle, image_blend, 0.1+skill_get(17)*.025)}
-//with instances_matching(CustomProjectile,"name","quartz shell","flex bullet"){draw_sprite_ext(sprite_index, image_index, x, y, 2*image_xscale, 2*image_yscale, image_angle, image_blend, 0.1+_f*.2)}
-with instances_matching(CustomProjectile,"name","mega lightning bullet")
-{
+with instances_matching(CustomProjectile,"name","mega lightning bullet"){
   draw_sprite_ext(sprite_index, image_index, x, y, 2*image_xscale+(1-image_index)*2, 2*image_yscale+(1-image_index)*2, image_angle, image_blend, 0.2+(1-image_index)*.4);
 }
 
@@ -448,6 +441,7 @@ with create_heavy_bullet(x, y){
     spr_dead = global.sprHeavyPsyBulletHit
     
     damage = 8
+    typ = 2
     force = -20
     timer = irandom(4) + 3
     range = 130
@@ -1447,6 +1441,11 @@ var a = instance_create(_x,_y,CustomProjectile);
 with a
 {
     name = "Plasmite"
+    defbloom = {
+        xscale : 2,
+        yscale : 2,
+        alpha : .1
+    }
 	image_speed = 0
 	image_index = 0
 	damage = 4+3*skill_get(17)
@@ -1524,6 +1523,11 @@ with create_square(_x,_y){
 var a = instance_create(_x,_y,CustomProjectile);
 with a
 {
+    defbloom = {
+        xscale : 2,
+        yscale : 2,
+        alpha : .1
+    }
     typ = 1
     name = "Triangle"
     size = 1
@@ -1563,6 +1567,11 @@ repeat(3){
 #define create_square(_x,_y)
 var a = instance_create(_x,_y,CustomSlash);
 with a{
+    defbloom = {
+        xscale : 2,
+        yscale : 2,
+        alpha : .1
+    }
     typ = 0
     name = "Square"
     size = 1
@@ -1586,7 +1595,6 @@ with a{
     on_step    = square_step
     on_hit     = square_hit
     on_wall    = square_wall
-    on_draw    = square_draw
     on_destroy = square_destroy
     on_square  = script_ref_create(square_square)
     on_anim    = nothing
@@ -1619,11 +1627,6 @@ if other.team != pseudoteam and current_frame_active{
     if speed > minspeed && projectile_canhit_melee(other) = true{projectile_hit(other, round(2*damage + speed), force, direction)}else{projectile_hit(other, damage, force, direction)};
 }
 
-#define square_draw
-draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, image_yscale, image_angle, image_blend, 1.0);
-draw_set_blend_mode(bm_add);
-draw_sprite_ext(sprite_index, image_index, x, y, 2*image_xscale, 2*image_yscale, image_angle, image_blend, 0.1);
-draw_set_blend_mode(bm_normal);
 
 #define square_projectile
 if other.team = pseudoteam || ("pseudoteam" in other and other.pseudoteam == pseudoteam){
@@ -1917,10 +1920,15 @@ with a
 	sprite_index = global.sprLaserFlakBullet
 	mask_index = mskFlakBullet
 	on_hit      = laserflak_hit
-	on_draw     = laserflak_draw
 	on_step     = laserflak_step
 	on_destroy  = laserflak_destroy
 	on_square   = script_ref_create(lflak_square)
+	defbloom = {
+        xscale = 1.5+skill_get(mut_laser_brain),
+        yscale = xscale,
+        alpha = .1 + skill_get(mut_laser_brain) * .025
+    }
+
 }
 return a;
 
@@ -1993,12 +2001,6 @@ if chance(66)
 }
 */
 if speed < friction instance_destroy()
-
-#define laserflak_draw
-draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, image_yscale, image_angle, image_blend, 1.0);
-draw_set_blend_mode(bm_add);
-draw_sprite_ext(sprite_index, image_index, x, y, 1.75*image_xscale, 1.75*image_yscale, image_angle, image_blend, 0.25);
-draw_set_blend_mode(bm_normal);
 
 #define quartz_penalty(_mod) //this is for player step only stupid
 if chance(4)

@@ -26,6 +26,9 @@ return sndSwapMachinegun;
 #define weapon_area
 return 13;
 
+#define weapon_iris
+return "heavy smart x gun"
+
 #define weapon_text
 return choose("PERFECTION","TRUE BEAUTY","A SIGHT TO BEHOLD","SMARTER THAN ITS SIBLING");
 

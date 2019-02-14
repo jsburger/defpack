@@ -252,7 +252,30 @@ else{
     }
 }
 
-if global.forcecolor{
+if global.forcecolor and global.colors[global.color] != "blind"{
+    //leading in innovation with EPIC copy pasting
+    with HeavyBullet{
+        with heavy_bullet_color(){
+            creator = other.creator
+            team = other.team
+            speed = other.speed
+            direction = other.direction
+            image_angle = other.direction
+        }
+        instance_delete(self)
+    }
+    if global.color != 6{
+        with BouncerBullet {
+            with bullet_color(){
+                creator = other.creator
+                team = other.team
+                speed = other.speed
+                direction = other.direction
+                image_angle = other.direction
+            }
+            instance_delete(self)
+        }
+    }
     with Bullet1 {
         with bullet_color(){
             creator = other.creator
@@ -265,6 +288,9 @@ if global.forcecolor{
     }
 }
 
+#define heavy_bullet_color()
+return mod_script_call_nc("mod", "defpack tools", "create_heavy_"+global.colors[global.color]+"_bullet", x, y)
+
 #define bullet_color
 if global.color <= 4
     return mod_script_call_nc("mod", "defpack tools", "create_"+global.colors[global.color]+"_bullet", x, y)
@@ -275,6 +301,8 @@ if global.color = 6
 switch wep{
     case "bouncer smg":
         return wep_bouncer_smg
+    case "bouncer shotgun"
+        return wep_bouncer_shotgun
     default:
         return wep
 }
@@ -302,8 +330,16 @@ switch wep{
         return "quad x machinegun"
     case wep_smart_gun:
         return "smart x gun"
+    case wep_bouncer_shotgun:
+        return "x shotgun"
     case wep_hyper_rifle:
         return "hyper x rifle"
+    case wep_heavy_assault_rifle:
+        return "heavy assault x rifle"
+    case wep_heavy_machinegun:
+        return "heavy x machinegun"
+    case wep_heavy_revolver:
+        return "heavy x revolver"
     default:
         return weapon_get_name(wep)
 }
@@ -312,7 +348,7 @@ switch wep{
 var str = weapon_find(wp);
 if is_real(str) or (is_string(str) and mod_script_exists("weapon", str, "weapon_iris")){
     var q = convert(str)
-    if q = str return [str, 1]
+    if q = str return [str, 0]
     str = string_replace(q, "x ", `${global.colors[col]} `)
 }
 else{

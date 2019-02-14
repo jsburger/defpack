@@ -68,6 +68,11 @@ repeat(3)
 			friction = 2+1.1*(i-1)
 			sprite_index = global.sprShieldBullet
 			mask_index   = mskHeavyBullet
+			defbloom = {
+                xscale : 2,
+                yscale : 2,
+                alpha : .1
+            }
 			motion_add(other.gunangle+(random_range(-1,1)* other.accuracy+13*j*(i-1)),28)
 			image_angle = direction
 			on_projectile = def_projectile

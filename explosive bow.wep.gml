@@ -207,7 +207,7 @@ if random(100) < (50 + 25*charged)*current_time_scale{
 var hitem = 0
 if skill_get(mut_bolt_marrow){
     var q = mod_script_call_nc("mod","defpack tools","instance_nearest_matching_ne",x,y,hitme,"team",team)
-    if instance_exists(q) and distance_to_object(q) < 10 {
+    if instance_exists(q) and point_distance(x,y,q.x,q.y) < 24 {
         x = q.x - hspeed_raw
         y = q.y - vspeed_raw
         hitem = 1

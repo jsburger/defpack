@@ -50,6 +50,11 @@ with instance_create(x,y,CustomProjectile)
 	image_angle = direction
 	speedset = 0
 	ammo = 8
+	defbloom = {
+        xscale = 1.5+skill_get(mut_laser_brain),
+        yscale = xscale,
+        alpha = .1 + skill_get(mut_laser_brain) * .025
+    }
 	accuracy = other.accuracy
 	on_step 	 = atom_step
 	on_wall 	 = mb_wall

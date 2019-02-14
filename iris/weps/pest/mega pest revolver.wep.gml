@@ -59,6 +59,11 @@ with instance_create(x,y,CustomProjectile)
     frames = 10
     image_speed = 1
     creator = other
+    defbloom = {
+        xscale : 2,
+        yscale : 2,
+        alpha : .1
+    }
     move_contact_solid(other.gunangle,12)
     motion_add(other.gunangle+random_range(-1,1)*other.accuracy,22)
     image_angle = direction
@@ -75,6 +80,13 @@ with instance_create(x,y,CustomProjectile)
 #define mega_hit
 if current_frame_active{
     frames--
+    if skill_get(mut_recycle_gland) and recycle_amount > 0 and irandom(9) < 5{
+        instance_create(x, y, RecycleGland)
+        sound_play(sndRecGlandProc)
+        recycle_amount -= 1
+        with creator ammo[1] = min(ammo[1] + 1, typ_amax[1])
+    }
+
     repeat(3) instance_create(x+random_range(-8,8),y+random_range(-8,8),ToxicGas)
     projectile_hit(other,damage,force,direction)
     sleep(5)

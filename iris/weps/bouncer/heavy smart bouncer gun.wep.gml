@@ -46,7 +46,7 @@ if fork(){
 }
 sound_play_pitch(sndSmartgun,random_range(.6,.8))
 var _p = random_range(.8,1.2)
-sound_play_pitch(sndPistol,.7*p)
+sound_play_pitch(sndPistol,.7*_p)
 sound_play_pitchvol(sndBouncerSmg,.7*_p,1)
 sound_play_pitchvol(sndHeavyNader,1*_p,.8)
 motion_add(ang+180,1)

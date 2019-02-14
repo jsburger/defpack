@@ -68,13 +68,17 @@ sound_play_pitch(sndSlugger,2*r)
 sound_play_pitch(sndFlakCannon,.8*r)
 motion_set(gunangle-180,4)
 weapon_post(9,-30,24)
-with instance_create(x,y,CustomProjectile)
-{
-  name = "sudden death bullet"
-  sprite_index = sprEBullet3
-  mask_index   = mskBullet2
-  image_speed = 1
-  friction = .6
+with instance_create(x,y,CustomProjectile){
+    name = "sudden death bullet"
+    defbloom = {
+        xscale : 2,
+        yscale : 2,
+        alpha : .1
+    }
+    sprite_index = sprEBullet3
+    mask_index   = mskBullet2
+    image_speed = 1
+    friction = .6
 	force = 50
 	damage = 1000
 	motion_add(other.gunangle,22)
@@ -83,12 +87,12 @@ with instance_create(x,y,CustomProjectile)
 	team = other.team
 	creator = other
 	repeat(6){instance_create(x+lengthdir_x(random_range(1,6),direction),y+lengthdir_y(random_range(1,6),direction),Smoke)}
-  image_angle = direction
-  on_wall    = shell_wall
-  on_step    = shell_step
-  on_hit     = shell_hit
-  on_anim    = shell_anim
-  on_destroy = shell_destroy
+    image_angle = direction
+    on_wall    = shell_wall
+    on_step    = shell_step
+    on_hit     = shell_hit
+    on_anim    = shell_anim
+    on_destroy = shell_destroy
 }
 
 #define shell_anim

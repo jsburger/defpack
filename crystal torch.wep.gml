@@ -10,7 +10,100 @@ global.reloads = [16,18,20,22,24]
 global.cursed  = [InvCrystal,InvLaserCrystal,InvSpider]
 global.uncursed= [CrystalProp,LaserCrystal,Spider]
 
+while 1 {
+    with WepPickup if instance_is(self,WepPickup){ 
+        if weapon_find(wep) == mod_current{
+            if !is_object(wep){
+                wep = {
+                    wep : mod_current,
+                    cursecharge: 0,
+                    torchid: irandom(10000)
+                }
+            }
+            if current_frame_active{
+                var q = weapon_get_deepest(wep)
+                var radius = 40 + q.cursecharge/2
+                for var i = 0; i < 360; i += random_range(20, 40){
+                    with instance_create(x+lengthdir_x(radius, i), y + lengthdir_y(radius, i), Curse){
+                        image_xscale /= 2
+                        image_yscale /= 2
+                        sprite_index = global.sprNegaCurse
+                    }
+                }
+                for var i = 0; i < array_length(global.cursed); i++{
+                    with global.cursed[i] if point_distance(x,y,other.x,other.y) <= radius{
+                        var hp = my_health
+                        with instance_create(x,y,global.uncursed[i]) my_health = hp
+                        q.cursecharge += 6
+                        puff()
+                        instance_delete(self)
+                    }
+                }
+                with Player if curse or bcurse{
+                    if point_distance(x,y,other.x,other.y) <= radius{
+                        if curse{
+                            q.cursecharge += 2
+                            curse = 0
+                        }
+                        if bcurse{
+                            bcurse = 0
+                            q.cursecharge += 2
+                        }
+                        puff()
+                    }
+                }
+                with instances_matching(Wall, "sprite_index", sprWall104Bot){
+                    if distance_to_object(other) <= radius{
+                        sprite_index = sprWall4Bot
+                        topspr = sprWall4Top
+                        outspr = sprWall4Out
+                        q.cursecharge += 1
+                        break
+                    }
+                }
+                with instances_matching(TopSmall, "sprite_index", sprWall104Trans){
+                    if distance_to_object(other) <= radius{
+                        sprite_index = sprWall4Trans
+                        break
+                    }
+                }
+                with instances_matching(Floor, "sprite_index", sprFloor104, sprFloor104B){
+                    if distance_to_object(other) <= radius - 8{
+                        sprite_index = sprite_index = sprFloor104 ? sprFloor4 : sprFloor4B
+                        break
+                    }
+                }
+            }
+        }
+    }
+    wait(0)
+}
+
 #macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)
+
+#define puff
+repeat(irandom_range(2,4)){
+    with instance_create(x,y,Curse){
+        sprite_index = global.sprNegaCurse
+        gravity = -.1
+        friction = .1
+        motion_set(random(360), random(2))
+        depth = -3
+    }
+}
+
+#define weapon_find(w)
+if is_object(w){
+    if is_string(w.wep){
+        if mod_script_exists("weapon",w.wep,"weapon_wep") return weapon_find(lq_get(w, mod_script_call_nc("weapon", w.wep, "weapon_wep", w)))
+    }
+    return weapon_find(w.wep)
+}
+return w
+
+#define weapon_get_deepest(w)
+if is_object(w) and !is_object(w.wep) return w
+return weapon_get_deepest(w.wep)
 
 #define weapon_mergable
 return 0
@@ -114,15 +207,17 @@ with other{
 if !walled sound_play(sndMeleeWall)
 walled = 1
 
+
 #define torchhit
 if projectile_canhit_melee(other){
 	projectile_hit(other,damage,lv*2,direction)
-	var cursechange = -.5;
+	var cursechange = -.25;
 
     for var i = 0; i < array_length(global.cursed); i++{
         if instance_is(other,global.cursed[i]){
             with other{
                 var hp = my_health
+                puff()
                 with instance_create(x,y,global.uncursed[i]) my_health = hp
                 instance_delete(self)
             }
@@ -135,7 +230,7 @@ if projectile_canhit_melee(other){
 	        wep.cursecharge = clamp(wep.cursecharge + cursechange, 0, 50)
 	    }
 	    if is_object(bwep) && bwep.wep = mod_current && bwep.torchid = other.torchid{
-	        bwep.cursecharge = clamp(bwep.cursecharge + cursecharge, 0, 50)
+	        bwep.cursecharge = clamp(bwep.cursecharge + cursechange, 0, 50)
 	    }
 	}
 }
@@ -143,7 +238,7 @@ if projectile_canhit_melee(other){
 #define step(w)
 if current_frame_active{
     var ang = gunangle + wepangle
-    if w and is_object(wep) and !irandom(15 - floor(wep.cursecharge/6)) with instance_create(x + lengthdir_x(15, ang),y + lengthdir_y(15, ang),Curse){
+    if w and is_object(wep) and !irandom(13 - floor(wep.cursecharge/6)) with instance_create(x + lengthdir_x(15, ang),y + lengthdir_y(15, ang),Curse){
         sprite_index = global.sprNegaCurse
         depth-= 2
         
@@ -153,6 +248,7 @@ with instances_matching(CustomSlash,"name","crystal slash"){
 	with BigCursedChest{
 		if distance_to_object(other) <= 0{
 			instance_create(x,y,BigWeaponChest)
+			puff()
 			instance_delete(self)
 			var cursechange = 2
 			with other {
@@ -171,6 +267,7 @@ with instances_matching(CustomSlash,"name","crystal slash"){
 		if distance_to_object(other) <= 0{
 			var cursechange = 2 * curse
 			curse = 0
+			puff()
 			with other {
 			    with creator{
             	    if is_object(wep) && wep.wep = mod_current && wep.torchid = other.torchid{

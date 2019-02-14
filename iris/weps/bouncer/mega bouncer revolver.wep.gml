@@ -54,6 +54,11 @@ with instance_create(x,y,CustomProjectile)
     damage = 4
     team = other.team
     force = 6
+    defbloom = {
+        xscale : 2,
+        yscale : 2,
+        alpha : .1
+    }
     frames = 16
     bounce = 3
     image_speed = 1
@@ -77,6 +82,13 @@ with instance_create(x,y,CustomProjectile)
 #define mega_hit
 if current_frame_active{
     frames--
+    if skill_get(mut_recycle_gland) and recycle_amount > 0 and irandom(9) < 5{
+        instance_create(x, y, RecycleGland)
+        sound_play(sndRecGlandProc)
+        recycle_amount -= 1
+        with creator ammo[1] = min(ammo[1] + 1, typ_amax[1])
+    }
+
     repeat(3) instance_create(x+random_range(-8,8),y+random_range(-8,8),Smoke)
     projectile_hit(other,damage,force,direction)
     sleep(5)

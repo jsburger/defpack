@@ -153,7 +153,10 @@ with instances_in(x-succ,y-succ/2,x+succ,y+succ/2,instances_matching_ne([hitme,C
             if "spr_hurt" in other sprite = other.spr_hurt
             frames = sprite_get_number(sprite)
             if "snd_hurt" in other sound_play(other.snd_hurt)
-            fallspeed = other.size*3
+            if instance_is(other, YungCuz){
+                fallspeed = 6
+            }
+            else fallspeed = other.size*3
             depth = -8
             on_draw = victimdraw
             on_step = victimstep

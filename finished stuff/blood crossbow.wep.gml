@@ -104,7 +104,7 @@ with instance_create(x,y,MeatExplosion) team = other.team
 var hitem = 0
 if skill_get(mut_bolt_marrow){
     var q = mod_script_call_nc("mod","defpack tools","instance_nearest_matching_ne",x,y,hitme,"team",team)
-    if instance_exists(q) and distance_to_object(q) < 10 {
+    if instance_exists(q) and point_distance(q.x,q.y, x, y) < 24 {
         x = q.x - hspeed_raw
         y = q.y - vspeed_raw
         hitem = 1
