@@ -43,11 +43,11 @@ with instance_create(x, y, CustomObject)
     ammotime = ammobase
     index = other.index
 
-    on_step = cubestep
-    on_destroy = cubedestroy
+    on_step = chargestep
+    on_destroy = chargedestroy
 }
 
-#define cubestep
+#define chargestep
 if !instance_exists(creator) or !button_check(index, btn){
     instance_destroy()
     exit
@@ -101,7 +101,7 @@ if current_frame mod 6 < current_time_scale && charged = 1 creator.gunshine = 1
 x = creator.x + lengthdir_x(7, creator.gunangle)
 y = creator.y + lengthdir_y(7, creator.gunangle)
 
-#define cubedestroy
+#define chargedestroy
 with instance_create(x,y,CustomObject)
 {
   name = "grenade burst"
