@@ -39,6 +39,7 @@ with instance_create(x, y, CustomObject)
     ammo     = 1
     maxammo  = 25
     ammobase = 3
+    charged = 0
     ammotime = ammobase
     index = other.index
 
@@ -72,11 +73,31 @@ if ammotime <= 0 and (creator.ammo[weapon_type()] >= weapon_cost() or creator.in
     }
     else
     {
-        creator.gunshine = 1
+      if charged = 0
+      {
+        charged = 1
+        sound_play_pitch(sndSnowTankCooldown,8)
+        sound_play_pitch(sndNadeReload,1.4)
+        sound_play_pitchvol(sndShielderDeflect,4,.5)
+        sound_play_pitchvol(sndBigCursedChest,20,.1)
+        sound_play_pitchvol(sndCursedChest,12,.2)
+        with instance_create(creator.x+lengthdir_x(18,creator.gunangle),creator.y+lengthdir_y(18,creator.gunangle),ChickenB)
+        {
+            creator = other.creator
+            image_xscale = .5
+            image_yscale = .5
+            with instance_create(x,y,ChickenB)
+            {
+                creator = other.creator
+                image_speed = .75
+            };
+        };
+      }
     }
     ammotime = ammobase
 
 }
+if current_frame mod 6 < current_time_scale && charged = 1 creator.gunshine = 1
 x = creator.x + lengthdir_x(7, creator.gunangle)
 y = creator.y + lengthdir_y(7, creator.gunangle)
 
@@ -94,8 +115,8 @@ with instance_create(x,y,CustomObject)
 
 #define burststep
 if !instance_exists(creator){instance_destroy();exit}
-x = creator.x + lengthdir_x(14, creator.gunangle)
-y = creator.y + lengthdir_y(14, creator.gunangle)
+x = creator.x + lengthdir_x(10, creator.gunangle)
+y = creator.y + lengthdir_y(10, creator.gunangle)
 
 timer -= current_time_scale
 if timer <= 0

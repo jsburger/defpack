@@ -27,6 +27,7 @@
 
 //MINI EXPLOSIONS
 /loadwep flechette bazooka
+/loadwep grenade minigun
 
 //DRILL
 
