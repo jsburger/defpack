@@ -25,11 +25,11 @@ return "SORRY"
 weapon_post(3,4,0)
 sound_play_pitch(sndDiscgun,random_range(.85,.95))
 sound_play_pitch(sndBouncerSmg,1.4)
-with mod_script_call("mod","defpack tools","create_bouncerdisc",x,y)
+with mod_script_call_self("mod","defpack tools","create_bouncerdisc",x,y)
 {
     creator = other
     team = other.team
-    move_contact_solid(other.gunangle,12+other.speed)
+    move_contact_solid(other.gunangle,12)
     motion_add(other.gunangle+random_range(-8,8)*other.accuracy,4)
     image_angle = direction
 }

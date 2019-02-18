@@ -14,12 +14,12 @@ while 1 {
 	    current_time_scale = t
 		var p = global.user
 		if instance_exists(p){
-            if instance_number(BoltTrail) > 100{
+            if instance_number(BoltTrail) > 300{
                 var q = instances_matching(BoltTrail,"",null)
-                var l = array_length(q)
-                var r = random_range(11, l)
-                if l > 10 repeat(10){
-                    instance_delete(q[(--r)])
+                array_sort(q, 1)
+                var r = -1
+                repeat(20){
+                    instance_delete(q[(++r)])
                 }
             }
     		with instances_matching(Player,"team",p.team){
