@@ -43,10 +43,11 @@ with instance_create(x,y,CustomProjectile)
 	team = other.team
 	image_speed = 0
 	image_index = 0
+	timer = 30 * 8
 	damage = 12+skill_get(17)*6
 	sprite_index = global.sprPlasmiteBig
 	fric = random_range(1.01,1.012)
-	motion_set(other.gunangle+random_range(-6,6)*other.accuracy,3)
+	motion_set(other.gunangle+random_range(-2,2)*other.accuracy,3)
 	image_angle = direction
 	speedset = 0
 	ammo = 8
@@ -60,7 +61,9 @@ with instance_create(x,y,CustomProjectile)
 	on_wall 	 = mb_wall
 	on_destroy   = atom_destroy
 	on_square    = script_ref_create(atom_square)
-	repeat(6){create_electron()}
+	repeat(2){with create_electron(){radius = 1.2}}
+	repeat(3){with create_electron(){radius = 1.5}}
+	repeat(5){with create_electron(){radius = 2}}
 }
 
 #define atom_square
@@ -91,20 +94,28 @@ with instance_create(x,y,CustomProjectile)
 var _a = instance_create(x,y,CustomProjectile)
 with _a
 {
+	name ="electron"
+	defbloom = {
+        xscale : 2+skill_get(mut_laser_brain),
+        yscale : 2+skill_get(mut_laser_brain),
+        alpha : .1 + skill_get(mut_laser_brain) * .025
+    }
 	creator = other
 	team = other.team
 	image_speed = 0
 	image_index = 0
-	damage = 2+skill_get(17)
+	damage = 3+skill_get(17)
 	sprite_index = sprPlasmaTrail
+	mask_index   = sprAllyBullet
 	fric = random_range(.1,.2)
-	motion_set(other.direction+random_range(-30,30),random_range(12,19))
+	motion_set(other.direction+random_range(-40,40),random_range(12,19))
 	speedset = 1
-	maxspeed = 7
-	radius = random_range(.6,1)
+	maxspeed = 12
+	radius = 3
 	target = other
 	on_step 	 = mbs_step
-	on_wall 	 = mb_wall
+	on_hit     = mbs_hit
+	on_wall 	 = mbs_wall
 	on_destroy = mb_destroy
 }
 return _a;
@@ -120,7 +131,15 @@ if irandom(9) = 1
 }
 if irandom(4-skill_get(17))=1{with instance_create(x+random_range(-12,12),y+random_range(-12,12),GunGun){image_index=2-skill_get(17)}}
 speed /= fric
-if speed < 1.00005{instance_destroy()}
+timer -= current_time_scale
+if timer <= 0{instance_destroy()}
+//if speed < 1.00005{instance_destroy()}
+
+#define mbs_hit
+if projectile_canhit_melee(other) = true
+{
+	projectile_hit(other,damage,12,direction)
+}
 
 #define atom_destroy
 sleep(50)
@@ -141,6 +160,7 @@ repeat(ammo)
 }
 
 #define mb_wall
+with other{instance_create(x,y,FloorExplo);instance_destroy()}
 instance_destroy()
 
 #define mb_destroy
@@ -170,11 +190,10 @@ else
 
 
 #define mbs_step
-move_bounce_solid(false)
-if irandom(12-skill_get(17)*5) = 1{instance_create(x,y,PlasmaTrail)}
+if irandom(10-skill_get(17)*4) = 1{instance_create(x,y,PlasmaTrail)}
 if speedset = 0
 {
-	move_bounce_solid(false)
+	//move_bounce_solid(false)
 	speed/= fric
 	if speed < 1.00005{speedset = 1}
 }
@@ -182,9 +201,12 @@ else
 {
 	if instance_exists(target)
 	{
-		motion_add(point_direction(x,y,target.x,target.y),radius)
+		motion_add(point_direction(x,y,target.x,target.y)+random_range(-4,4),radius)
 		if speed > maxspeed{speed = maxspeed}
 		image_angle = direction
 	}
 	else instance_destroy()
 }
+
+#define mbs_wall
+move_bounce_solid(false)
