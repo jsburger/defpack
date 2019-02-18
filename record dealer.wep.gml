@@ -34,81 +34,6 @@ return false;
 #define weapon_laser_sight
 return false;
 
-#define weapon_fire
-var _disc = choose("normal","golden","sticky","bouncer","mega");
-repeat(4)
-{
-  sound_play_slowdown(sndSuperDiscGun,.8)
-  weapon_post(6,-50,5)
-  switch _disc
-  {
-    case "normal":
-    with instance_create(x,y,Disc)
-    {
-      sprite_index = global.sprVinyl
-      creator = other
-      team = other.team
-      move_contact_solid(other.gunangle,sprite_get_width(sprite_index))
-      hitid = [sprite_index,"VINYL"]
-      motion_add(other.gunangle + random_range(-6,6),5)
-      image_angle = direction
-    }
-    break;
-    case "golden":
-    with instance_create(x,y,Disc)
-    {
-      sprite_index = global.sprGoldVinyl
-      creator = other
-      team = other.team
-      hitid = [sprite_index,"GOLDEN VINYL"]
-      move_contact_solid(other.gunangle,sprite_get_width(sprite_index))
-      motion_add(other.gunangle + random_range(-6,6),8)
-      image_angle = direction
-    }
-    break;
-    case "sticky":
-    with mod_script_call("mod","defpack tools","create_stickydisc",x,y)
-    {
-      sprite_index = global.sprStickyVinyl
-      creator = other
-      team = other.team
-      hitid = [sprite_index,"STICKY VINYL"]
-      move_contact_solid(other.gunangle,sprite_get_width(sprite_index))
-      motion_add(other.gunangle + random_range(-6,6),4)
-      image_angle = direction
-      orspeed = speed
-    }
-    break;
-    case "bouncer":
-    with mod_script_call("mod","defpack tools","create_bouncerdisc",x,y)
-    {
-      sprite_index = global.sprBouncerVinyl
-      team = other.team
-      creator = other
-      hitid = [sprite_index,"BOUNCER VINYL"]
-      move_contact_solid(other.gunangle,sprite_get_width(sprite_index))
-      motion_add(other.gunangle + random_range(-6,6),4)
-      image_angle = direction
-    }
-    break;
-    case "mega":
-    with mod_script_call("mod","defpack tools","create_megadisc",x+lengthdir_x(12,gunangle),y+lengthdir_y(12,gunangle))
-    {
-      team = other.team
-      sprite_index = global.sprMegaVinyl
-      if irandom(99) = 0 sprite_index = global.sprNTVinyl
-      creator = other
-      if sprite_index = global.sprMegaVinyl hitid = [sprite_index,"MEGA VINYL"] else hitid = [sprite_index,"THE NUCLEAR THRONE#SOUNDTRACK"]
-      move_contact_solid(other.gunangle,14)
-      motion_add(other.gunangle + random_range(-6,6),4)
-      image_angle = direction
-      maxspeed = speed
-    }
-    break;
-  }
-  wait(3)
-  if !instance_exists(self) exit
-}
 #define weapon_sprt
 return global.sprRecordDealer;
 
@@ -118,9 +43,67 @@ return global.sprRecordDealerHUD;
 #define weapon_text
 return "A FUNKY MIX";
 
-#define sound_play_slowdown(_snd,_vol)
-with instance_create(x,y,CustomObject)
+#define weapon_fire
+var _disc = choose("normal","golden","sticky","bouncer","mega");
+repeat(4)
 {
+  sound_play_slowdown(sndSuperDiscGun,.8)
+  weapon_post(6,-50,5)
+  var angle = gunangle + random_range(-6,6)*accuracy
+  with get_disc(_disc){
+      direction = angle
+      projectile_init(other.team, other)
+      move_contact_solid(other.gunangle, min(sprite_width, 14))
+      image_angle = direction
+  }
+  wait(3)
+  if !instance_exists(self) exit
+}
+
+#define get_disc(disc)
+switch disc{
+    case "normal":
+        with instance_create(x, y, Disc){
+            sprite_index = global.sprVinyl
+            hitid = [sprite_index, "VINYL"]
+            speed = 5
+            return id
+        }
+    case "golden":
+        with instance_create(x, y, Disc){
+            sprite_index = global.sprGoldVinyl
+            hitid = [sprite_index, "GOLDEN VINYL"]
+            speed = 8
+            return id
+        }
+    case "sticky":
+        with mod_script_call_nc("mod", "defpack tools", "create_stickydisc", x, y){
+            sprite_index = global.sprStickyVinyl
+            hitid = [sprite_index, "STICKY VINYL"]
+            speed = 4
+            orspeed = speed
+            return id
+        }
+    case "bouncer":
+        with mod_script_call_self("mod", "defpack tools", "create_bouncerdisc", x, y){
+            sprite_index = global.sprBouncerVinyl
+            hitid = [sprite_index, "BOUNCER VINYL"]
+            speed = 4
+            return id
+        }
+    case "mega":
+        with mod_script_call_nc("mod", "defpack tools", "create_megadisc", x, y){
+            sprite_index = (irandom(99) == 0) ? global.sprNTVinyl : global.sprMegaVinyl
+            hitid[0] = sprite_index
+            hitid[1] = sprite_index = global.sprMegaVinyl ? "MEGA VINYL" : "THE NUCLEAR THRONE#SOUNDTRACK"
+            speed = 4
+            maxspeed = speed
+            return id
+        }
+}
+
+#define sound_play_slowdown(_snd,_vol)
+with instance_create(x,y,CustomObject){
   pitch = 1.2
   decel = random_range(.05,.07)
   p = random_range(.8,1.2)
@@ -132,7 +115,9 @@ with instance_create(x,y,CustomObject)
 }
 
 #define sound_step
-pitch -= decel
-sound_play_pitchvol(snd,pitch*p,vol)
-lifetime -= 1
-if lifetime <= 0 instance_destroy() //should need time scale adjustments since sound speed is independent of it
+if frac(current_frame) < current_time_scale{
+    pitch -= decel
+    sound_play_pitchvol(snd,pitch*p,vol)
+    lifetime -= 1
+    if lifetime <= 0 instance_destroy()
+}

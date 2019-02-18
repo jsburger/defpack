@@ -32,6 +32,7 @@ sound_play_gun(sndDiscgun, 0.2, 0.3);
 with mod_script_call("mod","defpack tools","create_stickydisc",x,y)
 {
   creator = other
+  team = other.team
   motion_add(other.gunangle+random_range(-8,8)*other.accuracy,4)
   image_angle = direction
   orspeed = speed
