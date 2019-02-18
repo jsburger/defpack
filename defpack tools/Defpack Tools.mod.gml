@@ -85,6 +85,7 @@ global.sprSword = sprite_add("sprSword.png", 1, 10, 10)
 global.sprSwordStick = sprite_add_p("sprSwordStick.png", 1, 10, 10)
 global.sprKnife = sprite_add("sprKnife.png", 1, 7, 7)
 global.sprKnifeStick = sprite_add_p("sprKnifeStick.png", 1, 7, 7)
+global.sprSwordSlash = sprite_add("sprSwordSlash.png", 5, 16, 16)
 
 global.sprCharge = sprite_add("sprHoldIcon.png",0,5,5)
 
@@ -2340,16 +2341,17 @@ with create_sword(x, y){
     spr_dead = global.sprKnifeStick
     
     defbloom.sprite = sprite_index
-    slashrange = 40
+    slashrange = 30
     length = 4
     
     return id
 }
 
 #define create_sword(x, y)
-with instance_create(x, y, CustomProjectile){
+var melee = 1;
+with instance_create(x, y, melee ? CustomSlash : CustomProjectile){
     name = "Sword"
-    damage = 30
+    damage = 25
     force  = 6
     sprite_index = global.sprSword
     mask_index   = mskHeavyBolt
@@ -2364,8 +2366,14 @@ with instance_create(x, y, CustomProjectile){
     }
     draw_angle = random(360)
     anglespeed = 90
-    slashrange = 60
+    slashrange = 40
     length = 6
+    
+    if melee{
+        on_anim = nothing
+        on_projectile = sword_proj
+        on_grenade = sword_proj
+    }
 
     on_wall = sword_wall
     on_hit  = sword_hit
@@ -2375,6 +2383,9 @@ with instance_create(x, y, CustomProjectile){
     
     return id
 }
+
+#define sword_proj
+with other if typ > 0 instance_destroy()
 
 #define sword_draw
 draw_sprite_ext(sprite_index, 0, x, y, image_xscale, image_yscale, draw_angle + image_angle, image_blend, image_alpha)
@@ -2445,10 +2456,11 @@ if instance_exists(q) and q != other and q.mask_index != mskNone and distance_to
     projectile_hit(q, damage, force, point_direction(x, y, q.x, q.y))
     sound_play_hit_big(sndChickenSword, .2)
     with instance_create(q.x, q.y, CustomObject){
-        sprite_index = sprShank
-        image_angle = point_direction(other.x, other.y, q.x, q.y) + 180
-        image_xscale = point_distance(q.x, q.y, other.x, other.y)/sprite_width
-        image_speed = .4
+        sprite_index = global.sprSwordSlash
+        image_angle = point_direction(other.x, other.y, q.x, q.y)
+        image_speed = .9
+        image_yscale = -2       
+        depth = -3
         on_step = effect_step
     }
 }
@@ -2463,6 +2475,5 @@ if d {
 }
 
 #define effect_step
-image_xscale *= .5*current_time_scale
 if image_index + image_speed*current_time_scale > image_number instance_destroy()
 

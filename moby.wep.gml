@@ -43,15 +43,9 @@ if !is_object(w){
     }
 }
 else{
-    if "charge" in w{
-        w.charge = min(w.charge + 2/w.charge, maxcharge)
-        w.persist = 5
-    }
-    else{
-        w.charge = 1
-        w.persist = 5
-        w.canbloom = 1
-    }
+    var q = lq_defget(w, "charge", 1)
+    w.charge = min(q + 2/q, maxcharge)
+    w.persist = 5
 }
 
 with instance_create(x,y,Shell){motion_add(other.gunangle+other.right*100+random(80)-40,3+random(3))}
@@ -64,7 +58,7 @@ with create_bullet(x+lengthdir_x(20,gunangle),y+ lengthdir_y(20,gunangle)){
 	team = other.team
 	flashang = other.gunangle
 }
-if w.canbloom {
+if lq_defget(w, "canbloom", 1){
     with instance_create(x+lengthdir_x(20,gunangle),y+ lengthdir_y(20,gunangle),CustomObject){
     	depth = -1
     	sprite_index = sprBullet1
