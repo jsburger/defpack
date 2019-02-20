@@ -5,6 +5,9 @@ global.sprRockletChestOpen = sprite_add("sprRockletChestOpen.png", 1, 8, 7);
 global.sprVectorChest     = sprite_add_weapon("sprVectorChest.png", 8, 7);
 global.sprVectorChestOpen = sprite_add("sprVectorChestOpen.png", 1, 8, 7);
 
+global.sprZenithChest     = sprite_add_weapon("sprZenithChest.png", 8, 7);
+global.sprZenithChestOpen = sprite_add("sprZenithChestOpen.png", 1, 8, 7);
+
 global.sprQuartzChest     = sprite_add_weapon("sprQuartzChest.png", 8, 7);
 global.sprQuartzChestOpen = sprite_add("sprQuartzChestOpen.png", 1, 8, 7);
 
@@ -43,13 +46,13 @@ global.sprAoEChestOpen = sprite_add("sprAoEChestOpen.png", 1, 8, 7);
      // replace wep chests
     if !instance_exists(GenCont)
         with(WeaponChest){
-            customchest_create(x, y,choose("vector","ultra","aoe","rocklet","toxic","tool","combo","regal","quartz","flame","blood","hyper"));
+            customchest_create(x, y,choose("vector","ultra","aoe","rocklet","toxic","tool","combo","regal","quartz","flame","blood","hyper","zenith"));
             instance_delete(id);
         }
 */
      // debug
     with(Player) if button_pressed(index, "horn")
-        customchest_create(mouse_x, mouse_y,choose("vector","ultra","aoe","rocklet","toxic","tool","combo","regal","quartz","flame","blood","hyper"));
+        customchest_create(mouse_x, mouse_y,choose("zenith"));
 
      // chest step
     with instances_matching(chestprop, "name", "CustomChest"){
@@ -153,6 +156,12 @@ global.sprAoEChestOpen = sprite_add("sprAoEChestOpen.png", 1, 8, 7);
             spr_open = global.sprHyperChestOpen;
             break
           }
+          case "zenith":
+          {
+            sprite_index = global.sprZenithChest;
+            spr_open = global.sprZenithChestOpen;
+            break
+          }
         }
         on_open = customchest_open;
     }
@@ -226,6 +235,11 @@ switch t
   case "hyper":
   {
     _w = choose(wep_hyper_rifle,wep_hyper_slugger,wep_hyper_launcher,"hyper crossbow")
+    break
+  }
+  case "zenith":
+  {
+    _w = choose("herald","andromeda launcher","stopwatch","sak",/*"antiprism",*/"defender","flex","punisher","rapier","prism","cube gun")// """Cool""" stuff goes here
     break
   }
 }

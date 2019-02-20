@@ -105,7 +105,7 @@ if manual or _canshoot {
     {
         creator = other
     	team = other.team
-    	motion_set(angle,12)
+    	motion_set(angle,16)
     	image_angle = direction
     }
     return 1

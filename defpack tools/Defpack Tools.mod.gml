@@ -371,7 +371,7 @@ with instance_create(x, y, CustomProjectile){
     spr_dead = sprBulletHit
     mask_index = mskBullet1
     image_speed = 1
-    
+
     defbloom = {
         xscale : 2,
         yscale : 2,
@@ -387,22 +387,22 @@ with instance_create(x, y, CustomProjectile){
     on_wall = bullet_wall
     on_hit = bullet_hit
     on_destroy = bullet_destroy
-    
+
     return id
 }
 
 #define create_heavy_bullet(x, y)
 with create_bullet(x, y){
     name = "Heavy Bullet"
-    
+
     sprite_index = sprHeavyBullet
     spr_dead = sprHeavyBulletHit
     mask_index = mskHeavyBullet
-    
+
     recycle_amount = 2
     force = 12
     damage = 7
-    
+
     return id
 }
 
@@ -413,10 +413,10 @@ with create_heavy_bullet(x, y){
     damage = 9
     turn = choose(-1, 1)
     bounce = 2
-    
+
     on_step = bouncer_step
     on_wall = bouncer_wall
-    
+
     return id
 }
 
@@ -440,17 +440,17 @@ with create_bullet(x,y){
     sprite_index = global.sprPsyBullet
     mask_index = global.mskPsyBullet
     spr_dead = global.sprPsyBulletHit
-    
+
     damage = 4
     typ = 2
     force = -10
-    
+
     timer = irandom(6)+4
     range = 70
     turnspeed = .3
     on_step = psy_step
     on_hit = psy_hit
-    
+
     return id
 }
 
@@ -460,17 +460,17 @@ with create_heavy_bullet(x, y){
     sprite_index = global.sprHeavyPsyBullet
     mask_index = global.mskPsyBullet
     spr_dead = global.sprHeavyPsyBulletHit
-    
+
     damage = 8
     typ = 2
     force = -20
     timer = irandom(4) + 3
     range = 130
     turnspeed = .42
-    
+
     on_step = psy_step
     on_hit = psy_hit
-    
+
     return id
 }
 
@@ -522,7 +522,7 @@ with instance_create(x, y, CustomProjectile){
 	on_wall = psy_shell_wall
 	on_destroy = psy_shell_destroy
 	on_anim = bullet_anim
-	
+
 	return id
 }
 
@@ -685,14 +685,14 @@ with create_bullet(x, y){
     name = "Lightning Bullet"
     sprite_index = skill_get(mut_laser_brain) ? global.sprLightningBulletUpg : global.sprLightningBullet
     spr_dead = global.sprLightningBulletHit
-    
+
     force = 7
     damage = 2
     typ = 2
-    
+
     on_step = thunder_step
     on_destroy = thunder_destroy
-    
+
     return id
 }
 
@@ -701,13 +701,13 @@ with create_heavy_bullet(x, y){
     name = "Heavy Lightning Bullet"
     sprite_index = skill_get(mut_laser_brain) ? global.sprHeavyLightningBulletUpg : global.sprHeavyLightningBullet
     spr_dead = global.sprHeavyLightningBulletHit
-    
+
     typ = 2
     damage = 4
 
     on_step = heavy_thunder_step
     on_destroy = heavy_thunder_destroy
-    
+
     return id
 }
 
@@ -750,12 +750,12 @@ with create_bullet(x, y){
     name = "Toxic Bullet"
     sprite_index = global.sprToxicBullet
     spr_dead = global.sprToxicBulletHit
-    
+
     force = 8
     damage = 2
-    
+
     on_destroy = toxic_destroy
-    
+
     return id
 }
 
@@ -764,19 +764,19 @@ with create_heavy_bullet(x, y){
     name = "Heavy Toxic Bullet"
     sprite_index = global.sprHeavyToxicBullet
     spr_dead = global.sprHeavyToxicBulletHit
-    
+
     damage = 5
     force = 11
-    
+
     on_destroy = heavy_toxic_destroy
-    
+
     return id
 }
 
 
 #define toxic_destroy
 repeat(2){
-	instance_create(x,y,ToxicGas)
+	with instance_create(x,y,ToxicGas){friction *= 4}
 }
 bullet_destroy()
 
@@ -794,12 +794,12 @@ with create_bullet(x,y){
     name = "Fire Bullet"
     sprite_index = global.sprFireBullet
     spr_dead = global.sprFireBulletHit
-    
+
     damage = 3
 
     on_step = fire_step
     on_destroy = fire_destroy
-    
+
     return id
 }
 
@@ -808,12 +808,12 @@ with create_heavy_bullet(x, y){
     name = "Heavy Fire Bullet"
     sprite_index = global.sprHeavyFireBullet
     spr_dead = global.sprHeavyFireBulletHit
-    
+
     damage = 4
-    
+
     on_step = fire_step
     on_destroy = heavy_fire_destroy
-    
+
     return id
 }
 
@@ -844,7 +844,7 @@ with instance_create(x, y, CustomSlash){
 	sprite_index = global.sprDarkBullet
 	mask_index = global.mskDarkBullet
 	spr_dead = global.sprDarkBulletHit
-	
+
 	typ = 0
 	damage = 8
 	force = 7
@@ -858,7 +858,7 @@ with instance_create(x, y, CustomSlash){
     on_wall = bullet_wall
     on_hit = bullet_hit
 	on_anim = bullet_anim
-	
+
 	return id
 }
 
@@ -916,14 +916,14 @@ with create_bullet(x, y){
     typ = 0
     sprite_index = global.sprLightBullet
     spr_dead = global.sprLightBulletHit
-    
+
     force = 4
     lasthit = -4
     pierces = 6
-    
+
     on_hit = light_hit
-    
-    
+
+
     return id
 }
 
@@ -1476,7 +1476,7 @@ with instance_create(_x, _y, CustomProjectile) {
 	on_destroy   = plasmite_destroy
 	on_draw      = plasmite_draw
 	on_square    = script_ref_create(plasmite_square)
-	
+
 	return id
 }
 
@@ -1825,7 +1825,7 @@ with create_spikeball(_x, _y){
     size = 2
     sprite_index = global.sprMiniSpikeball
     mask_index   = global.mskMiniSpikeball
-    
+
     return id
 }
 
@@ -1846,7 +1846,7 @@ with instance_create(_x,_y,CustomSlash){
     on_step       = spike_step
     on_projectile = spike_projectile
     on_anim       = nothing
-    
+
     return id
 }
 
@@ -2114,7 +2114,7 @@ with instance_create(_x,_y,CustomProjectile){
     hitid = [sprite_index,"MINI EXPLOSION"]
     on_anim = explo_anim
     on_hit = explo_hit
-    
+
     return id
 }
 
@@ -2159,9 +2159,9 @@ with instance_create(_x,_y,CustomProjectile) {
     image_speed = .5
     name = "Bouncer Disc"
     sprite_index = global.sprBouncerDisc
-    
+
     disc_init()
-    
+
     on_step = bouncerdisc_step
     on_hit = bouncerdisc_hit
     on_wall = bouncerdisc_wall
@@ -2209,16 +2209,16 @@ with instance_create(_x,_y,CustomProjectile){
     image_speed = .4
     name = "Sticky Disc"
     sprite_index = global.sprStickyDisc
-    
+
     disc_init()
-    
+
     stuckto = -4
     orspeed = 0
     depth = -3
     on_step    = stickydisc_step
     on_hit     = stickydisc_hit
     on_wall    = stickydisc_wall
-    
+
     return id
 }
 
@@ -2270,16 +2270,16 @@ with instance_create(_x,_y,CustomProjectile){
     image_speed = .4
     maxspeed = speed
     name = "Mega Disc"
-    
+
     disc_init()
     spr_trail = global.sprMegaDiscTrail
     mask_index = sprite_index
-    
+
     on_step    = md_step
     on_wall    = md_wall
     on_hit     = md_hit
     on_destroy = md_destroy
-    
+
     return id
 }
 
@@ -2339,11 +2339,11 @@ with create_sword(x, y){
     mask_index = mskBolt
     sprite_index = global.sprKnife
     spr_dead = global.sprKnifeStick
-    
+
     defbloom.sprite = sprite_index
     slashrange = 30
     length = 4
-    
+
     return id
 }
 
@@ -2368,7 +2368,7 @@ with instance_create(x, y, melee ? CustomSlash : CustomProjectile){
     anglespeed = 90
     slashrange = 40
     length = 6
-    
+
     if melee{
         on_anim = nothing
         on_projectile = sword_proj
@@ -2380,7 +2380,7 @@ with instance_create(x, y, melee ? CustomSlash : CustomProjectile){
     on_step = sword_step
     on_end_step = sword_end_step
     on_draw = sword_draw
-    
+
     return id
 }
 
@@ -2424,7 +2424,9 @@ repeat(2){
 }
 
 #define sword_wall
-sound_play_hit(sndChickenSword, .2)
+var _p = random_range(.9,1.2)
+sound_play_pitchvol(sndChickenSword, 1.5*_p , .2)
+sound_play_pitchvol(sndBoltHitWall,1.2* _p , .8)
 with instance_create(x, y, CustomObject){
     sprite_index = other.spr_dead
     image_angle = other.direction
@@ -2459,7 +2461,7 @@ if instance_exists(q) and q != other and q.mask_index != mskNone and distance_to
         sprite_index = global.sprSwordSlash
         image_angle = point_direction(other.x, other.y, q.x, q.y)
         image_speed = .9
-        image_yscale = -2       
+        image_yscale = -2
         depth = -3
         on_step = effect_step
     }
@@ -2476,4 +2478,3 @@ if d {
 
 #define effect_step
 if image_index + image_speed*current_time_scale > image_number instance_destroy()
-

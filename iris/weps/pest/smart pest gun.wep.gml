@@ -61,7 +61,7 @@ if fork(){
 }
 
 with mod_script_call("mod","defpack tools","create_toxic_bullet",x,y){
-	motion_set(ang+random_range(-2,2)*other.accuracy,10)
+	motion_set(ang+random_range(-2,2)*other.accuracy,16)
 	move_contact_solid(ang,6)
 	projectile_init(other.team,other)
 	image_angle = direction

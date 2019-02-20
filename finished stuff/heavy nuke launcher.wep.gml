@@ -15,7 +15,7 @@ return global.sprHeavyNukeLauncher;
 return 4;
 
 #define weapon_chrg
-return 1;
+return 0;
 
 #define weapon_auto
 return false;
@@ -80,10 +80,10 @@ if instance_exists(creator){
 }
 if soundcheck = 1{
 	if !instance_exists(creator){instance_destroy();exit}
-	if !button_check(creator.index,btn){
+	/*if !button_check(creator.index,btn){
 		instance_destroy()
 		exit
-	}
+	}*/
 }
 if timer > 0{timer -= current_time_scale}
 else{

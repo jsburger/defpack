@@ -18,7 +18,7 @@
 /loadwep finished stuff/plasmite rifle
 /loadwep finished stuff/plasmite shotgun
 /loadwep finished stuff/plasmite cannon
-/loadwep finished stuff/turbo-murderizer 3000
+/loadwep turbo-murderizer 3000
 
 //SQUARE
 

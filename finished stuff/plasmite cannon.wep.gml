@@ -43,14 +43,15 @@ with instance_create(x,y,CustomProjectile)
 	team = other.team
 	image_speed = 0
 	image_index = 0
-	timer = 30 * 8
-	damage = 12+skill_get(17)*6
+	timer = 30 * (6 + skill_get(mut_laser_brain) * 2)
+	damage = 8
 	sprite_index = global.sprPlasmiteBig
-	fric = random_range(1.01,1.012)
+	mask_index   = mskBullet1
+	fric = 1.02 - skill_get(mut_laser_brain) * .01
 	motion_set(other.gunangle+random_range(-2,2)*other.accuracy,3)
 	image_angle = direction
 	speedset = 0
-	ammo = 8
+	ammo = 6
 	defbloom = {
         xscale : 1.5+skill_get(mut_laser_brain),
         yscale : 1.5+skill_get(mut_laser_brain),

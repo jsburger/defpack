@@ -23,7 +23,7 @@ return sprCrossbow
 #define weapon_reloaded
 
 #define weapon_text
-return choose("SHARP AS ALL CAN BE", "@wSWORDS@d CAN HIT#TWO THINGS AT ONCE")
+return choose("SHARP AS ALL CAN BE", "@wSWORDS@s CAN HIT#TWO THINGS AT ONCE")
 #define weapon_fire
 var _p = random_range(.8, 1.2)
 sound_play_pitch(sndHeavyCrossbow, 2 * _p)
