@@ -1,10 +1,12 @@
 #define init
-global.sprSuperSonicLauncher   = sprite_add_weapon("sprSuperSonicLauncher.png", 1, 3);
+global.sprSuperSonicLauncher   = sprite_add_weapon("sprites/sprSuperSonicLauncher.png", 1, 3);
+global.sprSonicStreak   = sprite_add("sprites/projectiles/sprSonicStreak.png",6,8,32);
+
 #define weapon_name
 return "SUPERSONIC LAUNCHER"
 
 #define weapon_sprt
-return global.sprSuperSonicLauncher ;
+return global.sprSuperSonicLauncher;
 
 #define weapon_type
 return 4;
@@ -152,12 +154,24 @@ sound_play_pitch(sndImpWristKill,1.7)
 sound_play_pitch(sndExplosionS,random_range(.4,.6))
 sound_play_pitch(sndSuperBazooka,2)
 damage = 25
+var _a = random(360)
 do
 {
 	dir += 1 x += lengthdir_x(1,direction) y += lengthdir_y(1,direction)
 	if irandom(1) = 0 with instance_create(x,y,Dust){motion_add(other.direction-random_range(-80,80),random_range(2,7));growspeed = random_range(0.1,0.005)}
 	if place_meeting(x,y,enemy) || place_meeting(x,y,Wall) || place_meeting(x,y,prop)
 	{
+		repeat(8)
+		{
+			var _r = random_range(47,54)
+			with instance_create(x+lengthdir_x(_r,_a),y+lengthdir_y(_r,_a),AcidStreak)
+			{
+				sprite_index = global.sprSonicStreak
+				image_angle = _a - 90
+				image_speed = .3
+			}
+			_a += 360/8
+		}
 		with mod_script_call("mod","defpack tools","create_sonic_explosion",other.x,other.y)
 		{
 			//if !place_meeting(x,y,Floor){instance_destroy()}

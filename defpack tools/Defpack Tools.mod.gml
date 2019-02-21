@@ -33,7 +33,6 @@ global.sprMagPelletDisappear = sprite_add("Magnet Pellet Dissapear.png", 5, 8, 8
 global.sprHeavyMagPellet = sprite_add("Heavy Magnet Pellet.png", 2, 9, 9);
 global.sprHeavyMagPelletDisappear = sprite_add("Heavy Magnet Pellet Dissapear.png", 5, 9, 8);
 
-
 global.sprDarkBullet = sprite_add("Dark Bullet.png", 2, 8, 8);
 global.mskDarkBullet = sprite_add_p("Dark Bullet Mask.png", 0, 2.5, 4.5);
 global.sprDarkBulletHit = sprite_add("Dark Bullet Hit.png", 4, 8, 8);

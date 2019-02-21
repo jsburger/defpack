@@ -22,7 +22,7 @@
 
 /loadwep sonic launcher
 /loadwep assault sonic launcher
-/loadwep finished stuff/supersonic launcher
+/loadwep supersonic launcher
 /loadwep screecher
 
 //MINI EXPLOSIONS

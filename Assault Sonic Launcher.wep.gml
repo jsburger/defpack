@@ -1,6 +1,8 @@
 #define init
 global.sprAssaultSonicLauncher = sprite_add_weapon("sprites/sprAssaultSonicLauncher.png", 4, 2);
-global.sprTripleSonicNade = sprite_add("sprites/projectiles/Triple Sonic Nade.png",1,2.5,2.5);
+global.sprTripleSonicNade      = sprite_add("sprites/projectiles/Triple Sonic Nade.png",1,3,3);
+global.sprSonicStreak          = sprite_add("sprites/projectiles/sprSonicStreak.png",6,8,32);
+
 #define weapon_name
 return "ASSAULT SONIC LAUNCHER"
 
@@ -38,7 +40,7 @@ if instance_exists(self){
 		sprite_index = global.sprTripleSonicNade
 		team = other.team
 		creator = other
-		friction = 0.5
+		friction = .5
 		damage = 6
 		force = 5
 		bounce = 3
@@ -94,6 +96,14 @@ if speed <= 0 || bounce <= 0
 }
 
 #define sonic_launcher_destroy
+with instance_create(x,y,CustomObject)
+{
+	it      = 2
+	it2     = 0
+	team    = other.team
+	creator = other.creator
+	on_step = dispense_step
+}
 with mod_script_call("mod","defpack tools","create_sonic_explosion",x,y)
 {
 	scalefac = random_range(0.6,0.75)
@@ -106,18 +116,36 @@ with mod_script_call("mod","defpack tools","create_sonic_explosion",x,y)
 	sound_play(sndExplosion)
 	repeat(round(scalefac*10)){ with instance_create(x,y,Dust) {motion_add(random(360),3)}}
 }
+var _a = random(360)
 repeat(3)
 {
-	with mod_script_call("mod", "defpack tools", "create_sonic_explosion", x+random_range(-20,20),y+random_range(-20,20))
+	with instance_create(x+lengthdir_x(12,_a),y+lengthdir_y(12,_a),AcidStreak)
+	{
+		sprite_index = global.sprSonicStreak
+		image_angle = _a - 90
+		motion_add(image_angle+90,12)
+		friction = 2.1
+	}
+	_a += 120
+}
+
+#define dispense_step
+it -= current_time_scale
+if it <= 0
+{
+	with mod_script_call("mod", "defpack tools", "create_sonic_explosion", x+random_range(-30,30),y+random_range(-30,30))
 	{
 
 		scalefac = random_range(0.24,0.4)
 		image_xscale = scalefac
 		image_yscale = scalefac
 		damage = 10
-		image_speed = 0.82
+		image_speed = .5
 		team = other.team
 		creator = other.creator
 		repeat(round(scalefac*10)){ with instance_create(x,y,Dust) {motion_add(random(360),3)}}
 	}
+	it  = 3
+	it2++
+	if it2 >= 4 instance_destroy()
 }

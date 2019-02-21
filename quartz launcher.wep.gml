@@ -1,8 +1,9 @@
 #define init
 global.sprQuartzLauncher = sprite_add_weapon("sprites/sprQuartzLauncher.png", 7, 4);
 global.sprQuartzGrenade  = sprite_add("sprites/projectiles/sprQuartzGrenade.png",0,4,4);
-global.sprHud = sprite_add("sprites/sprQuartzLauncherHud.png", 1, 7, 4)
-global.sprGlassShard = sprite_add("defpack tools/sprGlassShard.png",5,4,4)
+global.sprHud 			  = sprite_add("sprites/sprQuartzLauncherHud.png", 1, 7, 4)
+global.sprGlassShard  = sprite_add("defpack tools/sprGlassShard.png",5,4,4)
+global.sprSonicStreak = sprite_add("sprites/projectiles/sprSonicStreak.png",6,8,32);
 
 #define weapon_name
 return "QUARTZ LAUNCHER";
@@ -157,6 +158,11 @@ repeat(3)
 		creator = other.creator
 		sound_play(sndExplosion)
 		repeat(round(scalefac*10)){ with instance_create(x,y,Dust) {motion_add(random(360),3);sprite_index = sprExtraFeetDust}}
+	}
+	with instance_create(x+lengthdir_x(48,i+60),y+lengthdir_y(48,i+60),AcidStreak)
+	{
+		sprite_index = global.sprSonicStreak
+		image_angle = i + 60 - 90
 	}
 	i += 120
 }

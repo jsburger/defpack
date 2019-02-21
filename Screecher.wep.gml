@@ -1,5 +1,6 @@
 #define init
-global.sprScreecher = sprite_add_weapon("sprites/sprScreecher.png", 2, 4);
+global.sprScreecher   = sprite_add_weapon("sprites/sprScreecher.png", 2, 4);
+global.sprSonicStreak = sprite_add("sprites/projectiles/sprSonicStreak.png",6,8,64);
 
 #define weapon_name
 return "SCREECHER"
@@ -41,6 +42,16 @@ weapon_post(6,0,1)
 sleep(50)
 var ang = gunangle
 var x1 = x, y1 = y
+repeat(4)with instance_create(x+lengthdir_x(2,ang),y+lengthdir_y(2,ang),AcidStreak)
+{
+	speed = 4
+	friction = random_range(.3,1.2)
+	sprite_index = global.sprSonicStreak
+	image_speed *= random_range(.8,1.2)
+	image_angle = ang - 90 + random_range(-24,24)
+	direction = image_angle + 90
+}
+
 with mod_script_call("mod","defpack tools","create_sonic_explosion",x1+lengthdir_x(16,ang),y1+lengthdir_y(16,ang))
 {
 	image_xscale = .1

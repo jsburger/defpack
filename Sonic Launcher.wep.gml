@@ -1,6 +1,7 @@
 #define init
 global.sprSonicLauncher = sprite_add_weapon("sprites/sprSonicLauncher.png", 2, 2);
-global.sprSonicNade = sprite_add("sprites/projectiles/Sonic Nade.png",1,2.5,2.5);
+global.sprSonicStreak   = sprite_add("sprites/projectiles/sprSonicStreak.png",6,8,32);
+global.sprSonicNade     = sprite_add("sprites/projectiles/Sonic Nade.png",1,3,3);
 #define weapon_name
 return "SONIC LAUNCHER"
 
@@ -34,7 +35,7 @@ with instance_create(x+lengthdir_x(3,gunangle),y+lengthdir_y(3,gunangle),CustomP
 	sprite_index = global.sprSonicNade
 	team = other.team
 	creator = other
-	friction = 0.5
+	friction = .5 + .03 //might help with defense lets see
 	damage = 5
 	force = 5
 	bounce = 2
@@ -61,7 +62,13 @@ weapon_post(6,-6,4)
 
 #define sonic_launcher_step
 if dt > -1 dt--
-if dt = 0 repeat(4)with instance_create(x,y,Dust){motion_add(random(359),random_range(0,2))}
+if dt = 0
+{
+	repeat(4) with instance_create(x,y,Dust)
+	{
+		motion_add(random(359),random_range(0,2))
+	}
+}
 image_angle += anglefac * speed/1.5 * current_time_scale
 if place_meeting(x + hspeed,y,Wall){
 	instance_create(x,y,Dust)
@@ -74,6 +81,13 @@ if place_meeting(x,y +vspeed,Wall){
 	vspeed *= -1
 	bounce -= 1
 	sound_play_pitch(sndBouncerBounce,random_range(1.6,1.8))
+	with instance_create(x+lengthdir_x(12,direction),y+lengthdir_y(12,direction),AcidStreak)
+	{
+		sprite_index = global.sprSonicStreak
+		image_angle = other.direction
+		motion_add(image_angle+90,12)
+		friction = 2.1
+	}
 }
 if place_meeting(x +hspeed,y +vspeed,Wall){
 	instance_create(x,y,Dust)
@@ -94,9 +108,21 @@ with mod_script_call("mod","defpack tools","create_sonic_explosion",x,y)
 	image_xscale = scalefac
 	image_yscale = scalefac
 	damage = 11
-	image_speed = 0.75
+	image_speed = 0.6
 	team = other.team
 	creator = other.creator
 	sound_play(sndExplosion)
 	repeat(round(scalefac*10)){ with instance_create(x,y,Dust) {motion_add(random(360),3)}}
+}
+var _a = random(360)
+repeat(3)
+{
+	with instance_create(x+lengthdir_x(12,_a),y+lengthdir_y(12,_a),AcidStreak)
+	{
+		sprite_index = global.sprSonicStreak
+		image_angle = _a - 90
+		motion_add(image_angle+90,12)
+		friction = 2.1
+	}
+	_a += 120
 }
