@@ -38,6 +38,6 @@ with mod_script_call("mod", "defpack tools", "create_toxic_bullet",x,y){
     creator = other
     team = other.team
     move_contact_solid(other.gunangle,8)
-    motion_set(other.gunangle + random_range(-6,6) * other.accuracy,10)
+    motion_set(other.gunangle + random_range(-6,6) * other.accuracy,16)
 	image_angle = direction
 }

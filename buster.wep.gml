@@ -1,10 +1,11 @@
 #define init
-global.sprBlaster 		  = sprite_add_weapon("sprites/sprBlaster.png",7,5)
-global.sprBlasterBomb   = sprite_add("sprites/projectiles/sprBlasterBomb.png",4,12,12) //"ROCKET"
+global.sprBuster 		      = sprite_add_weapon("sprites/sprBuster.png",7,5)
+global.sprBusterBomb      = sprite_add("sprites/projectiles/sprBusterBomb.png",4,12,12) //"ROCKET"
+global.sprBusterBombBlink = sprite_add("sprites/projectiles/sprBusterBombBlink.png",2,7,6)
 return "BUSTER"
 #macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)
 #define weapon_sprt
-return global.sprBlaster;
+return global.sprBuster;
 
 #define weapon_type
 return 4;
@@ -14,6 +15,9 @@ return false;
 
 #define weapon_load
 return 28;
+
+#define weapon_chrg
+return 1;
 
 #define weapon_cost
 return 2;
@@ -33,25 +37,28 @@ sound_play_pitch(sndRocketFly,2.1*_p)
 sound_play_pitch(sndGrenadeShotgun,.7*_p)
 sound_play_pitch(sndHeavyNader,1.7*_p)
 sound_play_pitchvol(sndHeavySlugger,.6*_p,1)
+sound_play_pitchvol(sndNadeReload,.6*_p,2)
 weapon_post(9,-60,24)
 sleep(10)
 with instance_create(x,y,CustomProjectile)
 {
+  name = "bomb"
+  btn = other.specfiring ? "spec" : "fire"
   move_contact_solid(other.gunangle,16)
 	team = other.team
 	creator = other
 	typ = 1
 	damage = 2
+  force  = 6
 	if instance_is(other, Player){
 		var _x = mouse_x[other.index];
 		var _y = mouse_y[other.index];
-		motion_add(point_direction(x,y,_x,_y) + random_range(-5,5) * other.accuracy,max(sqrt(point_distance(_x,_y,x,y)),10))
+		motion_add(point_direction(x,y,_x,_y) + random_range(-5,5) * other.accuracy,/*max(sqrt(point_distance(_x,_y,x,y)),10)*/15)
 	}else{
 		motion_add(other.gunangle,10)
 	}
-	friction = .5
-	maxspeed = 14
-	lifetime = 5
+	friction = .4
+	lifetime = 5 * 30
 	image_speed = .5
 	image_angle = direction
 	if current_frame_active repeat(5)
@@ -61,36 +68,47 @@ with instance_create(x,y,CustomProjectile)
 			motion_add(other.direction+random_range(-15,15),random_range(2,3))
 		}
 	}
-	sprite_index = global.sprBlasterBomb
-	on_step 	 = blaster_step
-	on_hit 		 = blaster_hit
-	on_wall    = blaster_wall
-	on_destroy = blaster_destroy
+	sprite_index = global.sprBusterBomb
+  mask_index   = sprDiscTrail
+	on_step 	 = buster_step
+	on_hit 		 = buster_hit
+	on_wall    = buster_wall
+	on_destroy = buster_destroy
+  on_draw    = buster_draw
 }
 
-#define blaster_step
-if speed > maxspeed speed = maxspeed
-image_angle += speed * 2 * current_time_scale
-if irandom(1) && current_frame_active with instance_create(x+lengthdir_x(-sprite_get_height(sprite_index)/2.2,image_angle-90),y+lengthdir_y(-sprite_get_height(sprite_index)/2.2,image_angle-90),Smoke){image_xscale = .75;image_yscale = .75;motion_add(90,2)}
-//if speed = maxspeed if lifetime>0{if lifetime = 5{sound_play_pitch(sndSniperTarget,8)};lifetime -= current_time_scale}else{instance_destroy();exit}
-if speed <= friction instance_destroy()
+#define buster_step
+if !instance_exists(creator){instance_destroy();exit}
+image_angle += speed * 3 * current_time_scale
+if current_frame_active with instance_create(x+lengthdir_x(-sprite_get_height(sprite_index)/2.2,image_angle-90),y+lengthdir_y(-sprite_get_height(sprite_index)/2.2,image_angle-90),Smoke){image_xscale = .5;image_yscale = .5;motion_add(90,2)}
+lifetime -= current_time_scale
+if lifetime <= 0{
+  instance_destroy()
+  exit
+}
+if !button_check(creator.index,btn) && lifetime <= (5 * 30 - 6){
+  sleep(50)
+  instance_destroy()
+  exit
+}
 
-#define blaster_hit
+#define buster_hit
 if current_frame_active {
-	sleep(9*min(other.size,4))
+	sleep(50)
 	view_shake_at(x,y,6)
 	with instance_create(x,y,Smoke){image_angle = random(360)}
-	projectile_hit(other,damage,speed,direction)
+	projectile_hit(other,damage,force + speed,direction)
 }
 
-#define blaster_wall
+#define buster_wall
 sleep(12)
+lifetime = 30 * 3
 repeat(3) instance_create(x,y,Smoke)
 move_bounce_solid(false)
 speed *= .6
 sound_play_pitchvol(sndGrenadeHitWall,random_range(.5,.7),.8)
 
-#define blaster_destroy
+#define buster_destroy
 instance_create(x,y,SmallExplosion)
 sound_play(sndExplosion)
 var i = random(360);
@@ -106,6 +124,13 @@ repeat(2)
 	j += 32
 	k = SmallExplosion
 }
-sleep(30)
+sleep(20)
 view_shake_at(x,y,15)
 instance_create(x,y,GroundFlame)
+
+#define buster_draw
+draw_self()
+if lifetime <= 30
+{
+  draw_sprite_ext(global.sprBusterBombBlink,image_index,x,y,image_xscale,image_yscale,image_angle,image_blend,image_alpha)
+}

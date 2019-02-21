@@ -71,7 +71,7 @@ with instance_create(x + lengthdir_x(l, gunangle),y + lengthdir_y(l, gunangle),S
     		if other.ammo[1] >=1 {
     			instance_create(x+lengthdir_x(sprite_width,direction),y+lengthdir_y(sprite_width,direction),Smoke)
     			with mod_script_call("mod","defpack tools","create_toxic_bullet",x,y){
-    				motion_set(other.direction + random_range(-9,9)*other.creator.accuracy, 10)
+    				motion_set(other.direction + random_range(-9,9)*other.creator.accuracy, 16)
     				image_angle = direction
     				creator = other.creator
     				team = other.team
