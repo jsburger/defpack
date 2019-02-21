@@ -229,7 +229,7 @@ with WepPickup if wep = 0 instance_destroy()
 with instances_matching(WepPickup,"chargecheck",null){
     chargecheck = 1
     var w = is_object(wep) ? wep.wep : wep
-    if is_string(w) and (mod_script_exists("weapon", w, "weapon_chrg") || string_count("ABRIS ",  string_upper(weapon_get_name(w)))){
+    if is_string(w) and (mod_script_call_nc("weapon", w, "weapon_chrg") == 1 || string_count("ABRIS ",  string_upper(weapon_get_name(w)))){
         name += ` @0(${global.sprCharge}:0) `
     }
 }
@@ -252,7 +252,7 @@ if instance_exists(GenCont){
     surface_reset_target()
 }
 with instances_matching(WepPickup,"wep",0){instance_delete(self)}
-if global.SAKmode &&  mod_exists("weapon","sak"){
+if global.SAKmode && mod_exists("weapon","sak"){
     with instances_matching(instances_matching(WepPickup,"roll",1),"saked",undefined){
         saked = 1
         wep = mod_script_call_nc("weapon","sak","make_gun_random")
