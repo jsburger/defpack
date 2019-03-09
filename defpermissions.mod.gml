@@ -565,43 +565,36 @@ for (var i = 0; i < maxp; i++) if player_is_active(i){
     if global.configopen[i] and global.buttonsopen[i] > 0{
         var h = global.scroll[i]
         if d > 0{
-            //if h > 0{
-                if !found{
-                    mouse = point_in_rectangle(mousex,mousey,_x2 + 4,_y,_x2+sw + 4,_y+sh)
-                    found = mouse
-                }
-                else mouse = 0
-                if h > 0 && mouse && released{
-                    h--
-                    click(0)
-                }
-                draw_rectangle_c(_x2 + 5,_y+2,_x2+sw + 5,_y+sh+1,c_black)
-                draw_rectangle_c(_x2 + 4,_y+1,_x2+sw + 4,_y+sh,mouse ? p.sidehighlight : p.sidebutton)
-                //draw_rectangle_co(_x2 + 4,_y,_x2+sw + 4,_y+sh,p.sideoutline)
-                draw_sprite_ext(global.sprArrow,0,_x2 + sw/2 + 5,_y + sh/2,1,1,0,p.arrowcolor,1)
-                //draw_tri(_x2 + sw/2 + 3.5, _y + sh/2, 4,3, 90, p.arrowcolor)
-            //}
-            //if h + mc < l{
-                if !found{
-                    mouse = point_in_rectangle(mousex,mousey,_x2 + 4,_y2-sh,_x2+sw + 4,_y2)
-                    found = mouse
-                }
-                else mouse = 0
-                if h + mc < l && mouse && released{
-                    h++
-                    click(1)
-                }
-              
-                draw_rectangle_c(_x2 + 5,_y2-sh+1,_x2+sw + 5,_y2,c_black)
-                draw_rectangle_c(_x2 + 4,_y2-sh,_x2+sw + 4,_y2-1,mouse ? p.sidehighlight : p.sidebutton)
-                //draw_rectangle_co(_x2 + 4,_y2-sh,_x2+sw + 4,_y2,p.sideoutline)d
-                draw_sprite_ext(global.sprArrow,0,_x2 + sw/2 + 4,_y2 - sh/2 + 1,1,1,180,p.arrowcolor,1)
-                //draw_tri(_x2 + 3.5 + sw/2, _y2 + - sh/2, 4,3, 270,p.arrowcolor)
-            //}
+            if !found{
+                mouse = point_in_rectangle(mousex,mousey,_x2 + 4,_y,_x2+sw + 4,_y+sh)
+                found = mouse
+            }
+            else mouse = 0
+            if h > 0 && mouse && released{
+                h--
+                click(0)
+            }
+            draw_rectangle_c(_x2 + 5,_y+2,_x2+sw + 5,_y+sh+1,c_black)
+            draw_rectangle_c(_x2 + 4,_y+1,_x2+sw + 4,_y+sh,mouse ? p.sidehighlight : p.sidebutton)
+            draw_sprite_ext(global.sprArrow,0,_x2 + sw/2 + 5,_y + sh/2,1,1,0,p.arrowcolor,1)
+            
+            if !found{
+                mouse = point_in_rectangle(mousex,mousey,_x2 + 4,_y2-sh,_x2+sw + 4,_y2)
+                found = mouse
+            }
+            else mouse = 0
+            if h + mc < l && mouse && released{
+                h++
+                click(1)
+            }
+          
+            draw_rectangle_c(_x2 + 5,_y2-sh+1,_x2+sw + 5,_y2,c_black)
+            draw_rectangle_c(_x2 + 4,_y2-sh,_x2+sw + 4,_y2-1,mouse ? p.sidehighlight : p.sidebutton)
+            draw_sprite_ext(global.sprArrow,0,_x2 + sw/2 + 4,_y2 - sh/2 + 1,1,1,180,p.arrowcolor,1)
+            
             var sbx = _x2 + 4, sbx2 = sbx + sw, sby = _y + sh + 2, sbh = mh - sh - 4, sby2 = sby + sbh
             draw_rectangle_c(sbx+1, sby+1, sbx2+1, sby2+1, c_black)
             draw_rectangle_c(sbx, sby, sbx2, sby2, p.scrollbg)
-            //draw_rectangle_co(sbx, sby, sbx2, sby2, p.sideoutline)
             var sbl = sbh * mc/l, sbl2 = h/l * sbh
             if !found{
                 mouse = point_in_rectangle(mousex,mousey, sbx, sby, sbx2, sby2)

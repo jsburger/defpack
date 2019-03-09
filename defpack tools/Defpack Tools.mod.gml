@@ -111,6 +111,10 @@ global.sprWaterBeam       = sprite_add("sprWaterBeam.png",1,0,6);
 global.sprVectorBeamStart = sprite_add("sprVectorBeamStart.png",0,8,8);
 //thanks yokin
 #macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)
+//thanks jsburg (me)
+#macro player_reload (reloadspeed + ((race == "venuz") * (.2 + .4 * ultra_get("venuz", 1))) + ((1 - my_health/maxhealth) * skill_get(mut_stress))) * current_time_scale
+
+#macro prim_offset 1
 
 #define sprite_add_p(sprite, subimages, xoffset, yoffset)
 var q = sprite_add(sprite, subimages, xoffset, yoffset)
@@ -180,10 +184,11 @@ with instances_matching(CustomObject,"name","sniper charge","sniper pest charge"
     var _vpf    = 3;
     var _mx     = x - view_xview[creator.index];
     var _my     = y - view_yview[creator.index];
-    draw_sprite_ext(global.sprAim,0,_mx-_vpf+_offset-100,_my-_vpf+_offset-100,1,1,0  ,_pc,.1+.9*(charge/100))
-    draw_sprite_ext(global.sprAim,0,_mx-_vpf+_offset-100,_my+_vpf-_offset+100,1,1,90 ,_pc,.1+.9*(charge/100))
-    draw_sprite_ext(global.sprAim,0,_mx+_vpf-_offset+100,_my+_vpf-_offset+100,1,1,180,_pc,.1+.9*(charge/100))
-    draw_sprite_ext(global.sprAim,0,_mx+_vpf-_offset+100,_my-_vpf+_offset-100,1,1,270,_pc,.1+.9*(charge/100))
+    for var i = -1; i <= 1; i += 2{
+        for var o = -1; o <= 1; o += 2{
+            draw_sprite_ext(global.sprAim, 0, _mx + (_vpf - _offset + 100) * i, _my + (_vpf - _offset + 100) * o, -i, -o, 0, _pc, .1 + .9*charge/100)
+        }
+    }
     draw_sprite_ext(global.sprCursorCentre,0,_mx,_my,1,1,0,_pc,1)
 }
 draw_set_visible_all(1)
@@ -191,35 +196,93 @@ draw_set_visible_all(1)
 #define draw_pause
 mod_variable_set("weapon", "stopwatch", "pausetime", 1)
 
+#define draw_bloom
+with instances_matching_ne(CustomProjectile, "defbloom", undefined) {
+    draw_sprite_ext(
+        lq_defget(defbloom,"sprite",sprite_index), image_index, x, y,
+        defbloom.xscale * image_xscale, defbloom.yscale * image_yscale,
+        lq_defget(defbloom, "angle", image_angle), image_blend, defbloom.alpha * image_alpha
+    )
+}
+
+with instances_matching(CustomProjectile,"name","vector"){
+	draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, 2.5*image_yscale, image_angle, image_blend, 0.1+skill_get(17)*.025);
+	if ammo > 0{draw_sprite_ext(global.sprVectorHead, 0, x, y, 3, 3, image_angle-45, image_blend, 0.1+skill_get(17)*.025)}
+}
+with instances_matching(CustomProjectile,"name","vector beam"){
+  draw_sprite_ext(sprite_index, image_index, xstart, ystart, image_xscale, 1.5*image_yscale, image_angle, image_blend, 0.15+skill_get(17)*.05);
+	if x != xstart draw_sprite_ext(global.sprVectorBeamStart, 0, xstart, ystart, 1.5, image_yscale*1.5, image_angle, image_blend, .15+skill_get(17)*.05);
+	if x != xstart draw_sprite_ext(global.sprVectorHead, 0, x, y, 2.5, image_yscale*2.5, image_angle-45, image_blend, .15+skill_get(17)*.05);
+}
+with instances_matching(CustomProjectile,"name","mega lightning bullet"){
+  draw_sprite_ext(sprite_index, image_index, x, y, 2*image_xscale+(1-image_index)*2, 2*image_yscale+(1-image_index)*2, image_angle, image_blend, 0.2+(1-image_index)*.4);
+}
+
+
 #define instances_in(left,top,right,bottom,obj)
 return instances_matching_gt(instances_matching_lt(instances_matching_gt(instances_matching_lt(obj,"y",bottom),"y",top),"x",right),"x",left)
 
+#define instances_seen_nonsync(obj)
+return instances_in(view_xview_nonsync,view_yview_nonsync,view_xview_nonsync+game_width,view_yview_nonsync+game_height, obj)
+
+#define instance_nearest_matching_ne(_x,_y,obj,varname,value)
+var num = instance_number(obj),
+    man = instance_nearest(_x,_y,obj),
+    mans = [],
+    n = 0,
+    found = -4;
+if instance_exists(obj){
+    while ++n <= num && variable_instance_get(man,varname) = value || (instance_is(man,prop) && !instance_is(man,Generator)){
+        man.x += 10000
+        array_push(mans,man)
+        man = instance_nearest(_x,_y,obj)
+    }
+    if variable_instance_get(man,varname) != value && (!instance_is(man,prop) || instance_is(man,Generator)) found = man
+    with mans x-= 10000
+}
+return found
+
+#define chance(percentage)
+return random(100) <= percentage*current_time_scale
+
+#define approach(a, b, n, dn)
+return (b - a) * (1 - power((n - 1)/n, dn))
+
+#define angle_approach(a, b, n, dn)
+return angle_difference(a, b) * (1 - power((n - 1)/n, dn))
+
+#define instance_matching_exists(obj, varname, value)
+with obj{
+    if variable_instance_get(id, varname) == value return true
+}
+return false
+
 #define draw_trails
-if array_length_1d(instances_matching(CustomProjectile,"name","Rocklet","big rocklet","huge rocklet")){
+var q = instances_matching(CustomProjectile,"name","Rocklet","big rocklet","huge rocklet")
+if array_length(q){
     surface_set_target(global.trailsf)
     draw_clear_alpha(0,0)
     draw_set_blend_mode(bm_normal)
     draw_set_alpha(1)
     draw_set_color_write_enable(1,1,1,1)
 
-    with instances_in(view_xview_nonsync,view_yview_nonsync,view_xview_nonsync+game_width,view_yview_nonsync+game_height,instances_matching(CustomProjectile,"name","big rocklet","huge rocklet")){
+    with instances_seen_nonsync(instances_matching(q, "name","big rocklet","huge rocklet")){
         var _x = (x - view_xview_nonsync)*4, _y = (y - view_yview_nonsync)*4, _xp = (lerp(x,xprevious,4*speed/maxspeed) - view_xview_nonsync)*4, _yp = (lerp(y,yprevious,4*speed/maxspeed) - view_yview_nonsync)*4;
         var len = ((random_nonsync(speed)/maxspeed))*16;
         var xoff = lengthdir_x(len,direction + 90), yoff = lengthdir_y(len,direction + 90);
         draw_triangle_color(_x + xoff, _y + yoff, _x - xoff, _y - yoff, _xp, _yp, c_white, c_white, c_black, 0)
     }
-    with instances_in(view_xview_nonsync,view_yview_nonsync,view_xview_nonsync+game_width,view_yview_nonsync+game_height,instances_matching(CustomProjectile,"name","Rocklet")){
+    with instances_seen_nonsync(instances_matching(q, "name","Rocklet")){
         var _x = (x - view_xview_nonsync)*4, _y = (y - view_yview_nonsync)*4, _xp = (lerp(x,xprevious,4*speed/maxspeed) - view_xview_nonsync)*4, _yp = (lerp(y,yprevious,4*speed/maxspeed) - view_yview_nonsync)*4;
         var len = (random_nonsync(speed)/maxspeed)*8;
         var xoff = lengthdir_x(len,direction + 90), yoff = lengthdir_y(len,direction + 90);
         draw_triangle_color(_x + xoff, _y + yoff, _x - xoff, _y - yoff, _xp, _yp, c_white, c_white, c_black, 0)
-
     }
+    
     surface_reset_target()
     draw_set_blend_mode(bm_add)
     draw_surface_ext(global.trailsf,view_xview_nonsync,view_yview_nonsync,0.25,0.25,0,c_white,1)
     draw_set_blend_mode(bm_normal)
-
 }
 
 #define step
@@ -502,13 +565,14 @@ if timer > 0{
 if timer <= 0{
 	var closeboy = instance_nearest_matching_ne(x,y,hitme,"team",team)
 	if instance_exists(closeboy) && distance_to_object(closeboy) < range && collision_line(x,y,closeboy.x,closeboy.y,Wall,0,0) < 0{
-		var dir, spd;
+		var dir, spd, dif;
 
 		dir = point_direction(x, y, closeboy.x, closeboy.y);
 		spd = speed * 5 * current_time_scale
-
-		direction -= clamp(angle_difference(image_angle, dir) * turnspeed * current_time_scale, -spd, spd); //Smoothly rotate to aim position.
-		image_angle = direction
+        dif = clamp(angle_approach(direction, dir, 1/turnspeed, current_time_scale), -spd, spd)
+        
+		direction -= dif; //Smoothly rotate to aim position.
+		image_angle -= dif
 	}
 }
 
@@ -842,7 +906,9 @@ if chance(8){
 }
 
 #define fire_destroy
-create_miniexplosion(x,y)
+with create_miniexplosion(x, y){
+    team = other.team
+}
 with instance_create(x,y,BulletHit){
 	sprite_index = other.spr_dead
     image_index = 1
@@ -964,12 +1030,12 @@ if other != lasthit{
 }
 
 #define create_sonic_explosion(_x,_y)
-var a = instance_create(_x,_y,CustomSlash)
-with(a){
+with instance_create(_x,_y,CustomSlash){
 	name = "Sonic Explosion"
+	
 	sprite_index = global.sprSonicExplosion
 	mask_index = global.mskSonicExplosion
-	team = 0
+	
 	typ = 0
 	damage = 5
 	candeflect = 1
@@ -978,14 +1044,15 @@ with(a){
 	shake = 10
 	if GameCont.area = 101{synstep = 0}else{synstep = 1} //oasis synergy
 	hitid = [sprite_index,"Sonic Explosion"]
-	on_step = script_ref_create(sonic_step)
-	on_projectile = script_ref_create(sonic_projectile)
-	on_grenade = script_ref_create(sonic_grenade)
-	on_hit = script_ref_create(sonic_hit)
-	on_wall = script_ref_create(nothing)
-	on_anim = script_ref_create(sonic_anim)
+	on_step       = sonic_step
+	on_projectile = sonic_projectile
+	on_grenade    = sonic_grenade
+	on_hit        = sonic_hit
+	on_wall       = nothing
+	on_anim       = sonic_anim
+	
+	return id
 }
-return a
 #define nothing
 
 #define sonic_anim
@@ -995,9 +1062,9 @@ instance_destroy()
 if synstep = 0
 {
 	synstep = 1
-		image_xscale *= 1.25
-		image_yscale *= 1.25
-		image_speed  *= .8
+	image_xscale *= 1.25
+	image_yscale *= 1.25
+	image_speed  *= .8
 }
 if shake {view_shake_at(x,y,shake);shake = 0}
 
@@ -1060,33 +1127,81 @@ with shell_yeah(_angle, _spread, _speed, _color){
 }
 
 
-#define draw_circle_width_colour(precision,radius,width,offset,xcenter,ycenter,col,alpha)
-var int = 360/precision;
-draw_set_alpha(alpha);
-draw_set_color(col);
-for (var i = 0; i < 360; i+=int){
-	draw_line_width(xcenter+lengthdir_x(radius,offset+i),ycenter+lengthdir_y(radius,offset+i),xcenter+lengthdir_x(radius,offset+i+int),ycenter+lengthdir_y(radius,offset+i+int),width)
+#define draw_arc(x, y, angle, innerradius, outerradius, degrees, precision, col, inneralpha, outeralpha)
+x += 1
+y += 1
+var r1 = innerradius, r2 = outerradius, ang1 = angle - degrees/2, inc = degrees/precision;
+draw_primitive_begin(pr_trianglestrip)
+for (var i = 0; i <= precision; i++){
+    var xl = lengthdir_x(1, ang1 + inc * i), yl = lengthdir_y(1, ang1 + inc * i)
+    draw_vertex_color(x + xl * r1, y + yl * r1, col, inneralpha)
+    draw_vertex_color(x + xl * r2, y + yl * r2, col, outeralpha)
 }
-draw_set_color(c_white)
-draw_set_alpha(1)
+draw_primitive_end();
+
+#define anglefy(a)
+return wrap(a, 360)
+
+#define wrap(a, n)
+while a < 0{
+    a += n
+}
+return a mod n
+
+#define draw_arc_broken(x, y, angle, radius, thickness, degrees, pivot, precision, col, inneralpha, outeralpha)
+x += 1
+y += 1
+var r1 = radius, ang1 = anglefy(angle - degrees/2), inc = degrees/precision, pinc = 180/precision, d = anglefy(-angle_difference(ang1, pivot))/inc + precision/2, n = 360*precision/degrees;
+draw_primitive_begin(pr_trianglestrip)
+for (var i = 0; i <= precision; i++){
+    var e = (pinc*wrap(-i + d, n))
+    var a = ang1 + inc * i, r = thickness * max(dsin(e), 0)
+    var xl = lengthdir_x(1, a), yl = lengthdir_y(1, a)
+    draw_vertex_color(x + xl * (r1 - r/2), y + yl * (r1 - r/2), col, inneralpha)
+    draw_vertex_color(x + xl * (r1 + r/2), y + yl * (r1 + r/2), col, outeralpha)
+}
+draw_primitive_end();
+
+#define draw_arc_wave(x, y, angle, radius, thickness, degrees, precision, col, inneralpha, outeralpha, stiff)
+x += 1
+y += 1
+var r1 = radius, ang1 = anglefy(angle - degrees/2), inc = degrees/precision, pinc = 180/precision;
+draw_primitive_begin(pr_trianglestrip)
+for (var i = 0; i <= precision; i++){
+    var a = ang1 + inc * i, r = thickness * max(dsin(pinc * i), 0)
+    var xl = lengthdir_x(1, a), yl = lengthdir_y(1, a)
+    var ur = (r1 - (r * !stiff + thickness * stiff)/2)
+    draw_vertex_color(x + xl * ur, y + yl * ur, col, inneralpha)
+    draw_vertex_color(x + xl * (ur + r), y + yl * (ur + r), col, outeralpha)
+}
+draw_primitive_end();
+
+
+#define draw_circle_width_colour(precision,radius,width,offset,xcenter,ycenter,col,alpha)
+draw_arc(xcenter, ycenter, offset, radius - width, radius, 360, precision, col, alpha, alpha)
+
 
 //this is basically a fucked up version of the draw_polygon_texture function, but it does something neat i guess
-#define draw_polygon_striped(sides,radius,angle,_x,_y,sprite,col,alpha)
+#define draw_polygon_striped(sides,radius,angle,_x,_y,col,alpha)
 draw_set_alpha(alpha)
 draw_set_color(col)
+_x += 1
+_y += 1
 var tex,w;
-w = sprite_get_width(sprite);
-tex = sprite_get_texture(sprite, 0);
+w = sprite_get_width(global.stripes);
+tex = sprite_get_texture(global.stripes, 0);
 draw_primitive_begin_texture(pr_trianglefan, tex);
 draw_vertex_texture(_x,_y,.50,0)
 for (var i = angle; i <= angle+360; i += 360/sides){
-    draw_vertex_texture(_x+lengthdir_x(radius,i), _y+lengthdir_y(radius,i), .5+(1/w)*lengthdir_x(radius,-angle+i+180),0);
+    draw_vertex_texture(_x+lengthdir_x(radius,i), _y+lengthdir_y(radius,i), abs(frac(.5+(1/w)*lengthdir_x(radius,-angle+i+180))), (current_frame mod 16) * .04);
 }
 draw_primitive_end();
 draw_set_color(c_white)
 draw_set_alpha(1)
 
 #define draw_polygon_texture(sides,radius,angle,spriteang,_x,_y,xscale,yscale,sprite,frame,col,alpha)
+_x += 1
+_y += 1
 draw_set_alpha(alpha)
 draw_set_color(col)
 var tex,w,h;
@@ -1104,58 +1219,139 @@ draw_set_alpha(1)
 
 //abris time
 #define create_abris(Creator,startsize,endsize,weapon)
-var a  = instance_create(0,0,CustomObject);
-with a{
-	//generic variables
-	creator = Creator;
-	name = "Abris Target"
-	team = -1
-	on_step = abris_step
-	on_draw = abris_draw
-	with creator if "index" in self{other.index = index}else{other.index = id}
-	//accuarcy things
-	accbase = startsize*creator.accuracy
-	acc = accbase
-	accmin = endsize
-	accspeed = 1.2
-	accset = false
-	//other things
-	damage = 2
-	maxdamage = 8
-	wep = weapon
-	check = 0 //the button it checks, 0 is undecided, 1 is fire, 2 is specs, should only be 0 on creation, never step
-	popped = 0
-	dropped = 0
-	type = weapon_get_type(wep)
-	cost = weapon_get_cost(wep)
-	auto = 0
-	//visual things
-	rotspeed = 3
-	offspeed = 3
-	lasercolour1 = c_red
-	lasercolour = c_red
-	lasercolour2 = c_maroon
-	offset = random(360)
-
-	primary = 1
-	//god bless YAL
-	if index <= 3
-	{
-	    btn = "fire"
-		check = other.specfiring ? 2 : 1;
-		if check = 2{
-		    btn = "spec"
-		    if other.race = "steroids" primary = 0
-		    if other.race = "venuz" popped = 1
-		}
-	}
-	else{
-	    btn = "fire"
-	}
+with instance_create(0, 0, CustomObject){
+    creator = Creator
+    name = "Abris Target"
+    team = -1
+    
+    on_step    = abris_step
+    on_draw    = abris_draw
+    on_cleanup = abris_cleanup
+    
+    index = ("index" in creator) ? creator.index : creator.id
+    accbase = startsize * creator.accuracy
+    acc = accbase
+    accmin = endsize
+    accspeed = 1.2
+    
+    damage = 2
+    maxdamage = 8
+    wep = weapon
+    auto = 0
+    
+    rotspeed = 3
+    offspeed = 4
+    lasercolour  = c_red
+    lasercolour1 = c_red
+    lasercolour2 = c_maroon
+    offset = random(360)
+    
+    btn = "fire"
+    hand = 0
+    reload = -1
+    if index <= 3{
+        btn = creator.specfiring ? "spec" : "fire"
+        hand = (btn == "spec" and creator.race == "steroids")
+    }
+    
+    //mouse targeting or manual targeting, you choose!
+    targeting = "mouse"
+    length = 16
+    angle = 0
+    
+    abris_draw()
+    return id
 }
-return a;
+
+#define abris_cleanup
+if index <= 3 view_pan_factor[index] = undefined
+
+#define abris_refund
+if instance_is(creator, Player){
+    if creator.infammo = 0{
+        var t = weapon_get_type(wep), c = weapon_get_cost(wep);
+        creator.ammo[t] = min(creator.ammo[t] + c, creator.typ_amax[t])
+    }
+}
+on_destroy = nothing
+abris_cleanup()
+instance_destroy()
 
 #define abris_step
+if instance_exists(creator){
+    if reload = -1{
+        reload = hand ? creator.breload : creator.reload
+        with creator other.reload += player_reload
+    }
+    if hand creator.breload = max(reload, creator.breload)
+    else creator.reload = max(reload, creator.reload)
+    
+    var timescale = (mod_variable_get("weapon", "stopwatch", "slowed") == 1) ? 30/room_speed : current_time_scale;
+    var _a = accbase/accmin;
+    if index <= 3{
+        view_pan_factor[index] = 5 - (_a * 1)
+    }
+    image_angle += rotspeed * timescale
+    offset += offspeed * timescale
+    acc /= power(accspeed, timescale)
+    
+    if button_pressed(index, "swap") and creator.bwep != 0{
+        abris_refund()
+        exit
+    }
+    
+    if !button_check(index, btn) or (auto and acc <= accmin){
+        with instance_create(x, y, CustomProjectile){
+            name = "Abris Blast"
+            sprite_index = sprGammaBlast
+            image_alpha = 0
+            team = other.creator.team
+            var size = 2 * (other.acc+other.accmin)/(sprite_width)
+            damage = ceil(other.damage + (other.maxdamage - other.damage)*(1 - (other.acc/other.accbase)))
+            image_xscale = size
+            image_yscale = size
+            on_wall = nothing
+            on_hit = abris_hit
+            if fork(){
+                wait(0)
+                if instance_exists(self) instance_destroy()
+                exit
+            }
+        }
+        abris_cleanup()
+        instance_destroy()
+    }
+}
+else instance_destroy()
+
+#define abris_draw
+if instance_exists(creator){
+    var _x, _y, c = creator, ang;
+    if targeting == "mouse"{
+        _x = mouse_x[index]
+        _y = mouse_y[index]
+        ang = c.gunangle
+    }
+    else if targeting == "manual"{
+        _x = c.y + lengthdir_x(length, angle)
+        _y = c.x + lengthdir_y(length, angle)
+        ang = angle
+    }
+
+    var w = collision_line_first(creator.x, creator.y, _x, _y, Wall, 0, 0);
+    x = w[0]
+    y = w[1]
+    
+    var kick = hand ? creator.bwkick : creator.wkick;
+    draw_sprite_ext(sprHeavyGrenadeBlink, 0, c.x + lengthdir_x(14 - kick, ang), c.y + lengthdir_y(14 - kick, ang) + 1, 1, 1, ang, lasercolour1, 1)
+    var r = acc + accmin, sides = 16;
+    mod_script_call_nc("mod", "defpack tools", "draw_polygon_striped", sides, r, 45, x, y, lasercolour1, .1 + (accbase-acc)/(accbase * 5))
+    mod_script_call_nc("mod", "defpack tools", "draw_circle_width_colour", sides, r, 1, acc + image_angle, x, y, lasercolour1, .1*(accbase - acc))
+    mod_script_call_nc("mod", "defpack tools", "draw_circle_width_colour", sides, accmin, 1, acc + image_angle, x, y, lasercolour1, .2)
+    draw_line_width_color(c.x + lengthdir_x(16 - kick, ang), c.y + lengthdir_y(16 - kick, ang), x, y, 1, lasercolour1, lasercolour1)
+}
+
+#define abris_step_old
 if instance_exists(creator){
   var timescale = (mod_variable_get("weapon", "stopwatch", "slowed") == 1) ? 30/room_speed : current_time_scale;
   var _a = accbase/accmin
@@ -1177,7 +1373,7 @@ if instance_exists(creator){
 		}else{
 			creator.breload = weapon_get_load(creator.bwep)
 		}
-		acc /= 1+((accspeed - 1)*timescale)
+		acc /= power(accspeed, timescale)
 		if index <= 3{var _xx = mouse_x[index];var _yy = mouse_y[index]}else{var _xx = index.x;var _yy = index.y}
 		if collision_line(x,y,_xx,_yy,Wall,0,0) >= 0{
 			if acc < accbase{acc += abs(creator.accuracy*3)}else{acc = accbase;lasercolour=c_white}
@@ -1227,7 +1423,7 @@ else{instance_destroy()}
 #define abris_hit
 projectile_hit(other,damage,0,0)
 
-#define abris_draw
+#define abris_draw_old
 if instance_exists(creator) && check{
 	x = creator.x
 	y = creator.y
@@ -1261,6 +1457,7 @@ if instance_exists(creator) && check{
 //
 //  Returns the instance id of an object colliding with a given line and
 //  closest to the first point, or noone if no instance found.
+// yo whats up jsburg here, made this shit return the point of collison as the first two indexes of the array, and the instance as the third
 //  The solution is found in log2(range) collision checks.
 //
 //      x1,y2       first point on collision line, real
@@ -1297,7 +1494,7 @@ if instance_exists(creator) && check{
             }
         }
     }
-    return inst;
+    return [dx, dy, inst];
 }
 
 #define draw_curve(x1,y1,x2,y2,direction,detail)
@@ -1327,39 +1524,37 @@ return 0;
 #define create_lightning(_x,_y)
 if instance_exists(GameCont) and GameCont.area = 101
 {
-  sleep(150)
-  with Player lasthit = [sprLightningDeath,"ELECTROCUTION"]
-  with hitme with other projectile_hit(other,7,0,0)
-  instance_destroy()
-  exit
+    sleep(150)
+    with Player lasthit = [sprLightningDeath,"ELECTROCUTION"]
+    with hitme with other projectile_hit(other,7,0,0)
+    exit
 }
-else
-{
-  with instance_create(_x,_y,CustomProjectile){
-	vbuf = vertex_create_buffer()
-  	lightning_refresh()
-  	hitid = [sprLightningHit,"Lightning Bolt"]
-  	name = "Lightning Bolt"
-  	time = skill_get(17)+4
-  	timestart = time
-  	create_frame = current_frame
-  	colors = [c_black,c_white,c_white,merge_color(c_blue,c_white,.3),c_white]
-  	wantdust = 1
-  	damage = 9 + skill_get(17)*3
-  	force = 40
-    mask_index   = sprPlasmaBall
-    image_xscale = 5
-    image_yscale = 5
-  	on_wall    = lightning_wall
-  	on_draw    = lightning_draw;
-    on_destroy = lightning_destroy
-    on_cleanup = lightning_cleanup
-  	on_step    = lightning_step
-  	on_hit     = lightning_hit
-  	depth = -8
-
-  	return id
-  }
+else{
+    with instance_create(_x,_y,CustomProjectile){
+        vbuf = vertex_create_buffer()
+        lightning_refresh()
+        hitid = [sprLightningHit,"Lightning Bolt"]
+        name = "Lightning Bolt"
+        time = skill_get(17)+4
+        timestart = time
+        create_frame = current_frame
+        colors = [c_black,c_white,c_white,merge_color(c_blue,c_white,.3),c_white]
+        wantdust = 1
+        damage = 9 + skill_get(17)*3
+        force = 40
+        mask_index   = sprPlasmaBall
+        image_xscale = 5
+        image_yscale = 5
+        on_wall    = lightning_wall
+        on_draw    = lightning_draw
+        on_destroy = lightning_destroy
+        on_cleanup = lightning_cleanup
+        on_step    = lightning_step
+        on_hit     = lightning_hit
+        depth = -8
+        
+        return id
+    }
 }
 #define lightning_wall
 with other{
@@ -1371,13 +1566,13 @@ with other{
 d3d_set_fog(1,colors[min((current_frame - create_frame),array_length_1d(colors)-1)], 0,0)
 vertex_submit(vbuf, pr_trianglestrip)
 d3d_set_fog(0,0,0,0)
-for (var i = 0; i < array_length_1d(ypoints); i++){
+for (var i = 0; i < array_length(ypoints); i++){
 	draw_sprite(sprLightningHit,1+irandom(2),xpoints[i],ypoints[i])
 	//draw_line_width(xpoints[i],ypoints[i],xpoints[i-1],ypoints[i-1],i/10)
 }
 #define lightning_hit
 if projectile_canhit(other) && current_frame_active{
-	projectile_hit_push(other,damage,force)
+	projectile_hit_push(other, damage, force)
 }
 
 
@@ -1410,6 +1605,7 @@ while yy > y - 2*game_height{
     }
 }
 vertex_end(vbuf)
+vertex_freeze(vbuf)
 
 #define slope(x1,x2,y1,y2)
 return((y2-y1)/(x2-x1))
@@ -1438,11 +1634,11 @@ if wantdust != 0{
   		  motion_set(random(360),3+random(10))
 	    }
   	}
-      repeat(8){
-          with instance_create(x+random_range(-30,30),y+random_range(-30,30),LightningSpawn){
+    repeat(8){
+        with instance_create(x+random_range(-30,30),y+random_range(-30,30),LightningSpawn){
             image_angle = point_direction(other.x,other.y,x,y) + random_range(-8,8)
-          }
-      }
+        }
+    }
   	if instance_exists(Floor){
   	    var closeboy = instance_nearest(x,y,Floor);
       	if point_in_rectangle(x,y,closeboy.x-16,closeboy.y-16,closeboy.x+16,closeboy.y+16){
@@ -1452,7 +1648,7 @@ if wantdust != 0{
       	            while instance_exists(self) && time < 45{
       	                time += current_time_scale
       	                image_alpha -= current_time_scale/45
-      	                if random(100) <= (45-time)*current_time_scale{
+      	                if chance(45 - time){
       	                    with instance_create(x,y,Smoke){
       	                        motion_add(90,random_range(1,2))
       	                        image_xscale = (1-(other.time/45)) * random_range(.5,1)
@@ -1473,6 +1669,7 @@ if wantdust != 0{
 time -= current_time_scale
 if time <= 0 instance_destroy()
 
+
 #define create_plasmite(_x,_y)
 with instance_create(_x, _y, CustomProjectile) {
     name = "Plasmite"
@@ -1483,7 +1680,7 @@ with instance_create(_x, _y, CustomProjectile) {
     }
 	image_speed = 0
 	damage = 4+3*skill_get(17)
-	if skill_get(17) = false sprite_index = global.sprPlasmite else sprite_index = global.sprPlasmiteUpg
+	sprite_index = skill_get(mut_laser_brain) ? global.sprPlasmiteUpg : global.sprPlasmite
  	fric = random_range(.2,.3)
     force = 2
 	maxspeed = 13
@@ -1506,7 +1703,7 @@ if instance_exists(closeboy) && distance_to_object(closeboy) <= 24{
 }
 image_angle = direction
 if speed > maxspeed{speed = maxspeed}
-maxspeed /= 1+(fric*current_time_scale)
+maxspeed /= power(1+(fric), current_time_scale)
 if maxspeed <= 1+fric instance_destroy();
 
 #define plasmite_wall
@@ -1554,9 +1751,7 @@ with create_square(_x,_y){
 }
 
 #define create_triangle(_x,_y)
-var a = instance_create(_x,_y,CustomProjectile);
-with a
-{
+with instance_create(_x,_y,CustomProjectile){
     defbloom = {
         xscale : 2,
         yscale : 2,
@@ -1574,8 +1769,8 @@ with a
     on_step    = triangle_step
     on_wall    = triangle_wall
     on_destroy = triangle_destroy
+    return id
 }
-return a;
 
 #define triangle_step
 if friction > speed{instance_destroy()}
@@ -1660,7 +1855,6 @@ if other.team != pseudoteam and current_frame_active{
     with other motion_add(point_direction(other.x,other.y,x,y),other.size)
     if speed > minspeed && projectile_canhit_melee(other) = true{projectile_hit(other, round(2*damage + speed), force, direction)}else{projectile_hit(other, damage, force, direction)};
 }
-
 
 #define square_projectile
 if other.team = pseudoteam || ("pseudoteam" in other and other.pseudoteam == pseudoteam){
