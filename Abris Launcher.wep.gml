@@ -40,7 +40,7 @@ with mod_script_call("mod","defpack tools","create_abris",self,_strtsize,_endsiz
 	accspeed = 1.15
 	damage = 3
 	maxdamage = 7
-	payload = script_ref_create(pop)
+	on_destroy = pop
 }
 sound_play_pitch(sndSniperTarget,1/accuracy+.5)
 #define pop
@@ -49,8 +49,7 @@ sound_play_pitch(sndGrenade,random_range(.5,.8))
 sound_play_pitch(sndGrenadeShotgun,random_range(.5,.8))
 sound_play(sndExplosion)
 with creator weapon_post(6,25,35)
-repeat(6)
-{
-	with instance_create(explo_x+lengthdir_x(acc+accmin,offset),explo_y+lengthdir_y(acc+accmin,offset),SmallExplosion){hitid = [sprite_index,"small explosion"]}
+repeat(6){
+	with instance_create(x+lengthdir_x(acc+accmin,offset),y+lengthdir_y(acc+accmin,offset),SmallExplosion){hitid = [sprite_index,"small explosion"]}
 	offset += 360/6
 }
