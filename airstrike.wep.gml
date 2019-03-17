@@ -1,6 +1,5 @@
 #define init
 global.sprAirstrike = sprite_add_weapon("sprites/sprAirstrike.png", -1, 3);
-global.stripes 	    = sprite_add("defpack tools/BIGstripes.png",1,1,1)
 
 #define weapon_name
 return "AIRSTRIKE"
@@ -51,9 +50,10 @@ j += speed_raw
 if (j % (speed * 4)) < current_time_scale
 {
 	ammo--
-	with instance_create(x + random_range(-8,8) * accuracy,y + random_range(-8,8) * accuracy,CustomProjectile)
+	with instance_create(x + random_range(-8,8) * accuracy,y + random_range(-8,8) * accuracy, CustomObject)
 	{
 		team    = other.team
+		creator = other.creator
 		acc 		= other.accuracy/1.35
 		sprite_index = mskNone
 		image_speed = 0
@@ -64,7 +64,7 @@ if (j % (speed * 4)) < current_time_scale
 		on_hit  	 = fakeabris_hit
 		on_draw 	 = fakeabris_draw
 		on_step 	 = fakeabris_step
-		on_destroy = fakeabris_destroy
+		on_destroy   = fakeabris_destroy
 	}
 }
 if ammo <= 0 instance_destroy()
@@ -73,8 +73,7 @@ if ammo <= 0 instance_destroy()
 var i = random(360)
 sleep(20)
 view_shake_at(x,y,30)
-repeat(ammo)
-{
+repeat(ammo){
 	sound_play_pitch(sndExplosionS,.7)
 	instance_create(x+lengthdir_x(radius,i),y+lengthdir_y(radius,i),SmallExplosion)
 	i += 360/ammo
@@ -82,8 +81,11 @@ repeat(ammo)
 
 #define fakeabris_step
 image_angle += 7 * current_time_scale * radiusmin/radius
-if radiusmin < radius{radius /= (1 + .06/acc*current_time_scale)}
-else{instance_destroy()}
+if radiusmin < radius{
+    radius /= power(1 + .06/acc, current_time_scale)
+}
+else
+    instance_destroy()
 #define fakeabris_hit
 
 #define fakeabris_draw

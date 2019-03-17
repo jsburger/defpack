@@ -36,7 +36,7 @@ return "FASTER, FASTER";
 var _strtsize = 20;
 var _endsize  = 8;
 with mod_script_call("mod","defpack tools","create_abris",self,_strtsize,_endsize,argument0){
-	accspeed = 1.07
+	accspeed = 1.15
 	auto = 1
 	damage = 2
 	maxdamage = 2
@@ -48,9 +48,9 @@ sound_play_pitch(sndSniperTarget,1/accuracy+1)
 sound_play_pitch(sndGrenadeShotgun,random_range(1.5,1.8))
 sound_play_pitch(sndGrenade,random_range(1.5,1.8))
 sound_play(sndExplosionS)
-with creator weapon_post(4,12,6)
-repeat(3)
-{
-	with instance_create(explo_x+lengthdir_x(acc+12,offset),explo_y+lengthdir_y(acc+12,offset),SmallExplosion){hitid = [sprite_index,"small explosion"]}
+if isplayer with creator weapon_post(4,12,6)
+repeat(3){
+	with instance_create(x + lengthdir_x(acc+accmin, offset), y + lengthdir_y(acc+accmin, offset), SmallExplosion)
+	    hitid = [sprite_index,"small explosion"]
 	offset += 120
 }

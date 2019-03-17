@@ -30,7 +30,7 @@ weapon_post(-1,-3,0)
 sound_play_pitchvol(sndNadeReload,1.4,.6)
 
 #define weapon_text
-return "ready to bloom";
+return "INCOMING";
 
 #define weapon_fire
 var _strtsize = 50;//never thought id have to nerf eagle eyes im so proud of you
@@ -39,17 +39,21 @@ var _accspeed = 1.2;
 with mod_script_call("mod","defpack tools","create_abris",self,_strtsize,_endsize,argument0){
 	accspeed = 1.15
 	damage = 3
-	maxdamage = 7
-	on_destroy = pop
+	maxdamage = 15
+	payload = script_ref_create(pop)
 }
 sound_play_pitch(sndSniperTarget,1/accuracy+.5)
+
 #define pop
 sound_play_pitch(sndGrenadeRifle,random_range(.5,.8))
 sound_play_pitch(sndGrenade,random_range(.5,.8))
 sound_play_pitch(sndGrenadeShotgun,random_range(.5,.8))
 sound_play(sndExplosion)
-with creator weapon_post(6,25,35)
-repeat(6){
-	with instance_create(x+lengthdir_x(acc+accmin,offset),y+lengthdir_y(acc+accmin,offset),SmallExplosion){hitid = [sprite_index,"small explosion"]}
-	offset += 360/6
+if isplayer with creator weapon_post(6,25,35)
+var n = 8;
+repeat(n){
+	with instance_create(x + lengthdir_x(acc + accmin, offset), y + lengthdir_y(acc + accmin, offset), SmallExplosion){
+	    hitid = [sprite_index,"small explosion"]
+	}
+	offset += 360/n
 }

@@ -2,7 +2,7 @@
 global.sprMoby = sprite_add_weapon("sprites/sprMoby.png", 7, 2);
 global.yellow = merge_color(c_yellow, c_white, .4)
 
-#macro maxcharge 24
+#macro maxchrg 24
 
 #define weapon_name
 return "MOBY";
@@ -33,18 +33,27 @@ return 14;
 #define weapon_text
 return "HEAVY OCEAN";
 
+#define charge_base
+return {
+    maxcharge : maxchrg - 1,
+    charge : 0,
+    style : 0,
+    width : 12
+}
+
 #define weapon_fire(w)
 if !is_object(w){
     w = {
         wep: w,
         charge : 1,
         persist : 0,
-        canbloom : 1
+        canbloom : 1,
+        defcharge : charge_base()
     }
 }
 else{
     var q = lq_defget(w, "charge", 1)
-    w.charge = min(q + 2/q, maxcharge)
+    w.charge = min(q + 2/q, maxchrg)
     w.persist = 5
 }
 
@@ -72,7 +81,7 @@ if lq_defget(w, "canbloom", 1){
     weapon_post(5+random_range(w.charge * .04,-w.charge * .04),-3,2)
     sound_play_pitch(sndTripleMachinegun,(.7 + w.charge * .02)*random_range(.95,1.05))
     sound_play(sndMinigun)
-    sound_play_gun(sndClickBack, 0, 1 - (w.charge/(maxcharge*1.5)))
+    sound_play_gun(sndClickBack, 0, 1 - (w.charge/(maxchrg*1.5)))
     sound_stop(sndClickBack)
 }
 wep = w
@@ -108,6 +117,10 @@ else if w.charge > 1{
     if random(100) <= 50 * current_time_scale with instance_create(x+lengthdir_x(16,gunangle),y+lengthdir_y(16,gunangle),Smoke) {vspeed -= random(1); image_xscale/=2;image_yscale/=2; hspeed/=2}
     w.charge = max (w.charge - current_time_scale*.5, 1)
 }
+if lq_get(w, "defcharge") == undefined{
+    w.defcharge = charge_base()
+}
+w.defcharge.charge = w.charge - 1
 
 
 #define create_bullet(_x,_y)

@@ -39,6 +39,31 @@ return false
 
 #define weapon_reloaded
 
+#define weapon_sprt
+if instance_is(self,Player){
+    with instances_matching(instances_matching(CustomObject, "name", "bow charge"),"creator", id){
+        var yoff = (creator.race = "steroids" and btn = "spec") ? -1 : 1
+        with creator{
+            var l = other.charge/other.maxcharge * 4 - 1
+            if other.charged
+                for var i = -1; i <= 1; i++{
+                    draw_sprite_ext(other.spr_arrow, 0, x - lengthdir_x(l, gunangle), y - lengthdir_y(l, gunangle) + yoff, 1, 1, gunangle + 12*i, c_white, 1)
+                }
+            else
+                draw_sprite_ext(other.spr_arrow, 0, x - lengthdir_x(l, gunangle), y - lengthdir_y(l, gunangle) + yoff, 1, 1, gunangle, c_white, 1)
+            
+        }
+    }
+    if race = "skeleton" return global.sprBow2
+}
+return global.sprBow
+
+#define weapon_sprt_hud
+return global.sprArrowHUD
+
+#define weapon_text
+return "CLASSIC"
+
 #define weapon_fire
 with instance_create(x,y,CustomObject)
 {
@@ -47,6 +72,11 @@ with instance_create(x,y,CustomObject)
 	creator = other
 	charge    = 0
     maxcharge = 25
+    defcharge = {
+        style : 1,
+        charge : 0,
+        maxcharge : 25
+    }
 	charged = 0
 	holdtime = 5 * 30
 	depth = TopCont.depth
@@ -71,6 +101,7 @@ if btn = "spec"{
         creator.reload = max(weapon_get_load(creator.wep) * array_length_1d(instances_matching(instances_matching(instances_matching(CustomObject, "name", name),"creator",creator),"btn",btn)), creator.reload)
 }
 view_pan_factor[index] = 3 - (charge/maxcharge * .5)
+defcharge.charge = charge
 if button_check(index,btn){
     if charge < maxcharge{
         charge += timescale;
@@ -157,19 +188,3 @@ else
     }
 }
 
-#define weapon_sprt
-if instance_is(self,Player){
-    with instances_matching(instances_matching(CustomObject, "name", "bow charge"),"creator", id){
-        var yoff = (creator.race = "steroids" and btn = "spec") ? -1 : 1
-        with creator
-            draw_sprite_ext(other.spr_arrow, 0, x - lengthdir_x(other.charge/other.maxcharge * 4 - 1, gunangle), y - lengthdir_y(other.charge/other.maxcharge * 4 - 1, gunangle) + yoff, 1, 1, gunangle, c_white, 1)
-    }
-    if race = "skeleton" return global.sprBow2
-}
-return global.sprBow
-
-#define weapon_sprt_hud
-return global.sprArrowHUD
-
-#define weapon_text
-return "CLASSIC"
