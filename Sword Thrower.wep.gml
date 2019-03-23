@@ -1,4 +1,5 @@
 #define init
+global.sprSwordThrower = sprite_add_weapon("sprites/sprSwordThrower.png", 2, 4)
 global.last = -4
 #define weapon_name
 return "SWORD THROWER"
@@ -19,11 +20,12 @@ return 0
 #define weapon_laser_sight
 return 1
 #define weapon_sprt
-return sprCrossbow
+return global.sprSwordThrower
 #define weapon_reloaded
 
 #define weapon_text
-return choose("SHARP AS ALL CAN BE", "@wSWORDS@d CAN HIT#TWO THINGS AT ONCE")
+return choose("SHARP AS ALL CAN BE", "@wSWORDS@s CAN HIT#TWO THINGS AT ONCE")
+
 #define weapon_fire
 var _p = random_range(.8, 1.2)
 sound_play_pitch(sndHeavyCrossbow, 2 * _p)

@@ -106,7 +106,9 @@ vertex_format_begin()
 vertex_format_add_position()
 global.lightningformat = vertex_format_end()
 
-global.arccount = 0
+global.showCharge = 1
+mod_script_call("mod", "defpermissions", "permission_register", "mod", mod_current, "showCharge", "Weapon Charge Indicators")
+global.chargeSmooth = [0, 0]
 
 global.sprVectorHead 	  = sprite_add("sprVectorHead.png",0,5,5)
 global.sprWaterBeam       = sprite_add("sprWaterBeam.png",1,0,6);
@@ -151,10 +153,6 @@ if cmd = "sakcity"{
 
 #define cleanup
 with global.traildrawer instance_destroy()
-
-#define draw_shadows()
-with instances_matching(CustomProjectile,"name","volley arrow")
-    draw_sprite_ext(shd16,0,x,y,clamp(1/z*10,0,1),clamp(1/z*10,0,1),0,c_white,1)
 
 #define draw_dark()
 with Player{
@@ -203,7 +201,7 @@ with instances_matching(CustomObject,"name","sniper charge","sniper pest charge"
 draw_set_visible_all(1)
 
 var q = instances_matching_ne(CustomObject, "defcharge", undefined);
-with Player if player_is_local_nonsync(index){
+if global.showCharge with Player if player_is_local_nonsync(index){
     var matches = instances_matching(q, "creator", id)
     if race = "steroids" and is_object(bwep) and "defcharge" in bwep{
         array_push(matches, bwep)
@@ -215,7 +213,7 @@ with Player if player_is_local_nonsync(index){
         var counts = array_create(2)
         with matches{
             with defcharge{
-                if power(charge/maxcharge, 2) >= .001
+                if power(charge/maxcharge, lq_defget(self, "power", 2)) >= .001
                 counts[style]++
             }
         }
@@ -223,21 +221,26 @@ with Player if player_is_local_nonsync(index){
         var c = player_get_color(index), _col = c;
         //counters
         var _ac = 0, _bc = 0, _am = counts[defcharge_arc], _bm = counts[defcharge_bar];
+        //smoothing
+        var _sm = global.chargeSmooth;
+        for var i = 0; i < array_length(_sm); i++{
+            _sm[i] += approach(_sm[i], counts[i], 3, 30/room_speed)
+        }
         //arc vars
-        global.arccount += approach(global.arccount, min(360, 180 * sqrt(_am)), 3, 30/room_speed)
         if _am{
-            var _arcpnt = 90, _p = floor(10/max(_am/2, 1)), _ah = 2, _al = 2*(_ah + 1) + 6, _arcmax = global.arccount,
+            var _arcpnt = 90, _p = floor(10/max(_am/2, 1)), _ah = 2, _al = 2*(_ah + 1) + 6, _arcmax = min(360, 180 * sqrt(_sm[defcharge_arc])),
                 _arcspc = _arcmax/_am, _arclen = _arcspc - 8, _arcdir = _arcpnt + (_arcmax - _arcspc)/2;
             draw_arc(_x, _y + 1, _arcpnt, _al - 1, _al + _ah + 2, _arcmax, _p * _am, c_black, 1, 1)
             draw_arc(_x, _y    , _arcpnt, _al, _al + _ah + 1, _arcmax, _p * _am, 0, 1, 1)
         }
         //bar vars
-        var _bh = 2, _bhinc = 2 * (_bh + 1);
+        var _bh = 2, _bhinc = 2 * (_bh + 1) * (_sm[defcharge_bar]/_bm);
         //looping through oldest objects to newest objects
         for var i = array_length(matches) - 1; i >= 0; i--{
             with matches[i]{
                 with defcharge{
-                    var cm = power(charge/maxcharge, 2), b = lq_defget(self, "blinked", 0);
+                    _col = c
+                    var cm = power(charge/maxcharge, lq_defget(self, "power", 2)), b = lq_defget(self, "blinked", 0);
                     if cm < .001 continue
                     if cm >= .99 {
                         if b < 2 and b > -1{
@@ -326,6 +329,27 @@ if instance_exists(obj){
 }
 return found
 
+#define get_n_targets(_x, _y, obj, amount)
+var num = instance_number(obj),
+    man = instance_nearest(_x, _y, obj),
+    mans = [],
+    n = 0,
+    found = [];
+if instance_exists(obj){
+    while ++n <= num and variable_instance_get(man, varname) == value || (instance_is(man,prop) && !instance_is(man,Generator)){
+        man.x += 10000
+        array_push(mans,man)
+        man = instance_nearest(_x,_y,obj)
+    }
+    if variable_instance_get(man,varname) != value && (!instance_is(man,prop) || instance_is(man,Generator)) {
+        array_push(found, man)
+        if --amount <= 0 return found
+    }
+    with mans x-= 10000
+}
+if array_length(found) == 0 return -4
+return found
+
 #define script_ref_call_self(scr)
 return mod_script_call_self(scr[0], scr[1], scr[2])
 
@@ -337,12 +361,6 @@ return (b - a) * (1 - power((n - 1)/n, dn))
 
 #define angle_approach(a, b, n, dn)
 return angle_difference(a, b) * (1 - power((n - 1)/n, dn))
-
-#define instance_matching_exists(obj, varname, value)
-with obj{
-    if variable_instance_get(id, varname) == value return true
-}
-return false
 
 #define draw_trails
 var q = instances_matching(CustomProjectile,"name","Rocklet","big rocklet","huge rocklet")
@@ -1427,7 +1445,10 @@ if instance_exists(creator){
         }
     }
 }
-else instance_destroy()
+else{
+    on_destroy = nothing
+    instance_destroy()
+}
 
 #define abris_destroy
 script_ref_call_self(payload)
@@ -1554,8 +1575,7 @@ return 0;
 
 
 #define create_lightning(_x,_y)
-if instance_exists(GameCont) and GameCont.area = 101
-{
+if instance_exists(GameCont) and GameCont.area = 101{
     sleep(150)
     with Player lasthit = [sprLightningDeath,"ELECTROCUTION"]
     with hitme with other projectile_hit(other,7,0,0)
@@ -2588,6 +2608,7 @@ with instance_create(x, y, melee ? CustomSlash : CustomProjectile){
     name = "Sword"
     damage = 25
     force  = 6
+    typ = 1
     sprite_index = global.sprSword
     mask_index   = mskHeavyBolt
     spr_dead     = global.sprSwordStick
@@ -2628,7 +2649,7 @@ draw_sprite_ext(sprite_index, 0, x, y, image_xscale, image_yscale, draw_angle + 
 #define sword_step
 var aspeed = anglespeed * sign(hspeed) * current_time_scale;
 draw_angle -= aspeed;
-defbloom.angle = draw_angle + image_angle + 90;
+defbloom.angle = draw_angle + image_angle;
 
 if skill_get(mut_bolt_marrow){
     var q = instance_nearest_matching_ne(x, y, hitme, "team", team)
@@ -2661,8 +2682,8 @@ repeat(2){
 
 #define sword_wall
 var _p = random_range(.9,1.2)
-sound_play_pitchvol(sndChickenSword, 1.5*_p , .2)
-sound_play_pitchvol(sndBoltHitWall,1.2* _p , .8)
+sound_play_pitchvol(sndChickenSword, 1.5*_p , .5)
+sound_play_pitchvol(sndSwapSword, .9* _p , .8)
 with instance_create(x, y, CustomObject){
     sprite_index = other.spr_dead
     image_angle = other.direction
@@ -2724,6 +2745,7 @@ with instance_create(x, y, CustomObject){
 	acc     = 1
 	charged = 1
 	maxcharge = 100
+	chargespeed = 3.2
 	holdtime = 150
 	depth = TopCont.depth
 	index = -1
@@ -2764,7 +2786,7 @@ else{
     else creator.reload = max(reload, creator.reload)
 }
 
-charge += timescale * 3.2 / acc
+charge += timescale * chargespeed / acc
 if charge > maxcharge{
 	charge = maxcharge
 	if charged > 0{
@@ -2790,12 +2812,13 @@ for (var i=0; i<maxp; i++){player_set_show_cursor(index,i,0)}
 if button_check(index, btn) = false || holdtime <= 0
 {
     sound_stop(sndFlameCannonLoop)
-	sound_pitch(sndNoSelect,1)
 	with instance_create(creator.x,creator.y,CustomObject){
-		move_contact_solid(other.creator.gunangle,24)
+	    time = 1
+		move_contact_solid(other.creator.gunangle, 24)
+		image_angle = other.creator.gunangle
 		depth = -1
 		sprite_index = other.spr_flash
-		image_speed = .4
+		image_speed = 1
 		on_step = muzzle_step
 		on_draw = muzzle_draw
 	}
@@ -2823,20 +2846,22 @@ with creator{
 	weapon_post(12,2,158)
 	motion_add(gunangle -180,_c / 20)
 	sleep(120)
-	with sniper_fire(x + lengthdir_x(10, gunangle), y + lengthdir_y(10, gunangle), gunangle, team, 1 + _cc){
+	var q = sniper_fire(x + lengthdir_x(10, gunangle), y + lengthdir_y(10, gunangle), gunangle, team, 1 + _cc)
+	with q{
 	    creator = other
 	    damage = 12 + round(28 * _cc)
 	    worth = 12
-	    bolt_line(xstart, ystart, x, y, 3*_cc, c_yellow, c_orange)
+	    instance_create(x, y, BulletHit)
 	}
+	bolt_line_bulk(q, 2 * _cc, c_yellow, c_orange)
 }
 sleep(charge*3)
 
 
 #define sniper_fire(xx, yy, angle, t, width)
-return sniper_fire_r(xx, yy, angle, t, width, 20)
+return sniper_fire_r(xx, yy, angle, t, width, 20, -1)
 
-#define sniper_fire_r(xx, yy, angle, t, width, tries)
+#define sniper_fire_r(xx, yy, angle, t, width, tries, pierces)
 //FUCK YOU YOKIN FUCK YOU YOKIN FUCK YOU FUCK YOU FUCKYOU
 if tries <= 0 return [-4]
 var junk = []
@@ -2863,28 +2888,49 @@ with instance_create(xx, yy, CustomProjectile){
     var _x = lengthdir_x(hyperspeed,direction), _y = lengthdir_y(hyperspeed,direction);
     var shields = instances_matching_ne([CrystalShield,PopoShield], "team", team),
         slashes = instances_matching_ne([EnergySlash,Slash,EnemySlash,EnergyHammerSlash,BloodSlash,GuitarSlash], "team", team),
-        shanks  = instances_matching_ne([Shank,EnergyShank], "team", team);
+        shanks  = instances_matching_ne([Shank,EnergyShank], "team", team),
+        hitmes  = -4, lasthit = -4;
+    if pierces{
+        hitmes = instances_matching_ne(hitme, "team", team);
+    }
     do {
         dir += hyperspeed
     	x += _x
     	y += _y
-    	with shields if place_meeting(x,y,other) {
+    	with shields if place_meeting(x, y, other) {
     	    var a = point_direction(x, y, other.x, other.y);
-    	    array_push(junk, sniper_fire_r(other.x, other.y, a, team, width, tries - 1))
+    	    array_push(junk, sniper_fire_r(other.x, other.y, a, team, width, tries - 1, pierces))
     	    stop = 1
     	    break
     	}
     	with slashes if place_meeting(x, y, other){
-    	    array_push(junk, sniper_fire_r(other.x, other.y, direction, team, width, tries - 1))
+    	    array_push(junk, sniper_fire_r(other.x, other.y, direction, team, width, tries - 1, pierces))
     	    stop = 1
     	    break
     	}
-    	with shanks if place_meeting(x,y,other){
+    	with shanks if place_meeting(x, y, other){
     	    stop = 1
     	    break
+    	}
+    	with hitmes if place_meeting(x, y, other){
+    	    if id != lasthit{
+    	        if pierces != -1{
+    	            if --pierces <= 0{
+    	                stop = 1
+    	                break
+    	            }
+    	        }
+    	        lasthit = id
+    	    }
     	}
     }
-    until stop or place_meeting(x, y, Wall) or dir > 1000
+    until stop or place_meeting(x+_x, y+_y, Wall) or dir > 1000
+    if !stop{
+        var e = collision_line_first(x, y, x+_x, y+_y, Wall, 0, 0)
+        dir += point_distance(x, y, e[0], e[1])
+        x = e[0]
+        y = e[1]
+    }
     image_xscale += .5 * dir
     xprevious = x
     yprevious = y
@@ -2893,6 +2939,7 @@ with instance_create(xx, yy, CustomProjectile){
     var array = [id]
 }
 unpack(array, junk)
+with array friends = array
 return array;
 
 #define unpack(box, stuff)
@@ -2917,11 +2964,34 @@ if skill_get(mut_recycle_gland) and recycle < worth and !irandom(1){
     var e = min(worth - recycle, floor(worth/6));
     instance_create(other.x, other.y, RecycleGland)
     sound_play(sndRecGlandProc)
-    recycle += e
+    with friends if instance_exists(self) recycle += e
     with creator{
-        ammo[1] += e
+        ammo[1] = min(ammo[1] + e, typ_amax[1])
     }
 }
+
+
+#define bolt_line_bulk(dudes, width, col1, col2)
+var total = 0, count = array_length(dudes)
+with dudes{
+    total += image_xscale
+}
+var w = width
+var tc = .05, n = 0, n2 = 0;
+with dudes{
+    var s = image_xscale/total
+    for var i = 0; i < 1; i += tc{
+        with instance_create(lerp(xstart, x, i), lerp(ystart, y, i), BoltTrail){
+            image_xscale = other.image_xscale * tc * 2
+            image_angle = other.image_angle
+            image_yscale = n + i * s * w
+            image_blend = merge_color(col1, col2, n2 + i*s)
+        }
+    }
+    n2 += s
+    n += w*s
+}
+
 
 #define bolt_line(x1, y1, x2, y2, width, col1, col2)
 var dis = point_distance(x1, y1, x2, y2) + 1;
@@ -2938,12 +3008,13 @@ for var i = 0; i <= num; i++{
 
 
 #define muzzle_step
-if image_index > 1{instance_destroy()}
+time -= current_time_scale
+if image_index + image_speed*current_time_scale > 1 or time < 0{instance_destroy()}
 
 #define muzzle_draw
-draw_sprite_ext(sprite_index, image_index, x, y, 2*image_xscale, 2*image_yscale, image_angle, image_blend, 1.0);
+draw_sprite_ext(sprite_index, image_index, x, y, 2*image_xscale, image_yscale, image_angle, image_blend, 1.0);
 draw_set_blend_mode(bm_add);
-draw_sprite_ext(sprite_index, image_index, x, y, 3*image_xscale, 3*image_yscale, image_angle, image_blend, 0.3);
+draw_sprite_ext(sprite_index, image_index, x, y, 4*image_xscale, 2*image_yscale, image_angle, image_blend, 0.3);
 draw_set_blend_mode(bm_normal);
 
 

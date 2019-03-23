@@ -18,7 +18,7 @@ return 1;
 return 19;
 
 #define weapon_cost
-return 0
+return 2
 
 #define weapon_swap
 return sndSwapExplosive;
@@ -33,50 +33,48 @@ return 10;
 #define weapon_text
 return "PROTECTION AT ALL COSTS";
 
+#define step(p)
+if ammo[weapon_type()] < weapon_cost(){
+    if (p and button_pressed(index, "fire")) or (!p and race = "steroids" and button_pressed(index, "spec")){
+        projectile_hit(self, 1)
+        lasthit = [global.sprBloodAbrisLauncher,"Blood Abris#Launcher"]
+        sound_play(sndBloodHurt);
+        ammo[weapon_type()] += weapon_cost()
+    }
+}
+
 #define weapon_fire
 var _strtsize = 45-skill_get(13)*25
 var _endsize  = 30;
 sound_play_pitch(sndSniperTarget,1/accuracy+1.5)
-if ammo[4] >= 2 || infammo != 0
-{
-	if infammo = 0 ammo[4] -= 2
-}
-else
-{
-	sprite_index = spr_hurt;
-	sound_play(snd_hurt)
-	image_index = 0;
-	sound_play(sndBloodHurt);
-	my_health --;
-	lasthit = [global.sprBloodAbrisLauncher,"Blood Abris#Launcher"]
-	sound_play(snd_hurt);
-	sound_play(sndBloodLauncher)
-	sound_play(sndBloodLauncherExplo)
-}
-with mod_script_call("mod","defpack tools","create_abris",self,_strtsize,_endsize,argument0){
-	with creator weapon_post(5,12,45)
+with mod_script_call_self("mod","defpack tools","create_abris",self,_strtsize,_endsize,argument0){
 	accspeed = 1.33
 	cost = 2
 	damage = 2
     maxdamage = 6
 	payload = script_ref_create(pop)
+	ringcolour = merge_color(c_maroon, c_red, .3)
+    stripecolour = ringcolour
 }
 
 
 #define pop
-with instance_create(x,y,BloodStreak){image_angle = other.creator.gunangle}
-sound_play_pitch(sndBloodLauncher,random_range(.8,1.2))
-sound_play_pitch(sndBloodLauncherExplo,random_range(.8,1.2))
-creator.wkick = 2
+with instance_create((x + creator.x)/2, (y + creator.y)/2, BloodStreak){
+    image_angle = point_direction(x, y, other.x, other.y)
+}
+sound_play_pitch(sndBloodLauncher, random_range(.8, 1.2))
+sound_play_pitch(sndBloodLauncherExplo, random_range(.8, 1.2))
+if isplayer with creator weapon_post(5,12,45)
+var r = acc + accmin - 12
 repeat(4){
-instance_create(explo_x+lengthdir_x(acc+12,offset),explo_y+lengthdir_y(acc+12,offset),MeatExplosion);
-with instance_create(explo_x+lengthdir_x(acc+12,offset+90),explo_y+lengthdir_y(acc+12,offset+90),BloodStreak)
-{
-	image_angle = point_direction(x,y,mouse_x[other.index],mouse_y[other.index])
-}
-with instance_create(explo_x+lengthdir_x(acc+22,offset+45),explo_y+lengthdir_y(acc+22,offset+45),BloodStreak)
-{
-	image_angle = point_direction(x,y,mouse_x[other.index],mouse_y[other.index])
-}
-offset += 90
+    with instance_create(x + lengthdir_x(r, offset), y + lengthdir_y(r, offset), MeatExplosion){
+        team = other.creator.team
+    }
+    with instance_create(x + lengthdir_x(r, offset + 90), y + lengthdir_y(r, offset + 90), BloodStreak){
+    	image_angle = other.offset + 90
+    }
+    with instance_create(x + lengthdir_x(r + 10, offset + 45), y + lengthdir_y(r + 10, offset + 45), BloodStreak){
+    	image_angle = other.offset + 45
+    }
+    offset += 90
 }

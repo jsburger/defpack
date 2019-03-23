@@ -2,8 +2,8 @@
 global.sprRockletChest     = sprite_add_weapon("sprRockletChest.png", 8, 7);
 global.sprRockletChestOpen = sprite_add("sprRockletChestOpen.png", 1, 8, 7);
 
-global.sprVectorChest     = sprite_add_weapon("sprVectorChest.png", 8, 7);
-global.sprVectorChestOpen = sprite_add("sprVectorChestOpen.png", 1, 8, 7);
+global.sprVectorChest     = sprite_add_weapon("sprVectorChest.png", 9, 7);
+global.sprVectorChestOpen = sprite_add("sprVectorChestOpen.png", 1, 9, 7);
 
 global.sprZenithChest     = sprite_add_weapon("sprZenithChest.png", 8, 7);
 global.sprZenithChestOpen = sprite_add("sprZenithChestOpen.png", 1, 8, 7);
@@ -35,28 +35,46 @@ global.sprHyperChestOpen = sprite_add("sprHyperChestOpen.png", 1, 8, 7);
 global.sprAutoChest     = sprite_add_weapon("sprAutoChest.png", 8, 7);
 global.sprAutoChestOpen = sprite_add("sprAutoChestOpen.png", 1, 8, 7);
 
-global.sprToolChest     = sprite_add_weapon("sprToolChest.png", 8, 7);
-global.sprToolChestOpen = sprite_add("sprToolChestOpen.png", 1, 8, 7);
+global.sprToolChest     = sprite_add_weapon("sprToolChest.png", 10, 7);
+global.sprToolChestOpen = sprite_add("sprToolChestOpen.png", 1, 10, 7);
 
-global.sprAoEChest     = sprite_add_weapon("sprAoEChest.png", 8, 7);
-global.sprAoEChestOpen = sprite_add("sprAoEChestOpen.png", 1, 8, 7);
+global.sprAoEChest     = sprite_add_weapon("sprAoEChest.png", 9, 7);
+global.sprAoEChestOpen = sprite_add("sprAoEChestOpen.png", 1, 9, 7);
+
+global.chests = ds_map_create()
+chest_add("Ultra",   14, [wep_ultra_shovel,wep_ultra_shotgun,wep_ultra_laser_pistol,wep_ultra_revolver,wep_ultra_crossbow,wep_ultra_grenade_launcher,"ultra spam gun","ultra hand","defender","ultra gunhammer"])
+chest_add("AoE",     6,  ["buster","blaster","puncher"])
+chest_add("Rocklet", 9,  ["rocklet pistol","rocklet rifle","rocklet cannon","super rocklet cannon","rocklet minigun"])
+chest_add("Toxic",   3,  ["toxicthrower","cobra","toxic carronader",wep_toxic_bow,"heavy toxic crossbow",wep_toxic_launcher,"toxic cannon"])
+chest_add("Tool",    3,  [wep_wrench,wep_screwdriver,"chainsaw","nail gun"])
+chest_add("Combo",   6,  ["rapier","other axe","bigsword"])
+chest_add("Vector",  6,  ["vector shotgun","vector rifle","vector cannon"])
+chest_add("Regal",   5,  ["chris knife","apergig tanat","kemosabe"])
+chest_add("Auto",    6,  [wep_auto_shotgun,wep_auto_crossbow,wep_auto_grenade_shotgun,wep_heavy_auto_crossbow,"auto abris launcher","auto screwdriver","auto grenade launcher"])
+chest_add("Quartz",  10, ["quartz machinegun","quartz shotgun","quartz crossbow","quartz laser","quartz launcher"])
+chest_add("Flame",   8,  [wep_flare_gun,wep_dragon,wep_flamethrower,wep_flame_cannon,"firestorm"])
+chest_add("Blood",   9,  [wep_blood_hammer,"bone","big bone",wep_blood_launcher,wep_blood_cannon,"blood abris launcher","blood crossbow"])
+chest_add("Hyper",   9,  [wep_hyper_rifle,wep_hyper_slugger,wep_hyper_launcher,"hyper crossbow"])
+chest_add("Zenith",  13, ["herald","andromeda launcher","stopwatch","sak",/*"antiprism",*/"defender","flex","punisher","rapier"])
 
 #define step
-/*
-     // replace wep chests
-    if !instance_exists(GenCont)
-        with(WeaponChest){
-            customchest_create(x, y,choose("vector","ultra","aoe","rocklet","toxic","tool","combo","regal","quartz","flame","blood","hyper","zenith"));
-            instance_delete(id);
+     // replacing chests
+    if !instance_exists(GenCont){
+        with instances_matching(WeaponChest, "customchestcheck", null){
+            customchestcheck = 1
+            if random(100) <= 8{
+                var q = get_chests(0, GameCont.hard + array_length(instances_matching(Player, "race", "robot")))
+                if array_length(q){
+                    customchest_create(x, y, q[irandom(array_length(q) - 1)])
+                    instance_delete(self)
+                }
+            }
         }
-*/
-     // debug
-    with(Player) if button_pressed(index, "horn")
-        customchest_create(mouse_x, mouse_y,choose("zenith"));
-
+    }
+    
      // chest step
     with instances_matching(chestprop, "name", "CustomChest"){
-        if place_meeting(x, y, Player) || place_meeting(x, y, PortalShock){
+        if place_meeting(x, y, Player) || place_meeting(x, y, PortalShock) || instance_exists(BigPortal){
              // run open code
             script_execute(on_open)
 
@@ -69,178 +87,40 @@ global.sprAoEChestOpen = sprite_add("sprAoEChestOpen.png", 1, 8, 7);
         }
     }
 
+#define chest_add(Name, Hard, Weapons)
+global.chests[? Name] = {
+    name : Name,
+    spr_idle : mod_variable_get("mod", mod_current, "spr"+Name+"Chest"),
+    spr_open : mod_variable_get("mod", mod_current, "spr"+Name+"ChestOpen"),
+    weps : Weapons,
+    difficulty : Hard
+}
+
+#define get_chests(areamin, areamax)
+var q = ds_map_values(global.chests), a = [];
+with q{
+    if difficulty >= areamin and difficulty <= areamax array_push(a, name)
+}
+return a
+
 #define customchest_create(xx, yy, Type)
-     // use chest
     var o = instance_create(xx, yy, chestprop);
     with(o){
         name = "CustomChest";
-        t = Type// specifc chest type
-
-        switch t
-        {
-          case "ultra":
-          {
-            sprite_index = global.sprUltraChest;
-            spr_open = global.sprUltraChestOpen;
-            break
-          }
-          case "aoe":
-          {
-            sprite_index = global.sprAoEChest;
-            spr_open = global.sprAoEChestOpen;
-            break
-          }
-          case "rocklet":
-          {
-            sprite_index = global.sprRockletChest;
-            spr_open = global.sprRockletChestOpen;
-            break
-          }
-          case "toxic":
-          {
-            sprite_index = global.sprToxicChest;
-            spr_open = global.sprToxicChestOpen;
-            break
-          }
-          case "tool":
-          {
-            sprite_index = global.sprToolChest;
-            spr_open = global.sprToolChestOpen;
-            break
-          }
-          case "combo":
-          {
-            sprite_index = global.sprComboChest;
-            spr_open = global.sprComboChestOpen;
-            break
-          }
-          case "vector":
-          {
-            sprite_index = global.sprVectorChest;
-            spr_open = global.sprVectorChestOpen;
-            break
-          }
-          case "regal":
-          {
-            sprite_index = global.sprRegalChest;
-            spr_open = global.sprRegalChestOpen;
-            break
-          }
-          case "auto":
-          {
-            sprite_index = global.sprAutoChest;
-            spr_open = global.sprAutoChestOpen;
-            break
-          }
-          case "quartz":
-          {
-            sprite_index = global.sprQuartzChest;
-            spr_open = global.sprQuartzChestOpen;
-            break
-          }
-          case "flame":
-          {
-            sprite_index = global.sprFlameChest;
-            spr_open = global.sprFlameChestOpen;
-            break
-          }
-          case "blood":
-          {
-            sprite_index = global.sprBloodChest;
-            spr_open = global.sprBloodChestOpen;
-            break
-          }
-          case "hyper":
-          {
-            sprite_index = global.sprHyperChest;
-            spr_open = global.sprHyperChestOpen;
-            break
-          }
-          case "zenith":
-          {
-            sprite_index = global.sprZenithChest;
-            spr_open = global.sprZenithChestOpen;
-            break
-          }
-        }
+        type = Type// specifc chest type
+        var q = global.chests[? Type]
+        spr_open = q.spr_open
+        sprite_index = q.spr_idle
+        weps = q.weps
         on_open = customchest_open;
     }
     return o;
 
 #define customchest_open
-var _w = 1
+var _w = wep_screwdriver
 sound_play(sndAmmoChest);
-switch t
-{
-  case "ultra":
-  {
-    _w = choose(wep_ultra_shovel,wep_ultra_shotgun,wep_ultra_laser_pistol,wep_ultra_revolver,wep_ultra_crossbow,wep_ultra_grenade_launcher,"ultra spam gun","ultra hand","defender","ultra gunhammer")
-    break
-  }
-  case "aoe":
-  {
-    _w = choose("buster","blaster","puncher")
-    break
-  }
-  case "rocklet":
-  {
-    _w = choose("rocklet pistol","rocklet rifle","rocklet cannon","super rocklet cannon","rocklet minigun")
-    break
-  }
-  case "toxic":
-  {
-    _w = choose("toxicthrower","cobra","toxic carronader",wep_toxic_bow,"heavy toxic crossbow",wep_toxic_launcher,"toxic cannon")
-    break
-  }
-  case "tool":
-  {
-    _w = choose(wep_wrench,wep_screwdriver,"chainsaw","nail gun")
-    break
-  }
-  case "combo":
-  {
-    _w = choose("rapier","other axe","bigsword")
-    break
-  }
-  case "vector":
-  {
-    _w = choose("vector shotgun","vector rifle","vector cannon")
-    break
-  }
-  case "regal":
-  {
-    _w = choose("chris knife","apergig tanat","kemosabe")
-    break
-  }
-  case "auto":
-  {
-    _w = choose(wep_auto_shotgun,wep_auto_crossbow,wep_auto_grenade_shotgun,wep_heavy_auto_crossbow,"auto abris launcher","auto screwdriver","auto grenade launcher")
-    break
-  }
-  case "quartz":
-  {
-    _w = choose("quartz machinegun","quartz shotgun","quartz crossbow","quartz laser","quartz launcher")
-    break
-  }
-  case "flame":
-  {
-    _w = choose(wep_flare_gun,wep_dragon,wep_flamethrower,wep_flame_cannon,"firestorm")
-    break
-  }
-  case "blood":
-  {
-    _w = choose(wep_blood_hammer,"bone","big bone",wep_blood_launcher,wep_blood_cannon,"blood abris launcher","blood crossbow")
-    break
-  }
-  case "hyper":
-  {
-    _w = choose(wep_hyper_rifle,wep_hyper_slugger,wep_hyper_launcher,"hyper crossbow")
-    break
-  }
-  case "zenith":
-  {
-    _w = choose("herald","andromeda launcher","stopwatch","sak",/*"antiprism",*/"defender","flex","punisher","rapier","prism","cube gun")// """Cool""" stuff goes here
-    break
-  }
+_w = weps[irandom(array_length(weps)-1)]
+with instance_create(x,y,WepPickup){
+    wep = _w
+    if weapon_get_type(wep) != 0 ammo = 1
 }
-with instance_create(x,y,WepPickup){wep = _w}

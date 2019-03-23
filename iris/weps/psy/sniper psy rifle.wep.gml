@@ -3,7 +3,7 @@ global.sprSniperPsyRifle = sprite_add_weapon("sprites/sprSniperPsyRifle.png", 5,
 global.sprPsyBullet 		 = sprite_add("sprites/projectiles/sprPsyMuzzle.png", 1, 8, 8);
 global.sprPsyBulletHit   = sprite_add("sprites/projectiles/sprPsyBulletHit.png", 4, 8, 8);
 global.epic = 1
-mod_script_call_nc("mod","defpermissions","permission_register","weapon",mod_current,"epic","Homing Psy Sights")
+mod_script_call_nc("mod","defpermissions","permission_register","weapon",mod_current,"epic","Psy Sniper Sight")
 
 #macro lasercolor 14074
 
@@ -26,18 +26,28 @@ return 1;
 return 20;
 
 #define weapon_cost
-return 20;
+return 12;
 
 #define weapon_swap
 return sndSwapMachinegun;
+
+#define drawthing(x, y, l, ang)
+var xx = lengthdir_x(l, ang), yy = lengthdir_y(l, ang)
+draw_vertex(x + xx, y + yy)
+draw_vertex(x - xx, y - yy);
+
 
 #define weapon_laser_sight
 with instances_matching(instances_matching(CustomObject, "name", "sniper psy charge"),"creator",self){
     with other
     if global.epic{
+        draw_set_color(lasercolor)
+        draw_primitive_begin(pr_trianglestrip)
+        var l = .5;
+        drawthing(x, y, l, gunangle + 90)
         with instance_create(x+lengthdir_x(10,gunangle),y+lengthdir_y(10,gunangle),CustomObject){
             move_contact_solid(other.gunangle,18)
-            draw_line_width_color(other.x, other.y, x, y, 1, lasercolor, lasercolor)
+            drawthing(x, y, l, other.gunangle + 90)
             typ = 1
             sprite_index = mskBullet2
             image_angle = other.gunangle
@@ -71,9 +81,10 @@ with instances_matching(instances_matching(CustomObject, "name", "sniper psy cha
                         slashes = instances_matching_ne([EnergySlash,Slash,EnemySlash,EnergyHammerSlash,BloodSlash,GuitarSlash], "team", team),
                         shanks = instances_matching_ne([Shank,EnergyShank], "team", team),
                         customslashes = instances_matching_ne(CustomSlash, "team", team);
+                    drawthing(x, y, l, olddirection + 90)
+                    olddirection = direction
             	}
-        	    draw_line_width_color(x, y, _x, _y, 1, lasercolor, lasercolor)
-
+        	    
             	var q = instance_nearest_matching_ne(x,y,hitme,"team",team);
             	var reset = 1;
                 var cap = 3*hyperspeed;
@@ -90,14 +101,25 @@ with instances_matching(instances_matching(CustomObject, "name", "sniper psy cha
             	if reset{
             	    direction -= clamp(angle_difference(direction,bangle),-cap,cap)
             	}
+            	if direction != olddirection{
+            	    drawthing(x, y, l, direction + 90)
+            	}
 
-            	if place_meeting(x,y,Wall){instance_destroy()}
+            	if place_meeting(x, y, Wall){
+            	    var e = mod_script_call_nc("mod", "defpack tools", "collision_line_first", x, y, x + lengthdir_x(hyperspeed, direction), y + lengthdir_y(hyperspeed, direction), Wall, 0, 0)
+            	    drawthing(e[0], e[1], l, direction + 90)
+            	    instance_destroy()
+            	}
             }
             while instance_exists(self) and dir < 500
-            if instance_exists(self)
+            if instance_exists(self){
+                drawthing(x, y, l, direction + 90)
                 instance_destroy()
+            }
 
         }
+        draw_primitive_end()
+        draw_set_color(c_white)
         return false;
     }
     return true;
@@ -116,135 +138,54 @@ return -1;
 #define weapon_text
 return choose("insanity");
 
+
 #define weapon_fire
-
-with instance_create(x,y,CustomObject)
-{
-	name    = "sniper psy charge"
-	creator = other
-	charge  = 0
-	index = other.index
-	acc     = other.accuracy
-	charged = 1
-	holdtime = 5 * 30
-	depth = TopCont.depth
-	index = creator.index
-	undef = view_pan_factor[index]
-	on_step 	 = snipercharge_step
-	on_cleanup = snipercharge_destroy
-	on_destroy = snipercharge_destroy
-	btn = other.specfiring ? "spec" : "fire"
+with mod_script_call_self("mod", "defpack tools", "create_sniper_charge", x, y){
+    name = "sniper psy charge"
+    creator = other
+    team = other.team
+    index = other.index
+    cost = weapon_cost()
+    on_fire = script_ref_create(psy_rifle_fire)
+    spr_flash = global.sprPsyBullet
 }
 
-#define snipercharge_step
-var timescale = (mod_variable_get("weapon", "stopwatch", "slowed") == 1) ? 30/room_speed : current_time_scale;
-if !instance_exists(creator){instance_destroy();exit}
-if button_check(index,"swap"){creator.ammo[1] = min(creator.ammo[1] + weapon_cost(), creator.typ_amax[1]);instance_destroy();exit}
-if btn = "fire" creator.reload = weapon_get_load(creator.wep)
-if btn = "spec"{
-    if creator.race = "steroids"
-        creator.breload = weapon_get_load(creator.bwep)
-    else
-        creator.reload = max(weapon_get_load(creator.wep) * array_length_1d(instances_matching(instances_matching(instances_matching(CustomObject, "name", name),"creator",creator),"btn",btn)), creator.reload)
-}
-charge += timescale * 3.2 / acc
-if charge > 100
-{
-	charge = 100
-	if charged > 0
-	{
-		sound_play_pitch(sndSniperTarget,1.2)
-    sound_play_pitch(sndSnowTankCooldown,8)
-    sound_play_pitchvol(sndShielderDeflect,4,.5)
-    sound_play_pitchvol(sndBigCursedChest,20,.1)
-    sound_play_pitchvol(sndCursedChest,12,.2)
-    with instance_create(creator.x+lengthdir_x(12,creator.gunangle),creator.y+lengthdir_y(12,creator.gunangle),ChickenB)
-    {
-        creator = other.creator
-        image_xscale = .5
-        image_yscale = .5
-        with instance_create(x,y,ChickenB)
-        {
-            creator = other.creator
-            image_speed = .75
-        };
-    };
+#define psy_rifle_fire
+var _ptch = random_range(-.5,.5)
+sound_play_pitch(sndHeavyRevoler,.7-_ptch/3)
+sound_play_pitch(sndCursedPickup,.6)
+sound_play_pitch(sndSniperFire,random_range(.6,.8))
+sound_play_pitch(sndHeavySlugger,1.3+_ptch/2)
+var _c = charge, _cc = charge/maxcharge;
+with creator{
+	weapon_post(12,2,158)
+	motion_add(gunangle -180,_c / 20)
+	sleep(120)
+	with instance_create(x+lengthdir_x(10,gunangle),y+lengthdir_y(10,gunangle),CustomProjectile){
+		move_contact_solid(other.gunangle,18)
+		typ = 1
+		creator = other
+		team  = other.team
+		image_yscale = .5
+		trailscale = 1 + (_c/110)
+		hyperspeed = 8
+		sprite_index = mskNothing
+		mask_index = mskBullet2
+		force = 7
+		damage = 12 + round(28*(_c/100))
+		lasthit = -4
+		dir = 0
+		recycleset = 0
+		image_angle = other.gunangle
+		direction = other.gunangle
+		bangle = direction
+		on_end_step = sniper_step
+		on_destroy  = sniper_destroy
+		on_hit 	    = void
 	}
-	charged = 0
 }
-if charged = 0
-{
-	if holdtime >= 60 {var _m = 5}else{var _m = 3}
-    if current_frame mod _m < current_time_scale creator.gunshine = 1
-	with creator with instance_create(x,y,Dust){
-		motion_add(random(360),random_range(2,3))
-	}
-	holdtime -= timescale
-}
-view_pan_factor[index] = 2.1+charged/10
-sound_play_pitchvol(sndFlameCannonLoop,10-charge/10,1)
-sound_play_gun(sndFootOrgSand4,999999999999999999999999999999999999999999999999,.00001)
-x = mouse_x[index]
-y = mouse_y[index]
-for (var i=0; i<maxp; i++){player_set_show_cursor(index,i,0)}
-if button_check(index, btn) = false || holdtime <= 0
-{
-    sound_stop(sndFlameCannonLoop)
-	sound_play_gun(sndFootOrgSand4,999999999999999999999999999999999999999999999999,1)
-	sound_pitch(sndNoSelect,1)
-	var _ptch = random_range(-.5,.5)
-	sound_play_pitch(sndHeavyRevoler,.7-_ptch/3)
-	sound_play_pitch(sndCursedPickup,.6)
-	sound_play_pitch(sndSniperFire,random_range(.6,.8))
-	sound_play_pitch(sndHeavySlugger,1.3+_ptch/2)
-	var _c = charge
-	with creator
-	{
-		weapon_post(12,2,158)
-		motion_add(gunangle -180,_c / 20)
-		with instance_create(x+lengthdir_x(10,gunangle),y+lengthdir_y(10,gunangle),CustomProjectile)
-		{
-				move_contact_solid(other.gunangle,18)
-				typ = 1
-				creator = other
-				index = other.index
-				team  = other.team
-				image_yscale = .5
-				trailscale = 1 + (_c/110)
-				hyperspeed = 8
-				sprite_index = mskNothing
-				mask_index = mskBullet2
-				force = 7
-				damage = 12 + round(28*(_c/100))
-				lasthit = -4
-				dir = 0
-				dd = 0
-				recycleset = 0
-				image_angle = other.gunangle
-				direction = other.gunangle
-				bangle = direction
-				on_end_step 	 = sniper_step
-				on_destroy = sniper_destroy
-				on_hit 		 = void
-		}
-		with instance_create(x,y,CustomProjectile)
-		{
-			move_contact_solid(other.gunangle,24)
-			depth = -1
-			sprite_index = global.sprPsyBullet
-      mask_index   = mskNone
-			image_speed = .4
-			on_step = muzzle_anim
-			on_draw = muzzle_draw
-		}
-	}
-	sleep(charge)
-	instance_destroy()
-}
+sleep(charge*3)
 
-#define snipercharge_destroy
-view_pan_factor[index] = undefined
-for (var i=0; i<maxp; i++){player_set_show_cursor(index,i,1)}
 
 #define void
 
@@ -308,10 +249,10 @@ do
                 view_shake_at(x,y,12)
                 sleep(20)
                 if skill_get(16) = true && recycleset < weapon_cost() and !irandom(1){
-				    recycleset += 3;
+				    recycleset += 2;
 				    instance_create(x,y,RecycleGland);
 				    sound_play(sndRecGlandProc);
-				    creator.ammo[1] = min(creator.ammo[1] + 3, creator.typ_amax[1])
+				    creator.ammo[1] = min(creator.ammo[1] + 2, creator.typ_amax[1])
 			    }
 			}
 		}
@@ -326,7 +267,6 @@ for var i = 0; i < a; i++{
         image_yscale *= i/a
     }
 }
-
 
 
 #define instance_nearest_matching_ne(_x,_y,obj,varname,value)
@@ -350,11 +290,3 @@ return found
 #define sniper_destroy
 with instance_create(x,y,BulletHit) sprite_index = global.sprPsyBulletHit
 
-#define muzzle_anim
-instance_destroy()
-
-#define muzzle_draw
-draw_sprite_ext(sprite_index, image_index, x, y, 2*image_xscale, 2*image_yscale, image_angle, image_blend, 1.0);
-draw_set_blend_mode(bm_add);
-draw_sprite_ext(sprite_index, image_index, x, y, 3*image_xscale, 3*image_yscale, image_angle, image_blend, 0.3);
-draw_set_blend_mode(bm_normal);

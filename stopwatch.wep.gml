@@ -15,12 +15,7 @@ while 1 {
 		var p = global.user
 		if instance_exists(p){
             if instance_number(BoltTrail) > 300{
-                var q = instances_matching(BoltTrail,"",null)
-                array_sort(q, 1)
-                var r = -1
-                repeat(20){
-                    instance_delete(q[(++r)])
-                }
+                with BoltTrail image_yscale -= .2*t
             }
     		with instances_matching(Player,"team",p.team){
     		    event_perform(ev_step,ev_step_begin)
@@ -34,37 +29,15 @@ while 1 {
     			image_index += image_speed * t;
     		    event_perform(ev_step,ev_step_end)
     		    if !instance_exists(self) continue
-    			/*if reload > 0{
-    				reload -= t
-    				if skill_get(mut_stress) reload -= (1 - my_health/maxhealth) * t
-    				if race = "venuz" {
-    					reload -= .2 * t
-    					if ultra_get(race,1) reload -= .4 * t
-    				}
-    			}
-    			if race = "steroids" && breload > 0 breload -= t
-    			var _moveKeys = ["east", "nort", "west", "sout"];
-    				for(var i = 0; i < array_length(_moveKeys); i++){
-    					if(button_check(index, _moveKeys[i])){
-    						var d = (i * 90);
-                            motion_add(d,t)
-    					}
-    				}
-
-    			if roll{
-    				angle += 40*t
-    			}
-    			if infammo > 0 infammo -= t
-    			*/
     			with script_bind_draw(vignette,-13){
     				index = other.index
     				x = other.x
     				y = other.y
     			}
-    			var ang = gunangle;
-    			gunangle = point_direction(view_xview[index], view_yview[index], x-game_width/2, y-game_height/2)
-    			weapon_post(0,floor(point_distance(view_xview[index], view_yview[index], x-game_width/2, y-game_height/2)/2),0)
-    			gunangle = ang
+     			var ang = gunangle;
+     			gunangle = point_direction(view_xview[index], view_yview[index], x-game_width/2, y-game_height/2)
+     			weapon_post(0,floor(point_distance(view_xview[index], view_yview[index], x-game_width/2, y-game_height/2)/3),0)
+     			gunangle = ang
     			var spr = weapon_get_sprt(wep)
     			var bspr = weapon_get_sprt(bwep)
     			with(instance_create(x, y, CustomObject)){
@@ -99,7 +72,7 @@ while 1 {
         			if alarm1 < 0 event_perform(ev_alarm,1)
         			if alarm2 < 0 event_perform(ev_alarm,2)
         			image_index += image_speed * t;
-        			if image_index >= image_number && sprite_index = sprAllyAppear {spr_idle = sprAllyIdle; image_index = 0}
+        			if image_index >= image_number event_perform(ev_other, ev_animation_end)
         		    event_perform(ev_step,ev_step_end)
         		}
         		with PopupText {
@@ -212,7 +185,7 @@ else{
 	global.slowed = 1
 }
 sound_play(sndClick)
-with script_bind_draw(circle,depth){
+with script_bind_draw(circle,-10){
 	x = other.x
 	y = other.y
 	creator = other
@@ -229,7 +202,7 @@ with creator{
 	other.x = x
 	other.y = y
 }
-draw_arc(x, y, 0, radius, radius + 12, 1, .5, 360, 12, c_lime, 1, 1)
+draw_arc(x, y, 0, radius, radius + 10, 1, .5, 360, 36, c_lime, 1, 1)
 /*for (var i = 0; i<360;i += 360/16){
 	draw_line_width_color(x+lengthdir_x(radius,i), y+lengthdir_y(radius/1.5,i), x+lengthdir_x(radius,i+360/16), y+lengthdir_y(radius/1.5,i+360/16), 8, c_lime, c_lime)
 }*/

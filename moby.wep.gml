@@ -38,7 +38,8 @@ return {
     maxcharge : maxchrg - 1,
     charge : 0,
     style : 0,
-    width : 12
+    width : 12,
+    power : 1
 }
 
 #define weapon_fire(w)
@@ -50,6 +51,7 @@ if !is_object(w){
         canbloom : 1,
         defcharge : charge_base()
     }
+    wep = w
 }
 else{
     var q = lq_defget(w, "charge", 1)
@@ -58,6 +60,7 @@ else{
 }
 
 with instance_create(x,y,Shell){motion_add(other.gunangle+other.right*100+random(80)-40,3+random(3))}
+
 with create_bullet(x+lengthdir_x(20,gunangle),y+ lengthdir_y(20,gunangle)){
 	on_destroy = shell_destroy
 	direction = other.gunangle + random_range(-20,20)*other.accuracy*sqrt(w.charge)/6;
@@ -65,8 +68,8 @@ with create_bullet(x+lengthdir_x(20,gunangle),y+ lengthdir_y(20,gunangle)){
 	image_angle = direction;
 	creator = other
 	team = other.team
-	flashang = other.gunangle
 }
+
 if lq_defget(w, "canbloom", 1){
     with instance_create(x+lengthdir_x(20,gunangle),y+ lengthdir_y(20,gunangle),CustomObject){
     	depth = -1
@@ -84,7 +87,6 @@ if lq_defget(w, "canbloom", 1){
     sound_play_gun(sndClickBack, 0, 1 - (w.charge/(maxchrg*1.5)))
     sound_stop(sndClickBack)
 }
-wep = w
 
 #define step(w)
 if w && is_object(wep) && wep.wep = mod_current goodstep(wep)

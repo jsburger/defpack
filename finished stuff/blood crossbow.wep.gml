@@ -20,7 +20,7 @@ return true;
 return 21;
 
 #define weapon_cost
-return 0;
+return 1;
 
 #define weapon_swap
 return sndSwapBow;
@@ -31,28 +31,23 @@ return 10;
 #define weapon_text
 return choose("BONE LAUNCHER","THE BONE ZONE");
 
-#define weapon_fire
-if infammo = 0{
-	if ammo[3] - 1 < 0{
-		ammo[3] = 0;
-		sprite_index = spr_hurt;
-		image_index = 0;
-		my_health --;
-		sound_play(sndBloodHurt);
-		lasthit = [global.sprBloodCrossbow,"Blood Crossbow"]
-		sound_play(snd_hurt);
-	}
-	else
-	{
-		ammo[3] -= 1
-	}
+#define step(p)
+if ammo[weapon_type()] < weapon_cost(){
+    if (p and button_pressed(index, "fire")) or (!p and race = "steroids" and button_pressed(index, "spec")){
+        projectile_hit(self, 1)
+        lasthit = [global.sprBloodCrossbow,"Blood Crossbow"]
+        sound_play(sndBloodHurt);
+        ammo[weapon_type()] += weapon_cost()
+    }
 }
+
+
+#define weapon_fire
 var _p = random_range(.8,1.2)
 sound_play_pitchvol(sndHeavyCrossbow,.8*_p,.6)
 sound_play_pitchvol(sndBloodHammer,1.2*_p,.6)
 weapon_post(5,-40,0)
-with instance_create(x,y,CustomProjectile)
-{
+with instance_create(x,y,CustomProjectile){
 	team = other.team
 	check = 0
 	creator = other

@@ -24,7 +24,7 @@ return false;
 return 22;
 
 #define weapon_cost
-return 1;
+return 0;
 
 #define weapon_swap
 return sndSwapExplosive;

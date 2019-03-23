@@ -18,8 +18,8 @@ global.sprammom          = sprite_add("sprites/sprSAKammoMini.png",9,0,0)
 global.sprbodyShell      = sprite_add("sprites/sprSAKbodyShell.png",6,0,0)
 global.sprbodySlug       = sprite_add("sprites/sprSAKbodySlug.png",6,0,0)
 global.sprbodym          = sprite_add("sprites/sprSAKbodyMini.png",7,0,0)
-global.sprmods  	       = sprite_add("sprites/sprSAKmods.png",10,0,0)
-global.sprmodsm  	       = sprite_add("sprites/sprSAKmodsm.png",11,0,0)
+global.sprmods  	     = sprite_add("sprites/sprSAKmods.png",10,0,0)
+global.sprmodsm  	     = sprite_add("sprites/sprSAKmodsm.png",11,0,0)
 global.sprmodsShotgun    = sprite_add("sprites/sprSAKmodsShotgun.png",10,0,0)
 global.sprmodsPopGun     = sprite_add("sprites/sprSAKmodsPop.png",10,0,0)
 global.sprmodsEraser     = sprite_add("sprites/sprSAKmodsEraser.png",10,0,0)
@@ -793,14 +793,18 @@ switch thing{
 
 #define flak(p)
 with instance_create(x,y,CustomProjectile){
-	mask_index = 835
+	mask_index = mskFlakBullet
 	if string_count(p, "slug") mask_index = mskSuperFlakBullet
 	var str = p + " flak"
 	sprite_index = global.flakmap[? str]
 	spr_dead = global.flakmap[? str + " hit"]
 	on_destroy = flakpop
 	on_step = flakstep
-	on_draw = flakdraw
+	defbloom = {
+	    xscale: 2,
+	    yscale: 2,
+	    alpha: .2
+	}
 	with proj(p){
 	    other.damage = damage * 4
 	    instance_delete(self)
@@ -814,13 +818,17 @@ with instance_create(x,y,CustomProjectile){
 
 #define superflak(p)
 with instance_create(x,y,CustomProjectile){
-	mask_index = 835
+	mask_index = mskSuperFlakBullet
 	var str = "super " + p + " flak"
 	sprite_index = global.flakmap[? str]
 	spr_dead = global.flakmap[? str + " hit"]
 	on_destroy = superflakpop
 	on_step = superflakstep
-	on_draw = flakdraw
+	defbloom = {
+	    xscale: 2,
+	    yscale: 2,
+	    alpha: .2
+	}
     with proj(p){
 	    other.damage = damage * 15
 	    instance_delete(self)
@@ -915,10 +923,10 @@ with instance_create(x,y,CustomProjectile) {
 	dirfac = random(360)
 	payload = p
 	hyper = 0
-	on_hit = script_ref_create(cannon_hit)
-	on_wall = script_ref_create(cannon_wall)
-	on_step = script_ref_create(cannon_step)
-	on_draw = script_ref_create(cannon_draw)
+	on_hit  = cannon_hit
+	on_wall = cannon_wall
+	on_step = cannon_step
+	on_draw = cannon_draw
 	on_anim = cannon_anim
 	on_shoot = script_ref_create(shotfire)
 
@@ -995,8 +1003,7 @@ y = yprevious
 projectile_hit_push(other,damage,force)
 script_ref_call(on_shoot,payload)
 timer -= 1;
-if timer <= 0
-{
+if timer <= 0{
 	instance_destroy()
 }
 
@@ -1018,15 +1025,13 @@ repeat(5){
 }
 
 #define cannon_step
-image_angle+=(6+speed*3)*current_time_scale
+image_angle += (6 + speed*3) * current_time_scale
 time -= current_time_scale
 
-//if image_index >= 2.5{image_index = 1}
-
-image_xscale = clamp(image_xscale + (random_range(-.05,.05)*current_time_scale),1.2,1.4)
+image_xscale = clamp(image_xscale + (random_range(-.05, .05) * current_time_scale), 1.2, 1.4)
 image_yscale = image_xscale
 if timer = 4 ftimer = 3
-speed /= 1 + (.1*current_time_scale)
+speed /= power(1.1, current_time_scale)
 if speed <= 1 {canshoot = 1; speed = 0}
 
 while time <= 0{
@@ -1034,8 +1039,7 @@ while time <= 0{
     if canshoot{
         script_ref_call(on_shoot,payload)
 		timer -= 1;
-		if timer <= 0
-		{
+		if timer <= 0{
 			instance_destroy()
 			exit
 		}
@@ -1096,7 +1100,7 @@ return choose("Gunlocker, eat your heart out","essence of shell")
 
 #define birdspread
 with instances_matching_ne(projectile,"birdspeed",null){
-	direction+=birdspeed * current_time_scale * speed
+	direction += birdspeed * current_time_scale * speed
 	image_angle = direction
 }
 
@@ -1137,9 +1141,10 @@ if q && is_object(wep) && wep.wep = mod_current && !wep.done{
 
 #define stats(w)
 var sts = global.stats;
-w.load = floor(sts[? w.info[2]][1] * sts[? w.info[1]][1] * sts[? w.info[3]][1])
-w.ammo = floor(sts[? w.info[2]][0] * sts[? w.info[1]][0] * sts[? w.info[3]][0])
-w.rads = floor(sts[? w.info[1]][3] * sts[? w.info[2]][0])
+w.load = max(1, floor(sts[? w.info[2]][1] * sts[? w.info[1]][1] * sts[? w.info[3]][1]))
+w.ammo = max(1, floor(sts[? w.info[2]][0] * sts[? w.info[1]][0] * sts[? w.info[3]][0]))
+var radbase = sts[? w.info[1]][3]
+if radbase > 0 w.rads = max(1, floor(radbase * sts[? w.info[2]][0] * sts[? w.info[3]][0]))
 for (var i = 1; i<= 3; i++){
 	array_push(w.sounds,sts[? w.info[i]][2])
 	if mod_script_exists("weapon", mod_current, "take_"+string_replace(w.info[i]," ","_")) mod_script_call("weapon", mod_current, "take_"+string_replace(w.info[i]," ","_"),w)
@@ -1156,7 +1161,7 @@ with player_find(index){
 	var tex = global.textmap;
 	var cho = global.choicemap;
 	var sts = global.stats;
-	var width = array_length_1d(cho[? w.info[w.phase]]);
+	var width = array_length(cho[? w.info[w.phase]]);
 	var height = 50;
 	var _x 		= view_xview[index]+game_width/2 - width*gx/2;
 	var _X 		= view_xview[index]+game_width/2 + width*gx/2-3;
@@ -1250,20 +1255,17 @@ with player_find(index){
 		}
 		if point_in_rectangle(mouse_x[index], mouse_y[index], x1, y1, x1 + 18, y1 + 18) || push
 		{
-			if !button_check(index, "fire")
-			{
+			if !button_check(index, "fire"){
 				draw_sprite(_btn,i,x1,y1-1)
 			}
-			else
-			{
+			else{
 				draw_sprite_ext(_btn,i,x1,y1,1,1,0,c_ltgray,1)
 			}
 
 			var access = cho[? w.info[w.phase]][i]
 
 			var p = ""
-			switch access
-			{
+			switch access{
 				case "shell"      :case "slug"    :case "heavy slug": p = `@(color:${merge_colour(c_yellow,c_orange,.5)})` break;
 				case "flame shell": p = `@(color:${merge_colour(c_red,c_orange,.3)})` break;
 				case "ultra shell": p = `@(color:${merge_colour(c_yellow,c_lime,.7)})` break;
@@ -1275,22 +1277,24 @@ with player_find(index){
 
 			draw_set_font(fntSmall)
 
-            var rel = sts[? access][1]
+            var rel  = sts[? access][1]
             var cost = sts[? access][0]
             for var o = w.phase; o > 0; o--{
                 rel *= sts[? w.info[o]][1]
                 cost *= sts[? w.info[o]][0]
             }
             var t = tex[? access]
-            t += "#@sReload:@w " + string(w.phase = 0 ? rel : floor(rel))
-            t += "#@sCost:@w " + string(floor(cost))
+            t += "#@sReload:@w " + string(w.phase = 0 ? rel : max(1, floor(rel)))
+            t += "#@sCost:@w " + string(w.phase = 0 ? cost : max(1, floor(cost)))
+            var ammo = w.phase == 0 ? access : w.info[1]
+            var rad = max(1, floor(sts[? ammo][3] * cost/sts[? ammo][0]))
+            if rad > 1 t += "#@sRads:@w " + string(rad)
 
             draw_text_nt(_x+1, y2+16, t)
 
 			draw_set_font(fntM)
 
-			if button_released(index, "fire") || push
-			{
+			if button_released(index, "fire") || push{
 				weapon_post(-2,8,0)
 				sleep(9)
 				repeat(5) instance_create(x+random_range(-5,5),y+random_range(-5,5),Dust)
@@ -1299,10 +1303,8 @@ with player_find(index){
 				w.info[++w.phase] = access
 				w.numbers[w.phase-1] = i
 				sound_play(sndClick)
-				if w.phase = 3
-				{
-					with instance_create(x,y,Shell)
-					{
+				if w.phase = 3{
+					with instance_create(x,y,Shell){
 						image_speed = 0
 						sprite_index = global.boxempty
 						image_angle = random(360)
@@ -1319,8 +1321,7 @@ with player_find(index){
 				}
 			}
 		}
-		else
-		{
+		else{
 			draw_sprite_ext(_btn,i,x1,y1,1,1,0,c_gray,1)
 		}
 	}
@@ -1334,7 +1335,7 @@ w.sprite = global.gunmap[? w.name]
 var w = get_blank()
 var cho = global.choicemap;
 for (var i = 0; i< 3; i+=0){
-	var n = irandom(array_length_1d(cho[? w.info[i]]) -1);
+	var n = irandom(array_length(cho[? w.info[i]]) -1);
 	w.numbers[i] = n
 	w.info[++i] = cho[? w.info[i-1]][n]
 }

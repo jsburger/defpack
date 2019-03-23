@@ -23,7 +23,7 @@ return 43;
 return 12;
 
 #define weapon_iris
-return "x sniper rifle"
+return "sniper x rifle"
 
 #define weapon_swap
 return sndSwapMachinegun;

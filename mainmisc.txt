@@ -34,6 +34,7 @@
 
 /loadmod defpack tools/defpack tools
 /loadmod defpack tools 2
+/loadmod sprites/chests/chest
 
 ///OTHER///
 /loadwep finished stuff/defender

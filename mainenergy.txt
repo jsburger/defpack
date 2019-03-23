@@ -35,7 +35,7 @@
 /loadwep lightning wheel
 /loadwep beamer
 /loadwep ionizer
-/loadwep cube gun
+///loadwep cube gun
 /loadwep stopwatch
 
 /load mainmisc

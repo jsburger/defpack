@@ -16,7 +16,7 @@ return global.sprQuartzMachinegun;
 return 1;
 
 #define weapon_cost
-return 1;
+return 0;
 
 #define weapon_area
 return 13;
@@ -53,8 +53,7 @@ with instance_create(x,y,CustomProjectile)
     damage = 6
     typ = 1
     image_speed = 1
-    recycle_amount = 1
-    
+
     defbloom = {
         xscale : 2,
         yscale : 2,
@@ -81,14 +80,12 @@ view_shake_at(x,y,2)
 sleep(1)
 
 #define quartzbullet_hit
-if projectile_canhit_melee(other) = true || lasthit != other
-{
-  sleep(5)
-  view_shake_at(x,y,6)
-  projectile_hit(other,damage,force,direction)
-  pierce--
-  lasthit = other
-  recycle_amount = 0
+if projectile_canhit_melee(other) = true || lasthit != other{
+    sleep(5)
+    view_shake_at(x,y,6)
+    projectile_hit(other,damage,force,direction)
+    pierce--
+    lasthit = other
 }
 if pierce < 0{instance_destroy()}
 

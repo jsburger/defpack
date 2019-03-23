@@ -16,7 +16,7 @@ return global.sprQuartzShotgun;
 return 2;
 
 #define weapon_cost
-return 1;
+return 0;
 
 #define weapon_area
 return 13;
@@ -44,8 +44,7 @@ weapon_post(7,30,25)
 sound_play_pitch(sndSawedOffShotgun,random_range(1.2,1.4))
 sound_play_pitch(sndSlugger,random_range(.7,.8))
 sound_play_pitch(sndLaserCrystalHit,random_range(1.4,1.7))
-repeat(5) with instance_create(x,y,CustomProjectile)
-{
+repeat(5) with instance_create(x,y,CustomProjectile){
     name = "Quartz Shell"
     sprite_index = global.sprQuartzBullet2
     mask_index   = mskBullet2

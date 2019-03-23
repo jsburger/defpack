@@ -8,7 +8,7 @@ return "QUARTZ LASER"
 #define weapon_type
 return 5
 #define weapon_cost
-return 1
+return 0
 #define weapon_area
 return 15
 #define weapon_load

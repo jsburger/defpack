@@ -107,7 +107,6 @@ savepalette()
 file_unload("data/defpermissions.mod/palettes.txt")
 file_unload("data/defpermissions.mod/defconfig.txt")
 
-#macro labellength 18
 
 #define permission_register(type,name,variable,desc)
 while !file_exists("data/defpermissions.mod/defconfig.txt") {wait(0)}
@@ -229,6 +228,50 @@ draw_roundrect_color(x1,y1,x2,y2,color,color,0)
 draw_set_color(col)
 draw_text_shadow(x,y,str)
 draw_set_color(c_white)
+
+#macro scroll_value (current_frame/3)
+
+#define draw_text_s(x, y, str, col, alpha, shadow, scroll, scroll_len)
+var w = string_width(str)
+if w > scroll_len{
+    if !scroll{
+        var n = 0, s = "", l = string_length(str), m = 0
+        while string_width(s) < scroll_len and ++m < 20{
+            s = string_delete(str, ++n, l) + ".."
+        }
+        return draw_text_s(x, y, s, col, alpha, shadow, 0, string_width(s))
+    }
+    return draw_text_scrolling_2(x, y, str + "  ", col, alpha, shadow, scroll_len, scroll_value mod scroll_len)
+}
+if shadow return draw_text_c(x, y, str, col)
+return draw_text_color(x, y, str, col, col, col, col, alpha)
+
+#define draw_text_scrolling_2(x,y,str,col,alpha,shadow,len,scroll)
+var w = string_width(str) + shadow, h = string_height(str) + shadow, ha = draw_get_halign(), va = draw_get_valign();
+draw_set_halign(0)
+draw_set_valign(0)
+
+var sf = surface_create(w, h)
+surface_set_target(sf)
+draw_clear_alpha(0, 0)
+
+if shadow draw_text_shadow(-view_xview_nonsync, -view_yview_nonsync, str)
+else draw_text(-view_xview_nonsync, -view_yview_nonsync, str)
+
+surface_reset_target()
+draw_set_halign(ha)
+draw_set_valign(va)
+
+var n = scroll/len * w;
+x += (-len/2 * ha)
+y += ((h - shadow)/2 * va)
+draw_surface_part_ext(sf, n, 0, len, h, x, y, 1, 1, col, alpha)
+var _x = max(len, w) - n
+if _x < len{
+    draw_surface_part_ext(sf, 0, 0, len - _x, h, x + _x, y, 1, 1, col, alpha)
+}
+
+surface_destroy(sf)
 
 #define draw_text_scrolling(x,y,str,col,alpha,shadow,len,scroll)
 var l = string_length(str);
@@ -406,7 +449,7 @@ for (var i = 0; i < maxp; i++) if player_is_active(i){
         var mouse = point_in_rectangle(mousex,mousey,copyx,copyy,copyx+copyw,copyy+copyh)
         draw_rectangle_c(copyx+6,copyy+1,copyx+copyw+1,copyy+copyh+1,c_black)
         draw_rectangle_c(copyx+5,copyy,copyx+copyw,copyy+copyh,mouse ? p.palettehighlight : p.palettebutton)
-        //draw_rectangle_co(copyx,copyy,copyx+copyw,copyy+copyh,c_black)
+        
         draw_text_c(copyx + 8, copyy-1, "copy", p.textcolor)
 
         if mouse and released{
@@ -421,13 +464,10 @@ for (var i = 0; i < maxp; i++) if player_is_active(i){
          }
         draw_rectangle_c(copyx+6,copyy + copyh + 3,copyx+copyw+1,copyy+copyh*2 + 3,c_black)
         draw_rectangle_c(copyx+5,copyy + copyh + 2,copyx+copyw,copyy+copyh*2 + 2,mouse ? p.palettehighlight : p.palettebutton)
-        //draw_rectangle_co(copyx,copyy + copyh + 2,copyx+copyw,copyy+copyh*2 + 2,c_black)
         draw_text_c(copyx + 6, copyy + copyh + 1, "paste", p.textcolor)
 
         draw_rectangle_c(copyx,copyy+1, copyx - 8,copyy + 2*copyh + 3, c_black)
         draw_rectangle_c(copyx - 1,copyy, copyx - 9,copyy + 2*copyh + 2, edit.copy)
-        //draw_rectangle_co(copyx - 1 ,copyy, copyx - 9,copyy + 2 * copyh + 2, 0)
-
 
         var color = edit.color
 
@@ -452,7 +492,6 @@ for (var i = 0; i < maxp; i++) if player_is_active(i){
 
         draw_rectangle_c(pmx - pmw + 4 ,copyy + 1, pmx - pmw + 10,copyy + 2*copyh + 3, c_black)
         draw_rectangle_c(pmx - pmw + 3 ,copyy, pmx - pmw + 9,copyy + 2*copyh + 2, edit.color)
-        //draw_rectangle_co(pmx - pmw + 3 ,copyy, pmx - pmw + 9,copyy + 2*copyh + 2, 0)
 
 
         var tleft = pmx - pmw*2 - 5, tright = pmx - pmw - 2
@@ -468,7 +507,6 @@ for (var i = 0; i < maxp; i++) if player_is_active(i){
             draw_rectangle_c(tleft - 8, ty, tright, ty + theight - tgap + 1, c_black)
             draw_rectangle_c(tright, ty, tleft-4, ty + theight - tgap, q = moused || edit.selected = q ? p.palettehighlight : p.palettebutton)
             draw_rectangle_c(tleft - 9, ty, tleft - 5, ty + theight - tgap, lq_get_value(p,q))
-            //draw_rectangle_co(tleft - 4, ty, tleft - 1, ty + theight - tgap, 0)
             draw_text_c(tleft, ty - 3, lq_get_key(p,q), c_white)
             if q = moused and released{
                 click(1)
@@ -498,7 +536,6 @@ for (var i = 0; i < maxp; i++) if player_is_active(i){
                     var xcol = (mouse and mousex < sleft - 2) ? c_white : c_ltgray
                     draw_sprite_ext(spr,0,sleft-11,sy +2 + sheight/2,1,1,0,c_black,1)
                     draw_sprite_ext(spr,0,sleft-12,sy +1 + sheight/2,1,1,0,xcol,1)
-                    //draw_line_width_color(sleft - 4, sy +sheight - 2, sleft - sheight, sy + 2, 2, xcol, xcol)
                 }
                 if mouse{
                     if mousex < sleft - 2{
@@ -510,7 +547,6 @@ for (var i = 0; i < maxp; i++) if player_is_active(i){
                             else if u < global.palettes[0] global.palettes[0]--
                             edit.selected = 0
                             click(1)
-                            //break
                         }
                         if released and u = 1{
                             click(1)
@@ -518,15 +554,6 @@ for (var i = 0; i < maxp; i++) if player_is_active(i){
                             edit.selected = 0
                         }
                     }
-                    /*else if u != 1 and mousex < sleft{
-                        draw_tooltip(sleft - sheight*.5, sy, "Save to this slot")
-                        if released{
-                            click(0)
-                            global.palettes[u] = global.editingpalette
-                            global.palettes[0] = u
-                            edit.selected = 0
-                        }
-                    }*/
                     else{
                         draw_tooltip(round(sleft + sheight/2), sy, "Load "+pal.name)
                         if released{
@@ -546,7 +573,6 @@ for (var i = 0; i < maxp; i++) if player_is_active(i){
                 draw_rectangle_c(sleft+1, sy+1, sleft + sheight+1, sy + sheight+1, c_black)
                 draw_rectangle_c(sleft, sy, sleft + sheight, sy + sheight, mouse ? c_ltgray : c_gray)
                 draw_text_c(sleft + 7, sy + 2, "+", c_white)
-                //draw_rectangle_co(sleft, sy, sleft + sheight, sy + sheight, c_black)
                 if mouse{
                     draw_tooltip(round(sleft + sheight/2), sy, "Create new palette")
                     if released{
@@ -608,7 +634,6 @@ for (var i = 0; i < maxp; i++) if player_is_active(i){
                 var oldscroll = h
                 h = round(clamp((mousey - sby)/(sbh-4) * d,0,d))
                 if oldscroll != h{
-                    //sound_play_pitchvol(sndBurn,3.5 + sqr((1 - h/(l-mc)) * 2),.35)
                     sound_play_pitchvol(sndClickBack,3 + sqr((1 - h/(l-mc)) * 1.5),.5)
                 }
             }
@@ -627,16 +652,20 @@ for (var i = 0; i < maxp; i++) if player_is_active(i){
                 found = mouse
             }
             else mouse = 0
+            //deciding cell color
             var col = merge_color(p.cellfadetop, p.cellcolor, o/n)
-            //if o = n + 1 col = p.cellcolor
             if o > n col = merge_color(p.cellcolor, p.cellfadebottom, (o-n)/n)
+            //drawing cell shadow
             draw_rectangle_c(_x+1,_y3+2,_x2+1,_y4,c_black);
-            draw_line_width_color(_x+6,_y4+2,_x2-5,_y4+2,1,c_black,c_black)
-            draw_line_width_color(_x+6,_y4+1,_x2-5,_y4+1,1,c_black,c_black)
-            draw_line_width_color(_x+5,_y4+1,_x2-6,_y4+1,1,p.cellbar,p.cellbar)
+                //bar in between
+                draw_line_width_color(_x+6,_y4+2,_x2-5,_y4+2,1,c_black,c_black)
+                draw_line_width_color(_x+6,_y4+1,_x2-5,_y4+1,1,c_black,c_black)
+                draw_line_width_color(_x+5,_y4+1,_x2-6,_y4+1,1,p.cellbar,p.cellbar)
+            //cell
             draw_rectangle_c(_x,_y3+1,_x2,_y4-1,mouse ? p.cellhighlight : col);
-            draw_text_scrolling(_x+2, _y3, global.stuff[h+o][3], p.textcolor, 1, 1, labellength, mouse ? current_frame/5 : 0)
-            //draw_text_c(_x+2,_y3,global.stuff[h+o][3],p.textcolor);
+            //perm name
+            draw_text_s(_x+2, _y3, global.stuff[h+o][3], p.textcolor, 1, 1, mouse, 75)
+            //v is value
             var v = global.stuff[h+o][4];
             var typ = global.stuff[h+o][5];
             //toggle style permissions
@@ -647,8 +676,7 @@ for (var i = 0; i < maxp; i++) if player_is_active(i){
                 draw_circle_color(_x +3 + iw/4 + iw*v/2, _y4 - 3 -ih/2, ih/2, p.togglecolor, p.togglecolor,0)
                 var c = p.modlabel
                 //draw mod name
-                draw_text_scrolling(_x + 6 + iw, _y4 - 11, global.stuff[h+o][1], c, .6, false, 14, mouse ? current_frame/5 : 0)
-                //draw_text_color(_x + 6 + iw, _y4 - 11,string_delete(global.stuff[h+o][1],15,100000),c,c,c,c,.6)
+                draw_text_s(_x + 6 + iw, _y4 - 11, global.stuff[h+o][1], c, .6, 0, mouse, 60)
                 //making the button work
                 if mouse && released{
                     var a = array_clone(global.stuff[h+o]);
@@ -669,12 +697,13 @@ for (var i = 0; i < maxp; i++) if player_is_active(i){
                 //bar padding, bar width, bar x start, bar ystart, bar height, bar x end
                 var pd = 2, bw = cw - 2*pd - 10, bx = _x + 2, by = _y4 - 6, bh = 7, bxe = bx + bw * ((v - mn)/(mx - mn))
                 var r = mx - mn
-                //draw_line_width_color(bx-1, by - .5, bx + bw, by - .5, bh+ 1, c_black, c_black)
+                
                 draw_line_width_color(bx+1, by+1, bx + bw + 1, by+1, bh, c_black, c_black)
                 draw_line_width_color(bx, by, bx + bw, by, bh, p.barbg, p.barbg)
                 draw_line_width_color(bx, by, bxe, by, bh, p.barleft, merge_color(p.barleft,p.barright,(v-mn)/r))
                 draw_line_width_color(bxe, by+1, bxe+3, by+1, bh + 2, c_black, c_black)
                 draw_line_width_color(bxe, by, bxe+2, by, bh + 2, p.bartip, p.bartip)
+                
                 draw_set_halign(1)
                 var tex = string(v)
                 if v == global.stuff[h+o][6][0] tex = global.stuff[h+o][7][0]
@@ -686,7 +715,6 @@ for (var i = 0; i < maxp; i++) if player_is_active(i){
                     var num = clamp(round(((mousex - bx)/bw) * r) + mn, mn, mx)
                     mod_variable_set(a[0],a[1],a[2],num);
                     if v != num sound_play_pitchvol(sndClickBack,2 + sqr(1 + 2 * (1 - abs(mx - num)/r)),.75)
-                        //sound_play_pitch(sndAmmoPickup,5)
                     global.stuff[h+o,4] = num
                 }
                 if mouse && released{
