@@ -14,7 +14,7 @@ return 1;
 return false;
 
 #define weapon_load
-return 23;
+return 18;
 
 #define weapon_cost
 return 7;
@@ -31,20 +31,19 @@ return "GOUTS OF @rFLAME@d";
 #define weapon_fire
 
 weapon_post(9,-6,72)
-var _ptch = random_range(-.4,.4);
-sound_play_pitch(sndHeavySlugger,2+_ptch)
-sound_play_pitch(sndDoubleFireShotgun,2)
-sound_play_pitch(sndSawedOffShotgun,1.8)
-sound_play_pitch(sndFlamerStop,.4)
-repeat(8)
-{
-mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, 2+random(3), c_red)
-with mod_script_call("mod", "defpack tools", "create_fire_bullet",x+lengthdir_x(random_range(-7,7)*accuracy,gunangle+90),y+lengthdir_y(random_range(-7,7)*accuracy,gunangle+90)){
-	creator = other
-	team = other.team
-	team = other.team
-	move_contact_solid(other.gunangle,5)
-	motion_add(other.gunangle+random_range(-18,18)*other.accuracy,18+random_range(-9,7)*other.accuracy)
-	image_angle = direction
-}
+var _p = random_range(.8, 1.2);
+sound_play_pitch(sndHeavySlugger, 2 * _p)
+sound_play_pitch(sndDoubleFireShotgun, 2 * _p)
+sound_play_pitch(sndSawedOffShotgun, 1.8 * _p)
+sound_play_pitchvol(sndFlamerStop, .4 * _p, .6)
+repeat(8){
+    mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, 2+random(3), c_red)
+    with mod_script_call("mod", "defpack tools", "create_fire_bullet",x+lengthdir_x(random_range(-7,7)*accuracy,gunangle+90),y+lengthdir_y(random_range(-7,7)*accuracy,gunangle+90)){
+    	creator = other
+    	team = other.team
+    	team = other.team
+    	move_contact_solid(other.gunangle,5)
+    	motion_add(other.gunangle+random_range(-18,18)*other.accuracy,18+random_range(-8,5)*other.accuracy)
+    	image_angle = direction
+    }
 }

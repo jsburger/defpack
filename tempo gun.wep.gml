@@ -11,7 +11,7 @@ global.sprTempoGun = sprite_add_weapon("sprites/sprTempoGun.png",2,3);
 #define weapon_swap             return sndSwapPistol;
 
 #define weapon_auto             return true;
-#define weapon_load             return 7;
+#define weapon_load             return 6;
 #define weapon_type             return 1;
 #define weapon_cost             return 2;
 #define weapon_rads             return 0;

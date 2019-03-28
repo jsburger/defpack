@@ -1198,12 +1198,7 @@ with player_find(index){
 	draw_text_nt(floor((_X+_x)/2-string_width(_str)/2),_y-15,_str)
 
 	var _m_index = 0
-	/*switch w.info[2]
-	{
-		case
-	}
-	trace(w.info[0]) actually never gets seen like a boss*/
-
+	
 	draw_set_color(c_black)
 	draw_set_alpha(.3)
 	draw_rectangle(_x,_Yline1,_X,_Yline2+2,0)
@@ -1344,13 +1339,6 @@ stats(w)
 name(w)
 sprite(w)
 return w
-
-#define multsum()
-var n = argument[0]
-for var i = 1; i < argument_count; i++{
-    n *= argument[i]
-}
-return floor(n)
 
 #define name(w)
 w.name = `${w.info[3]} ${w.info[1]} ${w.info[2]}`

@@ -110,7 +110,8 @@ if timer <= 0{
 }
 
 with instances_in(x-succ,y-succ/2,x+succ,y+succ/2,Wall){
-    if (sqr(x+8 - other.x))/sqr(other.succ) + (sqr(y+8-other.y))/sqr(other.succ/2) <= 1{
+    var _x = clamp(other.x, bbox_left, bbox_right), _y = clamp(other.y, bbox_top, bbox_bottom);
+    if (sqr(_x - other.x))/sqr(other.succ) + (sqr(_y - other.y))/sqr(other.succ/2) <= 1{
         instance_create(x,y,FloorExplo)
         instance_destroy()
     }
@@ -118,7 +119,8 @@ with instances_in(x-succ,y-succ/2,x+succ,y+succ/2,Wall){
 
 
 with instances_in(x-succ,y-succ/2,x+succ,y+succ/2,[Debris,ScorchTop,Scorch]){
-    if (sqr(x - other.x))/sqr(other.succ) + (sqr(y-other.y))/sqr(other.succ/2) <= 1{
+    var _x = clamp(other.x, bbox_left, bbox_right), _y = clamp(other.y, bbox_top, bbox_bottom);
+    if (sqr(_x - other.x))/sqr(other.succ) + (sqr(_y - other.y))/sqr(other.succ/2) <= 1{
         instance_destroy()
     }
 }
@@ -226,7 +228,7 @@ if fall < -height instance_destroy()
 
 
 #define instances_in(left,top,right,bottom,obj)
-return instances_matching_gt(instances_matching_lt(instances_matching_gt(instances_matching_lt(obj,"y",bottom),"y",top),"x",right),"x",left)
+return instances_matching_gt(instances_matching_lt(instances_matching_gt(instances_matching_lt(obj,"bbox_top",bottom),"bbox_bottom",top),"bbox_left",right),"bbox_right",left)
 
 
 #define drawmyshit(_x,_y,scale,size,off)

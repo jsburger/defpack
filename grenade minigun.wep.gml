@@ -42,6 +42,13 @@ with instance_create(x, y, CustomObject)
     charged = 0
     ammotime = ammobase
     index = other.index
+    
+    defcharge = {
+        style : 1,
+        maxcharge : maxammo,
+        charge : ammo,
+        power : 1
+    }
 
     on_step = chargestep
     on_destroy = chargedestroy
@@ -52,65 +59,49 @@ if !instance_exists(creator) or !button_check(index, btn){
     instance_destroy()
     exit
 }
+var timescale = (mod_variable_get("weapon", "stopwatch", "slowed") == 1) ? 30/room_speed : current_time_scale;
 if reload = -1{
-    reload = (hand ? creator.breload : creator.reload) + creator.reloadspeed * current_time_scale
+    reload = hand ? creator.breload : creator.reload
+    reload += mod_script_call_nc("mod", "defpack tools", "get_reloadspeed", creator) * timescale
 }
 else{
-    if hand creator.breload = max(reload, creator.breload)
+    if hand creator.breload = max(creator.breload, reload)
     else creator.reload = max(reload, creator.reload)
 }
-
-with creator other.ammotime -= (reloadspeed + ((race = "venuz") * (.2 + .4 * ultra_get("venuz", 1))) + ((1 - my_health/maxhealth) * skill_get(mut_stress))) * current_time_scale
+ammotime -= mod_script_call_nc("mod", "defpack tools", "get_reloadspeed", creator) * timescale
 if ammotime <= 0 and (creator.ammo[weapon_type()] >= weapon_cost() or creator.infammo != 0){
-    if ammo <= maxammo{
-        sound_play_pitchvol(sndNadeReload,ammo/12+1,.8)
+    if ammo < maxammo{
+        sound_play_pitchvol(sndNadeReload, ammo/12 + 1, .8)
         ammo++
+        defcharge.charge++
         if hand creator.bwkick = 1
         else creator.wkick = 1
         with creator if infammo = 0{
             ammo[weapon_type()] -= weapon_cost()
         }
     }
-    else
-    {
-      if charged = 0
-      {
-        charged = 1
-        sound_play_pitch(sndSnowTankCooldown,8)
-        sound_play_pitch(sndNadeReload,1.4)
-        sound_play_pitchvol(sndShielderDeflect,4,.5)
-        sound_play_pitchvol(sndBigCursedChest,20,.1)
-        sound_play_pitchvol(sndCursedChest,12,.2)
-        with instance_create(creator.x+lengthdir_x(18,creator.gunangle),creator.y+lengthdir_y(18,creator.gunangle),ChickenB)
-        {
-            creator = other.creator
-            image_xscale = .5
-            image_yscale = .5
-            with instance_create(x,y,ChickenB)
-            {
-                creator = other.creator
-                image_speed = .75
-            };
-        };
-      }
+    else{
+        if charged = 0{
+            charged = 1
+            mod_script_call_self("mod","defpack tools", "weapon_charged", creator, 18)
+        }
     }
     ammotime = ammobase
-
 }
 if current_frame mod 6 < current_time_scale && charged = 1 creator.gunshine = 1
 x = creator.x + lengthdir_x(7, creator.gunangle)
 y = creator.y + lengthdir_y(7, creator.gunangle)
 
 #define chargedestroy
-with instance_create(x,y,CustomObject)
-{
-  name = "grenade burst"
-  ammo = other.ammo
-  creator = other.creator
-  timer = 0
-  maxtimer = 2
-  accuracy = creator.accuracy
-  on_step = burststep
+with instance_create(x,y,CustomObject){
+    name = "grenade burst"
+    ammo = other.ammo
+    creator = other.creator
+    timer = 0
+    maxtimer = 2
+    accuracy = creator.accuracy
+    on_step = burststep
+    hand = other.hand
 }
 
 #define burststep
@@ -119,21 +110,20 @@ x = creator.x + lengthdir_x(10, creator.gunangle)
 y = creator.y + lengthdir_y(10, creator.gunangle)
 
 timer -= current_time_scale
-if timer <= 0
-{
-  with creator
-  {
-    weapon_post(5,-7,3)
-  }
-  var _p = random_range(.8,1.2)
-  sound_play_pitch(sndGrenadeRifle,.8*_p)
-  sound_play_pitch(sndGrenadeShotgun,.7*_p + ammo/15)
-  repeat(3) with instance_create(x,y,MiniNade)
-  {
-    motion_add (other.creator.gunangle+random_range(-32,32)*other.accuracy,choose(12,16,18))
-    image_angle = direction
-  }
-  ammo--
-  timer = maxtimer
+if timer <= 0{
+    with creator{
+        weapon_post(0,-7,3)
+        if other.hand bwkick = 5
+        else wkick = 5
+    }
+    var _p = random_range(.8,1.2)
+    sound_play_pitch(sndGrenadeRifle,.8*_p)
+    sound_play_pitch(sndGrenadeShotgun,.7*_p + ammo/15)
+    repeat(3) with instance_create(x,y,MiniNade){
+        motion_add (other.creator.gunangle+random_range(-32,32)*other.accuracy,choose(12,16,18))
+        image_angle = direction
+    }
+    ammo--
+    timer = maxtimer
 }
 if ammo <= 0 or !instance_exists(creator)instance_destroy()

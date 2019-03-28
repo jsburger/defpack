@@ -65,27 +65,28 @@ return global.sprArrowHUD
 return "CLASSIC"
 
 #define weapon_fire
-with instance_create(x,y,CustomObject)
-{
-    sound = sndMeleeFlip
+with instance_create(x,y,CustomObject){
+    sound   = sndMeleeFlip
 	name    = "bow charge"
 	creator = other
 	charge    = 0
     maxcharge = 25
     defcharge = {
-        style : 1,
+        style : 0,
+        width : 12,
         charge : 0,
-        maxcharge : 25
+        maxcharge : maxcharge
     }
 	charged = 0
-	holdtime = 5 * 30
 	depth = TopCont.depth
 	spr_arrow = other.race = "skeleton" ? global.sprArrow2 : global.sprArrow
 	index = creator.index
-	on_step 	 = bow_step
+	on_step    = bow_step
 	on_destroy = bow_destroy
 	on_cleanup = bow_cleanup
+	reload = -1
 	btn = other.specfiring ? "spec" : "fire"
+	hand = other.specfiring and other.race == "steroids"
 }
 
 
@@ -93,16 +94,17 @@ with instance_create(x,y,CustomObject)
 if !instance_exists(creator){instance_delete(self);exit}
 var timescale = (mod_variable_get("weapon", "stopwatch", "slowed") == 1) ? 30/room_speed : current_time_scale;
 if button_check(index,"swap"){instance_destroy();exit}
-if btn = "fire" creator.reload = weapon_get_load(creator.wep)
-if btn = "spec"{
-    if creator.race = "steroids"
-        creator.breload = weapon_get_load(creator.bwep)
-    else
-        creator.reload = max(weapon_get_load(creator.wep) * array_length_1d(instances_matching(instances_matching(instances_matching(CustomObject, "name", name),"creator",creator),"btn",btn)), creator.reload)
+if reload = -1{
+    reload = hand ? creator.breload : creator.reload
+    reload += mod_script_call_nc("mod", "defpack tools", "get_reloadspeed", creator) * timescale
+}
+else{
+    if hand creator.breload = max(creator.breload, reload)
+    else creator.reload = max(reload, creator.reload)
 }
 view_pan_factor[index] = 3 - (charge/maxcharge * .5)
 defcharge.charge = charge
-if button_check(index,btn){
+if button_check(index, btn){
     if charge < maxcharge{
         charge += timescale;
         charged = 0
@@ -112,21 +114,7 @@ if button_check(index,btn){
         if current_frame mod 6 < current_time_scale creator.gunshine = 1
         charge = maxcharge;
         if charged = 0{
-            sound_play_pitch(sndSnowTankCooldown,8)
-            sound_play_pitchvol(sndShielderDeflect,4,.5)
-            sound_play_pitchvol(sndBigCursedChest,20,.1)
-            sound_play_pitchvol(sndCursedChest,12,.2)
-            with instance_create(creator.x+lengthdir_x(12,creator.gunangle),creator.y+lengthdir_y(12,creator.gunangle),ChickenB)
-            {
-                creator = other.creator
-                image_xscale = .5
-                image_yscale = .5
-                with instance_create(x,y,ChickenB)
-                {
-                    creator = other.creator
-                    image_speed = .75
-                };
-            };
+            mod_script_call_self("mod","defpack tools", "weapon_charged", creator, 12)
             charged = 1
         }
     }
@@ -135,7 +123,6 @@ else{instance_destroy()}
 
 #define bow_cleanup
 view_pan_factor[index] = undefined
-sound_set_track_position(sound,0)
 sound_stop(sound)
 
 #define bow_destroy
@@ -144,30 +131,26 @@ var _p = random_range(.8,1.2)
 sound_play_pitchvol(sndSwapGuitar,4*_p,.8)
 sound_play_pitchvol(sndAssassinAttack,2*_p,.8)
 sound_play_pitchvol(sndClusterOpen,2*_p,.2)
-if charged = 0
-{
-  with creator weapon_post(1,-10,0)
-  with instance_create(creator.x,creator.y,Bolt)
-  {
-    sprite_index = other.spr_arrow
-    mask_index   = mskBullet1
-    creator = other.creator
-    team    = creator.team
-    damage = 10
-    move_contact_solid(creator.gunangle,6)
-    motion_add(creator.gunangle+random_range(-8,8)*creator.accuracy*(1-(other.charge/other.maxcharge)),16+6*other.charge/other.maxcharge)
-    image_angle = direction
-  }
+if charged = 0{
+    with creator weapon_post(1,-10,0)
+    with instance_create(creator.x,creator.y,Bolt){
+        sprite_index = other.spr_arrow
+        mask_index   = mskBullet1
+        creator = other.creator
+        team    = creator.team
+        damage = 10
+        move_contact_solid(creator.gunangle,6)
+        motion_add(creator.gunangle+random_range(-8,8)*creator.accuracy*(1-(other.charge/other.maxcharge)),16+6*other.charge/other.maxcharge)
+        image_angle = direction
+    }
 }
 else
 {
-    with creator
-    {
-      weapon_post(1,-30,0)
-      repeat(6) with instance_create(x,y,Dust)
-      {
-        motion_add(random(360),choose(5,6))
-      }
+    with creator{
+        weapon_post(1,-30,0)
+        repeat(6) with instance_create(x,y,Dust){
+            motion_add(random(360),choose(5,6))
+        }
     }
     sound_play_pitchvol(sndShovel,2,.8)
     sound_play_pitchvol(sndUltraCrossbow,3,.8)

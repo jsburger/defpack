@@ -45,6 +45,7 @@ motion_add(gunangle,-5)
 with instance_create(x+lengthdir_x(4,gunangle),y+lengthdir_y(4,gunangle)-1,CustomProjectile){
 	friction = .18
 	motion_set(other.gunangle, 7)
+	image_angle = direction
 	team = other.team
 	creator = other
 	name = "Heavy Nuke"
@@ -69,36 +70,21 @@ with instance_create(x+lengthdir_x(4,gunangle),y+lengthdir_y(4,gunangle)-1,Custo
 sleep(70)
 
 #define nuke_step
-if instance_exists(creator){
-    if btn = "fire" creator.reload = weapon_get_load(creator.wep)
-    if btn = "spec"{
-        if creator.race = "steroids"
-            creator.breload = weapon_get_load(creator.bwep)
-        else
-            creator.reload = max(weapon_get_load(creator.wep) * array_length_1d(instances_matching(instances_matching(instances_matching(CustomProjectile, "name", name),"creator",creator),"btn",btn)), creator.reload)
-    }
-}
-if soundcheck = 1{
-	if !instance_exists(creator){instance_destroy();exit}
-	/*if !button_check(creator.index,btn){
-		instance_destroy()
-		exit
-	}*/
-}
-if timer > 0{timer -= current_time_scale}
+if timer > 0
+    timer -= current_time_scale
 else{
-	if fimage_index < 2{fimage_index += .5*current_time_scale}
-	else{
-		fimage_index = 0
+    fimage_index = (fimage_index + .5 * current_time_scale) mod 2
+    var _x = mouse_x[index], _y = mouse_y[index];
+    if speed >= 3{
+        motion_add(point_direction(x, y, _x, _y), .6)
+    }
+    image_angle = direction
+    if speed < 6 friction -= .35 * current_time_scale
+    else speed = 6
+    if random(100) <= 80*current_time_scale with instance_create(x- hspeed*2, y - vspeed*2, Smoke) {
+		motion_set(other.direction+random_range(-8,8)-180,2+random(2))
+		depth = other.depth + 1
 	}
-}
-var _x = mouse_x[index]
-var _y = mouse_y[index]
-if instance_exists(creator) {
-	if timer <= 0 && speed >= 3{motion_add(point_direction(x,y,_x,_y),.6*current_time_scale)}
-	image_angle = direction
-}
-if timer <= 0{
 	if !soundcheck{
 		soundcheck = 1
 		view_shake_at(x,y,32)
@@ -112,11 +98,6 @@ if timer <= 0{
 			image_yscale = image_xscale
 			damage = 8
 		}
-	}
-	if speed < 6{friction = -.35}
-	else{speed = 6}
-	if random(100) <= 80*current_time_scale with instance_create(x- hspeed*2, y - vspeed*2, Smoke) {
-		motion_set(other.direction+random_range(-8,8)-180,2+random(2))
 	}
 }
 if place_meeting(x, y, Explosion){

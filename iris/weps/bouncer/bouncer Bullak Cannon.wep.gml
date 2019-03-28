@@ -17,7 +17,7 @@ return false;
 return 18;
 
 #define weapon_cost
-return 10;
+return 6;
 
 #define weapon_swap
 return sndSwapMachinegun;
@@ -45,5 +45,3 @@ with mod_script_call_self("mod", "defpack tools 2", "create_bouncer_bullak", x, 
     motion_set(other.gunangle+random_range(3,3) * other.accuracy, 16)
     image_angle = direction + 90
 }
-
-mod_script_call("mod", "defpack tools 2","create_flak",0,5,13,0,BouncerBullet,10,id) //not gonna lie this shit spooks the fuck outta me, i swear somethings gonna go wrong

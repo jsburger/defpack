@@ -45,8 +45,7 @@ sound_play_pitch(sndCursedPickupDisappear,.6*_p)
 sound_play_pitchvol(sndBigCursedChest,.4*_p,.5)
 sound_play_gun(sndClickBack,1,0)
 sound_stop(sndClickBack)
-with instance_create(x,y,CustomProjectile)
-{
+with instance_create(x,y,CustomProjectile){
     name = "mega psy bullet"
     typ = 2
     sprite_index = global.sprMegaPsyBullet
@@ -106,29 +105,12 @@ repeat(6) instance_create(x,y,Smoke) motion_add(random(360),random_range(1,3))
 with instance_create(x,y,BulletHit){sprite_index = global.sprMegaPsyBulletHit}
 
 #define mega_step
-if timer > 0{
-	timer -= current_time_scale
-}
+mod_script_call_self("mod", "defpack tools", "psy_step")
 if timer <= 0{
-  with mod_script_call("mod","defpack tools","instance_nearest_matching_ne",x,y,hitme,"team",team)
-  {
-    if distance_to_object(other) < other.range*2
-    {
-      motion_add(point_direction(x,y,other.x,other.y),1)
+    var q = mod_script_call_nc("mod","defpack tools","instance_nearest_matching_ne",x,y,hitme,"team",team)
+    if instance_exists(q) and distance_to_object(q) < range * 2{
+        with q motion_add(point_direction(x, y, other.x, other.y), current_time_scale)
     }
-  }
-	var closeboy = mod_script_call("mod","defpack tools","instance_nearest_matching_ne",x,y,hitme,"team",team)
-	if instance_exists(closeboy) && distance_to_object(closeboy) < range && collision_line(x,y,closeboy.x,closeboy.y,Wall,0,0) < 0{
-		var dir, spd;
-
-		dir = point_direction(x, y, closeboy.x, closeboy.y);
-		spd = speed * 5 * current_time_scale
-
-		direction -= clamp(angle_difference(image_angle, dir) * turnspeed * current_time_scale, -spd, spd); //Smoothly rotate to aim position.
-		image_angle = direction
-
-    if place_meeting(x,y,closeboy){turnspeed = 0}else{turnspeed = .25}
-	}
 }
 
 #define mega_anim

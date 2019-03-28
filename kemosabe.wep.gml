@@ -1,6 +1,7 @@
 #define init
 global.sprKemosabe    = sprite_add_weapon("sprites/sprKemosabe.png", 3, 2);
 global.sprLuckyBullet = sprite_add("sprites/projectiles/Lucky Bullet.png",2,11,11)
+global.sprMagazine    = sprite_add("sprites/sprKemosabeMag.png", 1, 2, 3)
 #define weapon_name
 return "KEMOSABE";
 
@@ -27,6 +28,18 @@ return 6;
 
 #define weapon_text
 return choose("SO CLEAN FOR#SUCH DIRTY WORK", "LIL FRIEND");
+
+#define weapon_reloaded(p)
+if ammo[1] mod 16 == 0{
+    with instance_create(x + lengthdir_x(3, gunangle), y + lengthdir_y(3, gunangle), Shell){
+        motion_set(other.gunangle - other.right * 90 * sign(p - .1) + random_range(-10, 10), random_range(4,6))
+        friction *= 2
+        sprite_index = global.sprMagazine
+    }
+    if p wkick++
+    else bwkick++
+    sound_play_pitch(sndSwapShotgun, 1.6)
+}
 
 #define weapon_fire
 weapon_post(5,-5,5)
@@ -55,7 +68,6 @@ with instance_create(x,y,CustomProjectile){
     mask_index   = mskBullet1
     can_crit = 1
     recycle_amount = 1
-    move_contact_solid(other.gunangle,2)
 	motion_add(other.gunangle+random_range(-14,14)*other.accuracy,20)
     image_angle = direction
     on_anim    = kemosabe_anim
@@ -71,6 +83,14 @@ image_index = 1
 if irandom(16-(skill_get(mut_lucky_shot)*5)) = 0 && can_crit = 1{
     can_crit = 0
     mod_script_call("mod","defpack tools","crit")
+}
+with creator{
+    var num = (skill_get(mut_recycle_gland) * (irandom(9) < 5)) + 10*skill_get("recycleglandx10")
+    if num{
+        ammo[1] = min(ammo[1] + other.recycle_amount * num, typ_amax[1])
+        instance_create(other.x, other.y, RecycleGland)
+        sound_play(sndRecGlandProc)
+    }
 }
 projectile_hit(other,damage,force,direction)
 instance_destroy()

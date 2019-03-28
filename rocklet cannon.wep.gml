@@ -58,7 +58,7 @@ with instance_create(x,y,CustomProjectile)
 }
 
 #define cannon_step
-timer+= current_time_scale
+timer += current_time_scale
 if timer >= 2 && ammo > 0{
     timer-=2
     anginc+= pi/3
@@ -85,13 +85,11 @@ if speed > maxspeed{speed = maxspeed}
 
 #define cannon_destroy
 var i = random(360);
-if fork(){
-    instance_create(x,y,Explosion)
-    repeat(ammo){
-        sound_play(sndExplosionS)
-        instance_create(x+lengthdir_x(16,i),y+lengthdir_y(16,i),SmallExplosion)
-        i+=360/ammo
-    }
+instance_create(x,y,Explosion)
+repeat(ammo){
+    sound_play(sndExplosionS)
+    instance_create(x+lengthdir_x(16,i),y+lengthdir_y(16,i),SmallExplosion)
+    i += 360/ammo
 }
 
 

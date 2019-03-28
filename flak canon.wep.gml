@@ -1,5 +1,16 @@
 #define init
-global.sprFlakCanon = sprite_add_weapon("sprites/sprFlakCanon.png", 4, 4);
+global.sprFlakCanon = sprite_add_weapon("sprites/sprFlakCanon.png", 3, 2);
+
+while 1{
+    with instances_matching(WepPickup, "wep", mod_current){
+        with instance_create(x+lengthdir_x(random(20)-4, rotation), y+lengthdir_y(random(20)-4, rotation), Curse){
+            image_blend = c_black
+            depth = other.depth
+            gravity = .075
+        }
+    }
+    wait(1)
+}
 
 #define weapon_name
 return curse("FLAK CANON")
@@ -56,7 +67,9 @@ with mod_script_call_self("mod", "defpack tools 2", "create_recursive_flak", x, 
 }
 #define step
 if (current_frame < floor(current_frame) + current_time_scale){
-    if argument0 || (!argument0 and race = "steroids") with instance_create(x+lengthdir_x(12,gunangle), y+lengthdir_y(12,gunangle), Curse){
+    if argument0 || (!argument0 and race = "steroids") with instance_create(x+lengthdir_x(2 + random(14), gunangle), y+lengthdir_y(2 + random(14), gunangle) + 2, Curse){
         image_blend = c_black
+        depth = other.depth
+        gravity = .075
     }
 }

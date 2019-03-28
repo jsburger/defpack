@@ -53,8 +53,6 @@ with mod_script_call_self("mod","defpack tools","create_abris",self,_strtsize,_e
 	damage = 2
     maxdamage = 6
 	payload = script_ref_create(pop)
-	ringcolour = merge_color(c_maroon, c_red, .3)
-    stripecolour = ringcolour
 }
 
 

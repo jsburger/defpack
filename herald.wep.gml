@@ -21,12 +21,15 @@ global.sf = surface_create(game_width,game_height)
 
 global.sounds = [sndExplosion,sndExplosionL,sndExplosionXL]
 
-
+global.canDraw = true
 global.pink = make_color_rgb(252,59,82)
 
 //set to one for default on
 global.canshader = 1
 mod_script_call("mod","defpermissions","permission_register","weapon",mod_current,"canshader","Herald Shader")
+
+//shader defaults to off in coop, can be manually turned back on though
+if player_is_active(1) mod_script_call_nc("mod", "defpermissions", "permission_set", "weapon", mod_current, "canshader", 0)
 
 //defpermissions should have set the proper value after the script call
 if global.canshader = 1{
@@ -253,6 +256,7 @@ with creator ammo[other.type] -= (infammo == 0) ? other.cost : 0
 meteortime = 0
 var ang = random(360)
 with instance_create(mouse_x[index]+lengthdir_x(random(accbase),ang), mouse_y[index]+lengthdir_y(random(accbase),ang),CustomObject){
+    name = "HeraldMeteor"
     z = game_height+100+random(40)
     zstart = z
     depth = -12
@@ -274,20 +278,23 @@ surface_set_target(global.sf)
 draw_triangle(x-_x+lengthdir_x(size*10,0),y-_y-z+lengthdir_y(size*10,0),x-_x+lengthdir_x(size*10,180),y-_y-z+lengthdir_y(size*10,180),x-_x+lengthdir_x(dis,ang),y-_y-z+lengthdir_y(dis,ang),0)
 draw_circle(x-_x,y-_y-z,size*10,0)
 surface_reset_target()
+global.canDraw = true
 
 #define meteordraw
-
-if global.canshader{
-    shader_set(global.sh);
-    shader_set_vertex_constant_f(0, matrix_multiply(matrix_multiply(matrix_get(matrix_world), matrix_get(matrix_view)), matrix_get(matrix_projection)));
-
-    texture_set_stage(0, surface_get_texture(global.sf));
+if global.canDraw{
+    if global.canshader{
+        shader_set(global.sh);
+        shader_set_vertex_constant_f(0, matrix_multiply(matrix_multiply(matrix_get(matrix_world), matrix_get(matrix_view)), matrix_get(matrix_projection)));
+    
+        texture_set_stage(0, surface_get_texture(global.sf));
+    }
+    draw_surface(global.sf, view_xview_nonsync, view_yview_nonsync);
+    if global.canshader shader_reset();
+    surface_set_target(global.sf)
+    draw_clear_alpha(0,0)
+    surface_reset_target()
+    global.canDraw = false
 }
-draw_surface(global.sf, view_xview_nonsync, view_yview_nonsync);
-if global.canshader shader_reset();
-surface_set_target(global.sf)
-draw_clear_alpha(0,0)
-surface_reset_target()
 
 #define meteor_step
 z = max(z - zspeed*current_time_scale,0)
@@ -327,27 +334,28 @@ if instance_exists(creator){
 	sound_play_gun(sndFootOrgSand1,1,1-alpha)
 	sound_stop(sndFootOrgSand1)
 	with creator weapon_post(other.alpha * 2,0,0)
-	runealpha = min(runealpha + .0035*current_time_scale*phasespeed, 1)
+	var n = current_time_scale * phasespeed
+	runealpha = min(runealpha + .0035*n, 1)
 	if runealpha = 1{
-        runecolor = merge_color(runecolor,c_white,.03*current_time_scale*phasespeed)
-        runebloom = merge_color(runebloom,c_white,.03*current_time_scale*phasespeed)
-        bigrunecolor = merge_color(bigrunecolor,c_white,.01*current_time_scale*phasespeed)
+        runecolor = merge_color(runecolor,c_white,.03*n)
+        runebloom = merge_color(runebloom,c_white,.03*n)
+        bigrunecolor = merge_color(bigrunecolor,c_white,.01*n)
     }
 	image_angle += rotspeed * current_time_scale;
 	subangle -= rotspeed * current_time_scale;
     if phase < 1{
-        phase += .003*current_time_scale*phasespeed
+        phase += .003*n
         vigncol1 = merge_color(c_white,c_black,other.alpha/2)
         vigncol2 = merge_color(c_white,c_red,other.alpha)
     }
     if phase >= 1 and phase < 2{
         phase += .02*current_time_scale*phasespeed
-        vigncol2 = merge_color(vigncol2,c_silver,.02*current_time_scale*phasespeed)
-        vigncol1 = merge_color(vigncol1,c_black,.06*current_time_scale*phasespeed)
+        vigncol2 = merge_color(vigncol2,c_silver,.02*n)
+        vigncol1 = merge_color(vigncol1,c_black,.06*n)
     }
-    meteortime+=current_time_scale
+    meteortime += current_time_scale
     if phase >= 2 && meteortime >= 3 meteor()
-    if phase < 1 rotspeed+=phase*current_time_scale*.025*phasespeed
+    if phase < 1 rotspeed+=phase*.025*n
 	if check = 1 || popped{
 		if popped{
 			var pops = 1;
@@ -371,16 +379,15 @@ if instance_exists(creator) && check{
 	y = creator.y
 	if button_check(creator.index, (check = 1? "fire":"spec")){
 	    ritual_draw()
-		var comp = (check = 1 ? creator.wep : creator.bwep);
-		if popped {comp = wep}
+		var comp = ((check = 1 or popped) ? creator.wep : creator.bwep);
 		if wep != comp {instance_destroy()}
 	}
 }
 
 
 #define vignette
-draw_set_blend_mode_ext(1,3)
 with instances_matching(CustomObject,"name","Herald Circle"){
+    draw_set_blend_mode_ext(1,3)
 	var _x = mouse_x[index], _y = mouse_y[index];
 	with Player{
 		draw_set_visible_all(0)
@@ -388,8 +395,8 @@ with instances_matching(CustomObject,"name","Herald Circle"){
 		draw_circle_color((_x + x)/2,(_y + y)/2,point_distance(x,y,_x,_y)+game_width/1.5,other.vigncol1,other.vigncol2,0)
 		draw_set_visible_all(1)
 	}
+	draw_set_blend_mode(bm_normal)
 }
-draw_set_blend_mode(bm_normal)
 
 #define beam_draw(_x,_y,color,alpha)
 var col = merge_color(color,c_black,1 - alpha),col2 = c_black;
@@ -400,7 +407,7 @@ draw_set_blend_mode(bm_normal)
 
 
 #define ritual_draw
-var points = [];
+//var points = [];
 var _x = mouse_x[index], _y = mouse_y[index];
 
 var bloom = 1;
@@ -475,13 +482,6 @@ if phase > 2{
     draw_circle_color(_x,_y,accbase*1.2,merge_color(c_white,c_black,1/min(power(phase,10),accbase*1.5)),c_black,0)
 }
 draw_set_blend_mode(bm_normal)
-
-
-
-#define draw_surface_centered(sf,sx,sy,xscale,yscale,rot,color,alpha)
-var w = surface_get_width(sf) * xscale / 2,
-    h = surface_get_height(sf) * yscale /2;
-draw_surface_ext(sf,x-lengthdir_x(w,rot),y-lengthdir_y(h,rot),xscale,yscale,rot,color,alpha)
 
 
 #define lightning_line(x1,y1,x2,y2)
@@ -567,12 +567,3 @@ repeat(lines){
 }
 if alpha != -1 draw_set_alpha(1)
 
-#define coolline(x1,y1,x2,y2,width,col,col2)
-var __x = ((x1+x2)/2)
-var __y = ((y1+y2)/2)
-var dist = point_distance(x1,y1,x2,y2)
-var dir = point_direction(x1,y1,x2,y2)
-var lx = lengthdir_x(width/2,dir+90)
-var ly = lengthdir_y(width/2,dir+90)
-draw_line_width_color(__x,__y,__x+lx,__y+ly,dist,col,col2)
-draw_line_width_color(__x,__y,__x-lx,__y-ly,dist,col,col2)

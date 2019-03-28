@@ -121,6 +121,7 @@ instance_destroy()
 
 
 #define rainarrow_step
+var dn = z
 z -= current_time_scale*20
 if z <= 25 and z > -25{
     mask_index = sprGrenade;
@@ -134,12 +135,20 @@ if z <= 25 and z > -25{
     }
 }
 else mask_index = mskNone
-/*with instance_create(x,y - z,BoltTrail){
-    image_angle = point_direction(x,y,other.xprevious,other.yprevious - other.z + 20*current_time_scale)
-    image_xscale = point_distance(x,y,other.xprevious,other.yprevious - other.z + 20*current_time_scale)
-    depth = other.depth
-    image_yscale /= 2
-}*/
+var n = max(z, 0);
+dn = abs(z - dn)
+with instance_create(x,y - n,BoltTrail){
+    image_angle = point_direction(x,y,other.xprevious,other.yprevious - n - dn)
+    image_xscale = point_distance(x,y,other.xprevious,other.yprevious - n - dn)
+    depth = other.depth + 1
+    if fork(){
+        while instance_exists(self){
+            image_alpha -= .1 * current_time_scale
+            wait(0)
+        }
+        exit
+    }
+}
 
 if z < 0{
     var yoff = -8, dep = -10

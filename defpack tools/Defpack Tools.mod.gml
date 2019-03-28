@@ -73,16 +73,16 @@ global.mskHeavySpikeball  = sprite_add_p("mskHeavySpikeball.png",0, 15, 15);
 global.sprAim          = sprite_add("sprAim.png",0,10,10);
 global.sprCursorCentre = sprite_add("sprCursorCentre.png",0,1,1);
 
-global.sprBouncerDisc = sprite_add("sprBouncerDisc.png",2,6,6)
-global.sprStickyDisc  = sprite_add("sprStickyDisc.png",2,7,6)
+global.sprBouncerDisc    = sprite_add("sprBouncerDisc.png",2,6,6)
+global.sprStickyDisc     = sprite_add("sprStickyDisc.png",2,7,6)
 global.sprMegaDisc       = sprite_add_p("sprMegaDisc.png",2,12,12);
 global.sprMegaDiscDie    = sprite_add("sprMegaDiscDie.png",6,12,12);
 global.sprMegaDiscTrail  = sprite_add("sprMegaDiscTrail.png",3,12,12);
 global.sprMegaDiscBounce = sprite_add("sprMegaDiscBounce.png",4,12,12);
 
-global.sprSword = sprite_add("sprSword.png", 1, 10, 10)
+global.sprSword      = sprite_add("sprSword.png", 1, 10, 10)
 global.sprSwordStick = sprite_add_p("sprSwordStick.png", 1, 10, 10)
-global.sprKnife = sprite_add("sprKnife.png", 1, 7, 7)
+global.sprKnife      = sprite_add("sprKnife.png", 1, 7, 7)
 global.sprKnifeStick = sprite_add_p("sprKnifeStick.png", 1, 7, 7)
 global.sprSwordSlash = sprite_add("sprSwordSlash.png", 5, 16, 16)
 
@@ -107,16 +107,16 @@ vertex_format_add_position()
 global.lightningformat = vertex_format_end()
 
 global.showCharge = 1
-mod_script_call("mod", "defpermissions", "permission_register", "mod", mod_current, "showCharge", "Weapon Charge Indicators")
+mod_script_call_nc("mod", "defpermissions", "permission_register", "mod", mod_current, "showCharge", "Weapon Charge Indicators")
 global.chargeSmooth = [0, 0]
 
-global.sprVectorHead 	  = sprite_add("sprVectorHead.png",0,5,5)
-global.sprWaterBeam       = sprite_add("sprWaterBeam.png",1,0,6);
-global.sprVectorBeamStart = sprite_add("sprVectorBeamStart.png",0,8,8);
+global.sprVectorHead   = sprite_add("sprVectorHead.png",1,8,2)
+global.sprVector	   = sprite_add("sprVector.png",1,2,3)
+global.sprVectorImpact = sprite_add("sprVectorImpact.png",7,16,16)
+global.sprVectorEffect = sprite_add("sprVectorBeamEnd.png",3,5,5);
+
 //thanks yokin
 #macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)
-//thanks jsburg (me)
-#macro player_reload (reloadspeed + ((race == "venuz") * (.2 + .4 * ultra_get("venuz", 1))) + ((1 - my_health/maxhealth) * skill_get(mut_stress)))
 
 #macro prim_offset 1
 #macro lasercolor 14074
@@ -242,7 +242,7 @@ if global.showCharge with Player if player_is_local_nonsync(index){
                     _col = c
                     var cm = power(charge/maxcharge, lq_defget(self, "power", 2)), b = lq_defget(self, "blinked", 0);
                     if cm < .001 continue
-                    if cm >= .99 {
+                    if cm >= .95 {
                         if b < 2 and b > -1{
                             blinked = b + current_time_scale
                             _col = c_white
@@ -253,13 +253,13 @@ if global.showCharge with Player if player_is_local_nonsync(index){
                     
                     switch (style){
                         case defcharge_bar:
-                            var _w = width/2, _yc = _y + _bhinc * ++_bc + 4
-                            draw_bar(_x, _yc, width, _bh, c_white)
-                            draw_line_width_color(_x - _w, _yc + .5, _x - _w + cm * width, _yc + .5, _bh, _col, _col)
+                            var _dw = lq_defget(self, "width", 12), _w = _dw/2, _yc = _y + _bhinc * ++_bc + 4
+                            draw_bar(_x, _yc, _dw, _bh, c_white)
+                            draw_line_width_color(_x - _w, _yc + .5, _x - _w + cm * _dw, _yc + .5, _bh, _col, _col)
                         break
                         case defcharge_arc:
                             var _d = _arcdir - _arcspc * _ac++
-                            draw_arc(_x, _y + 1, _d + _arclen*(1 - cm)/2, _al, _al + _ah + 1, _arclen * cm, round(_p*cm), _col, 1, 1)
+                            draw_arc(_x, _y + 1, _d + _arclen*(1 - cm)/2, _al, _al + _ah + .9, _arclen * cm, round(_p*cm), _col, 1, 1)
                             var _ld = _arcspc/2 - 2
                             draw_line_width_color(_x + lengthdir_x(_al-1, _d + _ld), _y + lengthdir_y(_al-1, _d + _ld), _x + lengthdir_x(_al + _ah + 2, _d + _ld), _y + lengthdir_y(_al + _ah + 2, _d + _ld), 1, c_white, c_white)
                             draw_line_width_color(_x + lengthdir_x(_al-1, _d - _ld), _y + lengthdir_y(_al-1, _d - _ld), _x + lengthdir_x(_al + _ah + 2, _d - _ld), _y + lengthdir_y(_al + _ah + 2, _d - _ld), 1, c_white, c_white)
@@ -277,7 +277,7 @@ if global.showCharge with Player if player_is_local_nonsync(index){
             draw_line_width_color(_x + lengthdir_x(_al-1, _ld2), _y + lengthdir_y(_al-1, _ld2), _x + lengthdir_x(_al + _ah + 2, _ld2), _y + lengthdir_y(_al + _ah + 2, _ld2), 1, c_white, c_white)
         }
     }
-    else global.arccount = 0
+    else global.chargeSmooth = [0, 0]
 }
 
 #define draw_pause
@@ -291,18 +291,29 @@ with instances_matching_ne(CustomProjectile, "defbloom", undefined) {
         lq_defget(defbloom, "angle", image_angle), image_blend, defbloom.alpha * image_alpha
     )
 }
-
-with instances_matching(CustomProjectile,"name","vector"){
+with instances_matching(CustomProjectile, "name", "Vector"){
 	draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, 2.5*image_yscale, image_angle, image_blend, 0.1+skill_get(17)*.025);
 	if ammo > 0{draw_sprite_ext(global.sprVectorHead, 0, x, y, 3, 3, image_angle-45, image_blend, 0.1+skill_get(17)*.025)}
 }
 with instances_matching(CustomProjectile,"name","vector beam"){
   draw_sprite_ext(sprite_index, image_index, xstart, ystart, image_xscale, 1.5*image_yscale, image_angle, image_blend, 0.15+skill_get(17)*.05);
-	if x != xstart draw_sprite_ext(global.sprVectorBeamStart, 0, xstart, ystart, 1.5, image_yscale*1.5, image_angle, image_blend, .15+skill_get(17)*.05);
-	if x != xstart draw_sprite_ext(global.sprVectorHead, 0, x, y, 2.5, image_yscale*2.5, image_angle-45, image_blend, .15+skill_get(17)*.05);
+	if x != xstart draw_sprite_ext(spr_tail, 0, xstart, ystart, 1.5, image_yscale*1.5, image_angle, image_blend, .15+skill_get(17)*.05);
+	if x != xstart draw_sprite_ext(spr_head, 0, x, y, 2.5, image_yscale*2.5, image_angle-45, image_blend, .15+skill_get(17)*.05);
 }
 with instances_matching(CustomProjectile,"name","mega lightning bullet"){
   draw_sprite_ext(sprite_index, image_index, x, y, 2*image_xscale+(1-image_index)*2, 2*image_yscale+(1-image_index)*2, image_angle, image_blend, 0.2+(1-image_index)*.4);
+}
+
+#define draw_shadows
+with Player if visible{
+    drone_shadow(wep)
+    drone_shadow(bwep)
+}
+
+#define drone_shadow(w)
+if !is_object(w) exit
+if lq_defget(w, "is_drone", 0){
+    draw_sprite(shd16, 0, w.x, w.y + 12)
 }
 
 
@@ -329,29 +340,34 @@ if instance_exists(obj){
 }
 return found
 
-#define get_n_targets(_x, _y, obj, amount)
+#define get_n_targets(_x, _y, obj, varname, value, amount)
 var num = instance_number(obj),
     man = instance_nearest(_x, _y, obj),
     mans = [],
     n = 0,
     found = [];
 if instance_exists(obj){
-    while ++n <= num and variable_instance_get(man, varname) == value || (instance_is(man,prop) && !instance_is(man,Generator)){
+    while ++n <= num and amount > 0{
         man.x += 10000
         array_push(mans,man)
         man = instance_nearest(_x,_y,obj)
-    }
-    if variable_instance_get(man,varname) != value && (!instance_is(man,prop) || instance_is(man,Generator)) {
-        array_push(found, man)
-        if --amount <= 0 return found
+        if variable_instance_get(man, varname) != value && (!instance_is(man,prop) || instance_is(man,Generator)){
+            array_push(found, man)
+            amount--
+        }
     }
     with mans x-= 10000
 }
-if array_length(found) == 0 return -4
 return found
 
 #define script_ref_call_self(scr)
 return mod_script_call_self(scr[0], scr[1], scr[2])
+
+#define sound_play_hit_pitch(snd, pitch)
+var p = player_find(player_find_local_nonsync()),
+    q = audio_play_sound_at(snd, p.x - x, 0, p.y - y, 200, 400, 1, false, 1);
+audio_sound_pitch(q, pitch);
+return q;
 
 #define chance(percentage)
 return random(100) <= percentage*current_time_scale
@@ -361,6 +377,10 @@ return (b - a) * (1 - power((n - 1)/n, dn))
 
 #define angle_approach(a, b, n, dn)
 return angle_difference(a, b) * (1 - power((n - 1)/n, dn))
+
+#define get_reloadspeed(p)
+if !instance_is(p, Player) return 1
+return (p.reloadspeed + ((p.race == "venuz") * (.2 + .4 * ultra_get("venuz", 1))) + ((1 - p.my_health/p.maxhealth) * skill_get(mut_stress)))
 
 #define draw_trails
 var q = instances_matching(CustomProjectile,"name","Rocklet","big rocklet","huge rocklet")
@@ -399,7 +419,7 @@ if is_string(w){
 return 0
 
 #define step
-with WepPickup if wep = 0 instance_destroy()
+with instances_matching(WepPickup, "wep", 0) instance_destroy()
 
 with instances_matching(WepPickup,"chargecheck",null){
     chargecheck = 1
@@ -425,7 +445,7 @@ if instance_exists(GenCont){
     draw_clear_alpha(c_black,0)
     surface_reset_target()
 }
-with instances_matching(WepPickup,"wep",0){instance_delete(self)}
+
 if global.SAKmode && mod_exists("weapon","sak"){
     with instances_matching(instances_matching(WepPickup,"roll",1),"saked",undefined){
         saked = 1
@@ -1278,7 +1298,7 @@ texture_set_repeat(1)
 var tex, w, scroll, s;
 w = 256;
 tex = sprite_get_texture(global.stripes, 0);
-var n = 2;
+var n = 1.5;
 scroll = -floor(scroll mod (16 * n)) * (.004/n);
 draw_primitive_begin_texture(pr_trianglefan, tex);
 draw_vertex_texture(_x, _y, .50 + scroll, 0)
@@ -1335,6 +1355,7 @@ with instance_create(0, 0, CustomObject){
     auto = 0
     
     scroll = random(16)
+    scrollang = random(360)
     rotspeed = 3
     offspeed = 4
     lasercolour  = c_red
@@ -1344,7 +1365,7 @@ with instance_create(0, 0, CustomObject){
     payload = script_ref_create(nothing)
     
     defcharge = {
-        width : sqrt(3*abs(accbase)),
+        width : sqrt(3*abs(startsize)),
         charge : 0,
         maxcharge : 1,
         style : defcharge_bar
@@ -1419,7 +1440,7 @@ if instance_exists(creator){
         }
         if reload = -1{
             reload = hand ? creator.breload : creator.reload
-            with creator other.reload += player_reload * timescale
+            reload += get_reloadspeed(creator) * timescale
         }
         if hand creator.breload = max(reload, creator.breload)
         else creator.reload = max(reload, creator.reload)
@@ -1493,13 +1514,13 @@ if instance_exists(creator){
     x = w[0]
     y = w[1]
     
-    var kick = hand ? creator.bwkick : creator.wkick;
-    draw_sprite_ext(sprHeavyGrenadeBlink, 0, c.x + lengthdir_x(14 - kick, ang), c.y + lengthdir_y(14 - kick, ang) + 1, 1, 1, ang, lasercolour, 1)
+    var kick = hand ? creator.bwkick : creator.wkick, yoff = -4 * hand;
+    draw_sprite_ext(sprHeavyGrenadeBlink, 0, c.x + lengthdir_x(14 - kick, ang), c.y + lengthdir_y(14 - kick, ang) + 1 + yoff, 1, 1, ang, lasercolour, 1)
     var r = acc + accmin, sides = 16, a = 1 - acc/accbase;
-    mod_script_call_nc("mod", "defpack tools", "draw_polygon_striped", sides, r, 45, x, y, stripecolour, .1 + .3*a, scroll)
+    mod_script_call_nc("mod", "defpack tools", "draw_polygon_striped", sides, r, scrollang, x, y, stripecolour, .1 + .3*a, scroll)
     mod_script_call_nc("mod", "defpack tools", "draw_circle_width_colour", sides, r, 1, acc + image_angle, x, y, ringcolour, .2 + a * .8)
     mod_script_call_nc("mod", "defpack tools", "draw_circle_width_colour", sides, accmin, 1, acc + image_angle, x, y, ringcolour, .2 + a * .2)
-    draw_line_width_color(c.x + lengthdir_x(16 - kick, ang), c.y + lengthdir_y(16 - kick, ang), x, y, 1, lasercolour, lasercolour)
+    draw_line_width_color(c.x + lengthdir_x(16 - kick, ang), c.y + lengthdir_y(16 - kick, ang) + yoff, x, y, 1, lasercolour, lasercolour)
 }
 
 #define abris_hit
@@ -1534,8 +1555,8 @@ projectile_hit(other,damage,0,0)
     inst = collision_line(ox,oy,dx,dy,object,prec,notme);
     if (inst != noone) {
         while ((abs(sx) >= 1) || (abs(sy) >= 1)) {
-            sx /= 2;
-            sy /= 2;
+            sx *= .5;
+            sy *= .5;
             i = collision_line(ox,oy,dx,dy,object,prec,notme);
             if (i) {
                 dx -= sx;
@@ -2053,7 +2074,7 @@ with instance_create(_x,_y,CustomProjectile){
 }
 
 #define rocket_step
-direction -= (angle_difference(direction,direction_goal)*current_time_scale)/8
+direction -= angle_approach(direction, direction_goal, 8, current_time_scale)
 if speed > maxspeed{speed = maxspeed}
 image_angle = direction
 
@@ -2459,7 +2480,7 @@ if speed < 12{speed+=.6}
 
 
 #define create_stickydisc(_x,_y)
-with instance_create(_x,_y,CustomProjectile){
+with instance_create(_x, _y, CustomProjectile){
     damage = 4
     image_speed = .4
     name = "Sticky Disc"
@@ -2606,7 +2627,7 @@ with create_sword(x, y){
 var melee = 1;
 with instance_create(x, y, melee ? CustomSlash : CustomProjectile){
     name = "Sword"
-    damage = 25
+    damage = 20
     force  = 6
     typ = 1
     sprite_index = global.sprSword
@@ -2680,10 +2701,11 @@ repeat(2){
     e += 180
 }
 
+
 #define sword_wall
 var _p = random_range(.9,1.2)
-sound_play_pitchvol(sndChickenSword, 1.5*_p , .5)
-sound_play_pitchvol(sndSwapSword, .9* _p , .8)
+sound_play_hit_pitch(sndChickenSword, 1.5 * _p)
+sound_play_hit_pitch(sndBoltHitWall, .8 * _p)
 with instance_create(x, y, CustomObject){
     sprite_index = other.spr_dead
     image_angle = other.direction
@@ -2705,6 +2727,7 @@ with instance_create(x, y, CustomObject){
 }
 instance_destroy()
 
+
 #define sword_hit
 var d = other.my_health > damage/2;
 var a = other;
@@ -2713,7 +2736,7 @@ other.x += 10000
 var q = instance_nearest_matching_ne(x, y, hitme, "team", team)
 if instance_exists(q) and q != other and q.mask_index != mskNone and distance_to_object(q) < slashrange{
     projectile_hit(q, damage, force, point_direction(x, y, q.x, q.y))
-    sound_play_hit_big(sndChickenSword, .2)
+    sound_play_hit_pitch(sndChickenSword, 1.4*random_range(.9,1.2))
     with instance_create(q.x, q.y, CustomObject){
         sprite_index = global.sprSwordSlash
         image_angle = point_direction(other.x, other.y, q.x, q.y)
@@ -2879,6 +2902,7 @@ with instance_create(xx, yy, CustomProjectile){
     damage = 20
     force = 7
     
+    name = "Sniper Bullet"
     on_wall = nothing
     on_hit = sniper_hit
     on_end_step = sniper_end_step
@@ -2992,7 +3016,6 @@ with dudes{
     n += w*s
 }
 
-
 #define bolt_line(x1, y1, x2, y2, width, col1, col2)
 var dis = point_distance(x1, y1, x2, y2) + 1;
 var dir = point_direction(x1, y1, x2, y2)
@@ -3006,7 +3029,6 @@ for var i = 0; i <= num; i++{
     }
 }
 
-
 #define muzzle_step
 time -= current_time_scale
 if image_index + image_speed*current_time_scale > 1 or time < 0{instance_destroy()}
@@ -3018,6 +3040,166 @@ draw_sprite_ext(sprite_index, image_index, x, y, 4*image_xscale, 2*image_yscale,
 draw_set_blend_mode(bm_normal);
 
 
+#define smarter_gun_step(p)
+var w = p ? wep : bwep;
+if !is_object(w) or "is_drone" not in w{
+    if p wep = smarter_gun_init(wep)
+    else bwep = smarter_gun_init(bwep)
+}
+smart_step(self, p ? wep : bwep, sign(p - .1))
+
+w = p ? wep : bwep
+var name = w.wep, c = weapon_get_cost(w), l = weapon_get_load(w)
+
+if ammo[1] >= c or infammo != 0 {
+    if (p and reload <= 0 and !button_check(index, "fire")) or (!p and breload <= 0 and !(button_check(index, "spec") and race = "steroids")){
+        if mod_script_call_self("weapon", name, "shoot", w, 0){
+            if p reload += l
+            else breload += l
+            if infammo = 0 ammo[1] -= c
+        }
+    }
+}
+
+if !p && race != "steroids" && breload > 0{
+    breload -= get_reloadspeed(self)
+}
+
+#define smarter_gun_init(_wep)
+if !is_object(_wep) _wep = {
+    wep : _wep
+}
+with _wep {
+    x = other.x
+    y = other.y
+    xgoal = x
+    ygoal = y
+    yoff = 0
+    gunangle = 0
+    kick = 0
+    is_drone = 1
+}
+return _wep
+
+#define smart_step(c, w, p)
+var timescale = current_time_scale;
+with w{
+    x += approach(x, xgoal, 4, timescale) - lengthdir_x(kick, gunangle)/2
+    y += approach(y, ygoal, 4, timescale) - lengthdir_y(kick, gunangle)/2
+    yoff = (sin(current_frame/10) * 3 * p)
+    
+    var l = 24, a = c.gunangle + 180 + 50 * p, d = 6;
+    
+    var wantx = c.x + 24 * p 
+    var wanty = c.y - 24 
+    
+    var q = collision_line_first(c.x, c.y, wantx, wanty, Wall, 0, 0), a = point_direction(c.x, c.y, wantx, wanty);
+    xgoal = q[0] - lengthdir_x(d, a)
+    ygoal = q[1] - lengthdir_y(d, a)
+    
+    kick -= clamp(sign(kick) * timescale/2, -kick * timescale, kick * timescale)
+}
+
+#define smarter_gun_sprite(spr, w)
+if instance_is(self,Player){
+    if is_object(w){
+        draw_sprite_ext(spr, 0, w.x, w.y + w.yoff, w.kick != 0 ? sign(lengthdir_x(1, w.gunangle)) : right, 1, 0, c_white, 1)
+        return mskNothing
+    }
+}
+return spr
+
+
+#define create_vector(x, y)
+with instance_create(x, y, CustomProjectile){
+	name = "Vector"
+	loss = .1-skill_get(17)*.04
+	pierce = 1
+	damage = 5 + 2 * skill_get(mut_laser_brain)
+    langle = 0
+	lspeed = 10-skill_get(17)*4
+	sprite_index = global.sprVector
+	mask_index = mskLaser
+	on_step = vector_step
+	on_hit  = vector_hit
+	on_wall = vector_wall
+	on_draw = vector_draw
+	image_yscale = 1.5
+	ammo = 1
+	return id
+}
+
+#define vector_wall
+with instance_create(x+lengthdir_x(-12,image_angle),y+lengthdir_y(-12,image_angle),PlasmaImpact){
+	sound_play(sndPlasmaHit)
+	creator = other.creator
+	team = other.team
+	sprite_index = global.sprVectorImpact
+}
+repeat(irandom_range(6,8)){instance_create(x+lengthdir_x(random_range(1,5),image_angle-180),y,Smoke)}
+instance_destroy();
+
+#define vector_step
+if ammo > 0 {
+	ammo -= current_time_scale
+	if ammo <= 0{
+        if irandom(4-skill_get(17)) < 1{
+        	var _s = choose(random_range(-10,-4),random_range(4,10))
+        	var s_ = choose(random_range(-10,-4),random_range(4,10))
+            with instance_create(x+s_,y+_s,BulletHit){
+                sprite_index = global.sprVectorEffect
+                image_angle = other.image_angle
+                motion_add(other.image_angle,choose(1,2))
+            }
+        }
+        var ang = langle;
+        var near = instance_nearest_matching_ne(x, y, hitme, "team", team)
+        if instance_exists(near){
+            if distance_to_object(near) < 120 && !collision_line(x,y,near.x,near.y,Wall,0,0){
+                var dir = angle_difference(ang, point_direction(x,y,near.x,near.y));
+                if abs(dir) < 45 {
+                    var cap = 45;
+                    ang -= clamp(dir,-cap,cap)
+                }
+            }
+        }
+        var _x = x + lengthdir_x(lspeed, ang), _y = y + lengthdir_y(lspeed, ang);
+        with create_vector(_x, _y){
+            lspeed = other.lspeed
+            image_xscale = lspeed/2
+            pierce = other.pierce
+            creator = other.creator
+            langle = other.langle
+            team = other.team
+            image_angle = ang
+            if place_meeting(x,y,Wall) ammo = 0
+        }
+        pierce = 0
+    }
+}
+image_yscale -= loss*current_time_scale
+if image_yscale <= 0 instance_destroy()
+
+
+#define vector_draw
+draw_self()
+if ammo > 0 draw_sprite_ext(global.sprVectorHead, 0, x, y, 2, 2, image_angle-45, image_blend, 1)
+
+#define vector_hit
+if projectile_canhit_melee(other){
+    pierce -= 1
+    instance_create(other.x,other.y,Smoke)
+    projectile_hit(other, damage, lspeed/other.size, image_angle)
+}
+if pierce <= 0 && ammo{
+    with instance_create(x,y,PlasmaImpact){
+        sound_play(sndPlasmaHit)
+        creator = other.creator
+        team = other.team
+        sprite_index = global.sprVectorImpact
+    }
+    instance_destroy()
+}
 
 
 

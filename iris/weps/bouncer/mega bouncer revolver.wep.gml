@@ -134,7 +134,7 @@ repeat(6) instance_create(x,y,Smoke) motion_add(random(360),random_range(1,3))
 with instance_create(x,y,BulletHit){sprite_index = sprSlugHit;image_index = 1}
 
 #define mega_step
-image_angle += turnspeed * turn
+image_angle += turnspeed * turn * current_time_scale
 
 #define mega_anim
 image_index = 1

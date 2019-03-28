@@ -51,57 +51,47 @@ with instance_create(x,y,CustomObject)
 	creator = other
 	charge    = 0
     maxcharge = 20
+    defcharge = {
+        style : 0,
+        width : 12,
+        charge : 0,
+        maxcharge : maxcharge
+    }
 	charged = 0
-	holdtime = 5 * 30
-	depth = TopCont.depth
 	index = creator.index
-	undef = view_pan_factor[index]
-	on_step 	 = bow_step
+	on_step    = bow_step
 	on_destroy = bow_destroy
 	on_cleanup = bow_cleanup
+	reload = -1
 	btn = other.specfiring ? "spec" : "fire"
+	hand = other.specfiring and other.race == "steroids"
 }
 
 #define bow_step
 if !instance_exists(creator){instance_delete(self);exit}
 var timescale = (mod_variable_get("weapon", "stopwatch", "slowed") == 1) ? 30/room_speed : current_time_scale;
-with creator weapon_post(0,-(min(other.charge/other.maxcharge*10, point_distance(x,y,mouse_x[index],mouse_y[index]))) * timescale,0)
 if button_check(index,"swap"){instance_destroy();exit}
-if btn = "fire" creator.reload = weapon_get_load(creator.wep)
-if btn = "spec"{
-    if creator.race = "steroids"
-        creator.breload = weapon_get_load(creator.bwep)
-    else
-        creator.reload = max(weapon_get_load(creator.wep) * array_length_1d(instances_matching(instances_matching(instances_matching(CustomObject, "name", name),"creator",creator),"btn",btn)), creator.reload)
+if reload = -1{
+    reload = hand ? creator.breload : creator.reload
+    reload += mod_script_call_nc("mod", "defpack tools", "get_reloadspeed", creator) * timescale
 }
+else{
+    if hand creator.breload = max(creator.breload, reload)
+    else creator.reload = max(reload, creator.reload)
+}
+view_pan_factor[index] = 3 - (charge/maxcharge * .5)
+defcharge.charge = charge
 if button_check(index,btn){
     if charge < maxcharge{
         charge += timescale;
         charged = 0
-        //if charge < 20{
-            sound_play_pitchvol(sound,sqr((charge/maxcharge) * 3.5) + 6,1 - charge/maxcharge)
-
-        //}
+        sound_play_pitchvol(sound,sqr((charge/maxcharge) * 3.5) + 6,1 - charge/maxcharge)
     }
     else{
         if current_frame mod 6 < current_time_scale creator.gunshine = 1
         charge = maxcharge;
         if charged = 0{
-          sound_play_pitch(sndSnowTankCooldown,8)
-          sound_play_pitchvol(sndShielderDeflect,4,.5)
-          sound_play_pitchvol(sndBigCursedChest,20,.1)
-          sound_play_pitchvol(sndCursedChest,12,.2)
-          with instance_create(creator.x+lengthdir_x(12,creator.gunangle),creator.y+lengthdir_y(12,creator.gunangle),ChickenB)
-          {
-              creator = other.creator
-              image_xscale = .5
-              image_yscale = .5
-              with instance_create(x,y,ChickenB)
-              {
-                  creator = other.creator
-                  image_speed = .75
-              };
-          };
+            mod_script_call_self("mod","defpack tools", "weapon_charged", creator, 12)
             charged = 1
         }
     }

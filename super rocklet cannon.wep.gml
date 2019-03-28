@@ -102,8 +102,7 @@ if fork(){
 }
 
 #define create_big_rocklet(_x,_y)
-with instance_create(x,y,CustomProjectile)
-{
+with instance_create(x,y,CustomProjectile){
     creator = other
     name = "big rocklet"
     team = other.team
@@ -125,11 +124,11 @@ with instance_create(x,y,CustomProjectile)
 }
 
 #define cannon_step
-direction -= (angle_difference(direction,direction_goal)*current_time_scale)/10
-timer+= current_time_scale
+direction -= mod_script_call_nc("mod", "defpack tools", "angle_approach", direction, direction_goal, 10, current_time_scale)
+timer += current_time_scale
 if timer >= 2 && ammo > 0{
-    timer-=2
-    anginc+= pi/3
+    timer -= 2
+    anginc += pi/3
     ammo -= 2
     var n = 90*sin(anginc);
     sound_play_pitch(sndSlugger,2)
@@ -153,14 +152,13 @@ if speed > maxspeed{speed = maxspeed}
 
 #define cannon_destroy
 var i = random(360);
-if fork(){
-    instance_create(x,y,Explosion)
-    repeat(ammo){
-        sound_play(sndExplosionS)
-        instance_create(x+lengthdir_x(16,i),y+lengthdir_y(16,i),SmallExplosion)
-        i+=ammo/360
-    }
+instance_create(x,y,Explosion)
+repeat(ammo){
+    sound_play(sndExplosionS)
+    instance_create(x+lengthdir_x(16,i),y+lengthdir_y(16,i),SmallExplosion)
+    i += 360/ammo
 }
+
 
 
 #define cannon_draw

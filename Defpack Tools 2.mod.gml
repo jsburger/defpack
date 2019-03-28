@@ -28,8 +28,7 @@ image_speed = 0
 if chance(30) instance_create(x,y,Smoke)
 
 #define bullak_hit
-if projectile_canhit_melee(other) = true
-{
+if projectile_canhit_melee(other) = true{
 	var _hp = other.my_health;
 	sleep(40)
 	projectile_hit(other,damage,force,direction)
@@ -146,7 +145,7 @@ switch p{
         }
     case "toxic bullet":
         with mod_script_call_self("mod", "defpack tools", "create_toxic_bullet", x, y){
-            speed = 10
+            speed = 16
             return id
         }
 }
@@ -222,29 +221,16 @@ with genbullak(_x, _y){
     name = "Psy Bullak"
     on_step = psy_bullak_step
     sprite_index = global.sprBullakPurple
-    damage = 30
+    damage = 12
     payload = "psy bullet"
     timer = 5
+    range = 160
+    turnspeed = .3
     return id
 }
 
 #define psy_bullak_step
-if timer > 0{
-	timer -= current_time_scale
-}
-if timer <= 0{
-	var closeboy = mod_script_call_self("mod","defpack tools","instance_nearest_matching_ne",x,y,hitme,"team",team)
-	if instance_exists(closeboy) && distance_to_object(closeboy) < 160 && collision_line(x,y,closeboy.x,closeboy.y,Wall,0,0) < 0{
-		var dir, spd;
-
-		dir = point_direction(x, y, closeboy.x, closeboy.y);
-		spd = speed * 5 * current_time_scale
-
-        var _f = .3;
-		direction -= clamp(angle_difference(image_angle, dir) * _f * current_time_scale, -spd, spd); //Smoothly rotate to aim position.
-		image_angle = direction
-	}
-}
+mod_script_call_self("mod", "defpack tools", "psy_step")
 bullak_step()
 
 #define create_toxic_bullak(_x, _y)

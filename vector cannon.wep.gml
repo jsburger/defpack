@@ -42,13 +42,11 @@ if !button_check(index,"fire") || (race = "steroids" and bwep = mod_current and 
 return "BEAMING";
 
 #define weapon_fire
-if !skill_get(17)
-{
+if !skill_get(17){
 	sound_set_track_position(sndLaser,.09)
 	sound_play_pitch(sndLaser,.2*random_range(.8,1.2))
 }
-else
-{
+else{
 	sound_set_track_position(sndLaserUpg,.2)
 	sound_play_pitch(sndLaserUpg,.4*random_range(.8,1.2))
 }
@@ -61,6 +59,8 @@ with instance_create(x,y,CustomProjectile){
     image_angle = direction
 	sprite_index = global.sprWaterBeam
 	mask_index   = global.mskWaterBeam
+	spr_head     = global.sprVectorHead
+	spr_tail     = global.sprVectorEnd
 
     on_step = beam_step
     on_wall = beam_wall
@@ -142,5 +142,5 @@ if current_frame_active{
 }
 #define beam_draw
 draw_sprite_ext(sprite_index, image_index, xstart, ystart, image_xscale, image_yscale, image_angle, image_blend, 1.0);
-	if x != xstart draw_sprite_ext(global.sprVectorBeamStart, 0, xstart, ystart, 1, image_yscale, image_angle, image_blend, 1.0);
-	if x != xstart draw_sprite_ext(global.sprVectorHead, 0, x, y, 2, image_yscale*2, image_angle-45, image_blend, 1.0);
+	if x != xstart draw_sprite_ext(spr_tail, 0, xstart, ystart, 1, image_yscale, image_angle, image_blend, 1.0);
+	if x != xstart draw_sprite_ext(spr_head, 0, x, y, 2, image_yscale*2, image_angle-45, image_blend, 1.0);

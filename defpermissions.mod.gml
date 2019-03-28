@@ -55,6 +55,8 @@ global.paletteeditor = {
 
 global.editingpalette = p1
 
+global.pause = 0
+
 global.palettes = [1 , lq_clone(p1)]
 
 global.sprButtons = sprite_add("sprites/sprButtons.png",6,5,1);
@@ -144,6 +146,15 @@ else{
 }
 save()
 
+#define permission_set(type, name, variable, value)
+with global.stuff{
+    if self[@1] == name and self[@2] == variable{
+        self[@4] = value
+        mod_variable_set(type, name, variable, value)
+    }
+}
+save()
+
 #define chat_command(cmd,arg,ind)
 if cmd = "defconfig"{
     global.configopen[ind] = !global.configopen[ind]
@@ -230,6 +241,7 @@ draw_text_shadow(x,y,str)
 draw_set_color(c_white)
 
 #macro scroll_value (current_frame/3)
+#macro scroll_pause (current_frame/4)
 
 #define draw_text_s(x, y, str, col, alpha, shadow, scroll, scroll_len)
 var w = string_width(str)
@@ -240,6 +252,9 @@ if w > scroll_len{
             s = string_delete(str, ++n, l) + ".."
         }
         return draw_text_s(x, y, s, col, alpha, shadow, 0, string_width(s))
+    }
+    if global.pause{
+        return draw_text_scrolling(x, y, str, col, alpha, shadow, floor(scroll_len/4) - 1, scroll_pause)
     }
     return draw_text_scrolling_2(x, y, str + "  ", col, alpha, shadow, scroll_len, scroll_value mod scroll_len)
 }
@@ -300,7 +315,9 @@ draw_primitive_end()
 
 #define draw_pause
 draw_set_projection(0)
+global.pause = 1
 draw_menu()
+global.pause = 0
 draw_reset_projection()
 
 #define draw_gui

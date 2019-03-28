@@ -14,10 +14,10 @@ return 1;
 return false;
 
 #define weapon_load
-return 42;
+return 32;
 
 #define weapon_cost
-return 7;
+return 10;
 
 #define weapon_swap
 return sndSwapPistol;
@@ -29,7 +29,7 @@ return -1;
 return "BOTTLED LIGHTNING";
 
 #define weapon_fire
-repeat(3)
+repeat(4)
 {
 	weapon_post(9,-6,62)
 	var _ptch = random_range(-.4,.4);

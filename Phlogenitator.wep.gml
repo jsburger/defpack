@@ -10,6 +10,12 @@ for var i = 0; i < 11; i++{
     array_push(global.animarray, sprite_duplicate_ext(global.sprPhlogenitatorAnim, i, 1))
 }
 
+wait(60)
+global.animarray = []
+for var i = 0; i < 11; i++{
+    array_push(global.animarray, sprite_duplicate_ext(global.sprPhlogenitatorAnim, i, 1))
+}
+
 
 #define weapon_name
 return "PHLOGENITATOR"
