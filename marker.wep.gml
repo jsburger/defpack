@@ -55,7 +55,7 @@ with BoltStick{
 				tar_height = 80
 				team   = 2
 				ammo   = 25
-				timer  = 45
+				timer  = 30
 				target = other.target
 				on_step = volley_step
 			}
@@ -143,7 +143,7 @@ with instance_create(x,y - n,BoltTrail){
     depth = other.depth + 1
     if fork(){
         while instance_exists(self){
-            image_alpha -= .1 * current_time_scale
+            image_alpha -= .15 * current_time_scale
             wait(0)
         }
         exit
@@ -154,7 +154,7 @@ if z < 0{
     var yoff = -8, dep = -10
     if place_meeting(x, y, Floor){
         yoff = 0
-        dep = 0
+        dep = -1
     }
     else{
         if (instance_exists(InvisiWall)){
@@ -168,7 +168,7 @@ if z < 0{
         sprite_index = global.sprBoltStickGround
         image_index = random(1)
         image_xscale = choose(-1,1)
-        image_speed = .4
+        image_speed = .5
         depth = dep
         on_step = stickstep
         if fork(){
@@ -187,7 +187,7 @@ if z < 0{
 }
 
 #define rainarrow_draw
-draw_sprite_ext(shd16,0,x,y,.3,1,0,c_white,(1-z/zstart)*.4)
+draw_sprite_ext(shd16, 0, x, y, .3, 1, 0, c_white, (1-z/zstart)*.4)
 draw_sprite_ext(sprite_index,image_index,x,y-z,image_xscale,image_yscale,270,image_blend,image_index)
 
 #define stickstep

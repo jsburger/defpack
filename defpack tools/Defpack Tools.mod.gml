@@ -106,8 +106,8 @@ vertex_format_begin()
 vertex_format_add_position()
 global.lightningformat = vertex_format_end()
 
-global.showCharge = 1
-mod_script_call_nc("mod", "defpermissions", "permission_register", "mod", mod_current, "showCharge", "Weapon Charge Indicators")
+global.chargeType = 1
+mod_script_call_nc("mod", "defpermissions", "permission_register_options", "mod", mod_current, "chargeType", "Weapon Charge Indicators", ["Off", "Wep Specific", "Bar Only", "Arc Only"])
 global.chargeSmooth = [0, 0]
 
 global.sprVectorHead   = sprite_add("sprVectorHead.png",1,8,2)
@@ -201,7 +201,7 @@ with instances_matching(CustomObject,"name","sniper charge","sniper pest charge"
 draw_set_visible_all(1)
 
 var q = instances_matching_ne(CustomObject, "defcharge", undefined);
-if global.showCharge with Player if player_is_local_nonsync(index){
+if global.chargeType with Player if player_is_local_nonsync(index){
     var matches = instances_matching(q, "creator", id)
     if race = "steroids" and is_object(bwep) and "defcharge" in bwep{
         array_push(matches, bwep)
@@ -213,11 +213,13 @@ if global.showCharge with Player if player_is_local_nonsync(index){
         var counts = array_create(2)
         with matches{
             with defcharge{
-                if power(charge/maxcharge, lq_defget(self, "power", 2)) >= .001
-                counts[style]++
+                if power(charge/maxcharge, lq_defget(self, "power", 2)) >= .001{
+                    var num = global.chargeType == 1 ? style : global.chargeType - 2;
+                    counts[num]++
+                }
             }
         }
-        var _x = mouse_x_nonsync - view_xview_nonsync, _y = mouse_y_nonsync - view_yview_nonsync;
+        var _x = mouse_x_nonsync - view_xview_nonsync - .5, _y = mouse_y_nonsync - view_yview_nonsync - .5;
         var c = player_get_color(index), _col = c;
         //counters
         var _ac = 0, _bc = 0, _am = counts[defcharge_arc], _bm = counts[defcharge_bar];
@@ -228,7 +230,7 @@ if global.showCharge with Player if player_is_local_nonsync(index){
         }
         //arc vars
         if _am{
-            var _arcpnt = 90, _p = floor(10/max(_am/2, 1)), _ah = 2, _al = 2*(_ah + 1) + 6, _arcmax = min(360, 180 * sqrt(_sm[defcharge_arc])),
+            var _arcpnt = 90, _p = ceil(10/max(_am/2, 1)), _ah = 2, _al = 2*(_ah + 1) + 6, _arcmax = min(360, 120 * sqrt(_sm[defcharge_arc])),
                 _arcspc = _arcmax/_am, _arclen = _arcspc - 8, _arcdir = _arcpnt + (_arcmax - _arcspc)/2;
             draw_arc(_x, _y + 1, _arcpnt, _al - 1, _al + _ah + 2, _arcmax, _p * _am, c_black, 1, 1)
             draw_arc(_x, _y    , _arcpnt, _al, _al + _ah + 1, _arcmax, _p * _am, 0, 1, 1)
@@ -242,7 +244,7 @@ if global.showCharge with Player if player_is_local_nonsync(index){
                     _col = c
                     var cm = power(charge/maxcharge, lq_defget(self, "power", 2)), b = lq_defget(self, "blinked", 0);
                     if cm < .001 continue
-                    if cm >= .95 {
+                    if cm >= .98 {
                         if b < 2 and b > -1{
                             blinked = b + current_time_scale
                             _col = c_white
@@ -251,9 +253,10 @@ if global.showCharge with Player if player_is_local_nonsync(index){
                     }
                     else blinked = 0
                     
-                    switch (style){
+                    var num = global.chargeType == 1 ? style : global.chargeType - 2;
+                    switch (num){
                         case defcharge_bar:
-                            var _dw = lq_defget(self, "width", 12), _w = _dw/2, _yc = _y + _bhinc * ++_bc + 4
+                            var _dw = lq_defget(self, "width", 14), _w = _dw/2, _yc = _y + _bhinc * ++_bc + 4.5
                             draw_bar(_x, _yc, _dw, _bh, c_white)
                             draw_line_width_color(_x - _w, _yc + .5, _x - _w + cm * _dw, _yc + .5, _bh, _col, _col)
                         break
@@ -265,7 +268,6 @@ if global.showCharge with Player if player_is_local_nonsync(index){
                             draw_line_width_color(_x + lengthdir_x(_al-1, _d - _ld), _y + lengthdir_y(_al-1, _d - _ld), _x + lengthdir_x(_al + _ah + 2, _d - _ld), _y + lengthdir_y(_al + _ah + 2, _d - _ld), 1, c_white, c_white)
                         break
                     }
-        
                 }
             }
         }

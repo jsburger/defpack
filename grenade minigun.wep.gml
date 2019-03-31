@@ -88,7 +88,10 @@ if ammotime <= 0 and (creator.ammo[weapon_type()] >= weapon_cost() or creator.in
     }
     ammotime = ammobase
 }
-if current_frame mod 6 < current_time_scale && charged = 1 creator.gunshine = 1
+if current_frame mod 6 < current_time_scale && charged = 1{
+    creator.gunshine = 1
+    with defcharge blinked = 1
+}
 x = creator.x + lengthdir_x(7, creator.gunangle)
 y = creator.y + lengthdir_y(7, creator.gunangle)
 

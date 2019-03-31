@@ -17,10 +17,10 @@ return global.sprWonderSword;
 return 0;
 
 #define weapon_auto
-return false;
+return 1;
 
 #define weapon_load
-return 1;
+return 12;
 
 #define weapon_cost
 return 0;
@@ -29,22 +29,162 @@ return 0;
 return sndSwapHammer;
 
 #define weapon_area
-if UberCont.hardmode = 1 return 14
+if UberCont.hardmode == 1 return 14
 return -1;
 
 #define weapon_text
 return "@yWonder @swhat @yis @sthis sword";
 
 #define weapon_gold
-return 1;
+if UberCont.hardmode == 1 return 1;
+return -1
 
 #define weapon_reloaded
 return -1;
 
 #define weapon_fire
+with instance_create(x, y, CustomObject){
+    name = "WonderCharge"
+    creator = other
+    team = other.team
+    hand = other.race == "steroids" and other.specfiring
+    btn = other.specfiring ? "spec" : "fire"
+    index = other.index
+    tier = 0
+    charge = 0
+    charged = 0
+    maxcharge = 45
+    supercharge = maxcharge * 3
+    var q = mod_variable_get("mod", "defpack tools", "chargeType")
+    var p = {
+        style: 1,
+        charge: 0,
+        maxcharge: maxcharge
+    }
+    if q == 1 or q == 3{
+        defcharge = [p, lq_clone(p), lq_clone(p)]
+    }
+    else defcharge = p
+    
+    on_step = charge_step
+    on_destroy = charge_destroy
+}
+
+#define charge_step
+if (instance_exists(creator) and button_check(index, btn)) and !button_pressed(index, "swap"){
+    var _reloads = [0, 26, 12, 32];
+    if hand creator.breload = max(_reloads[tier] + 12, creator.breload)
+    else creator.reload = max(_reloads[tier] + 12, creator.reload)
+    if !charged{
+        charge += mod_script_call_nc("mod", "defpack tools", "get_reloadspeed", creator) * current_time_scale
+        charge = min(charge, maxcharge)
+        var p = is_array(defcharge) ? defcharge[tier] : defcharge
+        p.charge = charge
+    }
+    if charge >= maxcharge and !charged{
+        if tier <= 2{
+            tier++
+            charge = 0
+            creator.gunshine = 7
+            with defcharge blinked = 1
+            sound_play_pitch(sndSwapGold, .6 + tier * .1)
+            sound_play_pitchvol(sndGoldPickup, .6 + tier * .1, .2)
+            with instance_create(creator.x, creator.y - 27, CustomObject){
+                image_alpha = 0
+                num = other.tier
+                sprite_index = sprGroundFlameBigDisappear
+                motion_add(90, 2)
+                friction = .2
+                bimage_index = image_index
+                image_speed = .45 - .05 * (other.tier + 1)
+                depth = -8
+                on_step = flarefire_step
+                on_draw = flarefire_draw
+            }
+            if tier == 3{
+                charged = 1
+            }
+        }
+    }
+    if charged{
+        if current_frame mod 6 < current_time_scale{
+            creator.gunshine = 5
+            with defcharge blinked = 1
+        }
+    }
+    creator.wepangle = (120 + 40 * power((charge + maxcharge * tier)/supercharge, 3)) * sign(creator.wepangle)
+}
+else instance_destroy()
+
+#define charge_destroy
+var _shakes = [12, 21, 40, 74],
+    _reloads = [0, 26, 12, 32],
+    _damages = [20, 28, 34, 40],
+    _frames = [4, 10, 20, 70],
+    _tier = tier;
+with creator{
+	sound_play_gun(sndBlackSword,.5,0)
+	sound_play_gun(sndGoldWrench,.6,0)
+	sound_play_pitch(sndGoldScrewdriver,.6)
+	if _tier > 0{
+    	sound_play_pitchvol(sndGoldDiscgun,.8,.4)
+    	sound_play_pitch(sndEnemySlash,1.4)
+    	if _tier > 1{
+        	sound_play_pitch(sndIncinerator,.8)
+        	if _tier > 2{
+            	sound_play_pitch(sndFireShotgun,random_range(.6,.8))
+            	sound_play_pitchvol(sndFlameCannonEnd,.7,.5)
+        	}
+    	}
+	}
+	
+    with instance_create(x + lengthdir_x(20 * skill_get(mut_long_arms), gunangle), y + lengthdir_y(20 * skill_get(mut_long_arms), gunangle), Slash){
+        if _tier > 0{
+            mask_index = mskMegaSlash
+            sprite_index = global.sprGoldSlashBig
+        }
+        else{
+            mask_index = mskSlash
+            sprite_index = global.sprGoldSlash
+        }
+        motion_set(other.gunangle, 2 + 3 * skill_get(mut_long_arms))
+        image_angle = direction
+        projectile_init(other.team, other)
+        if _tier >= 2{
+			repeat(7){
+			    for var i = -1; i <= 1; i++{
+			        with instance_create(x, y, Flame){
+			            motion_set(other.direction + 20*i, 4)
+			            move_contact_solid(direction, 65 - abs(5*i))
+			            direction += random_range(-34,34)
+			            projectile_init(other.team, other.creator)
+			        }
+			    }
+			}
+        }
+        damage = _damages[_tier]
+    }
+    sleep(_frames[_tier])
+    motion_add(gunangle, 4)
+    weapon_post(0, 0, _shakes[_tier])
+    var n = 12 + _reloads[_tier]
+    if button_pressed(index, "swap") other.hand = !other.hand
+    if !other.hand{
+        reload = max(n, reload)
+        wkick = 9
+        wepangle = -120 * sign(wepangle)
+    }
+    else{
+        breload = max(n, reload)
+        bwkick = 9 * sign(bwepangle)
+        bwepangle = -120 * sign(bwepangle)
+    }
+    
+}
 
 
 #define step(w)
+exit
 if "wondershit" not in self{
 	wondershit = [0,0]
 	bwondershit = [0,0]
@@ -423,77 +563,3 @@ repeat(num)
 	draw_set_blend_mode(bm_normal);
 	j -= 1/3
 }
-/*
-sound_play(sndScrewdriver)
-wkick = 9
-wepangle = -wepangle
-motion_add(gunangle, 4)
-with instance_create(x+lengthdir_x(12,gunangle),y+lengthdir_y(12,direction),CustomProjectile)
-{
-	damage = 50
-	force = 30
-	name = "Sweetspot"
-	parent = noone
-	creator = other
-	sprite_index = global.mskGuardSlash
-	mask_index = global.mskGuardSlash
-	image_alpha = 0
-	depth -= 1
-	direction = other.gunangle
-	image_angle = direction
-	team = other.team
-	on_step = sweetspot_step
-	on_wall = actually_nothing
-	on_hit = sweetspot_hit
-	on_draw = sweetspot_draw
-}
-wait(1)
-with instance_create(x+lengthdir_x(6,gunangle),y+lengthdir_y(6,gunangle),Slash)
-{
-	with CustomProjectile
-	{
-		if ("name" in self && name = "Sweetspot")
-		if parent = noone{parent = other}
-	}
-	damage = 30
-	image_xscale = .88
-	image_yscale = .88
-	creator = other
-	sprite_index = global.sprWonderSlash
-	mask_index = mskMegaSlash
-	motion_add(other.gunangle, 6 + (skill_get(13) * 3))
-	image_angle = direction
-	team = other.team
-	if skill_get(13) {
-		x += 4 *hspeed;
-		y += 4 *vspeed
-	}
-}
-
-#define sweetspot_step
-if instance_exists(parent)
-{
-	if  parent != noone
-	{
-		x = parent.x+lengthdir_x(12,direction)
-		y = parent.y+lengthdir_y(12,direction)
-		direction = parent.direction
-		iamge_angle = direction
-	}
-}
-else{instance_destroy();exit}
-speed = 0
-
-#define sweetspot_hit
-if other.sprite_index != other.spr_hurt{projectile_hit(other, damage, force, direction)};
-//instance_create(other.x,other.y,SmallExplosion)
-repeat(5)with instance_create(x+random_range(-14,14),y+random_range(-14,14),FireFly){image_blend = c_red}
-
-#define sweetspot_draw
-draw_self()
-draw_sprite_ext(global.sprWonderSlash,image_index,x,y,1,1,image_angle,c_white,1)
-
-
-#define actually_nothing
-
-#macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)

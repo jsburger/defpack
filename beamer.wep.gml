@@ -45,7 +45,7 @@ return "MASSIVE POWER";
 #define weapon_fire
 var p = random_range(.8,1.2)
 if !skill_get(17){
-	sound_set_track_position(sndLaser,.09)
+	//sound_set_track_position(sndLaser,.09)
 	sound_play_pitch(sndLaser,.2*p)
 	sound_play_charge(sndLaser, 1, .09)
 }
@@ -119,12 +119,12 @@ if floor(ammo) < current_time_scale and floor(ammo) >= 0{
         sound = -1
         time = 28
         image_speed = 0
-        repeat(1+skill_get(mut_laser_brain))with sound_play_charge(sndLaserUpg, 1, .33){
+        /*repeat(1+skill_get(mut_laser_brain))with sound_play_charge(sndLaserUpg, 1, .33){
             creator = noone
             pitch = 2
             decel = -.05 * random_range(.9, 1.2)
             lifetime = 40
-        }
+        }*/
         with sound_play_charge(sndEnergyHammerUpg, .6, .32){
             creator = noone
             pitch = .7

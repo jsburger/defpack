@@ -34,7 +34,7 @@ with instance_create(x+lengthdir_x(3,gunangle),y+lengthdir_y(3,gunangle),CustomP
 	sprite_index = global.sprSonicNade
 	team = other.team
 	creator = other
-	friction = .5 + .03 //might help with defense lets see
+	friction = .5
 	damage = 5
 	force = 5
 	bounce = 2
@@ -44,7 +44,7 @@ with instance_create(x+lengthdir_x(3,gunangle),y+lengthdir_y(3,gunangle),CustomP
 	if other.object_index = Player{
 		var _x = mouse_x[other.index]+random_range(-16,16)*other.accuracy;
 		var _y = mouse_y[other.index]+random_range(-16,16)*other.accuracy;
-		motion_add(point_direction(x,y,_x,_y),max(sqrt(point_distance(_x,_y,x,y)),10,sqrt(point_distance(_x,_y,x,y))))
+		motion_add(point_direction(x,y,_x,_y),max(sqrt(point_distance(_x,_y,x,y)),10))
 	}else{
 		motion_add(other.gunangle,10)
 	}

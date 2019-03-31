@@ -49,7 +49,7 @@ if instance_exists(self){
 		if other.object_index = Player{
 			var _x = mouse_x[other.index]+random_range(-22,22)*other.accuracy;
 			var _y = mouse_y[other.index]+random_range(-22,22)*other.accuracy;
-			motion_add(point_direction(x,y,_x,_y),max(sqrt(point_distance(_x,_y,x,y)),10,sqrt(point_distance(_x,_y,x,y))))
+			motion_add(point_direction(x,y,_x,_y),max(sqrt(point_distance(_x,_y,x,y)),10))
 		}else{
 			motion_add(other.gunangle,10)
 		}

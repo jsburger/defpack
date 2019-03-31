@@ -73,7 +73,7 @@ with instance_create(x,y,CustomObject){
     maxcharge = 25
     defcharge = {
         style : 0,
-        width : 12,
+        width : 14,
         charge : 0,
         maxcharge : maxcharge
     }
@@ -106,12 +106,15 @@ view_pan_factor[index] = 3 - (charge/maxcharge * .5)
 defcharge.charge = charge
 if button_check(index, btn){
     if charge < maxcharge{
-        charge += timescale;
+        charge += mod_script_call_nc("mod", "defpack tools", "get_reloadspeed", creator) * timescale;
         charged = 0
         sound_play_pitchvol(sound,sqr((charge/maxcharge) * 3.5) + 6,1 - charge/maxcharge)
     }
     else{
-        if current_frame mod 6 < current_time_scale creator.gunshine = 1
+        if current_frame mod 6 < current_time_scale {
+            creator.gunshine = 1
+            with defcharge blinked = 1
+        }
         charge = maxcharge;
         if charged = 0{
             mod_script_call_self("mod","defpack tools", "weapon_charged", creator, 12)

@@ -1132,7 +1132,7 @@ return {
 }
 
 #define step(q)
-if q && (!is_object(wep) || button_pressed(index, "horn")){
+if q && !is_object(wep){
 	wep = get_blank()
 }
 if q && is_object(wep) && wep.wep = mod_current && !wep.done{

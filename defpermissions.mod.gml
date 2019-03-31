@@ -127,9 +127,9 @@ else{
 }
 save()
 
-#define permission_register_range(type,name,variable,desc,minimum,maximum)
+#define permission_register_range(type,name,variable,desc,range,label)
 while !file_exists("data/defpermissions.mod/defconfig.txt") {wait(0)}
-var arr = [type,name,variable,desc,mod_variable_get(type,name,variable),1,minimum,maximum];
+var arr = [type,name,variable,desc,mod_variable_get(type,name,variable),1,range,label];
 var count = 0;
 for var o = 0; o < array_length_1d(global.stuff); o++{
     if name = global.stuff[o][1] && variable = global.stuff[o][2]{
@@ -141,10 +141,31 @@ if count = 0 array_push(global.stuff,arr)
 else{
     mod_variable_set(global.stuff[o][0],global.stuff[o][1],global.stuff[o][2],global.stuff[o][4])
     global.stuff[o,3] = desc
-    global.stuff[o,6] = minimum
-    global.stuff[o,7] = maximum
+    global.stuff[o,6] = range
+    global.stuff[o,7] = label
 }
 save()
+
+#define permission_register_options(type,name,variable,desc,options)
+while !file_exists("data/defpermissions.mod/defconfig.txt") {wait(0)}
+var l = array_length(options)
+var arr = [type, name, variable, desc, mod_variable_get(type,name,variable) mod l, 2, l, options];
+var count = 0;
+for var o = 0; o < array_length(global.stuff); o++{
+    if name = global.stuff[o][1] && variable = global.stuff[o][2]{
+        count = 1
+        break
+    }
+}
+if count == 0 array_push(global.stuff, arr)
+else{
+    mod_variable_set(global.stuff[o][0], global.stuff[o][1], global.stuff[o][2], global.stuff[o][4] mod l)
+    global.stuff[o,3] = desc
+    global.stuff[o,6] = l
+    global.stuff[o,7] = options
+}
+save()
+
 
 #define permission_set(type, name, variable, value)
 with global.stuff{
@@ -243,10 +264,10 @@ draw_set_color(c_white)
 #macro scroll_value (current_frame/3)
 #macro scroll_pause (current_frame/4)
 
-#define draw_text_s(x, y, str, col, alpha, shadow, scroll, scroll_len)
+#define draw_text_s(x, y, str, col, alpha, shadow, canscroll, scroll_len)
 var w = string_width(str)
 if w > scroll_len{
-    if !scroll{
+    if !canscroll{
         var n = 0, s = "", l = string_length(str), m = 0
         while string_width(s) < scroll_len and ++m < 20{
             s = string_delete(str, ++n, l) + ".."
@@ -345,7 +366,7 @@ for (var i = 0; i < maxp; i++) if player_is_active(i){
     draw_set_visible_all(0)
     draw_set_visible(i,1)
     //menu width, menu height, scroll bar width
-    var mw = 80, mh = 100, sw = 6, sh = 8;
+    var mw = 80, mh = 80, sw = 6, sh = 8;
     var _x =  -mw*global.buttonsopen[i] - 4 - sw + game_width, _y = 40;
     //cell width, cell height
     var cw = mw, ch = 20;
@@ -682,7 +703,7 @@ for (var i = 0; i < maxp; i++) if player_is_active(i){
             draw_rectangle_c(_x,_y3+1,_x2,_y4-1,mouse ? p.cellhighlight : col);
             //perm name
             draw_text_s(_x+2, _y3, global.stuff[h+o][3], p.textcolor, 1, 1, mouse, 75)
-            //v is value
+            //v is value, typ is the perm type
             var v = global.stuff[h+o][4];
             var typ = global.stuff[h+o][5];
             //toggle style permissions
@@ -721,6 +742,12 @@ for (var i = 0; i < maxp; i++) if player_is_active(i){
                 draw_line_width_color(bxe, by+1, bxe+3, by+1, bh + 2, c_black, c_black)
                 draw_line_width_color(bxe, by, bxe+2, by, bh + 2, p.bartip, p.bartip)
                 
+                var w = string_width(global.stuff[h+o][3])
+                if cw - w > 16{
+                    draw_text_s(_x + w + 4, _y3, global.stuff[h+o][1], p.modlabel, .6, 0, mouse, cw - w - 6)
+                }
+
+                
                 draw_set_halign(1)
                 var tex = string(v)
                 if v == global.stuff[h+o][6][0] tex = global.stuff[h+o][7][0]
@@ -742,6 +769,39 @@ for (var i = 0; i < maxp; i++) if player_is_active(i){
                         exit
                     }
                 }
+            }
+            //option style permissions
+            else if typ == 2{
+                var ar = global.stuff[h+o][7], len = global.stuff[h+o][6];
+                var pd = 2, bw = cw - 2 * pd, bx = _x + 2, by = _y4 - 6, bh = 7;
+                
+                draw_line_width_color(bx-1, by-.5, bx + bw, by-.5, bh+1, c_black, c_black)
+                draw_line_width_color(bx, by, bx + bw, by, bh, p.barbg, p.barbg)
+                
+                var w = string_width(global.stuff[h+o][3])
+                if cw - w > 16{
+                    draw_text_s(_x + w + 4, _y3, global.stuff[h+o][1], p.modlabel, .6, 0, mouse, cw - w - 4)
+                }
+                
+                draw_set_halign(1)
+                var tex = ar[v]
+                draw_text_s(bx + bw/2, by - 5.5, tex, p.bartext, 1, 1, mouse, bw - 2*pd)
+                draw_set_halign(0)
+                
+                if mouse and released{
+                    var a = array_clone(global.stuff[h+o]);
+                    var num = (v + 1) mod len;
+                    mod_variable_set(a[0],a[1],a[2],num);
+                    global.stuff[h+o,4] = num;
+                    click(1.5 * num)
+                    if fork(){
+                        //delay is for making sure that if the game crashes from an option change, the option isnt saved
+                        wait(3)
+                        save()
+                        exit
+                    }
+                }
+                
             }
             o++
             _y+=2

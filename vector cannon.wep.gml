@@ -33,8 +33,7 @@ return sndSwapEnergy;
 return 13;
 
 #define weapon_reloaded
-if !button_check(index,"fire") || (race = "steroids" and bwep = mod_current and !button_check(index,"spec"))
-{
+if !button_check(index,"fire") || (race = "steroids" and bwep = mod_current and !button_check(index,"spec")){
 	sound_play_pitchvol(sndIDPDNadeAlmost,.5,.2)
 	sound_play_pitchvol(sndPlasmaReload,1.4,.4)
 }
@@ -59,8 +58,8 @@ with instance_create(x,y,CustomProjectile){
     image_angle = direction
 	sprite_index = global.sprWaterBeam
 	mask_index   = global.mskWaterBeam
+	spr_tail     = global.sprVectorBeamStart
 	spr_head     = global.sprVectorHead
-	spr_tail     = global.sprVectorEnd
 
     on_step = beam_step
     on_wall = beam_wall
