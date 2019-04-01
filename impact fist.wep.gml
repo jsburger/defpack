@@ -69,7 +69,7 @@ if lifespan < 14 with other if typ > 0 instance_destroy()
 #define fistanim
 
 #define fisthit
-if lifespan < 8 and (floor(current_frame) < current_frame + current_time_scale){
+if lifespan < 8 and (floor(current_frame) < current_frame + current_time_scale) and (projectile_canhit_melee(other) or other.size < 4){
     projectile_hit(other, damage, direction, 40)
     //other.speed += 40
     sleep(100)

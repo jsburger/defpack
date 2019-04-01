@@ -26,6 +26,7 @@
 //OTHER BOLT
 
 /loadwep marker
+/loadwep knife thrower
 /loadwep sword thrower
 /loadwep heavy toxic crossbow
 /loadwep hyper crossbow

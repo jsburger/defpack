@@ -55,17 +55,13 @@ with instance_create(x, y, CustomObject){
     charged = 0
     maxcharge = 45
     supercharge = maxcharge * 3
-    var q = mod_variable_get("mod", "defpack tools", "chargeType")
     var p = {
         style: 1,
         charge: 0,
         maxcharge: maxcharge
     }
-    if q == 1 or q == 3{
         defcharge = [p, lq_clone(p), lq_clone(p)]
-    }
-    else defcharge = p
-    
+
     on_step = charge_step
     on_destroy = charge_destroy
 }
@@ -78,8 +74,7 @@ if (instance_exists(creator) and button_check(index, btn)) and !button_pressed(i
     if !charged{
         charge += mod_script_call_nc("mod", "defpack tools", "get_reloadspeed", creator) * current_time_scale
         charge = min(charge, maxcharge)
-        var p = is_array(defcharge) ? defcharge[tier] : defcharge
-        p.charge = charge
+        defcharge[tier].charge = charge
     }
     if charge >= maxcharge and !charged{
         if tier <= 2{

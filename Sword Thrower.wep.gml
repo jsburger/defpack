@@ -1,6 +1,5 @@
 #define init
 global.sprSwordThrower = sprite_add_weapon("sprites/sprSwordThrower.png", 2, 4)
-global.last = -4
 #define weapon_name
 return "SWORD THROWER"
 #define weapon_type
@@ -8,7 +7,7 @@ return 3
 #define weapon_cost
 return 2
 #define weapon_area
-return 7
+return 8
 #define weapon_load
 return 25
 #define weapon_swap
@@ -24,7 +23,7 @@ return global.sprSwordThrower
 #define weapon_reloaded
 
 #define weapon_text
-return choose("SHARP AS ALL CAN BE", "@wSWORDS@s CAN HIT#TWO THINGS AT ONCE")
+return choose("SHARP AS ALL CAN BE", "@wSWORDS@s CAN HIT TWO THINGS AT ONCE")
 
 #define weapon_fire
 var _p = random_range(.8, 1.2)
@@ -37,13 +36,4 @@ with mod_script_call_nc("mod", "defpack tools", "create_sword", x, y){
     image_yscale = -other.right
     projectile_init(other.team, other)
     image_angle = direction
-    global.last = id
 }
-
-#define step
-if instance_exists(global.last){
-    if (current_frame mod 4) < current_time_scale with global.last{
-        sound_play_hit(sndMeleeFlip, .1)
-    }
-}
-else global.last = -4

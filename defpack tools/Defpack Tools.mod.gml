@@ -189,8 +189,8 @@ with instances_matching(CustomObject,"name","sniper charge","sniper pest charge"
     if charged = 0{if (current_frame mod _m) <= current_time_scale {if _pc != c_white {_pc = c_white}else{_pc = player_get_color(creator.index)}}}
     var _offset = charge;
     var _vpf    = 3;
-    var _mx     = x - view_xview[creator.index];
-    var _my     = y - view_yview[creator.index];
+    var _mx     = mouse_x_nonsync - view_xview_nonsync + .5;
+    var _my     = mouse_y_nonsync - view_yview_nonsync + .5;
     for var i = -1; i <= 1; i += 2{
         for var o = -1; o <= 1; o += 2{
             draw_sprite_ext(global.sprAim, 0, _mx + (_vpf - _offset + 100) * i, _my + (_vpf - _offset + 100) * o, -i, -o, 0, _pc, .1 + .9*charge/100)
@@ -200,7 +200,7 @@ with instances_matching(CustomObject,"name","sniper charge","sniper pest charge"
 }
 draw_set_visible_all(1)
 
-var q = instances_matching_ne(CustomObject, "defcharge", undefined);
+var q = instances_matching_ne([CustomObject, CustomProjectile], "defcharge", undefined);
 if global.chargeType with Player if player_is_local_nonsync(index){
     var matches = instances_matching(q, "creator", id)
     if race = "steroids" and is_object(bwep) and "defcharge" in bwep{
@@ -244,7 +244,7 @@ if global.chargeType with Player if player_is_local_nonsync(index){
                     _col = c
                     var cm = power(charge/maxcharge, lq_defget(self, "power", 2)), b = lq_defget(self, "blinked", 0);
                     if cm < .001 continue
-                    if cm >= .98 {
+                    if cm >= .98 or b > 0{
                         if b < 2 and b > -1{
                             blinked = b + current_time_scale
                             _col = c_white
@@ -256,7 +256,7 @@ if global.chargeType with Player if player_is_local_nonsync(index){
                     var num = global.chargeType == 1 ? style : global.chargeType - 2;
                     switch (num){
                         case defcharge_bar:
-                            var _dw = lq_defget(self, "width", 14), _w = _dw/2, _yc = _y + _bhinc * ++_bc + 4.5
+                            var _dw = lq_defget(self, "width", 12), _w = _dw/2, _yc = _y + _bhinc * ++_bc + 4.5
                             draw_bar(_x, _yc, _dw, _bh, c_white)
                             draw_line_width_color(_x - _w, _yc + .5, _x - _w + cm * _dw, _yc + .5, _bh, _col, _col)
                         break
@@ -322,8 +322,11 @@ if lq_defget(w, "is_drone", 0){
 #define instances_in(left,top,right,bottom,obj)
 return instances_matching_gt(instances_matching_lt(instances_matching_gt(instances_matching_lt(obj,"y",bottom),"y",top),"x",right),"x",left)
 
+#define instances_in_bbox(left,top,right,bottom,obj)
+return instances_matching_gt(instances_matching_lt(instances_matching_gt(instances_matching_lt(obj,"bbox_top",bottom),"bbox_bottom",top),"bbox_left",right),"bbox_right",left)
+
 #define instances_seen_nonsync(obj)
-return instances_in(view_xview_nonsync,view_yview_nonsync,view_xview_nonsync+game_width,view_yview_nonsync+game_height, obj)
+return instances_in_bbox(view_xview_nonsync,view_yview_nonsync,view_xview_nonsync+game_width,view_yview_nonsync+game_height, obj)
 
 #define instance_nearest_matching_ne(_x,_y,obj,varname,value)
 var num = instance_number(obj),
@@ -369,6 +372,14 @@ return mod_script_call_self(scr[0], scr[1], scr[2])
 var p = player_find(player_find_local_nonsync()),
     q = audio_play_sound_at(snd, p.x - x, 0, p.y - y, 200, 400, 1, false, 1);
 audio_sound_pitch(q, pitch);
+return q;
+
+#define sound_play_ext(snd, x, y, pitch, vol, stack)
+if !stack sound_stop(snd);
+var p = player_find(player_find_local_nonsync()),
+    q = audio_play_sound_at(snd, p.x - x, 0, p.y - y, 200, 400, 1, false, 1);
+audio_sound_pitch(q, pitch);
+audio_sound_gain(q, vol, 0);
 return q;
 
 #define chance(percentage)
@@ -1773,8 +1784,8 @@ if chance(8 + 6*skill_get(17)) instance_create(x,y,PlasmaTrail)
 
 var closeboy = instance_nearest_matching_ne(x,y,hitme,"team",team)
 if instance_exists(closeboy) && distance_to_object(closeboy) <= 24{
-	  motion_add(point_direction(x,y,closeboy.x,closeboy.y),4*current_time_scale)
-	  maxspeed+=.5*current_time_scale
+    motion_add(point_direction(x,y,closeboy.x,closeboy.y),4*current_time_scale)
+    maxspeed+=.5*current_time_scale
 }
 image_angle = direction
 if speed > maxspeed{speed = maxspeed}
@@ -2614,9 +2625,11 @@ with create_sword(x, y){
     name = "Knife"
     damage = 10
     force = 3
-    mask_index = mskBolt
+    mask_index   = mskBolt
     sprite_index = global.sprKnife
-    spr_dead = global.sprKnifeStick
+    spr_dead     = global.sprKnifeStick
+    maxwhoosh = 3
+    anglespeed = 120
 
     defbloom.sprite = sprite_index
     slashrange = 30
@@ -2629,11 +2642,11 @@ with create_sword(x, y){
 var melee = 1;
 with instance_create(x, y, melee ? CustomSlash : CustomProjectile){
     name = "Sword"
-    damage = 20
+    damage = 25
     force  = 6
     typ = 1
     sprite_index = global.sprSword
-    mask_index   = mskHeavyBolt
+    mask_index   = mskBullet1
     spr_dead     = global.sprSwordStick
 
     defbloom = {
@@ -2647,7 +2660,9 @@ with instance_create(x, y, melee ? CustomSlash : CustomProjectile){
     anglespeed = 90
     slashrange = 40
     length = 6
-
+    whooshtime = 0
+    maxwhoosh = 4
+    
     if melee{
         on_anim = nothing
         on_projectile = sword_proj
@@ -2676,11 +2691,13 @@ defbloom.angle = draw_angle + image_angle;
 
 if skill_get(mut_bolt_marrow){
     var q = instance_nearest_matching_ne(x, y, hitme, "team", team)
-    if instance_exists(q) and q.mask_index != mskNone and point_distance(x, y, q.x, q.y) <= 20 * skill_get(mut_bolt_marrow){
+    if instance_exists(q) and q.mask_index != mskNone and point_distance(x, y, q.x, q.y) <= 20 * skill_get(mut_bolt_marrow) * 2 - length/6{
         x = q.x - hspeed_raw
         y = q.y - vspeed_raw
     }
 }
+whooshtime = (whooshtime + current_time_scale) mod maxwhoosh
+if whooshtime < current_time_scale sound_play_ext(sndMeleeFlip, x, y, 2 - length/6 + random_range(-.1, .1), length/6, 0)
 
 #define sword_end_step
 var e = 0, w = 1.5;
@@ -2702,7 +2719,6 @@ repeat(2){
     w /= 2
     e += 180
 }
-
 
 #define sword_wall
 var _p = random_range(.9,1.2)
@@ -2726,7 +2742,10 @@ with instance_create(x, y, CustomObject){
         if instance_exists(self) instance_destroy()
         exit
     }
+    other.x = x
+    other.y = y
 }
+sword_end_step()
 instance_destroy()
 
 
@@ -2751,10 +2770,11 @@ if instance_exists(q) and q != other and q.mask_index != mskNone and distance_to
 other.x -= 10000
 if d {
     with instance_create(x, y, BoltStick){
-        sprite_index = global.sprSwordStick
+        sprite_index = other.spr_dead
         target = a
         image_angle = other.direction
     }
+    sword_end_step()
     instance_destroy()
 }
 
@@ -2777,6 +2797,12 @@ with instance_create(x, y, CustomObject){
 	reload = -1
 	cost = 0
     spr_flash  = sprBullet1
+    defcharge = {
+        style: defcharge_bar,
+        charge: 0,
+        maxcharge: maxcharge,
+        width : 16
+    }
     
 	on_step    = snipercharge_step
 	on_cleanup = snipercharge_delete
@@ -2820,10 +2846,14 @@ if charge > maxcharge{
 	}
 	charged = 0
 }
+defcharge.charge = charge
 
 if charged = 0{
 	if holdtime >= 60 {var _m = 5}else{var _m = 3}
-	if current_frame mod _m < current_time_scale creator.gunshine = 1
+	if current_frame mod _m < current_time_scale{
+	    creator.gunshine = 1
+	    defcharge.blinked = 1
+	}
 	with creator with instance_create(x,y,Dust){
 		motion_add(random(360),random_range(2,3))
 	}
