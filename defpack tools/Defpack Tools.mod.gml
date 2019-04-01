@@ -83,7 +83,7 @@ global.sprMegaDiscBounce = sprite_add("sprMegaDiscBounce.png",4,12,12);
 global.sprSword      = sprite_add("sprSword.png", 1, 10, 10)
 global.sprSwordStick = sprite_add_p("sprSwordStick.png", 1, 10, 10)
 global.sprKnife      = sprite_add("sprKnife.png", 1, 7, 7)
-global.sprKnifeStick = sprite_add_p("sprKnifeStick.png", 1, 7, 7)
+global.sprKnifeStick = sprite_add_p("sprKnifeStick.png", 1, 4, 7)
 global.sprSwordSlash = sprite_add("sprSwordSlash.png", 5, 16, 16)
 
 global.sprCharge = sprite_add("sprHoldIcon.png",0,5,5)
