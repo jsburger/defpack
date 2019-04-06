@@ -28,8 +28,8 @@ return choose("LITTLE TERROR", "@wKNIVES@s CAN HIT TWO THINGS AT ONCE")
 #define weapon_fire
 var _p = random_range(.8, 1.2)
 sound_play_pitch(sndCrossbow, 2 * _p)
-sound_play_pitchvol(sndHeavySlugger, 12 * _p, .7)
-sound_play_pitch(sndSwapSword, 1.5 * _p)
+sound_play_pitchvol(sndHeavySlugger, 12 * _p, .5)
+sound_play_pitchvol(sndSwapSword, 1.5 * _p, .6)
 weapon_post(3, -20, 10)
 with mod_script_call_nc("mod", "defpack tools", "create_knife", x, y){
     motion_set(other.gunangle + random_range(-4,4) * other.accuracy, random_range(18, 22))

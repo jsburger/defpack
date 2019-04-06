@@ -368,16 +368,30 @@ return found
 #define script_ref_call_self(scr)
 return mod_script_call_self(scr[0], scr[1], scr[2])
 
+#define get_coords_nonsync()
+var _x, _y, i = player_find_local_nonsync(), p = player_find(i);
+if !instance_exists(p)
+    p = view_object[i]
+if instance_exists(p){
+    _x = p.x
+    _y = p.y
+}
+else{
+    _x = view_xview_nonsync + game_width/2
+    _y = view_yview_nonsync + game_height/2
+}
+return [_x, _y];
+
 #define sound_play_hit_pitch(snd, pitch)
-var p = player_find(player_find_local_nonsync()),
-    q = audio_play_sound_at(snd, p.x - x, 0, p.y - y, 200, 400, 1, false, 1);
+var p = get_coords_nonsync(),
+    q = audio_play_sound_at(snd, p[0] - x, 0, p[1] - y, 100, 400, 1, false, 1);
 audio_sound_pitch(q, pitch);
 return q;
 
 #define sound_play_ext(snd, x, y, pitch, vol, stack)
 if !stack sound_stop(snd);
-var p = player_find(player_find_local_nonsync()),
-    q = audio_play_sound_at(snd, p.x - x, 0, p.y - y, 200, 400, 1, false, 1);
+var p = get_coords_nonsync()
+var q = audio_play_sound_at(snd, p[0] - x, 0, p[1] - y, 100, 400, 1, false, 1);
 audio_sound_pitch(q, pitch);
 audio_sound_gain(q, vol, 0);
 return q;
@@ -2623,7 +2637,7 @@ if current_frame_active{
 #define create_knife(x, y)
 with create_sword(x, y){
     name = "Knife"
-    damage = 10
+    damage = 12
     force = 3
     mask_index   = mskBolt
     sprite_index = global.sprKnife
@@ -2632,7 +2646,7 @@ with create_sword(x, y){
     anglespeed = 120
 
     defbloom.sprite = sprite_index
-    slashrange = 30
+    slashrange = 40
     length = 4
 
     return id
@@ -2697,7 +2711,7 @@ if skill_get(mut_bolt_marrow){
     }
 }
 whooshtime = (whooshtime + current_time_scale) mod maxwhoosh
-if whooshtime < current_time_scale sound_play_ext(sndMeleeFlip, x, y, 2 - length/6 + random_range(-.1, .1), length/6, 0)
+if whooshtime < current_time_scale sound_play_ext(sndMeleeFlip, x, y, 2 - length/6 + random_range(-.1, .1), length/6, 0);
 
 #define sword_end_step
 var e = 0, w = 1.5;
@@ -2722,8 +2736,8 @@ repeat(2){
 
 #define sword_wall
 var _p = random_range(.9,1.2)
-sound_play_hit_pitch(sndChickenSword, 1.5 * _p)
-sound_play_hit_pitch(sndBoltHitWall, .8 * _p)
+sound_play_ext(sndChickenSword, x, y, 1.5 * _p, .8, 0)
+sound_play_ext(sndBoltHitWall, x, y, .8 * _p, .8, 0)
 with instance_create(x, y, CustomObject){
     sprite_index = other.spr_dead
     image_angle = other.direction
@@ -2757,7 +2771,7 @@ other.x += 10000
 var q = instance_nearest_matching_ne(x, y, hitme, "team", team)
 if instance_exists(q) and q != other and q.mask_index != mskNone and distance_to_object(q) < slashrange{
     projectile_hit(q, damage, force, point_direction(x, y, q.x, q.y))
-    sound_play_hit_pitch(sndChickenSword, 1.4*random_range(.9,1.2))
+    sound_play_ext(sndChickenSword, q.x, q.y, 1.4*random_range(.9,1.2), .8, 0)
     with instance_create(q.x, q.y, CustomObject){
         sprite_index = global.sprSwordSlash
         image_angle = point_direction(other.x, other.y, q.x, q.y)

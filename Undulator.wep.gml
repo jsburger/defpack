@@ -53,35 +53,34 @@ sound_play_pitch(sndUltraCrossbow,2.2)
 sound_play_pitch(sndHeavyRevoler,2)
 sound_play_pitch(sndIcicleBreak,2)
 sound_play_pitch(sndComputerBreak,random_range(.8,1.2))
-if instance_exists(creator)
-{
+if instance_exists(creator){
 	gunangle = creator.gunangle
 	accuracy = creator.accuracy
 	x = creator.x+lengthdir_x(15,gunangle)
 	y = creator.y+lengthdir_y(15,gunangle)
 	with creator weapon_post(7,-6,16)
-time -= current_time_scale
-if time = 0
-{
-	time = 2
-
-	with mod_script_call("mod", "defpack tools", "create_light_bullet",x+lengthdir_x(-10,gunangle),y+lengthdir_y(-10,gunangle)){
-	    creator = other.creator
-	    team = other.team
-	    motion_set(other.gunangle-4*(other.ammo_origin-other.ammo)+random_range(-2,2)*other.accuracy,13+other.ammo)
-		image_angle = direction
-		damage = 6
-	}
-	with mod_script_call("mod", "defpack tools", "create_light_bullet",x+lengthdir_x(-10,gunangle),y+lengthdir_y(-10,gunangle)){
-	    creator = other.creator
-	    team = other.team
-	    motion_set(other.gunangle+4*(other.ammo_origin-other.ammo)+random_range(-2,2)*other.accuracy,13+other.ammo)
-		image_angle = direction
-		damage = 6
-	}
-	ammo -= 1
+    time -= current_time_scale
+    if time <= 0{
+    	time = 2
+    	
+    	with mod_script_call("mod", "defpack tools", "create_light_bullet",x+lengthdir_x(-10,gunangle),y+lengthdir_y(-10,gunangle)){
+    	    creator = other.creator
+    	    team = other.team
+    	    motion_set(other.gunangle-4*(other.ammo_origin-other.ammo)+random_range(-2,2)*other.accuracy,13+other.ammo)
+    		image_angle = direction
+    		damage = 6
+    	}
+    	if ammo != 3 with mod_script_call("mod", "defpack tools", "create_light_bullet",x+lengthdir_x(-10,gunangle),y+lengthdir_y(-10,gunangle)){
+    	    creator = other.creator
+    	    team = other.team
+    	    motion_set(other.gunangle+4*(other.ammo_origin-other.ammo)+random_range(-2,2)*other.accuracy,13+other.ammo)
+    		image_angle = direction
+    		damage = 6
+    	}
+    	ammo -= 1
+    }
+    if ammo == 0
+        instance_destroy()
+    wait(3)
 }
-if ammo = 0
-instance_destroy()
-wait(3)
-}
+else instance_destroy()

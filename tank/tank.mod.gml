@@ -240,15 +240,15 @@ with Player if "tankthings" in self && driving{
 }
 
 //if button_pressed(0,"horn") tank_create(mouse_x,mouse_y)
-
-with instances_matching(WepPickup,"roll",1) if "tankcheck" not in self && !instance_exists(Portal){
-    tankcheck = 1
-    if !irandom(200){
-        crate_create(x,y)
-        instance_destroy()
+if instance_exists(GameCont) and GameCont.hard > 5{
+    with instances_matching(WepPickup,"roll",1) if "tankcheck" not in self && !instance_exists(Portal){
+        tankcheck = 1
+        if !irandom(200){
+            crate_create(x,y)
+            instance_destroy()
+        }
     }
 }
-
 
 #define draw_mount(_x,_y)
 draw_set_halign(1)

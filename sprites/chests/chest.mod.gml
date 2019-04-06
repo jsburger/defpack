@@ -60,8 +60,8 @@ chest_add("Zenith",  13, ["herald","andromeda launcher","stopwatch","sak",/*"ant
 #define step
      // replacing chests
     if !instance_exists(GenCont){
-        with instances_matching(WeaponChest, "customchestcheck", null){
-            customchestcheck = 1
+        with instances_matching(WeaponChest, "defcustomchestcheck", null){
+            defcustomchestcheck = 1
             if random(100) <= 8{
                 var q = get_chests(0, GameCont.hard + array_length(instances_matching(Player, "race", "robot")))
                 if array_length(q){
@@ -73,7 +73,7 @@ chest_add("Zenith",  13, ["herald","andromeda launcher","stopwatch","sak",/*"ant
     }
     
      // chest step
-    with instances_matching(chestprop, "name", "CustomChest"){
+    with instances_matching(chestprop, "name", "DefCustomChest"){
         if place_meeting(x, y, Player) || place_meeting(x, y, PortalShock) || instance_exists(BigPortal){
              // run open code
             script_execute(on_open)
@@ -106,7 +106,7 @@ return a
 #define customchest_create(xx, yy, Type)
     var o = instance_create(xx, yy, chestprop);
     with(o){
-        name = "CustomChest";
+        name = "DefCustomChest";
         type = Type// specifc chest type
         var q = global.chests[? Type]
         spr_open = q.spr_open

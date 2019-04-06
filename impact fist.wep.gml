@@ -62,14 +62,14 @@ sound_play_pitchvol(sndAssassinAttack,.8*r,1);
 weapon_post(-4,56,56);
 
 #define fistproj
-if lifespan < 14 with other if typ > 0 instance_destroy()
+if lifespan < 10 with other if typ > 0 instance_destroy()
 
 #define fistwall
 
 #define fistanim
 
 #define fisthit
-if lifespan < 8 and (floor(current_frame) < current_frame + current_time_scale) and (projectile_canhit_melee(other) or other.size < 4){
+if lifespan <= 4 and (floor(current_frame) < current_frame + current_time_scale) and (projectile_canhit_melee(other) or other.size < 4){
     projectile_hit(other, damage, direction, 40)
     //other.speed += 40
     sleep(100)
@@ -97,11 +97,11 @@ if lifespan < 8 and (floor(current_frame) < current_frame + current_time_scale) 
                 repeat(s/2 * n/l) with instance_create(x,y,Dust){
                     motion_set(dir - 180 + random_range(-65, 65), random_range(3, 9))
                 }
-                x += _x
-                y += _y
                 xprevious = x
                 yprevious = y
-                if place_meeting(x,y,Wall){
+                x += _x
+                y += _y
+                if place_meeting(x, y, Wall){
                     instance_create(x, y, size > 0 ? Explosion : SmallExplosion)
                     sound_play(sndExplosion)
                     break
@@ -115,13 +115,13 @@ if instance_exists(creator){
     var c = creator
     image_yscale = c.right * sign(!hand - .1)
     var k = hand ? c.bwkick : c.wkick
-    if lifespan >= 14{
+    if lifespan >= 10{
         with c{
             weapon_post(0, 4 * current_time_scale, 4 * current_time_scale)
             if other.hand bwkick = other.lifespan/3
             else wkick = other.lifespan/3
         }
-        sound_play_pitchvol(sndCrossReload, k/12, .7)
+        sound_play_pitchvol(sndCrossReload, (k + 2)/12, .7)
         image_xscale += approach(image_xscale, 0, 3.5, current_time_scale)
     }
     else{
@@ -137,7 +137,7 @@ if instance_exists(creator){
     image_angle = direction
 }
 lifespan += current_time_scale
-if lifespan > 20 instance_destroy()
+if lifespan > 16 instance_destroy()
 
 #define approach(a, b, n, dn)
 return (b - a) * (1 - power((n - 1)/n, dn))

@@ -86,7 +86,7 @@ if !is_object(w){
 }
 
 var i = 1
-repeat(3){
+repeat(3) if instance_exists(self){
     if infammo == 0 w.ammo--
     var _r = random_range(.9,1.1)
     sound_play_pitch(sndHeavyRevoler,1*_r)

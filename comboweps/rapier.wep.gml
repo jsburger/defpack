@@ -22,22 +22,22 @@ return 1
 return 1
 #define weapon_laser_sight
 return 0
-#define weapon_reloaded
-if wep = mod_current wepangle = 120 * sign(wepangle)
-if bwep = mod_current bwepangle = 120 * sign(bwepangle)
-sound_play(sndMeleeFlip)
+#define weapon_reloaded(p)
+if !button_check(index, p ? "fire" : "spec"){
+    if p wepangle = 120 * sign(wepangle)
+    else bwepangle = 120 * sign(bwepangle)
+    sound_play(sndMeleeFlip)
+}
 #define weapon_fire
 if "rapiers" not in self {rapiers = 1}
 rapiers = ++rapiers mod 3
 sound_play_pitch(sndBlackSword,random_range(1.4,1.7))
 motion_add(gunangle,5+speed)
-if rapiers != 1
-{
+if rapiers != 1{
 	sound_play_pitch(sndEnemySlash,random_range(.8,1.2))
 	wepangle = 20*wepflip
 	weapon_post(-5 - 10*skill_get(13),32,0)
-	with instance_create(x+lengthdir_x(5+20*skill_get(13),gunangle),y+lengthdir_y(5+20*skill_get(13),gunangle),Slash)
-	{
+	with instance_create(x+lengthdir_x(5+20*skill_get(13),gunangle),y+lengthdir_y(5+20*skill_get(13),gunangle),Slash){
 		canfix = false
 		damage = 6
 		team = other.team
@@ -49,39 +49,34 @@ if rapiers != 1
 		mask_index = global.mask
 	}
 }
-else
-{
+else{
 	sound_play_pitch(sndBlackSwordMega,random_range(1.4,1.7))
 	extraspeed = 12+4*skill_get(13)
 	wepangle = .1*wepflip
 	weapon_post(-10 - 10*skill_get(13),15,2)
 	move_contact_solid(gunangle,6)
-	with instance_create(x+lengthdir_x(extraspeed+20*skill_get(13),gunangle),y+lengthdir_y(extraspeed+20*skill_get(13),gunangle),Shank)
-	{
+	with instance_create(x+lengthdir_x(extraspeed+20*skill_get(13),gunangle),y+lengthdir_y(extraspeed+20*skill_get(13),gunangle),Shank){
 		canfix = false
-		damage = 25
+		damage = 20
 		team = other.team
 		creator = other
 		motion_add(other.gunangle,5)
 		image_angle = direction
 	}
 }
-if rapiers != 2
-{
+if rapiers != 2{
 	reload+=6
 }
 wepangle*=-1
 #define weapon_sprt
 return global.sword
 #define weapon_text
-return choose("@bhon @whon @rhon","make some new friends")
+return "make some new friends"
 
 #define step
-if "extraspeed" in self && current_frame_active
-{
-	if extraspeed > 0
-	{
-	    nexthurt = current_frame + 2
+if "extraspeed" in self && current_frame_active{
+	if extraspeed > 0{
+	    nexthurt = current_frame+1
 		if irandom(2) != 0{instance_create(x,y,Dust)}
 		canaim = false
 		with instance_create(x+lengthdir_x(extraspeed+20*skill_get(13),gunangle),y+lengthdir_y(extraspeed+20*skill_get(13),gunangle),Shank){

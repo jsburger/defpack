@@ -23,7 +23,7 @@ return 2;
 return sndSwapExplosive;
 
 #define weapon_area
-return 7;
+return 9;
 
 #define weapon_reloaded
 weapon_post(-1,-3,0)
