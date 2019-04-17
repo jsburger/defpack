@@ -124,13 +124,13 @@ if floor(ammo) < current_time_scale and floor(ammo) >= 0{
             pitch = 2
             decel = -.05 * random_range(.9, 1.2)
             lifetime = 40
-        }*/
+        }
         with sound_play_charge(sndEnergyHammerUpg, .6, .32){
             creator = noone
             pitch = .7
             decel = 0
             lifetime = 40
-        }
+        }*/
     }
 }
 if ammo <= 0{

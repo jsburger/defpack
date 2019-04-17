@@ -105,7 +105,7 @@ else{instance_destroy()}
 return -4
 
 #define bow_cleanup
-sound_set_track_position(sound,0)
+view_pan_factor[index] = undefined
 sound_stop(sound)
 
 #define bow_destroy
