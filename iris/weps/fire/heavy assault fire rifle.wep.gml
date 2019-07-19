@@ -1,5 +1,5 @@
 #define init
-global.sprHeavyAssaultFireRifle = sprite_add_weapon("sprites/sprHeavyFireAssaultRifle.png", 6, 2);
+global.sprHeavyAssaultFireRifle = sprite_add_weapon("sprites/sprHeavyFireAssaultRifle.png", 6, 3);
 #define weapon_name
 return "HEAVY FIRE ASSAULT RIFLE";
 

@@ -30,7 +30,7 @@ return 6;
 return choose("SO CLEAN FOR#SUCH DIRTY WORK", "LIL FRIEND");
 
 #define weapon_reloaded(p)
-if ammo[1] mod 16 == 0{
+/*if ammo[1] mod 16 == 0{
     with instance_create(x + lengthdir_x(3, gunangle), y + lengthdir_y(3, gunangle), Shell){
         motion_set(other.gunangle - other.right * 90 * sign(p - .1) + random_range(-10, 10), random_range(4,6))
         friction *= 2
@@ -39,7 +39,7 @@ if ammo[1] mod 16 == 0{
     if p wkick++
     else bwkick++
     sound_play_pitch(sndSwapShotgun, 1.6)
-}
+} sorry burg but this is too distracting*/
 
 #define weapon_fire
 weapon_post(5,-5,5)

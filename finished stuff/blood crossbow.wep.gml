@@ -92,6 +92,14 @@ instance_destroy()
 if life > 0 life -= current_time_scale else instance_destroy()
 
 #define b_destroy
+view_shake_at(x, y, 7)
+var _offset = random(360)
+repeat(3)
+{
+  with instance_create(x + lengthdir_x(12, direction - 180 + _offset), y + lengthdir_y(12, direction - 180 + _offset), BloodStreak){image_angle = other.direction - 180 + _offset}
+  _offset += 120;
+}
+sleep(10)
 sound_play_hit(sndBloodLauncherExplo,.1)
 with instance_create(x,y,MeatExplosion) team = other.team
 

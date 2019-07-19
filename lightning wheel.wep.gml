@@ -238,14 +238,10 @@ if phase = 1{
     }
 }
 speed = min(speed, maxspeed)
-if place_meeting(x+hspeed, y + vspeed, Wall){
-    if collision_line(x,y,creator.x, creator.y, Wall, 0, 0){
-        instance_destroy()
-        exit
-    }
-    else speed = 0
+if place_meeting(x, y, Wall) && phase != 1
+{
+  phase = 1
 }
-if place_meeting(x,y,Wall){x -= lengthdir_x(speed * 2,direction);y -= lengthdir_y(speed * 2,direction)}
 
 #define lring_projectile
 with other if typ{

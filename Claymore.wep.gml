@@ -48,8 +48,10 @@ return 1
 return "ABSOLUTELY LUNATIC";
 
 #define weapon_fire
-
-sound_play(sndHammer)
+var _p = random_range(.8, 1.2);
+sound_play_pitch(sndHammer, 1.2 * _p)
+sound_play_pitch(sndShovel, .7 * _p)
+sound_play_pitch(sndExplosionS, 1.2 * _p)
 weapon_post(8,10,5)
 
 with instance_create(x,y,Slash)

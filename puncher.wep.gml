@@ -84,7 +84,7 @@ if current_frame_active && !irandom(2) instance_create(x,y,Smoke)
 direction += extradir*current_time_scale
 speed += current_time_scale *.7
 image_angle = direction
-if speed >= 30 speed = 30
+if speed >= 26 speed = 26
 
 #define puncherdie
 sound_play(sndExplosion)

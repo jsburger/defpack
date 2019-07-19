@@ -32,6 +32,7 @@
 //DRILL
 
 /loadwep drill launcher
+/loadwep super drill launcher
 /loadwep mega drill launcher
 
 //TOXIC
@@ -61,7 +62,6 @@
 /loadwep finished stuff/blaster
 /loadwep puncher
 /loadwep buster
-/loadwep pulser
 /loadwep airstrike
 /loadwep herald
 

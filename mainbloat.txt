@@ -12,3 +12,4 @@
 /loadwep smart bazooka
 /loadwep super heavy slugger
 /loadwep tsunami
+/loadwep pulser

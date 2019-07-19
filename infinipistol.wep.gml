@@ -1,6 +1,6 @@
 #define init
 global.sprInfiniPistol = sprite_add_weapon("sprites/sprPelletPistol.png", -3, 2);
-global.sprPellet       = sprite_add("sprites/projectiles/sprPellet.png",2,7,6)
+global.sprPellet       = sprite_add("sprites/projectiles/sprPellet.png",2,8,8)
 global.sprPelletHit    = sprite_add("sprites/projectiles/sprPelletHit.png",4,8,8)
 #define weapon_name
 return "INFINIPISTOL";
@@ -34,24 +34,25 @@ return "POTENTIAL"
 
 #define weapon_fire
 weapon_post(2,0,3)
-motion_add(gunangle-180,2)
-sound_play_pitch(sndPopgun,random_range(1,2))
+motion_add(gunangle-180,2000)
+sound_play_pitch(sndEnemyFire,random_range(1,2))
 sound_play_pitchvol(sndRustyRevolver,random_range(2,3),.6)
-sound_play_pitchvol(sndNothing2Ball,random_range(2,3),.4)
+sound_play_pitchvol(sndNothing2Ball,random_range(2,3),.2)
 with instance_create(x,y,CustomProjectile)
 {
   typ = 1
+  move_contact_solid(other.gunangle, 9)
   sprite_index = global.sprPellet
   mask_index   = global.sprPellet
   recycle_amount = 0
-  damage = 1 if irandom(999999) = 0 damage = 999999999999999999999999
+  damage = choose(0, 1, 1) if irandom(999999) = 0 damage = 999999999999999999999999
   team = other.team
-  force = 5
+  force = 30
   bounce = 2
   image_speed = 1
   creator = other
-  move_contact_solid(other.gunangle,6)
-  motion_add(other.gunangle+random_range(-7,7)*other.accuracy,18)
+  move_contact_solid(other.gunangle,8)
+  motion_add(other.gunangle+random_range(-7,7)*other.accuracy,5)
   image_angle = direction
   on_destroy = pellet_destroy
   on_wall    = pellet_wall
