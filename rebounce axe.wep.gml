@@ -66,13 +66,16 @@ if projectile_canhit_melee(other) = true
 	projectile_hit(other,damage,12,direction)
 	if team != other.team
 	{
-		creator.reload = round(creator.reload*.3)
 		var _p = random_range(.8, 1.2);
 		sound_play_pitchvol(sndImpWristHit,.5 * _p,2)
 		sound_play_pitchvol(sndHitMetal,.6 * _p,2)
 		view_shake_at(x,y,other.size * 4)
 		sleep(min(other.size, 4) * 25)
-		creator.gunshine = 8
+		if instance_exists(creator) = true
+		{
+			creator.reload = round(creator.reload*.3)
+			creator.gunshine = 8
+		}
 		sound_play_gun(sndEmpty,1,.4)
 		sound_stop(sndEmpty)
 		repeat(12) with instance_create(other.x, other.y, Dust)
