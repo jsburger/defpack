@@ -109,13 +109,13 @@ if floor(ammo) < current_time_scale and floor(ammo) >= 0{
     	spr_head     = global.sprBeamEnd
     	spr_tail     = global.sprBeamStart
     	mask_index   = global.mskBeam
-    
+
         on_step = beam_step
         on_wall = beam_wall
     	on_draw = beam_draw
     	on_hit  = beam_hit
     	on_square = script_ref_create(beam_square)
-        
+
         sound = -1
         time = 28
         image_speed = 0
@@ -192,6 +192,25 @@ if instance_exists(creator){
     	y += _y
     }
     until dir >= 1800 || place_meeting(x,y,Wall)
+		if place_meeting(x, y, Wall)
+		{
+			with instance_nearest(x, y, Wall)
+			{
+				instance_create(x, y, FloorExplo)
+				instance_destroy()
+			}
+			view_shake_at(x, y, 3)
+			sleep(2)
+			with instance_create(x + random_range(-8, 8), y + random_range(-8, 8), PlasmaImpact)
+			{
+				var _size = random_range(.4, .8)
+				image_xscale = _size
+				image_yscale = _size
+				image_speed *= random_range(.8, 1.2)
+				team = other.team
+				creator = other.creator
+			}
+		}
     xprevious = x
     yprevious = y
 

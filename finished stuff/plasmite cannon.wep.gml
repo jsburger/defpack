@@ -161,8 +161,19 @@ repeat(ammo)
 }
 
 #define mb_wall
-with other{instance_create(x,y,FloorExplo);instance_destroy()}
+with instance_create(x, y, PlasmaImpact)
+{
+	team = other.team;
+	creator = other.creator;
+}
+sound_play_pitch(sndPlasmaHit, random_range(.9, 1.1))
+view_shake_at(x, y, 4)
+sleep(10)
 instance_destroy()
+/*move_bounce_solid(false)
+speed += 2
+fric *= 1.005
+*/
 
 #define mb_destroy
 sound_play_pitch(sndPlasmaHit,random_range(1.55,1.63))

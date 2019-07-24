@@ -2,7 +2,7 @@
 global.sprOtherSword = sprite_add_weapon("sprites/sprOtherSword.png", 3, 7);
 
 #define weapon_name
-return "OTHER AXE"
+return "REBOUNCE AXE"
 
 #define weapon_sprt
 return global.sprOtherSword;
@@ -26,7 +26,7 @@ return sndSwapSword;
 return 9;
 
 #define weapon_text
-return "BE BRAVE";
+return choose("BE BRAVE", "STRIKE AGAIN");
 
 #define weapon_melee
 return 1
@@ -41,9 +41,9 @@ weapon_post(8,-8,60)
 wepangle = -wepangle
 with instance_create(x,y,CustomSlash)
 {
-	image_speed = 1/3
+	image_speed = .5
 	creator = other
-	motion_add(other.gunangle, 1 + (skill_get(13)*2))
+	motion_add(other.gunangle, 2 + (skill_get(13)*2))
 	image_angle = direction
 	team = other.team
 	if skill_get(13) {
@@ -51,15 +51,7 @@ with instance_create(x,y,CustomSlash)
 		y += 4 *vspeed
 	}
 	sprite_index = sprHeavySlash
-	damage = 10
-	if place_meeting(x,y,enemy){
-		creator.reload = round(creator.reload*.3)
-		sound_play_pitchvol(sndImpWristHit,.8,1)
-		sound_play_pitchvol(sndImpWristKill,.8,1)
-		view_shake_at(x,y,other.size * 4)
-		sleep(min(other.size, 4) * 15)
-		creator.gunshine = 12
-	}
+	damage = 12
 	on_anim = s_anim
 	on_hit  = s_hit
 }
@@ -71,5 +63,24 @@ instance_destroy()
 #define s_hit
 if projectile_canhit_melee(other) = true
 {
-	projectile_hit(other,damage+other.size,12,direction)
+	projectile_hit(other,damage,12,direction)
+	if team != other.team
+	{
+		var _p = random_range(.8, 1.2);
+		sound_play_pitchvol(sndImpWristHit,.5 * _p,2)
+		sound_play_pitchvol(sndHitMetal,.6 * _p,2)
+		view_shake_at(x,y,other.size * 4)
+		sleep(min(other.size, 4) * 25)
+		if instance_exists(creator) = true
+		{
+			creator.reload = round(creator.reload*.3)
+			creator.gunshine = 8
+		}
+		sound_play_gun(sndEmpty,1,.4)
+		sound_stop(sndEmpty)
+		repeat(12) with instance_create(other.x, other.y, Dust)
+		{
+			motion_add(other.direction + random_range(-70, 70), random_range(4, 6))
+		}
+	}
 }

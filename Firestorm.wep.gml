@@ -119,12 +119,14 @@ for (var i = 0; i < 360; i+=360/n){
 #define fakeflare_step
 if image_index >= 1 image_speed = 0
 motion_add(gravdir,grav)
-if current_frame_active{with instance_create(x,y,Flame){team = other.team;creator = other.creator}}
+friction += .07
+if current_frame_active{if irandom(9) != 1 with instance_create(x,y,Flame){team = other.team;creator = other.creator}}
 if speed > maxspeed speed = maxspeed
+if speed <= friction instance_destroy()
 
 #define fakeflare_destroy
 sound_play_pitchvol(sndFlareExplode,random_range(.8,1.2),.4)
-repeat(16)
+repeat(12)
 {
   with instance_create(x,y,Flame)
   {

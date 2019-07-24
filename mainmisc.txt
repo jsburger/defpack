@@ -9,7 +9,7 @@
 /loadwep auto screwdriver
 /loadwep chris knife
 /loadwep comboweps/rapier
-/loadwep other axe
+/loadwep rebounce axe
 /loadwep comboweps/bigsword
 /loadwep tempest blade
 /loadwep wondersword

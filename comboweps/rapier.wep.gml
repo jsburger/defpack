@@ -95,4 +95,5 @@ if "extraspeed" in self && current_frame_active{
 	}
 	else{extraspeed = 0;canaim = true}
 }
+if mask_index = 268 {rapiers = 1}
 if "rapiers" in self{if button_pressed(index,"swap") && canswap{rapiers = 1}}

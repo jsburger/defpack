@@ -98,7 +98,7 @@ with instances_matching_ne(projectile,"team",other.team)
   }
 }
 if curse = true and current_frame < floor(current_frame) + current_time_scale {instance_create(x+random_range(-2,2),y+random_range(-2,2),Curse)}
-ang += 20*current_time_scale
+ang += 43*current_time_scale
 if phase = 0 //move regularly
 {
   if speed <= friction
@@ -143,33 +143,12 @@ else//return to player
     }
   }
 }
-if place_meeting(x+hspeed,y+vspeed,Wall)
+if place_meeting(x, y, Wall) && phase != 1
 {
   phase = 1
-  lasthit = -4
-  var _y = false;
-  if instance_exists(creator){if !collision_line(x,y,creator.x,creator.y,Wall,0,0){_y = true}}else{_y = true}
-  if _y = false
-  {
-    with instance_create(x,y,ThrownWep)
-    {
-      sprite_index = global.sprboomerang
-      wep = mod_current
-      curse = other.curse
-      motion_add(other.direction-180+random_range(-30,30),2)
-      team = other.team
-      creator = other.creator
-    }
-    sound_play(sndExplosionS)
-    var meetx = (x + other.x)/2;
-    var meety = (y + other.y)/2;
-    instance_create(meetx,meety,SmallExplosion)
-    instance_destroy()
-    exit
-  }
-  else{speed = 0}
+  instance_create(x, y, SmallExplosion)
+  sound_play(sndExplosionS)
 }
-if place_meeting(x,y,Wall){x -= lengthdir_x(speed * 2,direction);y -= lengthdir_y(speed * 2,direction)}
 if speed > maxspeed speed = maxspeed
 
 #define weapon_sprt

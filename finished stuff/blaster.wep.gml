@@ -32,7 +32,6 @@ return 5;
 return "HEAT WAVES";
 
 #define weapon_fire
-weapon_post(8,8,4)
 var things = [SmallExplosion,CustomObject,Explosion],
     lengths = [30,55,100],
     ang = gunangle,
@@ -48,6 +47,7 @@ var things = [SmallExplosion,CustomObject,Explosion],
             sound_play_pitch(sndGrenadeRifle,.8*_pitch)
             sound_play_pitch(sndGrenadeShotgun,1.5*_pitch)
             sound_play_pitch(sndExplosion,_pitch)
+            weapon_post(8,8,4)
             with instance_create(_x+lengthdir_x(lengths[i] + speed,ang),_y+lengthdir_y(lengths[i]+speed,ang),things[i]){
                 creator = other
                 if i > 0{

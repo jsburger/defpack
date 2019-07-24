@@ -1,5 +1,5 @@
 #define init
-global.sprThunderBulletCannon = sprite_add_weapon("sprites/sprThunderBulletCannon.png", 4, 2);
+global.sprThunderBulletCannon = sprite_add_weapon("sprites/sprThunderBulletCannon.png", 9, 3);
 
 #define weapon_name
 return "THUNDER BULLET CANNON";
@@ -31,12 +31,12 @@ return "BOTTLED LIGHTNING";
 #define weapon_fire
 repeat(4)
 {
-	weapon_post(9,-6,62)
+	weapon_post(9,-6,42)
 	var _ptch = random_range(-.4,.4);
 	sound_play_pitch(sndPistol,.5)
 	sound_play_pitch(sndMachinegun,1.6+_ptch)
-	sound_play_pitch(sndHeavySlugger,2+_ptch)
-	if skill_get(17)=0{sound_play_pitch(sndLightningCannon,3)}else{sound_play_pitch(sndLightningCannonUpg,3)}
+	sound_play_pitchvol(sndSlugger,2+_ptch,.8)
+	if skill_get(17)=0{sound_play_pitchvol(sndLightningCannon,1.4,.7)}else{sound_play_pitchvol(sndLightningCannonUpg,1.4,.7)}
 	repeat(3)
 	{
 		mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, 2+random(2), c_navy)
