@@ -20,6 +20,9 @@ return 19;
 #define weapon_cost
 return 2
 
+#define weapon_chrg
+return true;
+
 #define weapon_swap
 return sndSwapExplosive;
 
@@ -31,7 +34,7 @@ sound_play_pitchvol(sndNadeReload,1.4,.6)
 return 10;
 
 #define weapon_text
-return "PROTECTION AT ALL COSTS";
+return "THE SPLASH ZONE";
 
 #define step(p)
 if ammo[weapon_type()] < weapon_cost(){

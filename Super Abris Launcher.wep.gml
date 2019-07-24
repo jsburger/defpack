@@ -1,6 +1,6 @@
 #define init
 global.sprSuperAbrisLauncher = sprite_add_weapon("sprites/sprSuperAbrisLauncher.png", 3, 4);
-global.sprDanger 						 = sprite_add("sprites/projectiles/Danger.png",0,1,29);
+//global.sprDanger 						 = sprite_add("sprites/projectiles/Danger.png",0,1,29);
 
 #define weapon_name
 return "SUPER ABRIS LAUNCHER"
@@ -20,6 +20,9 @@ return 44;
 #define weapon_cost
 return 4;
 
+#define weapon_chrg
+return true;
+
 #define weapon_swap
 return sndSwapExplosive;
 
@@ -31,7 +34,7 @@ weapon_post(-1,-3,0)
 sound_play_pitchvol(sndNadeReload,1.4,.6)
 
 #define weapon_text
-return "BLESS WALLS";
+return "HAIL MARY";
 
 #define weapon_fire
 var _strtsize = 100-skill_get(13)*15;
