@@ -37,6 +37,17 @@ sound_play_pitch(sndCursedReminder,.2)
 sound_play_pitch(sndMinigun,.4+_ptch/12)
 //sound_play_pitchvol(sndStatueDead,.7+_ptch/7,.2) to good for this
 repeat(8)
+	mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, 2+random(2), c_purple)
+with mod_script_call_self("mod", "defpack tools", "shoot_n_psy_bullets", x, y, 8, team){
+    motion_set(other.gunangle+random_range(-12,12)*other.accuracy,8+random_range(-1,1)*other.accuracy)
+    image_angle = direction
+    projectile_init(other.team, other)
+}
+
+exit
+
+
+repeat(8)
 {
 	mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, 2+random(2), c_purple)
 	with mod_script_call("mod", "defpack tools", "create_psy_bullet",x+lengthdir_x(random_range(-7,7)*accuracy,gunangle+90),y+lengthdir_y(random_range(-7,7)*accuracy,gunangle+90)){

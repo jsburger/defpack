@@ -353,13 +353,13 @@ var num = instance_number(obj),
     found = [];
 if instance_exists(obj){
     while ++n <= num and amount > 0{
-        man.x += 10000
-        array_push(mans,man)
-        man = instance_nearest(_x,_y,obj)
-        if variable_instance_get(man, varname) != value && (!instance_is(man,prop) || instance_is(man,Generator)){
+        if variable_instance_get(man, varname) != value && (!instance_is(man, prop) || instance_is(man, Generator)){
             array_push(found, man)
             amount--
         }
+        man.x += 10000
+        array_push(mans, man)
+        man = instance_nearest(_x, _y, obj)
     }
     with mans x-= 10000
 }
@@ -528,11 +528,9 @@ with instance_create(c.x + lengthdir_x(l, c.gunangle), c.y + lengthdir_y(l, c.gu
 var x2 = x - w * .5, y2 = ceil(y + (h + 3)/2);
 draw_line_width_color(x2 - 1, y, x2 + w + 1, y, h + 3, col, col)
 draw_line_width_color(x2, y, x2 + w, y, h + 1, 0, 0)
-var y3 = ceil(y + (h + 3)/2)
+var y3 = ceil(y + (h + 3)/2);
 draw_line_width_color(x2 - 1, y3, x2 + w + 1, y3, 1, 0, 0)
 
-#define bullet_draw
-draw_self()
 
 #define bullet_wall
 instance_create(x,y,Dust)
@@ -542,8 +540,8 @@ instance_destroy()
 #define bullet_hit
 projectile_hit(other, damage, force, direction);
 if recycle_amount != 0{
-    with creator{
-        var num = (skill_get(mut_recycle_gland) * (irandom(9) < 5)) + 10*skill_get("recycleglandx10")
+    with creator if instance_is(self, Player){
+        var num = (skill_get(mut_recycle_gland) * (irandom(9) < 5)) + 10*skill_get("recycleglandx10");
         if num{
             ammo[1] = min(ammo[1] + other.recycle_amount * num, typ_amax[1])
             instance_create(other.x, other.y, RecycleGland)
@@ -651,6 +649,75 @@ with create_bullet(x,y){
     on_step = psy_step
     on_hit = psy_hit
 
+    return id
+}
+
+#define create_psy_bullet_new(x, y)
+with create_psy_bullet(x, y){
+    name = "PsyBullet"
+    on_step = psy_step_new
+    on_draw = psy_draw_new
+    target = -4
+
+    return id;
+};
+
+#define psy_draw_new
+with target{
+    var _y = y - sprite_get_bbox_top(sprite_index) - 10
+    draw_triangle_color(x, _y, x - 3, _y - 8, x + 3, _y - 8, c_fuchsia, c_fuchsia, c_fuchsia, 0)
+}
+draw_self();
+
+#define psy_step_new
+if timer > 0{
+	timer -= current_time_scale
+}
+if timer <= 0{
+    var t = target;
+	if instance_exists(t) && collision_line(x,y,t.x,t.y,Wall,0,0) < 0{
+		var dir, spd, dif;
+
+		dir = point_direction(x, y, t.x, t.y);
+		spd = speed_raw * 5
+        dif = clamp(angle_approach(direction, dir, 1/turnspeed, current_time_scale), -spd, spd)
+        
+		direction -= dif; //Smoothly rotate to aim position.
+		image_angle -= dif
+	}
+}
+
+#define shoot_n_psy_bullets(x, y, n, team)
+var _x = x, _y = y;
+if instance_is(self, Player){
+    _x = mouse_x[index]
+    _y = mouse_y[index]
+}
+else if "gunangle" in self{
+    _x = x + lengthdir_x(50, gunangle)
+    _y = y + lengthdir_y(50, gunangle)
+}
+var a = array_create(n), targets = get_n_targets(_x, _y, hitme, "team", team, ceil(n/2)), l = array_length(targets);
+for (var i = 0; i < n; i++){
+    var q = create_psy_bullet_new(x, y);
+    if l with q target = targets[i mod l]
+    a[i] = q
+}
+return a;
+
+#define shoot_psy_random_target(x, y, n, team)
+var _x = x, _y = y;
+if instance_is(self, Player){
+    _x = mouse_x[index]
+    _y = mouse_y[index]
+}
+else if "gunangle" in self{
+    _x = x + lengthdir_x(50, gunangle)
+    _y = y + lengthdir_y(50, gunangle)
+}
+var targets = get_n_targets(_x, _y, hitme, "team", team, n), l = array_length(targets);
+with create_psy_bullet_new(x, y){
+    if l target = targets[irandom(l-1)]
     return id
 }
 

@@ -34,7 +34,7 @@ sound_play_pitch(sndCursedReminder,.4)
 sound_play_pitch(sndMinigun,.8)
 weapon_post(3,-12,8)
 mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, random_range(2,4), c_purple)
-with mod_script_call("mod", "defpack tools", "create_psy_bullet",x,y){
+with mod_script_call_self("mod", "defpack tools", "shoot_psy_random_target", x, y, 4, team){
 	creator = other
 	move_contact_solid(other.gunangle,10)
 	team = other.team
