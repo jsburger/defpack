@@ -8,6 +8,7 @@
 //SPLINTER
 
 /loadwep nail gun
+/loadwep rivet gun
 /loadwep finished stuff/splinter cannon
 /loadwep millimata
 

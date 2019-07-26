@@ -72,6 +72,7 @@ if other.my_health > damage {
         sprite_index = other.sprite_index
         image_angle = other.image_angle
     }
+    with other direction += 180
     instance_destroy()
 }
 

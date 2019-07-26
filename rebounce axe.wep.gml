@@ -63,7 +63,7 @@ instance_destroy()
 #define s_hit
 if projectile_canhit_melee(other) = true
 {
-	projectile_hit(other,damage,12,direction)
+	projectile_hit(other,damage,40,direction)
 	if team != other.team
 	{
 		var _p = random_range(.8, 1.2);
