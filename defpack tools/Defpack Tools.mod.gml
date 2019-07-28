@@ -239,7 +239,7 @@ if global.chargeType with Player if player_is_local_nonsync(index){
         //bar vars
         var _bh = 2, _bhinc = 2 * (_bh + 1) * (_sm[defcharge_bar]/_bm);
         //looping through oldest objects to newest objects
-        for var i = array_length(matches) - 1; i >= 0; i--{
+        for (var i = array_length(matches) - 1; i >= 0; i--){
             with matches[i]{
                 with defcharge{
                     _col = c
@@ -307,6 +307,7 @@ with instances_matching(CustomProjectile,"name","mega lightning bullet"){
   draw_sprite_ext(sprite_index, image_index, x, y, 2*image_xscale+(1-image_index)*2, 2*image_yscale+(1-image_index)*2, image_angle, image_blend, 0.2+(1-image_index)*.4);
 }
 
+
 #define draw_shadows
 with Player if visible{
     drone_shadow(wep)
@@ -365,6 +366,31 @@ if instance_exists(obj){
     with mans x-= 10000
 }
 return found
+
+#define get_n_targets_chain(_xstart, _ystart, obj, varname, value, amount)
+var num = instance_number(obj),
+    man = instance_nearest(_xstart, _ystart, obj),
+    mans = [],
+    n = 0,
+    found = [],
+    _x = _xstart,
+    _y = _ystart;
+if instance_exists(obj){
+    while ++n <= num and amount > 0{
+        if variable_instance_get(man, varname) != value && (!instance_is(man, prop) || instance_is(man, Generator)){
+            array_push(found, man)
+            amount--
+            _x = man.x
+		    _y = man.y
+        }
+        man.x += 10000
+        array_push(mans, man)
+        man = instance_nearest(_x, _y, obj)
+    }
+    with mans x-= 10000
+}
+return found
+
 
 #define script_ref_call_self(scr)
 return mod_script_call_self(scr[0], scr[1], scr[2])
@@ -457,7 +483,7 @@ with instances_matching(WepPickup, "wep", 0) instance_destroy()
 
 with instances_matching(WepPickup,"chargecheck",null){
     chargecheck = 1
-    if weapon_get_chrg(wep) || string_count("ABRIS ",  string_upper(weapon_get_name(wep))) {
+    if weapon_get_chrg(wep) {
         name += ` @0(${global.sprCharge}:0) `
     }
 }
