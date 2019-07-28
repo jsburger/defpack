@@ -1,6 +1,5 @@
 #define init
-global.sprPerpetrator = sprite_add_weapon("sprites/Perpetrator.png", 5, 2);
-global.sprDual = sprite_add("sprites/projectiles/sprDual.png",9,4,4)
+global.sprPerpetrator = sprite_add_weapon("sprites/weapons/sprPerpetrator.png", 5, 2);
 
 #define weapon_name
 return "PERPETRATOR";

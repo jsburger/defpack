@@ -1,17 +1,17 @@
 #define init
-global.sprCrystalTorch[0] = sprite_add_weapon("sprites/sprCrystalTorch1.png",6,10)
-global.sprCrystalTorch[1] = sprite_add_weapon("sprites/sprCrystalTorch2.png",6,10)
-global.sprCrystalTorch[2] = sprite_add_weapon("sprites/sprCrystalTorch3.png",6,10)
-global.sprCrystalTorch[3] = sprite_add_weapon("sprites/sprCrystalTorch4.png",6,10)
-global.sprCrystalTorch[4] = sprite_add_weapon("sprites/sprCrystalTorch5.png",6,10)
-global.sprNegaCurse = sprite_add("sprites/sprNegaCurse.png",6,4,4);
+global.sprCrystalTorch[0] = sprite_add_weapon("sprites/weapons/sprCrystalTorch1.png",6,10)
+global.sprCrystalTorch[1] = sprite_add_weapon("sprites/weapons/sprCrystalTorch2.png",6,10)
+global.sprCrystalTorch[2] = sprite_add_weapon("sprites/weapons/sprCrystalTorch3.png",6,10)
+global.sprCrystalTorch[3] = sprite_add_weapon("sprites/weapons/sprCrystalTorch4.png",6,10)
+global.sprCrystalTorch[4] = sprite_add_weapon("sprites/weapons/sprCrystalTorch5.png",6,10)
+global.sprNegaCurse = sprite_add("sprites/other/sprNegaCurse.png",6,4,4);
 
 global.reloads = [16,18,20,22,24]
 global.cursed  = [InvCrystal,InvLaserCrystal,InvSpider]
 global.uncursed= [CrystalProp,LaserCrystal,Spider]
 
 while 1 {
-    with WepPickup if instance_is(self,WepPickup){ 
+    with WepPickup if instance_is(self,WepPickup){
         if weapon_find(wep) == mod_current{
             if !is_object(wep){
                 wep = {
@@ -241,7 +241,7 @@ if current_frame_active{
     if w and is_object(wep) and !irandom(13 - floor(wep.cursecharge/6)) with instance_create(x + lengthdir_x(15, ang),y + lengthdir_y(15, ang),Curse){
         sprite_index = global.sprNegaCurse
         depth-= 2
-        
+
     }
 }
 with instances_matching(CustomSlash,"name","crystal slash"){

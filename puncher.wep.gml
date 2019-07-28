@@ -1,5 +1,5 @@
 #define init
-global.sprPuncher 			= sprite_add_weapon("sprites/sprPuncher.png",11,3)
+global.sprPuncher 			= sprite_add_weapon("sprites/weapons/sprPuncher.png",11,3)
 global.sprPuncherRocket = sprite_add("sprites/projectiles/sprPuncherRocket.png",0,6,6)
 #macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)
 #define weapon_name

@@ -1,20 +1,20 @@
 
-/loadmod defparticles
+/loadmod defpack tools/defparticles
 
 ///MELEE//
+
 /loadwep toothbrush
 /loadwep bone
 /loadwep big bone
 /loadwep ultra hand
 /loadwep auto screwdriver
 /loadwep chris knife
-/loadwep comboweps/rapier
+/loadwep rapier
 /loadwep rebounce axe
-/loadwep comboweps/bigsword
+/loadwep mega hammer
 /loadwep tempest blade
 /loadwep wondersword
 /loadwep crystal torch
-/loadwep shard
 /loadwep impact fist
 
 
@@ -33,33 +33,31 @@
 ///TOOLS///
 
 /loadmod defpack tools/defpack tools
-/loadmod defpack tools 2
-/loadmod sprites/chests/chest
+/loadmod defpack tools/defpack tools 2
+/loadmod chests/chest
 
 ///OTHER///
-/loadwep finished stuff/defender
+
+/loadwep defender
 /loadwep punisher
-/loadwep finished stuff/drinks/vinegar
-/loadwep finished stuff/drinks/munitions mist
-/loadwep finished stuff/drinks/sunset mayo
-/loadwep finished stuff/drinks/saltshake
-/loadwep finished stuff/drinks/expresso
-/loadwep finished stuff/drinks/extra double triple coffee
-/loadwep finished stuff/drinks/lightning blue lifting drink(tm)
-/loadwep finished stuff/drinks/guardian juice
-/loadwep finished stuff/drinks/frog milk
-/loadwep finished stuff/drinks/soda popper
-/loadmod finished stuff/drinks/sodaeffect
-/loadwep finished stuff/drinks/donut box
+/loadwep vinegar
+/loadwep munitions mist
+/loadwep sunset mayo
+/loadwep saltshake
+/loadwep expresso
+/loadwep extra double triple coffee
+/loadwep lightning blue lifting drink(tm)
+/loadwep guardian juice
+/loadwep frog milk
+/loadwep soda popper
+/loadmod sodaeffect
+/loadwep donut box
 /loadwep infinipistol
 
-///NON-WEAPONS///
-/load iris
-/load crown
+///IRIS WEPS///
 
-///TODO///
-///loadwep antiprism
-/loadwep sak
-/loadwep stopwatch
-/loadwep herald
-/loadwep finished stuff/andromeda launcher
+/load iris weps
+
+///NON-WEAPONS///
+/load mutation
+/load crown

@@ -1,0 +1,23 @@
+/loadwep fire revolver
+/loadwep fire machinegun
+/loadwep triple fire machinegun
+/loadwep quad fire machinegun
+/loadwep fire smg
+/loadwep assault fire rifle
+/loadwep hyper fire rifle
+/loadwep fire minigun
+/loadwep double fire minigun
+/loadwep smart fire gun
+/loadwep fire bullet cannon
+/loadwep fire gunhammer
+/loadwep fire bullet cannon
+/loadwep fire bullak cannon
+/loadwep sniper fire rifle
+/loadwep heavy fire revolver
+/loadwep heavy fire machinegun
+/loadwep heavy assault fire rifle
+/loadwep heavy smart fire gun
+/loadwep heavy fire gunhammer
+/loadwep fire shotgun
+/loadwep smarter fire gun
+/loadwep mega fire revolver

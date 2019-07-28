@@ -1,5 +1,5 @@
 #define init
-global.sprBow      = sprite_add_weapon("sprites/sprBow.png",2,8)
+global.sprBow      = sprite_add_weapon("sprites/weapons/sprBow.png",2,8)
 global.sprArrow    = sprite_add("sprites/projectiles/sprArrow.png",1,3,4)
 global.sprArrowHUD = sprite_add_weapon("sprites/projectiles/sprArrow.png",5,3)
 
@@ -51,7 +51,7 @@ if instance_is(self,Player){
                 }
             else
                 draw_sprite_ext(other.spr_arrow, 0, x - lengthdir_x(l, gunangle), y - lengthdir_y(l, gunangle) + yoff, 1, 1, gunangle, c_white, 1)
-            
+
         }
     }
     if race = "skeleton" return global.sprBow2
@@ -173,4 +173,3 @@ else
         i += 12;
     }
 }
-

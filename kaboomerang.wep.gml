@@ -1,6 +1,6 @@
 #define init
-global.sprboomerang    = sprite_add_weapon("sprites/sprBOOMerang.png",3,3);
-global.sprboomerangHUD = sprite_add_weapon("sprites/sprBOOMerang.png",-1,3);
+global.sprboomerang    = sprite_add_weapon("sprites/weapons/sprKaboomerang.png",3,3);
+global.sprboomerangHUD = sprite_add_weapon("sprites/weapons/sprKaboomerang.png",-1,3);
 
 #define weapon_name
 return "KABOOMERANG";

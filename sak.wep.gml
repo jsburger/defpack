@@ -1,7 +1,7 @@
 #define init
-global.box 			= sprite_add_weapon("sprites/sprSAK.png",2,3)
-global.boxopen  = sprite_add_weapon("sprites/sprSAKOpen.png",2,3)
-global.boxempty = sprite_add_weapon("sprites/sprSAKEmpty.png",2,3)
+global.box 			= sprite_add_weapon("sprites/weapons/sprSAK.png",2,3)
+global.boxopen  = sprite_add_weapon("sprites/weapons/sprSAKOpen.png",2,3)
+global.boxempty = sprite_add_weapon("sprites/weapons/sprSAKEmpty.png",2,3)
 global.guys = [0,0,0,0]
 with instances_matching([CustomDraw],"customshell",1){
 	instance_destroy()
@@ -13,20 +13,20 @@ if fork(){
     }
     exit
 }
-global.sprammo           = sprite_add("sprites/sprSAKammo.png",8,0,0)
-global.sprammom          = sprite_add("sprites/sprSAKammoMini.png",9,0,0)
-global.sprbodyShell      = sprite_add("sprites/sprSAKbodyShell.png",6,0,0)
-global.sprbodySlug       = sprite_add("sprites/sprSAKbodySlug.png",6,0,0)
-global.sprbodym          = sprite_add("sprites/sprSAKbodyMini.png",7,0,0)
-global.sprmods  	     = sprite_add("sprites/sprSAKmods.png",10,0,0)
-global.sprmodsm  	     = sprite_add("sprites/sprSAKmodsm.png",11,0,0)
-global.sprmodsShotgun    = sprite_add("sprites/sprSAKmodsShotgun.png",10,0,0)
-global.sprmodsPopGun     = sprite_add("sprites/sprSAKmodsPop.png",10,0,0)
-global.sprmodsEraser     = sprite_add("sprites/sprSAKmodsEraser.png",10,0,0)
-global.sprmodsSlugger    = sprite_add("sprites/sprSAKmodsSlugger.png",10,0,0)
-global.sprmodsFlakCannon = sprite_add("sprites/sprSAKmodsFlak.png",10,0,0)
-global.sprmodsShotCannon = sprite_add("sprites/sprSAKmodsShot.png",10,0,0)
-global.sprmodsm          = sprite_add("sprites/sprSAKammoMini.png",8,0,0)
+global.sprammo           = sprite_add("sprites/interface/sprSAKammo.png",8,0,0)
+global.sprammom          = sprite_add("sprites/interface/sprSAKammoMini.png",9,0,0)
+global.sprbodyShell      = sprite_add("sprites/interface/sprSAKbodyShell.png",6,0,0)
+global.sprbodySlug       = sprite_add("sprites/interface/sprSAKbodySlug.png",6,0,0)
+global.sprbodym          = sprite_add("sprites/interface/sprSAKbodyMini.png",7,0,0)
+global.sprmods  	     	 = sprite_add("sprites/interface/sprSAKmods.png",10,0,0)
+global.sprmodsm  	    	 = sprite_add("sprites/interface/sprSAKmodsm.png",11,0,0)
+global.sprmodsShotgun    = sprite_add("sprites/interface/sprSAKmodsShotgun.png",10,0,0)
+global.sprmodsPopGun     = sprite_add("sprites/interface/sprSAKmodsPop.png",10,0,0)
+global.sprmodsEraser     = sprite_add("sprites/interface/sprSAKmodsEraser.png",10,0,0)
+global.sprmodsSlugger    = sprite_add("sprites/interface/sprSAKmodsSlugger.png",10,0,0)
+global.sprmodsFlakCannon = sprite_add("sprites/interface/sprSAKmodsFlak.png",10,0,0)
+global.sprmodsShotCannon = sprite_add("sprites/interface/sprSAKmodsShot.png",10,0,0)
+global.sprmodsm          = sprite_add("sprites/interface/sprSAKammoMini.png",8,0,0)
 
 global.shellbods = ["shotgun", "eraser", "flak cannon", "pop gun", "shot cannon"]
 global.slugbods = ["shotgun", "eraser", "flak cannon", "slugger", "shot cannon"]
@@ -1198,7 +1198,7 @@ with player_find(index){
 	draw_text_nt(floor((_X+_x)/2-string_width(_str)/2),_y-15,_str)
 
 	var _m_index = 0
-	
+
 	draw_set_color(c_black)
 	draw_set_alpha(.3)
 	draw_rectangle(_x,_Yline1,_X,_Yline2+2,0)

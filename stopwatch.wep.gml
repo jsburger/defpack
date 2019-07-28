@@ -1,5 +1,5 @@
 #define init
-global.watch = sprite_add_weapon("sprites/sprStopwatch.png",0,3)
+global.watch = sprite_add_weapon("sprites/weapons/sprStopwatch.png",0,3)
 global.time = current_time_scale
 global.slowed = 0
 global.user = -1

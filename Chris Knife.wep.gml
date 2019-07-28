@@ -1,6 +1,6 @@
 #define init
-global.sprKnife 	    = sprite_add_weapon("sprites/Knife.png", 0, 2);
-global.sprKnifeshank  = sprite_add("sprites/projectiles/knifeshank.png",2,0,8);
+global.sprKnife 	    = sprite_add_weapon("sprites/weapons/sprChrisKnife.png", 0, 2);
+global.sprKnifeshank  = sprite_add("sprites/projectiles/sprKnifeShank.png",2,0,8);
 
 #define weapon_name
 return "CHRIS KNIFE";

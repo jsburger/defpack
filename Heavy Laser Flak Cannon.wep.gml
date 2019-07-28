@@ -1,6 +1,6 @@
 #define init
-global.sprHeavyLaserFlakCannon = sprite_add_weapon("sprites/sprHeavyLaserFlakCannon.png", 8, 6);
-global.sprHeavyLaserFlakBullet = sprite_add("defpack tools/sprHeavyLaserFlak.png",2, 12, 12);
+global.sprHeavyLaserFlakCannon = sprite_add_weapon("sprites/weapons/sprHeavyLaserFlakCannon.png", 8, 6);
+global.sprHeavyLaserFlakBullet = sprite_add("sprites/projectiles/sprHeavyLaserFlak.png",2, 12, 12);
 
 #define weapon_name
 return "HEAVY LASER FLAK CANNON";

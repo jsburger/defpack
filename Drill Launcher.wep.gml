@@ -1,6 +1,6 @@
 #define init
 //global.gun
-global.sprDrillLauncher = sprite_add_weapon("sprites/sprDrillLauncher.png",6,4)
+global.sprDrillLauncher = sprite_add_weapon("sprites/weapons/sprDrillLauncher.png",6,4)
 global.sprDrill = sprite_add("sprites/projectiles/sprDrill.png",4,7,4)
 global.explosive = 0 //boolean, try turning it off
 #define weapon_name

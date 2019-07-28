@@ -1,6 +1,6 @@
 #define init
-global.sprHeavyToxicCrossbow = sprite_add_weapon("sprites/Heavy Toxic Crossbow.png", 3, 4);
-global.sprHeavyToxicBolt = sprite_add("sprites/projectiles/heavy toxic bolt.png",2, 8, 8);
+global.sprHeavyToxicCrossbow = sprite_add_weapon("sprites/weapons/sprHeavyToxicCrossbow.png", 3, 4);
+global.sprHeavyToxicBolt = sprite_add("sprites/projectiles/sprHeavyToxicBolt.png",2, 8, 8);
 
 #define weapon_name
 return "HEAVY TOXIC CROSSBOW"

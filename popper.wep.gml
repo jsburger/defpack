@@ -1,5 +1,5 @@
 #define init
-global.sprPopper = sprite_add_weapon("sprites/sprPopper.png", 4, 1);
+global.sprPopper = sprite_add_weapon("sprites/weapons/sprPopper.png", 4, 1);
 #define weapon_name
 return "POPPER";
 

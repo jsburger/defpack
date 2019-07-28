@@ -1,8 +1,8 @@
 #define init
-global.sprFlakShotgun = sprite_add_weapon("sprites/sprFlakShotgun.png", 4, 4);
-global.sprFlakShotgunAnim = sprite_add("sprites/sprFlakShotgunAnim.png", 11, 4, 4);
-global.sprFatty = sprite_add("sprites/sprFatShell.png",1,3,5)
-global.sprSuperFatty = sprite_add("sprites/sprFatShellUpg.png",1,3,5)
+global.sprFlakShotgun     = sprite_add_weapon("sprites/weapons/sprFlakShotgun.png", 4, 4);
+global.sprFlakShotgunAnim = sprite_add("sprites/weapons/sprFlakShotgunAnim.png", 11, 4, 4);
+global.sprFatty      = sprite_add("sprites/other/sprFatShell.png",1,3,5)
+global.sprSuperFatty = sprite_add("sprites/other/sprFatShellUpg.png",1,3,5)
 global.gunindex = [0,0,0,0]
 
 global.animarray = []
@@ -135,4 +135,3 @@ if is_object(w) and lq_defget(w, "image_speed", 0) > 0{
         w.anim_index = 0
     }
 }
-

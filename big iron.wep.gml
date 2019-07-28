@@ -1,5 +1,5 @@
 #define init
-global.sprBigIron = sprite_add_weapon("sprites/sprBigIron.png", 2, 4);
+global.sprBigIron = sprite_add_weapon("sprites/weapons/sprBigIron.png", 2, 4);
 
 #define weapon_name
 return "BIG IRON"

@@ -8,16 +8,16 @@
 
 //VECTOR
 
-/loadwep finished stuff/vector rifle
-/loadwep finished stuff/vector shotgun
+/loadwep vector rifle
+/loadwep vector shotgun
 /loadwep vector cannon
 
 //PLASMITE
 
-/loadwep finished stuff/plasmite pistol
-/loadwep finished stuff/plasmite rifle
-/loadwep finished stuff/plasmite shotgun
-/loadwep finished stuff/plasmite cannon
+/loadwep plasmite pistol
+/loadwep plasmite rifle
+/loadwep plasmite shotgun
+/loadwep plasmite cannon
 /loadwep turbo-murderizer 3000
 
 //SQUARE
@@ -35,7 +35,6 @@
 /loadwep lightning wheel
 /loadwep beamer
 /loadwep ionizer
-///loadwep cube gun
 /loadwep stopwatch
 
 /load mainmisc

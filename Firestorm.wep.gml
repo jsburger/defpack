@@ -1,6 +1,6 @@
 #define init
-global.sprGun = sprite_add_weapon("sprites/sprFlareCannon.png",3,4)
-global.sprProj = sprite_add("sprites/projectiles/BigFlare.png",2,7,7)
+global.sprGun  = sprite_add_weapon("sprites/weapons/sprFlareCannon.png",3,4)
+global.sprProj = sprite_add("sprites/projectiles/sprBigFlare.png",2,7,7)
 #define weapon_name
 return "FIRESTORM"
 #define weapon_type

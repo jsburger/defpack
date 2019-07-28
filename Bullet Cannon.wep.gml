@@ -1,6 +1,6 @@
 #define init
-global.sprBulletCannon    = sprite_add_weapon("sprites/Bullet Cannon.png", 4, 2);
-global.sprBulletCannonHUD = sprite_add_weapon("sprites/Bullet Cannon.png", 4, 4);
+global.sprBulletCannon    = sprite_add_weapon("sprites/weapons/sprBulletCannon.png", 4, 2);
+global.sprBulletCannonHUD = sprite_add_weapon("sprites/weapons/sprBulletCannon.png", 4, 4);
 
 #define weapon_name
 return "BULLET CANNON";

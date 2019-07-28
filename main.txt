@@ -1,3 +1,3 @@
 /load mainbullets
-/loadmod defpermissions
+/loadmod defpack tools/defpermissions
 /load tank

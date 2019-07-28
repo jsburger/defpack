@@ -1,6 +1,6 @@
 #define init
-global.sprMarker 		 = sprite_add_weapon("sprites/sprMarker.png", 3, 2);
-global.sprMarkerBolt = sprite_add("sprites/projectiles/sprMarkerBolt.png",2,-2,3)
+global.sprMarker 				  = sprite_add_weapon("sprites/weapons/sprMarker.png", 3, 2);
+global.sprMarkerBolt 			= sprite_add("sprites/projectiles/sprMarkerBolt.png",2,-2,3)
 global.sprBoltStickGround = sprite_add("sprites/projectiles/sprBoltStickGround.png", 6, 6, 16)
 #define weapon_name
 return "MARKER"
@@ -201,5 +201,3 @@ if image_index + image_speed * current_time_scale > image_number{
         image_speed += .1
     }
 }
-
-

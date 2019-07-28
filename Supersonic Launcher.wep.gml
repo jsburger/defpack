@@ -1,5 +1,5 @@
 #define init
-global.sprSuperSonicLauncher   = sprite_add_weapon("sprites/sprSuperSonicLauncher.png", 1, 3);
+global.sprSuperSonicLauncher   = sprite_add_weapon("sprites/weapons/sprSuperSonicLauncher.png", 1, 3);
 global.sprSonicStreak   = sprite_add("sprites/projectiles/sprSonicStreak.png",6,8,32);
 
 #define weapon_name
@@ -72,7 +72,7 @@ with instance_create(x,y,CustomProjectile){
     	}
     }
     while dir < 1000
-    
+
     xprevious = x
     yprevious = y
 	on_end_step = supersonic_step
@@ -86,14 +86,14 @@ instance_destroy()
 with mod_script_call_nc("mod", "defpack tools", "create_sonic_explosion", x + lengthdir_x(length, dir), y + lengthdir_y(length, dir)){
     image_xscale = scale
     image_yscale = scale
-    
+
     team = other.team
     creator = other.creator
     image_speed = spd
     damage = dmg
-    
+
     if dustspeed repeat(10 * scale) with instance_create(x, y, Dust) motion_set(random(360), dustspeed)
-    
+
     return id
 }
 
@@ -123,11 +123,3 @@ for var i = 0; i < Ring2Amount; i++{
     explo(100, 360/Ring2Amount * i + ringoffset, .2, .8, 3, 0)
 }
 repeat(8){with instance_nearest(x,y,Wall){if distance_to_object(other)<= 32{instance_create(x,y,FloorExplo);instance_destroy()}}}
-
-
-
-
-
-
-
-

@@ -1,8 +1,8 @@
 #define init
-global.sprPhlogenitator     = sprite_add_weapon("sprites/sprPhlogenitator.png", 4, 4);
-global.sprPhlogenitatorAnim = sprite_add("sprites/sprPhlogenitatorAnim.png", 11, 4, 6);
-global.sprFatty 		    = sprite_add("sprites/sprFatShell.png",1,3,5)
-global.sprSuperFatty        = sprite_add("sprites/sprFatShellUpg.png",1,3,5)
+global.sprPhlogenitator     = sprite_add_weapon("sprites/weapons/sprPhlogenitator.png", 4, 4);
+global.sprPhlogenitatorAnim = sprite_add("sprites/weapons/sprPhlogenitatorAnim.png", 11, 4, 6);
+global.sprFatty 		        = sprite_add("sprites/other/sprFatShell.png",1,3,5)
+global.sprSuperFatty        = sprite_add("sprites/other/sprFatShellUpg.png",1,3,5)
 
 global.animarray = []
 wait(3)

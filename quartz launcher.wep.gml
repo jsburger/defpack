@@ -1,8 +1,8 @@
 #define init
-global.sprQuartzLauncher = sprite_add_weapon("sprites/sprQuartzLauncher.png", 7, 4);
+global.sprQuartzLauncher = sprite_add_weapon("sprites/weapons/sprQuartzLauncher.png", 7, 4);
 global.sprQuartzGrenade  = sprite_add("sprites/projectiles/sprQuartzGrenade.png",0,4,4);
-global.sprHud 			  = sprite_add("sprites/sprQuartzLauncherHud.png", 1, 7, 4)
-global.sprGlassShard  = sprite_add("defpack tools/sprGlassShard.png",5,4,4)
+global.sprHud 			  = sprite_add("sprites/interface/sprQuartzLauncherHud.png", 1, 7, 4)
+global.sprGlassShard  = sprite_add("sprites/other/sprGlassShard.png",5,4,4)
 global.sprSonicStreak = sprite_add("sprites/projectiles/sprSonicStreak.png",6,8,32);
 
 #define weapon_name

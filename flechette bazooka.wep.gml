@@ -1,9 +1,6 @@
 #define init
-global.sprFlechetteBazooka = sprite_add_weapon("sprites\sprFlechetteBazooka.png", 9, 4);
+global.sprFlechetteBazooka = sprite_add_weapon("sprites/weapons/sprFlechetteBazooka.png", 9, 4);
 global.sprFlechetteRocket  = sprite_add("sprites\projectiles\sprFlechetteRocket.png", 0, 10, 4);
-global.sprFlechette  			 = sprite_add("sprites\projectiles\sprFlechette.png",0,3,2)
-global.mskFlechette 			 = sprite_add("sprites\projectiles\mskFlechette.png",0,3,2)
-
 #define weapon_name
 return "FLECHETTE BAZOOKA";
 

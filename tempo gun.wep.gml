@@ -1,5 +1,5 @@
 #define init
-global.sprTempoGun = sprite_add_weapon("sprites/sprTempoGun.png",2,3);
+global.sprTempoGun = sprite_add_weapon("sprites/weapons/sprTempoGun.png",2,3);
 #macro maxcombo 4
 
 //Credit to Smash Brothers (aka matt on the discord) for this gun

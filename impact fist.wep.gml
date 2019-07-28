@@ -1,10 +1,10 @@
 #define init
-global.sprMegaImpactFist = sprite_add_weapon("sprites/mega impact fist.png", 4, 8);
-global.sprMegaRealFist = sprite_add("sprites/mega impact fist fist.png", 4, 0, 13);
-global.sprMegaRealFistUpg = sprite_add("sprites/big mega impact fist fist.png", 4, 0, 13);
+global.sprMegaImpactFist  = sprite_add_weapon("sprites/weapons/sprImpactFist.png", 4, 8);
+global.sprMegaRealFist    = sprite_add("sprites/projectiles/sprImpactFistProj.png", 4, 0, 13);
+global.sprMegaRealFistUpg = sprite_add("sprites/projectiles/sprImpactFistProjUpg.png", 4, 0, 13);
 
 #define weapon_name
-return "MEGA IMPACT FIST"
+return "IMPACT FIST"
 
 #define weapon_sprt
 return global.sprMegaImpactFist;
@@ -141,5 +141,3 @@ if lifespan > 16 instance_destroy()
 
 #define approach(a, b, n, dn)
 return (b - a) * (1 - power((n - 1)/n, dn))
-
-

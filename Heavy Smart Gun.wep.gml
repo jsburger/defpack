@@ -1,5 +1,5 @@
 #define init
-global.sprHeavySmartGun = sprite_add_weapon("sprites/sprHeavySmartGun.png", 10, 4);
+global.sprHeavySmartGun = sprite_add_weapon("sprites/weapons/sprHeavySmartGun.png", 10, 4);
 //global.sprSmartAim = sprite_add("Smart aim.png",0,9,9)
 
 #define weapon_name

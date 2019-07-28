@@ -1,5 +1,5 @@
 #define init
-global.sprAutoScrewdriver = sprite_add_weapon("sprites/sprAutoScrewdriver.png", -2, 2);
+global.sprAutoScrewdriver = sprite_add_weapon("sprites/weapons/sprAutoScrewdriver.png", -2, 2);
 
 #define weapon_name
 return "AUTO SCREWDRIVER";

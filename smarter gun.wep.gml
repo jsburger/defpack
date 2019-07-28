@@ -1,6 +1,6 @@
 #define init
-global.sprSmarterGun 	  = sprite_add_weapon("sprites/sprSmarterGun.png",8,6)
-global.sprSmarterGunHUD = sprite_add_weapon("sprites/sprSmarterGun.png",1,4)
+global.sprSmarterGun 	  = sprite_add_weapon("sprites/weapons/sprSmarterGun.png",8,6)
+global.sprSmarterGunHUD = sprite_add_weapon("sprites/weapons/sprSmarterGun.png",1,4)
 #define weapon_name
 return "SMARTER GUN"
 #define weapon_type
@@ -152,21 +152,19 @@ with w{
     x += approach(x, xgoal, 6, timescale) - lengthdir_x(kick, gunangle)/2
     y += approach(y, ygoal, 6, timescale) - lengthdir_y(kick, gunangle)/2
     yoff = (sin(current_frame/10) * 3 * p)
-    
+
     var l = 24, a = c.gunangle + 180 + 50 * p, d = 6;
-    
-    var wantx = c.x + 24 * p 
-    var wanty = c.y - 24 
-    
+
+    var wantx = c.x + 24 * p
+    var wanty = c.y - 24
+
     var q = mod_script_call("mod", "defpack tools", "collision_line_first", c.x, c.y, wantx, wanty, Wall, 0, 0), a = point_direction(c.x, c.y, wantx, wanty);
     xgoal = q[0] - lengthdir_x(d, a)
     ygoal = q[1] - lengthdir_y(d, a)
-    
+
     kick -= clamp(sign(kick) * timescale/2, -kick * timescale, kick * timescale)
 }
 
 #define approach(a, b, n, dn)
 return (b - a) * (1 - power((n - 1)/n, dn))
 */
-
-

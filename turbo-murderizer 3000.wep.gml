@@ -1,5 +1,5 @@
 #define init
-global.sprTurboMurderizer3000 = sprite_add_weapon("sprites/sprTurboMurderizer3000.png",12,5)
+global.sprTurboMurderizer3000 = sprite_add_weapon("sprites/weapons/sprTurboMurderizer3000.png",12,5)
 #define weapon_name
 return "TURBO-MURDERIZER 3000"
 #define weapon_type

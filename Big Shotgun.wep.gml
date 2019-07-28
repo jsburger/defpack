@@ -1,5 +1,5 @@
 #define init
-global.sprite = sprite_add_weapon("sprites/sprBigShotgun.png",4,2)
+global.sprite = sprite_add_weapon("sprites/weapons/sprBigShotgun.png",4,2)
 global.sprMegaFlash = sprHeavySlugHit//sprite_add("sprites/projectiles/sprMegaFlashShort.png",4,16,24)
 global.mskMegaFlash = sprite_add("sprites/projectiles/mskMegaFlashShort.png",4,16,24)
 if(fork()){
@@ -7,7 +7,7 @@ if(fork()){
     sprite_collision_mask(global.mskMegaFlash, false, 0, 0, 0, 0, 0, 0, 0);
     exit;
 }
-global.shells = [sprite_add("sprites/sprFatShell.png",1,3,5),sprite_add("sprites/sprFatShellUpg.png",1,3,5)]
+global.shells = [sprite_add("sprites/other/sprFatShell.png",1,3,5),sprite_add("sprites/other/sprFatShellUpg.png",1,3,5)]
 
 #define weapon_name
 return "BIG SHOTGUN"

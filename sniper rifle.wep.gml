@@ -1,5 +1,5 @@
 #define init
-global.sprSniperRifle = sprite_add_weapon("sprites/sprSniperRifle.png", 5, 3);
+global.sprSniperRifle = sprite_add_weapon("sprites/weapons/sprSniperRifle.png", 5, 3);
 
 #define weapon_chrg
 return true;

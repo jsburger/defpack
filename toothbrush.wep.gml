@@ -1,12 +1,12 @@
 #define init
-global.brush[0] = sprite_add_weapon("sprites/toothbrush.png",0,0)
-global.brush[1] = sprite_add_weapon("sprites/greentoothbrush.png",0,0)
-global.brush[2] = sprite_add_weapon("sprites/redtoothbrush.png",0,0)
-global.brush[3] = sprite_add_weapon("sprites/purpletoothbrush.png",0,0)
-global.brush[4] = sprite_add_weapon("sprites/bluetoothbrush.png",0,0)
-global.brush[5] = sprite_add_weapon("sprites/boothtrush.png",0,0)
-global.brush[6] = sprite_add_weapon("sprites/yellowtoothbrush.png",0,0)
-global.mskbrush = sprite_add_weapon("sprites/mskToothbrushUpg.png",20,0)
+global.brush[0] = sprite_add_weapon("sprites/weapons/sprToothbrush.png"      ,0,0)
+global.brush[1] = sprite_add_weapon("sprites/weapons/sprToothbrushGreen.png" ,0,0)
+global.brush[2] = sprite_add_weapon("sprites/weapons/sprToothbrushRed.png"   ,0,0)
+global.brush[3] = sprite_add_weapon("sprites/weapons/sprToothbrushPurple.png",0,0)
+global.brush[4] = sprite_add_weapon("sprites/weapons/sprToothbrushBlue.png"  ,0,0)
+global.brush[5] = sprite_add_weapon("sprites/weapons/sprToothbrushInvert.png",0,0)
+global.brush[6] = sprite_add_weapon("sprites/weapons/sprToothbrushYellow.png",0,0)
+global.mskbrush = sprite_add_weapon("sprites/projectiles/mskToothbrush.png",20,0)
 #define weapon_name
 return "TOOTHBRUSH"
 #define weapon_type

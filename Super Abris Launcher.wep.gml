@@ -1,6 +1,6 @@
 #define init
-global.sprSuperAbrisLauncher = sprite_add_weapon("sprites/sprSuperAbrisLauncher.png", 3, 4);
-//global.sprDanger 						 = sprite_add("sprites/projectiles/Danger.png",0,1,29);
+global.sprSuperAbrisLauncher = sprite_add_weapon("sprites/weapons/sprSuperAbrisLauncher.png", 3, 4);
+//global.sprDanger 					 = sprite_add("sprites/projectiles/Danger.png",0,1,29);
 
 #define weapon_name
 return "SUPER ABRIS LAUNCHER"

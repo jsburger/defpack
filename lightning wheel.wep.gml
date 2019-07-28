@@ -1,8 +1,8 @@
 #define init
-global.sprLightningWheel        = sprite_add_weapon("sprites/sprLightningWheel.png",9,8);
-global.sprLightningWheelHUD     = sprite_add_weapon("sprites/sprLightningWheel.png",3,5);
-global.sprLightningWheelProj    = sprite_add("sprites/sprLightningWheelProj.png",2,10,10);
-global.sprLightningWheelProjUpg = sprite_add("sprites/sprLightningWheelProjUpg.png",2,13,13);
+global.sprLightningWheel        = sprite_add_weapon("sprites/weapons/sprLightningWheel.png",9,8);
+global.sprLightningWheelHUD     = sprite_add_weapon("sprites/weapons/sprLightningWheel.png",3,5);
+global.sprLightningWheelProj    = sprite_add("sprites/projectiles/sprLightningWheelProj.png",2,10,10);
+global.sprLightningWheelProjUpg = sprite_add("sprites/projectiles/sprLightningWheelProjUpg.png",2,13,13);
 
 #macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)
 

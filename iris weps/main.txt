@@ -1,0 +1,19 @@
+//FIRE BULLET
+
+/load fire
+
+//BOUNCER BULLET
+
+/load bouncer
+
+//PEST BULLET
+
+/load pest
+
+//THUNDER BULLET
+
+/load thunder
+
+//PSY BULLET
+
+/load psy

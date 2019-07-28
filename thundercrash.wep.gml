@@ -1,9 +1,9 @@
 #define init
-global.sprThundercrash    = sprite_add_weapon("sprites/sprThundercrash.png", 10, 5);
-global.sprThundercrashHUD = sprite_add_weapon("sprites/sprThundercrash.png", 17, 6);
-global.sprUmbrella        = sprite_add("defpack tools/sprRainDisk.png",2,14,14);
-global.mskUmbrella        = sprite_add("defpack tools/mskRainDisk.png",0,14,14);
-global.sprUmbrellaOrb     = sprite_add("sprites/projectiles/sprRainOrb.png",2,9,9);
+global.sprThundercrash    = sprite_add_weapon("sprites/weapons/sprThundercrash.png", 10, 5);
+global.sprThundercrashHUD = sprite_add_weapon("sprites/weapons/sprThundercrash.png", 17, 6);
+global.sprUmbrella        = sprite_add("sprites/projectiles/sprThundercrashBullet.png",2,14,14);
+global.mskUmbrella        = sprite_add("sprites/projectiles/mskThundercrashBullet.png",0,14,14);
+global.sprUmbrellaOrb     = sprite_add("sprites/projectiles/sprThundercrashGrenade.png",2,9,9);
 
 
 #define weapon_name

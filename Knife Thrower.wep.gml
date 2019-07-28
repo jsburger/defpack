@@ -1,5 +1,5 @@
 #define init
-global.sprKnifeThrower = sprite_add_weapon("sprites/sprKnifeThrower.png", 0, 2)
+global.sprKnifeThrower = sprite_add_weapon("sprites/weapons/sprKnifeThrower.png", 0, 2)
 #define weapon_name
 return "KNIFE THROWER"
 #define weapon_type

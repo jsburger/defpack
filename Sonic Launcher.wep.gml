@@ -1,7 +1,7 @@
 #define init
-global.sprSonicLauncher = sprite_add_weapon("sprites/sprSonicLauncher.png", 2, 2);
+global.sprSonicLauncher = sprite_add_weapon("sprites/weapons/sprSonicLauncher.png", 2, 2);
 global.sprSonicStreak   = sprite_add("sprites/projectiles/sprSonicStreak.png",6,8,32);
-global.sprSonicNade     = sprite_add("sprites/projectiles/Sonic Nade.png",1,3,3);
+global.sprSonicNade     = sprite_add("sprites/projectiles/sprSonicGrenade.png",1,3,3);
 #define weapon_name
 return "SONIC LAUNCHER"
 
