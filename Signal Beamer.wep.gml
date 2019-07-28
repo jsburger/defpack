@@ -1,9 +1,9 @@
 #define init
-global.sprSignalBeamer = sprite_add_weapon("sprites/sprSignalBeamer.png", 2, 2);
-global.sprSignalBeamerG = sprite_add_weapon("sprites/sprSignalBeamerG.png", 2, 2);
-global.sprSignalBeamerY = sprite_add_weapon("sprites/sprSignalBeamerY.png", 2, 2);
-global.sprSignalBeamerR = sprite_add_weapon("sprites/sprSignalBeamerR.png", 2, 2);
-global.sprSignalBeamerE = sprite_add_weapon("sprites/sprSignalBeamerE.png", 2, 2);
+global.sprSignalBeamer = sprite_add_weapon("sprites/weapons/sprSignalBeamer.png", 2, 2);
+global.sprSignalBeamerG = sprite_add_weapon("sprites/weapons/sprSignalBeamerG.png", 2, 2);
+global.sprSignalBeamerY = sprite_add_weapon("sprites/weapons/sprSignalBeamerY.png", 2, 2);
+global.sprSignalBeamerR = sprite_add_weapon("sprites/weapons/sprSignalBeamerR.png", 2, 2);
+global.sprSignalBeamerE = sprite_add_weapon("sprites/weapons/sprSignalBeamerE.png", 2, 2);
 
 #define weapon_name
 return "SIGNAL BEAMER"

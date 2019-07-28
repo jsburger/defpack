@@ -1,5 +1,5 @@
 #define init
-global.spr = sprite_add_weapon("tankcannon.png",4,2)
+global.spr = sprite_add_weapon("../sprites/weapons/sprTankCannon.png",4,2)
 
 #define weapon_name
 return "TANK CANNON";
@@ -134,4 +134,3 @@ if image_index > 1{instance_destroy()}
 draw_set_blend_mode(bm_add);
 draw_sprite_ext(sprite_index, image_index, x, y, 2*image_xscale, 1.5*image_yscale, image_angle, image_blend, 0.3);
 draw_set_blend_mode(bm_normal);
-

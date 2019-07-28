@@ -1,7 +1,5 @@
 #define init
-global.sprFlechetteShotgun = sprite_add_weapon("sprites/sprFlechetteShotgun.png", 5, 2);
-global.sprFlechette  = sprite_add("sprites\projectiles\sprFlechette.png",0,3,2)
-global.mskFlechette  = sprite_add("sprites\projectiles\mskFlechette.png",0,3,2)
+global.sprFlechetteShotgun = sprite_add_weapon("sprites/weapons/sprFlechetteShotgun.png", 5, 2);
 
 #define weapon_name
 return "FLECHETTE SHOTGUN";
@@ -48,7 +46,7 @@ repeat(2){
     	mask_index   = global.mskFlechette
     	creator = other
     }
-    
+
     with instance_create(x+lengthdir_x(3,gunangle),y+lengthdir_y(3,gunangle),Splinter){
     	motion_add(other.gunangle+random_range(-7,7)*other.accuracy+4*other.accuracy,26+random_range(-3,3))
     	image_angle = direction

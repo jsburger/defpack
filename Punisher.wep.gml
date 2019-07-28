@@ -1,6 +1,6 @@
 #define init
-global.gun = sprite_add_weapon("sprites/sprPunisher.png", 6, 4)
-global.proj = sprite_add("sprites/projectiles/sprPunisherBolt.png", 4, 2, 1)
+global.gun   = sprite_add_weapon("sprites/weapons/sprPunisher.png", 6, 4)
+global.proj  = sprite_add("sprites/projectiles/sprPunisherBolt.png", 4, 2, 1)
 global.shock = sprite_add("sprites/projectiles/sprPunisherShock.png", 4, 12, 12)
 #define weapon_name
 return "PUNISHER"

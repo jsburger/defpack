@@ -1,5 +1,5 @@
 #define init
-global.sprGrenadeMinigun = sprite_add_weapon("sprites/sprGrenadeMinigun.png",8,3);
+global.sprGrenadeMinigun = sprite_add_weapon("sprites/weapons/sprGrenadeMinigun.png",8,3);
 
 #macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)
 
@@ -42,7 +42,7 @@ with instance_create(x, y, CustomObject)
     charged = 0
     ammotime = ammobase
     index = other.index
-    
+
     defcharge = {
         style : 1,
         maxcharge : maxammo,

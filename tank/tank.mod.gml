@@ -1,10 +1,10 @@
 #define init
-global.tank = sprite_add("tank.png",11,16,8)
+global.tank = sprite_add("../sprites/tank/sprTank.png",11,16,8)
 with instances_matching(CustomHitme, "name", "tank") sprite_index = global.tank
-global.crate = sprite_add("sprTankChest.png", 1, 16, 16)
-global.crateshine = sprite_add_weapon("sprTankChest.png", 16, 16)
-global.cratehurt = sprite_add("sprTankChestHurt.png", 3, 16, 16)
-global.cratedead = sprite_add("sprTankChestDestroy.png", 4, 16, 16)
+global.crate = sprite_add("../sprites/tank/sprTankChest.png", 1, 16, 16)
+global.crateshine = sprite_add_weapon("../sprites/tank/sprTankChest.png", 16, 16)
+global.cratehurt = sprite_add("../sprites/tank/sprTankChestHurt.png", 3, 16, 16)
+global.cratedead = sprite_add("../sprites/tank/sprTankChestDestroy.png", 4, 16, 16)
 
 #macro tankscale 4
 #macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)

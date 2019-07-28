@@ -1,0 +1,23 @@
+/loadwep psy revolver
+/loadwep psy machinegun
+/loadwep triple psy machinegun
+/loadwep quad psy machinegun
+/loadwep psy smg
+/loadwep assault psy rifle
+/loadwep hyper psy rifle
+/loadwep psy minigun
+/loadwep double psy minigun
+/loadwep smart psy gun
+/loadwep psy bullet cannon
+/loadwep psy gunhammer
+/loadwep psy bullet cannon
+/loadwep psy bullak cannon
+/loadwep sniper psy rifle
+/loadwep heavy psy revolver
+/loadwep heavy psy machinegun
+/loadwep heavy assault psy rifle
+/loadwep heavy smart psy gun
+/loadwep heavy psy gunhammer
+/loadwep psy shotgun
+/loadwep smarter psy gun
+/loadwep mega psy revolver

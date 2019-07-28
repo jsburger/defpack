@@ -1,7 +1,7 @@
 #define init
-global.sprKemosabe    = sprite_add_weapon("sprites/sprKemosabe.png", 3, 2);
-global.sprLuckyBullet = sprite_add("sprites/projectiles/Lucky Bullet.png",2,11,11)
-global.sprMagazine    = sprite_add("sprites/sprKemosabeMag.png", 1, 2, 3)
+global.sprKemosabe    = sprite_add_weapon("sprites/weapons/sprKemosabe.png", 3, 2);
+global.sprLuckyBullet = sprite_add("sprites/projectiles/sprCritBullet.png",2,11,11)
+global.sprMagazine    = sprite_add("sprites/other/sprKemosabeMag.png", 1, 2, 3)
 #define weapon_name
 return "KEMOSABE";
 

@@ -1,10 +1,10 @@
 #define init
-global.toot = sprite_add_weapon("sprites/sprHerald.png",-1,3)
-global.bigrune = sprite_add("sprites/projectiles/sprHeraldRuneBig.png",1,12,24)
-global.smallrunes = sprite_add("sprites/projectiles/sprHeraldRunesSmall.png",9,3,3)
+global.toot 					 = sprite_add_weapon("sprites/weapons/sprHerald.png",-1,3)
+global.bigrune 				 = sprite_add("sprites/projectiles/sprHeraldRuneBig.png",1,12,24)
+global.smallrunes 		 = sprite_add("sprites/projectiles/sprHeraldRunesSmall.png",9,3,3)
 global.smallrunesbloom = sprite_add("sprites/projectiles/sprHeraldRunesSmall.png",9,3,3)
-global.runes = sprite_add("sprites/projectiles/sprHeraldRunes.png",9,4,4)
-global.runesbloom = sprite_add("sprites/projectiles/sprHeraldRunesOutlined.png",9,5,5)
+global.runes 					 = sprite_add("sprites/projectiles/sprHeraldRunes.png",9,4,4)
+global.runesbloom 		 = sprite_add("sprites/projectiles/sprHeraldRunesOutlined.png",9,5,5)
 with instances_matching(CustomDraw,"name",mod_current) instance_destroy()
 with script_bind_draw(vignette,-10){
 	global.drawer = id
@@ -285,7 +285,7 @@ if global.canDraw{
     if global.canshader{
         shader_set(global.sh);
         shader_set_vertex_constant_f(0, matrix_multiply(matrix_multiply(matrix_get(matrix_world), matrix_get(matrix_view)), matrix_get(matrix_projection)));
-    
+
         texture_set_stage(0, surface_get_texture(global.sf));
     }
     draw_surface(global.sf, view_xview_nonsync, view_yview_nonsync);
@@ -566,4 +566,3 @@ repeat(lines){
 	thickness -= thickness/lines
 }
 if alpha != -1 draw_set_alpha(1)
-

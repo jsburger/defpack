@@ -1,7 +1,7 @@
 #define init
-global.sprWonderSword  = sprite_add_weapon("sprites/sprWonderSword.png", -2, 6);
+global.sprWonderSword  = sprite_add_weapon("sprites/weapons/sprWonderSword.png", -2, 6);
 global.sprGoldSlashBig = sprite_add("sprites/projectiles/sprGoldSlashBig.png",3,0,36)
-global.sprGoldSlash    = sprite_add("sprites/projectiles/Gunhammer Slash.png",3,0,24)
+global.sprGoldSlash    = sprite_add("sprites/projectiles/sprGunhammerSlash.png",3,0,24)
 //global.sprFlarefire   = sprite_add("Flarefire.png",5,10,10)
 
 #define weapon_chrg
@@ -132,7 +132,7 @@ with creator{
         	}
     	}
 	}
-	
+
     with instance_create(x + lengthdir_x(20 * skill_get(mut_long_arms), gunangle), y + lengthdir_y(20 * skill_get(mut_long_arms), gunangle), Slash){
         if _tier > 0{
             mask_index = mskMegaSlash
@@ -174,7 +174,7 @@ with creator{
         bwkick = 9 * sign(bwepangle)
         bwepangle = -120 * sign(bwepangle)
     }
-    
+
 }
 
 

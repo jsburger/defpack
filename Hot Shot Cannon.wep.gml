@@ -1,6 +1,6 @@
 #define init
-global.sprHotShotCannon = sprite_add_weapon("sprites/Hot Shot Cannon.png", 4, 2);
-global.sprHotShotBullet = sprite_add("sprites/projectiles/FireShot.png",3,8,8)
+global.sprHotShotCannon = sprite_add_weapon("sprites/weapons/sprHotShotCannon.png", 4, 2);
+global.sprHotShotBullet = sprite_add("sprites/projectiles/sprFireShot.png",3,8,8)
 wait(10)
 sprite_collision_mask(global.sprHotShotBullet,1,1,0,0,0,0,0,0)
 #define weapon_name

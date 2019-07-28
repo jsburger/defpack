@@ -37,13 +37,12 @@
 
 //TOXIC
 
-/loadwep finished stuff/toxicthrower
-/loadwep finished stuff/cobra
+/loadwep toxicthrower
+/loadwep cobra
 
 //SMART
 
-///loadwep smart bazooka
-/loadwep finished stuff/smart nuke launcher
+/loadwep smart nuke launcher
 
 //CANNON
 
@@ -55,11 +54,11 @@
 /loadwep claymore
 /loadwep kaboomerang
 /loadwep auto grenade launcher
-/loadwep finished stuff/heavy nuke launcher
+/loadwep heavy nuke launcher
 /loadwep firestorm
-/loadwep finished stuff/andromeda launcher
-/loadwep finished stuff/toxic carronader
-/loadwep finished stuff/blaster
+/loadwep andromeda launcher
+/loadwep toxic carronader
+/loadwep blaster
 /loadwep puncher
 /loadwep buster
 /loadwep airstrike

@@ -1,5 +1,5 @@
 #define init
-global.sprMillimata = sprite_add_weapon("sprites/sprMillimata.png", 3, 4);
+global.sprMillimata = sprite_add_weapon("sprites/weapons/sprMillimata.png", 3, 4);
 
 #define weapon_name
 return "MILLIMATA"

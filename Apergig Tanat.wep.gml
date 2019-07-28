@@ -1,5 +1,5 @@
 #define init
-global.sprApergigTanat = sprite_add_weapon("sprites/Apergig Tanat.png", 0, 3);
+global.sprApergigTanat = sprite_add_weapon("sprites/weapons/sprApergigTanat.png", 0, 3);
 
 #define weapon_name
 return "APERGIG TANAT";

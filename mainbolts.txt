@@ -2,25 +2,25 @@
 
 //BLOOD
 
-/loadwep finished stuff/blood crossbow
-///loadwep finished stuff/heavy blood crossbow
+/loadwep blood crossbow
 
 //SPLINTER
 
 /loadwep nail gun
 /loadwep rivet gun
-/loadwep finished stuff/splinter cannon
+/loadwep splinter cannon
 /loadwep millimata
 
 //DISC
 
-/loadwep finished stuff/bouncer disc gun
-/loadwep finished stuff/sticky disc gun
+/loadwep bouncer disc gun
+/loadwep sticky disc gun
 /loadwep mega disc gun
 /loadwep record dealer
 /loadwep disc spam gun
 
 //BOWS
+
 /loadwep bow
 /loadwep explosive bow
 

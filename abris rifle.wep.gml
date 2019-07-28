@@ -1,5 +1,5 @@
 #define init
-global.sprAbrisRifle = sprite_add_weapon("sprites/sprAbrisRifle.png", 3, 2);
+global.sprAbrisRifle = sprite_add_weapon("sprites/weapons/sprAbrisRifle.png", 3, 2);
 
 #define weapon_name
 return "ABRIS RIFLE"

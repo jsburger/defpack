@@ -1,5 +1,5 @@
 #define init
-global.sprWideSlugger = sprite_add_weapon("sprites/sprWideSlugger.png",3,5)
+global.sprWideSlugger = sprite_add_weapon("sprites/weapons/sprWideSlugger.png",3,5)
 global.sprWideSlug = sprite_add("sprites/projectiles/sprWideSlug.png",2,12,17);
 global.mskWideSlug = sprite_add("sprites/projectiles/mskWideSlug.png",2,12,17);
 

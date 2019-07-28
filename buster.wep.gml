@@ -1,5 +1,5 @@
 #define init
-global.sprBuster 		  = sprite_add_weapon("sprites/sprBuster.png",7,5)
+global.sprBuster 		      = sprite_add_weapon("sprites/weapons/sprBuster.png",7,5)
 global.sprBusterBomb      = sprite_add("sprites/projectiles/sprBusterBomb.png",4,12,12) //"ROCKET"
 global.sprBusterBombBlink = sprite_add("sprites/projectiles/sprBusterBombBlink.png",2,7,6)
 return "BUSTER"

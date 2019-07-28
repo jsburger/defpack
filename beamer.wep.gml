@@ -1,5 +1,5 @@
 #define init
-global.sprBeamer       = sprite_add_weapon("sprites/sprBeamer.png",12,6);
+global.sprBeamer       = sprite_add_weapon("sprites/weapons/sprBeamer.png",12,6);
 global.sprBeam         = sprite_add("sprites/projectiles/sprBeam.png",1,0,10);
 global.mskBeam         = sprite_add("sprites/projectiles/mskBeam.png",1,1,10);
 global.sprBeamStart    = sprite_add("sprites/projectiles/sprBeamStart.png",1,12,10);

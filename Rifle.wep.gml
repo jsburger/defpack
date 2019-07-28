@@ -1,7 +1,7 @@
 #define init
-global.gun = sprite_add_weapon("sprites/sprRifle.png",9,4)
-global.gun2 = sprite_add("sprites/sprRifleAnim.png",7,9,3)
-global.clip = sprite_add("sprites/sprRifleClip.png",1,3,3)
+global.gun = sprite_add_weapon("sprites/weapons/sprRifle.png",9,4)
+global.gun2 = sprite_add("sprites/weapons/sprRifleAnim.png",7,9,3)
+global.clip = sprite_add("sprites/weapons/sprRifleClip.png",1,3,3)
 
 global.animarray = []
 wait(3)
@@ -126,7 +126,7 @@ repeat(3) if instance_exists(self){
            }
            exit
         }
-        
+
     }
     with instance_create(x + lengthdir_x(12, gunangle), y + lengthdir_y(12, gunangle) - 4*(race == "steroids" and specfiring), CustomProjectile){
         creator = other
@@ -140,7 +140,7 @@ repeat(3) if instance_exists(self){
         dist = 0
 
         hyperspeed = 6
-        
+
         with instance_create(x + lengthdir_x(6, other.gunangle),y + lengthdir_y(6, other.gunangle),BulletHit){
             image_angle = other.direction - 120
             image_speed *= 4
@@ -155,7 +155,7 @@ repeat(3) if instance_exists(self){
                 image_index = 2
             };
         }
-        
+
         on_end_step = bullet_step
         on_destroy = bullet_destroy
     }
@@ -284,4 +284,3 @@ for var i = 0; i < ammo; i++{
 instance_destroy()
 draw_reset_projection()
 draw_set_visible_all(1)
-

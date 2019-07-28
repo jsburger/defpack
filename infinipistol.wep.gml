@@ -1,5 +1,5 @@
 #define init
-global.sprInfiniPistol = sprite_add_weapon("sprites/sprPelletPistol.png", -3, 2);
+global.sprInfiniPistol = sprite_add_weapon("sprites/weapons/sprPelletPistol.png", -3, 2);
 global.sprPellet       = sprite_add("sprites/projectiles/sprPellet.png",2,8,8)
 global.sprPelletHit    = sprite_add("sprites/projectiles/sprPelletHit.png",4,8,8)
 #define weapon_name

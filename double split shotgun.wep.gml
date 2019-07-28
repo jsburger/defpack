@@ -1,5 +1,5 @@
 #define init
-global.sprDoubleSplitShotgun = sprite_add_weapon("sprites/sprDoubleSplitShotgun.png", 3, 2);
+global.sprDoubleSplitShotgun = sprite_add_weapon("sprites/weapons/sprDoubleSplitShotgun.png", 3, 2);
 
 #define weapon_name
 return "DOUBLE SPLIT SHOTGUN";

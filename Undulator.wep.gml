@@ -1,6 +1,5 @@
 #define init
-global.sprUndulator = sprite_add_weapon("sprites/sprUndulator.png", 7, 3);
-global.sprDual = sprite_add("sprites/projectiles/sprDual.png",9,4,4)
+global.sprUndulator = sprite_add_weapon("sprites/weapons/sprUndulator.png", 7, 3);
 
 #define weapon_name
 return "UNDULATOR";
@@ -62,7 +61,7 @@ if instance_exists(creator){
     time -= current_time_scale
     if time <= 0{
     	time = 2
-    	
+
     	with mod_script_call("mod", "defpack tools", "create_light_bullet",x+lengthdir_x(-10,gunangle),y+lengthdir_y(-10,gunangle)){
     	    creator = other.creator
     	    team = other.team

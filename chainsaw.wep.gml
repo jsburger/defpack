@@ -1,7 +1,7 @@
 #define init
-global.sprChainsaw = sprite_add_weapon("sprites/sprChainsaw.png",0,3)
-global.mskChainsaw = sprite_add_weapon("sprites/mskChainsawUpg.png",20,3)
-global.sprMiniAmmo = sprite_add("sprites/sprMiniAmmo.png",7,3,3)
+global.sprChainsaw = sprite_add_weapon("sprites/weapons/sprChainsaw.png",0,3)
+global.mskChainsaw = sprite_add_weapon("sprites/projectiles/mskChainsaw.png",20,3)
+global.sprMiniAmmo = sprite_add("sprites/other/sprMiniAmmo.png",7,3,3)
 #macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)
 
 #define weapon_name
@@ -109,50 +109,50 @@ switch (_id.object_index){
 	//FEATHER BLEEDERS
 	case Raven : return Feather;
 	//CURSED BLEEDERS
-	case InvSpider  	 : 
-	case InvCrystal      : 
+	case InvSpider  	 :
+	case InvCrystal      :
 	case InvLaserCrystal : return Curse;
 	//CRYSTAL BLEEDERS
-	case LaserCrystal : 
-	case HyperCrystal : 
-	case CrystalProp  : 
-	case Spider		: 
+	case LaserCrystal :
+	case HyperCrystal :
+	case CrystalProp  :
+	case Spider		:
 	case RhinoFreak	: return Hammerhead;
 	//WHITE BLEEDERS
-	case YVStatue : 
-	case BigSkull : 
+	case YVStatue :
+	case BigSkull :
 	case SnowMan  : return MeleeHitWall;
 	//ROBOT BLEEDERS
-	case SnowBot       : 
-	case SnowTank      : 
-	case GoldSnowTank  : 
-	case Barrel        : 
-	case OasisBarrel   : 
-	case ToxicBarrel   : 
-	case Wolf          : 
-	case StreetLight   : 
-	case SodaMachine   : 
-	case Hydrant	   : 
-	case Turret	       : 
-	case TechnoMancer  : 
-	case Terminal      : 
-	case MutantTube    : 
-	case DogMissile    : 
-	case Sniper        : 
-	case Car           : 
-	case Pipe          : 
-	case Anchor 	   : 
-	case WaterMine	   : 
-	case VenuzTV       : 
-	case CarVenus	   : 
-	case CarVenus2	   : 
-	case CarVenusFixed : 
+	case SnowBot       :
+	case SnowTank      :
+	case GoldSnowTank  :
+	case Barrel        :
+	case OasisBarrel   :
+	case ToxicBarrel   :
+	case Wolf          :
+	case StreetLight   :
+	case SodaMachine   :
+	case Hydrant	   :
+	case Turret	       :
+	case TechnoMancer  :
+	case Terminal      :
+	case MutantTube    :
+	case DogMissile    :
+	case Sniper        :
+	case Car           :
+	case Pipe          :
+	case Anchor 	   :
+	case WaterMine	   :
+	case VenuzTV       :
+	case CarVenus	   :
+	case CarVenus2	   :
+	case CarVenusFixed :
 	case Van		   : return BulletHit;
 	//LIGHTNING BLEEDERS
 	case LightningCrystal  : return LightningSpawn;
 	// BIG BLEEDERS
-	case JungleFly  : 
-	case BigMaggot  : 
+	case JungleFly  :
+	case BigMaggot  :
 	case BanditBoss : return BloodGamble;
 	//BIG GREEN BLEEDERS
 	case Scorpion 	:

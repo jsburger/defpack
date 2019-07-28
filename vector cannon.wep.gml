@@ -1,5 +1,5 @@
 #define init
-global.sprGeysir 		      = sprite_add_weapon("sprites/sprGeysir.png", 7, 7);
+global.sprGeysir 		      = sprite_add_weapon("sprites/weapons/sprVectorCannon.png", 7, 7);
 global.sprWaterBeam       = sprite_add("sprites/projectiles/sprWaterBeam.png",1,0,6);
 global.mskWaterBeam       = sprite_add("sprites/projectiles/mskWaterBeam.png",1,2,6);
 global.sprVectorBeamEnd   = sprite_add("sprites/projectiles/sprVectorBeamEnd.png",3,5,5);

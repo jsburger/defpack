@@ -1,5 +1,5 @@
 #define init
-global.lasertank = sprite_add("LaserTank.png",14,11,7)
+global.lasertank = sprite_add("../sprites/tank/sprLaserTank.png",14,11,7)
 
 // /gml mod_script_call("mod","laser tank","tank_create",mouse_x,mouse_y)
 #define tank_create(_x,_y)

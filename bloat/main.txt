@@ -1,0 +1,25 @@
+/loadwep antiprism
+/loadwep auto flak cannon
+/loadwep bullak machinegun
+/loadwep cube gun
+/loadwep evolver
+/loadwep first aid soda
+/loadwep flak canon
+/loadwep heavy blood crossbow
+/loadwep hot crossbow
+/loadwep huge shotgun
+/loadwep lightning orb
+/loadwep plasma charger
+/loadwep psy shot cannon
+/loadwep pulser
+/loadwep rocklet shotgun
+/loadwep scorcher
+/loadwep shard
+/loadwep smart bazooka
+/loadwep smartsword
+/loadwep spear
+/loadwep stun gun
+/loadwep super heavy slugger
+/loadwep tape
+/loadwep tsunami
+/loadwep ultra claymore

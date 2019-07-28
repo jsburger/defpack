@@ -1,8 +1,8 @@
 // Define Sprites
 #define init
-global.spr_idle = sprite_add("sprCrownIdle.png",1,8,8);
-global.spr_walk = sprite_add("sprCrownWalk.png",6,8,8);
-global.spr_icon = sprite_add("sprCrownSelect.png",1,12,16);
+global.spr_idle = sprite_add("../sprites/crown/sprCrownIdle.png",1,8,8);
+global.spr_walk = sprite_add("../sprites/crown/sprCrownWalk.png",6,8,8);
+global.spr_icon = sprite_add("../sprites/crown/sprCrownSelect.png",1,12,16);
 //Set Sprites
 #define crown_object
 spr_idle = global.spr_idle;
@@ -88,7 +88,7 @@ with instances_matching_ne(Player, "driving", 1)
 			        wep = w
 			    }
 			}
-			
+
     		if weapon_get_type(bwep) != 0
     		{
     			bmeleeammo = 12

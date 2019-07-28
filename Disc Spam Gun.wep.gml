@@ -1,5 +1,5 @@
 #define init
-global.sprDiscSpamGun = sprite_add_weapon("sprites/sprDiscSpamGun.png", 0, 2)
+global.sprDiscSpamGun = sprite_add_weapon("sprites/weapons/sprDiscSpamGun.png", 0, 2)
 global.discang = [random(360), random(360), random(360), random(360)]
 global.discang2 = [random(360), random(360), random(360), random(360)]
 #define weapon_name

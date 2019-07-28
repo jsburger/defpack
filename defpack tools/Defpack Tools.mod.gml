@@ -1,101 +1,104 @@
 #define init
-global.sprFireBullet         = sprite_add("Fire Bullet.png", 2, 8, 8);
-global.sprFireBulletHit      = sprite_add("Fire Bullet Hit.png", 4, 8, 8);
-global.sprHeavyFireBullet    = sprite_add("sprHeavyFireBullet.png", 2, 12, 12);
-global.sprHeavyFireBulletHit = sprite_add("sprHeavyFireBulletHit.png", 4, 12, 12);
+global.sprFireBullet         = sprite_add("../sprites/projectiles/iris/fire/sprFireBullet.png", 2, 8, 8);
+global.sprFireBulletHit      = sprite_add("../sprites/projectiles/iris/fire/sprFireBulletHit.png", 4, 8, 8);
+global.sprHeavyFireBullet    = sprite_add("../sprites/projectiles/iris/fire/sprHeavyFireBullet.png", 2, 12, 12);
+global.sprHeavyFireBulletHit = sprite_add("../sprites/projectiles/iris/fire/sprHeavyFireBulletHit.png", 4, 12, 12);
 
-global.sprHeavyBouncerBullet = sprite_add("sprHeavyBouncerBullet.png", 2, 12, 12);
+global.sprHeavyBouncerBullet = sprite_add("../sprites/projectiles/iris/bouncer/sprHeavyBouncerBullet.png", 2, 12, 12);
 
-global.sprToxicBullet         = sprite_add("Toxic Bullet.png", 2, 8, 8);
-global.sprToxicBulletHit      = sprite_add("Toxic Bullet Hit.png", 4, 8, 8);
-global.sprHeavyToxicBullet    = sprite_add("sprHeavyPestBullet.png", 2, 12, 12);
-global.sprHeavyToxicBulletHit = sprite_add("sprHeavyPestBulletHit.png", 4, 12, 12);
+global.sprToxicBullet         = sprite_add("../sprites/projectiles/iris/pest/sprPestBullet.png", 2, 8, 8);
+global.sprToxicBulletHit      = sprite_add("../sprites/projectiles/iris/pest/sprPestBulletHit.png", 4, 8, 8);
+global.sprHeavyToxicBullet    = sprite_add("../sprites/projectiles/iris/pest/sprHeavyPestBullet.png", 2, 12, 12);
+global.sprHeavyToxicBulletHit = sprite_add("../sprites/projectiles/iris/pest/sprHeavyPestBulletHit.png", 4, 12, 12);
 
-global.sprPsyBullet         = sprite_add("Psy Bullet.png", 2, 8, 8);
-global.mskPsyBullet         = sprite_add_p("Psy Bullet Mask.png", 0, 7, 3);
-global.sprPsyBulletHit      = sprite_add("Psy Bullet Hit.png", 4, 8, 8);
-global.sprHeavyPsyBullet    = sprite_add("sprHeavyPsyBullet.png", 2, 12, 12);
-global.sprHeavyPsyBulletHit = sprite_add("sprHeavyPsyBulletHit.png", 4, 12, 12);
+global.sprPsyBullet         = sprite_add("../sprites/projectiles/iris/psy/sprPsyBullet.png", 2, 8, 8);
+global.mskPsyBullet         = sprite_add_p("../sprites/projectiles/iris/psy/mskPsyBullet.png", 0, 7, 3);
+global.sprPsyBulletHit      = sprite_add("../sprites/projectiles/iris/psy/sprPsyBulletHit.png", 4, 8, 8);
+global.sprHeavyPsyBullet    = sprite_add("../sprites/projectiles/iris/psy/sprHeavyPsyBullet.png", 2, 12, 12);
+global.sprHeavyPsyBulletHit = sprite_add("../sprites/projectiles/iris/psy/sprHeavyPsyBulletHit.png", 4, 12, 12);
 
-global.sprLightningBullet         = sprite_add("Lightning Bullet.png", 2, 8, 8);
-global.sprLightningBulletUpg      = sprite_add("sprThunderBulletUpg.png", 2, 8, 8);
-global.sprLightningBulletHit      = sprite_add("Lightning Bullet Hit.png", 4, 8, 8);
-global.sprHeavyLightningBullet    = sprite_add("sprHeavyThunderBullet.png", 2, 12, 12);
-global.sprHeavyLightningBulletUpg = sprite_add("sprHeavyThunderBulletUpg.png", 2, 12, 12);
-global.sprHeavyLightningBulletHit = sprite_add("sprHeavyThunderBulletHit.png", 4, 12, 12);
+global.sprLightningBullet         = sprite_add("../sprites/projectiles/iris/thunder/sprThunderBullet.png", 2, 8, 8);
+global.sprLightningBulletUpg      = sprite_add("../sprites/projectiles/iris/thunder/sprThunderBulletUpg.png", 2, 8, 8);
+global.sprLightningBulletHit      = sprite_add("../sprites/projectiles/iris/thunder/sprThunderBulletHit.png", 4, 8, 8);
+global.sprHeavyLightningBullet    = sprite_add("../sprites/projectiles/iris/thunder/sprHeavyThunderBullet.png", 2, 12, 12);
+global.sprHeavyLightningBulletUpg = sprite_add("../sprites/projectiles/iris/thunder/sprHeavyThunderBulletUpg.png", 2, 12, 12);
+global.sprHeavyLightningBulletHit = sprite_add("../sprites/projectiles/iris/thunder/sprHeavyThunderBulletHit.png", 4, 12, 12);
 
-global.sprPsyPellet = sprite_add("Psy Pellet.png", 2, 8, 8);
-global.sprPsyPelletDisappear = sprite_add("Psy Pellet Disappear.png", 5, 8, 8);
+global.sprPsyPellet = sprite_add("../sprites/projectiles/sprPsyShell.png", 2, 8, 8);
+global.sprPsyPelletDisappear = sprite_add("../sprites/projectiles/sprPsyShellDisappear.png", 5, 8, 8);
 
-global.sprMagPellet = sprite_add("Magnet Pellet.png", 2, 8, 8);
-global.sprMagPelletDisappear = sprite_add("Magnet Pellet Dissapear.png", 5, 8, 8);
+global.sprMagPellet = sprite_add("../sprites/projectiles/sprSplitShell.png", 2, 8, 8);
+global.sprMagPelletDisappear = sprite_add("../sprites/projectiles/sprSplitShellDisappear.png", 5, 8, 8);
 
-global.sprHeavyMagPellet = sprite_add("Heavy Magnet Pellet.png", 2, 9, 9);
-global.sprHeavyMagPelletDisappear = sprite_add("Heavy Magnet Pellet Dissapear.png", 5, 9, 8);
+global.sprHeavyMagPellet = sprite_add("../sprites/projectiles/sprSplitSlug.png", 2, 9, 9);
+global.sprHeavyMagPelletDisappear = sprite_add("../sprites/projectiles/sprSplitSlugDisappear.png", 5, 9, 8);
 
-global.sprDarkBullet = sprite_add("Dark Bullet.png", 2, 8, 8);
-global.mskDarkBullet = sprite_add_p("Dark Bullet Mask.png", 0, 2.5, 4.5);
-global.sprDarkBulletHit = sprite_add("Dark Bullet Hit.png", 4, 8, 8);
-global.sprLightBullet = sprite_add("Light Bullet.png", 2, 8, 8);
-global.sprLightBulletHit = sprite_add("Light Bullet Hit.png", 4, 8, 8);
+global.sprDarkBullet     = sprite_add("../sprites/projectiles/sprBlackBullet.png", 2, 8, 8);
+global.mskDarkBullet     = sprite_add_p("../sprites/projectiles/mskBlackBullet.png", 0, 2.5, 4.5);
+global.sprDarkBulletHit  = sprite_add("../sprites/projectiles/sprBlackBulletHit.png", 4, 8, 8);
+global.sprLightBullet    = sprite_add("../sprites/projectiles/sprWhiteBullet.png", 2, 8, 8);
+global.sprLightBulletHit = sprite_add("../sprites/projectiles/sprWhiteBulletHit.png", 4, 8, 8);
 
-global.sprPlasmite    = sprite_add("sprPlasmite.png",0,3,3);
-global.sprPlasmiteUpg = sprite_add("sprPlasmiteUpg.png",0,3,3);
+global.sprPlasmite    = sprite_add("../sprites/projectiles/sprPlasmite.png",0,3,3);
+global.sprPlasmiteUpg = sprite_add("../sprites/projectiles/sprPlasmiteUpg.png",0,3,3);
 
-global.sprRocklet      = sprite_add("sprRocklet.png",2,1,6);
-global.sprRockletFlame = sprite_add("sprRockletFlame.png",0,8,3);
+global.sprRocklet      = sprite_add("../sprites/projectiles/sprRocklet.png",2,1,6);
+global.sprRockletFlame = sprite_add("../sprites/projectiles/sprRockletFlame.png",0,8,3);
 
-global.sprSonicExplosion = sprite_add("Soundwave_strip8.png",8,61,59);
-global.mskSonicExplosion = sprite_add_p("mskSonicExplosion_strip9.png",9,32,32);
+global.sprSonicExplosion = sprite_add("../sprites/projectiles/sprSonicExplosion.png",8,61,59);
+global.mskSonicExplosion = sprite_add_p("../sprites/projectiles/mskSonicExplosion.png",9,32,32);
 
-global.sprGenShell      = sprite_add("sprGenShell.png",7, 2, 2);
-global.sprGenShellLong  = sprite_add("sprGenShellL.png",7, 2, 3);
-global.sprGenShellHeavy = sprite_add("sprGenShellH.png",7, 2, 3);
-global.sprGenShellBig   = sprite_add("sprGenShellXL.png",7, 3, 3);
-global.stripes = sprite_add("BIGstripes.png",1,1,1);
+global.sprGenShell      = sprite_add("../sprites/other/sprGenShell.png",7, 2, 2);
+global.sprGenShellLong  = sprite_add("../sprites/other/sprGenShellL.png",7, 2, 3);
+global.sprGenShellHeavy = sprite_add("../sprites/other/sprGenShellH.png",7, 2, 3);
+global.sprGenShellBig   = sprite_add("../sprites/other/sprGenShellXL.png",7, 3, 3);
+global.stripes = sprite_add("../sprites/other/sprBigStripes.png",1,1,1);
 
-global.sprSquare = sprite_add("sprSquare.png", 0, 7, 7);
-global.mskSquare = sprite_add_p("mskSquare.png",0,5,5);
-global.sprSuperSquare = sprite_add("sprSuperSquare.png", 0, 14, 14);
-global.mskSuperSquare = sprite_add_p("mskSuperSquare.png",0,10,10);
+global.sprSquare = sprite_add("../sprites/projectiles/sprSquare.png", 0, 7, 7);
+global.mskSquare = sprite_add_p("../sprites/projectiles/mskSquare.png",0,5,5);
+global.sprSuperSquare = sprite_add("../sprites/projectiles/sprSuperSquare.png", 0, 14, 14);
+global.mskSuperSquare = sprite_add_p("../sprites/projectiles/mskSuperSquare.png",0,10,10);
 
-global.sprTriangle = sprite_add("sprTriangle.png",0,7,7);
+global.sprTriangle = sprite_add("../sprites/projectiles/sprTriangle.png",0,7,7);
 
-global.sprLaserFlakBullet = sprite_add("sprLaserFlak.png",2, 7, 7);
+global.sprLaserFlakBullet = sprite_add("../sprites/projectiles/sprLaserFlak.png",2, 7, 7);
 
-global.sprMiniSpikeball = sprite_add("sprMiniSpikeball.png",0, 6, 5);
-global.mskMiniSpikeball = sprite_add_p("mskMiniSpikeball.png",0, 6, 5);
-global.sprSpikeball     = sprite_add("sprSpikeball.png",0, 11, 9);
-global.mskSpikeball     = sprite_add_p("mskSpikeball.png",0, 11, 9);
-global.sprHeavySpikeball  = sprite_add("sprHeavySpikeball.png",0, 15, 15);
-global.mskHeavySpikeball  = sprite_add_p("mskHeavySpikeball.png",0, 15, 15);
+global.sprMiniSpikeball = sprite_add("../sprites/projectiles/sprMiniSpikeball.png",0, 6, 5);
+global.mskMiniSpikeball = sprite_add_p("../sprites/projectiles/mskMiniSpikeball.png",0, 6, 5);
+global.sprSpikeball     = sprite_add("../sprites/projectiles/sprSpikeball.png",0, 11, 9);
+global.mskSpikeball     = sprite_add_p("../sprites/projectiles/mskSpikeball.png",0, 11, 9);
+global.sprHeavySpikeball  = sprite_add("../sprites/projectiles/sprHeavySpikeball.png",0, 15, 15);
+global.mskHeavySpikeball  = sprite_add_p("../sprites/projectiles/mskHeavySpikeball.png",0, 15, 15);
 
-global.sprAim          = sprite_add("sprAim.png",0,10,10);
-global.sprCursorCentre = sprite_add("sprCursorCentre.png",0,1,1);
+global.sprAim          = sprite_add("../sprites/interface/sprAim.png",0,10,10);
+global.sprCursorCentre = sprite_add("../sprites/interface/sprCursorCentre.png",0,1,1);
 
-global.sprBouncerDisc    = sprite_add("sprBouncerDisc.png",2,6,6)
-global.sprStickyDisc     = sprite_add("sprStickyDisc.png",2,7,6)
-global.sprMegaDisc       = sprite_add_p("sprMegaDisc.png",2,12,12);
-global.sprMegaDiscDie    = sprite_add("sprMegaDiscDie.png",6,12,12);
-global.sprMegaDiscTrail  = sprite_add("sprMegaDiscTrail.png",3,12,12);
-global.sprMegaDiscBounce = sprite_add("sprMegaDiscBounce.png",4,12,12);
+global.sprBouncerDisc    = sprite_add("../sprites/projectiles/sprBouncerDisc.png",2,6,6)
+global.sprStickyDisc     = sprite_add("../sprites/projectiles/sprStickyDisc.png",2,7,6)
+global.sprMegaDisc       = sprite_add_p("../sprites/projectiles/sprMegaDisc.png",2,12,12);
+global.sprMegaDiscDie    = sprite_add("../sprites/projectiles/sprMegaDiscDie.png",6,12,12);
+global.sprMegaDiscTrail  = sprite_add("../sprites/projectiles/sprMegaDiscTrail.png",3,12,12);
+global.sprMegaDiscBounce = sprite_add("../sprites/projectiles/sprMegaDiscBounce.png",4,12,12);
 
-global.sprSword       = sprite_add("sprSword.png", 1, 10, 10)
-global.sprSwordStick  = sprite_add_p("sprSwordStick.png", 1, 10, 10)
-global.sprSwordImpact = sprMeleeHitWall//sprite_add("sprSwordImpact.png", 8, 16, 16)
-global.sprKnife       = sprite_add("sprKnife.png", 1, 7, 7)
-global.sprKnifeStick  = sprite_add_p("sprKnifeStick.png", 1, 4, 7)
-global.sprSwordSlash  = sprite_add("sprSwordSlash.png", 5, 16, 16)
+global.sprSword       = sprite_add("../sprites/projectiles/sprSword.png", 1, 10, 10)
+global.sprSwordStick  = sprite_add_p("../sprites/projectiles/sprSwordStick.png", 1, 10, 10)
+global.sprSwordImpact = sprMeleeHitWall//sprite_add("../sprites/projectiles/sprSwordImpact.png", 8, 16, 16)
+global.sprKnife       = sprite_add("../sprites/projectiles/sprKnife.png", 1, 7, 7)
+global.sprKnifeStick  = sprite_add_p("../sprites/projectiles/sprKnifeStick.png", 1, 4, 7)
+global.sprSwordSlash  = sprite_add("../sprites/projectiles/sprSwordSlash.png", 5, 16, 16)
 
-global.sprCharge = sprite_add_weapon("sprHoldIcon.png",5,5)
+global.sprCharge = sprite_add_weapon("../sprites/interface/sprHoldIcon.png",5,5)
+
+global.sprFlechette  = sprite_add("..\sprites\projectiles\sprFlechette.png",0,3,2)
+global.mskFlechette  = sprite_add("..\sprites\projectiles\mskFlechette.png",0,3,2)
 
 global.SAKmode = 0
 //mod_script_call("mod","defpermissions","permission_register","mod",mod_current,"SAKmode","SAK Mode")
 
-global.sprShard      = sprite_add_weapon("sprShard.png",0,3);
-global.sprGlassShard = sprite_add("sprGlassShard.png",5,4,4)
+global.sprShard      = sprite_add_weapon("../sprites/weapons/sprShard.png",0,3);
+global.sprGlassShard = sprite_add("../sprites/other/sprGlassShard.png",5,4,4)
 
-global.sprKillslash   = sprite_add("sprKillslash.png",8,16,16);
+global.sprKillslash   = sprite_add("../sprites/projectiles/sprKillslash.png",8,16,16);
 
 global.traildrawer = -4
 global.trailsf = surface_create(game_width*4,game_height*4)
@@ -111,10 +114,10 @@ global.chargeType = 1
 mod_script_call_nc("mod", "defpermissions", "permission_register_options", "mod", mod_current, "chargeType", "Weapon Charge Indicators", ["Off", "Wep Specific", "Bar Only", "Arc Only"])
 global.chargeSmooth = [0, 0]
 
-global.sprVectorHead   = sprite_add("sprVectorHead.png",1,8,2)
-global.sprVector	   = sprite_add("sprVector.png",1,2,3)
-global.sprVectorImpact = sprite_add("sprVectorImpact.png",7,16,16)
-global.sprVectorEffect = sprite_add("sprVectorBeamEnd.png",3,5,5);
+global.sprVectorHead   = sprite_add("../sprites/projectiles/sprVectorHead.png",1,8,2)
+global.sprVector	   = sprite_add("../sprites/projectiles/sprVector.png",1,2,3)
+global.sprVectorImpact = sprite_add("../sprites/projectiles/sprVectorImpact.png",7,16,16)
+global.sprVectorEffect = sprite_add("../sprites/projectiles/sprVectorBeamEnd.png",3,5,5);
 
 //thanks yokin
 #macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)
@@ -688,7 +691,7 @@ if timer <= 0{
 		dir = point_direction(x, y, t.x, t.y);
 		spd = speed_raw * 5
         dif = clamp(angle_approach(direction, dir, 1/turnspeed, current_time_scale), -spd, spd)
-        
+
 		direction -= dif; //Smoothly rotate to aim position.
 		image_angle -= dif
 	}
@@ -3348,3 +3351,29 @@ if pierce <= 0 && ammo{
     }
     instance_destroy()
 }
+
+#define create_flechette(x, y)
+var _p = instance_create(x, y, CustomProjectile);
+with _p{
+  sprite_index = global.sprFlechette;
+  friction = 1;
+  damage   = 6;
+  force    = 6;
+  on_destroy = flechette_destroy;
+  on_step    = flechette_step;
+  on_hit     = flechette_hit;
+}
+return _p;
+
+#define flechette_step
+if speed <= friction{instance_destroy()}
+
+#define flechette_hit
+projectile_hit(other, damage, force, direction);
+if other.my_health > damage * 2{
+  instance_destroy();
+}
+
+#define flechette_destroy
+instance_create(x + hspeed, y + vspeed, SmallExplosion);
+sound_play(sndExplosionS)

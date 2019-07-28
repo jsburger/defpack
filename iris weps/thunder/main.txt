@@ -1,0 +1,23 @@
+/loadwep thunder revolver
+/loadwep thunder machinegun
+/loadwep triple thunder machinegun
+/loadwep quad thunder machinegun
+/loadwep thunder smg
+/loadwep assault thunder rifle
+/loadwep hyper thunder rifle
+/loadwep thunder minigun
+/loadwep double thunder minigun
+/loadwep smart thunder gun
+/loadwep thunder bullet cannon
+/loadwep thunder gunhammer
+/loadwep thunder bullet cannon
+/loadwep thunder bullak cannon
+/loadwep sniper thunder rifle
+/loadwep heavy thunder revolver
+/loadwep heavy thunder machinegun
+/loadwep heavy assault thunder rifle
+/loadwep heavy smart thunder gun
+/loadwep heavy thunder gunhammer
+/loadwep thunder shotgun
+/loadwep smarter thunder gun
+/loadwep mega thunder revolver

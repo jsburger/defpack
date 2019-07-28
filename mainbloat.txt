@@ -1,15 +1,1 @@
-/loadwep antiprism
-/loadwep auto flak cannon
-/loadwep bullak machinegun
-/loadwep heavy split shotgun
-/loadwep finished stuff/heavy blood crossbow
-/loadwep hot crossbow
-/loadwep huge shotgun
-/loadwep lightning orb
-/loadwep plasma charger
-/loadwep psy pop gun
-/loadwep rocklet shotgun
-/loadwep smart bazooka
-/loadwep super heavy slugger
-/loadwep tsunami
-/loadwep pulser
+/load bloat

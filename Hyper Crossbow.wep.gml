@@ -1,5 +1,5 @@
 #define init
-global.sprHyperCrossbow = sprite_add_weapon("sprites/sprHyperCrossbow.png", 5, 8);
+global.sprHyperCrossbow = sprite_add_weapon("sprites/weapons/sprHyperCrossbow.png", 5, 8);
 global.sprHyperBolt 		= sprite_add("sprites/projectiles/sprHyperBolt.png",2, 8, 8);
 
 #define weapon_name

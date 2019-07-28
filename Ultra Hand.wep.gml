@@ -1,6 +1,6 @@
 #define init
-global.smacker    = sprite_add_weapon("sprites/sprultrahand.png",-6,5)
-global.smackerOff = sprite_add_weapon("sprites/sprultrahandoff.png",-6,5)
+global.smacker    = sprite_add_weapon("sprites/weapons/sprUltraHand.png",-6,5)
+global.smackerOff = sprite_add_weapon("sprites/weapons/sprUltraHandOff.png",-6,5)
 
 #define weapon_name
 return "ULTRA HAND"

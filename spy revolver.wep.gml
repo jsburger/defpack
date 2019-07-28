@@ -1,10 +1,10 @@
 #define init
-global.spyBullet = sprite_add("sprites/projectiles/Spy Bullet.png",2,8,8)
-global.spyArm = sprite_add("sprites/projectiles/spy arm.png",1,0,3)
-global.spyHand = sprite_add("sprites/projectiles/spy hand.png",1,0,4)
-global.gun = sprite_add_weapon("sprites/spy revolver.png",2,2)
-global.hit = sprite_add("sprites/projectiles/spy bullet hit.png",4,8,8)
-global.crit = sprite_add("sprites/sprCritIndicator.png",0,11,14)
+global.spyBullet = sprite_add("sprites/projectiles/sprSpyBullet.png",2,8,8)
+global.spyArm 	 = sprite_add("sprites/projectiles/sprSpyArm.png",1,0,3)
+global.spyHand 	 = sprite_add("sprites/projectiles/sprSpyHand.png",1,0,4)
+global.gun 	     = sprite_add_weapon("sprites/weapons/sprSpyRevolver.png",2,2)
+global.hit 		   = sprite_add("sprites/projectiles/spy bullet hit.png",4,8,8)
+global.crit 		 = sprite_add("sprites/other/sprCritIndicator.png",0,11,14)
 
 #define weapon_name
 return "SPY REVOLVER";

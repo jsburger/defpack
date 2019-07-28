@@ -1,0 +1,22 @@
+/loadwep bouncer revolver
+/loadwep bouncer machinegun
+/loadwep triple bouncer machinegun
+/loadwep quad bouncer machinegun
+//loadwep bouncer smg
+/loadwep assault bouncer rifle
+/loadwep hyper bouncer rifle
+/loadwep bouncer minigun
+/loadwep double bouncer minigun
+/loadwep smart bouncer gun
+/loadwep bouncer gunhammer
+/loadwep bouncer bullet cannon
+/loadwep bouncer bullak cannon
+/loadwep sniper bouncer rifle
+/loadwep heavy bouncer revolver
+/loadwep heavy bouncer machinegun
+/loadwep heavy assault bouncer rifle
+/loadwep heavy smart bouncer gun
+/loadwep heavy bouncer gunhammer
+//loadwep bouncer shotgun
+/loadwep smarter bouncer gun
+/loadwep mega bouncer revolver

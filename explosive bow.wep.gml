@@ -1,7 +1,7 @@
 #define init
-global.sprExplosiveBow   = sprite_add_weapon("sprites/sprFireBow.png", 4, 9);
-global.sprHotArrow  	   = sprite_add("sprites/projectiles/sprFireArrow.png",0, 9, 4);
-global.sprHotArrowHUD  	 = sprite_add_weapon("sprites/projectiles/sprFireArrow.png", 7, 3);
+global.sprExplosiveBow   = sprite_add_weapon("sprites/weapons/sprExplosiveBow.png", 4, 9);
+global.sprHotArrow  	   = sprite_add("sprites/projectiles/sprExplosiveArrow.png",0, 9, 4);
+global.sprHotArrowHUD  	 = sprite_add_weapon("sprites/projectiles/sprExplosiveArrow.png", 7, 3);
 
 #define weapon_name
 return "EXPLOSIVE BOW"

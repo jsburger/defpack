@@ -1,5 +1,5 @@
 #define init
-global.sprMoby = sprite_add_weapon("sprites/sprMoby.png", 7, 2);
+global.sprMoby = sprite_add_weapon("sprites/weapons/sprMoby.png", 7, 2);
 global.yellow = merge_color(c_yellow, c_white, .4)
 
 #macro maxchrg 24

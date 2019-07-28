@@ -1,5 +1,5 @@
 #define init
-global.sprSteelDiver = sprite_add_weapon("sprites/sprSteelDiver.png", 5, 3);
+global.sprSteelDiver = sprite_add_weapon("sprites/weapons/sprSteelDiver.png", 5, 3);
 
 #define weapon_name
 return "STEEL DIVER"

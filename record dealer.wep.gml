@@ -1,6 +1,6 @@
 #define init
-global.sprRecordDealer    = sprite_add_weapon("sprites/sprRecordDealer.png",6,4)
-global.sprRecordDealerHUD = sprite_add_weapon("sprites/sprRecordDealer.png",10,3)
+global.sprRecordDealer    = sprite_add_weapon("sprites/weapons/sprRecordDealer.png",6,4)
+global.sprRecordDealerHUD = sprite_add_weapon("sprites/weapons/sprRecordDealer.png",10,3)
 global.sprVinyl           = sprite_add("sprites/projectiles/sprVinyl.png",2,7,7)
 global.sprGoldVinyl       = sprite_add("sprites/projectiles/sprGoldVinyl.png",2,7,7)
 global.sprStickyVinyl     = sprite_add("sprites/projectiles/sprStickyVinyl.png",2,7,7)

@@ -1,5 +1,5 @@
 #define init
-global.PsyEraser = sprite_add_weapon("sprites/Psy Eraser.png", 2, 1);
+global.PsyEraser = sprite_add_weapon("sprites/weapons/sprPsyEraser.png", 2, 1);
 
 #define weapon_name
 return "PSY ERASER";

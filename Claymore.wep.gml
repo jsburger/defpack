@@ -1,6 +1,6 @@
 #define init
-global.sprClaymore   = sprite_add_weapon("sprites/Claymore.png", 4, 4);
-global.sprLunatic 	 = sprite_add_weapon("sprites/sprLunatic.png", 1, 13);
+global.sprClaymore   = sprite_add_weapon("sprites/weapons/sprClaymore.png", 4, 4);
+global.sprLunatic 	 = sprite_add_weapon("sprites/weapons/sprLunatic.png", 1, 13);
 
 #define weapon_name
 if instance_is(self,Player)
