@@ -1,6 +1,7 @@
 #define init
 global.sprFlechetteBazooka = sprite_add_weapon("sprites/weapons/sprFlechetteBazooka.png", 9, 4);
 global.sprFlechetteRocket  = sprite_add("sprites\projectiles\sprFlechetteRocket.png", 0, 10, 4);
+
 #define weapon_name
 return "FLECHETTE BAZOOKA";
 
@@ -8,7 +9,7 @@ return "FLECHETTE BAZOOKA";
 return global.sprFlechetteBazooka;
 
 #define weapon_type
-return 4;
+return 3;
 
 #define weapon_auto
 return true;
@@ -17,7 +18,7 @@ return true;
 return 43;
 
 #define weapon_cost
-return 2;
+return 8;
 
 #define weapon_swap
 return sndSwapExplosive;
@@ -66,16 +67,13 @@ sound_play_pitchvol(sndFlareExplode,1,.4)
 var _dir = random(360)
 repeat(6)
 {
-	with instance_create(x,y,Splinter)
-	{
-		motion_add(_dir+random_range(-20,20)*other.acc,22)
-		image_angle = direction
-		team = other.team
-		damage = 6
-		sprite_index = global.sprFlechette
-		mask_index   = global.mskFlechette
-		creator = other
+	with mod_script_call("mod", "defpack tools", "create_flechette", x, y){
+		creator = other;
+		team    = creator.team;
+		motion_add(_dir + random_range(-20,20) * other.acc, 20);
+		image_angle = direction;
 	}
+
 	_dir += 360/6
 }
 _dir = random(360)

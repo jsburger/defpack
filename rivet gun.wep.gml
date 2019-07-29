@@ -23,7 +23,7 @@ return 2;
 return sndSwapBow;
 
 #define weapon_area
-return 3;
+return 10;
 
 #define weapon_text
 return "RIVETING";

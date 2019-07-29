@@ -89,8 +89,9 @@ global.sprSwordSlash  = sprite_add("../sprites/projectiles/sprSwordSlash.png", 5
 
 global.sprCharge = sprite_add_weapon("../sprites/interface/sprHoldIcon.png",5,5)
 
-global.sprFlechette  = sprite_add("..\sprites\projectiles\sprFlechette.png",0,3,2)
-global.mskFlechette  = sprite_add("..\sprites\projectiles\mskFlechette.png",0,3,2)
+global.sprFlechette       = sprite_add("..\sprites\projectiles\sprFlechette.png"     ,0, 6,2)
+global.mskFlechette       = sprite_add("..\sprites\projectiles\mskFlechette.png"     ,0, 6,2)
+global.sprFlechetteBlink  = sprite_add("..\sprites\projectiles\sprFlechetteBlink.png",3,14,2)
 
 global.SAKmode = 0
 //mod_script_call("mod","defpermissions","permission_register","mod",mod_current,"SAKmode","SAK Mode")
@@ -3383,23 +3384,81 @@ var _p = instance_create(x, y, CustomProjectile);
 with _p{
   sprite_index = global.sprFlechette;
   friction = 1;
-  damage   = 6;
-  force    = 6;
+  damage   = 4;
+  force    = 4;
   on_destroy = flechette_destroy;
   on_step    = flechette_step;
+  on_wall    = flechette_wall;
   on_hit     = flechette_hit;
 }
 return _p;
 
 #define flechette_step
-if speed <= friction{instance_destroy()}
+var hitem = 0
+if skill_get(mut_bolt_marrow){
+    var q = instance_nearest_matching_ne(x,y,hitme,"team",team)
+    if instance_exists(q) and point_distance(q.x,q.y, x, y) < 24 {
+        x = q.x - hspeed_raw
+        y = q.y - vspeed_raw
+        hitem = 1
+    }
+}
+var _xprev = x - lengthdir_x(speed, direction), // i dont know why xprevious and x take on the same value here but its really messing bolttrails up with nolt marrow. same with y and yprevious
+    _yprev = y - lengthdir_y(speed, direction);
+with instance_create(x,y,BoltTrail){
+    image_xscale = point_distance(x, y, _xprev, _yprev)
+    image_angle = point_direction(x ,y, _xprev, _yprev)
+}
+if speed <= .001{instance_destroy()}
+
+#define flechette_wall
+move_bounce_solid(false);
+direction += random_range(-8,8);
+image_angle = direction;
 
 #define flechette_hit
 projectile_hit(other, damage, force, direction);
-if other.my_health > damage * 2{
+if (other.my_health > 0){
+  var _hitme = other;
+  with instance_create(x, y, CustomObject){
+    sprite_index = global.sprFlechetteBlink;
+    image_angle  = other.image_angle;
+    image_speed  = 0;
+    target  = _hitme;
+    timer = 16 + 24;
+    depth = target.depth - 1;
+    on_step = flechette_stick_step;
+  }
   instance_destroy();
+  exit;
 }
 
 #define flechette_destroy
-instance_create(x + hspeed, y + vspeed, SmallExplosion);
-sound_play(sndExplosionS)
+repeat(3){instance_create(x, y, Dust)}
+
+#define flechette_stick_step
+if !instance_exists(target){
+  flechette_stick_explo();
+  exit;
+}
+if place_meeting(x, y, Explosion){
+  flechette_stick_explo();
+  exit;
+}
+x = target.x;
+y = target.y;
+timer--;
+if timer <= 16{
+  image_speed  = .5;
+  if image_index = 0 image_index++;
+  if timer <= 0{
+    flechette_stick_explo();
+  }
+}
+
+#define flechette_stick_explo()
+sound_play(sndExplosionS);
+instance_create(x, y, SmallExplosion);
+sleep(5);
+view_shake_at(x, y, 2);
+instance_destroy();
