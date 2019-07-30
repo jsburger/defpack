@@ -1,124 +1,166 @@
 #define init
-global.sprFireBullet         = sprite_add("../sprites/projectiles/iris/fire/sprFireBullet.png", 2, 8, 8);
-global.sprFireBulletHit      = sprite_add("../sprites/projectiles/iris/fire/sprFireBulletHit.png", 4, 8, 8);
-global.sprHeavyFireBullet    = sprite_add("../sprites/projectiles/iris/fire/sprHeavyFireBullet.png", 2, 12, 12);
-global.sprHeavyFireBulletHit = sprite_add("../sprites/projectiles/iris/fire/sprHeavyFireBulletHit.png", 4, 12, 12);
 
-global.sprHeavyBouncerBullet = sprite_add("../sprites/projectiles/iris/bouncer/sprHeavyBouncerBullet.png", 2, 12, 12);
+	var i = "../sprites/projectiles/";
+	global.spr = {};
+	
+	//Sprites, sorted by ammo type, misc at the bottom
+	with spr {
+		msk = {};
+		
+		//Fire Bullets
+		FireBullet         = sprite_add(i + "iris/fire/sprFireBullet.png",    2, 8, 8);
+		FireBulletHit      = sprite_add(i + "iris/fire/sprFireBulletHit.png", 4, 8, 8);
+		HeavyFireBullet    = sprite_add(i + "iris/fire/sprHeavyFireBullet.png",    2, 12, 12);
+		HeavyFireBulletHit = sprite_add(i + "iris/fire/sprHeavyFireBulletHit.png", 4, 12, 12);
+		
+		//Bouncers
+		HeavyBouncerBullet = sprite_add(i + "iris/bouncer/sprHeavyBouncerBullet.png", 2, 12, 12);
+		
+		//Toxic Bullets
+		ToxicBullet         = sprite_add(i + "iris/pest/sprPestBullet.png",    2, 8, 8);
+		ToxicBulletHit      = sprite_add(i + "iris/pest/sprPestBulletHit.png", 4, 8, 8);
+		HeavyToxicBullet    = sprite_add(i + "iris/pest/sprHeavyPestBullet.png",    2, 12, 12);
+		HeavyToxicBulletHit = sprite_add(i + "iris/pest/sprHeavyPestBulletHit.png", 4, 12, 12);
+		
+		//Lightning Bullets
+		LightningBullet         = sprite_add(i + "iris/thunder/sprThunderBullet.png",    2, 8, 8);
+		LightningBulletUpg      = sprite_add(i + "iris/thunder/sprThunderBulletUpg.png", 2, 8, 8);
+		LightningBulletHit      = sprite_add(i + "iris/thunder/sprThunderBulletHit.png", 4, 8, 8);
+		HeavyLightningBullet    = sprite_add(i + "iris/thunder/sprHeavyThunderBullet.png",    2, 12, 12);
+		HeavyLightningBulletUpg = sprite_add(i + "iris/thunder/sprHeavyThunderBulletUpg.png", 2, 12, 12);
+		HeavyLightningBulletHit = sprite_add(i + "iris/thunder/sprHeavyThunderBulletHit.png", 4, 12, 12);
+		
+		//Psy Bullets
+		PsyBullet         = sprite_add  (i + "iris/psy/sprPsyBullet.png",    2, 8, 8);
+		PsyBulletHit      = sprite_add  (i + "iris/psy/sprPsyBulletHit.png", 4, 8, 8);
+		msk.PsyBullet     = sprite_add_p(i + "iris/psy/mskPsyBullet.png",    0, 7, 3);
+		HeavyPsyBullet    = sprite_add  (i + "iris/psy/sprHeavyPsyBullet.png",    2, 12, 12);
+		HeavyPsyBulletHit = sprite_add  (i + "iris/psy/sprHeavyPsyBulletHit.png", 4, 12, 12);
+		
+		//Dark Bullets
+		sprDarkBullet     = sprite_add  (i + "sprBlackBullet.png",    2, 8, 8);
+		sprDarkBulletHit  = sprite_add  (i + "sprBlackBulletHit.png", 4, 8, 8);
+		msk.DarkBullet    = sprite_add_p(i + "mskBlackBullet.png",    0, 3, 5);
+		
+		//Light Bullets
+		sprLightBullet    = sprite_add(i + "sprWhiteBullet.png",    2, 8, 8);
+		sprLightBulletHit = sprite_add(i + "sprWhiteBulletHit.png", 4, 8, 8);
 
-global.sprToxicBullet         = sprite_add("../sprites/projectiles/iris/pest/sprPestBullet.png", 2, 8, 8);
-global.sprToxicBulletHit      = sprite_add("../sprites/projectiles/iris/pest/sprPestBulletHit.png", 4, 8, 8);
-global.sprHeavyToxicBullet    = sprite_add("../sprites/projectiles/iris/pest/sprHeavyPestBullet.png", 2, 12, 12);
-global.sprHeavyToxicBulletHit = sprite_add("../sprites/projectiles/iris/pest/sprHeavyPestBulletHit.png", 4, 12, 12);
+		//Iris Casings
+		GenShell      = sprite_add("../sprites/other/sprGenShell.png",   7, 2, 2);
+		GenShellLong  = sprite_add("../sprites/other/sprGenShellL.png",  7, 2, 3);
+		GenShellHeavy = sprite_add("../sprites/other/sprGenShellH.png",  7, 2, 3);
+		GenShellBig   = sprite_add("../sprites/other/sprGenShellXL.png", 7, 3, 3);
 
-global.sprPsyBullet         = sprite_add("../sprites/projectiles/iris/psy/sprPsyBullet.png", 2, 8, 8);
-global.mskPsyBullet         = sprite_add_p("../sprites/projectiles/iris/psy/mskPsyBullet.png", 0, 7, 3);
-global.sprPsyBulletHit      = sprite_add("../sprites/projectiles/iris/psy/sprPsyBulletHit.png", 4, 8, 8);
-global.sprHeavyPsyBullet    = sprite_add("../sprites/projectiles/iris/psy/sprHeavyPsyBullet.png", 2, 12, 12);
-global.sprHeavyPsyBulletHit = sprite_add("../sprites/projectiles/iris/psy/sprHeavyPsyBulletHit.png", 4, 12, 12);
+		//Psy Shells
+		PsyShell           = sprite_add(i + "sprPsyShell.png", 2, 8, 8);
+		PsyPelletDisappear = sprite_add(i + "sprPsyShellDisappear.png", 5, 8, 8);
 
-global.sprLightningBullet         = sprite_add("../sprites/projectiles/iris/thunder/sprThunderBullet.png", 2, 8, 8);
-global.sprLightningBulletUpg      = sprite_add("../sprites/projectiles/iris/thunder/sprThunderBulletUpg.png", 2, 8, 8);
-global.sprLightningBulletHit      = sprite_add("../sprites/projectiles/iris/thunder/sprThunderBulletHit.png", 4, 8, 8);
-global.sprHeavyLightningBullet    = sprite_add("../sprites/projectiles/iris/thunder/sprHeavyThunderBullet.png", 2, 12, 12);
-global.sprHeavyLightningBulletUpg = sprite_add("../sprites/projectiles/iris/thunder/sprHeavyThunderBulletUpg.png", 2, 12, 12);
-global.sprHeavyLightningBulletHit = sprite_add("../sprites/projectiles/iris/thunder/sprHeavyThunderBulletHit.png", 4, 12, 12);
+		//Split Shells
+		SplitShell               = sprite_add(i + "sprSplitShell.png",          2, 8, 8);
+		SplitShellDisappear      = sprite_add(i + "sprSplitShellDisappear.png", 5, 8, 8);
+		HeavySplitShell          = sprite_add(i + "sprSplitSlug.png",           2, 9, 9);
+		HeavySplitShellDisappear = sprite_add(i + "sprSplitSlugDisappear.png",  5, 9, 8);
+		
+		//Rocklets
+		Rocklet      = sprite_add(i + "sprRocklet.png", 2, 1, 6);
+		RockletFlame = sprite_add(i + "sprRockletFlame.png", 0, 8, 3);
+		
+		//Sonic Explosions
+		SonicExplosion     = sprite_add(  i + "sprSonicExplosion.png", 8, 61, 59);
+		msk.SonicExplosion = sprite_add_p(i + "mskSonicExplosion.png", 9, 32, 32);
+		
+		//Abris Stripes
+		Stripes = sprite_add("../sprites/other/sprBigStripes.png", 1, 1, 1);
 
-global.sprPsyPellet = sprite_add("../sprites/projectiles/sprPsyShell.png", 2, 8, 8);
-global.sprPsyPelletDisappear = sprite_add("../sprites/projectiles/sprPsyShellDisappear.png", 5, 8, 8);
+		//Plasmites
+		Plasmite    = sprite_add(i + "sprPlasmite.png",    0, 3, 3);
+		PlasmiteUpg = sprite_add(i + "sprPlasmiteUpg.png", 0, 3, 3);
 
-global.sprMagPellet = sprite_add("../sprites/projectiles/sprSplitShell.png", 2, 8, 8);
-global.sprMagPelletDisappear = sprite_add("../sprites/projectiles/sprSplitShellDisappear.png", 5, 8, 8);
+		//Squares
+		Square     = sprite_add  (i + "sprSquare.png", 0, 7, 7);
+		msk.Square = sprite_add_p(i + "mskSquare.png", 0, 5, 5);
+		
+		SuperSquare     = sprite_add  (i + "sprSuperSquare.png", 0, 14, 14);
+		msk.SuperSquare = sprite_add_p(i + "mskSuperSquare.png", 0, 10, 10);
+		
+		//Triangles
+		Triangle = sprite_add(i + "sprTriangle.png", 0, 7, 7);
+		
+		//Laser Flaks
+		LaserFlakBullet = sprite_add(i + "sprLaserFlak.png", 2, 7, 7);
+		
+		//Vectors
+		VectorHead   = sprite_add(i + "sprVectorHead.png",1,8,2)
+		Vector	   = sprite_add(i + "sprVector.png",1,2,3)
+		VectorImpact = sprite_add(i + "sprVectorImpact.png",7,16,16)
+		VectorEffect = sprite_add(i + "sprVectorBeamEnd.png",3,5,5);
+		
+		//Spike Balls
+		MiniSpikeball      = sprite_add  (i + "sprMiniSpikeball.png", 0, 6, 5);
+		msk.MiniSpikeball  = sprite_add_p(i + "mskMiniSpikeball.png", 0, 6, 5);
+		Spikeball          = sprite_add  (i + "sprSpikeball.png", 0, 11, 9);
+		msk.Spikeball      = sprite_add_p(i + "mskSpikeball.png", 0, 11, 9);
+		HeavySpikeball     = sprite_add  (i + "sprHeavySpikeball.png", 0, 15, 15);
+		msk.HeavySpikeball = sprite_add_p(i + "mskHeavySpikeball.png", 0, 15, 15);
+		
+		//Discs
+		BouncerDisc    = sprite_add  (i + "sprBouncerDisc.png", 2,  6,  6);
+		StickyDisc     = sprite_add  (i + "sprStickyDisc.png",  2,  7,  6);
+		MegaDisc       = sprite_add_p(i + "sprMegaDisc.png",    2, 12, 12);
+		MegaDiscDie    = sprite_add  (i + "sprMegaDiscDie.png",    6, 12, 12);
+		MegaDiscTrail  = sprite_add  (i + "sprMegaDiscTrail.png",  3, 12, 12);
+		MegaDiscBounce = sprite_add  (i + "sprMegaDiscBounce.png", 4, 12, 12);
+		
+		//Blades
+		Sword       = sprite_add  (i + "sprSword.png",      1, 10, 10)
+		SwordStick  = sprite_add_p(i + "sprSwordStick.png", 1, 10, 10)
+		SwordImpact = sprMeleeHitWall   //sprite_add(i + "sprSwordImpact.png", 8, 16, 16)
+		Knife       = sprite_add  (i + "sprKnife.png",      1, 7, 7)
+		KnifeStick  = sprite_add_p(i + "sprKnifeStick.png", 1, 4, 7)
+		SwordSlash  = sprite_add  (i + "sprSwordSlash.png", 5, 16, 16)
+		
+		//Flechettes
+		Flechette       = sprite_add("..\sprites\projectiles\sprFlechette.png",      0,  6, 2)
+		msk.Flechette   = sprite_add("..\sprites\projectiles\mskFlechette.png",      0,  6, 2)
+		FlechetteBlink  = sprite_add("..\sprites\projectiles\sprFlechetteBlink.png", 3, 14, 2)
+		
+		
+		//Quartz Shards
+		Shard      = sprite_add_weapon("../sprites/weapons/sprShard.png", 0, 3);
+		GlassShard = sprite_add("../sprites/other/sprGlassShard.png", 5, 4, 4)
+		
+		//Crits
+		Killslash = sprite_add(i + "sprKillslash.png", 8, 16, 16);
+		
+		//Charge Icon
+		Charge = sprite_add_weapon("../sprites/interface/sprHoldIcon.png", 5, 5);
+		
+		//Sniper Sights
+		Aim          = sprite_add("../sprites/interface/sprAim.png", 0, 10, 10);
+		CursorCentre = sprite_add("../sprites/interface/sprCursorCentre.png", 0, 1, 1);
+		
+	}
+	
 
-global.sprHeavyMagPellet = sprite_add("../sprites/projectiles/sprSplitSlug.png", 2, 9, 9);
-global.sprHeavyMagPelletDisappear = sprite_add("../sprites/projectiles/sprSplitSlugDisappear.png", 5, 9, 8);
 
-global.sprDarkBullet     = sprite_add("../sprites/projectiles/sprBlackBullet.png", 2, 8, 8);
-global.mskDarkBullet     = sprite_add_p("../sprites/projectiles/mskBlackBullet.png", 0, 2.5, 4.5);
-global.sprDarkBulletHit  = sprite_add("../sprites/projectiles/sprBlackBulletHit.png", 4, 8, 8);
-global.sprLightBullet    = sprite_add("../sprites/projectiles/sprWhiteBullet.png", 2, 8, 8);
-global.sprLightBulletHit = sprite_add("../sprites/projectiles/sprWhiteBulletHit.png", 4, 8, 8);
-
-global.sprPlasmite    = sprite_add("../sprites/projectiles/sprPlasmite.png",0,3,3);
-global.sprPlasmiteUpg = sprite_add("../sprites/projectiles/sprPlasmiteUpg.png",0,3,3);
-
-global.sprRocklet      = sprite_add("../sprites/projectiles/sprRocklet.png",2,1,6);
-global.sprRockletFlame = sprite_add("../sprites/projectiles/sprRockletFlame.png",0,8,3);
-
-global.sprSonicExplosion = sprite_add("../sprites/projectiles/sprSonicExplosion.png",8,61,59);
-global.mskSonicExplosion = sprite_add_p("../sprites/projectiles/mskSonicExplosion.png",9,32,32);
-
-global.sprGenShell      = sprite_add("../sprites/other/sprGenShell.png",7, 2, 2);
-global.sprGenShellLong  = sprite_add("../sprites/other/sprGenShellL.png",7, 2, 3);
-global.sprGenShellHeavy = sprite_add("../sprites/other/sprGenShellH.png",7, 2, 3);
-global.sprGenShellBig   = sprite_add("../sprites/other/sprGenShellXL.png",7, 3, 3);
-global.stripes = sprite_add("../sprites/other/sprBigStripes.png",1,1,1);
-
-global.sprSquare = sprite_add("../sprites/projectiles/sprSquare.png", 0, 7, 7);
-global.mskSquare = sprite_add_p("../sprites/projectiles/mskSquare.png",0,5,5);
-global.sprSuperSquare = sprite_add("../sprites/projectiles/sprSuperSquare.png", 0, 14, 14);
-global.mskSuperSquare = sprite_add_p("../sprites/projectiles/mskSuperSquare.png",0,10,10);
-
-global.sprTriangle = sprite_add("../sprites/projectiles/sprTriangle.png",0,7,7);
-
-global.sprLaserFlakBullet = sprite_add("../sprites/projectiles/sprLaserFlak.png",2, 7, 7);
-
-global.sprMiniSpikeball = sprite_add("../sprites/projectiles/sprMiniSpikeball.png",0, 6, 5);
-global.mskMiniSpikeball = sprite_add_p("../sprites/projectiles/mskMiniSpikeball.png",0, 6, 5);
-global.sprSpikeball     = sprite_add("../sprites/projectiles/sprSpikeball.png",0, 11, 9);
-global.mskSpikeball     = sprite_add_p("../sprites/projectiles/mskSpikeball.png",0, 11, 9);
-global.sprHeavySpikeball  = sprite_add("../sprites/projectiles/sprHeavySpikeball.png",0, 15, 15);
-global.mskHeavySpikeball  = sprite_add_p("../sprites/projectiles/mskHeavySpikeball.png",0, 15, 15);
-
-global.sprAim          = sprite_add("../sprites/interface/sprAim.png",0,10,10);
-global.sprCursorCentre = sprite_add("../sprites/interface/sprCursorCentre.png",0,1,1);
-
-global.sprBouncerDisc    = sprite_add("../sprites/projectiles/sprBouncerDisc.png",2,6,6)
-global.sprStickyDisc     = sprite_add("../sprites/projectiles/sprStickyDisc.png",2,7,6)
-global.sprMegaDisc       = sprite_add_p("../sprites/projectiles/sprMegaDisc.png",2,12,12);
-global.sprMegaDiscDie    = sprite_add("../sprites/projectiles/sprMegaDiscDie.png",6,12,12);
-global.sprMegaDiscTrail  = sprite_add("../sprites/projectiles/sprMegaDiscTrail.png",3,12,12);
-global.sprMegaDiscBounce = sprite_add("../sprites/projectiles/sprMegaDiscBounce.png",4,12,12);
-
-global.sprSword       = sprite_add("../sprites/projectiles/sprSword.png", 1, 10, 10)
-global.sprSwordStick  = sprite_add_p("../sprites/projectiles/sprSwordStick.png", 1, 10, 10)
-global.sprSwordImpact = sprMeleeHitWall//sprite_add("../sprites/projectiles/sprSwordImpact.png", 8, 16, 16)
-global.sprKnife       = sprite_add("../sprites/projectiles/sprKnife.png", 1, 7, 7)
-global.sprKnifeStick  = sprite_add_p("../sprites/projectiles/sprKnifeStick.png", 1, 4, 7)
-global.sprSwordSlash  = sprite_add("../sprites/projectiles/sprSwordSlash.png", 5, 16, 16)
-
-global.sprCharge = sprite_add_weapon("../sprites/interface/sprHoldIcon.png",5,5)
-
-global.sprFlechette       = sprite_add("..\sprites\projectiles\sprFlechette.png"     ,0, 6,2)
-global.mskFlechette       = sprite_add("..\sprites\projectiles\mskFlechette.png"     ,0, 6,2)
-global.sprFlechetteBlink  = sprite_add("..\sprites\projectiles\sprFlechetteBlink.png",3,14,2)
-
-global.SAKmode = 0
-//mod_script_call("mod","defpermissions","permission_register","mod",mod_current,"SAKmode","SAK Mode")
-
-global.sprShard      = sprite_add_weapon("../sprites/weapons/sprShard.png",0,3);
-global.sprGlassShard = sprite_add("../sprites/other/sprGlassShard.png",5,4,4)
-
-global.sprKillslash   = sprite_add("../sprites/projectiles/sprKillslash.png",8,16,16);
-
-global.traildrawer = -4
-global.trailsf = surface_create(game_width*4,game_height*4)
-surface_set_target(global.trailsf)
-draw_clear_alpha(c_white,0)
-surface_reset_target()
-
-vertex_format_begin()
-vertex_format_add_position()
-global.lightningformat = vertex_format_end()
-
-global.chargeType = 1
-mod_script_call_nc("mod", "defpermissions", "permission_register_options", "mod", mod_current, "chargeType", "Weapon Charge Indicators", ["Off", "Wep Specific", "Bar Only", "Arc Only"])
-global.chargeSmooth = [0, 0]
-
-global.sprVectorHead   = sprite_add("../sprites/projectiles/sprVectorHead.png",1,8,2)
-global.sprVector	   = sprite_add("../sprites/projectiles/sprVector.png",1,2,3)
-global.sprVectorImpact = sprite_add("../sprites/projectiles/sprVectorImpact.png",7,16,16)
-global.sprVectorEffect = sprite_add("../sprites/projectiles/sprVectorBeamEnd.png",3,5,5);
+	global.SAKmode = 0
+	//mod_script_call("mod","defpermissions","permission_register","mod",mod_current,"SAKmode","SAK Mode")
+	
+	global.traildrawer = -4
+	global.trailsf = surface_create(game_width*4,game_height*4)
+	surface_set_target(global.trailsf)
+	draw_clear_alpha(c_white,0)
+	surface_reset_target()
+	
+	vertex_format_begin()
+	vertex_format_add_position()
+	global.lightningformat = vertex_format_end()
+	
+	global.chargeType = 1
+	global.chargeSmooth = [0, 0]
+	
+	mod_script_call_nc("mod", "defpermissions", "permission_register_options", "mod", mod_current, "chargeType", "Weapon Charge Indicators", ["Off", "Wep Specific", "Bar Only", "Arc Only"])
 
 //thanks yokin
 #macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)
@@ -132,6 +174,17 @@ global.sprVectorEffect = sprite_add("../sprites/projectiles/sprVectorBeamEnd.png
 
 #macro defcharge_bar 0
 #macro defcharge_arc 1
+
+#macro spr global.spr
+#macro msk global.spr.msk
+
+#define sprite_add_d(sprite, subimages, xoffset, yoffset)
+var a = string_split(sprite, "/"),
+	name = a[array_length(a) - 1],
+	location = string_count("msk", name) > 0 ? msk : spr;
+	name = string_replace(string_replace(string_replace(name, "msk", ""), "spr", ""), ".png", "")
+	
+	lq_set(location, name, sprite_add(sprite, subimages, xoffset, yoffset))
 
 #define sprite_add_p(sprite, subimages, xoffset, yoffset)
 var q = sprite_add(sprite, subimages, xoffset, yoffset)
@@ -194,14 +247,14 @@ with instances_matching(CustomObject,"name","sniper charge","sniper pest charge"
     if charged = 0{if (current_frame mod _m) <= current_time_scale {if _pc != c_white {_pc = c_white}else{_pc = player_get_color(creator.index)}}}
     var _offset = charge;
     var _vpf    = 3;
-    var _mx     = mouse_x_nonsync - view_xview_nonsync + .5;
-    var _my     = mouse_y_nonsync - view_yview_nonsync + .5;
+    var _mx     = mouse_x_nonsync - view_xview_nonsync + 1;
+    var _my     = mouse_y_nonsync - view_yview_nonsync + 1;
     for var i = -1; i <= 1; i += 2{
         for var o = -1; o <= 1; o += 2{
-            draw_sprite_ext(global.sprAim, 0, _mx + (_vpf - _offset + 100) * i, _my + (_vpf - _offset + 100) * o, -i, -o, 0, _pc, .1 + .9*charge/100)
+            draw_sprite_ext(spr.Aim, 0, _mx + (_vpf - _offset + 100) * i, _my + (_vpf - _offset + 100) * o, -i, -o, 0, _pc, .1 + .9*charge/100)
         }
     }
-    draw_sprite_ext(global.sprCursorCentre,0,_mx,_my,1,1,0,_pc,1)
+    draw_sprite_ext(spr.CursorCentre,0,_mx,_my,1,1,0,_pc,1)
 }
 draw_set_visible_all(1)
 
@@ -215,33 +268,41 @@ if global.chargeType with Player if player_is_local_nonsync(index){
         array_push(matches, wep)
     }
     if array_length(matches){
-        var counts = array_create(2)
+        var _chargeCounter = array_create(2)
         with matches{
             with defcharge{
                 if power(charge/maxcharge, lq_defget(self, "power", 2)) >= .001{
                     var num = global.chargeType == 1 ? style : global.chargeType - 2;
-                    counts[num]++
+                    _chargeCounter[num]++
                 }
             }
         }
-        var _x = mouse_x_nonsync - view_xview_nonsync - .5, _y = mouse_y_nonsync - view_yview_nonsync - .5;
+        var _x = mouse_x_nonsync - view_xview_nonsync, _y = mouse_y_nonsync - view_yview_nonsync + 1;
         var c = player_get_color(index), _col = c;
         //counters
-        var _ac = 0, _bc = 0, _am = counts[defcharge_arc], _bm = counts[defcharge_bar];
+        var _arcCount = 0, _barCount = 0, _arcMax = _chargeCounter[defcharge_arc], _barMax = _chargeCounter[defcharge_bar];
         //smoothing
-        var _sm = global.chargeSmooth;
-        for var i = 0; i < array_length(_sm); i++{
-            _sm[i] += approach(_sm[i], counts[i], 3, 30/room_speed)
+        var _scale = global.chargeSmooth, _l = array_length(_scale);
+        for var i = 0; i < _l; i++{
+            _scale[i] += approach(_scale[i], _chargeCounter[i], 3, 30/room_speed)
         }
         //arc vars
-        if _am{
-            var _arcpnt = 90, _p = ceil(10/max(_am/2, 1)), _ah = 2, _al = 2*(_ah + 1) + 6, _arcmax = min(360, 120 * sqrt(_sm[defcharge_arc])),
-                _arcspc = _arcmax/_am, _arclen = _arcspc - 8, _arcdir = _arcpnt + (_arcmax - _arcspc)/2;
-            draw_arc(_x, _y + 1, _arcpnt, _al - 1, _al + _ah + 2, _arcmax, _p * _am, c_black, 1, 1)
-            draw_arc(_x, _y    , _arcpnt, _al, _al + _ah + 1, _arcmax, _p * _am, 0, 1, 1)
+        if _arcMax{
+            var _arcPoint = 90,                              //the angle arcs are centered on
+            	_arcPrecision = ceil(10/max(_arcMax/2, 1)),  //amount of segments each arc has
+            	_arcThickness = 2,                           //how thick the arcs are, also affects border i think
+            	_arcHeight = 2*(_arcThickness + 1) + 6,      //how far the arcs are from the cursor, its a radius
+            	_arcTop = _arcThickness + _arcHeight,        //radius + thickness
+            	_arcBorder = _arcTop + 2,                    //the radius the borders are drawn to
+            	_arcSpan = min(360, 120 * sqrt(_scale[defcharge_arc])), //the total amount of degrees for all arcs
+                _arcSpace = _arcSpan/_arcMax,                //each arc's amount of space
+                _arcLength = _arcSpace - 8,                  //each arc's length in degrees, the 8 is for giving the borders space
+                _arcStart = _arcPoint + (_arcSpan - _arcSpace)/2; //the right side of the first arc drawn
+            draw_arc(_x, _y + 1, _arcPoint, _arcHeight - 1, _arcBorder , _arcSpan, _arcPrecision * _arcMax, c_black, 1, 1)
+            draw_arc(_x, _y    , _arcPoint, _arcHeight    , _arcTop + 1, _arcSpan, _arcPrecision * _arcMax, 0, 1, 1)
         }
         //bar vars
-        var _bh = 2, _bhinc = 2 * (_bh + 1) * (_sm[defcharge_bar]/_bm);
+        var _barHeight = 2, _barInc = 2 * (_barHeight + 1) * (_scale[defcharge_bar]/_barMax);
         //looping through oldest objects to newest objects
         for (var i = array_length(matches) - 1; i >= 0; i--){
             with matches[i]{
@@ -261,27 +322,27 @@ if global.chargeType with Player if player_is_local_nonsync(index){
                     var num = global.chargeType == 1 ? style : global.chargeType - 2;
                     switch (num){
                         case defcharge_bar:
-                            var _dw = lq_defget(self, "width", 12), _w = _dw/2, _yc = _y + _bhinc * ++_bc + 4.5
-                            draw_bar(_x, _yc, _dw, _bh, c_white)
-                            draw_line_width_color(_x - _w, _yc + .5, _x - _w + cm * _dw, _yc + .5, _bh, _col, _col)
+                            var _dw = lq_defget(self, "width", 12), _w = _dw/2, _yc = _y + _barInc * ++_barCount + 4
+                            draw_bar(_x, _yc, _dw, _barHeight, c_white)
+                            draw_line_width_color(_x - _w, _yc + .5, _x - _w + cm * _dw, _yc + .5, _barHeight, _col, _col)
                         break
                         case defcharge_arc:
-                            var _d = _arcdir - _arcspc * _ac++
-                            draw_arc(_x, _y + 1, _d + _arclen*(1 - cm)/2, _al, _al + _ah + .9, _arclen * cm, round(_p*cm), _col, 1, 1)
-                            var _ld = _arcspc/2 - 2
-                            draw_line_width_color(_x + lengthdir_x(_al-1, _d + _ld), _y + lengthdir_y(_al-1, _d + _ld), _x + lengthdir_x(_al + _ah + 2, _d + _ld), _y + lengthdir_y(_al + _ah + 2, _d + _ld), 1, c_white, c_white)
-                            draw_line_width_color(_x + lengthdir_x(_al-1, _d - _ld), _y + lengthdir_y(_al-1, _d - _ld), _x + lengthdir_x(_al + _ah + 2, _d - _ld), _y + lengthdir_y(_al + _ah + 2, _d - _ld), 1, c_white, c_white)
+                            var _d = _arcStart - _arcSpace * _arcCount++
+                            draw_arc(_x, _y + 1, _d + _arcLength*(1 - cm)/2, _arcHeight, _arcTop + .9, _arcLength * cm, round(_arcPrecision * cm), _col, 1, 1)
+                            var _ld = _arcSpace/2 - 2
+                            draw_line_width_color(_x + lengthdir_x(_arcHeight-1, _d + _ld), _y + lengthdir_y(_arcHeight-1, _d + _ld), _x + lengthdir_x(_arcBorder, _d + _ld), _y + lengthdir_y(_arcBorder, _d + _ld), 1, c_white, c_white)
+                            draw_line_width_color(_x + lengthdir_x(_arcHeight-1, _d - _ld), _y + lengthdir_y(_arcHeight-1, _d - _ld), _x + lengthdir_x(_arcBorder, _d - _ld), _y + lengthdir_y(_arcBorder, _d - _ld), 1, c_white, c_white)
                         break
                     }
                 }
             }
         }
-        if _am{
-            draw_arc(_x, _y, _arcpnt, _al - 1, _al, _arcmax, _p * _am, c_white, 1, 1)
-            draw_arc(_x, _y, _arcpnt, _al + _ah + 1, _al + _ah + 2, _arcmax, _p * _am, c_white, 1, 1)
-            var _ld1 = _arcpnt - _arcmax/2 + 2, _ld2 = _arcpnt + _arcmax/2 - 2
-            draw_line_width_color(_x + lengthdir_x(_al-1, _ld1), _y + lengthdir_y(_al-1, _ld1), _x + lengthdir_x(_al + _ah + 2, _ld1), _y + lengthdir_y(_al + _ah + 2, _ld1), 1, c_white, c_white)
-            draw_line_width_color(_x + lengthdir_x(_al-1, _ld2), _y + lengthdir_y(_al-1, _ld2), _x + lengthdir_x(_al + _ah + 2, _ld2), _y + lengthdir_y(_al + _ah + 2, _ld2), 1, c_white, c_white)
+        if _arcMax{
+            draw_arc(_x, _y, _arcPoint, _arcHeight - 1, _arcHeight, _arcSpan, _arcPrecision * _arcMax, c_white, 1, 1)
+            draw_arc(_x, _y, _arcPoint, _arcTop + 1, _arcBorder, _arcSpan, _arcPrecision * _arcMax, c_white, 1, 1)
+            var _ld1 = _arcPoint - _arcSpan/2 + 2, _ld2 = _arcPoint + _arcSpan/2 - 2
+            draw_line_width_color(_x + lengthdir_x(_arcHeight-1, _ld1), _y + lengthdir_y(_arcHeight-1, _ld1), _x + lengthdir_x(_arcBorder, _ld1), _y + lengthdir_y(_arcBorder, _ld1), 1, c_white, c_white)
+            draw_line_width_color(_x + lengthdir_x(_arcHeight-1, _ld2), _y + lengthdir_y(_arcHeight-1, _ld2), _x + lengthdir_x(_arcBorder, _ld2), _y + lengthdir_y(_arcBorder, _ld2), 1, c_white, c_white)
         }
     }
     else global.chargeSmooth = [0, 0]
@@ -300,7 +361,7 @@ with instances_matching_ne(CustomProjectile, "defbloom", undefined) {
 }
 with instances_matching(CustomProjectile, "name", "Vector"){
 	draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, 2.5*image_yscale, image_angle, image_blend, 0.1+skill_get(17)*.025);
-	if ammo > 0{draw_sprite_ext(global.sprVectorHead, 0, x, y, 3, 3, image_angle-45, image_blend, 0.1+skill_get(17)*.025)}
+	if ammo > 0{draw_sprite_ext(spr.VectorHead, 0, x, y, 3, 3, image_angle-45, image_blend, 0.1+skill_get(17)*.025)}
 }
 with instances_matching(CustomProjectile,"name","vector beam"){
   draw_sprite_ext(sprite_index, image_index, xstart, ystart, image_xscale, 1.5*image_yscale, image_angle, image_blend, 0.15+skill_get(17)*.05);
@@ -488,7 +549,7 @@ with instances_matching(WepPickup, "wep", 0) instance_destroy()
 with instances_matching(WepPickup,"chargecheck",null){
     chargecheck = 1
     if weapon_get_chrg(wep) {
-        name += ` @0(${global.sprCharge}:0) `
+        name += ` @0(${spr.Charge}:0) `
     }
 }
 
@@ -644,7 +705,7 @@ with create_bullet(x, y){
 #define create_heavy_bouncer_bullet(x, y)
 with create_heavy_bullet(x, y){
     name = "Heavy Bouncer Bullet"
-    sprite_index = global.sprHeavyBouncerBullet
+    sprite_index = spr.HeavyBouncerBullet
     damage = 9
     turn = choose(-1, 1)
     bounce = 2
@@ -672,9 +733,9 @@ else instance_destroy()
 #define create_psy_bullet(x, y)
 with create_bullet(x,y){
     name = "Psy Bullet"
-    sprite_index = global.sprPsyBullet
-    mask_index = global.mskPsyBullet
-    spr_dead = global.sprPsyBulletHit
+    sprite_index = spr.PsyBullet
+    mask_index = msk.PsyBullet
+    spr_dead = spr.PsyBulletHit
 
     damage = 4
     typ = 2
@@ -761,9 +822,9 @@ with create_psy_bullet_new(x, y){
 #define create_heavy_psy_bullet(x, y)
 with create_heavy_bullet(x, y){
     name = "Heavy Psy Bullet"
-    sprite_index = global.sprHeavyPsyBullet
-    mask_index = global.mskPsyBullet
-    spr_dead = global.sprHeavyPsyBulletHit
+    sprite_index = spr.HeavyPsyBullet
+    //mask_index = msk.PsyBullet
+    spr_dead = spr.HeavyPsyBulletHit
 
     damage = 8
     typ = 2
@@ -806,7 +867,7 @@ if timer <= 0{
 #define create_psy_shell(x, y)
 with instance_create(x, y, CustomProjectile){
 	name = "Psy Shell"
-	sprite_index = global.sprPsyPellet
+	sprite_index = spr.PsyPellet
 	friction = .6
 	image_angle = direction
 	mask_index = mskBullet2
@@ -865,7 +926,7 @@ image_angle = direction
 
 #define psy_shell_destroy
 with instance_create(x,y,BulletHit){
-	sprite_index = global.sprPsyPelletDisappear
+	sprite_index = spr.PsyPelletDisappear
 	speed = other.speed/5
 	direction = other.direction
 	image_angle = direction
@@ -873,7 +934,7 @@ with instance_create(x,y,BulletHit){
 
 #define create_heavy_split_shell(_x,_y)
 with create_split_shell(_x,_y){
-    sprite_index = global.sprHeavyMagPellet
+    sprite_index = spr.HeavyMagPellet
     force = 5
     ammo = 3
     damage = 7
@@ -885,7 +946,7 @@ with create_split_shell(_x,_y){
 var c = instance_create(_x, _y, CustomProjectile)
 with (c){
 	name = "Split Shell"
-	sprite_index = global.sprMagPellet
+	sprite_index = spr.MagPellet
 	friction = .55
 	mask_index = mskBullet2
 	wallbounce = skill_get(15) * 4 + (skill_get("shotgunshouldersx10")*40)
@@ -916,7 +977,7 @@ ammo--
 image_xscale *= .8
 image_yscale *= .8
 if ammo = 2{
-    sprite_index = global.sprMagPellet
+    sprite_index = spr.MagPellet
     image_xscale = 1
     image_yscale = 1
 }
@@ -967,8 +1028,8 @@ if speed < 2{instance_destroy()}
 with instance_create(x,y,BulletHit){
 	image_xscale = other.image_xscale
 	image_yscale = image_xscale
-	sprite_index = global.sprMagPelletDisappear
-	if other.sprite_index = global.sprHeavyMagPellet {sprite_index = global.sprHeavyMagPelletDisappear}
+	sprite_index = spr.MagPelletDisappear
+	if other.sprite_index = spr.HeavyMagPellet {sprite_index = spr.HeavyMagPelletDisappear}
 	speed = other.speed/5
 	direction = other.direction
 	image_angle = direction
@@ -982,8 +1043,8 @@ return create_lightning_bullet(x, y)
 #define create_lightning_bullet(x, y)
 with create_bullet(x, y){
     name = "Lightning Bullet"
-    sprite_index = skill_get(mut_laser_brain) ? global.sprLightningBulletUpg : global.sprLightningBullet
-    spr_dead = global.sprLightningBulletHit
+    sprite_index = skill_get(mut_laser_brain) ? spr.LightningBulletUpg : spr.LightningBullet
+    spr_dead = spr.LightningBulletHit
 
     force = 7
     damage = 2
@@ -998,8 +1059,8 @@ with create_bullet(x, y){
 #define create_heavy_lightning_bullet(x, y)
 with create_heavy_bullet(x, y){
     name = "Heavy Lightning Bullet"
-    sprite_index = skill_get(mut_laser_brain) ? global.sprHeavyLightningBulletUpg : global.sprHeavyLightningBullet
-    spr_dead = global.sprHeavyLightningBulletHit
+    sprite_index = skill_get(mut_laser_brain) ? spr.HeavyLightningBulletUpg : spr.HeavyLightningBullet
+    spr_dead = spr.HeavyLightningBulletHit
 
     typ = 2
     damage = 4
@@ -1047,8 +1108,8 @@ return create_toxic_bullet(x,y)
 #define create_toxic_bullet(x, y)
 with create_bullet(x, y){
     name = "Toxic Bullet"
-    sprite_index = global.sprToxicBullet
-    spr_dead = global.sprToxicBulletHit
+    sprite_index = spr.ToxicBullet
+    spr_dead = spr.ToxicBulletHit
 
     force = 8
     damage = 2
@@ -1062,8 +1123,8 @@ with create_bullet(x, y){
 #define create_heavy_toxic_bullet(x, y)
 with create_heavy_bullet(x, y){
     name = "Heavy Toxic Bullet"
-    sprite_index = global.sprHeavyToxicBullet
-    spr_dead = global.sprHeavyToxicBulletHit
+    sprite_index = spr.HeavyToxicBullet
+    spr_dead = spr.HeavyToxicBulletHit
 
     damage = 5
     force = 11
@@ -1111,8 +1172,8 @@ return create_fire_bullet(x,y)
 #define create_fire_bullet(x,y)
 with create_bullet(x,y){
     name = "Fire Bullet"
-    sprite_index = global.sprFireBullet
-    spr_dead = global.sprFireBulletHit
+    sprite_index = spr.FireBullet
+    spr_dead = spr.FireBulletHit
 
     damage = 3
 
@@ -1125,8 +1186,8 @@ with create_bullet(x,y){
 #define create_heavy_fire_bullet(x,y)
 with create_heavy_bullet(x, y){
     name = "Heavy Fire Bullet"
-    sprite_index = global.sprHeavyFireBullet
-    spr_dead = global.sprHeavyFireBulletHit
+    sprite_index = spr.HeavyFireBullet
+    spr_dead = spr.HeavyFireBulletHit
 
     damage = 4
 
@@ -1162,9 +1223,9 @@ bullet_destroy()
 #define create_dark_bullet(x,y)
 with instance_create(x, y, CustomSlash){
 	name = "Dark Bullet"
-	sprite_index = global.sprDarkBullet
-	mask_index = global.mskDarkBullet
-	spr_dead = global.sprDarkBulletHit
+	sprite_index = spr.DarkBullet
+	mask_index = msk.DarkBullet
+	spr_dead = spr.DarkBulletHit
 
 	typ = 0
 	damage = 8
@@ -1235,8 +1296,8 @@ bullet_destroy()
 with create_bullet(x, y){
     name = "Light Bullet"
     typ = 0
-    sprite_index = global.sprLightBullet
-    spr_dead = global.sprLightBulletHit
+    sprite_index = spr.LightBullet
+    spr_dead = spr.LightBulletHit
 
     force = 4
     lasthit = -4
@@ -1272,8 +1333,8 @@ if other != lasthit{
 with instance_create(_x,_y,CustomSlash){
 	name = "Sonic Explosion"
 
-	sprite_index = global.sprSonicExplosion
-	mask_index = global.mskSonicExplosion
+	sprite_index = spr.SonicExplosion
+	mask_index = msk.SonicExplosion
 
 	typ = 0
 	damage = 5
@@ -1335,7 +1396,7 @@ if projectile_canhit_melee(other){
 with instance_create(x, y, Shell){
 	image_speed = 0
 	motion_add(other.gunangle + (other.right * _angle) + random_range(-_spread, _spread), _speed);
-	sprite_index = global.sprGenShell
+	sprite_index = spr.GenShell
 	switch _color
 	{
 		case c_yellow: image_index = 0;break
@@ -1352,17 +1413,17 @@ with instance_create(x, y, Shell){
 //im not feeling like rewriting every weapon using shell_yeah
 #define shell_yeah_big(_angle, _spread, _speed, _color)
 with shell_yeah(_angle, _spread, _speed, _color){
-    sprite_index = global.sprGenShellBig
+    sprite_index = spr.GenShellBig
 }
 
 #define shell_yeah_heavy(_angle, _spread, _speed, _color)
 with shell_yeah(_angle, _spread, _speed, _color){
-    sprite_index = global.sprGenShellHeavy
+    sprite_index = spr.GenShellHeavy
 }
 
 #define shell_yeah_long(_angle, _spread, _speed, _color)
 with shell_yeah(_angle, _spread, _speed, _color){
-    sprite_index = global.sprGenShellLong
+    sprite_index = spr.GenShellLong
 }
 
 
@@ -1428,7 +1489,7 @@ _y += prim_offset
 texture_set_repeat(1)
 var tex, w, scroll, s;
 w = 256;
-tex = sprite_get_texture(global.stripes, 0);
+tex = sprite_get_texture(spr.Stripes, 0);
 var n = 1.5;
 scroll = -floor(scroll mod (16 * n)) * (.004/n);
 draw_primitive_begin_texture(pr_trianglefan, tex);
@@ -1884,7 +1945,7 @@ with instance_create(_x, _y, CustomProjectile) {
     }
 	image_speed = 0
 	damage = 4+3*skill_get(17)
-	sprite_index = skill_get(mut_laser_brain) ? global.sprPlasmiteUpg : global.sprPlasmite
+	sprite_index = skill_get(mut_laser_brain) ? spr.PlasmiteUpg : spr.Plasmite
  	fric = random_range(.2,.3)
     force = 2
 	maxspeed = 13
@@ -1945,8 +2006,8 @@ with create_square(_x,_y){
     bounce = 5+skill_get(17)*2
     image_xscale = 1+skill_get(17)*.3
 	image_yscale = 1+skill_get(17)*.3
-	sprite_index = global.sprSuperSquare
-	mask_index 	 = global.mskSuperSquare
+	sprite_index = spr.SuperSquare
+	mask_index 	 = msk.SuperSquare
 	anglefac = random_range(0.6,2)
 	lifetime += room_speed
 	size = 4
@@ -1968,7 +2029,7 @@ with instance_create(_x,_y,CustomProjectile){
     damage = 5
     image_xscale = 1.2
     image_yscale = 1.2
-    sprite_index = global.sprTriangle
+    sprite_index = spr.Triangle
     image_angle = direction - 45
     on_step    = triangle_step
     on_wall    = triangle_wall
@@ -2019,8 +2080,8 @@ with a{
     iframes = 0
     anglefac = random_range(0.8,2.5)
     fac = choose(1,-1)
-    sprite_index = global.sprSquare
-    mask_index 	 = global.mskSquare
+    sprite_index = spr.Square
+    mask_index 	 = msk.Square
     hitframes = 0
     lifetime = room_speed * 6
     on_projectile = square_projectile
@@ -2188,7 +2249,7 @@ if bounce <= 0 instance_destroy()
 
 #define create_rocklet(_x,_y)
 with instance_create(_x,_y,CustomProjectile){
-    sprite_index = global.sprRocklet
+    sprite_index = spr.Rocklet
     damage = 3
     name = "Rocklet"
     maxspeed = 14
@@ -2215,7 +2276,7 @@ with instance_create(x,y,SmallExplosion){damage -= 2}
 
 #define rocket_draw
 draw_self()
-draw_sprite_ext(global.sprRockletFlame,-1,x,y,1,1,image_angle,c_white,image_alpha)
+draw_sprite_ext(spr.RockletFlame,-1,x,y,1,1,image_angle,c_white,image_alpha)
 
 #define laserflak_hit
 if projectile_canhit_melee(other) = true
@@ -2239,8 +2300,8 @@ with create_spikeball(_x, _y){
     damage = 1
     force = 3
     size = 2
-    sprite_index = global.sprMiniSpikeball
-    mask_index   = global.mskMiniSpikeball
+    sprite_index = spr.MiniSpikeball
+    mask_index   = msk.MiniSpikeball
 
     return id
 }
@@ -2254,8 +2315,8 @@ with instance_create(_x,_y,CustomSlash){
     size = 4
     bounce = 0
     hitframes = 0
-    sprite_index = global.sprSpikeball
-    mask_index   = global.mskSpikeball
+    sprite_index = spr.Spikeball
+    mask_index   = msk.Spikeball
 
     on_hit        = spike_hit
     on_wall       = spike_wall
@@ -2272,8 +2333,8 @@ with create_spikeball(x, y){
     damage = 10
     force = 8
     size = 10
-    sprite_index = global.sprHeavySpikeball
-    mask_index = global.mskHeavySpikeball
+    sprite_index = spr.HeavySpikeball
+    mask_index = msk.HeavySpikeball
     return id
 }
 
@@ -2323,7 +2384,7 @@ with instance_create(_x,_y,CustomProjectile) {
 	ammo = 10
 	typ = 1
 	size = 1
-	sprite_index = global.sprLaserFlakBullet
+	sprite_index = spr.LaserFlakBullet
 	mask_index = mskFlakBullet
 	on_hit      = laserflak_hit
 	on_step     = laserflak_step
@@ -2408,7 +2469,7 @@ if lsthealth > my_health {
     quartz_break()
     with instance_create(x,y,ThrownWep){
       wep = "shard"
-      sprite_index = global.sprShard
+      sprite_index = spr.Shard
       curse = other.curse
       motion_set(other.gunangle-180-random_range(-2,2),3)
     }
@@ -2422,7 +2483,7 @@ if lsthealth > my_health {
     quartz_break()
     with instance_create(x,y,ThrownWep){
       wep = "shard"
-      sprite_index = global.sprShard
+      sprite_index = spr.Shard
       curse = other.bcurse
       motion_set(other.gunangle-180-random_range(-2,2),3)
     }
@@ -2441,7 +2502,7 @@ sleep(400)
 view_shake_at(x,y,45)
 repeat(14) with instance_create(x,y,Feather){
   motion_add(random(360),random_range(3,6))
-  sprite_index = global.sprGlassShard
+  sprite_index = spr.GlassShard
   image_speed = random_range(.4,.7)
   image_index = irandom(5)
 }
@@ -2477,7 +2538,7 @@ with instance_create(x+lengthdir_x(sprite_get_width(sprite_index),image_angle),y
     image_angle = random(360)
     depth = other.depth -1
     image_speed = .6
-    sprite_index = global.sprKillslash
+    sprite_index = spr.Killslash
     image_xscale = random_range(1.3,1.5)
     image_yscale = image_xscale
     on_step = Killslash_step
@@ -2485,7 +2546,7 @@ with instance_create(x+lengthdir_x(sprite_get_width(sprite_index),image_angle),y
         image_angle = other.image_angle - 90 + random_range(-8,8)
         depth = other.depth
         image_speed = .8
-        sprite_index = global.sprKillslash
+        sprite_index = spr.Killslash
         image_blend = c_black
         image_xscale = other.image_xscale-.5
         image_yscale = image_xscale
@@ -2569,7 +2630,7 @@ with instance_create(_x,_y,CustomProjectile) {
     damage = 2
     image_speed = .5
     name = "Bouncer Disc"
-    sprite_index = global.sprBouncerDisc
+    sprite_index = spr.BouncerDisc
 
     disc_init()
 
@@ -2619,7 +2680,7 @@ with instance_create(_x, _y, CustomProjectile){
     damage = 4
     image_speed = .4
     name = "Sticky Disc"
-    sprite_index = global.sprStickyDisc
+    sprite_index = spr.StickyDisc
 
     disc_init()
 
@@ -2676,14 +2737,14 @@ move_bounce_solid(true)
 
 #define create_megadisc(_x,_y)
 with instance_create(_x,_y,CustomProjectile){
-    sprite_index = global.sprMegaDisc
+    sprite_index = spr.MegaDisc
     damage = 2
     image_speed = .4
     maxspeed = speed
     name = "Mega Disc"
 
     disc_init()
-    spr_trail = global.sprMegaDiscTrail
+    spr_trail = spr.MegaDiscTrail
     mask_index = sprite_index
 
     on_step    = md_step
@@ -2713,14 +2774,14 @@ move_bounce_solid(false)
 direction += random_range(-12,12)
 with other{instance_create(x,y,FloorExplo);instance_destroy()}
 with instance_create(x,y,DiscBounce){
-    sprite_index = global.sprMegaDiscBounce
+    sprite_index = spr.MegaDiscBounce
 }
 if dist >= 200 instance_destroy()
 
 #define md_destroy
 sound_play_pitchvol(sndDiscDie,random_range(.6,.8),.4)
 with instance_create(x,y,DiscDisappear){
-    sprite_index = global.sprMegaDiscDie
+    sprite_index = spr.MegaDiscDie
 }
 
 #define md_hit
@@ -2748,8 +2809,8 @@ with create_sword(x, y){
     damage = 12
     force = 3
     mask_index   = sprHeavyGrenadeBlink
-    sprite_index = global.sprKnife
-    spr_dead     = global.sprKnifeStick
+    sprite_index = spr.Knife
+    spr_dead     = spr.KnifeStick
     maxwhoosh = 3
     bounce = 1
     anglespeed = 120
@@ -2768,15 +2829,15 @@ with instance_create(x, y, melee ? CustomSlash : CustomProjectile){
     damage = 25
     force  = 6
     typ = 1
-    sprite_index = global.sprSword
+    sprite_index = spr.Sword
     mask_index   = sprEnemyBullet1
-    spr_dead     = global.sprSwordStick
+    spr_dead     = spr.SwordStick
 
     defbloom = {
         xscale : 1.5,
         yscale : 1.5,
         alpha : .2,
-        sprite : global.sprSword,
+        sprite : spr.Sword,
         angle : 0
     }
     draw_angle = random(360)
@@ -2896,14 +2957,14 @@ var a = other;
 sleep(force * 5)
 view_shake_at(x, y, force * 6)
 projectile_hit(other, damage, force, direction)
-with instance_create(x, y, AcidStreak){sprite_index = global.sprSwordImpact; image_angle = other.direction; image_speed = .5}
+with instance_create(x, y, AcidStreak){sprite_index = spr.SwordImpact; image_angle = other.direction; image_speed = .5}
 other.x += 10000
 var q = instance_nearest_matching_ne(x, y, hitme, "team", team)
 if instance_exists(q) and q != other and q.mask_index != mskNone and distance_to_object(q) < slashrange{
     projectile_hit(q, damage, force, point_direction(x, y, q.x, q.y))
     sound_play_ext(sndChickenSword, q.x, q.y, 1.4*random_range(.9,1.2), .8, 0)
     with instance_create(q.x, q.y, CustomObject){
-        sprite_index = global.sprSwordSlash
+        sprite_index = spr.SwordSlash
         image_angle = point_direction(other.x, other.y, q.x, q.y)
         image_speed = .6
         image_yscale = -2
@@ -3296,7 +3357,7 @@ with instance_create(x, y, CustomProjectile){
 	damage = 5 + 2 * skill_get(mut_laser_brain)
     langle = 0
 	lspeed = 10-skill_get(17)*4
-	sprite_index = global.sprVector
+	sprite_index = spr.Vector
 	mask_index = mskLaser
 	on_step = vector_step
 	on_hit  = vector_hit
@@ -3312,7 +3373,7 @@ with instance_create(x+lengthdir_x(-12,image_angle),y+lengthdir_y(-12,image_angl
 	sound_play(sndPlasmaHit)
 	creator = other.creator
 	team = other.team
-	sprite_index = global.sprVectorImpact
+	sprite_index = spr.VectorImpact
 }
 repeat(irandom_range(6,8)){instance_create(x+lengthdir_x(random_range(1,5),image_angle-180),y,Smoke)}
 instance_destroy();
@@ -3325,7 +3386,7 @@ if ammo > 0 {
         	var _s = choose(random_range(-10,-4),random_range(4,10))
         	var s_ = choose(random_range(-10,-4),random_range(4,10))
             with instance_create(x+s_,y+_s,BulletHit){
-                sprite_index = global.sprVectorEffect
+                sprite_index = spr.VectorEffect
                 image_angle = other.image_angle
                 motion_add(other.image_angle,choose(1,2))
             }
@@ -3361,7 +3422,7 @@ if image_yscale <= 0 instance_destroy()
 
 #define vector_draw
 draw_self()
-if ammo > 0 draw_sprite_ext(global.sprVectorHead, 0, x, y, 2, 2, image_angle-45, image_blend, 1)
+if ammo > 0 draw_sprite_ext(spr.VectorHead, 0, x, y, 2, 2, image_angle-45, image_blend, 1)
 
 #define vector_hit
 if projectile_canhit_melee(other){
@@ -3374,7 +3435,7 @@ if pierce <= 0 && ammo{
         sound_play(sndPlasmaHit)
         creator = other.creator
         team = other.team
-        sprite_index = global.sprVectorImpact
+        sprite_index = spr.VectorImpact
     }
     instance_destroy()
 }
@@ -3382,7 +3443,7 @@ if pierce <= 0 && ammo{
 #define create_flechette(x, y)
 var _p = instance_create(x, y, CustomProjectile);
 with _p{
-  sprite_index = global.sprFlechette;
+  sprite_index = spr.Flechette;
   friction = 1;
   damage   = 4;
   force    = 4;
@@ -3421,7 +3482,7 @@ projectile_hit(other, damage, force, direction);
 if (other.my_health > 0){
   var _hitme = other;
   with instance_create(x, y, CustomObject){
-    sprite_index = global.sprFlechetteBlink;
+    sprite_index = spr.FlechetteBlink;
     image_angle  = other.image_angle;
     image_speed  = 0;
     target  = _hitme;

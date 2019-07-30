@@ -1,14 +1,14 @@
 #define init
-global.sprBullakRed = sprite_add("sprites/projectiles/sprBullakRed.png", 2, 11, 10)
-global.sprBullakYellow = sprite_add("sprites/projectiles/sprBullakYellow.png", 2, 11, 10)
-global.sprBullakGreen = sprite_add("sprites/projectiles/sprBullakGreen.png", 2, 11, 10)
-global.sprBullakBlue = sprite_add("sprites/projectiles/sprBullakBlue.png", 2, 11, 10)
-global.sprBullakBlueUpg = sprite_add("sprites/projectiles/sprBullakBlueUpg.png", 2, 12, 10)
-global.sprBullakPurple = sprite_add("sprites/projectiles/sprBullakPurple.png", 2, 11, 10)
-global.sprFireFlak = sprite_add("sprites/projectiles/Fire Flak.png", 2, 11, 10)
+global.sprBullakRed = sprite_add("../sprites/projectiles/sprBullakRed.png", 2, 11, 10)
+global.sprBullakYellow = sprite_add("../sprites/projectiles/sprBullakYellow.png", 2, 11, 10)
+global.sprBullakGreen = sprite_add("../sprites/projectiles/sprBullakGreen.png", 2, 11, 10)
+global.sprBullakBlue = sprite_add("../sprites/projectiles/sprBullakBlue.png", 2, 11, 10)
+global.sprBullakBlueUpg = sprite_add("../sprites/projectiles/sprBullakBlueUpg.png", 2, 12, 10)
+global.sprBullakPurple = sprite_add("../sprites/projectiles/sprBullakPurple.png", 2, 11, 10)
+global.sprFireFlak = sprite_add("../sprites/projectiles/Fire Flak.png", 2, 11, 10)
 global.sprDarkFlak = sprFlakBullet //rip
-global.sprIDPDFlak = sprite_add("sprites/projectiles/IDPD Flak.png", 2, 8, 8)
-global.sprSplitFlak = sprite_add("sprites/projectiles/IDPD Flak.png", 2, 8, 8)
+global.sprIDPDFlak = sprite_add("../sprites/projectiles/IDPD Flak.png", 2, 8, 8)
+global.sprSplitFlak = sprite_add("../sprites/projectiles/IDPD Flak.png", 2, 8, 8)
 global.flaks = ["recursive", "fire", "toxic", "lightning", "psy", "dark", "split", "bouncer"]
 
 #define flak_draw
