@@ -29,6 +29,5 @@
 /loadwep big shotgun
 /loadwep wide slugger
 /loadwep apergig tanat
-/loadwep flechette shotgun
 
 /load mainbolts

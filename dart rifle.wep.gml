@@ -2,7 +2,7 @@
 global.sprFlechetteRifle = sprite_add_weapon("sprites/weapons/sprFlechetteRifle.png", 6, 3);
 
 #define weapon_name
-return "FLECHETTE RIFLE";
+return "DART RIFLE";
 
 #define weapon_sprt
 return global.sprFlechetteRifle;
@@ -14,10 +14,10 @@ return 3;
 return true;
 
 #define weapon_load
-return 4;
+return 6;
 
 #define weapon_cost
-return 1;
+return 2; // 1 bolt + 1 explo
 
 #define weapon_laser_sight
 return true;
@@ -29,7 +29,7 @@ return sndSwapBow;
 return 12;
 
 #define weapon_text
-return "TERROR ABSOLUTE";
+return "STICKY @wDARTS";
 
 #define weapon_fire
 weapon_post(5,-4,8)

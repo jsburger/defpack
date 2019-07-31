@@ -2,26 +2,26 @@
 
 	var i = "../sprites/projectiles/";
 	global.spr = {};
-	
+
 	//Sprites, sorted by ammo type, misc at the bottom
 	with spr {
 		msk = {};
-		
+
 		//Fire Bullets
 		FireBullet         = sprite_add(i + "iris/fire/sprFireBullet.png",    2, 8, 8);
 		FireBulletHit      = sprite_add(i + "iris/fire/sprFireBulletHit.png", 4, 8, 8);
 		HeavyFireBullet    = sprite_add(i + "iris/fire/sprHeavyFireBullet.png",    2, 12, 12);
 		HeavyFireBulletHit = sprite_add(i + "iris/fire/sprHeavyFireBulletHit.png", 4, 12, 12);
-		
+
 		//Bouncers
 		HeavyBouncerBullet = sprite_add(i + "iris/bouncer/sprHeavyBouncerBullet.png", 2, 12, 12);
-		
+
 		//Toxic Bullets
 		ToxicBullet         = sprite_add(i + "iris/pest/sprPestBullet.png",    2, 8, 8);
 		ToxicBulletHit      = sprite_add(i + "iris/pest/sprPestBulletHit.png", 4, 8, 8);
 		HeavyToxicBullet    = sprite_add(i + "iris/pest/sprHeavyPestBullet.png",    2, 12, 12);
 		HeavyToxicBulletHit = sprite_add(i + "iris/pest/sprHeavyPestBulletHit.png", 4, 12, 12);
-		
+
 		//Lightning Bullets
 		LightningBullet         = sprite_add(i + "iris/thunder/sprThunderBullet.png",    2, 8, 8);
 		LightningBulletUpg      = sprite_add(i + "iris/thunder/sprThunderBulletUpg.png", 2, 8, 8);
@@ -29,19 +29,19 @@
 		HeavyLightningBullet    = sprite_add(i + "iris/thunder/sprHeavyThunderBullet.png",    2, 12, 12);
 		HeavyLightningBulletUpg = sprite_add(i + "iris/thunder/sprHeavyThunderBulletUpg.png", 2, 12, 12);
 		HeavyLightningBulletHit = sprite_add(i + "iris/thunder/sprHeavyThunderBulletHit.png", 4, 12, 12);
-		
+
 		//Psy Bullets
 		PsyBullet         = sprite_add  (i + "iris/psy/sprPsyBullet.png",    2, 8, 8);
 		PsyBulletHit      = sprite_add  (i + "iris/psy/sprPsyBulletHit.png", 4, 8, 8);
 		msk.PsyBullet     = sprite_add_p(i + "iris/psy/mskPsyBullet.png",    0, 7, 3);
 		HeavyPsyBullet    = sprite_add  (i + "iris/psy/sprHeavyPsyBullet.png",    2, 12, 12);
 		HeavyPsyBulletHit = sprite_add  (i + "iris/psy/sprHeavyPsyBulletHit.png", 4, 12, 12);
-		
+
 		//Dark Bullets
 		sprDarkBullet     = sprite_add  (i + "sprBlackBullet.png",    2, 8, 8);
 		sprDarkBulletHit  = sprite_add  (i + "sprBlackBulletHit.png", 4, 8, 8);
 		msk.DarkBullet    = sprite_add_p(i + "mskBlackBullet.png",    0, 3, 5);
-		
+
 		//Light Bullets
 		sprLightBullet    = sprite_add(i + "sprWhiteBullet.png",    2, 8, 8);
 		sprLightBulletHit = sprite_add(i + "sprWhiteBulletHit.png", 4, 8, 8);
@@ -61,15 +61,15 @@
 		SplitShellDisappear      = sprite_add(i + "sprSplitShellDisappear.png", 5, 8, 8);
 		HeavySplitShell          = sprite_add(i + "sprSplitSlug.png",           2, 9, 9);
 		HeavySplitShellDisappear = sprite_add(i + "sprSplitSlugDisappear.png",  5, 9, 8);
-		
+
 		//Rocklets
 		Rocklet      = sprite_add(i + "sprRocklet.png", 2, 1, 6);
 		RockletFlame = sprite_add(i + "sprRockletFlame.png", 0, 8, 3);
-		
+
 		//Sonic Explosions
 		SonicExplosion     = sprite_add(  i + "sprSonicExplosion.png", 8, 61, 59);
 		msk.SonicExplosion = sprite_add_p(i + "mskSonicExplosion.png", 9, 32, 32);
-		
+
 		//Abris Stripes
 		Stripes = sprite_add("../sprites/other/sprBigStripes.png", 1, 1, 1);
 
@@ -80,22 +80,22 @@
 		//Squares
 		Square     = sprite_add  (i + "sprSquare.png", 0, 7, 7);
 		msk.Square = sprite_add_p(i + "mskSquare.png", 0, 5, 5);
-		
+
 		SuperSquare     = sprite_add  (i + "sprSuperSquare.png", 0, 14, 14);
 		msk.SuperSquare = sprite_add_p(i + "mskSuperSquare.png", 0, 10, 10);
-		
+
 		//Triangles
 		Triangle = sprite_add(i + "sprTriangle.png", 0, 7, 7);
-		
+
 		//Laser Flaks
 		LaserFlakBullet = sprite_add(i + "sprLaserFlak.png", 2, 7, 7);
-		
+
 		//Vectors
 		VectorHead   = sprite_add(i + "sprVectorHead.png",1,8,2)
 		Vector	   = sprite_add(i + "sprVector.png",1,2,3)
 		VectorImpact = sprite_add(i + "sprVectorImpact.png",7,16,16)
 		VectorEffect = sprite_add(i + "sprVectorBeamEnd.png",3,5,5);
-		
+
 		//Spike Balls
 		MiniSpikeball      = sprite_add  (i + "sprMiniSpikeball.png", 0, 6, 5);
 		msk.MiniSpikeball  = sprite_add_p(i + "mskMiniSpikeball.png", 0, 6, 5);
@@ -103,7 +103,7 @@
 		msk.Spikeball      = sprite_add_p(i + "mskSpikeball.png", 0, 11, 9);
 		HeavySpikeball     = sprite_add  (i + "sprHeavySpikeball.png", 0, 15, 15);
 		msk.HeavySpikeball = sprite_add_p(i + "mskHeavySpikeball.png", 0, 15, 15);
-		
+
 		//Discs
 		BouncerDisc    = sprite_add  (i + "sprBouncerDisc.png", 2,  6,  6);
 		StickyDisc     = sprite_add  (i + "sprStickyDisc.png",  2,  7,  6);
@@ -111,7 +111,7 @@
 		MegaDiscDie    = sprite_add  (i + "sprMegaDiscDie.png",    6, 12, 12);
 		MegaDiscTrail  = sprite_add  (i + "sprMegaDiscTrail.png",  3, 12, 12);
 		MegaDiscBounce = sprite_add  (i + "sprMegaDiscBounce.png", 4, 12, 12);
-		
+
 		//Blades
 		Sword       = sprite_add  (i + "sprSword.png",      1, 10, 10)
 		SwordStick  = sprite_add_p(i + "sprSwordStick.png", 1, 10, 10)
@@ -119,47 +119,47 @@
 		Knife       = sprite_add  (i + "sprKnife.png",      1, 7, 7)
 		KnifeStick  = sprite_add_p(i + "sprKnifeStick.png", 1, 4, 7)
 		SwordSlash  = sprite_add  (i + "sprSwordSlash.png", 5, 16, 16)
-		
+
 		//Flechettes
-		Flechette       = sprite_add("..\sprites\projectiles\sprFlechette.png",      0,  6, 2)
+		Flechette       = sprite_add("..\sprites\projectiles\sprFlechette.png",      0,  6, 4)
 		msk.Flechette   = sprite_add("..\sprites\projectiles\mskFlechette.png",      0,  6, 2)
-		FlechetteBlink  = sprite_add("..\sprites\projectiles\sprFlechetteBlink.png", 3, 14, 2)
-		
-		
+		FlechetteBlink  = sprite_add("..\sprites\projectiles\sprFlechetteBlink.png", 3, 14, 4)
+
+
 		//Quartz Shards
 		Shard      = sprite_add_weapon("../sprites/weapons/sprShard.png", 0, 3);
 		GlassShard = sprite_add("../sprites/other/sprGlassShard.png", 5, 4, 4)
-		
+
 		//Crits
 		Killslash = sprite_add(i + "sprKillslash.png", 8, 16, 16);
-		
+
 		//Charge Icon
 		Charge = sprite_add_weapon("../sprites/interface/sprHoldIcon.png", 5, 5);
-		
+
 		//Sniper Sights
 		Aim          = sprite_add("../sprites/interface/sprAim.png", 0, 10, 10);
 		CursorCentre = sprite_add("../sprites/interface/sprCursorCentre.png", 0, 1, 1);
-		
+
 	}
-	
+
 
 
 	global.SAKmode = 0
 	//mod_script_call("mod","defpermissions","permission_register","mod",mod_current,"SAKmode","SAK Mode")
-	
+
 	global.traildrawer = -4
 	global.trailsf = surface_create(game_width*4,game_height*4)
 	surface_set_target(global.trailsf)
 	draw_clear_alpha(c_white,0)
 	surface_reset_target()
-	
+
 	vertex_format_begin()
 	vertex_format_add_position()
 	global.lightningformat = vertex_format_end()
-	
+
 	global.chargeType = 1
 	global.chargeSmooth = [0, 0]
-	
+
 	mod_script_call_nc("mod", "defpermissions", "permission_register_options", "mod", mod_current, "chargeType", "Weapon Charge Indicators", ["Off", "Wep Specific", "Bar Only", "Arc Only"])
 
 //thanks yokin
@@ -183,7 +183,7 @@ var a = string_split(sprite, "/"),
 	name = a[array_length(a) - 1],
 	location = string_count("msk", name) > 0 ? msk : spr;
 	name = string_replace(string_replace(string_replace(name, "msk", ""), "spr", ""), ".png", "")
-	
+
 	lq_set(location, name, sprite_add(sprite, subimages, xoffset, yoffset))
 
 #define sprite_add_p(sprite, subimages, xoffset, yoffset)

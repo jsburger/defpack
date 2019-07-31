@@ -1,8 +1,8 @@
 #define init
-global.sprFlechetteShotgun = sprite_add_weapon("sprites/weapons/sprFlechetteShotgun.png", 5, 2);
+global.sprFlechetteShotgun = sprite_add_weapon("sprites/weapons/sprFlechetteShotgun.png", 5, 4);
 
 #define weapon_name
-return "FLECHETTE SHOTGUN";
+return "DART SHOTGUN";
 
 #define weapon_sprt
 return global.sprFlechetteShotgun;
@@ -14,10 +14,10 @@ return 3;
 return true;
 
 #define weapon_load
-return 26;
+return 32;
 
 #define weapon_cost
-return 6;
+return 12; // 6 bolt + 6 explo
 
 #define weapon_laser_sight
 return true;

@@ -24,6 +24,12 @@
 /loadwep bow
 /loadwep explosive bow
 
+//DARTS
+
+/loadwep dart rifle
+/loadwep dart shotgun
+/loadwep dart bazooka
+
 //OTHER BOLT
 
 /loadwep marker

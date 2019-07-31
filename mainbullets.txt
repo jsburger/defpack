@@ -42,7 +42,6 @@
 /loadwep mega revolver
 /loadwep tempo gun
 /loadwep spy revolver
-/loadwep flechette rifle
 /loadwep flex
 /loadwep rifle
 
