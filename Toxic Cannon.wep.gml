@@ -25,7 +25,7 @@ return sndSwapExplosive;
 return 8;
 
 #define weapon_text
-return "HOW LONG CAN YOU HOLD YOUR BREATH?";
+return "A GUN ONLY A MOTHER COULD LOVE";
 
 #define weapon_fire
 weapon_post(6,-12,15)
@@ -35,9 +35,9 @@ sound_play_pitch(sndToxicBarrelGas,.8*_p)
 sound_play_pitch(sndFlameCannon,2.4*_p)
 sound_play_pitch(sndToxicLauncher,.6*_p)
 sound_play_pitch(sndHeavyCrossbow,.6*_p)
-with instance_create(x,y,FrogQueenBall)
-{
-	move_contact_solid(other.gunangle,18)
-	motion_set(other.gunangle,3)
-	team = other.team
+
+with instance_create(x,y,FrogQueenBall){
+	move_contact_solid(other.gunangle, 18)
+	motion_set(other.gunangle, 3)
+	projectile_init(other.team, other)
 }

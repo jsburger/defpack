@@ -32,8 +32,6 @@
 
 ///TOOLS///
 
-/loadmod defpack tools/defpack tools
-/loadmod defpack tools/defpack tools 2
 /loadmod chests/chest
 
 ///OTHER///

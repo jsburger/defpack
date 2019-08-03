@@ -1,6 +1,6 @@
 #define init
 global.sprSniperFireRifle = sprite_add_weapon("../../sprites/weapons/iris/fire/sprSniperFireRifle.png", 5, 3);
-global.sprFireMuzzle			= sprite_add("../../sprites/projectiles/iris/fire/sprFireMuzzle.png", 1, 7, 7);
+global.sprFireMuzzle	  = sprite_add("../../sprites/projectiles/iris/fire/sprFireMuzzle.png", 1, 7, 7);
 global.sprFireBulletHit   = mod_variable_get("mod", "defpack tools", "spr").FireBulletHit
 
 global.color = 14074
@@ -30,7 +30,7 @@ return 12;
 return sndSwapMachinegun;
 
 #define weapon_laser_sight
-with instances_matching(instances_matching(CustomObject, "name", "sniper fire charge"),"creator",self){
+with instances_matching(instances_matching(CustomObject, "name", "sniper fire charge"), "creator", self){
     with other{
         with mod_script_call_self("mod", "defpack tools", "sniper_fire", x, y, gunangle, team, 1 + other.charge/other.maxcharge){
             draw_line_width_color(xstart, ystart, x, y, 1, global.color, global.color)
