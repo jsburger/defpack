@@ -142,7 +142,7 @@ if ammo <= 0{
         sound_play_pitch(sndLaserCannonUpg,.6*p);
         sound_play_pitch(sndLaserCannon,2*p)
     }
-	sleep(30)
+	sleep(100)
 	sound_play_pitchvol(sndDevastatorExplo,5,.7)
 	view_shake_at(x,y,100)
 	with creator weapon_post(-20,100,40)

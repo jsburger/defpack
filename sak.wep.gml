@@ -205,7 +205,7 @@ a[? "super flame flak cannon"] = sprite_add_weapon("sprites/sak/sprSuperFlameFla
 a[? "auto flame flak cannon"]  = sprite_add_weapon("sprites/sak/sprAutoFlameFlakCannon.png",2,2)//
 a[? "hyper flame flak cannon"] = sprite_add_weapon("sprites/sak/sprHyperFlameFlakCannon.png",4,3)//
 
-a[? "flame shot cannon"]  	   = sprite_add_weapon("sprites/sak/sprFlameShotCannon.png",3,2)//
+a[? "flame shot cannon"]  	   = sprite_add_weapon("sprites/sak/sprFlameShotCannon.png",2,2)//
 a[? "super flame shot cannon"] = sprite_add_weapon("sprites/sak/sprSuperFlameShotCannon.png",4,3)//
 a[? "auto flame shot cannon"]  = sprite_add_weapon("sprites/sak/sprAutoFlameShotCannon.png",3,2)//
 a[? "hyper flame shot cannon"] = sprite_add_weapon("sprites/sak/sprHyperFlameShotCannon.png",4,3)//

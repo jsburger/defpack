@@ -1,5 +1,5 @@
 #define init
-global.sprSquareRifle = sprite_add_weapon("sprites/weapons/sprSquareRifle.png", 0, 2);
+global.sprSquareRifle = sprite_add_weapon("sprites/weapons/sprSquareRifle.png", 4, 2);
 
 #define weapon_name
 return "SQUARE RIFLE"
