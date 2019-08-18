@@ -60,9 +60,9 @@ motion_add(gunangle+180,1)
 repeat(3)
 {
 	if !instance_exists(self){exit}
-	var _P = random_range(.8,1.2);
-	sound_play_pitch(sndMachinegun,.8*_P)
-	sound_play_pitch(sndFlareExplode,2*_P)
+	var _P = random_range(.8,1.2), _v = .7;
+	sound_play_pitchvol(sndMachinegun,.8*_P, _v)
+	sound_play_pitchvol(sndFlareExplode,2*_P, _v)
 	sound_play_pitchvol(sndBloodLauncherExplo,1*_P,.12)
 	weapon_post(6,-4,16)
 	if ammo[1]/typ_amax[1] >= (2/3)
@@ -80,7 +80,7 @@ repeat(3)
 	}
 	else
 	{
-		sound_play_pitch(sndUltraEmpty,.5)
+		sound_play_pitchvol(sndUltraEmpty,.5, _v)
 		if ammo[1]/typ_amax[1] >= (1/3)
 		{
 			mod_script_call("mod","defpack tools", "shell_yeah", 100, 35, random_range(3,5), c_yellow)
@@ -96,7 +96,7 @@ repeat(3)
 		else
 		{
 			mod_script_call("mod","defpack tools", "shell_yeah", 100, 35, random_range(3,5), c_red)
-			sound_play_pitch(sndUltraEmpty,.4)
+			sound_play_pitchvol(sndUltraEmpty,.4, _v)
 			with mod_script_call("mod", "defpack tools", "create_fire_bullet",x,y)
 			{
 				move_contact_solid(other.gunangle,4)

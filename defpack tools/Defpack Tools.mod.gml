@@ -161,6 +161,11 @@
 	global.chargeSmooth = [0, 0]
 
 	mod_script_call_nc("mod", "defpermissions", "permission_register_options", "mod", mod_current, "chargeType", "Weapon Charge Indicators", ["Off", "Wep Specific", "Bar Only", "Arc Only"])
+	
+	//todo:
+	//sound_play_hit_big_pitch
+	//finalize audio falloff distances based off of vanilla
+	//find out if bolt marrow should be split into step on bolts
 
 //thanks yokin
 #macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)
@@ -476,14 +481,14 @@ return [_x, _y];
 
 #define sound_play_hit_pitch(snd, pitch)
 var p = get_coords_nonsync(),
-    q = audio_play_sound_at(snd, p[0] - x, 0, p[1] - y, 100, 400, 1, false, 1);
+    q = audio_play_sound_at(snd, p[0] - x, 0, p[1] - y, 100, 300, 1, false, 1);
 audio_sound_pitch(q, pitch);
 return q;
 
 #define sound_play_ext(snd, x, y, pitch, vol, stack)
 if !stack sound_stop(snd);
 var p = get_coords_nonsync()
-var q = audio_play_sound_at(snd, p[0] - x, 0, p[1] - y, 100, 400, 1, false, 1);
+var q = audio_play_sound_at(snd, p[0] - x, 0, p[1] - y, 100, 300, 1, false, 1);
 audio_sound_pitch(q, pitch);
 audio_sound_gain(q, vol, 0);
 return q;
@@ -520,12 +525,6 @@ if array_length(q){
         var _x = (x - view_xview_nonsync)*4, _y = (y - view_yview_nonsync)*4, _xp = (lerp(x,xprevious,4*speed/maxspeed) - view_xview_nonsync)*4, _yp = (lerp(y,yprevious,4*speed/maxspeed) - view_yview_nonsync)*4;
         var len = (random_nonsync(speed)/maxspeed)*8;
         var xoff = lengthdir_x(len,direction + 90), yoff = lengthdir_y(len,direction + 90);
-        var _closeboy = instance_nearest(x, y, enemy)
-        if _closeboy > -4 && distance_to_object(_closeboy) <= 32
-        {
-          direction = point_direction(x, y, _closeboy.x, _closeboy.y)
-          if speed > maxspeed speed = maxspeed
-        }
         draw_triangle_color(_x + xoff, _y + yoff, _x - xoff, _y - yoff, _xp, _yp, c_white, c_white, c_black, 0)
     }
 
@@ -934,7 +933,7 @@ with instance_create(x,y,BulletHit){
 
 #define create_heavy_split_shell(_x,_y)
 with create_split_shell(_x,_y){
-    sprite_index = spr.HeavyMagPellet
+    sprite_index = spr.HeavySplitShell
     force = 5
     ammo = 3
     damage = 7
@@ -946,7 +945,7 @@ with create_split_shell(_x,_y){
 var c = instance_create(_x, _y, CustomProjectile)
 with (c){
 	name = "Split Shell"
-	sprite_index = spr.MagPellet
+	sprite_index = spr.SplitShell
 	friction = .55
 	mask_index = mskBullet2
 	wallbounce = skill_get(15) * 4 + (skill_get("shotgunshouldersx10")*40)
@@ -977,7 +976,7 @@ ammo--
 image_xscale *= .8
 image_yscale *= .8
 if ammo = 2{
-    sprite_index = spr.MagPellet
+    sprite_index = spr.SplitShell
     image_xscale = 1
     image_yscale = 1
 }
@@ -1028,8 +1027,8 @@ if speed < 2{instance_destroy()}
 with instance_create(x,y,BulletHit){
 	image_xscale = other.image_xscale
 	image_yscale = image_xscale
-	sprite_index = spr.MagPelletDisappear
-	if other.sprite_index = spr.HeavyMagPellet {sprite_index = spr.HeavyMagPelletDisappear}
+	sprite_index = spr.SplitShellDisappear
+	if other.sprite_index = spr.HeavySplitShell {sprite_index = spr.HeavySplitShellDisappear}
 	speed = other.speed/5
 	direction = other.direction
 	image_angle = direction
@@ -1532,7 +1531,7 @@ with instance_create(0, 0, CustomObject){
 
     on_step    = abris_step
     on_draw    = abris_draw
-    on_cleanup = abris_cleanup
+    on_cleanup = script_ref_create(abris_cleanup)
     on_destroy = abris_destroy
 
     index = -1
@@ -1570,7 +1569,7 @@ with instance_create(0, 0, CustomObject){
     reload = -1
     length = 0
     angle = 0
-    if instance_is(creator, FireCont){
+    if instance_is(creator, FireCont) and "creator" in creator{
         angle = creator.gunangle
         creator = creator.creator
         targeting = abris_manual
@@ -1996,7 +1995,7 @@ draw_self()
 image_xscale = _x;
 
 #define plasmite_destroy
-sound_play_pitch(sndPlasmaHit,random_range(1.45,1.83))
+sound_play_hit_pitch(sndPlasmaHit,random_range(1.45,1.83))
 with instance_create(x,y,PlasmaImpact){image_xscale=.5;image_yscale=.5;team = other.team;damage = floor(damage/2)}
 
 #define create_supersquare(_x,_y)
@@ -2066,43 +2065,41 @@ with a{
         yscale : 2,
         alpha : .1
     }
-    typ = 0
-    name = "Square"
-    size = 1
-    pseudoteam = -1
-    friction = .3
-    bounce = 7+skill_get(17)*3
-    damage = 1
-    minspeed = 2
-    image_xscale = 1+skill_get(17)*.2
-    image_yscale = 1+skill_get(17)*.2
-    force = 1
-    iframes = 0
-    anglefac = random_range(0.8,2.5)
-    fac = choose(1,-1)
-    sprite_index = spr.Square
-    mask_index 	 = msk.Square
-    hitframes = 0
-    lifetime = room_speed * 6
-    on_projectile = square_projectile
-    on_grenade = nothing
-    on_step    = square_step
-    on_hit     = square_hit
-    on_wall    = square_wall
-    on_destroy = square_destroy
-    on_square  = script_ref_create(square_square)
-    on_anim    = nothing
+	typ = 0
+	name = "Square"
+	size = 1
+	pseudoteam = -1
+	friction = .3
+	bounce = 7+skill_get(17)*3
+	damage = 1
+	minspeed = 2
+	maxspeed = 16
+	image_xscale = 1+skill_get(17)*.2
+	image_yscale = 1+skill_get(17)*.2
+	force = 1
+	iframes = 0
+	anglefac = random_range(0.8,2.5)
+	fac = choose(1,-1)
+	sprite_index = spr.Square
+	mask_index 	 = msk.Square
+	hitframes = 0
+	lifetime = room_speed * 6
+	on_projectile = square_projectile
+	on_grenade = nothing
+	on_step    = square_step
+	on_hit     = square_hit
+	on_wall    = square_wall
+	on_destroy = square_destroy
+	on_square  = script_ref_create(square_square)
+	on_anim    = nothing
 }
 return a;
 
 #define square_destroy
-if size > 1
-{
+if size > 1{
 	var i = random(360);
-	repeat(4)
-	{
-		with create_square(x,y)
-		{
+	repeat(4){
+		with create_square(x,y){
 			creator = other.creator
 			team    = other.pseudoteam
 			pseudoteam = team
@@ -2112,7 +2109,7 @@ if size > 1
 		i += 360/size
 	}
 }
-sound_play_pitch(sndPlasmaHit,random_range(.9,1.1))
+sound_play_hit_pitch(sndPlasmaHit,random_range(.9,1.1))
 with instance_create(x,y,PlasmaImpact){team = other.pseudoteam;}
 
 #define square_hit
@@ -2144,8 +2141,8 @@ if other.team = pseudoteam || ("pseudoteam" in other and other.pseudoteam == pse
 				    direction = other.direction;
 				    speed = speeds[i]
 				}
-				sound_play_pitch(sndPlasmaBigExplode,1.4)
-				sound_play_pitch(sndPlasmaHit,2.2)
+				sound_play_hit_pitch(sndPlasmaBigExplode,1.4)
+				sound_play_hit_pitch(sndPlasmaHit,2.2)
 				if skill_get(17){sound_play_pitch(sndPlasmaBigExplodeUpg,2.2)}
 				iframes += 10
                 break
@@ -2210,15 +2207,26 @@ if other.team = pseudoteam || ("pseudoteam" in other and other.pseudoteam == pse
     }
 
 #define square_square
-    motion_add(point_direction(other.x,other.y,x,y),7*(other.size/size))
-    repeat(6) with instance_create(x,y,PlasmaTrail){image_index = 0;image_speed = .5;motion_add(other.direction+random_range(-60,60),random_range(9,12))}
-    sound_play_pitch(sndPlasmaHit,random_range(.9,1.1))
-    with instance_create(x,y,PlasmaImpact){team = other.pseudoteam;instance_create(x+random_range(-8,8),y+random_range(-8,8),Smoke)}
+    motion_add(point_direction(other.x, other.y, x, y), 7 * (other.size / size))
+    repeat(6) with instance_create(x,y,PlasmaTrail){
+    	image_index = 0;
+    	image_speed = .5;
+    	motion_add(other.direction + random_range(-60, 60), random_range(9, 12))
+    }
+    sound_play_hit_pitch(sndPlasmaHit, random_range(.9,1.1))
+    with instance_create(x,y,PlasmaImpact){
+    	team = other.pseudoteam;
+    	instance_create(x + random_range(-8, 8), y + random_range(-8, 8), Smoke)
+    }
 
 #define square_wall
     move_bounce_solid(1)
-    sound_play_pitchvol(sndPlasmaHit,random_range(2,4),.3)
-    repeat(3) with instance_create(x,y,PlasmaTrail){image_index = 0;image_speed = .5;motion_add(other.direction+random_range(-30,30),random_range(6,8))}
+    sound_play_ext(sndPlasmaHit, x, y, random_range(2, 4), .3, 1)
+    repeat(3) with instance_create(x,y,PlasmaTrail){
+    	image_index = 0;
+    	image_speed = .5;
+    	motion_add(other.direction + random_range(-30, 30), random_range(6, 8))
+    }
     if speed <= minspeed bounce--
     sleep(size * 5)
     view_shake_at(x,y,size * 5)
@@ -2238,8 +2246,7 @@ if speed > 2{
 	}
 }
 iframes = max(iframes - current_time_scale, 0)
-if speed < minspeed speed = minspeed
-if speed > 16 speed = 16
+speed = clamp(speed, minspeed, maxspeed)
 image_angle += speed * anglefac * fac * current_time_scale
 if current_frame_active with instance_create(x+random_range(-8,8)+lengthdir_x(sprite_width/2,direction-180),y+random_range(-8,8)+lengthdir_y(sprite_width/2,direction-180),PlasmaTrail){
 	image_speed = 0.35-skill_get(17)*0.05
@@ -2266,12 +2273,18 @@ with instance_create(_x,_y,CustomProjectile){
 }
 
 #define rocket_step
-direction -= angle_approach(direction, direction_goal, 8, current_time_scale)
+var _q = instance_nearest(x, y, enemy), _g = direction_goal, _s = 8;
+if _q > -4 && distance_to_object(_q) <= 32 {
+	_g = point_direction(x, y, _q.x, _q.y)
+	_s = 1.5
+}
+
+direction -= angle_approach(direction, _g, 8, current_time_scale)
 if speed > maxspeed{speed = maxspeed}
 image_angle = direction
 
 #define rocket_destroy
-sound_play_pitch(sndExplosionS,1.5)
+sound_play_hit_pitch(sndExplosionS,1.5)
 with instance_create(x,y,SmallExplosion){damage -= 2}
 
 #define rocket_draw
@@ -3443,18 +3456,18 @@ if pierce <= 0 && ammo{
 #define create_flechette(x, y)
 var _p = instance_create(x, y, CustomProjectile);
 with _p{
-  sprite_index = spr.Flechette;
-  friction = 1;
-  damage   = 4;
-  force    = 4;
-  on_destroy = flechette_destroy;
-  on_step    = flechette_step;
-  on_wall    = flechette_wall;
-  on_hit     = flechette_hit;
+	sprite_index = spr.Flechette;
+	friction = 1;
+	damage   = 4;
+	force    = 4;
+	on_destroy  = flechette_destroy;
+	on_end_step = flechette_end_step;
+	on_wall     = flechette_wall;
+	on_hit      = flechette_hit;
 }
 return _p;
 
-#define flechette_step
+#define flechette_end_step
 var hitem = 0
 if skill_get(mut_bolt_marrow){
     var q = instance_nearest_matching_ne(x,y,hitme,"team",team)
@@ -3464,11 +3477,9 @@ if skill_get(mut_bolt_marrow){
         hitem = 1
     }
 }
-var _xprev = x - lengthdir_x(speed, direction), // i dont know why xprevious and x take on the same value here but its really messing bolttrails up with nolt marrow. same with y and yprevious
-    _yprev = y - lengthdir_y(speed, direction);
-with instance_create(x,y,BoltTrail){
-    image_xscale = point_distance(x, y, _xprev, _yprev)
-    image_angle = point_direction(x ,y, _xprev, _yprev)
+with instance_create(x, y, BoltTrail) {
+    image_xscale = point_distance(x, y, other.xprevious, other.yprevious)
+    image_angle = point_direction(x, y, other.xprevious, other.yprevious)
 }
 if speed <= .001{instance_destroy()}
 
@@ -3480,18 +3491,18 @@ image_angle = direction;
 #define flechette_hit
 projectile_hit(other, damage, force, direction);
 if (other.my_health > 0){
-  var _hitme = other;
-  with instance_create(x, y, CustomObject){
-    sprite_index = spr.FlechetteBlink;
-    image_angle  = other.image_angle;
-    image_speed  = 0;
-    target  = _hitme;
-    timer = 16 + 24;
-    depth = target.depth - 1;
-    on_step = flechette_stick_step;
-  }
-  instance_destroy();
-  exit;
+	var _hitme = other;
+	with instance_create(x, y, CustomObject){
+		sprite_index = spr.FlechetteBlink;
+		image_angle  = other.image_angle;
+		image_speed  = 0;
+		target  = _hitme;
+		timer = 16 + 24;
+		depth = target.depth - 1;
+		on_step = flechette_stick_step;
+	}
+	instance_destroy();
+	exit;
 }
 
 #define flechette_destroy
@@ -3499,26 +3510,26 @@ repeat(3){instance_create(x, y, Dust)}
 
 #define flechette_stick_step
 if !instance_exists(target){
-  flechette_stick_explo();
-  exit;
+	flechette_stick_explo();
+	exit;
 }
 if place_meeting(x, y, Explosion){
-  flechette_stick_explo();
-  exit;
+	flechette_stick_explo();
+	exit;
 }
 x = target.x;
 y = target.y;
 timer--;
 if timer <= 16{
-  image_speed  = .5;
-  if image_index = 0 image_index++;
-  if timer <= 0{
-    flechette_stick_explo();
-  }
+	image_speed  = .5;
+	if image_index = 0 image_index++;
+	if timer <= 0{
+		flechette_stick_explo();
+	}
 }
 
 #define flechette_stick_explo()
-sound_play(sndExplosionS);
+sound_play_hit_big(sndExplosionS, .1);
 instance_create(x, y, SmallExplosion);
 sleep(5);
 view_shake_at(x, y, 2);

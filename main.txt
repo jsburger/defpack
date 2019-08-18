@@ -1,3 +1,5 @@
 /load mainbullets
 /loadmod defpack tools/defpermissions
+/loadmod defpack tools/defpack tools
+/loadmod defpack tools/defpack tools 2
 /load tank

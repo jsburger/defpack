@@ -42,6 +42,6 @@ repeat(4){
 		team = other.team
 		creator = other
 	}
-    wait(3)
+    wait(2)
     if !instance_exists(self)exit
 }

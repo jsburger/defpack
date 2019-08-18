@@ -57,10 +57,10 @@ with instance_create(x,y,CustomProjectile){
 	mask_index   = mskBolt
 	damage = 17
 	with instance_create(x+hspeed*1.5,y+vspeed*1.5,BloodStreak){image_angle = other.direction}
-	on_end_step    = b_step
-	on_wall    = b_wall
-	on_hit     = b_hit
-	on_destroy = b_destroy
+	on_end_step = b_step
+	on_wall     = b_wall
+	on_hit      = b_hit
+	on_destroy  = b_destroy
 }
 
 #define b_hit
@@ -77,9 +77,7 @@ if other.my_health > damage {
 }
 
 #define b_wall
-var i = other;
-with instance_create(x+hspeed,y+vspeed,CustomObject)
-{
+with instance_create(x + hspeed, y + vspeed, CustomObject){
 	sound_play(sndBoltHitWall)
 	instance_create(x,y,Dust)
 	sprite_index = other.sprite_index
@@ -114,9 +112,9 @@ if skill_get(mut_bolt_marrow){
         hitem = 1
     }
 }
-with instance_create(x,y,BoltTrail){
-    image_xscale = point_distance(x,y,other.xprevious,other.yprevious)
-    image_angle = point_direction(x,y,other.xprevious,other.yprevious)
+with instance_create(x, y, BoltTrail) {
+    image_xscale = point_distance(x, y, other.xprevious, other.yprevious)
+    image_angle = point_direction(x, y, other.xprevious, other.yprevious)
     image_blend = c_red
 }
 if hitem with q with other b_hit()

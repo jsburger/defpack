@@ -29,18 +29,16 @@ return 10;
 return "RIVETING";
 
 #define weapon_fire
-var _p = random_range(.8, 1.2)
-sound_play_pitch(sndHeavyCrossbow, .7 * _p)
-sound_play_pitch(sndMachinegun, .7 * _p)
-sound_play_pitch(sndSuperSplinterGun, 1.4 * _p)
-sound_play_pitch(sndSplinterPistol, .7 * _p)
-sound_play_pitch(sndExplosionS, 2 * _p)
+var _p = random_range(.8, 1.2), _v = .6
+sound_play_pitchvol(sndHeavyCrossbow, .7 * _p, _v)
+sound_play_pitchvol(sndMachinegun, .7 * _p, _v)
+sound_play_pitchvol(sndSuperSplinterGun, 1.4 * _p, _v)
+sound_play_pitchvol(sndSplinterPistol, .7 * _p, _v)
+sound_play_pitchvol(sndExplosionS, 2 * _p, _v)
 weapon_post(7,-16,8)
-motion_add(gunangle - 180,1.4)
-with instance_create(x,y,Splinter)
-{
-	team = other.team
-	motion_add(other.gunangle+random_range(-9,9)*other.accuracy,24)
+motion_add(gunangle - 180, 1.4)
+with instance_create(x, y, Splinter){
+	motion_add(other.gunangle+random_range(-9,9)*other.accuracy, 24)
+	projectile_init(other.team, other)
 	image_angle = direction
-	creator = other
 }

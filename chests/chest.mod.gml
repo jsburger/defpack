@@ -17,8 +17,8 @@ global.sprRegalChestOpen = sprite_add("../sprites/chests/sprRegalChestOpen.png",
 global.sprUltraChest     = sprite_add_weapon("../sprites/chests/sprUltraChest.png", 8, 7);
 global.sprUltraChestOpen = sprite_add("../sprites/chests/sprUltraChestOpen.png", 1, 8, 7);
 
-global.sprToxicChest     = sprite_add_weapon("../sprites/chests/sprToxicChest.png", 8, 7);
-global.sprToxicChestOpen = sprite_add("../sprites/chests/sprToxicChestOpen.png", 1, 8, 7);
+global.sprToxicChest     = sprite_add_weapon("../sprites/chests/sprToxicChest.png", 8, 6);
+global.sprToxicChestOpen = sprite_add("../sprites/chests/sprToxicChestOpen.png", 1, 8, 6);
 
 global.sprComboChest     = sprite_add_weapon("../sprites/chests/sprComboChest.png", 8, 7);
 global.sprComboChestOpen = sprite_add("../sprites/chests/sprComboChestOpen.png", 1, 8, 7);
