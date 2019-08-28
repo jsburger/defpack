@@ -100,7 +100,7 @@ with instances_matching_ne(hitme, "team", team){
             projectile_hit(other, damage, 0, other.direction)
         x -= hspeed*clamp(other.size,0,3)/3
         y -= vspeed*clamp(other.size,0,3)/3
-        if "my_health" in self
+        if "my_health" in other
         {
           other.x += hspeed/3
           other.y += vspeed/3

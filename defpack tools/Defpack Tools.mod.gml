@@ -161,7 +161,7 @@
 	global.chargeSmooth = [0, 0]
 
 	mod_script_call_nc("mod", "defpermissions", "permission_register_options", "mod", mod_current, "chargeType", "Weapon Charge Indicators", ["Off", "Wep Specific", "Bar Only", "Arc Only"])
-	
+
 	//todo:
 	//sound_play_hit_big_pitch
 	//finalize audio falloff distances based off of vanilla
