@@ -85,8 +85,8 @@ if _canshoot{
     sound_play_pitchvol(sndServerBreak, 1.4 * _r, _v * .7)
     //sound_play_pitchvol(sndTurretFire, .8 * _r, _v * .8)
     with instance_create(_tx,_ty,Bullet1){
-    	sprite_index = sprIDPDBullet
-    	spr_dead = sprIDPDBulletHit
+    	sprite_index = sprBullet1
+    	spr_dead = sprBulletHit
     	creator = other
     	team = other.team
     	motion_set(angle,16)

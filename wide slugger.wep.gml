@@ -65,11 +65,11 @@ with instance_create(x,y,CustomProjectile){
     image_speed = 1
     image_xscale = 1.25
     image_yscale = 1.25
-    pierce = 45
+    pierce = 25
     on_destroy = dyn_destroy
     on_end_step = dyn_step
+    on_hit  = void
     on_wall = dyn_wall
-    on_hit  = dyn_hit
     on_anim = dyn_anim
 }
 #define dyn_anim
@@ -79,11 +79,20 @@ image_speed = 0
 image_index = 1
 
 #define dyn_destroy
+sleep(5)
+view_shake_at(x, y, 6)
 repeat(3)
 {
+  with instance_create(x,y,Slug)
+  {
+    motion_add(random(360),random_range(8,10))
+    image_angle = direction
+    team    = other.team
+    creator = other.creator
+  }
   with instance_create(x,y,Bullet2)
   {
-    motion_add(random(360),random_range(8,12))
+    motion_add(random(360),random_range(6,11) * (max(skill_get(mut_shotgun_shoulders) + 1, 0)))
     image_angle = direction
     team    = other.team
     creator = other.creator
@@ -102,14 +111,12 @@ if current_frame mod 2 < current_time_scale with instances_matching_ne(hitme,"te
       x -= hspeed*3/4
       y -= vspeed*3/4
       other.direction = direction
-      projectile_hit(_id,damage + 1 - floor(image_index),min(0,force + 3 * (1 - floor(image_index)) -other.size/4),direction)
-      //speed *= .95 + skill_get(15)*.1
-      var s = min(other.size,4)
-      sleep(5*s)
-      view_shake_at(x,y,4*s)
-      if other.my_health <= 0{sleep(16*s);view_shake_at(x,y,8*s);speed += 2}
+      projectile_hit(_id,damage + 1 - floor(image_index),min(0,force + 5 * (1 - image_index)),direction)
+      sleep(12)
+      view_shake_at(x,y,10)
+      if other.my_health <= 0{sleep(22);view_shake_at(x,y,15);speed += 2}
       if speed > maxspeed speed = maxspeed
-      if --pierce <= 0{instance_destroy();exit}
+      if pierce-- <= 0{instance_destroy();exit}
     }
   }
 }
@@ -125,15 +132,7 @@ if image_index = 0
   }
 }
 else instance_destroy()
-sound_play_pitchvol(sndFlakExplode,1.3,.2)
+sound_play_pitchvol(sndFlakExplode,1,.2)
 sound_play_pitchvol(sndHitWall,1.3,.5)
 
-#define dyn_hit
-/*
-if projectile_canhit(other) = true
-{
-    if other.team != team
-    {
-
-    }
-}
+#define void

@@ -161,7 +161,7 @@
 	global.chargeSmooth = [0, 0]
 
 	mod_script_call_nc("mod", "defpermissions", "permission_register_options", "mod", mod_current, "chargeType", "Weapon Charge Indicators", ["Off", "Wep Specific", "Bar Only", "Arc Only"])
-	
+
 	//todo:
 	//find out if bolt marrow should be split into step on bolts
 
