@@ -38,13 +38,13 @@
 		HeavyPsyBulletHit = sprite_add  (i + "iris/psy/sprHeavyPsyBulletHit.png", 4, 12, 12);
 
 		//Dark Bullets
-		sprDarkBullet     = sprite_add  (i + "sprBlackBullet.png",    2, 8, 8);
-		sprDarkBulletHit  = sprite_add  (i + "sprBlackBulletHit.png", 4, 8, 8);
+		DarkBullet     = sprite_add  (i + "sprBlackBullet.png",    2, 8, 8);
+		DarkBulletHit  = sprite_add  (i + "sprBlackBulletHit.png", 4, 8, 8);
 		msk.DarkBullet    = sprite_add_p(i + "mskBlackBullet.png",    0, 3, 5);
 
 		//Light Bullets
-		sprLightBullet    = sprite_add(i + "sprWhiteBullet.png",    2, 8, 8);
-		sprLightBulletHit = sprite_add(i + "sprWhiteBulletHit.png", 4, 8, 8);
+		LightBullet    = sprite_add(i + "sprWhiteBullet.png",    2, 8, 8);
+		LightBulletHit = sprite_add(i + "sprWhiteBulletHit.png", 4, 8, 8);
 
 		//Iris Casings
 		GenShell      = sprite_add("../sprites/other/sprGenShell.png",   7, 2, 2);
@@ -163,8 +163,6 @@
 	mod_script_call_nc("mod", "defpermissions", "permission_register_options", "mod", mod_current, "chargeType", "Weapon Charge Indicators", ["Off", "Wep Specific", "Bar Only", "Arc Only"])
 	
 	//todo:
-	//sound_play_hit_big_pitch
-	//finalize audio falloff distances based off of vanilla
 	//find out if bolt marrow should be split into step on bolts
 
 //thanks yokin
@@ -194,7 +192,12 @@ var a = string_split(sprite, "/"),
 #define sprite_add_p(sprite, subimages, xoffset, yoffset)
 var q = sprite_add(sprite, subimages, xoffset, yoffset)
 if fork(){
-    wait(3)
+	var t = sprite_get_texture(q, 0),
+	    w = 150;
+	
+	while(t == sprite_get_texture(q, 0) && w-- > 0){
+	    wait 0;
+	}
     sprite_collision_mask(q, 1, 1, 0, 0, 0, 0, 0, 0)
     exit
 }
@@ -465,6 +468,8 @@ return found
 #define script_ref_call_self(scr)
 return mod_script_call_self(scr[0], scr[1], scr[2])
 
+
+ //shitty and bad sound stuff
 #define get_coords_nonsync()
 var _x, _y, i = player_find_local_nonsync(), p = player_find(i);
 if !instance_exists(p)
@@ -479,19 +484,35 @@ else{
 }
 return [_x, _y];
 
-#define sound_play_hit_pitch(snd, pitch)
+#define audio_play_hit_pitch(snd, pitch)
 var p = get_coords_nonsync(),
     q = audio_play_sound_at(snd, p[0] - x, 0, p[1] - y, 100, 300, 1, false, 1);
 audio_sound_pitch(q, pitch);
 return q;
 
-#define sound_play_ext(snd, x, y, pitch, vol, stack)
+#define audio_play_ext(snd, x, y, pitch, vol, stack)
 if !stack sound_stop(snd);
 var p = get_coords_nonsync()
 var q = audio_play_sound_at(snd, p[0] - x, 0, p[1] - y, 100, 300, 1, false, 1);
 audio_sound_pitch(q, pitch);
 audio_sound_gain(q, vol, 0);
 return q;
+
+ //very good and epic sound stuff
+ //thank you yokin for coding ntte really good and also letting me copy from it
+#define sound_play_hit_ext(_sound, _pitch, _volume)
+	var s = sound_play_hit(_sound, 0);
+	sound_pitch(s, _pitch);
+	sound_volume(s, _volume);
+	return s;
+	
+#define sound_play_hit_big_ext(_sound, _pitch, _volume)
+	var s = sound_play_hit_big(_sound, 0);
+	sound_pitch(s, _pitch);
+	sound_volume(s, _volume);
+	return s;
+
+
 
 #define chance(percentage)
 return random(100) <= percentage*current_time_scale
@@ -545,7 +566,7 @@ return 0
 #define step
 with instances_matching(WepPickup, "wep", 0) instance_destroy()
 
-with instances_matching(WepPickup,"chargecheck",null){
+with instances_matching_ne(WepPickup, "chargecheck", 1){
     chargecheck = 1
     if weapon_get_chrg(wep) {
         name += ` @0(${spr.Charge}:0) `
@@ -935,7 +956,7 @@ with instance_create(x,y,BulletHit){
 with create_split_shell(_x,_y){
     sprite_index = spr.HeavySplitShell
     force = 5
-    ammo = 3
+    ammo = 2
     damage = 7
     falloff = 2
     return id
@@ -950,7 +971,7 @@ with (c){
 	mask_index = mskBullet2
 	wallbounce = skill_get(15) * 4 + (skill_get("shotgunshouldersx10")*40)
 	force = 4
-	ammo = 2
+	ammo = 1
 	lasthit = -4
 	typ = 1
 	image_speed = 1
@@ -975,14 +996,16 @@ return c;
 ammo--
 image_xscale *= .8
 image_yscale *= .8
-if ammo = 2{
+if ammo == 1{
     sprite_index = spr.SplitShell
     image_xscale = 1
     image_yscale = 1
+    damage = 3
+    falloff = 1
 }
 var ang = random_range(10, 30) * choose(-1,1)
 var a = ammo >= 3 ? "create_heavy_split_shell" : "create_split_shell"
-with mod_script_call("mod","defpack tools", a,x,y){
+with mod_script_call("mod","defpack tools", a, x, y){
 	creator = other.creator
 	image_xscale = other.image_xscale
 	image_yscale = other.image_yscale
@@ -990,9 +1013,14 @@ with mod_script_call("mod","defpack tools", a,x,y){
 	ammo = other.ammo
 	motion_set(other.direction + ang,random_range(12,14))
 	image_angle = direction
+	damage = other.damage
+	falloff = other.falloff
 }
 direction -= ang
 image_angle = direction
+fallofftime = current_frame + 2
+defbloom.alpha = .2
+
 
 #define split_wall
 fallofftime = current_frame + 2
@@ -1943,9 +1971,9 @@ with instance_create(_x, _y, CustomProjectile) {
         alpha : .1
     }
 	image_speed = 0
-	damage = 4+3*skill_get(17)
+	damage = 4 + 3*skill_get(mut_laser_brain)
 	sprite_index = skill_get(mut_laser_brain) ? spr.PlasmiteUpg : spr.Plasmite
- 	fric = random_range(.2,.3)
+ 	fric = random_range(.2, .3)
     force = 2
 	maxspeed = 13
 	on_step 	 = plasmite_step
@@ -1958,26 +1986,28 @@ with instance_create(_x, _y, CustomProjectile) {
 }
 
 #define plasmite_step
-if chance(8 + 6*skill_get(17)) instance_create(x,y,PlasmaTrail)
+if chance(8 + 6 * skill_get(mut_laser_brain)) instance_create(x, y, PlasmaTrail)
 
-var closeboy = instance_nearest_matching_ne(x,y,hitme,"team",team)
-if instance_exists(closeboy) && distance_to_object(closeboy) <= 24{
-    motion_add(point_direction(x,y,closeboy.x,closeboy.y),4*current_time_scale)
-    maxspeed+=.5*current_time_scale
+var closeboy = instance_nearest_matching_ne(x, y, hitme, "team", team);
+if instance_exists(closeboy) && distance_to_object(closeboy) <= 24 {
+    motion_add(point_direction(x, y, closeboy.x, closeboy.y), 4 * current_time_scale)
+    maxspeed += .5 * current_time_scale
 }
 image_angle = direction
-if speed > maxspeed{speed = maxspeed}
-maxspeed /= power(1+(fric), current_time_scale)
-if maxspeed <= 1+fric instance_destroy();
+if speed > maxspeed {
+	speed = maxspeed
+}
+maxspeed /= power(1 + fric, current_time_scale)
+if maxspeed <= 1 + fric instance_destroy();
 
 #define plasmite_wall
 move_bounce_solid(false)
 image_angle = direction
-sound_play_pitchvol(sndPlasmaHit,random_range(3,6),.3)
-var n = irandom_range(2,6), int = 360/n;
-for (var i = 0; i < 360; i+= int){
-    with mod_script_call("mod","defparticles","create_spark",x,y) {
-        motion_set(i + random_range(-int/3,int/3),random(8)+1)
+sound_play_pitchvol(sndPlasmaHit, random_range(3, 6), .3)
+var n = irandom_range(2, 6), int = 360/n;
+for (var i = 0; i < 360; i += int) {
+    with mod_script_call("mod", "defparticles", "create_spark", x, y) {
+        motion_set(i + random_range(-int/3, int/3), random(8) + 1)
         friction = 1.2
         age = speed
         color = c_white
@@ -1987,24 +2017,29 @@ for (var i = 0; i < 360; i+= int){
     }
 }
 
-
 #define plasmite_draw
 var _x = image_xscale
-image_xscale = _x + (sqr(speed/(sprite_width*1.5)))*_x
+image_xscale = _x + (sqr(speed/(sprite_width * 1.5))) * _x
 draw_self()
 image_xscale = _x;
 
 #define plasmite_destroy
-sound_play_hit_pitch(sndPlasmaHit,random_range(1.45,1.83))
-with instance_create(x,y,PlasmaImpact){image_xscale=.5;image_yscale=.5;team = other.team;damage = floor(damage/2)}
+sound_play_hit_ext(sndPlasmaHit, random_range(1.45, 1.83), 1)
+with instance_create(x,y,PlasmaImpact) {
+	image_xscale = .5;
+	image_yscale = .5;
+	team = other.team;
+	damage = floor(damage/2)
+}
 
 #define create_supersquare(_x,_y)
+var _lb = skill_get(mut_laser_brain);
 with create_square(_x,_y){
     damage = 2
     force = 12
-    bounce = 5+skill_get(17)*2
-    image_xscale = 1+skill_get(17)*.3
-	image_yscale = 1+skill_get(17)*.3
+    bounce = 5 + _lb * 2
+    image_xscale = 1 + _lb * .3
+	image_yscale = 1 + _lb * .3
 	sprite_index = spr.SuperSquare
 	mask_index 	 = msk.SuperSquare
 	anglefac = random_range(0.6,2)
@@ -2109,53 +2144,62 @@ if size > 1{
 		i += 360/size
 	}
 }
-sound_play_hit_pitch(sndPlasmaHit,random_range(.9,1.1))
-with instance_create(x,y,PlasmaImpact){team = other.pseudoteam;}
+sound_play_hit_ext(sndPlasmaHit, random_range(.9, 1.1), 1)
+with instance_create(x, y, PlasmaImpact) {
+	team = other.pseudoteam;
+}
 
 #define square_hit
-if other.team != pseudoteam and current_frame_active{
-    with other motion_add(point_direction(other.x,other.y,x,y),other.size)
-    if speed > minspeed && projectile_canhit_melee(other) = true{projectile_hit(other, round(2*damage + speed), force, direction)}else{projectile_hit(other, damage, force, direction)};
+if other.team != pseudoteam and current_frame_active {
+    with other motion_add(point_direction(other.x, other.y, x, y), other.size)
+    if speed > minspeed && projectile_canhit_melee(other) == true {
+    	projectile_hit(other, round(2 * damage + speed), force, direction)
+    }
+    else {
+    	projectile_hit(other, damage, force, direction)
+    };
 }
 
 #define square_projectile
 if other.team = pseudoteam || ("pseudoteam" in other and other.pseudoteam == pseudoteam){
-    if instance_is(other,CustomProjectile){
+    if instance_is(other, CustomProjectile){
         if "on_square" in other{
-            with other mod_script_call(on_square[0],on_square[1],on_square[2])
+            with other mod_script_call(on_square[0], on_square[1], on_square[2])
         }
     }
-    else if instance_is(other,Laser){
-        motion_add(other.direction,(2/size) * current_time_scale)
+    else if instance_is(other, Laser){
+        motion_add(other.direction, (2/size) * current_time_scale)
         if current_frame_active
-            with instance_create(x + lengthdir_x(random(sprite_width/2),random(360)),y+lengthdir_y(random(sprite_height/2),random(360)),PlasmaTrail)
-                motion_set(other.direction, random_range(3,8))
+            with instance_create(x + lengthdir_x(random(sprite_width/2), random(360)), y + lengthdir_y(random(sprite_height/2), random(360)), PlasmaTrail)
+                motion_set(other.direction, random_range(3, 8))
     }
-    else if iframes <= 0{
-        var melee = [EnergySlash,EnergyShank,EnergyHammerSlash]
-        var speeds = [12,9,17]
+    else if iframes <= 0 {
+        var melee = [EnergySlash, EnergyShank, EnergyHammerSlash];
+        var speeds = [12, 9, 17];
         for var i = 0; i <= 2; i++{
-            if instance_is(other,melee[i]){
+            if instance_is(other, melee[i]){
 				with instance_create(other.x,other.y,GunGun) image_index=2
 				if speed < 20 {
 				    direction = other.direction;
 				    speed = speeds[i]
 				}
-				sound_play_hit_pitch(sndPlasmaBigExplode,1.4)
-				sound_play_hit_pitch(sndPlasmaHit,2.2)
-				if skill_get(17){sound_play_pitch(sndPlasmaBigExplodeUpg,2.2)}
+				sound_play_hit_ext(sndPlasmaBigExplode, 1.4, 1)
+				sound_play_hit_ext(sndPlasmaHit, 2.2, 1)
+				if skill_get(17) {
+					sound_play_hit_ext(sndPlasmaBigExplodeUpg, 2.2, 1)
+				}
 				iframes += 10
                 break
             }
         }
     }
     if instance_is(other,PlasmaBall) || instance_is(other,PopoPlasmaBall) || instance_is(other,PlasmaHuge) || instance_is(other,PlasmaBig){
-        var num = plasmite_count(other.object_index)
+        var num = plasmite_count(other.object_index);
         repeat(num[0]){
-            with create_plasmite(x,y){
+            with create_plasmite(x, y){
                 creator = other.creator
                 team = other.pseudoteam
-                motion_add(other.direction+random_range(-140,140),random_range(12,16)+6)
+                motion_add(other.direction + random_range(-140, 140), random_range(12, 16) + 6)
                 fric += .08
                 image_angle = direction
             }
@@ -2164,39 +2208,47 @@ if other.team = pseudoteam || ("pseudoteam" in other and other.pseudoteam == pse
             with create_plasmite(x,y){
                 creator = other.creator
                 team = other.pseudoteam
-                motion_add(other.direction+random_range(-20,20),random_range(16,20)+6)
+                motion_add(other.direction+random_range(-20, 20), random_range(16, 20) + 6)
                 fric += .08
                 image_angle = direction
             }
         }
-        instance_destroy();exit
+        instance_destroy();
+        exit
     }
 }
 
 #define plasmite_count(object)
     switch object{
-        case PlasmaBig: return[10,5]
-        case PlasmaHuge: return[12,6]
-        default: return[8,4]
+        case PlasmaBig: return[10, 5]
+        case PlasmaHuge: return[12, 6]
+        default: return[8, 4]
     }
 
 #define plasmite_square
-    motion_set(point_direction(other.x,other.y,x,y),speed + other.size)
-    with other motion_add(point_direction(other.x,other.y,x,y),other.damage/(size*2))
-    sound_play_pitchvol(sndPlasmaHit,random_range(3,6),.3)
-    with instance_create(x,y,PlasmaTrail){image_xscale = 2;image_yscale = 2}
+    motion_set(point_direction(other.x, other.y, x, y), speed + other.size)
+    with other motion_add(point_direction(other.x, other.y, x, y), other.damage/(size * 2))
+    sound_play_hit_ext(sndPlasmaHit, random_range(3, 6), .3)
+    with instance_create(x, y, PlasmaTrail){
+    	image_xscale = 2;
+    	image_yscale = 2
+    }
     image_angle = direction
 
 #define lflak_square
-    sound_play_pitchvol(sndPlasmaBigExplode,random_range(3,6),.3)
-    repeat(12) with instance_create(x,y,PlasmaTrail){image_index = 0;image_speed = .5;motion_add(other.direction+random_range(-120,120),random_range(9,12))}
+    sound_play_hit_big_ext(sndPlasmaHit, random_range(3, 6), .3)
+    repeat(12) with instance_create(x, y, PlasmaTrail){
+    	image_index = 0;
+    	image_speed = .5;
+    	motion_add(other.direction + random_range(-120, 120), random_range(9, 12))
+    }
     with other{
         var i = direction + 90;
         repeat(2){
-            with create_triangle(x,y){
+            with create_triangle(x, y){
                 creator = other.creator
                 team = other.pseudoteam
-                motion_add(i,12)
+                motion_add(i, 12)
                 if direction > 180 turn = -1 else turn = 1
                 image_angle = direction - 45
             }
@@ -2213,7 +2265,7 @@ if other.team = pseudoteam || ("pseudoteam" in other and other.pseudoteam == pse
     	image_speed = .5;
     	motion_add(other.direction + random_range(-60, 60), random_range(9, 12))
     }
-    sound_play_hit_pitch(sndPlasmaHit, random_range(.9,1.1))
+    sound_play_hit_ext(sndPlasmaHit, random_range(.9, 1.1), 1)
     with instance_create(x,y,PlasmaImpact){
     	team = other.pseudoteam;
     	instance_create(x + random_range(-8, 8), y + random_range(-8, 8), Smoke)
@@ -2221,7 +2273,7 @@ if other.team = pseudoteam || ("pseudoteam" in other and other.pseudoteam == pse
 
 #define square_wall
     move_bounce_solid(1)
-    sound_play_ext(sndPlasmaHit, x, y, random_range(2, 4), .3, 1)
+    sound_play_hit_ext(sndPlasmaHit, random_range(2, 4), .3)
     repeat(3) with instance_create(x,y,PlasmaTrail){
     	image_index = 0;
     	image_speed = .5;
@@ -2237,10 +2289,10 @@ if team != id{
     team = id
 }
 if speed > 2{
-	if current_frame_active with instance_create(x + lengthdir_x(random(sprite_width/2),random(360)),y+lengthdir_y(random(sprite_height/2),random(360)),PlasmaTrail){
+	if current_frame_active with instance_create(x + lengthdir_x(random(sprite_width/2), random(360)), y + lengthdir_y(random(sprite_height/2), random(360)), PlasmaTrail){
 	    sprite_index = sprPlasmaImpact
 		image_index = 2
-		image_speed = 0.3-skill_get(17)*0.05
+		image_speed = 0.3 - skill_get(17) * 0.05
 		image_xscale = .25
 		image_yscale = .25
 	}
@@ -2248,14 +2300,14 @@ if speed > 2{
 iframes = max(iframes - current_time_scale, 0)
 speed = clamp(speed, minspeed, maxspeed)
 image_angle += speed * anglefac * fac * current_time_scale
-if current_frame_active with instance_create(x+random_range(-8,8)+lengthdir_x(sprite_width/2,direction-180),y+random_range(-8,8)+lengthdir_y(sprite_width/2,direction-180),PlasmaTrail){
-	image_speed = 0.35-skill_get(17)*0.05
+if current_frame_active with instance_create(x + random_range(-8, 8) + lengthdir_x(sprite_width/2, direction - 180), y + random_range(-8, 8) + lengthdir_y(sprite_width/2, direction - 180), PlasmaTrail){
+	image_speed = 0.35 - skill_get(17) * 0.05
 }
 if bounce <= 0 instance_destroy()
 
 
 #define create_rocklet(_x,_y)
-with instance_create(_x,_y,CustomProjectile){
+with instance_create(_x, _y, CustomProjectile){
     sprite_index = spr.Rocklet
     damage = 3
     name = "Rocklet"
@@ -2279,29 +2331,29 @@ if _q > -4 && distance_to_object(_q) <= 32 {
 	_s = 1.5
 }
 
-direction -= angle_approach(direction, _g, 8, current_time_scale)
-if speed > maxspeed{speed = maxspeed}
+direction -= angle_approach(direction, _g, _s, current_time_scale)
+if speed > maxspeed
+	speed = maxspeed
 image_angle = direction
 
 #define rocket_destroy
-sound_play_hit_pitch(sndExplosionS,1.5)
-with instance_create(x,y,SmallExplosion){damage -= 2}
+sound_play_hit_big_ext(sndExplosionS, 1.5 * random_range(.8, 1.2), .8)
+with instance_create(x, y, SmallExplosion)
+	damage = 3
 
 #define rocket_draw
 draw_self()
-draw_sprite_ext(spr.RockletFlame,-1,x,y,1,1,image_angle,c_white,image_alpha)
+draw_sprite_ext(spr.RockletFlame, -1, x, y, 1, 1, image_angle, c_white, image_alpha)
 
 #define laserflak_hit
-if projectile_canhit_melee(other) = true
-{
+if projectile_canhit_melee(other) == true{
 	var k = other.my_health;
-	projectile_hit(other,damage,ammo,direction)
-	repeat(3) with instance_create(x,y,PlasmaTrail)
-	{
-		view_shake_at(x,y,8)
-		motion_add(random(180),random_range(7,8))
+	projectile_hit(other, damage, ammo, direction)
+	repeat(3) with instance_create(x, y, PlasmaTrail){
+		view_shake_at(x, y, 8)
+		motion_add(random(180), random_range(7, 8))
 	}
-	sleep(damage*2)
+	sleep(damage * 2)
 	damage -= floor(k/size)
 	if damage <= 0 instance_destroy()
 }
@@ -2895,7 +2947,7 @@ if skill_get(mut_bolt_marrow){
     }
 }
 whooshtime = (whooshtime + current_time_scale) mod maxwhoosh
-if whooshtime < current_time_scale sound_play_ext(sndMeleeFlip, x, y, 2 - length/6 + random_range(-.1, .1), length/6, 0);
+if whooshtime < current_time_scale audio_play_ext(sndMeleeFlip, x, y, 2 - length/6 + random_range(-.1, .1), length/6, 0);
 
 #define sword_end_step
 var e = 0, w = 1.5;
@@ -2925,8 +2977,8 @@ if bounce > 0
   bounce--;
   sleep(5)
   repeat(4){instance_create(x, y, Dust)}
-  sound_play_ext(sndDiscBounce, x, y, 2 * _p, .8, 0)
-  sound_play_ext(sndChickenSword, x, y, 1.5 * _p, .5, 0)
+  sound_play_hit_ext(sndDiscBounce, 2 * _p, .8)
+  sound_play_hit_ext(sndChickenSword, 1.5 * _p, .5)
   move_bounce_solid(false)
   speed *= .8;
   length *= 1.2;
@@ -2935,8 +2987,8 @@ if bounce > 0
 }
 else
 {
-  sound_play_ext(sndChickenSword, x, y, 1.5 * _p, .8, 0)
-  sound_play_ext(sndBoltHitWall, x, y, .8 * _p, .8, 0)
+  sound_play_hit_ext(sndChickenSword, 1.5 * _p, .8)
+  sound_play_hit_ext(sndBoltHitWall, .8 * _p, .8)
   sleep(4)
   view_shake_at(x, y, force * 2)
   with instance_create(x, y, CustomObject){
@@ -2975,7 +3027,10 @@ other.x += 10000
 var q = instance_nearest_matching_ne(x, y, hitme, "team", team)
 if instance_exists(q) and q != other and q.mask_index != mskNone and distance_to_object(q) < slashrange{
     projectile_hit(q, damage, force, point_direction(x, y, q.x, q.y))
-    sound_play_ext(sndChickenSword, q.x, q.y, 1.4*random_range(.9,1.2), .8, 0)
+    with instance_create(q.x, q.y, CustomObject){
+	    sound_play_hit_ext(sndChickenSword, 1.4*random_range(.9,1.2), .8)
+	    instance_destroy()
+    }
     with instance_create(q.x, q.y, CustomObject){
         sprite_index = spr.SwordSlash
         image_angle = point_direction(other.x, other.y, q.x, q.y)

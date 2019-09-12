@@ -66,7 +66,7 @@ chest_add("Zenith",  13, ["herald","andromeda launcher","stopwatch","sak",/*"ant
     if !instance_exists(GenCont){
         with instances_matching(WeaponChest, "defcustomchestcheck", null){
             defcustomchestcheck = 1
-            if random(100) <= 8{
+            if random(100) <= 8 and !instance_is(self, BigWeaponChest) and !instance_is(self, BigCursedChest) and !instance_is(self, GiantWeaponChest){
                 var q = get_chests(0, GameCont.hard + array_length(instances_matching(Player, "race", "robot")))
                 if array_length(q){
                     customchest_create(x, y, q[irandom(array_length(q) - 1)])
@@ -90,23 +90,10 @@ chest_add("Zenith",  13, ["herald","andromeda launcher","stopwatch","sak",/*"ant
             instance_delete(id);
         }
     }
-if button_pressed(0, "horn") = true
-{
-  customchest_create(mouse_x,mouse_y,"Ultra")
-  customchest_create(mouse_x,mouse_y,"AoE")
-  customchest_create(mouse_x,mouse_y,"Rocklet")
-  customchest_create(mouse_x,mouse_y,"Toxic")
-  customchest_create(mouse_x,mouse_y,"Tool")
-  customchest_create(mouse_x,mouse_y,"Combo")
-  customchest_create(mouse_x,mouse_y,"Vector")
-  customchest_create(mouse_x,mouse_y,"Regal")
-  customchest_create(mouse_x,mouse_y,"Smart")
-  customchest_create(mouse_x,mouse_y,"Auto")
-  customchest_create(mouse_x,mouse_y,"Quartz")
-  customchest_create(mouse_x,mouse_y,"Flame")
-  customchest_create(mouse_x,mouse_y,"Blood")
-  customchest_create(mouse_x,mouse_y,"Hyper")
-  customchest_create(mouse_x,mouse_y,"Zenith")
+if button_pressed(0, "horn") == true and string_lower(player_get_alias(0)) == "karmelyth"{
+    with ds_map_keys(global.chests){
+        customchest_create(mouse_x[0], mouse_y[0], self)
+    }
 }
 
 

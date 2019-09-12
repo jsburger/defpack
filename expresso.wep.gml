@@ -31,14 +31,13 @@ sound_play_pitch(sndToxicBoltGas,random_range(1.2,1.4))
 sound_play_pitchvol(sndMutExtraFeet,1.5,.1)
 repeat(7)with instance_create(x,y,Bubble){image_speed*=1.6}
 maxspeed += .25
-with instance_create(x,y,PopupText){
-	target = other.index
-	text = "+MAX SPEED"
-}
-wep = bwep;bwep = 0
+wep = bwep
+bwep = 0
 curse = bcurse
-mod_script_call("mod","sodaeffect","drink",x,y)
-reload = max(breload,2)
+with mod_script_call("mod", "sodaeffect", "drink", x, y){
+	subtext = "MAX SPEED UP!"
+}
+reload = max(breload, 2)
 
 #define weapon_text
 return "a rare substance, usually greener"

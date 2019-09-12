@@ -21,7 +21,7 @@ if !irandom(1) return 11;
 else return -1;
 
 #define weapon_load
-return round(.58 * room_speed * current_time_scale) //this however is the revolver RoF
+return round(.58 * 30) //this however is the revolver RoF
 //return 24; //.8s which is the swing period of the TF2 spy knife
 
 #define weapon_swap
@@ -36,8 +36,8 @@ var _p = random_range(.8,1.2);
 sound_play_pitchvol(sndSlugger,.8*_p,.8);
 sound_play_pitchvol(sndPistol,.7*_p,.8);
 mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, 2+random(3), c_yellow)
-with instance_create(x + lengthdir_x(6,gunangle),y + lengthdir_y(6,gunangle),CustomProjectile){
-	motion_set(other.gunangle,3)
+with instance_create(x + lengthdir_x(6, gunangle), y + lengthdir_y(6, gunangle),CustomProjectile){
+	motion_set(other.gunangle, 3)
 	mask_index = mskBullet1
 	on_step = spy_step
 	on_anim = spy_anim

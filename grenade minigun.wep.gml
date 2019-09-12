@@ -96,6 +96,7 @@ x = creator.x + lengthdir_x(7, creator.gunangle)
 y = creator.y + lengthdir_y(7, creator.gunangle)
 
 #define chargedestroy
+if !instance_exists(creator) exit;
 with instance_create(x,y,CustomObject){
     name = "grenade burst"
     ammo = other.ammo
