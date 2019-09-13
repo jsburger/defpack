@@ -54,8 +54,8 @@ sound_play_pitch(sndShovel, .7 * _p)
 sound_play_pitch(sndExplosionS, 1.2 * _p)
 weapon_post(8,10,5)
 
-with instance_create(x,y,Slash)
-{
+var l = 20 * skill_get(mut_long_arms);
+with instance_create(x + lengthdir_x(l, gunangle), y + lengthdir_y(l, gunangle), Slash){
 	sprite_index = sprHeavySlash
 	damage = 12
 	creator = other
@@ -64,10 +64,6 @@ with instance_create(x,y,Slash)
 	team = other.team
 	image_xscale *= 1.1
 	image_yscale *= 1.2
-	if skill_get(13) {
-		x += 4 *hspeed;
-		y += 4 *vspeed
-	}
 	flip = -sign(other.wepangle)
 	if fork(){
 		wait(3)

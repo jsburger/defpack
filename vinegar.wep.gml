@@ -30,14 +30,13 @@ sound_play_pitch(sndToxicBoltGas,random_range(1.2,1.4))
 sound_play_pitchvol(sndMutEagleEyes,1.5,.02)
 repeat(7)with instance_create(x,y,Bubble){image_speed*=1.6}
 accuracy /= 1.2
-with instance_create(x,y,PopupText){
-	target = other.index
-	text = "+ACCURACY"
-}
-wep = bwep;bwep = 0
+wep = bwep
+bwep = 0
 curse = bcurse
-mod_script_call("mod","sodaeffect","drink",x,y)
-reload = max(breload,10)
+with mod_script_call("mod", "sodaeffect", "drink", x, y){
+	subtext = "ACCURACY UP!"
+}
+reload = max(breload, 10)
 
 #define weapon_text
 return "you're not supposed to drink these"
