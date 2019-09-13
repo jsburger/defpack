@@ -35,11 +35,12 @@ return choose("NOBODY IS HAPPY WITH THIS","@gULTRA @sSTALE");
 return 1
 
 #define weapon_fire
-sound_play_pitch(sndSwapExplosive,random_range(1.5,1.9))
-sound_play_pitch(sndFrogExplode,random_range(.6,.8))
-sound_play_pitch(sndFlyFire,random_range(.6,.8))
-sound_play_pitch(sndUltraLaser,random_range(1.4,1.6))
-weapon_post(0,0,12)
+var _p = random_range(.6, 1.3)
+sound_play_pitch(sndSwapExplosive, 1.7 * _p)
+sound_play_pitch(sndFrogExplode,.7 * _p)
+sound_play_pitch(sndFlyFire,.7 * _p)
+sound_play_pitch(sndUltraLaser,1.5 * _p)
+weapon_post(random_range(-2, 2),0,12)
 repeat(2){
 	with instance_create(x,y,GuardianBullet){
 		motion_add(other.gunangle+random_range(-180,180)*other.accuracy,2)

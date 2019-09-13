@@ -79,7 +79,7 @@ if fork(){
 }
 
 with instance_create(x,y,HeavyBullet){
-	motion_set(ang,16)
+	motion_set(ang + random_range(-2, 2) * other.accuracy,16)
 	projectile_init(other.team,other)
 	image_angle = direction
 	repeat(2) with instance_create(x+lengthdir_x(speed,direction),y+lengthdir_y(speed,direction),Dust)

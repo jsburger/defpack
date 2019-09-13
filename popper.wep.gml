@@ -29,7 +29,7 @@ return "POP (POP) POP";
 
 #define weapon_fire
 
-weapon_post(4,0,22)
+weapon_post(4,5,3)
 sound_play_pitch(sndPopgun,.7+random_range(-.1,.1))
 sound_play_pitch(sndMachinegun,.8+random_range(-.1,.1))
 with instance_create(x, y, Shell){
@@ -52,6 +52,8 @@ with instance_create(x + lengthdir_x(4, gunangle),y + lengthdir_y(4, gunangle),B
         var _crtr = creator;
         while instance_exists(self) && sprite_index != sprBullet2Disappear{var _x = x;var _y = y;wait(0)}
 		var i = random(360);
+    sleep(1)
+    view_shake_at(_x, _y, 5)
 		repeat(3){
 			with instance_create(_x,_y,Bullet2){
 				sound_play_pitchvol(sndFlakExplode,random_range(1.3,1.5),.2)

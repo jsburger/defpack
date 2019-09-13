@@ -5,7 +5,7 @@ return "LIGHTNING FLARE GUN"
 #define weapon_type
 return 4 // cmon burg
 #define weapon_cost
-return 3
+return 2
 #define weapon_area
 return -1
 #define weapon_load
@@ -33,31 +33,41 @@ with instance_create(x, y, CustomProjectile)
   sprite_index = global.sprLightingGrenade
   mask_index   = sprite_index
   team = other.team
+  image_speed = .5
   creator = other
-  damage = 12
+  damage = 25
   force  = 7
-  motion_add(other.gunangle + random_range(-5, 5), 16)
+  timer = 20
+  motion_add(other.gunangle + random_range(-2, 2), 18)
   image_angle = direction
   friction = .8
   on_step    = lflare_step
+  on_wall    = lflare_wall
   on_destroy = lflare_destroy
 }
 with instance_create(x + lengthdir_x(16, gunangle),y + lengthdir_y(16, gunangle),LightningSpawn){image_angle = other.gunangle}
 
+#define lflare_wall
+move_bounce_solid(false)
+sound_play(sndGrenadeHitWall)
+speed *= .8
+direction += random_range(-4, 4)
+repeat(3) instance_create(x, y, Smoke)
+
 #define lflare_step
 if irandom(2) = 0
 {
-  with instance_create(x,y,Lightning)
+  with instance_create(x,y,EnemyLightning)
   {
     image_angle = random(360)
     team = other.team
     creator = other.creator
-    ammo = 1 + irandom(1)
+    ammo = 0
     alarm0 = 1
     visible = 0
   }
 }
-if speed < friction instance_destroy()
+if speed < friction {if timer <= 16{sprite_index = sprGrenadeBlink}timer--;if timer <= 0 instance_destroy()}
 
 #define lflare_destroy
 sleep(25)
@@ -68,7 +78,7 @@ with instance_create(x, y, CustomObject)
 {
   team    = other.team
   creator = other.creator
-  timer = 12 + 3 * (skill_get(mut_laser_brain))
+  timer = 12 + 4 * (skill_get(mut_laser_brain))
   on_step = field_step
 }
 repeat(12){with instance_create(x, y, Dust){motion_add(random(360), random_range(3, 7))}}
@@ -80,16 +90,17 @@ if timer > 0
   repeat(2)
   {
     sound_play_pitchvol(sndLightningHit, random_range(.8, 1.2), .6)
-    with instance_create(x,y,Lightning)
+    with instance_create(x,y,EnemyLightning)
     {
       image_angle = random(360)
-      team = other.team
+      team = -500
       creator = other.creator
       ammo = 7 + irandom(1) + 2 * (skill_get(mut_laser_brain))
       alarm0 = 1
       visible = 0
       with instance_create(x,y,LightningSpawn){image_angle = other.image_angle}
     }
+    with instances_matching(EnemyLightning, "team", -500){if "dflag" not in self{dflag = "E"; damage += 5}}
   }
 }
 else instance_delete(self)

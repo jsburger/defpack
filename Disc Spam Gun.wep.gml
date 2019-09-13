@@ -16,7 +16,8 @@ return -1
 #define weapon_load
 return 2
 #define weapon_swap
-return sndSwapCursed
+sound_play(sndSwapCursed)
+return sndSwapBow
 #define weapon_auto
 return 1
 #define weapon_melee
@@ -44,10 +45,11 @@ return global.sprDiscSpamGun
 #define weapon_text
 return "Our sincere apologies"
 #define weapon_fire
-sound_play_pitch(sndSwapExplosive,random_range(1.5,1.9))
-sound_play_pitch(sndFlyFire,random_range(.6,.8))
-sound_play_pitch(sndFrogExplode,random_range(.6,.8))
-weapon_post(0,0,5)
+var _p = random_range(.6, 1.3)
+sound_play_pitch(sndSwapExplosive, 1.7 * _p)
+sound_play_pitch(sndFlyFire,.7 * _p)
+sound_play_pitch(sndFrogExplode,.7 * _p)
+weapon_post(random_range(-2, 2),0,5)
 
 var i = 0
 repeat(2){

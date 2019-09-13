@@ -53,10 +53,44 @@ sound_play_pitch(sndGrenade,random_range(.5,.8))
 sound_play_pitch(sndGrenadeShotgun,random_range(.5,.8))
 sound_play(sndExplosion)
 if isplayer with creator weapon_post(6,25,35)
-var n = 8;
-repeat(n){
-	with instance_create(x + lengthdir_x(acc + accmin, offset), y + lengthdir_y(acc + accmin, offset), SmallExplosion){
-	    hitid = [sprite_index,"small explosion"]
+with instance_create(x, y, CustomObject)
+{
+	n = 8
+	acc = other.acc
+	timer = 0
+	accmin = other.accmin
+	accbase = other.accbase
+	on_step = pop_step
+}
+
+#define pop_step
+if n > 0
+{
+	if timer-- <= 0
+	{
+		n--
+		var _d = random(360)
+		if n != 0 with instance_create(x + lengthdir_x((accbase * acc)/accmin, _d) * random_range(.6,1), y + lengthdir_y((accbase * acc)/accmin, _d) * random_range(.6,1), SmallExplosion)
+		{
+			hitid = [sprite_index,"small explosion"]
+			sound_play(sndExplosionS)
+			sleep(5)
+			view_shake_at(x, y, 4)
+		}
+		else with instance_create(x + lengthdir_x((accbase * acc)/accmin, _d) * random_range(.6,1), y + lengthdir_y((accbase * acc)/accmin, _d) * random_range(.6,1), Explosion)
+		{
+			hitid = [sprite_index,"explosion"]
+			sound_play(sndExplosion)
+			sleep(20)
+			view_shake_at(x, y, 24)
+		}
+		timer = 1
+		if n = 1 timer = 4
+		if n = 2 timer = 2
 	}
-	offset += 360/n
+}
+else
+{
+	instance_delete(self)
+	exit
 }

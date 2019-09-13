@@ -33,7 +33,7 @@ return "HEAT WAVES";
 
 #define weapon_fire
 var things = [SmallExplosion,CustomObject,Explosion],
-    lengths = [30,55,100],
+    lengths = [27,55,100],
     ang = gunangle,
     _x = x, _y = y;
 
@@ -49,6 +49,7 @@ var things = [SmallExplosion,CustomObject,Explosion],
             sound_play_pitch(sndExplosion,_pitch)
             weapon_post(8,8,4)
             with instance_create(_x+lengthdir_x(lengths[i] + speed,ang),_y+lengthdir_y(lengths[i]+speed,ang),things[i]){
+                if i = 0 team = other.team
                 creator = other
                 if i > 0{
                     repeat(2 + (1 * (GameCont.crown == crwn_death)))with instance_create(x,y,SmallExplosion) creator = other.creator

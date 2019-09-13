@@ -36,7 +36,7 @@ sound_play_pitchvol(sndFlakExplode,random_range(.4,.7),.8)
 sound_play_pitch(sndDoubleShotgun,1.2)
 with instance_create(x+lengthdir_x(12,gunangle),y+lengthdir_y(12,gunangle),CustomProjectile) {
 	move_contact_solid(other.gunangle,6)
-	motion_set(other.gunangle, 15 + random(2))
+	motion_set(other.gunangle + random_range(-3, 3) * other.accuracy, 15 + random(2))
     projectile_init(other.team,other)
 	sprite_index = global.sprShotBullet
 	mask_index = mskFlakBullet
