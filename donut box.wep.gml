@@ -29,11 +29,11 @@ if !is_object(w){
 }
 if w.ammo > 0{
     var _hp = 1+skill_get(mut_second_stomach)
-    var str = "MAX HEALTH"
+    var str = "MAX HP"
     if my_health + 1 <= maxhealth{
         w.ammo -= 1
         my_health = min(my_health + _hp, maxhealth)
-        if my_health != maxhealth str = `+${_hp} HEALTH`
+        if my_health != maxhealth str = `+${_hp} HP`
         sound_play_pitch(sndHPPickup,random_range(.8,1.2)+.2)
     }
     with instance_create(x, y, PopupText){
@@ -45,7 +45,7 @@ else{
     sound_play_pitch(sndEnemySlash,random_range(1,1.3))
     with instance_create(x,y,ThrownWep){
         sprite_index = global.sprDonutBoxEmpty
-        speed = 4
+        speed = 14
         wep = other.wep
         creator = other
         team = other.team
@@ -87,6 +87,7 @@ return "delicious...."
     draw_set_valign(fa_top);
     draw_set_color(c_white);
     if(!_primary && !_steroids) draw_set_color(c_silver);
+    if _ammo <= 0 draw_set_color(c_dkgray); 
 
     draw_text_shadow(_x, _y, string(_ammo));
 

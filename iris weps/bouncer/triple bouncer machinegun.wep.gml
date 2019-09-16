@@ -38,7 +38,7 @@ with instance_create(x,y,BouncerBullet)
 {
 	team = other.team
 	creator = other
-	motion_add(other.gunangle-25+random_range(-9,9)*other.accuracy,6)
+	motion_add(other.gunangle-25 * other.accuracy+random_range(-9,9)*other.accuracy,6)
 }
 with instance_create(x,y,BouncerBullet)
 {
@@ -50,5 +50,5 @@ with instance_create(x,y,BouncerBullet)
 {
 	team = other.team
 	creator = other
-	motion_add(other.gunangle+25+random_range(-9,9)*other.accuracy,6)
+	motion_add(other.gunangle+25 * other.accuracy+random_range(-9,9)*other.accuracy,6)
 }

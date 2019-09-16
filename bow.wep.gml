@@ -81,6 +81,7 @@ with instance_create(x,y,CustomObject){
 	depth = TopCont.depth
 	spr_arrow = other.race = "skeleton" ? global.sprArrow2 : global.sprArrow
 	index = creator.index
+  accuracy = other.accuracy
 	on_step    = bow_step
 	on_destroy = bow_destroy
 	on_cleanup = bow_cleanup
@@ -158,18 +159,18 @@ else
     sound_play_pitchvol(sndShovel,2,.8)
     sound_play_pitchvol(sndUltraCrossbow,3,.8)
     var ang = creator.gunangle + random_range(-5,5) * creator.accuracy
-    var i = -12;
+    var i = -12 * accuracy;
     repeat(3){
         with instance_create(creator.x,creator.y,Bolt){
             sprite_index = other.spr_arrow
             mask_index   = mskBullet1
             creator = other.creator
             team    = creator.team
-            damage = 10
+            damage = i = 0 ? 10 : 5
             move_contact_solid(creator.gunangle,6)
             motion_add(ang + i,20)
             image_angle = direction
         }
-        i += 12;
+        i += 12 * accuracy;
     }
 }
