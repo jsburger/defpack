@@ -18,10 +18,10 @@ return 5;
 return false;
 
 #define weapon_load
-return 30;
+return 24;
 
 #define weapon_cost
-return 6;
+return 3;
 
 #define weapon_swap
 return sndSwapEnergy;
@@ -49,7 +49,7 @@ else
 sound_play_gun(sndClickBack,1,.6)
 sound_stop(sndClickBack)
 weapon_post(8,-10,16)
-with lightning_create(x,y,12,gunangle+random_range(-10,10)){
+with lightning_create(x,y,irandom_range(16,18) + 5 * skill_get(mut_laser_brain),gunangle+random_range(-10,10)){
     team = other.team
     creator = other
     lightning_grow();
@@ -67,7 +67,7 @@ motion_add(gunangle-180,4)
         direction = _direction;
         image_angle = direction;
         creator = noone;
-        damage = 7;
+        damage = 14;
         force = 4;
         ammo = _ammo;
         typ = 0;
@@ -88,39 +88,28 @@ motion_add(gunangle-180,4)
         if(alarm0 <= 0) lightning_grow();
     }
     timer -= current_time_scale
-    if timer<= 0{
-        with instance_create(x,y,Laser)
-        {
-          image_angle = random(360)
-          team = other.team
-          creator = other.creator
-          image_yscale = other.image_yscale
-          with instance_create(x,y,PlasmaImpact)
-          {
-            s = choose(.5,.75)
-            image_xscale = s
-            image_yscale = s
-            image_speed = random_range(.3,.6)
-            team = other.team
-            creator = other.creator
-          }
-          with instance_create(x+random_range(-30,30),y+random_range(-30,30),PlasmaImpact)
-          {
-            s = .25
-            image_xscale = s
-            image_yscale = s
-            image_speed = random_range(.3,.6)
-            team = other.team
-            creator = other.creator
-          }
-          event_perform(ev_alarm,0)
-          with instance_create(x,y,PlasmaImpact)
-          {
-            team = other.team
-            creator = other.creator
-          }
-        }
-        instance_destroy()
+    if timer<= 0
+    {
+      with instance_create(x,y,PlasmaImpact)
+      {
+        s = choose(.5,.75)
+        image_xscale = s
+        image_yscale = s
+        damage += 5
+        image_speed = random_range(.3,.6)
+        team = other.team
+        creator = other.creator
+      }
+      with instance_create(x+random_range(-30,30),y+random_range(-30,30),PlasmaImpact)
+      {
+        s = .25
+        image_xscale = s
+        image_yscale = s
+        image_speed = random_range(.3,.6)
+        team = other.team
+        creator = other.creator
+      }
+      instance_destroy()
     }
 
 #define lightning_grow()

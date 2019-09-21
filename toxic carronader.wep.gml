@@ -47,7 +47,16 @@ with instances_matching_ne(hitme,"team",team)
 {
 	if point_distance(_x,_y,x,y)<=18
 	{
-		if instance_is(self,SuperFrog){instance_destroy(); continue}
+		if instance_is(self,SuperFrog)
+		{
+			view_shake_max_at(x,y,200)
+			sleep(150)
+			sound_play_pitchvol(sndHammerHeadEnd,random_range(1.23,1.33),20)
+			sound_play_pitchvol(sndBasicUltra,random_range(0.9,1.1),20)
+			sound_play_pitch(sndCoopUltraA,random_range(3.8,4.05))
+			instance_destroy()
+			continue
+		}
 		if projectile_canhit_melee(other)
 		{
 			view_shake_max_at(x,y,200)

@@ -84,7 +84,8 @@ if ammo > 0 && current_frame_active{
 #define chainsawshank_hit
 if current_frame_active{
 	view_shake_at(x,y,8)
-	sleep(6)
+	sleep(30)
+	other.speed = 0
 	var _splat = -4;
 	_splat = determine_gore(other)
     with instance_create((other.x*other.size+x)/(other.size+1),(other.y*other.size+y)/(other.size+1),_splat){image_angle = random(360)}

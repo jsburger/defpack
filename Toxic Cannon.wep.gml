@@ -1,5 +1,5 @@
 #define init
-global.sprToxicCannon = sprite_add_weapon("sprites/weapons/sprToxicCannon.png", 4, 4);
+global.sprToxicCannon = sprite_add_weapon("sprites/weapons/sprToxicCannon.png", 3, 6);
 #define weapon_name
 return "TOXIC CANNON";
 
@@ -28,6 +28,7 @@ return 8;
 return "A GUN ONLY A MOTHER COULD LOVE";
 
 #define weapon_fire
+sleep(70)
 weapon_post(6,-12,15)
 motion_add(gunangle-180,5)
 var _p = random_range(.8,1.2)

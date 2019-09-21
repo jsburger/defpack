@@ -1,14 +1,10 @@
 #define init
-global.sprBow      = sprite_add_weapon("sprites/weapons/sprBow.png",2,8)
-global.sprArrow    = sprite_add("sprites/projectiles/sprArrow.png",1,3,4)
-global.sprArrowHUD = sprite_add_weapon("sprites/projectiles/sprArrow.png",5,3)
-
-global.sprBow2     = sprite_add_weapon_base64("iVBORw0KGgoAAAANSUhEUgAAAAoAAAASCAYAAABit09LAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7BAAAOwQG4kWvtAAAAB3RJTUUH4wEXBQ8FXZOvsQAAARBJREFUKM+Nkr9Kw1AUxn8ndJF2MlQQQ4OLNGSJgxXBIdAphYKPEOe+QZ31YXwAu3a1DrqEbkqhRTDoVHA8DnpvExP//OAul+/e833nHFFVBsc7yhc3ty9CDdLtNPU88ezF9P4NQCazvCIEUIA4ctnf3aoVO/PFGu/ghPliLdOHV56e34kPtwE06bU3Qvu1yK/iRsmHCIB8WnFLHq1QVUtvAr+l/WEKoKMjxOEH+sOUMAzrPdZhxLb05R5ceQXx2QiALMuqYQzjpRL4LSCthhkvN2ECv6Vx5PJ4dw0gp6scx3gTEXu+c7EqhDEt6naaakZZxDH9U1Vbsm7e/16KBqBx5P69ZgBJr20jT2Z5bec/ACvpa0JPoQuCAAAAAElFTkSuQmCC", 1, 8)
-global.sprArrow2   = sprite_add_base64("iVBORw0KGgoAAAANSUhEUgAAABIAAAAHCAYAAAAF1R1/AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7BAAAOwQG4kWvtAAAAB3RJTUUH4wEXBQMR6/w0wAAAANRJREFUGNOV0bFKxEAQxvH/iI2vsAipdC1trYKwaXwWayGFbxG2PbCztrjiIHZTW2ax2eIIvoGdn8XpNYdRfzDNDAzMN1Zr5dvt3T0AT48PLCmlABBj3PfM3QkhaJ5nQgg0TWMAzx8nPy4Kry8AApjPLu366H03aNtWtVa5u2qt4hc5Z3LOkqRpmiQJk4SZ0batbi7e+IvVesvp+RXDMBBjpJTCsZnh7vR9z2q95b9KKYzjCO5+cJokliqlREpJOWellHanfX3tIOwlXdftw95sNgbwCTnnhjndldg9AAAAAElFTkSuQmCC",1, 3, 4)
+global.sprBow      = sprite_add_weapon("sprites/weapons/sprArchClassique.png",2,7)
+global.sprArrow    = sprite_add("sprites/projectiles/sprArchClassiqueArrow.png",1,3,4)
+global.sprArrowHUD = sprite_add_weapon("sprites/projectiles/sprArchClassiqueArrow.png",5,3)
 
 #define weapon_name
-//if instance_is(self,WepPickup) return `  BOW @0(${sprEnergyIcon}:0) `
-return "BOW"
+return "ARC CLASSIQUE"
 
 #define weapon_type
 return 3
@@ -17,7 +13,7 @@ return 3
 return 1
 
 #define weapon_area
-return 4
+return 8
 
 #define weapon_chrg
 return 1
@@ -81,7 +77,6 @@ with instance_create(x,y,CustomObject){
 	depth = TopCont.depth
 	spr_arrow = other.race = "skeleton" ? global.sprArrow2 : global.sprArrow
 	index = creator.index
-  accuracy = other.accuracy
 	on_step    = bow_step
 	on_destroy = bow_destroy
 	on_cleanup = bow_cleanup
@@ -159,18 +154,18 @@ else
     sound_play_pitchvol(sndShovel,2,.8)
     sound_play_pitchvol(sndUltraCrossbow,3,.8)
     var ang = creator.gunangle + random_range(-5,5) * creator.accuracy
-    var i = -12 * accuracy;
+    var i = -12;
     repeat(3){
         with instance_create(creator.x,creator.y,Bolt){
             sprite_index = other.spr_arrow
             mask_index   = mskBullet1
             creator = other.creator
             team    = creator.team
-            damage = i = 0 ? 10 : 5
+            damage = 10
             move_contact_solid(creator.gunangle,6)
             motion_add(ang + i,20)
             image_angle = direction
         }
-        i += 12 * accuracy;
+        i += 12;
     }
 }

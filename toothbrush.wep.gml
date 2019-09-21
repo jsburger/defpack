@@ -36,6 +36,7 @@ with instance_create(x+lengthdir_x(6+(20*skill_get(13)),gunangle),y+lengthdir_y(
 	creator = other
 	team = other.team
 	image_angle = other.gunangle
+	direction = image_angle
 }
 #define weapon_sprt
 if mod_exists("skill", "prismatic iris") return global.brush[mod_variable_get("skill", "prismatic iris", "color")]

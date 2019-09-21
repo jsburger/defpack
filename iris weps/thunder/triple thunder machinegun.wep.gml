@@ -59,14 +59,14 @@ sound(3)
 	}
 	with mod_script_call("mod", "defpack tools", "create_lightning_bullet",x,y){
 		move_contact_solid(other.gunangle,6)
-		motion_add(other.gunangle+15+random_range(-2,2)*other.accuracy,10)
+		motion_add(other.gunangle+15 * other.accuracy+random_range(-2,2)*other.accuracy,10)
 		image_angle = direction
 		team = other.team
 		creator = other
 	}
 	with mod_script_call("mod", "defpack tools", "create_lightning_bullet",x,y){
 		move_contact_solid(other.gunangle,6)
-		motion_add(other.gunangle-15+random_range(-2,2)*other.accuracy,10)
+		motion_add(other.gunangle-15 * other.accuracy+random_range(-2,2)*other.accuracy,10)
 		image_angle = direction
 		team = other.team
 		creator = other

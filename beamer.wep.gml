@@ -250,7 +250,7 @@ if current_frame_active{
 	view_shake_at(x,y,2)
     with other motion_set(other.direction,2+skill_get(mut_laser_brain))
     view_shake_max_at(other.x,other.y,min(other.size,4))
-    projectile_hit(other,3 + skill_get(mut_laser_brain)*2,1,direction)
+    projectile_hit(other,6 + skill_get(mut_laser_brain)*3,1,direction)
     if other.my_health <= 0{
         sleep(min(other.size, 4) * 20)
         view_shake_max_at(creator.x,creator.y,5*min(4, other.size))
