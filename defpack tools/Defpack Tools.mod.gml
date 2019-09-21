@@ -164,6 +164,9 @@
 
 	//todo:
 	//find out if bolt marrow should be split into step on bolts
+	
+#macro spr global.spr
+#macro msk global.spr.msk
 
 //thanks yokin
 #macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)
@@ -178,8 +181,12 @@
 #macro defcharge_bar 0
 #macro defcharge_arc 1
 
-#macro spr global.spr
-#macro msk global.spr.msk
+#macro default_bloom {
+        xscale : 2,
+        yscale : 2,
+        alpha : .1
+    };
+
 
 #define sprite_add_d(sprite, subimages, xoffset, yoffset)
 var a = string_split(sprite, "/"),
@@ -515,7 +522,7 @@ return q;
 
 
 #define chance(percentage)
-return random(100) <= percentage*current_time_scale
+return random(100) <= percentage * current_time_scale
 
 #define approach(a, b, n, dn)
 return (b - a) * (1 - power((n - 1)/n, dn))
@@ -564,8 +571,10 @@ if is_string(w){
 return 0
 
 #define step
+ //gets rid of dummy weapons, i dont know why vanilla doesnt do this
 with instances_matching(WepPickup, "wep", 0) instance_destroy()
 
+ //adds the hold icon to charge weapons
 with instances_matching_ne(WepPickup, "chargecheck", 1){
     chargecheck = 1
     if weapon_get_chrg(wep) {
@@ -573,52 +582,54 @@ with instances_matching_ne(WepPickup, "chargecheck", 1){
     }
 }
 
-if !surface_exists(global.trailsf){
-    global.trailsf = surface_create(game_width*4,game_height*4)
+ //surface for rocklet trails
+if !surface_exists(global.trailsf) {
+    global.trailsf = surface_create(game_width * 4, game_height * 4)
     surface_set_target(global.trailsf)
-    draw_clear_alpha(c_black,0)
+    draw_clear_alpha(c_black, 0)
     surface_reset_target()
 }
-if !instance_exists(global.traildrawer){
-    with script_bind_draw(draw_trails,1){
+ //thing that uses said surface
+if !instance_exists(global.traildrawer) {
+    with script_bind_draw(draw_trails, 1){
         global.traildrawer = id
         persistent = 1
     }
 }
-if instance_exists(GenCont){
-    surface_set_target(global.trailsf)
-    draw_clear_alpha(c_black,0)
-    surface_reset_target()
-}
 
-if global.SAKmode && mod_exists("weapon","sak"){
-    with instances_matching(instances_matching(WepPickup,"roll",1),"saked",undefined){
+if global.SAKmode && mod_exists("weapon", "sak"){
+    with instances_matching(instances_matching(WepPickup, "roll", 1), "saked", undefined) {
         saked = 1
-        wep = mod_script_call_nc("weapon","sak","make_gun_random")
+        wep = mod_script_call_nc("weapon", "sak", "make_gun_random")
     }
 }
 
-with instances_matching([Explosion,SmallExplosion,GreenExplosion,PopoExplosion],"hitid",-1){
-    hitid = [sprite_index,string_replace(string_upper(object_get_name(object_index)),"EXPLOSION"," EXPLOSION")]
+with instances_matching([Explosion, SmallExplosion, GreenExplosion, PopoExplosion], "hitid", -1) {
+    hitid = [sprite_index, string_replace(string_upper(object_get_name(object_index)), "EXPLOSION", " EXPLOSION")]
 }
 
 //drop tables
-with instances_matching_le([Inspector,Shielder,EliteGrunt,EliteInspector,EliteShielder],"my_health",0) if !irandom(97) with instance_create(x,y,WepPickup){wep = "donut box"}
-
+with instances_matching_le([Inspector, Shielder, EliteGrunt, EliteInspector, EliteShielder], "my_health", 0) {
+	if !irandom(97) {
+		with instance_create(x, y, WepPickup) {
+			wep = "donut box"
+		}
+	}
+}
 with SodaMachine{
 	if fork(){
-	    var _x = x, _y = y
+	    var _x = x, _y = y;
 	    wait(0)
 	    if !instance_exists(self) && instance_exists(Wall){
-    		with instance_create(_x,_y,WepPickup){
+    		with instance_create(_x, _y, WepPickup){
     		    if !irandom(99) wep = "soda popper"
     		    else{
-        		    var a = ["lightning blue lifting drink(tm)","extra double triple coffee","expresso","saltshake","munitions mist","vinegar","guardian juice"]
+        		    var a = ["lightning blue lifting drink(tm)", "extra double triple coffee", "expresso","saltshake", "munitions mist", "vinegar", "guardian juice"]
         			if skill_get(14) > 0
         			    array_push(a, "sunset mayo")
         			if array_length(instances_matching(Player, "notoxic", 0))
         			    array_push(a, "frog milk")
-                    wep = a[irandom(array_length(a)-1)]
+                    wep = a[irandom(array_length(a) - 1)]
                 }
     		}
     	}
@@ -627,15 +638,15 @@ with SodaMachine{
 }
 
 #define weapon_charged(c, l)
-sound_play_pitch(sndSnowTankCooldown,8)
-sound_play_pitchvol(sndShielderDeflect,4,.5)
-sound_play_pitchvol(sndBigCursedChest,20,.1)
-sound_play_pitchvol(sndCursedChest,12,.2)
-with instance_create(c.x + lengthdir_x(l, c.gunangle), c.y + lengthdir_y(l, c.gunangle), ChickenB){
+sound_play_pitch(sndSnowTankCooldown, 8)
+sound_play_pitchvol(sndShielderDeflect, 4, .5)
+sound_play_pitchvol(sndBigCursedChest, 20, .1)
+sound_play_pitchvol(sndCursedChest, 12, .2)
+with instance_create(c.x + lengthdir_x(l, c.gunangle), c.y + lengthdir_y(l, c.gunangle), ChickenB) {
 	creator = c
 	image_xscale = .5
 	image_yscale = .5
-	with instance_create(x,y,ChickenB){
+	with instance_create(x, y, ChickenB){
 		creator = c
 		image_speed = .75
 	};
@@ -651,16 +662,16 @@ draw_line_width_color(x2 - 1, y3, x2 + w + 1, y3, 1, 0, 0)
 
 
 #define bullet_wall
-instance_create(x,y,Dust)
-sound_play_hit(sndHitWall,.2)
+instance_create(x, y, Dust)
+sound_play_hit(sndHitWall, .2)
 instance_destroy()
 
 #define bullet_hit
 projectile_hit(other, damage, force, direction);
 if recycle_amount != 0{
     with creator if instance_is(self, Player){
-        var num = (skill_get(mut_recycle_gland) * (irandom(9) < 5)) + 10*skill_get("recycleglandx10");
-        if num{
+        var num = (skill_get(mut_recycle_gland) * (irandom(9) < 5)) + 10 * skill_get("recycleglandx10");
+        if num {
             ammo[1] = min(ammo[1] + other.recycle_amount * num, typ_amax[1])
             instance_create(other.x, other.y, RecycleGland)
             sound_play(sndRecGlandProc)
@@ -670,7 +681,7 @@ if recycle_amount != 0{
 instance_destroy()
 
 #define bullet_destroy
-with instance_create(x,y,BulletHit) sprite_index = other.spr_dead
+with instance_create(x, y, BulletHit) sprite_index = other.spr_dead
 
 #define bullet_anim
 image_index = 1
@@ -740,13 +751,12 @@ with create_heavy_bullet(x, y){
 image_angle += 6*turn * current_time_scale
 
 #define bouncer_wall
-if bounce > 0
-{
+if bounce > 0{
     bounce--
-    instance_create(x,y,Dust)
-    sound_play_pitchvol(sndBouncerBounce,random_range(.7,.8),.7)
+    instance_create(x, y, Dust)
+    sound_play_pitchvol(sndBouncerBounce, random_range(.7, .8), .7)
     move_bounce_solid(false)
-    direction += random_range(6,6)
+    direction += random_range(6, 6)
 }
 else instance_destroy()
 
@@ -761,7 +771,7 @@ with create_bullet(x,y){
     typ = 2
     force = -10
 
-    timer = irandom(6)+4
+    timer = irandom(6) + 4
     range = 70
     turnspeed = .3
     on_step = psy_step
@@ -782,7 +792,7 @@ with create_psy_bullet(x, y){
 
 #define psy_draw_new
 with target{
-    var _y = y - sprite_get_bbox_top(sprite_index) - 10
+    var _y = y - sprite_get_bbox_top(sprite_index) - 10;
     draw_triangle_color(x, _y, x - 3, _y - 8, x + 3, _y - 8, c_fuchsia, c_fuchsia, c_fuchsia, 0)
 }
 draw_self();
@@ -793,7 +803,7 @@ if timer > 0{
 }
 if timer <= 0{
     var t = target;
-	if instance_exists(t) && collision_line(x,y,t.x,t.y,Wall,0,0) < 0{
+	if instance_exists(t) && collision_line(x, y, t.x, t.y, Wall, 0, 0) < 0{
 		var dir, spd, dif;
 
 		dir = point_direction(x, y, t.x, t.y);
@@ -1027,17 +1037,17 @@ fallofftime = current_frame + 2
 defbloom.alpha = .2
 move_bounce_solid(true)
 speed *= .66
-speed = min(speed+wallbounce,14)
+speed = min(speed + wallbounce, 14)
 wallbounce /= 1.05
 instance_create(x,y,Dust)
-sound_play_hit(sndShotgunHitWall,.2)
+sound_play_hit(sndShotgunHitWall, .2)
 image_angle = direction
 if ammo{
     split_split()
 }
+
 #define mag_hit
-if lasthit != other.id || projectile_canhit_melee(other)
-{
+if lasthit != other.id or projectile_canhit_melee(other) {
     speed *= .66
     lasthit = other.id
 	shell_hit();
@@ -1048,8 +1058,12 @@ if lasthit != other.id || projectile_canhit_melee(other)
 }
 
 #define mag_shell_step
-if fallofftime < current_frame defbloom.alpha = .1
-if speed < 2{instance_destroy()}
+if fallofftime < current_frame {
+	defbloom.alpha = .1
+}
+if speed < 2 {
+	instance_destroy()
+}
 
 #define mag_shell_destroy
 with instance_create(x,y,BulletHit){
@@ -2629,15 +2643,18 @@ with other{
 }
 
 #define crit_step
-if lifetime > 0{lifetime -= current_time_scale}else{instance_destroy()}
+if lifetime > 0
+	lifetime -= current_time_scale
+else
+	instance_destroy()
 
 #define crit_hit
 if projectile_canhit_melee(other){
     projectile_hit(other, 2, 10, point_direction(other.x, other.y, x, y,))
 }
 
-#define create_miniexplosion(_x,_y)
-with instance_create(_x,_y,CustomProjectile){
+#define create_miniexplosion(_x, _y)
+with instance_create(_x, _y, CustomProjectile){
     name = "Mini Explosion"
     sprite_index = sprSmallExplosion
     mask_index   = mskSmallExplosion
@@ -2647,8 +2664,8 @@ with instance_create(_x,_y,CustomProjectile){
     damage = 2
     force = 4
     team = other.team
-    sound_play_pitchvol(sndExplosion,2*random_range(.8,1.2),.2)
-    hitid = [sprite_index,"MINI EXPLOSION"]
+    sound_play_pitchvol(sndExplosion, 2 * random_range(.8, 1.2), .2)
+    hitid = [sprite_index, "MINI EXPLOSION"]
     on_anim = explo_anim
     on_hit = explo_hit
 
@@ -2656,9 +2673,9 @@ with instance_create(_x,_y,CustomProjectile){
 }
 
 #define explo_hit
-var dmg = damage
-if instance_is(other,Player) and skill_get(mut_boiling_veins) dmg = max(min(other.my_health - other.boilcap, damage), 0)
-projectile_hit(other, dmg, force, point_direction(x,y,other.x,other.y))
+var dmg = damage;
+if instance_is(other, Player) and skill_get(mut_boiling_veins) dmg = max(min(other.my_health - other.boilcap, damage), 0)
+projectile_hit(other, dmg, force, point_direction(x, y, other.x, other.y))
 
 #define explo_anim
 instance_destroy()
@@ -2971,22 +2988,24 @@ repeat(2){
 }
 
 #define sword_wall
-var _p = random_range(.9,1.2)
-if bounce > 0
-{
-  bounce--;
-  sleep(5)
-  repeat(4){instance_create(x, y, Dust)}
-  sound_play_hit_ext(sndDiscBounce, 2 * _p, .8)
-  sound_play_hit_ext(sndChickenSword, 1.5 * _p, .5)
-  move_bounce_solid(false)
-  speed *= .8;
-  length *= 1.2;
-  direction += random_range(-7,7)
-  with instance_create(x, y, MeleeHitWall){image_angle = other.direction - 180}
+var _p = random_range(.9, 1.2);
+if bounce > 0 {
+	bounce--
+	sleep(5)
+	repeat(4){
+		instance_create(x, y, Dust)
+	}
+	sound_play_hit_ext(sndDiscBounce, 2 * _p, .8)
+	sound_play_hit_ext(sndChickenSword, 1.5 * _p, .5)
+	move_bounce_solid(false)
+	speed *= .8;
+	length *= 1.2;
+	direction += random_range(-7,7)
+	with instance_create(x, y, MeleeHitWall) {
+		image_angle = other.direction - 180
+	}
 }
-else
-{
+else {
   sound_play_hit_ext(sndChickenSword, 1.5 * _p, .8)
   sound_play_hit_ext(sndBoltHitWall, .8 * _p, .8)
   sleep(4)
@@ -3417,6 +3436,7 @@ if instance_is(self,Player){
 return spr
 
 
+
 #define create_vector(x, y)
 with instance_create(x, y, CustomProjectile){
 	name = "Vector"
@@ -3490,7 +3510,7 @@ if image_yscale <= 0 instance_destroy()
 
 #define vector_draw
 draw_self()
-if ammo > 0 draw_sprite_ext(spr.VectorHead, 0, x, y, 2, 2, image_angle-45, image_blend, 1)
+if ammo > 0 draw_sprite_ext(spr.VectorHead, 0, x, y, 2, 2, image_angle - 45, image_blend, 1)
 
 #define vector_hit
 if projectile_canhit_melee(other){
@@ -3506,6 +3526,46 @@ if pierce <= 0 && ammo{
         sprite_index = spr.VectorImpact
     }
     instance_destroy()
+}
+
+#define create_vector(_x, _y)
+with instance_create(_x, _y, CustomProjectile) {
+	name = "Vector"
+	
+	sprite_index = spr.Vector
+	mask_index = mskLaser
+	spr_trail = spr.Vector
+	spr_head = spr.VectorHead
+	
+	shrinkspeed = .1 - (skill_get(mut_laser_brain) * .04)
+	basedir = undefined
+	
+	on_step = vector_head_step
+	on_hit = vector_head_hit
+	on_end_step = vector_head_end_step
+	on_destroy = vector_head_destroy
+	
+	return id
+}
+
+#define vector_head_step
+
+#define vector_head_hit
+
+#define vector_head_end_step
+
+#define vector_head_destroy
+
+#define create_vector_trail(_x, _y)
+with instance_create(_x, _y, CustomProjectile){
+	name = "VectorTrail"
+	sprite_index = other.spr_trail
+	mask_index = mskLaser
+	shrinkspeed = other.shrinkspeed
+	
+	on_step = vector_trail_step
+	
+	return id
 }
 
 #define create_flechette(x, y)
@@ -3525,8 +3585,8 @@ return _p;
 #define flechette_end_step
 var hitem = 0
 if skill_get(mut_bolt_marrow){
-    var q = instance_nearest_matching_ne(x,y,hitme,"team",team)
-    if instance_exists(q) and point_distance(q.x,q.y, x, y) < 24 {
+    var q = instance_nearest_matching_ne(x, y, hitme, "team", team)
+    if instance_exists(q) and point_distance(q.x, q.y, x, y) < 24 {
         x = q.x - hspeed_raw
         y = q.y - vspeed_raw
         hitem = 1
