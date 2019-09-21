@@ -90,10 +90,8 @@ if fork(){
 			    	if q[1]{
 			    		text += `#@0(${weapon_get_sprite(p.bwep)}:0)   ~>   @0(${weapon_get_sprite(q[0])}:0)`
 			    	}
-					
             	}
 		    }
-
         }
     }
     exit
