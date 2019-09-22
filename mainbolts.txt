@@ -30,11 +30,13 @@
 /loadwep dart shotgun
 /loadwep dart bazooka
 
-//OTHER BOLT
-
-/loadwep marker
+//KNIVES
 /loadwep knife thrower
+/loadwep auto knife thrower
 /loadwep sword thrower
+
+//OTHER BOLT
+/loadwep marker
 /loadwep heavy toxic crossbow
 /loadwep hyper crossbow
 

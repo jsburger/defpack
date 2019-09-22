@@ -23,7 +23,7 @@ return 1;
 return sndSwapExplosive;
 
 #define weapon_area
-return 3;
+return 6;
 
 #define weapon_text
 return "DRIZZLE";
