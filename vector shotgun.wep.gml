@@ -28,32 +28,27 @@ return global.sprVectorShotgun
 return "pointy"
 
 #define weapon_fire
-motion_add(gunangle-180,4)
-repeat(3)instance_create(x,y,Smoke)
-weapon_post(11,0,17)
-var _pitch = random_range(.85,1.15)
-if skill_get(17) = true{
+motion_add(gunangle - 180, 4)
+repeat(3) instance_create(x, y, Smoke)
+weapon_post(11, 0, 17)
+var _pitch = random_range(.85, 1.15)
+if skill_get(17) = true {
 	sound_play_pitchvol(sndEnergyHammerUpg,.8*_pitch,2)
 	//sound_play_pitch(sndPlasmaMinigunUpg,random_range(.5,.6))
 	sound_play_pitch(sndEnergyScrewdriverUpg,random_range(.5,.7)*_pitch)
 	sound_play_pitch(sndPlasmaHit,random_range(1.4,1.6)*_pitch)
 }
-else{
+else {
 	sound_play_pitchvol(sndDevastator,3*_pitch,.6)
 	sound_play_pitchvol(sndEnergyHammerUpg,1.2*_pitch,2)
 	sound_play_pitch(sndEnergyScrewdriverUpg,1.5*_pitch)
 	sound_play_pitch(sndPlasmaHit,random_range(1.4,1.6)*_pitch)
 }
-var ang = gunangle + random_range(-9,9) * accuracy
-for var i = -1; i <= 1; i++{
-	with mod_script_call_nc("mod", "defpack tools", "create_vector", x + lengthdir_x(10, gunangle), y + lengthdir_y(10, gunangle)){
-		loss = .15-skill_get(17)*.04
-		pierce = 15
-		lspeed = random_range(7,9)
-		team = other.team
-		creator = other
-		image_angle = ang-40*i*creator.accuracy
-		langle = image_angle
-		image_xscale = lspeed/2
+var ang = gunangle + random_range(-9,9) * accuracy;
+for var i = -1; i <= 1; i++ {
+	with mod_script_call("mod", "defpack tools", "create_vector", x, y) {
+		shrinkspeed += .05
+		motion_set(ang - 40 * i * other.accuracy, random_range(7, 9))
+		projectile_init(other.team, other)
 	}
 }
