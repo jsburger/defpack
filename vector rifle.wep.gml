@@ -45,6 +45,13 @@ else
 	sound_play_pitch(sndEnergyHammerUpg,1.2*_pitch)
 	sound_play_pitch(sndLaser,.7*_pitch)
 }
+with mod_script_call("mod", "defpack tools", "create_vector", x, y) {
+	motion_set(other.gunangle + random_range(-1, 1) * other.accuracy, 12)
+	image_angle = direction
+	projectile_init(other.team, other)
+}
+
+exit
 with mod_script_call_nc("mod", "defpack tools", "create_vector", x + lengthdir_x(10, gunangle), y + lengthdir_y(10, gunangle)){
 	pierce = 25+skill_get(17)*15
 	lspeed = 12

@@ -92,7 +92,7 @@
 
 		//Vectors
 		VectorHead   = sprite_add(i + "sprVectorHead.png",1,8,2)
-		Vector	   = sprite_add(i + "sprVector.png",1,2,3)
+		Vector	   = sprite_add(i + "sprVector.png",1,0,3)
 		VectorImpact = sprite_add(i + "sprVectorImpact.png",7,16,16)
 		VectorEffect = sprite_add(i + "sprVectorBeamEnd.png",3,5,5);
 
@@ -373,10 +373,6 @@ with instances_matching_ne(CustomProjectile, "defbloom", undefined) {
         defbloom.xscale * image_xscale, defbloom.yscale * image_yscale,
         lq_defget(defbloom, "angle", image_angle), image_blend, defbloom.alpha * image_alpha
     )
-}
-with instances_matching(CustomProjectile, "name", "Vector"){
-	draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, 2.5*image_yscale, image_angle, image_blend, 0.1+skill_get(17)*.025);
-	if ammo > 0{draw_sprite_ext(spr.VectorHead, 0, x, y, 3, 3, image_angle-45, image_blend, 0.1+skill_get(17)*.025)}
 }
 with instances_matching(CustomProjectile,"name","vector beam"){
   draw_sprite_ext(sprite_index, image_index, xstart, ystart, image_xscale, 1.5*image_yscale, image_angle, image_blend, 0.15+skill_get(17)*.05);
@@ -3436,110 +3432,39 @@ if instance_is(self,Player){
 return spr
 
 
-
-#define create_vector(x, y)
-with instance_create(x, y, CustomProjectile){
-	name = "Vector"
-	loss = .1-skill_get(17)*.04
-	pierce = 1
-	damage = 5 + 2 * skill_get(mut_laser_brain)
-    langle = 0
-	lspeed = 10-skill_get(17)*4
-	sprite_index = spr.Vector
-	mask_index = mskLaser
-	on_step = vector_step
-	on_hit  = vector_hit
-	on_wall = vector_wall
-	on_draw = vector_draw
-	image_yscale = 1.5
-	ammo = 1
-	return id
-}
-
-#define vector_wall
-with instance_create(x+lengthdir_x(-12,image_angle),y+lengthdir_y(-12,image_angle),PlasmaImpact){
-	sound_play(sndPlasmaHit)
-	creator = other.creator
-	team = other.team
-	sprite_index = spr.VectorImpact
-}
-repeat(irandom_range(6,8)){instance_create(x+lengthdir_x(random_range(1,5),image_angle-180),y,Smoke)}
-instance_destroy();
-
-#define vector_step
-if ammo > 0 {
-	ammo -= current_time_scale
-	if ammo <= 0{
-        if irandom(4-skill_get(17)) < 1{
-        	var _s = choose(random_range(-10,-4),random_range(4,10))
-        	var s_ = choose(random_range(-10,-4),random_range(4,10))
-            with instance_create(x+s_,y+_s,BulletHit){
-                sprite_index = spr.VectorEffect
-                image_angle = other.image_angle
-                motion_add(other.image_angle,choose(1,2))
-            }
-        }
-        var ang = langle;
-        var near = instance_nearest_matching_ne(x, y, hitme, "team", team)
-        if instance_exists(near){
-            if distance_to_object(near) < 120 && !collision_line(x,y,near.x,near.y,Wall,0,0){
-                var dir = angle_difference(ang, point_direction(x,y,near.x,near.y));
-                if abs(dir) < 45 {
-                    var cap = 45;
-                    ang -= clamp(dir,-cap,cap)
-                }
-            }
-        }
-        var _x = x + lengthdir_x(lspeed, ang), _y = y + lengthdir_y(lspeed, ang);
-        with create_vector(_x, _y){
-            lspeed = other.lspeed
-            image_xscale = lspeed/2
-            pierce = other.pierce
-            creator = other.creator
-            langle = other.langle
-            team = other.team
-            image_angle = ang
-            if place_meeting(x,y,Wall) ammo = 0
-        }
-        pierce = 0
-    }
-}
-image_yscale -= loss*current_time_scale
-if image_yscale <= 0 instance_destroy()
-
-
-#define vector_draw
-draw_self()
-if ammo > 0 draw_sprite_ext(spr.VectorHead, 0, x, y, 2, 2, image_angle - 45, image_blend, 1)
-
-#define vector_hit
-if projectile_canhit_melee(other){
-    pierce -= 1
-    instance_create(other.x,other.y,Smoke)
-    projectile_hit(other, damage, lspeed/other.size, image_angle)
-}
-if pierce <= 0 && ammo{
-    with instance_create(x,y,PlasmaImpact){
-        sound_play(sndPlasmaHit)
-        creator = other.creator
-        team = other.team
-        sprite_index = spr.VectorImpact
-    }
-    instance_destroy()
-}
-
 #define create_vector(_x, _y)
 with instance_create(_x, _y, CustomProjectile) {
 	name = "Vector"
 	
-	sprite_index = spr.Vector
+	sprite_index = mskNone
 	mask_index = mskLaser
 	spr_trail = spr.Vector
 	spr_head = spr.VectorHead
+	image_xscale = 1.5
+	image_yscale = 1.5
 	
+	typ = 0
+	damage = 5 + 2 * skill_get(mut_laser_brain)
+	force = 8
 	shrinkspeed = .1 - (skill_get(mut_laser_brain) * .04)
 	basedir = undefined
+	lasthit = -4
 	
+	trail_x = x
+	trail_y = y
+	trail_length = 12
+	homing_range = 120
+	homing_scope = 45
+	
+	defbloom = {
+		sprite : spr_head,
+		xscale : 2,
+		yscale : 2,
+		alpha : .2,
+		angle : 0
+	}
+	
+	on_draw = vector_head_draw
 	on_step = vector_head_step
 	on_hit = vector_head_hit
 	on_end_step = vector_head_end_step
@@ -3549,25 +3474,112 @@ with instance_create(_x, _y, CustomProjectile) {
 }
 
 #define vector_head_step
+var _targ = instance_nearest_matching_ne(x, y, hitme, "team", team), _diff = angle_difference(direction, basedir);
+if instance_exists(_targ) {
+	if distance_to_object(_targ) < homing_range and !collision_line(x, y, _targ.x, _targ.y, Wall, 0, 0) {
+		var _diff2 = angle_difference(basedir, point_direction(x, y, _targ.x, _targ.y));
+		if abs(_diff2) <= homing_scope {
+			_diff = angle_difference(direction, point_direction(x, y, _targ.x, _targ.y))
+		}
+	}
+}
+direction -= clamp(_diff, -homing_scope * current_time_scale, homing_scope * current_time_scale)
+image_angle = direction
+defbloom.angle = direction - 45
+var _dist = point_distance(x, y, trail_x, trail_y);
+if _dist > 12 {
+	with create_vector_trail(trail_x, trail_y) {
+		image_xscale = _dist/2
+		image_angle = point_direction(x, y, other.x, other.y)
+		direction = image_angle
+	}
+	trail_x = x
+	trail_y = y
+}
 
 #define vector_head_hit
+if other != lasthit {
+	projectile_hit(other, damage, force, direction)
+	sound_play_hit_ext(sndPlasmaReload, 3, 1)
+	lasthit = other
+}
 
 #define vector_head_end_step
+if basedir == undefined {
+	image_angle = direction
+	defbloom.angle = direction - 45
+	basedir = direction
+}
 
 #define vector_head_destroy
+sound_play_hit_big(sndPlasmaHit, .2)
+with instance_create(x, y, PlasmaImpact) {
+	creator = other.creator
+	team = other.team
+	sprite_index = spr.VectorImpact
+}
+
+#define vector_head_draw
+draw_sprite_ext(spr_head, 0, x, y, image_xscale, image_yscale, image_angle - 45, image_blend, image_alpha)
+var _dis = point_distance(x, y, trail_x, trail_y), _dir = point_direction(x, y, trail_x, trail_y);
+draw_sprite_ext(spr_trail, 0, x, y, _dis/2, image_yscale, _dir, image_blend, image_alpha)
+
 
 #define create_vector_trail(_x, _y)
-with instance_create(_x, _y, CustomProjectile){
+with instance_create(_x, _y, CustomProjectile) {
 	name = "VectorTrail"
 	sprite_index = other.spr_trail
 	mask_index = mskLaser
 	shrinkspeed = other.shrinkspeed
 	
+	defbloom = default_bloom
+	defbloom.xscale = 1
+	image_yscale = other.image_yscale
+	
+	creator = other.creator
+	team = other.team
+	damage = other.damage
+	force = other.force
+	hit_list = []
+	
 	on_step = vector_trail_step
+	on_hit  = vector_trail_hit
+	on_wall = nothing
 	
 	return id
 }
 
+#define vector_trail_step
+with instances_in_bbox(bbox_left, bbox_top, bbox_right, bbox_bottom, hit_list) {
+	if place_meeting(x, y, other) {
+		motion_set(other.direction, vectorspeed)
+	}
+}
+image_yscale -= shrinkspeed * current_time_scale
+if image_yscale <= 0 instance_destroy()
+
+#define vector_trail_hit
+var _t = other;
+if projectile_canhit_melee(other) {
+	//projectile_hit(other, damage)
+}
+if current_frame_active {
+	if "vectorspeed" not in other {
+		other.vectorspeed = 0
+	}
+	other.vectorspeed = min(other.vectorspeed + .5/other.size, 12)
+	var _found;
+	with hit_list {
+		if self == _t {
+			_found = true
+			break
+		}
+	}
+	if !_found {
+		array_push(hit_list, _t)
+	}
+
+}
 #define create_flechette(x, y)
 var _p = instance_create(x, y, CustomProjectile);
 with _p{
