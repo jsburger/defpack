@@ -50,25 +50,26 @@ motion_add(gunangle-180,10)
 weapon_post(12,70,12)
 var p = random_range(.8,1.2)
 sleep(40)
-sound_play_pitchvol(sndHeavySlugger,.4*p,1)
-sound_play_pitchvol(sndBasicUltra,2*p,1)
-sound_play_pitchvol(sndBloodLauncher,.4*p,1)
-sound_play_pitchvol(sndStatueHurt,.4*p,1)
-sound_play_pitchvol(sndLilHunterSniper,.3*p,.5)
-sound_play_pitchvol(sndPlasmaRifle,.3*p,.8)
+sound_play_pitchvol(sndHeavySlugger,  .4 * p, 1)
+sound_play_pitchvol(sndBasicUltra,     2 * p, 1)
+sound_play_pitchvol(sndBloodLauncher, .4 * p, 1)
+sound_play_pitchvol(sndStatueHurt,    .4 * p, 1)
+sound_play_pitchvol(sndLilHunterSniper, .3 * p, .5)
+sound_play_pitchvol(sndPlasmaRifle, .3 * p, .8)
 with instance_create(x,y,CustomProjectile){
   repeat(3){with instance_create(x+lengthdir_x(12,other.gunangle),y+lengthdir_y(12,other.gunangle),PortalL){image_angle = random(360)}}
     name = "Andromeda Bullet";
     disgoal = distance_to_point(mouse_x[other.index],mouse_y[other.index]);
     motion_set(other.gunangle,disgoal/5)
     sprite_index = mskNone//global.sprAndromedaBullet
-    projectile_init(other.team,team)
+    projectile_init(other.team, other)
     image_speed = .2
     image_angle = direction
     on_anim = andro_anim
     on_draw = sp_draw
     mask_index = mskNone
 }
+
 
 #define andro_anim
 image_speed = 0

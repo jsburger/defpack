@@ -72,7 +72,7 @@ with instance_create(x, y, CustomObject){
 	spr_arrow  = global.sprArrow
 	on_step    = bow_step
 	on_destroy = bow_destroy
-	on_cleanup = bow_cleanup
+	on_cleanup = script_ref_create(bow_cleanup)
 	reload = -1
 	btn = other.specfiring ? "spec" : "fire"
 	hand = other.specfiring and other.race == "steroids"
