@@ -36,7 +36,7 @@ with instance_create(x+lengthdir_x(3,gunangle),y+lengthdir_y(3,gunangle),CustomP
 	creator = other
 	friction = .5
 	damage = 5
-	force = 5
+	force = 18
 	bounce = 2
 	typ = 1
 	anglefac = choose(1,-1)
@@ -58,7 +58,7 @@ sound_play_pitch(sndNothingFire,.7)
 weapon_post(6,-6,4)
 
 #define sonic_wall
-instance_create(x,y,Dust)
+with instance_create(x,y,Dust){sprite_index = sprExtraFeet}
 move_bounce_solid(false)
 bounce -= 1
 sound_play_pitch(sndBouncerBounce,random_range(1.6,1.8))
@@ -75,6 +75,7 @@ else if dt > -1{
     dt = -1
 	repeat(4) with instance_create(x,y,Dust){
 		motion_add(random(359),random_range(0,2))
+		sprite_index = sprExtraFeet
 	}
 }
 image_angle += anglefac * speed/1.5 * current_time_scale
@@ -83,7 +84,7 @@ if speed <= 0 || bounce <= 0{
 }
 
 #define sonic_launcher_destroy
-with mod_script_call("mod","defpack tools","create_sonic_explosion",x,y){
+with mod_script_call("mod","defpack tools","create_sonic_explosion",x - lengthdir_x(2, direction),y - lengthdir_y(2, direction)){
 	var scalefac = random_range(0.6,0.75);
 	image_xscale = scalefac
 	image_yscale = scalefac
@@ -92,15 +93,13 @@ with mod_script_call("mod","defpack tools","create_sonic_explosion",x,y){
 	team = other.team
 	creator = other.creator
 	sound_play(sndExplosion)
-	repeat(round(scalefac*10)){ with instance_create(x,y,Dust) {motion_add(random(360),3)}}
+	repeat(round(scalefac*10)){ with instance_create(x,y,Dust) {sprite_index = sprExtraFeet; motion_add(random(360),3)}}
 }
 var _a = random(360)
 repeat(3){
-	with instance_create(x+lengthdir_x(12,_a),y+lengthdir_y(12,_a),AcidStreak){
+	with instance_create(x+lengthdir_x(36,_a),y+lengthdir_y(36,_a),AcidStreak){
 		sprite_index = global.sprSonicStreak
 		image_angle = _a - 90
-		motion_add(image_angle+90,12)
-		friction = 2.1
 	}
 	_a += 120
 }

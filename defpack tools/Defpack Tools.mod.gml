@@ -68,7 +68,7 @@
 
 		//Sonic Explosions
 		SonicExplosion     = sprite_add(  i + "sprSonicExplosion.png", 8, 61, 59);
-		msk.SonicExplosion = sprite_add_p(i + "mskSonicExplosion.png", 9, 32, 32);
+		msk.SonicExplosion = sprite_add_p(i + "mskSonicExplosion.png", 9, 61, 59);
 
 		//Abris Stripes
 		Stripes = sprite_add("../sprites/other/sprBigStripes.png", 1, 1, 1);
@@ -164,7 +164,7 @@
 
 	//todo:
 	//find out if bolt marrow should be split into step on bolts
-	
+
 #macro spr global.spr
 #macro msk global.spr.msk
 
@@ -201,7 +201,7 @@ var q = sprite_add(sprite, subimages, xoffset, yoffset)
 if fork(){
 	var t = sprite_get_texture(q, 0),
 	    w = 150;
-	
+
 	while(t == sprite_get_texture(q, 0) && w-- > 0){
 	    wait 0;
 	}
@@ -508,7 +508,7 @@ return q;
 	sound_pitch(s, _pitch);
 	sound_volume(s, _volume);
 	return s;
-	
+
 #define sound_play_hit_big_ext(_sound, _pitch, _volume)
 	var s = sound_play_hit_big(_sound, 0);
 	sound_pitch(s, _pitch);
@@ -1407,14 +1407,7 @@ if shake {view_shake_at(x,y,shake);shake = 0}
 
 #define sonic_projectile
 with other{
-	if typ = 1 && other.candeflect{
-		team = other.team
-		direction = point_direction(other.x,other.y,x,y)
-		image_angle = direction
-	}
-	if typ = 2 || typ = 3 || (typ = 1 && !other.candeflect){
-		instance_destroy()
-	}
+instance_destroy()
 }
 
 #define sonic_grenade
@@ -1425,7 +1418,63 @@ with other{
 
 #define sonic_hit
 if projectile_canhit_melee(other){
-	projectile_hit(other,damage,force,point_direction(x,y,other.x,other.y))
+	var _explo = self;
+	projectile_hit(other,1,force,point_direction(x,y,other.x,other.y))
+	with other if !instance_is(self, prop) with instance_create(x, y, CustomObject)
+	{
+		with instances_matching(CustomObject, "name", "SuperForce"){if creator = other instance_delete(self); exit}
+		name         = "SuperForce";
+		team         = other.team;
+		creator      = other;
+		mask_index   = other.mask_index;
+		sprite_index = mskNothing;
+		with _explo
+		{
+			if "superforce"    in self other.force = superforce else other.force = 18
+			if "superfriction" in self other.superfriction = superfriction else other.superfriction = 1
+		}
+		motion_set(other.direction, force); // for easier direction manipulation on wall hit
+
+		on_step = superforce_step;
+	}
+}
+
+#define superforce_step
+//apply "super force" to enemies
+if !instance_exists(creator) ||instance_is(creator, Nothing) ||instance_is(creator, TechnoMancer) ||instance_is(creator, Turret) ||instance_is(creator, Nothing) ||instance_is(creator, LilHunterFly) || instance_is(creator, RavenFly){instance_delete(self); exit}
+with creator
+{
+	repeat(2) with instance_create(x, y, Dust){motion_add(other.direction + random_range(-8, 8), choose(1, 2, 2, 3)); sprite_index = sprExtraFeet}
+	other.x = x;
+	other.y = y;
+	motion_set(other.direction, other.force);
+	other.force -= other.superfriction * max(1, size);
+	if other.force <= 0 {with other {instance_delete(self);exit}}
+}
+if place_meeting(x + hspeed, y + vspeed, Wall)
+{
+  with instance_create(x, y, MeleeHitWall){image_angle = other.direction}	move_bounce_solid(false);
+	sound_play_pitchvol(sndImpWristKill, 1.3, .8)
+	sleep(25)
+	repeat(creator.size) instance_create(x, y, Debris)
+	with creator
+	{
+		projectile_hit(self,round(ceil(other.force) * 1.5),1	,direction)
+		if my_health <= 0
+		{
+			sleep(30)
+			view_shake_at(x, y, 16)
+			repeat(3) instance_create(x, y, Dust){sprite_index = sprExtraFeet}
+		}
+	}
+	force *= .7
+}
+if place_meeting(x, y, hitme)
+{
+	if other != creator && team != other.team && projectile_canhit_melee(other)
+	{
+		projectile_hit(other,ceil(force) + size,1 ,direction)
+	}
 }
 
 //ok i guess im stealing stuff from gunlocker too but its a good idea alright
@@ -3435,27 +3484,27 @@ return spr
 #define create_vector(_x, _y)
 with instance_create(_x, _y, CustomProjectile) {
 	name = "Vector"
-	
+
 	sprite_index = mskNone
 	mask_index = mskLaser
 	spr_trail = spr.Vector
 	spr_head = spr.VectorHead
 	image_xscale = 1.5
 	image_yscale = 1.5
-	
+
 	typ = 0
 	damage = 5 + 2 * skill_get(mut_laser_brain)
 	force = 8
 	shrinkspeed = .1 - (skill_get(mut_laser_brain) * .04)
 	basedir = undefined
 	lasthit = -4
-	
+
 	trail_x = x
 	trail_y = y
 	trail_length = 12
 	homing_range = 120
 	homing_scope = 45
-	
+
 	defbloom = {
 		sprite : spr_head,
 		xscale : 2,
@@ -3463,13 +3512,13 @@ with instance_create(_x, _y, CustomProjectile) {
 		alpha : .2,
 		angle : 0
 	}
-	
+
 	on_draw = vector_head_draw
 	on_step = vector_head_step
 	on_hit = vector_head_hit
 	on_end_step = vector_head_end_step
 	on_destroy = vector_head_destroy
-	
+
 	return id
 }
 
@@ -3531,21 +3580,21 @@ with instance_create(_x, _y, CustomProjectile) {
 	sprite_index = other.spr_trail
 	mask_index = mskLaser
 	shrinkspeed = other.shrinkspeed
-	
+
 	defbloom = default_bloom
 	defbloom.xscale = 1
 	image_yscale = other.image_yscale
-	
+
 	creator = other.creator
 	team = other.team
 	damage = other.damage
 	force = other.force
 	hit_list = []
-	
+
 	on_step = vector_trail_step
 	on_hit  = vector_trail_hit
 	on_wall = nothing
-	
+
 	return id
 }
 

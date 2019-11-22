@@ -53,7 +53,7 @@ with instance_create(x,y,CustomProjectile)
     damage = 6
     team = other.team
     force = 18
-    frames = 6
+    frames = 16
     image_speed = 1
     defbloom = {
         xscale : 2,
@@ -76,6 +76,8 @@ with instance_create(x,y,CustomProjectile)
 }
 #define mega_hit
 if current_frame_active{
+    x -= lengthdir_x(speed / 5, direction) * clamp(other.size, 2, 4)
+    y -= lengthdir_y(speed / 5, direction) * clamp(other.size, 2, 4)
     frames--
     if skill_get(mut_recycle_gland) and recycle_amount > 0 and irandom(9) < 5{
         instance_create(x, y, RecycleGland)
@@ -95,7 +97,10 @@ with other{instance_create(x,y,FloorExplo);instance_destroy()}
 instance_destroy()
 
 #define mega_destroy
-repeat(3) instance_create(x+random_range(-8,8),y+random_range(-8,8),Smoke)
+repeat(3)
+{
+  instance_create(x+random_range(-8,8),y+random_range(-8,8),Smoke)
+}
 with instance_create(x,y,BulletHit){sprite_index = sprSlugHit;image_index = 1}
 
 #define mega_anim

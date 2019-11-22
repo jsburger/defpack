@@ -23,3 +23,4 @@
 /loadwep tape
 /loadwep tsunami
 /loadwep ultra claymore
+/loadwep tempest blade
