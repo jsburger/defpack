@@ -1418,6 +1418,11 @@ with other{
 
 #define sonic_hit
 if projectile_canhit_melee(other){
+
+	// incredibly lazy approach of me not wanting to copy paste the event into the sonic hammer file
+	if "fx_sleep" in self sleep(fx_sleep)
+	if "fx_shake" in self view_shake_max_at(x, y, fx_shake)
+
 	var _explo = self;
 	projectile_hit(other,1,force,point_direction(x,y,other.x,other.y))
 	with other if !instance_is(self, prop) with instance_create(x, y, CustomObject)
@@ -1430,10 +1435,11 @@ if projectile_canhit_melee(other){
 		sprite_index = mskNothing;
 		with _explo
 		{
-			if "superforce"    in self other.force = superforce else other.force = 18
-			if "superfriction" in self other.superfriction = superfriction else other.superfriction = 1
+			if "superforce"     in self other.force = superforce else other.force = 18
+			if "superfriction"  in self other.superfriction = superfriction else other.superfriction = 1
+			if "superdirection" in self other.superdirection = superdirection
 		}
-		motion_set(other.direction, force); // for easier direction manipulation on wall hit
+		motion_set("superdirection" in self ? superdirection : other.direction, force); // for easier direction manipulation on wall hit
 
 		on_step = superforce_step;
 	}
@@ -1441,7 +1447,7 @@ if projectile_canhit_melee(other){
 
 #define superforce_step
 //apply "super force" to enemies
-if !instance_exists(creator) ||instance_is(creator, Nothing) ||instance_is(creator, TechnoMancer) ||instance_is(creator, Turret) ||instance_is(creator, Nothing) ||instance_is(creator, LilHunterFly) || instance_is(creator, RavenFly){instance_delete(self); exit}
+if !instance_exists(creator) ||instance_is(creator, Nothing) ||instance_is(creator, TechnoMancer) ||instance_is(creator, Turret) ||instance_is(creator, MaggotSpawn) ||instance_is(creator, Nothing) ||instance_is(creator, LilHunterFly) || instance_is(creator, RavenFly){instance_delete(self); exit}
 with creator
 {
 	repeat(2) with instance_create(x, y, Dust){motion_add(other.direction + random_range(-8, 8), choose(1, 2, 2, 3)); sprite_index = sprExtraFeet}
@@ -1456,6 +1462,7 @@ if place_meeting(x + hspeed, y + vspeed, Wall)
   with instance_create(x, y, MeleeHitWall){image_angle = other.direction}	move_bounce_solid(false);
 	sound_play_pitchvol(sndImpWristKill, 1.3, .8)
 	sleep(25)
+	view_shake_max_at(x, y, 8)
 	repeat(creator.size) instance_create(x, y, Debris)
 	with creator
 	{
@@ -1469,11 +1476,11 @@ if place_meeting(x + hspeed, y + vspeed, Wall)
 	}
 	force *= .7
 }
-if place_meeting(x, y, hitme)
+if place_meeting(x + hspeed, y + vspeed, hitme)
 {
-	if other != creator && team != other.team && projectile_canhit_melee(other)
+	if !instance_is(self, Player) && projectile_canhit_melee(other)
 	{
-		projectile_hit(other,ceil(force) + size,1 ,direction)
+		projectile_hit(other,(ceil(force) + size) * 2, force, direction)
 	}
 }
 
