@@ -54,18 +54,19 @@ with instance_create(x,y,CustomProjectile){
 	Ring2Amount = 12
 	ringoffset	= random(360)
 	instance_create(x,y,Smoke)
-	repeat(30) with instance_create(x, y, Dust){
-	    motion_add(other.direction-random_range(-60,60),random_range(2,5));
-	    growspeed = random_range(0.1,0.005)
-    }
 	direction = other.gunangle+random_range(-2,2)*other.accuracy
+	with instance_create(x+lengthdir_x(16,direction),y+lengthdir_y(16,direction),AcidStreak){
+		sprite_index = global.sprSonicStreak
+		image_angle = other.direction - 90
+		image_speed = .5
+	}
 	do{
 	    dir += 1
 	    x += lengthdir_x(1,direction)
 	    y += lengthdir_y(1,direction)
     	if irandom(1) = 0 with instance_create(x,y,Dust){
     	    motion_add(other.direction-random_range(-80,80),random_range(2,7));
-    	    growspeed = random_range(0.1,0.005)
+    	    growspeed = random_range(0.1,0.06)
     	}
     	if place_meeting(x,y,enemy) || place_meeting(x,y,Wall) || place_meeting(x,y,prop){
     	    break
@@ -91,8 +92,10 @@ with mod_script_call_nc("mod", "defpack tools", "create_sonic_explosion", x + le
     creator = other.creator
     image_speed = spd
     damage = dmg
+		superforce = 22
+		superfriction = .2
 
-    if dustspeed repeat(10 * scale) with instance_create(x, y, Dust) motion_set(random(360), dustspeed)
+    if dustspeed repeat(10 * scale) with instance_create(x, y, Smoke) {motion_set(random(360), dustspeed * random_range(.8, 1.1)); sprite_index = sprExtraFeetDust}
 
     return id
 }

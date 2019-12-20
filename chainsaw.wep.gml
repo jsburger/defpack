@@ -73,13 +73,11 @@ if ammo > 0 && current_frame_active{
 			if place_meeting(x,y,other){instance_destroy()}
 		}
 		on_hit        = chainsawshank_hit
-		on_wall       = nothing
+		on_wall       = chainsawshank_wall
 		on_anim       = anim_destroy
 	}
 	if ammo <= 0{instance_destroy();exit}
 }
-
-#define nothing
 
 #define chainsawshank_hit
 if current_frame_active{
@@ -101,6 +99,34 @@ if current_frame_active{
 		}
 	}
 }
+
+#define chainsawshank_wall
+if !instance_exists(creator){instance_delete(self); exit}
+with creator.creator
+{
+	var bwep   = specfiring and race == "steroids",
+			l      = 0;
+
+	if bwep{
+		bwkick = -6 - 6*skill_get(13) + random_range(-1,1)
+			var l = bwkick - 8;
+	}
+	else{
+			wkick = -6 - 6*skill_get(13) + random_range(-1,1)
+			var l = wkick - 8;
+	}
+}
+if current_frame mod 2 = 0 with instance_create(x+lengthdir_x(-l,creator.creator.gunangle) , y+lengthdir_y(-l,creator.creator.gunangle), Hammerhead)
+{
+	image_angle = random(360);
+	if irandom(room_speed) = 0
+	{
+		instance_create((x + other.creator.x)/2, (y + other.creator.y)/2, Debris)
+	}
+}
+view_shake_max_at(x, y, 4)
+sleep(12)
+sound_play_pitchvol(sndMeleeWall, random_range(1.3, 1.6), .8)
 
 #define anim_destroy
 instance_destroy()
@@ -133,7 +159,7 @@ switch (_id.object_index){
 	case Wolf          :
 	case StreetLight   :
 	case SodaMachine   :
-	case Hydrant	   :
+	case Hydrant	     :
 	case Turret	       :
 	case TechnoMancer  :
 	case Terminal      :
@@ -142,10 +168,10 @@ switch (_id.object_index){
 	case Sniper        :
 	case Car           :
 	case Pipe          :
-	case Anchor 	   :
+	case Anchor 	     :
 	case WaterMine	   :
 	case VenuzTV       :
-	case CarVenus	   :
+	case CarVenus	     :
 	case CarVenus2	   :
 	case CarVenusFixed :
 	case Van		   : return BulletHit;

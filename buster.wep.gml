@@ -82,7 +82,7 @@ with instance_create(x,y,CustomProjectile){
 }
 
 #define buster_step
-if !instance_exists(creator){instance_destroy();exit}
+if !instance_exists(creator){instance_destroy();exit}else{with creator{weapon_post(3,-20,0)}}
 image_angle += speed * 3 * current_time_scale
 if current_frame_active{
     with instance_create(x+lengthdir_x(-sprite_get_height(sprite_index)/2.2,image_angle-90),y+lengthdir_y(-sprite_get_height(sprite_index)/2.2,image_angle-90),Smoke){
@@ -116,7 +116,7 @@ if current_frame_active {
 
 #define buster_wall
 sleep(12)
-lifetime = 30 * 3
+if lifetime > 30 * 3 lifetime = 30 * 3
 repeat(3) instance_create(x,y,Smoke)
 move_bounce_solid(false)
 speed *= .6
@@ -124,7 +124,8 @@ sound_play_pitchvol(sndGrenadeHitWall,random_range(.5,.7),.8)
 
 #define buster_destroy
 instance_create(x,y,SmallExplosion)
-sound_play(sndExplosion)
+sound_play_pitch(sndExplosionL, .8)
+sound_play_pitch(sndExplosionS, .8)
 var i = random(360);
 var j = 24;
 var k = Explosion;
