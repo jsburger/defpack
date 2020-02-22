@@ -34,7 +34,7 @@ return "POTENTIAL"
 
 #define weapon_fire
 weapon_post(2,0,3)
-motion_add(gunangle-180,2000)
+motion_add(gunangle-180,2)
 sound_play_pitch(sndEnemyFire,random_range(1,2))
 sound_play_pitchvol(sndRustyRevolver,random_range(2,3),.6)
 sound_play_pitchvol(sndNothing2Ball,random_range(2,3),.2)
@@ -45,7 +45,7 @@ with instance_create(x,y,CustomProjectile)
   sprite_index = global.sprPellet
   mask_index   = global.sprPellet
   recycle_amount = 0
-  damage = choose(0, 1, 1) if irandom(999999) = 0 damage = 999999999999999999999999
+  damage = 2 if irandom(999999) = 0 damage = 999999999999999999999999
   team = other.team
   force = 30
   bounce = 2

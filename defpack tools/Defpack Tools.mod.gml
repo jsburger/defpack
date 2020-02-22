@@ -134,7 +134,7 @@
 		Killslash = sprite_add(i + "sprKillslash.png", 8, 16, 16);
 
 		//Charge Icon
-		Charge = sprite_add_weapon("../sprites/interface/sprHoldIcon.png", 5, 5);
+		Charge = sprite_add("../sprites/interface/sprHoldIcon.png", 35, 12, 12);
 
 		//Sniper Sights
 		Aim          = sprite_add("../sprites/interface/sprAim.png", 0, 10, 10);
@@ -574,7 +574,7 @@ with instances_matching(WepPickup, "wep", 0) instance_destroy()
 with instances_matching_ne(WepPickup, "chargecheck", 1){
     chargecheck = 1
     if weapon_get_chrg(wep) {
-        name += ` @0(${spr.Charge}:0) `
+        name += ` @0(${spr.Charge}:0) `//-.35
     }
 }
 

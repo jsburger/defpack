@@ -1,10 +1,9 @@
 
 ///ENERGY///
 
-//LASER FLAK
+//LASER
 
 /loadwep laser flak cannon
-/loadwep heavy laser flak cannon
 
 //VECTOR
 
@@ -19,12 +18,6 @@
 /loadwep plasmite shotgun
 /loadwep plasmite cannon
 /loadwep turbo-murderizer 3000
-
-//SQUARE
-
-/loadwep square gun
-/loadwep square rifle
-/loadwep square cannon
 
 //LIGHTNING
 

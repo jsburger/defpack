@@ -23,7 +23,7 @@ return false;
 return 27;
 
 #define weapon_cost
-return 0;
+return 1;
 
 #define weapon_swap
 return sndSwapBow;

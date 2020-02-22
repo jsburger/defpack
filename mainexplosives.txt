@@ -61,7 +61,6 @@
 /loadwep blaster
 /loadwep puncher
 /loadwep buster
-/loadwep airstrike
 /loadwep herald
 
 /load mainenergy
