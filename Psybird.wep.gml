@@ -39,45 +39,43 @@ with instance_create(x,y,CustomObject)
 }
 
 #define Psybird_step
-if instance_exists(creator)
-{
+if instance_exists(creator) {
 	gunangle = creator.gunangle
 	accuracy = creator.accuracy
 	x = creator.x+lengthdir_x(1,gunangle)
 	y = creator.y+lengthdir_y(1,gunangle)
-time -= current_time_scale
-if time <= 0
-{
-    	with creator weapon_post(6,-5,25)
-	sound_play_pitch(sndDoubleShotgun,random_range(.6,.8))
-	sound_play_pitch(sndWaveGun,random_range(.6,.8))
-
-	time = 1
-		with mod_script_call("mod", "defpack tools", "create_psy_shell",x+lengthdir_x(5,gunangle),y+lengthdir_y(5,gunangle)){
+	time -= current_time_scale
+	if time <= 0{
+		with creator weapon_post(6,-5,25)
+		sound_play_pitch(sndDoubleShotgun,random_range(.6,.8))
+		sound_play_pitch(sndWaveGun,random_range(.6,.8))
+		time = 1
+		ammo -= 1
+		with mod_script_call("mod", "defpack tools", "create_psy_shell", x + lengthdir_x(5, gunangle), y + lengthdir_y(5, gunangle)) {
 			creator = other
 			team = other.team
-			motion_set(other.gunangle + random_range(7,16) * other.accuracy,random_range(9,14))
+			motion_set(other.gunangle + random_range(7, 16) * other.accuracy, random_range(9, 14))
 			image_angle = direction
-			friction = random_range(.5,.6)
+			friction = random_range(.5, .6)
 			birdspeed = friction
 	    }
-		with mod_script_call("mod", "defpack tools", "create_psy_shell",x+lengthdir_x(5,gunangle),y+lengthdir_y(5,gunangle)){
+		with mod_script_call("mod", "defpack tools", "create_psy_shell", x + lengthdir_x(5, gunangle), y + lengthdir_y(5, gunangle)){
 			creator = other
 			team = other.team
-			motion_set(other.gunangle + random_range(-1,1) * other.accuracy,random_range(7,15))
+			motion_set(other.gunangle + random_range(-1, 1) * other.accuracy, random_range(7, 15))
 			image_angle = direction
-			friction = random_range(.5,.6)
-    	}
-		with mod_script_call("mod", "defpack tools", "create_psy_shell",x+lengthdir_x(5,gunangle),y+lengthdir_y(5,gunangle)){
+			friction = random_range(.5, .6)
+		}
+		with mod_script_call("mod", "defpack tools", "create_psy_shell", x + lengthdir_x(5, gunangle), y + lengthdir_y(5, gunangle)){
 			creator = other
 			team = other.team
-			motion_set(other.gunangle + random_range(-16,-7) * other.accuracy,random_range(9,14))
+			motion_set(other.gunangle + random_range(-16, -7) * other.accuracy, random_range(9, 14))
 			image_angle = direction
-			friction = random_range(.5,.6)
+			friction = random_range(.5, .6)
 			birdspeed = -friction
 		 }
-	ammo -= 1
-}
-if ammo = 0
-instance_destroy()
+	}
+	if ammo = 0 {
+		instance_destroy()
+	}
 }

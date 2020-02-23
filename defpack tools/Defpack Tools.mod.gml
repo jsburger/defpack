@@ -53,7 +53,7 @@
 		GenShellBig   = sprite_add("../sprites/other/sprGenShellXL.png", 7, 3, 3);
 
 		//Psy Shells
-		PsyShell           = sprite_add(i + "sprPsyShell.png", 2, 8, 8);
+		PsyPellet           = sprite_add(i + "sprPsyShell.png", 2, 8, 8);
 		PsyPelletDisappear = sprite_add(i + "sprPsyShellDisappear.png", 5, 8, 8);
 
 		//Split Shells
@@ -3170,10 +3170,10 @@ if button_check(index, btn) = false || holdtime <= 0
     script_ref_call_self(on_fire)
 	instance_destroy()
 }
-else
+else {
     sound_play_gun(sndFootOrgSand4,1,.00001)
     sound_stop(sndFootOrgSand4)
-
+}
 
 #define snipercharge_destroy
 snipercharge_delete()
@@ -3209,7 +3209,7 @@ return sniper_fire_r(xx, yy, angle, t, width, 20, -1)
 #define sniper_fire_r(xx, yy, angle, t, width, tries, pierces)
 //FUCK YOU YOKIN FUCK YOU YOKIN FUCK YOU FUCK YOU FUCKYOU
 if tries <= 0 return [-4]
-var junk = []
+var junk = [], _p = pierces;
 with instance_create(xx, yy, CustomProjectile){
     mask_index = mskLaser
     image_yscale = 2
@@ -3236,7 +3236,7 @@ with instance_create(xx, yy, CustomProjectile){
         slashes = instances_matching_ne([EnergySlash,Slash,EnemySlash,EnergyHammerSlash,BloodSlash,GuitarSlash], "team", team),
         shanks  = instances_matching_ne([Shank,EnergyShank], "team", team),
         hitmes  = -4, lasthit = -4;
-    if pierces{
+    if _p{
         hitmes = instances_matching_ne(hitme, "team", team);
     }
     do {
@@ -3245,12 +3245,12 @@ with instance_create(xx, yy, CustomProjectile){
     	y += _y
     	with shields if place_meeting(x, y, other) {
     	    var a = point_direction(x, y, other.x, other.y);
-    	    array_push(junk, sniper_fire_r(other.x, other.y, a, team, width, tries - 1, pierces))
+    	    array_push(junk, sniper_fire_r(other.x, other.y, a, team, width, tries - 1, _p))
     	    stop = 1
     	    break
     	}
     	with slashes if place_meeting(x, y, other){
-    	    array_push(junk, sniper_fire_r(other.x, other.y, direction, team, width, tries - 1, pierces))
+    	    array_push(junk, sniper_fire_r(other.x, other.y, direction, team, width, tries - 1, _p))
     	    stop = 1
     	    break
     	}
@@ -3260,8 +3260,8 @@ with instance_create(xx, yy, CustomProjectile){
     	}
     	with hitmes if place_meeting(x, y, other){
     	    if id != lasthit{
-    	        if pierces != -1{
-    	            if --pierces <= 0{
+    	        if _p != -1{
+    	            if --_p <= 0{
     	                stop = 1
     	                break
     	            }

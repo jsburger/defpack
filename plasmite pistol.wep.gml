@@ -11,35 +11,32 @@ return 1
 #define weapon_area
 return 3
 #define weapon_load
-return 14
+return 12
 #define weapon_swap
 return sndSwapEnergy
 #define weapon_auto
-return 1
+return 0
 #define weapon_laser_sight
 return 0
 #define weapon_text
-return "HAHA YES";
+return "THE FUTURE OF PAINTBALL";
 #define weapon_fire
+var _flip = instance_is(self, Player) ? wepflip : choose(-1, 1)
 repeat(2)
 {
 	weapon_post(5,0,4)
-	if !skill_get(17)
-	{
-		sound_play_pitch(sndPlasma,2)
-	}
-	else
-	{
-		sound_play_pitch(sndPlasmaUpg,2)
-	}
-	with mod_script_call("mod","defpack tools","create_plasmite",x,y)
+	sound_pitch(
+		sound_play_gun(skill_get(17) > 0 ? sndPlasmaUpg : sndPlasma, 0, .7), 2 + random(.1)
+	)
+	with mod_script_call("mod", "defpack tools", "create_plasmite", x, y)
 	{
 		fric = random_range(.06,.08) + .08
-		motion_set(other.gunangle+random_range(-14,14)*other.accuracy,16 * random_range(.8, 1.2))
+		motion_set(other.gunangle + random_range(6, 16) * other.accuracy * _flip, 16 * random_range(.8, 1.2))
 		maxspeed = speed
-		projectile_init(other.team,other)
+		projectile_init(other.team, other)
 		image_angle = direction
 	}
+	_flip *= -1
 	wait(2)
 	if !instance_exists(self) exit
 }
