@@ -24,6 +24,7 @@
 /loadwep assault sonic launcher
 /loadwep supersonic launcher
 /loadwep screecher
+/loadwep sonic hammer
 
 //MINI EXPLOSIONS
 /loadwep grenade minigun
@@ -60,7 +61,6 @@
 /loadwep blaster
 /loadwep puncher
 /loadwep buster
-/loadwep airstrike
 /loadwep herald
 
 /load mainenergy

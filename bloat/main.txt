@@ -14,7 +14,6 @@
 /loadwep pulser
 /loadwep rocklet shotgun
 /loadwep scorcher
-/loadwep shard
 /loadwep smart bazooka
 /loadwep smartsword
 /loadwep spear
@@ -23,3 +22,12 @@
 /loadwep tape
 /loadwep tsunami
 /loadwep ultra claymore
+/loadwep tempest blade
+
+/loadwep square gun
+/loadwep square rifle
+/loadwep square cannon
+/loadwep airstrike
+/loadwep heavy laser flak cannon
+/loadwep fire spam gun
+/loadwep ultra spam gun

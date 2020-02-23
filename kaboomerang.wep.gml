@@ -1,162 +1,162 @@
 #define init
-global.sprboomerang    = sprite_add_weapon("sprites/weapons/sprKaboomerang.png",3,3);
-global.sprboomerangHUD = sprite_add_weapon("sprites/weapons/sprKaboomerang.png",-1,3);
+  global.sprboomerang     = sprite_add_weapon("sprites/weapons/sprKaboomerang.png",  3, 12);
+  global.sprboomerangHUD  = sprite_add_weapon("sprites/weapons/sprKaboomerang.png", -1,  4);
+  global.sprboomerangProj = sprite_add("sprites/projectiles/sprKaboomerangProj.png", 4, 11, 11);
 
 #define weapon_name
-return "KABOOMERANG";
+  return "KABOOMERANG";
 
 #define weapon_type
-return 4;
+  return 4;
 
 #define weapon_sprt_hud
-return global.sprboomerangHUD;
+  return global.sprboomerangHUD;
 
 #define weapon_cost
-return 1;
+  return 1;
 
 #define weapon_area
-return 4;
+  return 4;
 
 #define weapon_load
-return 6;//!!!
+  return 6;//!!!
 
 #define weapon_swap
-return sndSwapHammer;
+  return sndSwapHammer;
 
 #define weapon_auto
-return false;
+  return false;
 
 #define weapon_melee
-return true;
+  return true;
 
 #define weapon_laser_sight
-return false;
+  return false;
 
 #define weapon_fire
-sound_play(sndChickenThrow)
-with instance_create(x,y,CustomObject)
-{
-  team = other.team
-  creator = other
-  sprite_index = mskNothing
-  mask_index   = sprMapDot
-  image_speed = 0
-  curse = other.curse
-  other.curse = 0
-  other.wep = 0
-  maxspeed = 14 + skill_get(13)*4
-  phase = 0
-  ang = 0
-  friction = 1
-  lasthit = -4
-  motion_add(other.gunangle,18)
-  on_end_step = boom_step
-  on_draw = boom_draw
-  with instance_create(x,y,MeleeHitWall){image_angle = other.direction-180}
-}
+  sound_play(sndChickenThrow)
+  with instance_create(x,y,CustomObject)
+  {
+    team = other.team
+    creator = other
+    sprite_index = global.sprboomerangProj
+    mask_index   = sprMapDot
+    image_speed = .5
+    curse = other.curse
+    other.curse = 0
+    other.wep = 0
+    maxspeed = 14 + skill_get(13)*4
+    phase = 0
+    ang = 0
+    friction = .8
+    lasthit = -4
+    motion_add(other.gunangle,24)
+    on_end_step = boom_step
+    on_draw = boom_draw
+    with instance_create(x,y,MeleeHitWall){image_angle = other.direction-180}
+  }
 
 #define boom_step
-if instance_exists(creator){if current_frame mod 6 = 0{sound_play_pitchvol(sndAssassinAttack,random_range(.9,1.1),.6*(1-distance_to_object(creator)/200))}}
-with Pickup
-{
-  if distance_to_object(other) <= 4 && ("rang" not in self || ("rang" in self && rang != other.id)){rang = other.id}
-  if "rang" in self{if instance_exists(rang){x = rang.x;y = rang.y}}
-}
-with instances_matching([AmmoChest, RadChest, WeaponChest, RogueChest, GoldChest, chestprop], "", null)
-{
-  if distance_to_object(other) <= 4 && ("rang" not in self || ("rang" in self && rang != other.id)){rang = other.id}
-  if "rang" in self and instance_exists(rang){
-      x = rang.x
-      y = rang.y
-  }
-}
-with instances_matching_ne(hitme,"team",team)
-{
-  if distance_to_object(other) <= 4
+  if instance_exists(creator){if current_frame mod (5 + phase) = 0{sound_play_pitchvol(sndAssassinAttack,random_range(.9,1.1) * (1 - phase * .07),.6*(1-distance_to_object(creator)/200))}}
+  with Pickup
   {
-    if projectile_canhit(other) = true
+    if distance_to_object(other) <= 4 && ("rang" not in self || ("rang" in self && rang != other.id)){rang = other.id}
+    if "rang" in self{if instance_exists(rang){x = rang.x;y = rang.y}}
+  }
+  with instances_matching([AmmoChest, RadChest, WeaponChest, RogueChest, GoldChest, chestprop], "", null)
+  {
+    if distance_to_object(other) <= 4 && ("rang" not in self || ("rang" in self && rang != other.id)){rang = other.id}
+    if "rang" in self and instance_exists(rang){
+        x = rang.x
+        y = rang.y
+    }
+  }
+  with instances_matching_ne(hitme,"team",team)
+  {
+    if distance_to_object(other) <= 4
     {
-      with other
+      if projectile_canhit(other) = true
       {
-        if lasthit != other
+        with other
         {
-          lasthit = other
-          sound_play(sndExplosionS)
-          var meetx = (x + other.x)/2;
-          var meety = (y + other.y)/2;
-          instance_create(meetx,meety,SmallExplosion)
+          if lasthit != other
+          {
+            lasthit = other
+            sound_play(sndExplosionS)
+            var meetx = (x + other.x)/2;
+            var meety = (y + other.y)/2;
+            instance_create(meetx,meety,SmallExplosion)
+          }
         }
       }
     }
   }
-}
-with instances_matching_ne(projectile,"team",other.team)
-{
-  if distance_to_object(other) <= 4
+  with instances_matching_ne(projectile,"team",other.team)
   {
-    with other if other.team != team with other instance_destroy()
-  }
-}
-if curse = true and current_frame < floor(current_frame) + current_time_scale {instance_create(x+random_range(-2,2),y+random_range(-2,2),Curse)}
-ang += 43*current_time_scale
-if phase = 0 //move regularly
-{
-  if speed <= friction
-  {
-    lasthit = -4
-    phase = 1
-    friction *= -1
-  }
-}
-else//return to player
-{
-  if instance_exists(creator)
-  {
-    var _d = point_direction(x,y,creator.x,creator.y)
-    if phase = 1 motion_add(_d,8*current_time_scale)
-    var _r = weapon_get_load(mod_current)
-    if distance_to_object(creator) <= 9+skill_get(17)*3
+    if distance_to_object(other) <= 4
     {
-      if creator.wep  = 0{creator.reload += _r;sleep(30);creator.curse = curse;sound_play(sndSwapHammer);instance_create(x,y,WepSwap);creator.wep = mod_current;instance_destroy();exit}
-      if creator.bwep = 0{creator.breload += _r;sleep(30);creator.bcurse = curse;sound_play(sndSwapHammer);instance_create(x,y,WepSwap);creator.bwep = mod_current;instance_destroy();exit}
-      //zphase = 2//not homing anymore
+      with other if other.team != team with other instance_destroy()
     }
-    if creator.mask_index = 268 && place_meeting(x,y,Portal)
+  }
+  if curse = true and current_frame < floor(current_frame) + current_time_scale {instance_create(x+random_range(-2,2),y+random_range(-2,2),Curse)}
+  if phase = 0 //move regularly
+  {
+    if speed <= friction
     {
-      if creator.wep  = 0{creator.reload += _r;sleep(30);creator.curse = curse;sound_play(sndSwapHammer);instance_create(x,y,WepSwap);creator.wep = mod_current;instance_destroy();exit}
-      if creator.bwep = 0{creator.breload += _r;sleep(30);creator.bcurse = curse;sound_play(sndSwapHammer);instance_create(x,y,WepSwap);creator.bwep = mod_current;instance_destroy();exit}
-      //zphase = 2//not homing anymore
+      lasthit = -4
+      phase = 1
+      friction *= -1
     }
-    if creator.wep != 0 && creator.bwep != 0
+    ang += 21*current_time_scale
+  }
+  else//return to player
+  {
+    if instance_exists(creator)
     {
-      with instance_create(x,y,ThrownWep)
+      var _d = point_direction(x,y,creator.x,creator.y)
+      if phase = 1 motion_add(_d,8*current_time_scale)
+      var _r = weapon_get_load(mod_current)
+      if distance_to_object(creator) <= 9+skill_get(17)*3
       {
-        sprite_index = other.sprite_index
-        wep = mod_current
-        curse = other.curse
-        motion_add(other.direction-180+random_range(-30,30),2)
-        team = other.team
-        creator = other.creator
+        if creator.wep  = 0{creator.reload += _r;sleep(30);creator.curse = curse;sound_play(sndSwapHammer);instance_create(x,y,WepSwap);creator.wep = mod_current;instance_destroy();exit}
+        if creator.bwep = 0{creator.breload += _r;sleep(30);creator.bcurse = curse;sound_play(sndSwapHammer);instance_create(x,y,WepSwap);creator.bwep = mod_current;instance_destroy();exit}
+        //zphase = 2//not homing anymore
       }
-      instance_destroy()
-      exit
+      if creator.mask_index = 268 && place_meeting(x,y,Portal)
+      {
+        if creator.wep  = 0{creator.reload += _r;sleep(30);creator.curse = curse;sound_play(sndSwapHammer);instance_create(x,y,WepSwap);creator.wep = mod_current;instance_destroy();exit}
+        if creator.bwep = 0{creator.breload += _r;sleep(30);creator.bcurse = curse;sound_play(sndSwapHammer);instance_create(x,y,WepSwap);creator.bwep = mod_current;instance_destroy();exit}
+        //zphase = 2//not homing anymore
+      }
+      if creator.wep != 0 && creator.bwep != 0
+      {
+        with instance_create(x,y,ThrownWep)
+        {
+          sprite_index = other.sprite_index
+          wep = mod_current
+          curse = other.curse
+          motion_add(other.direction-180+random_range(-30,30),2)
+          team = other.team
+          creator = other.creator
+        }
+        instance_destroy()
+        exit
+      }
     }
   }
-}
-if place_meeting(x, y, Wall) && phase != 1
-{
-  phase = 1
-  instance_create(x, y, SmallExplosion)
-  sound_play(sndExplosionS)
-}
-if speed > maxspeed speed = maxspeed
+  if place_meeting(x, y, Wall) && phase != 1
+  {
+    phase = 1
+    instance_create(x, y, SmallExplosion)
+    sound_play(sndExplosionS)
+  }
+  if speed > maxspeed speed = maxspeed
 
 #define weapon_sprt
-return global.sprboomerang
+  return global.sprboomerang
 
 #define weapon_text
-return choose("WATCH OUT FOR THAT 'RANG","BOOM OF RANGE")
-
+  return choose("WATCH OUT FOR THAT 'RANG","BOOM OF RANGE")
 
 #define boom_draw
-draw_sprite_ext(global.sprboomerang,image_index,x,y, image_xscale, image_yscale, ang, image_blend, image_alpha);
+  draw_sprite_ext(sprite_index,image_index,x,y, image_xscale, image_yscale, ang, image_blend, image_alpha);

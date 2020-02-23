@@ -1,6 +1,6 @@
 #define init
 global.sprSplinterCannon = sprite_add_weapon("sprites/weapons/sprSplinterCannon.png",6,3)
-global.sprSuperSplinter = sprite_add("sprites/projectiles/sprHeavySplinter.png",0,11,5)
+global.sprSuperSplinter = sprite_add("sprites/projectiles/sprHeavySplinter.png",0,11,3)
 return "SPLINTER CANNON"
 #define weapon_type
 return 3
@@ -31,7 +31,7 @@ sound_play_pitch(sndSuperSplinterGun,.7)
 sound_play_pitch(sndSplinterPistol,.6)
 
 with instance_create(x,y,CustomProjectile){
-    motion_set(other.gunangle + random_range(-2,2) * other.accuracy, 14)
+    motion_set(other.gunangle + random_range(-2,2) * other.accuracy, 20)
     projectile_init(other.team, other)
     damage = 35
     sprite_index = global.sprSuperSplinter

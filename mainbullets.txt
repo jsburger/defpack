@@ -6,10 +6,6 @@
 /loadwep heavy gunhammer
 /loadwep ultra gunhammer
 
-//BULLAKS
-
-/loadwep bullak cannon
-
 //CANNON
 
 /loadwep bullet cannon

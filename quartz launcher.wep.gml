@@ -24,7 +24,7 @@ return false;
 return 22;
 
 #define weapon_cost
-return 0;
+return 1;
 
 #define weapon_swap
 return sndSwapExplosive;
@@ -73,17 +73,6 @@ if projectile_canhit_melee(other) = true && lasthit != other
   projectile_hit(other,damage,force,direction)
   pierce-= other.size
   lasthit = other
-	with mod_script_call("mod","defpack tools","create_sonic_explosion",x,y)
-	{
-		var scalefac = .25
-		image_xscale = scalefac
-		image_yscale = scalefac
-		damage = 6
-		image_speed = 1
-		team = other.team
-		creator = other.creator
-		repeat(5){ with instance_create(x,y,Dust) {motion_add(random(360),3);sprite_index = sprExtraFeetDust}}
-	}
 	if other.my_health > 0 {instance_destroy();exit}
 }
 if pierce < 0{instance_destroy()}
@@ -93,17 +82,9 @@ with instance_create(x,y,Dust){motion_add(direction+random_range(-8,8)-180,3);sp
 move_bounce_solid(false)
 direction += random_range(-5,5)
 speed *= .6
-with mod_script_call("mod","defpack tools","create_sonic_explosion",x,y)
-{
-	var scalefac = .25
-	image_xscale = scalefac
-	image_yscale = scalefac
-	damage = 3
-	image_speed = 1
-	team = other.team
-	creator = other.creator
-	repeat(5){ with instance_create(x,y,Dust) {motion_add(random(360),3);sprite_index = sprExtraFeetDust}}
-}
+with instance_create(x, y, ImpactWrists) {image_speed = .7}
+repeat(5){ with instance_create(x,y,Dust) {motion_add(random(360),3);sprite_index = sprExtraFeetDust}}
+
 image_angle = direction
 sound_play_pitchvol(sndGrenadeHitWall,random_range(.8,1.2),.5)
 sound_play_pitch(sndLaserCrystalHit,random_range(1.2,1.4))
@@ -146,18 +127,15 @@ sleep(20)
 view_shake_at(x,y,15)
 repeat(3)
 {
-	with mod_script_call("mod","defpack tools","create_sonic_explosion",x+lengthdir_x(16,i),y+lengthdir_y(20,i))
+	with instance_create(x - lengthdir_x(4, i), y - lengthdir_y(4, i), Slash)
 	{
-		instance_create(x,y,WepSwap){image_angle = random(360)}
-		var scalefac = .75
-		image_xscale = scalefac
-		image_yscale = scalefac
-		damage = 8
-		image_speed = 0.75
-		team = other.team
-		creator = other.creator
-		sound_play(sndExplosion)
-		repeat(round(scalefac*10)){ with instance_create(x,y,Dust) {motion_add(random(360),3);sprite_index = sprExtraFeetDust}}
+		team 		= other.team;
+		creator = other.creator;
+		sprite_index = sprHeavySlash
+		damage = 30;
+		motion_set(i, 0);
+		friction = 2
+		image_angle = direction;
 	}
 	with instance_create(x+lengthdir_x(48,i+60),y+lengthdir_y(48,i+60),AcidStreak)
 	{
@@ -166,6 +144,7 @@ repeat(3)
 	}
 	i += 120
 }
+sound_play(sndExplosion)
 
 #define step
 mod_script_call("mod","defpack tools","quartz_penalty",mod_current)

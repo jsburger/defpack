@@ -1,128 +1,128 @@
 #define init
-global.sprLightningWheel        = sprite_add_weapon("sprites/weapons/sprLightningWheel.png",9,8);
-global.sprLightningWheelHUD     = sprite_add_weapon("sprites/weapons/sprLightningWheel.png",3,5);
-global.sprLightningWheelProj    = sprite_add("sprites/projectiles/sprLightningWheelProj.png",2,10,10);
-global.sprLightningWheelProjUpg = sprite_add("sprites/projectiles/sprLightningWheelProjUpg.png",2,13,13);
+  global.sprLightningWheel        = sprite_add_weapon("sprites/weapons/sprLightningWheel.png",9,8);
+  global.sprLightningWheelHUD     = sprite_add_weapon("sprites/weapons/sprLightningWheel.png",3,5);
+  global.sprLightningWheelProj    = sprite_add("sprites/projectiles/sprLightningWheelProj.png",4,9,9);
+  global.sprLightningWheelProjUpg = sprite_add("sprites/projectiles/sprLightningWheelProjUpg.png",2,13,13);
 
 #macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)
 
 #define weapon_name
-return "LIGHTNING WHEEL";
+  return "LIGHTNING WHEEL";
 
 #define weapon_sprt_hud
-return global.sprLightningWheelHUD;
+  return global.sprLightningWheelHUD;
 
 #define weapon_type
-return 5;
+  return 5;
 
 #define weapon_chrg
-return 1;
+  return 1;
 
 #define weapon_cost
-return 1;
+  return 1;
 
 #define weapon_area
-return 7;
+  return 7;
 
 #define weapon_load
-return 16;//???
+  return 16;//???
 
 #define weapon_swap
-return sndSwapHammer;
+  return sndSwapHammer;
 
 #define weapon_auto
-return false;
+  return false;
 
 #define weapon_melee
-return true;
+  return true;
 
 #define weapon_laser_sight
-return false;
+  return false;
 
 #define weapon_fire
-var _p = random_range(.8,1.2);
-//sound_play_pitchvol(sndAssassinAttack,.8*_p, 1.2)
-if !skill_get(17)
-{
-  sound_play_pitchvol(sndLightningRifle,1.4*_p, 1)
-  sound_play_pitchvol(sndGammaGutsKill,3*_p, .6)
-  sound_play_pitchvol(sndEnergyScrewdriver,.7*_p, 1)
-}
-else
-{
-sound_play_pitchvol(sndLightningRifleUpg,1.4*_p, 1)
-sound_play_pitchvol(sndGammaGutsKill,2.5*_p, .6)
-sound_play_pitchvol(sndEnergyScrewdriver,.6*_p, 1)
-}
-sound_play_gun(sndClickBack,1,.4)
-sound_stop(sndClickBack)
+  var _p = random_range(.8,1.2);
+  //sound_play_pitchvol(sndAssassinAttack,.8*_p, 1.2)
+  if !skill_get(17)
+  {
+    sound_play_pitchvol(sndLightningRifle,1.4*_p, 1)
+    sound_play_pitchvol(sndGammaGutsKill,3*_p, .6)
+    sound_play_pitchvol(sndEnergyScrewdriver,.7*_p, 1)
+  }
+  else
+  {
+  sound_play_pitchvol(sndLightningRifleUpg,1.4*_p, 1)
+  sound_play_pitchvol(sndGammaGutsKill,2.5*_p, .6)
+  sound_play_pitchvol(sndEnergyScrewdriver,.6*_p, 1)
+  }
+  sound_play_gun(sndClickBack,1,.4)
+  sound_stop(sndClickBack)
 
-view_shake_at(x, y, 17)
+  view_shake_at(x, y, 17)
 
-with instance_create(x,y,CustomObject){
-    team = other.team
-    creator = other
-    sprite_index = skill_get(mut_laser_brain) ? global.sprLightningWheelProjUpg : global.sprLightningWheelProj
-    mask_index = sprMapDot
-    image_speed = .4
-    curse = other.curse
-    wep = other.wep
-    other.curse = 0
-    other.wep = 0
-    maxspeed = 16 + skill_get(mut_long_arms)*2
-    phase = 0
-    ang = 0
-    image_alpha = 0
-    friction = 1.2
-    timer[0] = 15 //ammo timer
-    timer[1] = 3-skill_get(mut_laser_brain)
-    btn = other.specfiring ? "spec" : "fire"
-    damage = 3
-    force = 2
-    motion_add(other.gunangle, maxspeed)
-    grabbed = 0
-    walled = 0
+  with instance_create(x,y,CustomObject){
+      team = other.team
+      creator = other
+      sprite_index = skill_get(mut_laser_brain) ? global.sprLightningWheelProjUpg : global.sprLightningWheelProj
+      mask_index = sprMapDot
+      image_speed = .5
+      curse = other.curse
+      wep = other.wep
+      other.curse = 0
+      other.wep = 0
+      maxspeed = 16 + skill_get(mut_long_arms)*2
+      phase = 0
+      ang = 0
+      image_alpha = 0
+      friction = 1.2
+      timer[0] = 15 //ammo timer
+      timer[1] = 3-skill_get(mut_laser_brain)
+      btn = other.specfiring ? "spec" : "fire"
+      damage = 3
+      force = 2
+      motion_add(other.gunangle, maxspeed)
+      grabbed = 0
+      walled = 0
 
-    on_end_step = lring_step
-    on_draw = boom_draw
-    on_destroy = lring_destroy
-    wheel_hit()
-    with instance_create(x,y,MeleeHitWall) image_angle = other.direction + 180
-}
+      on_end_step = lring_step
+      on_draw = boom_draw
+      on_destroy = lring_destroy
+      wheel_hit()
+      with instance_create(x,y,MeleeHitWall) image_angle = other.direction + 180
+  }
 
 #define wheel_hit()
-with instances_matching_ne(hitme, "team", team){
-    motion_add(point_direction(x, y, other.x, other.y), 1)
-    if distance_to_object(other) <=16+speed+skill_get(mut_laser_brain)*6{
-        sleep(20)
-        view_shake_at(x,y,6)
-        with other{
-            projectile_hit(other, damage, 0, other.direction)
-        x -= hspeed*clamp(other.size,0,3)/3
-        y -= vspeed*clamp(other.size,0,3)/3
-        if "my_health" in other
-        {
-          other.x += hspeed/3
-          other.y += vspeed/3
+  with instances_matching_ne(hitme, "team", team){
+      motion_add(point_direction(x, y, other.x, other.y), 1)
+      if distance_to_object(other) <=16+speed+skill_get(mut_laser_brain)*6{
+          sleep(20)
+          view_shake_at(x,y,6)
+          with other{
+              projectile_hit(other, damage, 0, other.direction)
+          x -= hspeed*clamp(other.size,0,3)/3
+          y -= vspeed*clamp(other.size,0,3)/3
+          if "my_health" in other
+          {
+            other.x += hspeed/3
+            other.y += vspeed/3
+          }
+          sound_play_pitchvol(sndLightningCannonEnd,3 * random_range(.8, 1.2), .2)
+          sound_play_pitchvol(sndLightningHit, random_range(.8, 1.2), 1.4)
         }
-        sound_play_pitchvol(sndLightningCannonEnd,3 * random_range(.8, 1.2), .2)
-        sound_play_pitchvol(sndLightningHit, random_range(.8, 1.2), 1.4)
       }
-    }
-}
+  }
 
 #define chance(percent)
-return (random(100) <= percent * current_time_scale)
+  return (random(100) <= percent * current_time_scale)
 
 #define lring_destroy
-if !grabbed{
-    with instance_create(x,y,WepPickup){
-        wep = other.wep
-        curse = other.curse
-        motion_add(other.direction + random_range(-20,20), 2)
-        sprite_index = global.sprLightningWheel
-    }
-}
+  if !grabbed{
+      with instance_create(x,y,WepPickup){
+          wep = other.wep
+          curse = other.curse
+          motion_add(other.direction + random_range(-20,20), 2)
+          sprite_index = global.sprLightningWheel
+      }
+  }
 
 
 #define lring_step
@@ -169,12 +169,10 @@ with instances_matching_ne(projectile, "team", team){
 }
 
 if curse and current_frame_active instance_create(x + random_range(-5,5), y + random_range(-5, 5), Curse)
-ang += 15 * pi * current_time_scale
 
 if phase = 0 and speed <= friction{
     if button_check(creator.index, btn) and creator.mask_index != mskNone{
         speed = 0
-        ang += 12 * current_time_scale
         if timer[0] > 0 timer[0] -= current_time_scale
         else{
             timer[0] = 15
@@ -255,20 +253,20 @@ if place_meeting(x, y, Wall) && phase != 1
 }
 
 #define lring_projectile
-with other if typ{
-    instance_destroy()
-}
+  with other if typ{
+      instance_destroy()
+  }
 
 #define weapon_sprt
-return global.sprLightningWheel
+  return global.sprLightningWheel
 
 #define weapon_text
-return choose("HOLD FIRE TO HOLD THE SPIN","TESLA COIL")
+  return choose("HOLD FIRE TO HOLD THE SPIN","TESLA COIL")
 
 #define boom_draw
-var _ry = random_range(-1, 1),
-    _rx = random_range(-1, 1);
-draw_sprite_ext(sprite_index, image_index, x + _rx, y + _ry, image_xscale, image_yscale, ang, image_blend, 1.0);
-draw_set_blend_mode(bm_add);
-draw_sprite_ext(sprite_index, image_index, x + _rx, y + _ry, (1.5+skill_get(17)*.16)*image_xscale, (1.5+skill_get(17)*.16)*image_yscale, ang, image_blend, 0.15);
-draw_set_blend_mode(bm_normal);
+  var _ry = 0,
+      _rx = 0;
+  draw_sprite_ext(sprite_index, image_index, x + _rx, y + _ry, image_xscale, image_yscale, ang, image_blend, 1.0);
+  draw_set_blend_mode(bm_add);
+  draw_sprite_ext(sprite_index, image_index, x + _rx, y + _ry, (1.5+skill_get(17)*.16)*image_xscale, (1.5+skill_get(17)*.16)*image_yscale, ang, image_blend, 0.15);
+  draw_set_blend_mode(bm_normal);

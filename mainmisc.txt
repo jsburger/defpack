@@ -12,11 +12,11 @@
 /loadwep rapier
 /loadwep rebounce axe
 /loadwep mega hammer
-/loadwep tempest blade
 /loadwep wondersword
 /loadwep crystal torch
 /loadwep impact fist
-
+/loadwep shard
+/loadwep hex needle
 
 ///GOLD///
 
