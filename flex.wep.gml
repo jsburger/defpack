@@ -116,4 +116,4 @@ if speed <= friction * 2 instance_destroy()
 return global.sprInfinigun2
 
 #define weapon_text
-return choose("NEWER, BETTER")
+return choose("KILLING @wENEMIES#@sGIVES YOU @wINFINITE AMMO")
