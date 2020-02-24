@@ -1,8 +1,8 @@
 #define init
-    global.sprBullWhip = sprite_add_weapon("sprites/weapons/sprBullWhip.png", 0, 3)
-    global.sprBullWhipGrip = sprite_add_weapon("sprites/weapons/sprBullWhipHandle.png", 0, 3)
-    global.sprWhip = sprite_add_p("sprites/projectiles/sprBullWhipProj.png", 1, 0, 5)
-    global.sprWhipTip = sprite_add("sprites/projectiles/sprBullWhipProjTip.png", 1, 0, 5)
+    global.sprWhip = sprite_add_weapon("sprites/weapons/sprWhip.png", 0, 3)
+    global.sprWhipGrip = sprite_add_weapon("sprites/weapons/sprWhipHandle.png", 0, 3)
+    global.sprWhip = sprite_add_p("sprites/projectiles/sprWhipProj.png", 1, 0, 5)
+    global.sprWhipTip = sprite_add("sprites/projectiles/sprWhipProjTip.png", 1, 0, 5)
     
 #define sprite_add_p(sprite, subimages, xoffset, yoffset)
 var q = sprite_add(sprite, subimages, xoffset, yoffset)
@@ -20,7 +20,7 @@ return q
 
     
 #define weapon_name
-    return "BULL WHIP"
+    return "WHIP"
 #define weapon_type
     return 0
 #define weapon_cost
@@ -40,14 +40,14 @@ return q
 #define weapon_sprt(_w)
     if instance_is(self, Player) {
         if (wep = _w) and reload >= 0 {
-            return global.sprBullWhipGrip
+            return global.sprWhipGrip
         }
         if race == "steroids" and bwep == _w and breload >= 0{
-            return global.sprBullWhipGrip
+            return global.sprWhipGrip
         }
     }
     
-    return global.sprBullWhip
+    return global.sprWhip
     
 #define weapon_text
     return "EPIC DUB"
