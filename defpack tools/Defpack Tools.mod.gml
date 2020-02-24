@@ -40,7 +40,7 @@
 		//Dark Bullets
 		DarkBullet     = sprite_add  (i + "sprBlackBullet.png",    2, 8, 8);
 		DarkBulletHit  = sprite_add  (i + "sprBlackBulletHit.png", 4, 8, 8);
-		msk.DarkBullet    = sprite_add_p(i + "mskBlackBullet.png",    0, 3, 5);
+		msk.DarkBullet = sprite_add_p(i + "mskBlackBullet.png",    0, 3, 5);
 
 		//Light Bullets
 		LightBullet    = sprite_add(i + "sprWhiteBullet.png",    2, 8, 8);
@@ -53,7 +53,7 @@
 		GenShellBig   = sprite_add("../sprites/other/sprGenShellXL.png", 7, 3, 3);
 
 		//Psy Shells
-		PsyPellet           = sprite_add(i + "sprPsyShell.png", 2, 8, 8);
+		PsyPellet          = sprite_add(i + "sprPsyShell.png", 2, 8, 8);
 		PsyPelletDisappear = sprite_add(i + "sprPsyShellDisappear.png", 5, 8, 8);
 
 		//Split Shells
@@ -2632,18 +2632,17 @@ sound_play_gun(sndLaserCrystalDeath,.1,.0001)//mute action
 sleep(400)
 view_shake_at(x,y,45)
 repeat(14) with instance_create(x,y,Feather){
-  motion_add(random(360),random_range(3,6))
-  sprite_index = spr.GlassShard
-  image_speed = random_range(.4,.7)
-  image_index = irandom(5)
+	motion_add(random(360),random_range(3,6))
+	sprite_index = spr.GlassShard
+	image_speed = random_range(.4,.7)
+	image_index = irandom(5)
 }
 
 
 #define crit() //add this to on_hit effects in order to not be stupid
 var _t = team;
-view_shake_max_at(x,y,200)
-sleep(150)
-damage += 30
+view_shake_max_at(x, y, 150)
+sleep(100)
 sound_play_pitchvol(sndHammerHeadEnd,random_range(1.23,1.33),20)
 sound_play_pitchvol(sndBasicUltra,random_range(0.9,1.1),20)
 sound_play_pitch(sndCoopUltraA,random_range(3.8,4.05))

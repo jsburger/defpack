@@ -66,7 +66,6 @@ with instance_create(x,y,CustomProjectile){
     creator = other
     sprite_index = global.sprLuckyBullet
     mask_index   = mskBullet1
-    can_crit = 1
     recycle_amount = 1
 	motion_add(other.gunangle+random_range(-14,14)*other.accuracy,20)
     image_angle = direction
@@ -80,9 +79,10 @@ image_speed = 0
 image_index = 1
 
 #define kemosabe_hit
-if irandom(16-(skill_get(mut_lucky_shot)*5)) = 0 && can_crit = 1{
-    can_crit = 0
-    mod_script_call("mod","defpack tools","crit")
+var _damage = damage;
+if irandom(16-(skill_get(mut_lucky_shot)*5)) = 0{
+    _damage = (damage + 1) * 3 
+    mod_script_call("mod", "defpack tools", "crit")
 }
 with creator{
     var num = (skill_get(mut_recycle_gland) * (irandom(9) < 5)) + 10*skill_get("recycleglandx10")
@@ -92,7 +92,7 @@ with creator{
         sound_play(sndRecGlandProc)
     }
 }
-projectile_hit(other,damage,force,direction)
+projectile_hit(other, _damage, force, direction)
 instance_destroy()
 
 #define kemosabe_destroy
