@@ -9,6 +9,7 @@ global.colorcount = array_length_1d(global.colors)-1
 global.icons = []
 global.icon   = sprite_add("../sprites/mutation/sprMutPrismaticIris0.png", 1, 12, 16)
 global.arrow  = sprite_add("../sprites/mutation/sprIrisArrow.png", 1, 3, 10)
+global.sprRandomGun = sprite_add("../sprites/mutation/sprLensRandomGun.png", 5, 2, 3)
 global.effect = sprite_add("../sprites/mutation/sprIrisEffect.png",8,16,11)
 for var i = 0; i <= global.colorcount; i++{
     array_push(global.icons,sprite_add(`../sprites/mutation/sprMutPrismaticIcon${i}.png`,1,8,7))
@@ -84,12 +85,20 @@ if fork(){
             		 //smartest code youll ever see
 			    	q = get_colored(p.wep, i);
 			    	if q[1]{
-			    		text += `#@0(${weapon_get_sprite(p.wep)}:0)   ~>   @0(${weapon_get_sprite(q[0])}:0)`
+			    		text += `#@0(${weapon_get_sprite(p.wep)}:0)   @0(${global.arrow}:0)   @0(${weapon_get_sprite(q[0])}:0)`
 			    	}
 			    	q = get_colored(p.bwep, i);
 			    	if q[1]{
-			    		text += `#@0(${weapon_get_sprite(p.bwep)}:0)   ~>   @0(${weapon_get_sprite(q[0])}:0)`
+			    		text += `#@0(${weapon_get_sprite(p.bwep)}:0)   @0(${global.arrow}:0)   @0(${weapon_get_sprite(q[0])}:0)`
 			    	}
+            	}
+            	else {
+            		if weapon_get_type(p.wep) == 1{
+            			text += `#@0(${weapon_get_sprite(p.wep)}:0)   @0(${global.arrow}:0)   @0(${global.sprRandomGun}:-1)`
+            		}
+            		if weapon_get_type(p.bwep) == 1{
+            			text += `#@0(${weapon_get_sprite(p.bwep)}:0)   @0(${global.arrow}:0)   @0(${global.sprRandomGun}:-1)`
+            		}
             	}
 		    }
         }
