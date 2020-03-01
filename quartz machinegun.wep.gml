@@ -40,7 +40,7 @@ return false;
 return choose("GLASS CANNON","BE CAREFUL WITH IT")
 
 #define weapon_fire
-weapon_post(7,0,18)
+weapon_post(7,12,0)
 sound_play_pitch(sndHeavyRevoler,random_range(1,1.1))
 sound_play_pitch(sndLaserCrystalHit,random_range(1.7,2.1))
 with instance_create(x,y,CustomProjectile)

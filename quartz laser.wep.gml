@@ -8,7 +8,7 @@ return "QUARTZ LASER"
 #define weapon_type
 return 5
 #define weapon_cost
-return 0
+return 1
 #define weapon_area
 return 15
 #define weapon_load
@@ -61,7 +61,6 @@ with instance_create(x,y,Laser){
       }
 	        if button_check(index,spec ? "spec" : "fire"){
 	            if instance_exists(creator){
-	                sound_play_pitchvol(sndHyperCrystalChargeExplo,4,.16)
                   sound_play_pitch(sndLaser,2)
 	                sound_set_track_position(sndLaser,.078)
 	                if spec && !kicknegate creator.bwkick = 5

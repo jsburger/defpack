@@ -26,7 +26,7 @@ return sndSwapShotgun;
 return 9;
 
 #define weapon_text
-return "THE HORDE BEATS THE MANY";
+return "IT ALMOST LIKE SHOOTING SHOTGUNS";
 
 #define weapon_fire
 

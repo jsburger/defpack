@@ -200,7 +200,7 @@ instance_destroy()
 #define fist_hit(_target, _fist, _creator)
 projectile_hit(_target, damage, force, image_angle)
 _creator.fistinfo.combo++
-_creator.fistinfo.combotime = 60
+_creator.fistinfo.combotime = _fist.combotime
 with counter_create(_creator.fistinfo.combo, _fist.combocost){
 	index = _creator.index
 }
@@ -251,15 +251,20 @@ if instance_is(self, Player){
 }
 return sprites[0]
 
+#define fist_init()
+	is_fist = 1
+	fistowner = other
+	combotime = 60
+
 #define fist_step(_p)
 var _w = _p ? wep : bwep;
 if !is_object(_w) {
 	var s = _w
 	_w = {
 		wep : _w,
-		is_fist : 1,
-		fistowner : self,
-		combotime : 0
+	}
+	with _w {
+		fist_init()
 	}
 	if _p wep = _w
 	else bwep = _w
@@ -267,9 +272,7 @@ if !is_object(_w) {
 }
 else if !weapon_is_fist(_w){
 	with _w {
-		is_fist = 1
-		fistowner = other
-		combotime = 0
+		fist_init()
 	}
 	mod_script_call("weapon", _w.wep, "fist_stats", _w)
 }

@@ -1,47 +1,47 @@
 #define init
-global.sprPopper = sprite_add_weapon("sprites/weapons/sprPopper.png", 4, 1);
+  global.sprPopper = sprite_add_weapon("sprites/weapons/sprPopper.png", 4, 1);
+  global.sprPopperBullet = sprite_add("sprites/projectiles/sprPopperBullet.png", 2, 11, 11);
+
 #define weapon_name
-return "POPPER";
+  return "POPPER";
 
 #define weapon_sprt
-return global.sprPopper;
+  return global.sprPopper;
 
 #define weapon_type
-return 1;
+  return 1;
 
 #define weapon_auto
-return true;
+  return true;
 
 #define weapon_load
-return 6;
+  return 6;
 
 #define weapon_cost
-return 3;
+  return 3;
 
 #define weapon_swap
-return sndSwapPistol;
+  return sndSwapPistol;
 
 #define weapon_area
-return 4;
+  return 4;
 
 #define weapon_text
-return "POP (POP) POP";
+  return "POP (POP) POP";
 
 #define weapon_fire
 
 weapon_post(4,5,3)
-sound_play_pitch(sndPopgun,.7+random_range(-.1,.1))
-sound_play_pitch(sndMachinegun,.8+random_range(-.1,.1))
+var _p = random_range(.8, 1.2);
+sound_play_pitch(sndPopgun,.7 * _p)
+sound_play_pitch(sndMachinegun,.8 * _p)
 with instance_create(x, y, Shell){
     motion_set(other.gunangle + 70 * other.right, random_range(2, 5))
-    image_xscale = 4/3
-    image_yscale = 4/3
 }
 with instance_create(x + lengthdir_x(4, gunangle),y + lengthdir_y(4, gunangle),Bullet2){
 	creator = other
 	team = other.team
-	image_xscale = 4/3
-	image_yscale = 4/3
+  sprite_index = global.sprPopperBullet;
 	accuracy = other.accuracy
 	motion_add(other.gunangle + random_range(-10,10)*other.accuracy,14)
 	damage += 3
@@ -60,7 +60,7 @@ with instance_create(x + lengthdir_x(4, gunangle),y + lengthdir_y(4, gunangle),B
 				instance_create(x,y,Dust)
 				creator = _crtr
 				team    = _team
-				motion_add(i+random_range(-30,30)*_acc,10)
+				motion_add(i+random_range(-30,30)*_acc,10 + skill_get(mut_shotgun_shoulders) * 4)
 				image_angle = direction
 			}
 			i += 360/3

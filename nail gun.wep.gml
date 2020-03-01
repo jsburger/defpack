@@ -11,7 +11,7 @@ return global.sprNailGun;
 return 1;
 
 #define weapon_auto
-return true;
+return false;
 
 #define weapon_load
 return 4;
@@ -33,7 +33,7 @@ sound_play_pitchvol(sndSplinterGun,random_range(1.3,1.6),.4)
 sound_play_pitchvol(sndRustyRevolver,random_range(1.5,1.8),.4)
 sound_play_pitchvol(sndCrossbow,random_range(1.3,1.6),.7)
 sound_play_pitchvol(sndPopgun,random_range(1.3,1.6),.7)
-weapon_post(2,2,0)
+weapon_post(2,4,0)
 with instance_create(x,y,Splinter)
 {
 	team = other.team

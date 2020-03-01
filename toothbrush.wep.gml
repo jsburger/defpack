@@ -7,6 +7,7 @@ global.brush[4] = sprite_add_weapon("sprites/weapons/sprToothbrushBlue.png"  ,0,
 global.brush[5] = sprite_add_weapon("sprites/weapons/sprToothbrushInvert.png",0,0)
 global.brush[6] = sprite_add_weapon("sprites/weapons/sprToothbrushYellow.png",0,0)
 global.mskbrush = sprite_add_weapon("sprites/projectiles/mskToothbrush.png",20,0)
+global.sprToothbrushShank = sprite_add("sprites/projectiles/sprHexNeedleShank.png", 5, -6, 4);
 #define weapon_name
 return "TOOTHBRUSH"
 #define weapon_type
@@ -37,6 +38,11 @@ with instance_create(x+lengthdir_x(6+(20*skill_get(13)),gunangle),y+lengthdir_y(
 	team = other.team
 	image_angle = other.gunangle
 	direction = image_angle
+	with instance_create(x, y, Wind){
+		sprite_index = global.sprToothbrushShank;
+		image_angle = other.image_angle;
+		depth -= 1;
+	}
 }
 #define weapon_sprt
 if mod_exists("skill", "prismatic iris") return global.brush[mod_variable_get("skill", "prismatic iris", "color")]
