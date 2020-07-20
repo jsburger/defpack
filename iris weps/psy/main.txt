@@ -21,3 +21,5 @@
 /loadwep psy shotgun
 /loadwep smarter psy gun
 /loadwep mega psy revolver
+/loadwep rusty psy revolver
+/loadwep golden psy revolver

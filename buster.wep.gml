@@ -11,7 +11,7 @@ return global.sprBuster;
 return 4;
 
 #define weapon_auto
-return false;
+return -100;
 
 #define weapon_load
 return 28;

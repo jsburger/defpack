@@ -28,6 +28,22 @@ draw_set_blend_mode(bm_normal)
 */
 return 0
 #define weapon_fire
+var _amount = 10,
+     _angle = random(360),
+         _i = 0;
+repeat(_amount){
+  with instance_create(x, y, BloodStreak){
+    motion_add(_angle + 360 / _amount * _i, 4);
+    image_angle = direction;
+    _i++;
+  }
+}
+with instance_create(x, y, MeatExplosion){
+  team = other.team;
+  creator = other;
+  image_alpha = 0;
+}
+
 weapon_post(8,-13,32)
 var _p = random_range(.8,1.2)
 sound_play_pitchvol(sndBloodCannon,1.3*_p,.7)

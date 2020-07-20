@@ -21,3 +21,5 @@
 /loadwep thunder shotgun
 /loadwep smarter thunder gun
 /loadwep mega thunder revolver
+/loadwep rusty thunder revolver
+/loadwep golden thunder revolver

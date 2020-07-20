@@ -73,6 +73,10 @@ repeat(3){
         motion_add(random(360),random_range(3,6))
     }
 }
+view_shake_at(x, y, 48);
+if fork(){
+  sleep(40)
+}
 sound_play_pitch(sndBoltHitWall,.7)
 sound_play_pitch(sndExplosionS,random_range(.4,.6))
 instance_destroy()

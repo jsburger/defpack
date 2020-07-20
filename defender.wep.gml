@@ -40,14 +40,12 @@ return 21;
 return "KEEP YOUR DISTANCE";
 
 #define weapon_fire
-var _p = random_range(.8,1.2)
+var _p = random_range(.8,1.2);
 sound_play_pitchvol(sndEliteShielderShield,1.6*_p,.6)
 sound_play_pitch(sndUltraShotgun,1.3*_p)
-sound_play_pitch(sndDogGuardianLand,.4*_p)
-sound_play_pitch(sndGuardianFire,.7*_p)
-sound_play_pitch(sndBasicUltra,2*_p)
-sound_play_pitch(sndSlugger,.8*_p)
-sound_play_pitch(sndDoubleShotgun,.8*_p)
+sound_play_pitch(sndExplosionS,.6*_p)
+sound_play_pitch(sndBasicUltra,1.8*_p)
+sound_play_pitch(sndHyperSlugger,.7*_p)
 weapon_post(8,-25,26)
 var i = 1;
 var j = 1;

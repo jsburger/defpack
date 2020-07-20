@@ -66,7 +66,7 @@ chest_add("Zenith",  13, ["herald","andromeda launcher","stopwatch","sak",/*"ant
     if !instance_exists(GenCont){
         with instances_matching(WeaponChest, "defcustomchestcheck", null){
             defcustomchestcheck = 1
-            if random(100) <= 8 and !instance_is(self, BigWeaponChest) and !instance_is(self, BigCursedChest) and !instance_is(self, GiantWeaponChest){
+            if random(100) <= 8 and !instance_is(self, BigWeaponChest) and !instance_is(self, BigCursedChest) and !instance_is(self, GiantWeaponChest) && skill_get(mut_open_mind) > 0{
                 var q = get_chests(0, GameCont.hard + array_length(instances_matching(Player, "race", "robot")))
                 if array_length(q){
                     customchest_create(x, y, q[irandom(array_length(q) - 1)])

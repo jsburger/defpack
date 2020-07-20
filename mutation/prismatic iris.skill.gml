@@ -290,6 +290,16 @@ if is_string(wep) return mod_script_call_nc("weapon", wep, "weapon_iris")
 switch wep{
     case wep_revolver:
         return "x revolver"
+    case wep_golden_revolver:
+        return "golden x revolver"
+    case wep_rusty_revolver:
+        return "rusty x revolver"
+    case wep_golden_machinegun:
+        return "golden x machinegun"
+    case wep_golden_assault_rifle:
+        return "golden assault x rifle"
+    case wep_rogue_rifle:
+        return "x rogue rifle"
     case wep_machinegun:
         return "x machinegun"
     case wep_assault_rifle:

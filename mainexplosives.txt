@@ -23,7 +23,6 @@
 /loadwep sonic launcher
 /loadwep assault sonic launcher
 /loadwep supersonic launcher
-/loadwep screecher
 /loadwep sonic hammer
 
 //MINI EXPLOSIONS

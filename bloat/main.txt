@@ -14,6 +14,7 @@
 /loadwep pulser
 /loadwep rocklet shotgun
 /loadwep scorcher
+/loadwep screecher
 /loadwep smart bazooka
 /loadwep smartsword
 /loadwep spear

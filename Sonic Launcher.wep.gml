@@ -27,7 +27,7 @@ return sndSwapExplosive;
 return 5;
 
 #define weapon_text
-return "340 KM/H";
+return "NOISY NADES";
 
 #define weapon_fire
 with instance_create(x+lengthdir_x(3,gunangle),y+lengthdir_y(3,gunangle),CustomProjectile){
@@ -88,7 +88,6 @@ with mod_script_call("mod","defpack tools","create_sonic_explosion",x - lengthdi
 	var scalefac = random_range(0.6,0.75);
 	image_xscale = scalefac
 	image_yscale = scalefac
-	damage = 11
 	image_speed = 0.6
 	team = other.team
 	creator = other.creator

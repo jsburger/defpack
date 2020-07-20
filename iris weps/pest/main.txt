@@ -21,3 +21,5 @@
 /loadwep pest shotgun
 /loadwep smarter pest gun
 /loadwep mega pest revolver
+/loadwep rusty pest revolver
+/loadwep golden pest revolver
