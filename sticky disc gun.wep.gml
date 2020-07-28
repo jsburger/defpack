@@ -21,7 +21,7 @@ return 0
 #define weapon_sprt
 return global.sprStickyDiscGun
 #define weapon_text
-return "DAMAGE OVER TIME"
+return "THIS IS YOUR OWN FAULT"
 #define weapon_fire
 weapon_post(5,-30,0)
 var _p = random_range(.8,1.2)

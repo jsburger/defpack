@@ -29,7 +29,7 @@ return sndSwapBow;
 return 8;
 
 #define weapon_text
-return "ANTI-PERSONELL WATER GUN";
+return "THEY WON'T COME OFF";
 
 #define weapon_fire
 repeat(3){

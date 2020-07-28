@@ -71,7 +71,7 @@ wepangle*=-1
 #define weapon_sprt
 return global.sword
 #define weapon_text
-return "make some new friends"
+return "FANCY FOOTWORK"
 
 #define step
 if "extraspeed" in self && current_frame_active{

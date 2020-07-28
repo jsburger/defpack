@@ -45,7 +45,7 @@ if instance_is(self,Player) && is_object(w){
 }
 return global.gun
 #define weapon_text
-return "Chrome lined, 4150 steel barrel"
+return "HIT REGISTRATION"
 #define weapon_reloaded(p)
 var w = p ? wep : bwep
 if !is_object(w) exit

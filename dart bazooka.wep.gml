@@ -27,7 +27,7 @@ return sndSwapExplosive;
 return 8;
 
 #define weapon_text
-return choose("1179 POINTS","BIG @wDART");
+return "100.86 AVERAGE";
 
 
 #define weapon_fire

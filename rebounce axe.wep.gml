@@ -26,7 +26,7 @@ return sndSwapSword;
 return 9;
 
 #define weapon_text
-return choose("BE BRAVE", "STRIKE AGAIN");
+return choose("BE BRAVE, STRIKE AGAIN", "DON'T STOP HITTING THEM");
 
 #define weapon_melee
 return 1

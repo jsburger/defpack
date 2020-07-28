@@ -24,7 +24,7 @@ return global.sprSmarterGunHUD
 #define weapon_sprt(w)
 return mod_script_call_self("mod", "defpack tools", "smarter_gun_sprite", global.sprSmarterGun, w)
 #define weapon_text
-return "massive brain"
+return "INTRUSIVE THOUGHTS"
 #define weapon_iris
 return "smarter x gun"
 #define weapon_fire

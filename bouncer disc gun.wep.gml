@@ -20,7 +20,7 @@ return 0
 #define weapon_sprt
 return global.sprBouncerDiscGun
 #define weapon_text
-return "SORRY"
+return "OOPS"
 #define weapon_fire
 weapon_post(3,4,0)
 sound_play_pitch(sndDiscgun,random_range(.85,.95))

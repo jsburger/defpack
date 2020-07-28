@@ -52,7 +52,7 @@ return sndSwapExplosive;
 return 11;
 
 #define weapon_text
-return "540/600";
+return "TOP RATED";
 
 #define weapon_reloaded(p)
 sound_play(sndShotReload)

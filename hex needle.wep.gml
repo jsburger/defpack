@@ -45,7 +45,7 @@
   return global.sprHexNeedleHUD;
 
 #define weapon_text
-  return "WORKIN' THE MOJO";
+  return "ANGRY SPIRITS";
 
 #define weapon_fire
   with instance_create(x, y, CustomObject)

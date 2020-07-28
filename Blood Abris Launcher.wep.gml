@@ -34,7 +34,7 @@ sound_play_pitchvol(sndNadeReload,1.4,.6)
 return 10;
 
 #define weapon_text
-return "THE SPLASH ZONE";
+return "GRUESOME";
 
 #define step(p)
 if ammo[weapon_type()] < weapon_cost(){

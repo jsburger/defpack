@@ -27,7 +27,7 @@ return sndSwapExplosive;
 return 15;
 
 #define weapon_text
-return choose("A TRUE BOOMBURST","SHIFT SOME SMOKE","CLOSE COMBAT INFUSION");
+return "DEAFENING";
 
 #define weapon_fire
 sleep(12)

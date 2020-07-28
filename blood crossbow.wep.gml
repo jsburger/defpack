@@ -29,7 +29,7 @@ return sndSwapBow;
 return 10;
 
 #define weapon_text
-return choose("BONE LAUNCHER","THE BONE ZONE");
+return "NOTHING GOES TO WASTE";
 
 #define step(p)
 if ammo[weapon_type()] < weapon_cost(){

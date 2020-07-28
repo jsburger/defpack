@@ -22,7 +22,7 @@ return false;
 return 50;
 
 #define weapon_text
-return "You will be missed"
+return "OBLITERATE"
 
 #define weapon_melee
 return 0;

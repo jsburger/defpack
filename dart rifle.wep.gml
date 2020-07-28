@@ -29,7 +29,7 @@ return sndSwapBow;
 return 12;
 
 #define weapon_text
-return "STICKY @wDARTS";
+return "GET IT OFF";
 
 #define weapon_fire
 weapon_post(5,-4,8)
