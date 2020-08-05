@@ -1,25 +1,38 @@
 #define init
-global.color = 0                                                                                                                                 //variable that keys all these arrays, set by subpicks according to their filename
-global.colors = ["stock", "pest", "fire", "psy", "thunder", "blind", "bouncer"]                                                                  //the actual words used for the gun filenames
-global.names = ["prismatic iris", "pestilent gaze", "blazing visage", "all-seeing eye", "clouded stare", "filtered lens", "quivering sight"]     //sub mutation names
-//global.customs = ["sniper rifle", "bullet cannon", "bullak cannon", "gunhammer"] DEPRECATED                                                    //custom guns that need coloring too, make sure to add to the converter switch
-global.order = [-1,2,0,4,3,5,1]                                                                                              //the code goes through the colors array in order, assigning the subpick to the slot numbered here
-global.descriptions = ["h", "@gTOXIC", "@rFLAMING", "@pHOMING", "@bCHARGED", "@wSOMETHING ELSE", "@yBOUNCY"]                                      //shit thats appended to the subpick description
-global.colorcount = array_length_1d(global.colors)-1
+global.color = 0                                                                                                                     //variable that keys all these arrays, set by subpicks according to their filename
+global.colors = [
+	"stock", "pest", "fire", "psy", "thunder", "blind", "bouncer",                                                                   //the actual words used for the gun filenames
+	"random", "rad"
+]
+global.names = [
+	"prismatic iris", "pestilent gaze", "blazing visage", "all-seeing eye", "clouded stare", "filtered lens", "quivering sight",     //sub mutation names
+	"everchanging observer", "horrific glare"
+]
+//global.customs = ["sniper rifle", "bullet cannon", "bullak cannon", "gunhammer"] DEPRECATED                                        //custom guns that need coloring too, make sure to add to the converter switch
+global.order = [-1,2,0,4,3,5,1]                                                                                                      //the code goes through the colors array in order, assigning the subpick to the slot numbered here
+global.descriptions = [
+	"h", "@gTOXIC", "@rFLAMING", "@pHOMING", "@bCHARGED", "@wSOMETHING ELSE", "@yBOUNCY",                                            //shit thats appended to the subpick description
+	"ANYTHING", "@gIRRADIATED"
+]
+global.colorcount = array_length_1d(global.colors)-3
 global.icons = []
 global.icon   = sprite_add("../sprites/mutation/sprMutPrismaticIris0.png", 1, 12, 16)
 global.arrow  = sprite_add("../sprites/mutation/sprIrisArrow.png", 1, 3, 10)
 global.sprRandomGun = sprite_add("../sprites/mutation/sprLensRandomGun.png", 5, 2, 3)
 global.effect = sprite_add("../sprites/mutation/sprIrisEffect.png",8,16,11)
-for var i = 0; i <= global.colorcount; i++{
+for var i = 0; i <= global.colorcount+2; i++{
     array_push(global.icons,sprite_add(`../sprites/mutation/sprMutPrismaticIcon${i}.png`,1,8,7))
 }
 
 global.forcecolor = 0
 mod_script_call_nc("mod", "defpermissions", "permission_register", "skill", mod_current, "forcecolor", "Force Iris Bullets")
 
-#macro current_color global.colors[global.color]
+global.new_level = 0
+global.randomchoices = [1, 2, 3, 4, 6]                                                                       
+global.randomcolor = global.randomchoices[irandom(global.colorcount - 2)]                                                         //other weapons don't exist yet, but once they do, add their index here
 
+#macro current_color global.colors[global.color]
+#macro color_index (current_color == "random" ? global.randomcolor : global.color)
 
 #define game_start
 global.color = 0
@@ -64,44 +77,78 @@ GameCont.endpoints++
 if fork(){
     wait(0)
     GameCont.endpoints--
+    var _destiny = (crown_current == crwn_destiny);
+    var _horror = (player_count_race(char_horror) > 0)
+    var _maxselect = 0;
     with SkillIcon instance_destroy()
     with LevCont{
-        maxselect = global.colorcount - 1
+        maxselect = (_destiny ? 1 : global.colorcount) - 1 + _horror
+        _maxselect = maxselect
     }
     var p = player_find(player_find_local_nonsync()), q;
-    for var i = 1; i <= global.colorcount; i++{
-        var skil = `irisslave${i}`
-        with instance_create(0, 0, SkillIcon){
-            creator = LevCont
-            coolbutton = 1
-            num = global.order[i]
-            alarm0 = num + 3
-            skill = skil
-            sprite_index = mod_variable_get("skill", skil, "sprite")
-            name = `${global.names[i]}`
-            text = "@yBULLET@s WEAPONS BECOME " + global.descriptions[i] + "@s"
-            if instance_exists(p){
-            	if i != 5 { //not filtered lens
-            		 //smartest code youll ever see
-			    	q = get_colored(p.wep, i);
-			    	if q[1]{
-			    		text += `#@0(${weapon_get_sprite(p.wep)}:0)   @0(${global.arrow}:0)   @0(${weapon_get_sprite(q[0])}:0)`
-			    	}
-			    	q = get_colored(p.bwep, i);
-			    	if q[1]{
-			    		text += `#@0(${weapon_get_sprite(p.bwep)}:0)   @0(${global.arrow}:0)   @0(${weapon_get_sprite(q[0])}:0)`
-			    	}
-            	}
-            	else {
-            		if weapon_get_type(p.wep) == 1{
-            			text += `#@0(${weapon_get_sprite(p.wep)}:0)   @0(${global.arrow}:0)   @0(${global.sprRandomGun}:-1)`
-            		}
-            		if weapon_get_type(p.bwep) == 1{
-            			text += `#@0(${weapon_get_sprite(p.bwep)}:0)   @0(${global.arrow}:0)   @0(${global.sprRandomGun}:-1)`
-            		}
-            	}
-		    }
+    if (!_destiny){
+        for var i = 1; i <= global.colorcount; i++{
+            var skil = `irisslave${i}`
+            with instance_create(0, 0, SkillIcon){
+                creator = LevCont
+                coolbutton = 1
+                num = global.order[i]
+                alarm0 = num + 3
+                skill = skil
+                sprite_index = mod_variable_get("skill", skil, "sprite")
+                name = `${global.names[i]}`
+                text = "@yBULLET@s WEAPONS BECOME " + global.descriptions[i] + "@s"
+                if instance_exists(p){
+                    if global.colors[i] != "blind" { //not filtered lens
+                         //smartest code youll ever see
+                        q = get_colored(p.wep, i);
+                        if q[1]{
+                            text += `#@0(${weapon_get_sprite(p.wep)}:0)   @0(${global.arrow}:0)   @0(${weapon_get_sprite(q[0])}:0)`
+                        }
+                        q = get_colored(p.bwep, i);
+                        if q[1]{
+                            text += `#@0(${weapon_get_sprite(p.bwep)}:0)   @0(${global.arrow}:0)   @0(${weapon_get_sprite(q[0])}:0)`
+                        }
+                    }
+                    else {
+                        if weapon_get_type(p.wep) == 1{
+                            text += `#@0(${weapon_get_sprite(p.wep)}:0)   @0(${global.arrow}:0)   @0(${global.sprRandomGun}:-1)`
+                        }
+                        if weapon_get_type(p.bwep) == 1{
+                            text += `#@0(${weapon_get_sprite(p.bwep)}:0)   @0(${global.arrow}:0)   @0(${global.sprRandomGun}:-1)`
+                        }
+                    }
+                }
+            }
         }
+    }
+    else {
+    	var skil = "irisslave7"
+    	with instance_create(0, 0, SkillIcon){
+    		creator = LevCont
+    		coolbutton = 1
+    		num = 0
+    		alarm0 = num + 3
+    		skill = skil
+    		sprite_index = mod_variable_get("skill", skil, "sprite")
+    		name = `@w${global.names[global.colorcount+1]}`
+    		text = "@yBULLET@s WEAPONS BECOME " + global.descriptions[global.colorcount+1] + "@s"
+    		 //weapon previews done in step
+    	}
+    }
+    if(_horror){
+    	var skil = "irisslave8"
+    	with instance_create(0, 0, SkillIcon){
+    		creator = LevCont
+    		coolbutton = 1
+    		num = _maxselect
+    		alarm0 = num + 3
+    		skill = skil
+    		sprite_index = mod_variable_get("skill", skil, "sprite")
+    		name = `${global.names[global.colorcount+2]}`
+    		text = "@yBULLET@s WEAPONS BECOME " + global.descriptions[global.colorcount+2] + "@s"
+    		 //no preview because Karm didn't tell me what it does
+    	}
     }
     exit
 }
@@ -109,14 +156,15 @@ if fork(){
     while global.color = 0 && instance_exists(SkillIcon){
         wait(0)
     }
+    global.randomcolor = global.randomchoices[irandom(global.colorcount - 2)]
     wait(0)
     with Player{
         if current_color != "blind"{
         	 //i hate this but wont change it
-            color(wep, global.color)
+            color(wep, color_index)
             var we = wep;
             wep = bwep
-            color(bwep, global.color)
+            color(bwep, color_index)
             bwep = wep
             wep = we
         }
@@ -137,6 +185,7 @@ sprite_index = global.icon
 return global.icons[global.color]
 
 #define skill_text
+if global.color == 7 return "@yBULLET@s WEAPONS BECOME " + `@(color:${make_color_hsv(current_frame * 9 % 256, 255, 255)})` + global.descriptions[global.colorcount+1] + "@s"
 if global.color > 0 return "@yBULLET@s WEAPONS BECOME " + global.descriptions[global.color]
 return "@wREIMAGINE@s YOUR @yBULLET@s WEAPONS"
 
@@ -171,7 +220,19 @@ if global.color > 0 and instance_exists(Player){
 				}
 			}
 			else{
-				if color(wep, global.color){
+				if is_string(wep){
+					for var i = 1; i <= global.colorcount; i++{
+						if get_colored(string_replace(wep, global.colors[i], "x"), i)[1]{
+							break;
+						}
+					}
+					
+					if i <= global.colorcount{
+						continue;
+					}
+				}
+				
+				if color(wep, color_index){
 					chargecheck = 0
 					sprite_index = weapon_get_sprt(wep)
 					name = weapon_get_name(wep)
@@ -184,6 +245,33 @@ if global.color > 0 and instance_exists(Player){
 			}
 		}
 	}
+}
+
+if global.color == 0 and instance_exists(SkillIcon){
+	var p = player_find(player_find_local_nonsync()), q, c;
+	with instances_matching(SkillIcon, "skill", "irisslave7"){
+		text = "@yBULLET@s WEAPONS BECOME " + `@(color:${make_color_hsv(current_frame * 9 % 256, 255, 255)})` + global.descriptions[global.colorcount+1] + "@s"
+		if instance_exists(p){
+			c = global.randomchoices[current_frame div 1 mod (global.colorcount - 1)];
+			q = get_colored(p.wep, c);
+	        if q[1]{
+	            text += `#@0(${weapon_get_sprite(p.wep)}:0)   @0(${global.arrow}:0)   @0(${weapon_get_sprite(q[0])}:0)`
+	        }
+	        q = get_colored(p.bwep, c);
+	        if q[1]{
+	            text += `#@0(${weapon_get_sprite(p.bwep)}:0)   @0(${global.arrow}:0)   @0(${weapon_get_sprite(q[0])}:0)`
+	        }
+		}
+	}
+}
+
+if instance_exists(GenCont) and !global.new_level{
+	global.new_level = 1
+}
+
+else if global.new_level{
+	global.new_level = 0
+	global.randomcolor = global.randomchoices[irandom(global.colorcount - 2)]
 }
 
 
@@ -231,9 +319,10 @@ else{
 
 //swapping bullets to the iris equivalent for the "Force Iris Bullets" option
 if global.forcecolor and current_color != "blind"{
+	var _color = color_index
     //leading in innovation with EPIC copy pasting
-    with HeavyBullet{
-        with heavy_bullet_color(){
+    with HeavyBullet {
+        with heavy_bullet_color(_color){
             creator = other.creator
             team = other.team
             speed = other.speed
@@ -242,9 +331,9 @@ if global.forcecolor and current_color != "blind"{
         }
         instance_delete(self)
     }
-    if global.color != 6{
+    if global.colors[_color] != "bouncer"{
         with BouncerBullet {
-            with bullet_color(){
+            with bullet_color(_color){
                 creator = other.creator
                 team = other.team
                 speed = other.speed
@@ -255,7 +344,7 @@ if global.forcecolor and current_color != "blind"{
         }
     }
     with Bullet1 {
-        with bullet_color(){
+        with bullet_color(_color){
             creator = other.creator
             team = other.team
             speed = other.speed
@@ -266,13 +355,13 @@ if global.forcecolor and current_color != "blind"{
     }
 }
 
-#define heavy_bullet_color()
-return mod_script_call_nc("mod", "defpack tools", "create_heavy_"+global.colors[global.color]+"_bullet", x, y)
+#define heavy_bullet_color(color)
+return mod_script_call_nc("mod", "defpack tools", "create_heavy_"+global.colors[color]+"_bullet", x, y)
 
-#define bullet_color
-if global.color <= 4
-    return mod_script_call_nc("mod", "defpack tools", "create_"+global.colors[global.color]+"_bullet", x, y)
-if global.color == 6
+#define bullet_color(color)
+if color <= 4
+    return mod_script_call_nc("mod", "defpack tools", "create_"+global.colors[color]+"_bullet", x, y)
+if color == 6
     return instance_create(x, y, BouncerBullet)
 
 #define reverse(wep)
@@ -340,7 +429,7 @@ if is_real(str) or (is_string(str) and mod_script_exists("weapon", str, "weapon_
     str = string_replace(q, "x ", `${global.colors[col]} `)
 }
 else{
-    for var i = 1; i < array_length(global.colors); i++;{
+    for var i = 1; i <= global.colorcount; i++;{
         str = string_replace(str, global.colors[i], global.colors[col])
     }
 }
@@ -437,5 +526,7 @@ switch global.colors[global.color]
   case "thunder" : return "@bSTRIKE @s'EM DOWN";
   case "blind"   : return "@dNEVERMIND";
   case "bouncer" : return "@sTHE @ySTARS @sHAVE ALIGNED";
+  case "random"  : return "ROLL YOUR @wDICE@s,#MOVE YOUR @wMICE@s"
+  case "rad"     : return "EVEN THE @wWEAPONS @gMUTATED@s"
 }
 return "BELIEVE";

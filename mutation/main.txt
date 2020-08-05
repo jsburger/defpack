@@ -5,3 +5,5 @@
 /loadskill irisslave4
 /loadskill irisslave5
 /loadskill irisslave6
+/loadskill irisslave7
+/loadskill irisslave8
