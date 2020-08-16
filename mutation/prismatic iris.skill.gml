@@ -234,8 +234,8 @@ if global.color > 0 and instance_exists(Player){
 				
 				if color(wep, color_index){
 					chargecheck = 0
-					sprite_index = weapon_get_sprt(wep)
-					name = weapon_get_name(wep)
+					// sprite_index = weapon_get_sprt(wep)
+					// name = weapon_get_name(wep)
             		with instance_create(x,y,ImpactWrists){
                 		sprite_index = global.effect
                     	sound_play_pitchvol(sndStatueXP, .5 * random_range(.8, 1.2), .4)
@@ -303,8 +303,8 @@ else{
             if distance_to_object(instance_nearest(x,y,Player)) < 100{
                 irischeck = 1;
                 if color(wep,global.color){
-                    sprite_index = weapon_get_sprt(wep)
-                    name = weapon_get_name(wep)
+                    // sprite_index = weapon_get_sprt(wep)
+                    // name = weapon_get_name(wep)
                     with instance_create(x,y,ImpactWrists){
                         sprite_index = global.effect
                         sound_play_pitchvol(sndStatueXP,.5*random_range(.8,1.2),.4)
