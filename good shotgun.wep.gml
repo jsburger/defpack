@@ -32,7 +32,7 @@ return false;
 return global.sprGoodShotgun;
 
 #define weapon_text
-return "replace me pls";
+return "A STRAIGHT UPGRADE";
 
 #define weapon_fire
 

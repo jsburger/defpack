@@ -50,7 +50,7 @@ with instance_create(x+lengthdir_x(12+(20*skill_get(13)),gunangle),y+lengthdir_y
 #define weapon_sprt
 return global.sprBone
 #define weapon_text
-return "DEVILISH"
+return "GHOULISH"
 
 #define bone_wall
 speed = 0

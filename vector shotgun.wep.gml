@@ -25,7 +25,7 @@ if !button_check(index, (!p and race == "steroids") ? "spec" : "fire"){
 #define weapon_sprt
 return global.sprVectorShotgun
 #define weapon_text
-return "pointy"
+return "PARTICLE ACCELERATION"
 
 #define weapon_fire
 motion_add(gunangle - 180, 4)

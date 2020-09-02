@@ -30,7 +30,7 @@ return 9;
 sound_play(sndNadeReload)
 
 #define weapon_text
-return "GOES WELL WITH STRESS";
+return "CONSTANT EXPLOSIONS";
 
 #define weapon_fire
 sound_play_pitch(sndGrenade,random_range(.8,1.1))

@@ -26,7 +26,7 @@ return sndSwapMachinegun;
 return -1;
 
 #define weapon_text
-return "NO ESCAPE";
+return "HUNT THEM DOWN";
 
 #define weapon_fire
 

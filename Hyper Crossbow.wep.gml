@@ -27,7 +27,7 @@ return sndSwapBow;
 return 14;
 
 #define weapon_text
-return choose("BOLT STREAMER","A CONTINUOUS STATE OF HYPE","HYPER HYPER");
+return choose("1 FAST BOLT PER SHOT","A CONTINUOUS STATE OF HYPE", "HYPER HYPER");
 
 #define weapon_fire
 repeat(5)

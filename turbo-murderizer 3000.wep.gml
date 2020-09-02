@@ -21,7 +21,7 @@ return false
 #define weapon_sprt
 return global.sprTurboMurderizer3000
 #define weapon_text
-return "RIDICULOUS"
+return "COMEDY GREEN"
 #define weapon_fire
 motion_add(gunangle-180,4)
 var i = wepflip, flip = wepflip

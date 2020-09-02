@@ -45,7 +45,7 @@
   return global.sprHexNeedleHUD;
 
 #define weapon_text
-  return "WORKIN' THE MOJO";
+  return "ANGRY SPIRITS";
 
 #define weapon_fire
   var _offset = 12 + skill_get(mut_long_arms) * 8;

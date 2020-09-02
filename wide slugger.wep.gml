@@ -34,7 +34,7 @@ return false;
 return global.sprWideSlugger;
 
 #define weapon_text
-return "BRICK BLASTER"
+return "GOODBYE BODY"
 
 #define weapon_fire
 weapon_post(7,-40,15)

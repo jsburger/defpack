@@ -32,7 +32,7 @@ return false;
 return global.sprSonicHammer;
 
 #define weapon_text
-return "HERE WE GO";
+return "BASS IN YOUR EAR";
 
 #define weapon_fire
 wepangle = -wepangle

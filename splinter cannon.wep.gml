@@ -21,7 +21,7 @@ return 1
 #define weapon_sprt
 return global.sprSplinterCannon
 #define weapon_text
-return "CONSIDER IT HYPER"
+return "THAT HAS TO HURT"
 #define weapon_fire
 weapon_post(13,-72,30)
 sleep(15)
