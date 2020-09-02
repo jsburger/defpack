@@ -23,3 +23,6 @@
 /loadwep mega thunder revolver
 /loadwep rusty thunder revolver
 /loadwep golden thunder revolver
+/loadwep golden thunder machinegun
+/loadwep golden assault thunder rifle
+/loadwep thunder rogue rifle

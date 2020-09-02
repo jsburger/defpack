@@ -43,10 +43,6 @@
 
 /loadwep smart nuke launcher
 
-//CANNON
-
-/loadwep toxic cannon
-
 //OTHER EXPLOSIVE
 
 /loadwep chainsaw

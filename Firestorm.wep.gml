@@ -46,8 +46,8 @@ with instance_create(x,y,CustomProjectile){
     sprite_index = global.sprProj
     mask_index = mskFlakBullet
 
-    ammo = 12
-    timerbase = 4
+    ammo = 4
+    timerbase = 1
     timer = timerbase
     angle = random(360)
     angle_speed = 5

@@ -2875,9 +2875,10 @@ else if skill_get(mut_bolt_marrow){
 }
 
 #define stickydisc_hit
+var _dmg = instance_is(other, Player) = true ? 1 : damage;
 if projectile_canhit_melee(other){
     sound_play_hit(sndDiscHit,.2)
-    projectile_hit(other, damage, 5, direction)
+    projectile_hit(other, _dmg, 5, direction)
     if other.my_health > 0{
         if stuckto != other{
             stuckto = other

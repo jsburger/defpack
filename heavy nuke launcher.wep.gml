@@ -1,5 +1,5 @@
 #define init
-global.sprHeavyNukeLauncher   = sprite_add_weapon("sprites/weapons/sprHeavyNukeLauncher.png", 20, 8);
+global.sprHeavyNukeLauncher   = sprite_add_weapon("sprites/weapons/sprHeavyNukeLauncher.png", 12, 5);
 global.sprHeavyNuke 				  = sprite_add("sprites/projectiles/sprHeavyNuke.png",0, 8, 6);
 global.mskHeavyNuke 				  = sprite_add("sprites/projectiles/mskHeavyNuke.png",0, 8, 6);
 global.sprSmallGreenExplosion = sprite_add("sprites/projectiles/sprGreenExplosionS.png",7,12,12)

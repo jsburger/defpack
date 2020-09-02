@@ -32,3 +32,4 @@
 /loadwep heavy laser flak cannon
 /loadwep fire spam gun
 /loadwep ultra spam gun
+/loadwep toxic cannon

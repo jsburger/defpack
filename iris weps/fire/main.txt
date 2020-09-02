@@ -23,3 +23,6 @@
 /loadwep mega fire revolver
 /loadwep rusty fire revolver
 /loadwep golden fire revolver
+/loadwep golden fire machinegun
+/loadwep golden assault fire rifle
+/loadwep fire rogue rifle
