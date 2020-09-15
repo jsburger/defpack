@@ -19,6 +19,8 @@
 		//Toxic Bullets
 		ToxicBullet         = sprite_add(i + "iris/pest/sprPestBullet.png",    2, 8, 8);
 		ToxicBulletHit      = sprite_add(i + "iris/pest/sprPestBulletHit.png", 4, 8, 8);
+		ToxicShell          = sprite_add(i + "iris/pest/sprPestShell.png", 2, 8, 8);
+		ToxicShellHit       = sprite_add(i + "iris/pest/sprPestShellDisappear.png", 4, 8, 8);
 		HeavyToxicBullet    = sprite_add(i + "iris/pest/sprHeavyPestBullet.png",    2, 12, 12);
 		HeavyToxicBulletHit = sprite_add(i + "iris/pest/sprHeavyPestBulletHit.png", 4, 12, 12);
 
@@ -686,6 +688,35 @@ image_speed = 0
 
 #define shell_hit
 projectile_hit(other, (current_frame < fallofftime? damage : (damage - falloff)), force, direction);
+
+#define create_shell(x, y)
+with instance_create(x, y, CustomProjectile){
+    name = "Shell"
+	
+	sprite_index = sprBullet1
+    spr_dead = sprBulletHit
+    mask_index = mskBullet1
+    image_speed = 1
+
+    defbloom = {
+        xscale : 2,
+        yscale : 2,
+        alpha : .1
+    }
+
+    recycle_amount = 1
+    force = 8
+    damage = 3
+    typ = 1
+
+    on_anim = bullet_anim
+    on_wall = bullet_wall
+    on_hit = bullet_hit
+    on_destroy = bullet_destroy
+
+    return id
+}
+
 
 #define create_bullet(x, y)
 with instance_create(x, y, CustomProjectile){
@@ -2527,9 +2558,9 @@ with instance_create(x-lengthdir_x(speed,direction),y-lengthdir_y(speed,directio
 with instance_create(_x,_y,CustomProjectile) {
     name = "Laser Flak"
 	image_speed = 1
-	damage = 8 + skill_get(17)*3
+	damage = 8
 	friction = .5
-	ammo = 10
+	ammo = 6 + skill_get(mut_laser_brain) * 2;
 	typ = 1
 	size = 1
 	sprite_index = spr.LaserFlakBullet
@@ -2957,7 +2988,7 @@ if current_frame_active{
     }
     x -= hspeed/2
     y -= vspeed/2
-    projectile_hit(other,damage,0,direction)
+    projectile_hit(other,damage,speed/4,direction)
     if other.my_health <= 0{
         sleep (other.size*2)
     }

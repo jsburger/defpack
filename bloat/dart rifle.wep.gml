@@ -1,5 +1,5 @@
 #define init
-global.sprFlechetteRifle = sprite_add_weapon("sprites/weapons/sprFlechetteRifle.png", 6, 3);
+global.sprFlechetteRifle = sprite_add_weapon("../sprites/weapons/sprFlechetteRifle.png", 6, 3);
 
 #define weapon_name
 return "DART RIFLE";

@@ -47,8 +47,7 @@
 
 /loadwep chainsaw
 /loadwep claymore
-/loadwep kaboomerang
-/loadwep auto grenade launcher
+/loadwep kaboomerang	
 /loadwep heavy nuke launcher
 /loadwep firestorm
 /loadwep andromeda launcher

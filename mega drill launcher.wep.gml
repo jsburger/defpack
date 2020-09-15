@@ -1,6 +1,6 @@
 #define init
 //global.gun
-global.sprMegaDrillLauncher    = sprite_add_weapon("sprites/weapons/sprBigDrillLauncher.png",15,10)
+global.sprMegaDrillLauncher    = sprite_add_weapon("sprites/weapons/sprBigDrillLauncher.png",21,10)
 global.sprMegaDrillLauncherHUD = sprite_add_weapon("sprites/weapons/sprBigDrillLauncher.png",37,5)
 global.sprMegaDrill            = sprite_add("sprites/projectiles/sprBigDrill.png",4,15,10)
 global.sprMegaDrillBlink       = sprite_add("sprites/projectiles/sprBigDrillBlink.png", 2, 15, 10)
@@ -19,7 +19,13 @@ return 23
 #define weapon_load
 return 75
 #define weapon_swap
-return sndSwapMotorized
+if instance_is(self, Player){
+	view_shake_at(x, y, 20);
+	sleep(10);
+}
+sound_play_pitchvol(sndBasicUltra, 1.2, .6);
+sound_play_pitch(sndSwapMotorized, .9);
+return -4;
 #define weapon_auto
 return 0
 #define weapon_melee
@@ -71,6 +77,9 @@ return "PIERCE THE HEAVENS"
       on_end_step = global.explosive ? drill_step : bolt_step
       on_wall = drill_wall
   }
+
+#define step
+with instances_matching(Player, "wep", mod_current) || instances_matching(instances_matching(Player, "race", "steroids"), "bwep", mod_current){speed *= min(1, .8 + .2 * (skill_get(mut_extra_feet)))}
 
 #define bolt_step
   if skill_get(mut_bolt_marrow){

@@ -106,9 +106,10 @@ for (var i = 0; i < 360; i+=360/n){
         creator = other.creator
         sprite_index = sprFlare
         image_speed = .2
-        motion_set(other.angle + i, 5)
+        motion_set(other.angle + i + random_range(-40, 40), random_range(4, 7))
         projectile_init(other.team,other.creator)
-        gravdir = direction + 120
+        friction = random_range(0, .15);
+        gravdir = direction + 110
         grav = 1
         maxspeed = 30
         on_step    = fakeflare_step
@@ -125,7 +126,7 @@ if speed > maxspeed speed = maxspeed
 if speed <= friction instance_destroy()
 
 #define fakeflare_destroy
-sound_play_pitchvol(sndFlareExplode,random_range(.8,1.2),.4)
+sound_play_pitchvol(sndFlareExplode,random_range(.7,1.3),.4)
 repeat(12)
 {
   with instance_create(x,y,Flame)
@@ -135,6 +136,7 @@ repeat(12)
     motion_add(random(360),random_range(4,5))
   }
 }
+view_shake_max_at(x, y, 6);
 
 #macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)
 

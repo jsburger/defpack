@@ -8,6 +8,12 @@
 
 #macro  current_frame_active (current_frame % 1) < current_time_scale
 
+// V. 1: on hit -> curse enemies in area to take 20 damage after delay, throwable
+// V. 2: on hit -> curse enemies in area to take 20 damage after short delay
+// V. 3: on kill -> create splinters on top of enemies (is aoe yes but splinters have trouble hitting)
+// V. 4: on kill -> create blood explo on top of enemies (covered by the bones)
+
+
 #define weapon_chrg
   return true;
 
@@ -64,12 +70,12 @@
   with instance_create(x+lengthdir_x(_offset, gunangle), y+lengthdir_y(_offset, gunangle), CustomSlash){
       sprite_index = global.mskHexNeedle;
       mask_index   = global.mskHexNeedle;
-      image_speed  = 1;
+      image_speed  = 2;
       image_alpha  = 0;
 
       team       = other.team;
       creator    = other;
-      damage     = 4;
+      damage     = 6;
       force      = 4;
       can_fix    = false;
       canreflect = false;
@@ -89,82 +95,25 @@
 }
 
 #define needle_hit
-  if projectile_canhit_melee(other) = true && speed > 0{
-    var _origin = self;
-    projectile_hit(other, damage, force, direction);
-    with instances_matching(hitme, "team", other.team){
-      if distance_to_object(_origin) <= 128{
-        with instance_create(x, y, CustomObject){
-          target = other;
-          timer  = 15 + irandom(point_distance(other.x, other.y, _origin.x, _origin.y)) / 2;
-          damage = _origin.damage + 4;
-          force  = 6;
-          direction = point_direction(_origin.x, _origin.y, x, y);
-
-          on_step = hex_step;
+  var _e = other,
+      _c = creator;
+  if projectile_canhit_melee(_e) = true{
+    projectile_hit(_e, damage, force, direction);
+    if _e.my_health <= 0 && !instance_is(_e, prop){
+        view_shake_at(x, y, 16);
+        sleep(10 + min(_e.size, 3) * 12);
+        var _i = 0,
+            _a = random(360),
+            _n = _e.size > 0 ? 1 + 2 * _e.size : 0;
+        if _n > 0 repeat(_n){
+                with instance_create(_e.x + lengthdir_x(18, _a + 360 / _n * _i), _e.y + lengthdir_y(18, _a + 360 / _n * _i), MeatExplosion){
+                    team = _c.team;
+                    creator = _c;
+                }
+                _i++;
+            }
         }
-      }
     }
-    if other.my_health > 0 && "curse" in self{
-      view_shake_max_at(x, y, 10);
-      sleep(10);
-      speed = 0;
-      mans = other;
-      with instance_create(x, y, WepPickup){
-          wep   = "hex needle";
-          curse = other.curse;
-          sprite_index = mskNone;
-          other.child = self;
-      }
-    }
-    if "curse" not in self{
-      instance_delete(self);
-    }
-  }
-
-#define hex_step
-  if !instance_exists(target) || target.team = 0 || instance_is(target, LilHunterFly) || instance_is(target, RavenFly) || instance_is(target, BigMaggotBurrow){
-    instance_delete(self);
-    exit;
-  }
-  if timer > 0{
-    timer -= 2 * current_time_scale;
-    if irandom(1 / current_time_scale) = 0{
-      var _w = sprite_get_width(target.sprite_index) / 2 * .6,
-          _h = sprite_get_height(target.sprite_index) * .3;
-      with instance_create(target.x + random_range(-_w, _w), target.y - sprite_get_height(target.sprite_index) / 2  + random_range(0, _h), Curse){motion_add(90, 1);friction = .05}
-      with instance_create(target.x, target.y, Wind){
-        target = other.target
-        sprite_index = target.sprite_index
-        image_index  = target.image_index
-        image_speed  = 0
-        image_alpha = 2 / other.timer
-        image_blend = c_purple;
-        if fork(){
-          wait(1)
-          instance_delete(self)
-        }
-      }
-    }
-  }
-  else{
-    view_shake_max_at(x, y, 12);
-    sleep(30);
-    sound_play_pitchvol(sndCursedReminder, random_range(1.6, 2.4), .8);
-    sound_play_pitchvol(sndCursedPickup, random_range(.6, .8), .8);
-    sound_play_pitchvol(sndBigCursedChest, .2 * random_range(.8, 1.2), .6);
-    sound_play_pitchvol(sndSwapCursed, 1.4 * random_range(.8, 1.2), .8);
-    sound_play_pitchvol(sndStatueHurt, 1.2 * random_range(.8, 1.2), .8);
-    sound_play(target.snd_hurt)
-    projectile_hit(target, damage, 0, direction + random_range(-8, 8));
-    speed = force
-    repeat(target.size + 1 + irandom(2)){
-      with instance_create(target.x, target.y, Smoke){
-        motion_add(random(360), random(2) + 3)
-      }
-    }
-    instance_destroy();
-  }
 
 #define needle_projectile
   with other instance_destroy();

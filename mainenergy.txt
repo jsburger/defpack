@@ -26,7 +26,7 @@
 //OTHER ENERGY
 
 /loadwep lightning wheel
-/loadwep beamer
+/loadwep mega laser cannon
 /loadwep ionizer
 /loadwep stopwatch
 
