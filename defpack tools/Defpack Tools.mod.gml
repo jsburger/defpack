@@ -2442,13 +2442,7 @@ with instance_create(_x, _y, CustomProjectile){
 }
 
 #define rocket_step
-var _q = instance_nearest(x, y, enemy), _g = direction_goal, _s = 8;
-if _q > -4 && distance_to_object(_q) <= 32 {
-	_g = point_direction(x, y, _q.x, _q.y)
-	_s = 1.5
-}
-
-direction -= angle_approach(direction, _g, _s, current_time_scale)
+direction -= angle_approach(direction, direction_goal, 8, current_time_scale)
 if speed > maxspeed
 	speed = maxspeed
 image_angle = direction
@@ -3535,7 +3529,8 @@ with w{
     var wantx = c.x + 24 * p
     var wanty = c.y - 24
 
-    var q = collision_line_first(c.x, c.y, wantx, wanty, Wall, 0, 0), a = point_direction(c.x, c.y, wantx, wanty);
+	//with other is to change the scope back to an instance so 9944 doesnt shit down my throat
+    with other { var q = collision_line_first(c.x, c.y, wantx, wanty, Wall, 0, 0), a = point_direction(c.x, c.y, wantx, wanty); }
     xgoal = q[0] - lengthdir_x(d, a)
     ygoal = q[1] - lengthdir_y(d, a)
 
