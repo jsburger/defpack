@@ -2,17 +2,6 @@
 global.sprAbrisLauncher = sprite_add_weapon("sprites/weapons/sprAbrisLauncher.png", 0, 4);
 
 #define weapon_name
-if instance_is(self, WepPickup) {
-	trace(sprite_get_name(sprite_index))
-	// default sprite is sprScrewdriver, check if weapon_get_sprite == sprite_index for newly created weppickups
-}
-if instance_is(self, WepPickup) and (instance_is(other, Player) or instance_is(other, ThrownWep)) {
-	trace(other.wep == wep)
-	trace("Dropped!")
-}
-else if instance_is(self, Player) and instance_is(other, WepPickup) {
-	trace("Picked up!")
-}
 return "ABRIS LAUNCHER"
 
 #define weapon_sprt
@@ -28,7 +17,7 @@ return 1;
 return 22;
 
 #define weapon_cost
-return 2;
+return 3;
 
 #define weapon_chrg
 return true;
@@ -47,13 +36,13 @@ sound_play_pitchvol(sndNadeReload,1.4,.6)
 return "INCOMING";
 
 #define weapon_fire
-var _strtsize = 50;//never thought id have to nerf eagle eyes im so proud of you
-var _endsize  = 30;
+var _strtsize = 40;//never thought id have to nerf eagle eyes im so proud of you
+var _endsize  = 20;
 var _accspeed = 1.2;
 with mod_script_call("mod","defpack tools","create_abris",self,_strtsize,_endsize,argument0){
-	accspeed = 1.15
+	accspeed = 1.3
 	damage = 3
-	maxdamage = 15
+	maxdamage = 10
 	payload = script_ref_create(pop)
 }
 sound_play_pitch(sndSniperTarget, 1/accuracy + .5)
@@ -65,8 +54,7 @@ sound_play_pitch(sndGrenadeShotgun,random_range(.5,.8))
 sound_play(sndExplosion)
 if isplayer with creator weapon_post(6,25,35)
 with instance_create(x, y, CustomObject) {
-	n = 8
-	acc = other.acc
+	n = 3
 	timer = 1
 	accmin = other.accmin
 	acc = other.acc
@@ -77,17 +65,17 @@ with instance_create(x, y, CustomObject) {
 
 #define pop_step
 if n > 0 {
-	if --timer <= 0 repeat(min(n, irandom_range(1, 2))){
+	if --timer <= 0 repeat(1){
 		n--
-		var _d = explodir + random_range(-90, 90) + 180, _r = accmin + random(acc);
-		if n != 0 with instance_create(x + lengthdir_x(_r, _d) * random_range(.6,1), y + lengthdir_y(_r, _d) * random_range(.6,1), SmallExplosion) {
+		var _d = explodir + random(360), _r = accmin + random(acc);
+		if n != 0 with instance_create(x + lengthdir_x(_r, _d), y + lengthdir_y(_r, _d), SmallExplosion) {
 			hitid = [sprite_index,"small explosion"]
 			sound_play(sndExplosionS)
 			sleep(5)
 			view_shake_at(x, y, 4)
 			line(x, y, other.creator.x, other.creator.y)
 		}
-		else with instance_create(x + lengthdir_x(_r, _d) * random_range(.6,1), y + lengthdir_y(_r, _d) * random_range(.6,1), Explosion) {
+		else with instance_create(x + lengthdir_x(_r, _d), y + lengthdir_y(_r, _d), Explosion) {
 			hitid = [sprite_index,"explosion"]
 			sound_play(sndExplosion)
 			sleep(20)
@@ -96,8 +84,7 @@ if n > 0 {
 		}
 		explodir = _d
 		timer = 1
-		if n = 1 timer = 4
-		if n = 2 timer = 2
+		if n = 1 timer = 5 else timer = 3
 	}
 }
 else {
