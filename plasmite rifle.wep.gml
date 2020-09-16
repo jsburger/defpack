@@ -9,9 +9,9 @@ return 5
 #define weapon_cost
 return 1
 #define weapon_area
-return 6
+return 8
 #define weapon_load
-return 7
+return 8
 #define weapon_swap
 return sndSwapEnergy
 #define weapon_auto
@@ -19,7 +19,7 @@ return 1
 #define weapon_laser_sight
 return 0
 #define weapon_text
-return "AH AH";
+return "LONG RANGE ENGAGEMENT";
 #define weapon_fire
 repeat(2)
 {

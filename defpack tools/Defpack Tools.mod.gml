@@ -500,21 +500,19 @@ var q = audio_play_sound_at(snd, p[0] - x, 0, p[1] - y, 100, 300, 1, false, 1);
 audio_sound_pitch(q, pitch);
 audio_sound_gain(q, vol, 0);
 return q;
-
  //very good and epic sound stuff
  //thank you yokin for coding ntte really good and also letting me copy from it
 #define sound_play_hit_ext(_sound, _pitch, _volume)
 	var s = sound_play_hit(_sound, 0);
 	sound_pitch(s, _pitch);
-	sound_volume(s, _volume);
+	sound_volume(s, audio_sound_get_gain(s) * _volume);
 	return s;
 
 #define sound_play_hit_big_ext(_sound, _pitch, _volume)
 	var s = sound_play_hit_big(_sound, 0);
 	sound_pitch(s, _pitch);
-	sound_volume(s, _volume);
+	sound_volume(s, audio_sound_get_gain(s) * _volume);
 	return s;
-
 
 
 #define chance(percentage)
@@ -1555,6 +1553,7 @@ for (var i = 0; i <= precision; i++){
 }
 draw_primitive_end();
 
+
 #define draw_arc_wave(x, y, angle, radius, thickness, degrees, precision, col, inneralpha, outeralpha, stiff)
 x += prim_offset
 y += prim_offset
@@ -2055,8 +2054,9 @@ with instance_create(_x, _y, CustomProjectile) {
 if chance(8 + 6 * skill_get(mut_laser_brain)) instance_create(x, y, PlasmaTrail)
 
 var closeboy = instance_nearest_matching_ne(x, y, hitme, "team", team);
-if instance_exists(closeboy) && distance_to_object(closeboy) <= 24 {
-    motion_add(point_direction(x, y, closeboy.x, closeboy.y), 4 * current_time_scale)
+if instance_exists(closeboy) && distance_to_object(closeboy) <= 16 {
+	motion_add(direction + 180, current_time_scale)
+    motion_add(point_direction(x, y, closeboy.x, closeboy.y), (4) * current_time_scale)
     maxspeed += .5 * current_time_scale
 }
 image_angle = direction
@@ -2069,7 +2069,9 @@ if maxspeed <= 1 + fric instance_destroy();
 #define plasmite_wall
 move_bounce_solid(false)
 image_angle = direction
-sound_play_pitchvol(sndPlasmaHit, random_range(3, 6), .3)
+var s = audio_play_sound(sndPlasmaHit, 1, 0);
+audio_sound_gain(s, .5, 0)
+audio_sound_pitch(s, random_range(3, 6))
 var n = irandom_range(2, 6), int = 360/n;
 for (var i = 0; i < 360; i += int) {
     with mod_script_call("mod", "defparticles", "create_spark", x, y) {
@@ -2079,13 +2081,14 @@ for (var i = 0; i < 360; i += int) {
         color = c_white
         fadecolor = c_lime
         gravity = .8
-        gravity_direction = other.direction
+        gravity_direction = other.direction 
     }
 }
 
 #define plasmite_draw
 var _x = image_xscale
 image_xscale = _x + (sqr(speed/(sprite_width * 1.5))) * _x
+defbloom.xscale = image_xscale * 2
 draw_self()
 image_xscale = _x;
 
@@ -3057,33 +3060,33 @@ if bounce > 0 {
 	}
 }
 else {
-  sound_play_hit_ext(sndChickenSword, 1.5 * _p, .8)
-  sound_play_hit_ext(sndBoltHitWall, .8 * _p, .8)
-  sleep(4)
-  view_shake_at(x, y, force * 2)
-  with instance_create(x, y, CustomObject){
-      sprite_index = other.spr_dead
-      image_angle = other.direction
-      move_contact_solid(image_angle, 0)
-      x += lengthdir_x(other.length, image_angle)
-      y += lengthdir_y(other.length, image_angle)
-      repeat(12){
-          with instance_create(x, y, Dust){
-              direction = other.image_angle + 180 + random_range(-35,35)
-              speed = random(5)+1
-              depth = choose(1,-1)
-          }
-      }
-      if fork(){
-          wait(45)
-          if instance_exists(self) instance_destroy()
-          exit
-      }
-      other.x = x
-      other.y = y
-  }
-  sword_end_step()
-  instance_destroy()
+	sound_play_hit_ext(sndChickenSword, 1.5 * _p, .8)
+	sound_play_hit_ext(sndBoltHitWall, .8 * _p, .8)
+	sleep(4)
+	view_shake_at(x, y, force * 2)
+	with instance_create(x, y, CustomObject){
+	    sprite_index = other.spr_dead
+	    image_angle = other.direction
+	    move_contact_solid(image_angle, 0)
+	    x += lengthdir_x(other.length, image_angle)
+	    y += lengthdir_y(other.length, image_angle)
+	    repeat(12){
+	        with instance_create(x, y, Dust){
+	            direction = other.image_angle + 180 + random_range(-35,35)
+	            speed = random(5)+1
+	            depth = choose(1,-1)
+	        }
+	    }
+	    if fork(){
+	        wait(45)
+	        if instance_exists(self) instance_destroy()
+	        exit
+	    }
+	    other.x = x
+	    other.y = y
+	}
+	sword_end_step()
+	instance_destroy()
 }
 
 #define sword_hit

@@ -21,14 +21,14 @@ return false
 #define weapon_sprt
 return global.sprTurboMurderizer3000
 #define weapon_text
-return "RIDICULOUS"
+return "MY BIG BRAAP GUN"
 #define weapon_fire
-motion_add(gunangle-180,4)
+motion_add(gunangle - 180, 2)
 var i = wepflip, flip = wepflip
 repeat(3)
 {
-  weapon_post(9,5,12)
-  var _p = random_range(.8,1.2)
+  weapon_post(9, 5, 12)
+  var _p = random_range(.8, 1.2)
   if !skill_get(17)
 	{
 		sound_play_pitch(sndPlasma,1.3*_p)
@@ -42,8 +42,8 @@ repeat(3)
 	}
 	with mod_script_call_nc("mod","defpack tools","create_plasmite",x,y)
 	{
-		fric = random_range(.02,.2) + .08
-		motion_set(other.gunangle+(i)*25+random_range(-7,7)*other.accuracy,18)
+		fric = random_range(.02, .2) + .08
+		motion_set(other.gunangle + (i * 25) + random_range(-7, 7) * other.accuracy,18)
 		projectile_init(other.team,other)
         move_contact_solid(other.gunangle,6)
         image_angle = direction
