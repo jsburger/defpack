@@ -146,7 +146,9 @@
 	}
 
 
-
+	global.AbrisCustomColor = false;
+	mod_script_call("mod","defpermissions","permission_register","mod",mod_current,"AbrisCustomColor","Use Player colors for Abris weapons")
+	
 	global.SAKmode = 0
 	//mod_script_call("mod","defpermissions","permission_register","mod",mod_current,"SAKmode","SAK Mode")
 
@@ -1776,17 +1778,7 @@ if instance_exists(creator){
         }
         if hand creator.breload = max(reload, creator.breload)
         else creator.reload = max(reload, creator.reload)
-        if place_meeting(x, y, Wall){
-            if acc < accbase{
-                acc += abs(creator.accuracy*3) * timescale
-            }
-            else{
-                acc = accbase;
-            }
-        }
-        else{
-            acc /= power(accspeed, timescale)
-        }
+        acc /= power(accspeed, timescale)
         if !button_check(index, btn) or (auto and acc <= 2){
             instance_destroy()
         }
@@ -1828,8 +1820,8 @@ with instance_create(x, y, CustomProjectile){
 if instance_exists(creator){
     var _x, _y, c = creator, ang;
     if targeting == abris_mouse{
-        _x = mouse_x[index]
-        _y = mouse_y[index]
+        _x = c.x + lengthdir_x(point_distance(c.x, c.y, mouse_x[index], mouse_y[index]), c.gunangle) 
+        _y = c.y + lengthdir_y(point_distance(c.x, c.y, mouse_x[index], mouse_y[index]), c.gunangle)
         ang = c.gunangle
     }
     else if targeting == abris_manual{
@@ -1847,12 +1839,13 @@ if instance_exists(creator){
     y = w[1]
 
     var kick = hand ? creator.bwkick : creator.wkick, yoff = -4 * hand;
-    draw_sprite_ext(sprHeavyGrenadeBlink, 0, c.x + lengthdir_x(14 - kick, ang), c.y + lengthdir_y(14 - kick, ang) + 1 + yoff, 1, 1, ang, lasercolour, 1)
-    var r = acc + accmin, sides = 16, a = 1 - acc/accbase;
-    mod_script_call_nc("mod", "defpack tools", "draw_polygon_striped", sides, r, scrollang, x, y, stripecolour, .1 + .3*a, scroll)
-    mod_script_call_nc("mod", "defpack tools", "draw_circle_width_colour", sides, r, 1, acc + image_angle, x, y, ringcolour, .2 + a * .8)
-    mod_script_call_nc("mod", "defpack tools", "draw_circle_width_colour", sides, accmin, 1, acc + image_angle, x, y, ringcolour, .2 + a * .2)
-    draw_line_width_color(c.x + lengthdir_x(16 - kick, ang), c.y + lengthdir_y(16 - kick, ang) + yoff, x, y, 1, lasercolour, lasercolour)
+    var r = acc + accmin, sides = 16, a = 1 - acc/accbase, _c = global.AbrisCustomColor = true && instance_is(creator, Player) ? player_get_color(creator.index) : lasercolour
+    draw_sprite_ext(sprHeavyGrenadeBlink, 0, c.x + lengthdir_x(14 - kick, ang), c.y + lengthdir_y(14 - kick, ang) + 1 + yoff, 1, 1, ang, _c, 1)
+    mod_script_call_nc("mod", "defpack tools", "draw_circle_width_colour", sides, r, 1, acc + image_angle, x, y, _c, .2 + a * .8)
+    mod_script_call_nc("mod", "defpack tools", "draw_circle_width_colour", sides, accmin, 1, acc + image_angle, x, y, _c, .2 + a * .2)
+    draw_line_width_color(c.x + lengthdir_x(16 - kick, ang), c.y + lengthdir_y(16 - kick, ang) + yoff, x, y, 1, _c, _c)
+    mod_script_call_nc("mod", "defpack tools", "draw_polygon_striped", sides, r, scrollang, x, y, _c, .1 + .3*a, scroll)
+    draw_sprite_ext(sprGrenadeBlink, 0, x, y, 1, 1, image_angle * -.7, _c, 1)
 }
 
 #define abris_hit
