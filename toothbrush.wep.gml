@@ -33,7 +33,7 @@ weapon_post(-6 - (20*skill_get(13)),6,0)
 with instance_create(x+lengthdir_x(6+(20*skill_get(13)),gunangle),y+lengthdir_y(6+(20*skill_get(13)),gunangle),Shank){
 	sprite_index = mskNone
 	canfix = false
-	if skill_get(13) mask_index = global.mskbrush else mask_index = global.brush
+	if skill_get(13) mask_index = global.mskbrush else mask_index = global.brush[0]
 	creator = other
 	team = other.team
 	image_angle = other.gunangle
