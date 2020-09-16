@@ -1,5 +1,5 @@
 #define init
-global.sprFlechetteShotgun = sprite_add_weapon("sprites/weapons/sprFlechetteShotgun.png", 5, 4);
+global.sprFlechetteShotgun = sprite_add_weapon("../sprites/weapons/sprFlechetteShotgun.png", 5, 4);
 
 #define weapon_name
 return "DART SHOTGUN";
@@ -29,7 +29,7 @@ return sndSwapBow;
 return 8;
 
 #define weapon_text
-return "ANTI-PERSONELL WATER GUN";
+return "THEY WON'T COME OFF";
 
 #define weapon_fire
 repeat(3){

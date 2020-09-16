@@ -41,7 +41,7 @@ return global.sprRecordDealer;
 return global.sprRecordDealerHUD;
 
 #define weapon_text
-return "A FUNKY MIX";
+return "WRITE A LOVE SONG";
 
 #define weapon_fire
 var _disc = choose("normal","golden","sticky","bouncer","mega");

@@ -25,7 +25,7 @@ return sndSwapMachinegun;
 return -1;
 
 #define weapon_text
-return "replace me pls";
+return "UNENDING TOXICITY";
 
 #define weapon_fire
 

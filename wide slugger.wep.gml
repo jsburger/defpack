@@ -34,7 +34,7 @@ return false;
 return global.sprWideSlugger;
 
 #define weapon_text
-return "BRICK BLASTER"
+return "GOODBYE BODY"
 
 #define weapon_fire
 weapon_post(7,-40,15)
@@ -65,7 +65,7 @@ with instance_create(x,y,CustomProjectile){
     image_speed = 1
     image_xscale = 1.25
     image_yscale = 1.25
-    pierce = 25
+    pierce = 15
     on_destroy = dyn_destroy
     on_end_step = dyn_step
     on_hit  = void

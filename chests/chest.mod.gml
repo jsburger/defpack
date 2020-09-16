@@ -54,7 +54,7 @@ chest_add("Combo",   6,  ["rapier","rebounce axe","mega hammer"])
 chest_add("Vector",  6,  ["vector shotgun","vector rifle","vector cannon"])
 chest_add("Regal",   5,  ["chris knife","apergig tanat","kemosabe"])
 chest_add("Smart",   7,  [wep_smart_gun,"heavy smart gun", "smarter gun", "smart nuke launcher"])
-chest_add("Auto",    6,  [wep_auto_shotgun,wep_auto_crossbow,wep_auto_grenade_shotgun,wep_heavy_auto_crossbow,"auto abris launcher","auto screwdriver","auto grenade launcher"])
+chest_add("Auto",    6,  [wep_auto_shotgun,wep_auto_crossbow,wep_auto_grenade_shotgun,wep_heavy_auto_crossbow,"auto abris launcher","auto screwdriver","auto grenade launcher","auto knife thrower"])
 chest_add("Quartz",  10, ["quartz machinegun","quartz shotgun","quartz crossbow","quartz laser","quartz launcher"])
 chest_add("Flame",   8,  [wep_flare_gun,wep_dragon,wep_flamethrower,wep_flame_cannon,"firestorm"])
 chest_add("Blood",   9,  [wep_blood_hammer,"bone","big bone",wep_blood_launcher,wep_blood_cannon,"blood abris launcher","blood crossbow"])
@@ -66,7 +66,7 @@ chest_add("Zenith",  13, ["herald","andromeda launcher","stopwatch","sak",/*"ant
     if !instance_exists(GenCont){
         with instances_matching(WeaponChest, "defcustomchestcheck", null){
             defcustomchestcheck = 1
-            if random(100) <= 8 and !instance_is(self, BigWeaponChest) and !instance_is(self, BigCursedChest) and !instance_is(self, GiantWeaponChest){
+            if random(100) <= 8 and !instance_is(self, BigWeaponChest) and !instance_is(self, BigCursedChest) and !instance_is(self, GiantWeaponChest) && skill_get(mut_open_mind) > 0{
                 var q = get_chests(0, GameCont.hard + array_length(instances_matching(Player, "race", "robot")))
                 if array_length(q){
                     customchest_create(x, y, q[irandom(array_length(q) - 1)])

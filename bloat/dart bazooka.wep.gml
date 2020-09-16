@@ -1,6 +1,6 @@
 #define init
-global.sprFlechetteBazooka = sprite_add_weapon("sprites/weapons/sprFlechetteBazooka.png", 9, 4);
-global.sprFlechetteRocket  = sprite_add("sprites\projectiles\sprFlechetteRocket.png", 0, 10, 6);
+global.sprFlechetteBazooka = sprite_add_weapon("../sprites/weapons/sprFlechetteBazooka.png", 9, 4);
+global.sprFlechetteRocket  = sprite_add("../sprites\projectiles\sprFlechetteRocket.png", 0, 10, 6);
 
 #define weapon_name
 return "DART BAZOOKA";
@@ -27,7 +27,7 @@ return sndSwapExplosive;
 return 8;
 
 #define weapon_text
-return choose("1179 POINTS","BIG @wDART");
+return "100.86 AVERAGE";
 
 
 #define weapon_fire

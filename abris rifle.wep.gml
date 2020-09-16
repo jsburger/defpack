@@ -33,7 +33,7 @@ weapon_post(-1,-3,0)
 sound_play_pitchvol(sndNadeReload,1.4,.6)
 
 #define weapon_text
-return "FASTER, FASTER";
+return "IN YOUR SIGHTS";
 
 #define weapon_fire
 var _strtsize = 20;

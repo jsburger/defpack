@@ -8,7 +8,6 @@
 /loadwep big bone
 /loadwep ultra hand
 /loadwep auto screwdriver
-/loadwep chris knife
 /loadwep rapier
 /loadwep rebounce axe
 /loadwep mega hammer

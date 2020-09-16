@@ -31,82 +31,128 @@ return 13;
 return "PROTOPLANETARY ANNIHILATION";
 
 #define weapon_fire
-weapon_post(7,43,18)
-sound_play(sndDoubleFireShotgun)
-sound_play_pitch(sndFlakCannon,1.2)
-sound_play_pitchvol(sndFlakExplode,random_range(.4,.7),.8)
-sound_play_pitch(sndDoubleShotgun,1.2)
-with instance_create(x+lengthdir_x(12,gunangle),y+lengthdir_y(12,gunangle),CustomProjectile) {
-	motion_set(other.gunangle, 15 + random(2))
-	team = other.team
-	creator = other
-	sprite_index = global.sprHotShotBullet
-	damage = 2
-	force = 2
-	image_speed = .4
-	timer = 16
-	ftimer = 1.5
-	time = ftimer
-	canshoot = 0
-	dirfac = random(359)
-	dirfac2 = dirfac
-	on_hit = script_ref_create(cannon_hit)
-	on_wall = script_ref_create(cannon_wall)
-	on_step = script_ref_create(cannon_step)
-	on_draw = script_ref_create(cannon_draw)
-}
+	weapon_post(7,43,18)
+	sound_play(sndDoubleFireShotgun)
+	sound_play_pitch(sndFlakCannon,1.2)
+	sound_play_pitchvol(sndFlakExplode,random_range(.4,.7),.8)
+	sound_play_pitch(sndDoubleShotgun,1.2)
+	with instance_create(x+lengthdir_x(12,gunangle),y+lengthdir_y(12,gunangle),CustomProjectile) {
+		motion_set(other.gunangle, 15 + random(2))
+		team = other.team
+		creator = other
+		sprite_index = global.sprHotShotBullet
+		damage = 2
+		force = 2
+		image_speed = .4
+		ortimer = 16
+		timer = ortimer
+		ftimer = 1.5
+		time = ftimer
+		canshoot = 0
+		dirfac = random(359)
+		dirfac2 = dirfac
+		on_hit = script_ref_create(cannon_hit)
+		on_wall = script_ref_create(cannon_wall)
+		on_step = script_ref_create(cannon_step)
+		on_draw = script_ref_create(cannon_draw)
+	}
 
 #define cannon_wall
-view_shake_at(x,y,20)
-sound_play_pitch(sndShotgunHitWall,.8)
-if skill_get(15){speed ++;image_index = 0}
-move_bounce_solid(1)
-speed *= .7
-	repeat(irandom(1)+2){
-	with instance_create(x, y, FlameShell){
-		motion_set(random(360), random_range(8, 12))
-		projectile_init(other.team,other.creator)
-		image_angle = direction
+	view_shake_at(x,y,20)
+	sound_play_pitch(sndShotgunHitWall,.8)
+	if skill_get(15){speed ++;image_index = 0}
+	move_bounce_solid(1)
+	speed *= .7
+		repeat(irandom(1)+2){
+		with instance_create(x, y, FlameShell){
+			motion_set(random(360), random_range(8, 12))
+			projectile_init(other.team,other.creator)
+			image_angle = direction
+		}
 	}
-}
 
 #define cannon_hit
-x = xprevious
-y = yprevious
-projectile_hit_push(other,damage,force)
-dirfac += 9
-dirfac2 -= 12
-view_shake_at(x,y,4)
-var ang = dirfac
-sound_play_pitchvol(sndFireShotgun, 1, .5)
-sound_play_pitchvol(sndIncinerator, random_range(.8,1.2), .5)
-repeat (5){
-	with instance_create(x, y, FlameShell){
-		team = other.team
-		creator = other.creator
-		motion_set(ang, 9)
-		ang += 72
-		image_angle = direction
+	x = xprevious
+	y = yprevious
+	projectile_hit_push(other,damage,force)
+	dirfac += 9
+	dirfac2 -= 12
+	view_shake_at(x,y,4)
+	var ang = dirfac
+	sound_play_pitchvol(sndFireShotgun, 1, .5)
+	sound_play_pitchvol(sndIncinerator, random_range(.8,1.2), .5)
+	repeat (5){
+		with instance_create(x, y, FlameShell){
+			team = other.team
+			creator = other.creator
+			motion_set(ang, 9)
+			ang += 72
+			image_angle = direction
+		}
 	}
-}
-var ang2 = dirfac2
-repeat(3){
-	with instance_create(x, y, FlameShell){
-		team = other.team
-		creator = other.creator
-		motion_set(ang2, 11)
-		ang2 += 120
-		image_angle = direction
+	var ang2 = dirfac2
+	repeat(3){
+		with instance_create(x, y, FlameShell){
+			team = other.team
+			creator = other.creator
+			motion_set(ang2, 11)
+			ang2 += 120
+			image_angle = direction
+		}
 	}
-}
-timer -= 1;
-if timer <= 0
-{
-	instance_destroy()
-}
-
+	timer -= 1;
+	if timer <= 0
+	{
+		instance_destroy()
+	}
 
 #define cannon_step
+with instances_matching(Slash, "team", team){
+	if place_meeting(x, y, other){
+		with other{
+			motion_add(other.direction, max(0, 12 - speed))
+			time = ftimer;
+			canshoot = false;
+			timer = ortimer;
+			with instance_create(x, y, Deflect){
+				image_angle = other.direction;
+				sound_play_pitchvol(sndFlakExplode, .6, .8);
+				sound_play_pitchvol(sndShotgun, 1, .8);
+			}
+			sleep(30)
+			view_shake_at(x, y, 4)
+			with instance_create(x, y, FlameShell){
+				motion_set(other.direction + random_range(-32, 32), 13 + irandom(3))
+				team = other.team
+				creator = other.creator
+				image_angle = direction
+			}
+		}
+	}
+}
+with instances_matching(instances_matching(CustomSlash, "candeflect", true), "team", team){
+	if place_meeting(x, y, other){
+		with other{
+			motion_add(other.direction, max(0, 12 - speed))
+			time = ftimer;
+			canshoot = false;
+			timer = ortimer;
+			with instance_create(x, y, Deflect){
+				image_angle = other.direction;
+				sound_play_pitchvol(sndFlakExplode, .6, .8);
+				sound_play_pitchvol(sndShotgun, 1, .8);
+			}
+			sleep(30)
+			view_shake_at(x, y, 4)
+			with instance_create(x, y, FlameShell){
+				motion_set(other.direction + random_range(-32, 32), 13 + irandom(3))
+				team = other.team
+				creator = other.creator
+				image_angle = direction
+			}
+		}
+	}
+}
 image_angle+=(6+speed*3)*current_time_scale
 time -= current_time_scale
 

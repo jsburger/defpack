@@ -1,5 +1,5 @@
 #define init
-global.sprAutoNader = sprite_add_weapon("sprites/weapons/sprAutoGrenadeLauncher.png", 2, 1);
+global.sprAutoNader = sprite_add_weapon("../sprites/weapons/sprAutoGrenadeLauncher.png", 2, 1);
 global.sprAutoGrenade = sprite_add("sprites/projectiles/sprAutoGrenade.png",0,3,3);
 
 #define weapon_name
@@ -30,7 +30,7 @@ return 9;
 sound_play(sndNadeReload)
 
 #define weapon_text
-return "GOES WELL WITH STRESS";
+return "CONSTANT EXPLOSIONS";
 
 #define weapon_fire
 sound_play_pitch(sndGrenade,random_range(.8,1.1))

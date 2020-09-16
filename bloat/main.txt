@@ -1,11 +1,18 @@
 /loadwep antiprism
 /loadwep auto flak cannon
+/loadwep auto grenade launcher
 /loadwep bullak machinegun
+/loadwep chris knife
 /loadwep cube gun
+/loadwep dart rifle
+/loadwep dart shotgun
+/loadwep dart cannon
 /loadwep evolver
 /loadwep first aid soda
 /loadwep flak canon
+/loadwep good shotgun
 /loadwep heavy blood crossbow
+/loadwep heavy toxic crossbow
 /loadwep hot crossbow
 /loadwep huge shotgun
 /loadwep lightning orb
@@ -14,6 +21,7 @@
 /loadwep pulser
 /loadwep rocklet shotgun
 /loadwep scorcher
+/loadwep screecher
 /loadwep smart bazooka
 /loadwep smartsword
 /loadwep spear
@@ -31,3 +39,4 @@
 /loadwep heavy laser flak cannon
 /loadwep fire spam gun
 /loadwep ultra spam gun
+/loadwep toxic cannon

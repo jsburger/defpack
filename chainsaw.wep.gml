@@ -15,7 +15,7 @@
 #define weapon_area
 	return 6;
 #define weapon_load
-	return 14;
+	return 7;
 #define weapon_swap
 	return sndSwapMotorized
 #define weapon_auto
@@ -27,7 +27,7 @@
 #define weapon_sprt
 	return global.sprChainsaw
 #define weapon_text
-	return choose("RIP AND TEAR","KILLED ENEMIES ALWAYS#DROP SOME @yAMMO")
+	return choose("RIP AND TEAR", "KAR EN TUK", "KILLED ENEMIES ALWAYS#DROP SOME @yAMMO")
 
 #define weapon_fire
 	with instance_create(x,y,CustomObject){
@@ -102,7 +102,7 @@
 			sound_play_pitch(sndDiscBounce,random_range(.5,.6))
 			sleep(other.size * 80)
 			view_shake_at(x,y,other.size * 80)
-			repeat(other.size){
+			if other.size > 0 && instance_is(other, enemy) repeat(max(choose(other.size, other.size - 1), 1)){
 				with instance_create(other.x,other.y,AmmoPickup){num = .5;sprite_index = global.sprMiniAmmo}
 			}
 		}

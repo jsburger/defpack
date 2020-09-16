@@ -1,5 +1,5 @@
 #define init
-global.sprFlechetteRifle = sprite_add_weapon("sprites/weapons/sprFlechetteRifle.png", 6, 3);
+global.sprFlechetteRifle = sprite_add_weapon("../sprites/weapons/sprFlechetteRifle.png", 6, 3);
 
 #define weapon_name
 return "DART RIFLE";
@@ -29,7 +29,7 @@ return sndSwapBow;
 return 12;
 
 #define weapon_text
-return "STICKY @wDARTS";
+return "GET IT OFF";
 
 #define weapon_fire
 weapon_post(5,-4,8)

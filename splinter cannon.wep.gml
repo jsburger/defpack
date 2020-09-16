@@ -21,7 +21,7 @@ return 1
 #define weapon_sprt
 return global.sprSplinterCannon
 #define weapon_text
-return "CONSIDER IT HYPER"
+return "THAT HAS TO HURT"
 #define weapon_fire
 weapon_post(13,-72,30)
 sleep(15)
@@ -72,6 +72,10 @@ repeat(3){
         sprite_index = sprTutorialSplinter
         motion_add(random(360),random_range(3,6))
     }
+}
+view_shake_at(x, y, 48);
+if fork(){
+  sleep(40)
 }
 sound_play_pitch(sndBoltHitWall,.7)
 sound_play_pitch(sndExplosionS,random_range(.4,.6))

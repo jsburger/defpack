@@ -37,7 +37,7 @@ return sndSwapHammer;
 return 24;
 
 #define weapon_text
-return "UNBELIEVABLE POWER";
+return "UNBELIEVABLE HAMMERING";
 #define weapon_rads
 return 24
 

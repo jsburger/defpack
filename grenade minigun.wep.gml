@@ -24,7 +24,7 @@ return false
 #define weapon_sprt
 return global.sprGrenadeMinigun
 #define weapon_text
-return "BLESSED BY#THE @wGRENADE @sGOD HIMSELF"
+return choose("LOAD IT UP", "HARD TO BE CAREFUL")
 #define weapon_chrg
 return true
 #define weapon_fire

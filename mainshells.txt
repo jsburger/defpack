@@ -6,7 +6,6 @@
 /loadwep psy eraser
 /loadwep psybird
 
-
 //SPLIT SHELL
 
 /loadwep split shotgun
@@ -30,5 +29,6 @@
 /loadwep wide slugger
 /loadwep apergig tanat
 /loadwep good shotgun
+/loadwep mega shotgun
 
 /load mainbolts

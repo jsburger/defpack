@@ -55,7 +55,7 @@ sound_play(sndShotReload)
 if p wkick = -1
 else bwkick = -1
 #define weapon_text
-return "OH @rYEAH";
+return "BURNING COMETS";
 
 #define weapon_fire(w)
 if !is_object(w){

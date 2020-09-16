@@ -31,7 +31,7 @@ return 0;
 return -1;
 
 #define weapon_text
-return "TOO BIG FOR THE HOLSTER"
+return "THROW THE HOLSTER IN THE WASH"
 
 #define weapon_fire
 weapon_post(9,-40,30)

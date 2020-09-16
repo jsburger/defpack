@@ -24,17 +24,13 @@
 /loadwep bow
 /loadwep explosive bow
 
-//DARTS
-
-/loadwep dart rifle
-/loadwep dart shotgun
-/loadwep dart bazooka
+//KNIVES
+/loadwep knife thrower
+/loadwep auto knife thrower
+/loadwep sword thrower
 
 //OTHER BOLT
-
 /loadwep marker
-/loadwep knife thrower
-/loadwep sword thrower
 /loadwep heavy toxic crossbow
 /loadwep hyper crossbow
 

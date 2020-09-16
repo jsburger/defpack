@@ -43,7 +43,7 @@ return 0
 #define weapon_sprt
 return global.sprDiscSpamGun
 #define weapon_text
-return "Our sincere apologies"
+return "SORRIES WON'T COVER THIS"
 #define weapon_fire
 var _p = random_range(.6, 1.3)
 sound_play_pitch(sndSwapExplosive, 1.7 * _p)

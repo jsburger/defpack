@@ -20,3 +20,8 @@
 //loadwep bouncer shotgun
 /loadwep smarter bouncer gun
 /loadwep mega bouncer revolver
+/loadwep rusty bouncer revolver
+/loadwep golden bouncer revolver
+/loadwep golden bouncer machinegun
+/loadwep golden assault bouncer rifle
+/loadwep bouncer rogue rifle

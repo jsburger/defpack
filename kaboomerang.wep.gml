@@ -25,7 +25,7 @@
   return sndSwapHammer;
 
 #define weapon_auto
-  return false;
+  return true;
 
 #define weapon_melee
   return true;
@@ -34,13 +34,13 @@
   return false;
 
 #define weapon_fire
-  sound_play(sndChickenThrow)
+  sound_play(sndChickenThrow);
   with instance_create(x,y,CustomObject)
   {
     team = other.team
     creator = other
     sprite_index = global.sprboomerangProj
-    mask_index   = sprMapDot
+    mask_index   = sprBullet1
     image_speed = .5
     curse = other.curse
     other.curse = 0
@@ -73,7 +73,7 @@
   }
   with instances_matching_ne(hitme,"team",team)
   {
-    if distance_to_object(other) <= 4
+    if distance_to_object(other) <= 5
     {
       if projectile_canhit(other) = true
       {
@@ -81,11 +81,13 @@
         {
           if lasthit != other
           {
-            lasthit = other
-            sound_play(sndExplosionS)
+            lasthit = other;
+            sound_play(sndExplosionS);
             var meetx = (x + other.x)/2;
             var meety = (y + other.y)/2;
-            instance_create(meetx,meety,SmallExplosion)
+            instance_create(meetx,meety,SmallExplosion);
+            sleep(7 * other.size);
+            view_shake_at(x, y, 5 * other.size);
           }
         }
       }

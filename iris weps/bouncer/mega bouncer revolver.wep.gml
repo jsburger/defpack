@@ -121,7 +121,10 @@ else {instance_destroy();exit}
 with other{instance_create(x,y,FloorExplo);instance_destroy()}
 
 #define mega_destroy
-repeat(3)
+sleep(20)
+sound_play_pitchvol(sndSuperFlakExplode, 1.2, .8);
+sound_play_pitchvol(sndExplosion, .8, .8);
+repeat(3 + (bounce <= 0 ? 3 : 0))
 {
   instance_create(x,y,Smoke)
   with instance_create(x,y,BouncerBullet)

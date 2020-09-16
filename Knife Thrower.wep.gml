@@ -23,7 +23,7 @@ return global.sprKnifeThrower
 #define weapon_reloaded
 
 #define weapon_text
-return choose("LITTLE TERROR", "@wKNIVES@s CAN HIT TWO THINGS AT ONCE")
+return choose("REN FAIRE", "@wKNIVES@s CAN HIT TWO THINGS AT ONCE")
 
 #define weapon_fire
 var _p = random_range(.8, 1.2)

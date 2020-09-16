@@ -188,7 +188,7 @@ else{
 #define weapon_sprt
 return global.toot
 #define weapon_text
-return "this is what ends it"
+return "THE END OF IT ALL"
 
 #define step
 #define pop

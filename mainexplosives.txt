@@ -23,7 +23,6 @@
 /loadwep sonic launcher
 /loadwep assault sonic launcher
 /loadwep supersonic launcher
-/loadwep screecher
 /loadwep sonic hammer
 
 //MINI EXPLOSIONS
@@ -44,16 +43,11 @@
 
 /loadwep smart nuke launcher
 
-//CANNON
-
-/loadwep toxic cannon
-
 //OTHER EXPLOSIVE
 
 /loadwep chainsaw
 /loadwep claymore
-/loadwep kaboomerang
-/loadwep auto grenade launcher
+/loadwep kaboomerang	
 /loadwep heavy nuke launcher
 /loadwep firestorm
 /loadwep andromeda launcher

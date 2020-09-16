@@ -26,7 +26,7 @@ return sndSwapBow;
 return 10;
 
 #define weapon_text
-return "FANCY ME A VOODOO DOLL";
+return "WHO NEEDS VOODOO";
 
 #define weapon_fire
 var i = 0;

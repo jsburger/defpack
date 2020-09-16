@@ -14,7 +14,7 @@ return 5;
 return false;
 
 #define weapon_load
-return 23;
+return 30;
 
 #define weapon_cost
 return 4;
@@ -26,7 +26,7 @@ return sndSwapEnergy;
 return 9;
 
 #define weapon_text
-return "1/10";
+return "ENJOY THE SHOW";
 
 #define weapon_fire
 weapon_post(8,-13,53)

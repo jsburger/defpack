@@ -19,7 +19,7 @@ return 0
 #define weapon_laser_sight
 return 0
 #define weapon_text
-return "THE FUTURE OF PAINTBALL";
+return "EHE";
 #define weapon_fire
 var _flip = instance_is(self, Player) ? wepflip : choose(-1, 1)
 repeat(2)

@@ -18,7 +18,7 @@ return 0
 #define weapon_laser_sight
 return 0
 #define weapon_text
-return "THE FIZZY REVOLVER"
+return "CAN'T GET ENOUGH"
 #define weapon_fire(w)
 if is_object(w)
 {
