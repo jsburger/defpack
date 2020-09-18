@@ -94,7 +94,7 @@ with instances_matching_ne(projectile, "team", team){
 	if distance_to_object(other) <= 11{
 		sleep(4)
 		sound_play_pitchvol(sndShielderDeflect,random_range(1.8,2.2),.4)
-		view_shake_at(x,y,2)
+		view_shake_max_at(x,y,2)
 		instance_destroy()
 	}
 }
@@ -116,6 +116,6 @@ with instance_create(x,y,BulletHit){
 if place_meeting(x + hspeed,y +vspeed,Wall){sound_play_hit(sndHitWall,.2)}
 
 #define def_hit
-view_shake_at(x,y,8)
-projectile_hit(other, damage, force, direction)
-instance_destroy()
+view_shake_max_at(x,y,8)
+if projectile_canhit_melee(other) = true projectile_hit(other, damage, force, direction)
+//instance_destroy()
