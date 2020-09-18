@@ -39,7 +39,7 @@ return "AIM DOWN SIGHTS";
 var _strtsize = 30;
 var _endsize  = 15;
 with mod_script_call("mod","defpack tools","create_abris",self,_strtsize,_endsize,argument0){
-	accspeed = 1.3
+	accspeed = 1.15
 	damage = 1
 	maxdamage = 3
 	payload = script_ref_create(pop)
