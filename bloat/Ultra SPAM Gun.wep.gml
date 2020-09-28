@@ -1,6 +1,6 @@
 #define init
-global.sprUltraSpamGun 		= sprite_add_weapon("sprites/weapons/sprUltraSpamGun.png", 0, 2);
-global.sprUltraSpamGunOff = sprite_add_weapon("sprites/weapons/sprUltraSpamGunOff.png", 0, 2);
+global.sprUltraSpamGun 		= sprite_add_weapon("../sprites/weapons/sprUltraSpamGun.png", 0, 2);
+global.sprUltraSpamGunOff = sprite_add_weapon("../sprites/weapons/sprUltraSpamGunOff.png", 0, 2);
 #define weapon_name
 return "ULTRA SPAM GUN";
 

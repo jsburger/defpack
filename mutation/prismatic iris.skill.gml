@@ -1,10 +1,10 @@
 #define init
 global.color = 0                                                                                                                                 //variable that keys all these arrays, set by subpicks according to their filename
-global.colors = ["stock", "pest", "fire", "psy", "thunder", "blind", "bouncer"]                                                                  //the actual words used for the gun filenames
-global.names = ["prismatic iris", "pestilent gaze", "blazing visage", "all-seeing eye", "clouded stare", "filtered lens", "quivering sight"]     //sub mutation names
+global.colors = ["stock", "pest", "fire", "psy", "thunder", "blind", "bouncer", ""]                                                                  //the actual words used for the gun filenames
+global.names = ["prismatic iris", "pestilent gaze", "blazing visage", "all-seeing eye", "clouded stare", "filtered lens", "quivering sight", "fantastic refractions"]     //sub mutation names
 //global.customs = ["sniper rifle", "bullet cannon", "bullak cannon", "gunhammer"] DEPRECATED                                                    //custom guns that need coloring too, make sure to add to the converter switch
 global.order = [-1,2,0,4,3,5,1]                                                                                              //the code goes through the colors array in order, assigning the subpick to the slot numbered here
-global.descriptions = ["h", "@gTOXIC", "@rFLAMING", "@pHOMING", "@bCHARGED", "@wSOMETHING ELSE", "@yBOUNCY"]                                      //shit thats appended to the subpick description
+global.descriptions = ["h", "@gTOXIC", "@rFLAMING", "@pHOMING", "@bCHARGED", "@wSOMETHING ELSE", "@yBOUNCY",'@(color:${make_colour_hsv(current_time_scale / room_speed, 220, 255})EVERYTHING']                                      //shit thats appended to the subpick description
 global.colorcount = array_length_1d(global.colors)-1
 global.icons = []
 global.icon   = sprite_add("../sprites/mutation/sprMutPrismaticIris0.png", 1, 12, 16)
