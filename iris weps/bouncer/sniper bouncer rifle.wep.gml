@@ -26,7 +26,7 @@ return 12;
 return sndSwapMachinegun;
 
 #define weapon_laser_sight
-with instances_matching(instances_matching(CustomObject, "name", "sniper bouncer charge"),"creator",self){
+with instances_matching(instances_matching(CustomObject, "name", "BouncerSniperCharge"),"creator",self){
     with other{
         var q = shoot(x + lengthdir_x(10, gunangle), y + lengthdir_y(10, gunangle), gunangle, team, 1 + other.charge/other.maxcharge, 2)
         with q{
@@ -53,7 +53,7 @@ return choose("BEWARE THE RICOCHET");
 
 #define weapon_fire
 with mod_script_call_self("mod", "defpack tools", "create_sniper_charge", x, y){
-    name = "sniper bouncer charge"
+    name = "BouncerSniperCharge"
     creator = other
     team = other.team
     index = other.index

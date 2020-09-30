@@ -41,7 +41,7 @@ return "POTENTIAL"
     sound_set_track_position(sound_play_pitchvol(sndLaserCannonCharge, 3 * _p, .4 * _v), .2)
     // sound_play_pitchvol(sndEnemyFire,     random_range(1, 2),  .8)
     // sound_play_pitchvol(sndNothing2Ball,  random_range(2, 3), .2)
-    reload += reloadspeed
+    reload += "reloadspeed" in self ? reloadspeed : 1;
     with instance_create(x, y, CustomProjectile) {
         name = "InfiniPellet"
         sprite_index = global.sprPellet

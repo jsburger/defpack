@@ -5,6 +5,9 @@ global.sprPsyBulletHit   = sprite_add("../../sprites/projectiles/iris/psy/sprPsy
 global.epic = 1
 mod_script_call_nc("mod","defpermissions","permission_register","weapon",mod_current,"epic","Psy Sniper Sight")
 
+global.performanceCache = {};
+global.lastTime = 0;
+
 #macro lasercolor 14074
 
 #define weapon_name
@@ -35,15 +38,38 @@ return sndSwapMachinegun;
 var xx = lengthdir_x(l, ang), yy = lengthdir_y(l, ang)
 draw_vertex(x + xx, y + yy)
 draw_vertex(x - xx, y - yy);
+// trace_time_bulk("drawing")
 
+
+#define trace_time_bulk_start
+global.performanceCache = {}
+for (var i = 0; i < argument_count; i++) {
+	lq_set(global.performanceCache, argument[i], 0)
+}
+global.lastTime = get_timer_nonsync()
+
+#define trace_time_bulk(key)
+var t = get_timer_nonsync();
+lq_set(global.performanceCache, key, lq_get(global.performanceCache, key) + (t - global.lastTime))
+global.lastTime = get_timer_nonsync()
+
+#define trace_time_bulk_end
+var acc = 0
+for (var i = 0; i < lq_size(global.performanceCache); i += 1) {
+	trace_color(lq_get_key(global.performanceCache, i) + ": " + string(lq_get_value(global.performanceCache, i)), c_gray)
+	acc += lq_get_value(global.performanceCache, i)
+}
+trace_color("total: " + string(acc), c_gray)
 
 #define weapon_laser_sight
-with instances_matching(instances_matching(CustomObject, "name", "sniper psy charge"),"creator",self){
+with instances_matching(instances_matching(CustomObject, "name", "PsySniperCharge"), "creator", self) {
     with other
     if global.epic{
+	// trace_time_bulk_start("start", "movement", "reflect_checks", "reflection", "drawing", "nearest_matching", "homing_checks", "wall_collision", "turning")
         draw_set_color(lasercolor)
         draw_primitive_begin(pr_trianglestrip)
         var l = .5;
+	// trace_time_bulk("start")
         drawthing(x, y, l, gunangle + 90)
         with instance_create(x+lengthdir_x(10,gunangle),y+lengthdir_y(10,gunangle),CustomObject){
             move_contact_solid(other.gunangle,18)
@@ -57,13 +83,13 @@ with instances_matching(instances_matching(CustomObject, "name", "sniper psy cha
             bangle = image_angle
             lasthit = -4
             image_yscale = .5
-
             var shields = instances_matching_ne([CrystalShield,PopoShield], "team", team),
                 slashes = instances_matching_ne([EnergySlash,Slash,EnemySlash,EnergyHammerSlash,BloodSlash,GuitarSlash], "team", team),
                 shanks = instances_matching_ne([Shank,EnergyShank], "team", team),
                 customslashes = instances_matching_ne(CustomSlash, "team", team),
                 olddirection = direction;
             var dir = 0
+    	// trace_time_bulk("start")
             do
             {
                 var _x = x; var _y = y
@@ -71,10 +97,12 @@ with instances_matching(instances_matching(CustomObject, "name", "sniper psy cha
             	x += lengthdir_x(hyperspeed,direction)
             	y += lengthdir_y(hyperspeed,direction)
             	olddirection = direction
+    		// trace_time_bulk("movement")
             	with shields {if place_meeting(x,y,other){other.team = team;other.direction = point_direction(x,y,other.x,other.y);other.image_angle = other.direction}}
             	with slashes {if place_meeting(x,y,other){other.team = team;other.direction = direction ;other.image_angle = other.direction}}
             	with shanks  {if place_meeting(x,y,other){with other{instance_destroy();exit}}}
             	with customslashes {if place_meeting(x,y,other){mod_script_call_self(on_projectile[0],on_projectile[1],on_projectile[2]);}}
+        	// trace_time_bulk("reflect_checks")
             	if direction != olddirection{
             	    bangle = direction
                     var shields = instances_matching_ne([CrystalShield,PopoShield], "team", team),
@@ -84,8 +112,9 @@ with instances_matching(instances_matching(CustomObject, "name", "sniper psy cha
                     drawthing(x, y, l, olddirection + 90)
                     olddirection = direction
             	}
-
+            // trace_time_bulk("reflection")
             	var q = instance_nearest_matching_ne(x,y,hitme,"team",team);
+            // trace_time_bulk("nearest_matching")
             	var reset = 1;
                 var cap = 3*hyperspeed;
             	if instance_exists(q){
@@ -98,18 +127,20 @@ with instances_matching(instances_matching(CustomObject, "name", "sniper psy cha
                         }
             	    }
             	}
+            // trace_time_bulk("homing_checks")
             	if reset{
             	    direction -= clamp(angle_difference(direction,bangle),-cap,cap)
             	}
             	if direction != olddirection{
             	    drawthing(x, y, l, direction + 90)
             	}
-
+			// trace_time_bulk("turning")
             	if place_meeting(x, y, Wall){
             	    var e = mod_script_call_nc("mod", "defpack tools", "collision_line_first", x, y, x + lengthdir_x(hyperspeed, direction), y + lengthdir_y(hyperspeed, direction), Wall, 0, 0)
             	    drawthing(e[0], e[1], l, direction + 90)
             	    instance_destroy()
             	}
+            // trace_time_bulk("wall_collision")
             }
             while instance_exists(self) and dir < 500
             if instance_exists(self){
@@ -118,8 +149,11 @@ with instances_matching(instances_matching(CustomObject, "name", "sniper psy cha
             }
 
         }
+        trace_time()
         draw_primitive_end()
         draw_set_color(c_white)
+        // trace_time("draw_primitive_end")
+        // trace_time_bulk_end()
         return false;
     }
     return true;
@@ -141,7 +175,7 @@ return choose("insanity");
 
 #define weapon_fire
 with mod_script_call_self("mod", "defpack tools", "create_sniper_charge", x, y){
-    name = "sniper psy charge"
+    name = "PsySniperCharge"
     creator = other
     team = other.team
     index = other.index

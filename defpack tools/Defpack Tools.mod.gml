@@ -1,52 +1,46 @@
 #define init
 
+	/*
+	File Format Overview (WIP)
+	Init
+		Sprite/Mask adding
+		Create Globals, Rocklet Surface, Charge and Abris Color permission registry
+		
+	Macros
+	Init Relevant Functions (sprite_add_p)
+	Cleanup
+	Chat Commands
+	Drawing
+		draw_dark (Crystal Torch, Lightning Bolts, Mega Lightning Bullets)
+		draw_gui
+			Sniper cursors
+			Charge Indicators
+		draw_pause (sets Stopwatch variables)
+		draw_bloom 
+			defbloom handling
+			Misc bloom (Marker, Vector Cannon)
+		draw_shadows (Smarter Gun shadows)
+		
+	Game_Start
+	Step
+	
+	Helper Functions
+		drone_shadow (draws smarter gun shadows)
+		soda_add soda_get (soda api)
+		instance_in type functions
+		various homing scripts (instance_nearest_matching_ne)
+		...
+	*/
+
+
 	var i = "../sprites/projectiles/";
 	global.spr = {};
 
 	//Sprites, sorted by ammo type, misc at the bottom
 	with spr {
 		msk = {};
-
-		//Fire Bullets
-		FireBullet         = sprite_add(i + "iris/fire/sprFireBullet.png",    2, 8, 8);
-		FireBulletHit      = sprite_add(i + "iris/fire/sprFireBulletHit.png", 4, 8, 8);
-		HeavyFireBullet    = sprite_add(i + "iris/fire/sprHeavyFireBullet.png",    2, 12, 12);
-		HeavyFireBulletHit = sprite_add(i + "iris/fire/sprHeavyFireBulletHit.png", 4, 12, 12);
-
-		//Bouncers
-		HeavyBouncerBullet = sprite_add(i + "iris/bouncer/sprHeavyBouncerBullet.png", 2, 12, 12);
-
-		//Toxic Bullets
-		ToxicBullet         = sprite_add(i + "iris/pest/sprPestBullet.png",    2, 8, 8);
-		ToxicBulletHit      = sprite_add(i + "iris/pest/sprPestBulletHit.png", 4, 8, 8);
-		ToxicShell          = sprite_add(i + "iris/pest/sprPestShell.png", 2, 8, 8);
-		ToxicShellHit       = sprite_add(i + "iris/pest/sprPestShellDisappear.png", 4, 8, 8);
-		HeavyToxicBullet    = sprite_add(i + "iris/pest/sprHeavyPestBullet.png",    2, 12, 12);
-		HeavyToxicBulletHit = sprite_add(i + "iris/pest/sprHeavyPestBulletHit.png", 4, 12, 12);
-
-		//Lightning Bullets
-		LightningBullet         = sprite_add(i + "iris/thunder/sprThunderBullet.png",    2, 8, 8);
-		LightningBulletUpg      = sprite_add(i + "iris/thunder/sprThunderBulletUpg.png", 2, 8, 8);
-		LightningBulletHit      = sprite_add(i + "iris/thunder/sprThunderBulletHit.png", 4, 8, 8);
-		HeavyLightningBullet    = sprite_add(i + "iris/thunder/sprHeavyThunderBullet.png",    2, 12, 12);
-		HeavyLightningBulletUpg = sprite_add(i + "iris/thunder/sprHeavyThunderBulletUpg.png", 2, 12, 12);
-		HeavyLightningBulletHit = sprite_add(i + "iris/thunder/sprHeavyThunderBulletHit.png", 4, 12, 12);
-
-		//Psy Bullets
-		PsyBullet         = sprite_add  (i + "iris/psy/sprPsyBullet.png",    2, 8, 8);
-		PsyBulletHit      = sprite_add  (i + "iris/psy/sprPsyBulletHit.png", 4, 8, 8);
-		msk.PsyBullet     = sprite_add_p(i + "iris/psy/mskPsyBullet.png",    0, 7, 3);
-		HeavyPsyBullet    = sprite_add  (i + "iris/psy/sprHeavyPsyBullet.png",    2, 12, 12);
-		HeavyPsyBulletHit = sprite_add  (i + "iris/psy/sprHeavyPsyBulletHit.png", 4, 12, 12);
-
-		//Dark Bullets
-		DarkBullet     = sprite_add  (i + "sprBlackBullet.png",    2, 8, 8);
-		DarkBulletHit  = sprite_add  (i + "sprBlackBulletHit.png", 4, 8, 8);
-		msk.DarkBullet = sprite_add_p(i + "mskBlackBullet.png",    0, 3, 5);
-
-		//Light Bullets
-		LightBullet    = sprite_add(i + "sprWhiteBullet.png",    2, 8, 8);
-		LightBulletHit = sprite_add(i + "sprWhiteBulletHit.png", 4, 8, 8);
+		
+		 //Bullet sprites added in defpack bullets.mod
 
 		//Iris Casings
 		GenShell      = sprite_add("../sprites/other/sprGenShell.png",   7, 2, 2);
@@ -57,6 +51,10 @@
 		//Psy Shells
 		PsyPellet          = sprite_add(i + "sprPsyShell.png", 2, 8, 8);
 		PsyPelletDisappear = sprite_add(i + "sprPsyShellDisappear.png", 5, 8, 8);
+
+		//Toxic Shells?
+		ToxicShell          = sprite_add(i + "iris/pest/sprPestShell.png", 2, 8, 8);
+		ToxicShellHit       = sprite_add(i + "iris/pest/sprPestShellDisappear.png", 4, 8, 8);
 
 		//Split Shells
 		SplitShell               = sprite_add(i + "sprSplitShell.png",          2, 8, 8);
@@ -166,6 +164,8 @@
 	global.chargeSmooth = [0, 0]
 
 	mod_script_call_nc("mod", "defpermissions", "permission_register_options", "mod", mod_current, "chargeType", "Weapon Charge Indicators", ["Off", "Wep Specific", "Bar Only", "Arc Only"])
+	
+	global.sodaList = []
 
 	//todo:
 	//find out if bolt marrow should be split into step on bolts
@@ -215,6 +215,10 @@
 	}
 	return q
 
+#define cleanup
+	if surface_exists(global.trailsf) surface_destroy(global.trailsf)
+	with global.traildrawer instance_destroy()
+
 #define chat_command(cmd,arg,ind)
 	if cmd = "sakcity"{
 	    global.SAKmode = !global.SAKmode
@@ -224,13 +228,10 @@
 	    }
 	    else{
 	        trace_color("Evidently the ticket wasn't one way.", c_gray)
-	        trace_color("(Weapon drops are restored)", c_gray)
+	        trace_color("(Weapon drops are as normal)", c_gray)
 	    }
 	    return 1
 	}
-
-#define cleanup
-	with global.traildrawer instance_destroy()
 
 #define draw_dark()
 	with Player{
@@ -257,26 +258,30 @@
 	}
 
 #define draw_gui
-with instances_matching(CustomObject,"name","sniper charge","sniper pest charge","sniper fire charge","sniper thunder charge","sniper psy charge", "sniper bouncer charge"){
-    if !instance_exists(creator){draw_set_visible_all(1);instance_destroy();exit}
-    draw_set_visible_all(0)
-    draw_set_visible(creator.index,1)
-    var _pc     = player_get_color(creator.index);
-    if holdtime >= 60 {var _m = 5}else{var _m = 3}
-    if current_frame mod _m <= current_time_scale && _m = 3{sound_play_pitch(sndCursedReminder,5)}
-    if charged = 0{if (current_frame mod _m) <= current_time_scale {if _pc != c_white {_pc = c_white}else{_pc = player_get_color(creator.index)}}}
-    var _offset = charge;
-    var _vpf    = 3;
-    var _mx     = mouse_x_nonsync - view_xview_nonsync + 1;
-    var _my     = mouse_y_nonsync - view_yview_nonsync + 1;
-    for var i = -1; i <= 1; i += 2{
-        for var o = -1; o <= 1; o += 2{
-            draw_sprite_ext(spr.Aim, 0, _mx + (_vpf - _offset + 100) * i, _my + (_vpf - _offset + 100) * o, -i, -o, 0, _pc, .1 + .9*charge/100)
-        }
-    }
-    draw_sprite_ext(spr.CursorCentre,0,_mx,_my,1,1,0,_pc,1)
-}
-draw_set_visible_all(1)
+	var q = instances_matching(CustomObject, "parent", "sniperCharge");
+	if (array_length(q) > 0) with instances_matching_gt(q, "index", -1) if player_is_local_nonsync(index) {
+
+		var _col = player_get_color(index),
+			_h = holdtime <= 60;
+			_cyc = _h ? 3 : 5,
+		
+		// Flash white
+		if current_frame mod _cyc < current_time_scale {
+			_col = _col == c_white ? c_gray : c_white
+			if _h sound_play_pitch(sndCursedReminder, 5)
+		}
+		
+	    var _vpf = 3,
+	    	_mx  = mouse_x_nonsync - view_xview_nonsync + 1,
+	    	_my  = mouse_y_nonsync - view_yview_nonsync + 1;
+		
+	    for (var i = -1; i <= 1; i += 2) {
+	        for (var o = -1; o <= 1; o += 2) {
+	            draw_sprite_ext(spr.Aim, 0, _mx + (_vpf - charge + 100) * i, _my + (_vpf - charge + 100) * o, -i, -o, 0, _col, .1 + .9 * charge/maxcharge)
+	        }
+	    }
+	    draw_sprite_ext(spr.CursorCentre, 0, _mx, _my, 1, 1, 0, _col, 1)
+	}
 
 var q = instances_matching_ne([CustomObject, CustomProjectile], "defcharge", undefined);
 if global.chargeType with Player if player_is_local_nonsync(index){
@@ -395,12 +400,113 @@ with Player if visible{
     drone_shadow(bwep)
 }
 
+#define game_start
+	// Finds all sodas available
+	var weps = mod_get_names("weapon");
+	with weps {
+		if mod_script_exists("weapon", self, "soda_avail") add_soda(self)
+	}
+	// Cleans out sodas that aren't loaded anymore
+	for (var i = 0; i < array_length(global.sodaList); i++) {
+		if !mod_exists("weapon", global.sodaList[i]) {
+			global.sodaList = array_delete(global.sodaList, i)
+			i--
+		}
+	}
+
+
+#define step
+	// Gets rid of dummy weapons, I don't know why vanilla doesn't do this
+	with instances_matching(WepPickup, "wep", 0) instance_destroy()
+	
+	// Hold Icons for dropped weapons
+	with instances_matching_ne(WepPickup, "chargecheck", 1) {
+	    chargecheck = 1
+	    if weapon_get_chrg(wep) {
+	        name += ` @0(${spr.Charge}:0) `//-.35
+	    }
+	}
+	
+	// Surface for Rocklet trails
+	if !surface_exists(global.trailsf) {
+	    global.trailsf = surface_create(game_width * 4, game_height * 4)
+	    surface_set_target(global.trailsf)
+	    draw_clear_alpha(c_black, 0)
+	    surface_reset_target()
+	}
+	// CustomDraw that uses said surface
+	if !instance_exists(global.traildrawer) {
+	    with script_bind_draw(draw_trails, 1){
+	        global.traildrawer = id
+	        persistent = 1
+	    }
+	}
+	
+	// SAK city rolls
+	if global.SAKmode && mod_exists("weapon", "sak"){
+	    with instances_matching(instances_matching(WepPickup, "roll", 1), "saked", undefined) {
+	        saked = 1
+	        wep = mod_script_call_nc("weapon", "sak", "make_gun_random")
+	    }
+	}
+	
+	// Give all explosions a hitid since manually setting them is stupid
+	with instances_matching([Explosion, SmallExplosion, GreenExplosion, PopoExplosion], "hitid", -1) {
+	    hitid = [sprite_index, string_replace(string_upper(object_get_name(object_index)), "EXPLOSION", " EXPLOSION")]
+	}
+	
+	// Donut Drops
+	if mod_exists("weapon", "donut box") {
+		with instances_matching_le(instances_matching_ne(instances_matching_ne(enemy, "freeze", null), object_index, Grunt), "my_health", 0) {
+			if !irandom(97) {
+				with instance_create(x, y, WepPickup) {
+					wep = "donut box"
+				}
+			}
+		}
+	}
+	// Soda Drops
+	with SodaMachine {
+		if fork(){
+		    var _x = x, _y = y;
+		    wait(0)
+		    if !instance_exists(self) && instance_exists(Wall){
+	    		with instance_create(_x, _y, WepPickup){
+	    		    if !irandom(99) and mod_exists("weapon", "soda popper") wep = "soda popper"
+	    		    else wep = soda_get()
+	    		}
+	    	}
+	    	exit
+		}
+	}
+
+
+
 #define drone_shadow(w)
 if !is_object(w) exit
 if lq_defget(w, "is_drone", 0){
     draw_sprite(shd16, 0, w.x, w.y + 12)
 }
 
+#define add_soda(soda)
+var found = false;
+with global.sodaList {
+	if self = soda {
+		found = true
+		break
+	}
+}
+if !found array_push(global.sodaList, soda)
+
+#define soda_get()
+var available = [], q;
+with global.sodaList {
+	q = mod_script_call("weapon", self, "soda_avail");
+	if q == undefined or q {
+		array_push(available, self)
+	}
+}
+return available[irandom(array_length(available)-1)]
 
 #define instances_in(left,top,right,bottom,obj)
 return instances_matching_gt(instances_matching_lt(instances_matching_gt(instances_matching_lt(obj,"y",bottom),"y",top),"x",right),"x",left)
@@ -505,6 +611,7 @@ var q = audio_play_sound_at(snd, p[0] - x, 0, p[1] - y, 100, 300, 1, false, 1);
 audio_sound_pitch(q, pitch);
 audio_sound_gain(q, vol, 0);
 return q;
+
  //very good and epic sound stuff
  //thank you yokin for coding ntte really good and also letting me copy from it
 #define sound_play_hit_ext(_sound, _pitch, _volume)
@@ -528,6 +635,14 @@ return (b - a) * (1 - power((n - 1)/n, dn))
 
 #define angle_approach(a, b, n, dn)
 return angle_difference(a, b) * (1 - power((n - 1)/n, dn))
+
+#define array_delete(arr, index)
+	// Returns an array that holds everything but the indicated index
+	var b = [], _l = array_length(arr);
+	if index > 0 array_copy(b, 0, arr, 0, index)
+	if index != _l - 1 array_copy(b, array_length(b), arr, index + 1, _l - index)
+	return b
+
 
 #define get_reloadspeed(p)
 if !instance_is(p, Player) return 1
@@ -569,72 +684,6 @@ if is_string(w){
 }
 return 0
 
-#define step
- //gets rid of dummy weapons, i dont know why vanilla doesnt do this
-with instances_matching(WepPickup, "wep", 0) instance_destroy()
-
- //adds the hold icon to charge weapons
-with instances_matching_ne(WepPickup, "chargecheck", 1){
-    chargecheck = 1
-    if weapon_get_chrg(wep) {
-        name += ` @0(${spr.Charge}:0) `//-.35
-    }
-}
-
- //surface for rocklet trails
-if !surface_exists(global.trailsf) {
-    global.trailsf = surface_create(game_width * 4, game_height * 4)
-    surface_set_target(global.trailsf)
-    draw_clear_alpha(c_black, 0)
-    surface_reset_target()
-}
- //thing that uses said surface
-if !instance_exists(global.traildrawer) {
-    with script_bind_draw(draw_trails, 1){
-        global.traildrawer = id
-        persistent = 1
-    }
-}
-
-if global.SAKmode && mod_exists("weapon", "sak"){
-    with instances_matching(instances_matching(WepPickup, "roll", 1), "saked", undefined) {
-        saked = 1
-        wep = mod_script_call_nc("weapon", "sak", "make_gun_random")
-    }
-}
-
-with instances_matching([Explosion, SmallExplosion, GreenExplosion, PopoExplosion], "hitid", -1) {
-    hitid = [sprite_index, string_replace(string_upper(object_get_name(object_index)), "EXPLOSION", " EXPLOSION")]
-}
-
-//drop tables
-with instances_matching_le([Inspector, Shielder, EliteGrunt, EliteInspector, EliteShielder], "my_health", 0) {
-	if !irandom(97) {
-		with instance_create(x, y, WepPickup) {
-			wep = "donut box"
-		}
-	}
-}
-with SodaMachine{
-	if fork(){
-	    var _x = x, _y = y;
-	    wait(0)
-	    if !instance_exists(self) && instance_exists(Wall){
-    		with instance_create(_x, _y, WepPickup){
-    		    if !irandom(99) wep = "soda popper"
-    		    else{
-        		    var a = ["lightning blue lifting drink(tm)", "extra double triple coffee", "expresso","saltshake", "munitions mist", "vinegar", "guardian juice"]
-        			if skill_get(14) > 0
-        			    array_push(a, "sunset mayo")
-        			if array_length(instances_matching(Player, "notoxic", 0))
-        			    array_push(a, "frog milk")
-                    wep = a[irandom(array_length(a) - 1)]
-                }
-    		}
-    	}
-    	exit
-	}
-}
 
 #define weapon_charged(c, l)
 sound_play_pitch(sndSnowTankCooldown, 8)
@@ -660,108 +709,58 @@ var y3 = ceil(y + (h + 3)/2);
 draw_line_width_color(x2 - 1, y3, x2 + w + 1, y3, 1, 0, 0)
 
 
-#define bullet_wall
-instance_create(x, y, Dust)
-sound_play_hit(sndHitWall, .2)
-instance_destroy()
-
-#define bullet_hit
-projectile_hit(other, damage, force, direction);
-if recycle_amount != 0{
-    with creator if instance_is(self, Player){
-        var num = (skill_get(mut_recycle_gland) * (irandom(9) < 5)) + 10 * skill_get("recycleglandx10");
-        if num {
-            ammo[1] = min(ammo[1] + other.recycle_amount * num, typ_amax[1])
-            instance_create(other.x, other.y, RecycleGland)
-            sound_play(sndRecGlandProc)
-        }
-    }
-}
-instance_destroy()
-
-#define bullet_destroy
-with instance_create(x, y, BulletHit) sprite_index = other.spr_dead
-
-#define bullet_anim
-image_index = 1
-image_speed = 0
-
 #define shell_hit
 projectile_hit(other, (current_frame < fallofftime? damage : (damage - falloff)), force, direction);
 
-#define create_shell(x, y)
-with instance_create(x, y, CustomProjectile){
-    name = "Shell"
-	
-	sprite_index = sprBullet1
-    spr_dead = sprBulletHit
-    mask_index = mskBullet1
-    image_speed = 1
-
-    defbloom = {
-        xscale : 2,
-        yscale : 2,
-        alpha : .1
-    }
-
-    recycle_amount = 1
-    force = 8
-    damage = 3
-    typ = 1
-
-    on_anim = bullet_anim
-    on_wall = bullet_wall
-    on_hit = bullet_hit
-    on_destroy = bullet_destroy
-
-    return id
-}
-
-
-#define create_bullet(x, y)
-with instance_create(x, y, CustomProjectile){
-    name = "Bullet"
-
-    sprite_index = sprBullet1
-    spr_dead = sprBulletHit
-    mask_index = mskBullet1
-    image_speed = 1
-
-    defbloom = {
-        xscale : 2,
-        yscale : 2,
-        alpha : .1
-    }
-
-    recycle_amount = 1
-    force = 8
-    damage = 3
-    typ = 1
-
-    on_anim = bullet_anim
-    on_wall = bullet_wall
-    on_hit = bullet_hit
-    on_destroy = bullet_destroy
-
-    return id
-}
+#define def_bullet_create(scr, x, y)
+return mod_script_call("mod", "defpack bullets", scr, x, y)
 
 #define create_heavy_bullet(x, y)
-with create_bullet(x, y){
-    name = "Heavy Bullet"
+return def_bullet_create("create_heavy_bullet", x, y)
 
-    sprite_index = sprHeavyBullet
-    spr_dead = sprHeavyBulletHit
-    mask_index = mskHeavyBullet
+#define create_bullet(x, y)
+return def_bullet_create("create_bullet", x, y)
 
-    recycle_amount = 2
-    force = 12
-    damage = 7
+#define bullet_hit
+	projectile_hit(other, damage, force, direction);
+	recycle_gland_roll()
+	instance_destroy()
+	
+#define bullet_destroy
+	with instance_create(x, y, BulletHit) sprite_index = other.spr_dead
 
-    return id
-}
+#define bullet_anim
+	image_index = 1
+	image_speed = 0
+
+#define bullet_wall
+	instance_create(x, y, Dust)
+	sound_play_hit(sndHitWall, .2)
+	instance_destroy()
+
+#define chance_raw(percentage)
+return random(100) <= percentage
+
+
+#define recycle_gland_roll
+/// recycle_gland_roll(_chance = 60)
+var _chance = argument_count > 0 ? argument[0] : 60;
+	
+	var _gland = skill_get(mut_recycle_gland) + (10 * skill_get("recycleglandx10"));
+	if chance_raw(_chance * _gland) {
+		if recycle_amount != 0 {
+			instance_create(x, y, RecycleGland)
+			sound_play(sndRecGlandProc)
+			var num = recycle_amount * _gland
+			with creator if instance_is(self, Player) {
+				ammo[1] = min(ammo[1] + num, typ_amax[1])
+			}
+		}
+	}
+
 
 #define create_heavy_bouncer_bullet(x, y)
+return def_bullet_create("create_heavy_bouncer_bullet", x, y)
 with create_heavy_bullet(x, y){
     name = "Heavy Bouncer Bullet"
     sprite_index = spr.HeavyBouncerBullet
@@ -3181,7 +3180,8 @@ if image_index + image_speed*current_time_scale > image_number instance_destroy(
 
 #define create_sniper_charge(x, y)
 with instance_create(x, y, CustomObject){
-	name    = "sniper charge"
+	name    = "SniperCharge"
+	parent  = name
 	creator = -4
 	charge  = 0
 	acc     = 1

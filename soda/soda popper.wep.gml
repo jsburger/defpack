@@ -1,6 +1,6 @@
 #define init
-global.sprSodaPopper = sprite_add_weapon("sprites/weapons/sprSodaPopper.png",2,4)
-global.sprSodaPopperEmpty = sprite_add_weapon("sprites/weapons/sprSodaPopperEmpty.png",2,4)
+global.sprSodaPopper = sprite_add_weapon("../sprites/weapons/sprSodaPopper.png",2,4)
+global.sprSodaPopperEmpty = sprite_add_weapon("../sprites/weapons/sprSodaPopperEmpty.png",2,4)
 #define weapon_name
 return "SODA POPPER"
 #define weapon_type
@@ -30,14 +30,8 @@ if is_object(w)
       weapon_post(3,4,0)
       sound_play_pitch(sndSodaMachineBreak,random_range(.85,.95))
       sound_play_pitch(sndGunGun,1.4)
-      with instance_create(x+lengthdir_x(4,gunangle),y+lengthdir_y(4,gunangle),ThrownWep)
-      {
-        var a = ["lightning blue lifting drink(tm)","extra double triple coffee","expresso","saltshake","munitions mist","vinegar","guardian juice"]
-		if skill_get(14) > 0
-		    array_push(a, "sunset mayo")
-		if array_length(instances_matching(Player, "notoxic", 0))
-		    array_push(a, "frog milk")
-        wep = a[irandom(array_length(a)-1)]
+      with instance_create(x+lengthdir_x(4,gunangle),y+lengthdir_y(4,gunangle),ThrownWep){
+    	wep = mod_script_call("mod", "defpack tools", "soda_get");
         sprite_index = weapon_get_sprt(wep)
         speed = 12
         creator = other

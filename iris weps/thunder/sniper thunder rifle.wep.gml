@@ -30,7 +30,7 @@ return 24;
 return sndSwapMachinegun;
 
 #define weapon_laser_sight
-with instances_matching(instances_matching(CustomObject, "name", "sniper thunder charge"),"creator",self){
+with instances_matching(instances_matching(CustomObject, "name", "ThunderSniperCharge"), "creator", self) {
     with other{
         with mod_script_call_self("mod", "defpack tools", "sniper_fire", x, y, gunangle, team, 1 + other.charge/other.maxcharge){
             draw_line_width_color(xstart, ystart, x, y, 1, global.color, global.color)
@@ -58,7 +58,7 @@ return choose("THE SPEED OF SOUND");
 
 #define weapon_fire
 with mod_script_call_self("mod", "defpack tools", "create_sniper_charge", x, y){
-    name = "sniper thunder charge"
+    name = "ThunderSniperCharge"
     creator = other
     team = other.team
     index = other.index
@@ -70,21 +70,21 @@ with mod_script_call_self("mod", "defpack tools", "create_sniper_charge", x, y){
 
 #define thunder_rifle_fire
 var _c = charge, _cc = charge/maxcharge, cr = creator;
-repeat(2){
-    var _ptch = random_range(-.5,.5)
-    sound_play_pitch(sndHeavyRevoler,.7-_ptch/3)
-    sound_play_pitch(sndSawedOffShotgun,1.8-_ptch)
-    sound_play_pitch(sndHeavyMachinegun,1.7+_ptch)
-    sound_play_pitch(sndLightningRifleUpg,random_range(1.8,2.1))
-    sound_play_pitchvol(sndGammaGutsKill,random_range(1.8,2.1),1*skill_get(17))
-    sound_play_pitch(sndSniperFire,random_range(.6,.8))
-    sound_play_pitch(sndHeavySlugger,1.3+_ptch/2)
-    with cr{
+repeat(2) {
+    var _ptch = random_range(-.5, .5)
+    sound_play_pitch(sndHeavyRevoler, .7 - _ptch/3)
+    sound_play_pitch(sndSawedOffShotgun, 1.8 - _ptch)
+    sound_play_pitch(sndHeavyMachinegun, 1.7 + _ptch)
+    sound_play_pitch(sndLightningRifleUpg, random_range(1.8, 2.1))
+    sound_play_pitchvol(sndGammaGutsKill, random_range(1.8, 2.1), 1 * skill_get(17))
+    sound_play_pitch(sndSniperFire, random_range(.6, .8))
+    sound_play_pitch(sndHeavySlugger, 1.3 + _ptch/2)
+    with cr {
     	weapon_post(12,2,158)
     	motion_add(gunangle -180,_c / 20)
     	sleep(120)
     	var q = mod_script_call_self("mod", "defpack tools", "sniper_fire", x + lengthdir_x(10, gunangle), y + lengthdir_y(10, gunangle), gunangle, team, 1 + _cc)
-    	with q{
+    	with q {
     	    creator = other
     	    damage = 12 + round(28 * _cc)
     	    worth = 12

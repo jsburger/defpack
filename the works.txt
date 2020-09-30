@@ -1,3 +1,0 @@
-/loadmod defpack tools/defpermissions
-/loadmod defpack tools/defpack tools
-/loadmod defpack tools/defparticles

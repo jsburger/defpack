@@ -30,7 +30,7 @@ return 12;
 return sndSwapMachinegun;
 
 #define weapon_laser_sight
-with instances_matching(instances_matching(CustomObject, "name", "sniper pest charge"),"creator",self){
+with instances_matching(instances_matching(CustomObject, "name", "PestSniperCharge"),"creator",self){
     with other{
         with mod_script_call_self("mod", "defpack tools", "sniper_fire", x, y, gunangle, team, 1 + other.charge/other.maxcharge){
             draw_line_width_color(xstart, ystart, x, y, 1, global.color, global.color)
@@ -57,7 +57,7 @@ return choose("@gGreen @sLINES");
 
 #define weapon_fire
 with mod_script_call_self("mod", "defpack tools", "create_sniper_charge", x, y){
-    name = "sniper pest charge"
+    name = "PestSniperCharge"
     creator = other
     team = other.team
     index = other.index
