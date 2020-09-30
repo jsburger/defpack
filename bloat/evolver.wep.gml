@@ -19,13 +19,13 @@ return false
 #define weapon_laser_sight
 return false
 #define weapon_fire
-repeat(1+skill_get(22)*2)
+repeat(1+chance(skill_get(mut_stress)*2))
 {
   with create_evolvebullet(x,y)
   {
     creator = other
     team    = other.team
-    motion_set(other.gunangle+random_range(-12,12)*other.accuracy*(skill_get(22)+1),12+skill_get(2)*4)
+    motion_set(other.gunangle+random_range(-12,12)*other.accuracy*(skill_get(mut_stress)+1),12+chance(skill_get(2)*8))
     maxspeed = speed
     image_angle = direction
   }
@@ -40,15 +40,15 @@ with a
   sprite_index = sprBullet1
   mask_index   = mskBullet1
   image_speed  = 1
-  size = 1 + skill_get(23)
-  ammo = 0 + skill_get(23) * 3
-  bounce = skill_get(15) * 3
-  pierce = skill_get(17) * 2
-  wallpierce = skill_get(26) * 2 - skill_get(22)
+  size = 1 + chance(skill_get(mut_trigger_fingers))
+  ammo = 0 + chance(skill_get(mut_trigger_fingers) * 3)
+  bounce = chance(skill_get(mut_shotgun_shoulders) * 3)
+  pierce = chance(skill_get(mut_laser_brain) * 2)
+  wallpierce = chance(skill_get(mut_hammerhead) * 2)
   force  = 2
-  damage = round((3 + skill_get(11))/(1-skill_get(22)))
+  damage = chance(((3 + skill_get(mut_scarier_face))/(1-skill_get(22))))
   lasthit = -4
-  friction = .8 - skill_get(19) * .8
+  friction = .8 - skill_get(mut_eagle_eyes) * .8
   maxspeed = 25
   on_hit        = evolve_hit
   on_step       = evolve_step
@@ -66,7 +66,7 @@ if projectile_canhit(other) = true && lasthit != other
   projectile_hit(other,damage,force,direction)
   pierce--
   lasthit = other
-  if skill_get(20) = true
+  if skill_get(mut_impact_wrists) = true
   {
     with mod_script_call("mod","defpack tools","create_sonic_explosion",x,y)
     {
@@ -85,7 +85,7 @@ if pierce < 0{instance_destroy()}
 
 #define evolve_step
 if image_index = 1 image_speed = 0
-if skill_get(21) = true
+if skill_get(mut_bolt_marrow) = true
 {
   var closeboy = instance_nearest(x,y,enemy)
   if distance_to_object(closeboy) <= 32
@@ -160,10 +160,13 @@ if ammo > 0
 }*/
 
 #define weapon_sprt
-return sprPizzaChest2
+return sprUltraRevolver
 #define weapon_text
 return "EVOLVE"
 
+#define chance(VAL)
+var _v = VAL + skill_get(mut_throne_butt) * .25;  
+if frac(_v) * 100 >= irandom(99){return  _v - frac(_v) + 1}else{return _v - frac(_v)}
 
 /* mutation synergies
 + bolt marrow      : homing
@@ -177,7 +180,7 @@ DONE + extra feet       : shot speed up
 + strong spirit    : + iframes on kill
 + long arms        : destroy enemy bullets on hit/bigger projectile
 DONE + laser brain      : piercing
-+ thronebutt       : mutation stat bonus up
++ thronebutt       : mutation stat bonus
 DONE + eagle eyes       : no friction
 + patience         : -
 + euphoria         : slows down enemies hit for a short duration
@@ -185,7 +188,7 @@ DONE + eagle eyes       : no friction
 DONE + stress           : 3 projectiles at half damage
 + trigger fingers  : projectile splits into other projectile on destroy
 DONE + scarier face     : +damage
-+ gamma guts       : 4 halo projectiles
++ gamma guts       : halo damage
 DONE + impact wrists    : creates a weak sonic explosion on top of the enemy hit
 + plutonium hunger : bullet sucks like ugl
 + prismatic iris   : explodes into the rainbow bullets

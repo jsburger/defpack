@@ -40,7 +40,7 @@ var _strtsize = 40;//never thought id have to nerf eagle eyes im so proud of you
 var _endsize  = 20;
 var _accspeed = 1.2;
 with mod_script_call("mod","defpack tools","create_abris",self,_strtsize,_endsize,argument0){
-	accspeed = 1.3
+	accspeed = 1.15
 	damage = 3
 	maxdamage = 10
 	payload = script_ref_create(pop)

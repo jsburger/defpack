@@ -1,10 +1,6 @@
 
 ///ENERGY///
 
-//LASER
-
-/loadwep laser flak cannon
-
 //VECTOR
 
 /loadwep vector rifle

@@ -1,6 +1,6 @@
 #define init
-global.sprHotCrossbow = sprite_add_weapon("sprites/sprHotCrossbow.png", 2, 3);
-global.sprHotBolt 	  = sprite_add("sprites/projectiles/sprHotBolt.png",0, 1, 5);
+global.sprHotCrossbow = sprite_add_weapon("../sprites/sprHotCrossbow.png", 2, 3);
+global.sprHotBolt 	  = sprite_add("../sprites/projectiles/sprHotBolt.png",0, 1, 5);
 
 #define weapon_name
 return "HOT CROSSBOW"
