@@ -1,10 +1,6 @@
 
 ///ENERGY///
 
-//LASER
-
-/loadwep laser flak cannon
-
 //VECTOR
 
 /loadwep vector rifle
@@ -26,7 +22,7 @@
 //OTHER ENERGY
 
 /loadwep lightning wheel
-/loadwep beamer
+/loadwep mega laser cannon
 /loadwep ionizer
 /loadwep stopwatch
 

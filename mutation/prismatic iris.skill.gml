@@ -6,13 +6,13 @@ global.colors = [
 ]
 global.names = [
 	"prismatic iris", "pestilent gaze", "blazing visage", "all-seeing eye", "clouded stare", "filtered lens", "quivering sight",     //sub mutation names
-	"everchanging observer", "horrific glare"
+	"fantastic refractions", "horrific glare"
 ]
 //global.customs = ["sniper rifle", "bullet cannon", "bullak cannon", "gunhammer"] DEPRECATED                                        //custom guns that need coloring too, make sure to add to the converter switch
 global.order = [-1,2,0,4,3,5,1]                                                                                                      //the code goes through the colors array in order, assigning the subpick to the slot numbered here
 global.descriptions = [
 	"h", "@gTOXIC", "@rFLAMING", "@pHOMING", "@bCHARGED", "@wSOMETHING ELSE", "@yBOUNCY",                                            //shit thats appended to the subpick description
-	"ANYTHING", "@gIRRADIATED"
+	"EVERYTHING", "@gIRRADIATED"
 ]
 global.colorcount = array_length_1d(global.colors)-3
 global.icons = []

@@ -20,6 +20,11 @@ return 0
 return 0
 #define weapon_laser_sight
 return 0
+#define weapon_sprt
+return global.sprPuncher
+#define weapon_text
+return "breaking through"
+
 #define weapon_fire
 var r = random_range(.8,1.2);
 if fork(){
@@ -36,6 +41,7 @@ if fork(){
 				sprite_index = global.sprPuncherRocket
 				team = other.team
 				immuneToDistortion = 1
+				maxspeed = 25
 				creator = other
 				damage = 15
 				motion_set(other.gunangle + random_range(-4-(i),4+(i)) * other.accuracy,1)
@@ -53,25 +59,19 @@ if fork(){
 	sound_play(sndRocketFly)
 	exit
 }
-#define weapon_sprt
-return global.sprPuncher
-
-#define weapon_text
-return "breaking through"
 
 #define puncherdraw
 draw_self()
-draw_sprite_ext(sprRocketFlame,-1,x,y,1,1,image_angle,c_white,image_alpha)
+draw_sprite_ext(sprRocketFlame, -1, x, y, 1, 1, image_angle, c_white, image_alpha)
 
 #define puncherendstep
-with instance_create(x,y,BoltTrail)
-{
+with instance_create(x,y,BoltTrail) {
 	image_blend = c_yellow
 	image_angle = point_direction(x,y,other.xprevious, other.yprevious)
 	image_xscale = point_distance(x,y,other.xprevious, other.yprevious)
 	image_yscale = 1.4
-	if fork(){
-	    while instance_exists(self){
+	if fork() {
+	    while instance_exists(self) {
 	        image_blend = merge_color(image_blend,c_red,.1*current_time_scale)
 	        wait(0)
 	    }
@@ -80,11 +80,11 @@ with instance_create(x,y,BoltTrail)
 }
 
 #define puncherstep
-if current_frame_active && !irandom(2) instance_create(x,y,Smoke)
-direction += extradir*current_time_scale
+if current_frame_active && !irandom(2) instance_create(x, y, Smoke)
+direction += extradir * current_time_scale
 speed += current_time_scale *.7
 image_angle = direction
-if speed >= 26 speed = 26
+if speed >= maxspeed speed = maxspeed
 
 #define puncherdie
 sound_play(sndExplosion)

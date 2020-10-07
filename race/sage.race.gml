@@ -196,19 +196,25 @@ return tips[irandom(array_length(tips) - 1)]
     }
     
     
-    var _needfire = false, _scripts = [];
+    var _needfire = false, _firescripts = [],
+    	_needproj = false, _projscripts = [];
 	with sagespells {
-		if on_fire != undefined {
+		if lq_get(self, "on_fire") != undefined {
 			_needfire = true
-			array_push(_scripts, on_fire)
+			array_push(_firescripts, on_fire)
+		}
+		if lq_get(self, "post_fire") != undefined {
+			_needproj = true
+			array_push(_projscripts, on_)
 		}
 	}
     
 	if _needfire {
-		while (reload <= 0 and ((button_pressed(index, "fire") or (weapon_get_auto(wep) and button_check(index, "fire"))) or clicked)) {
-			script_ref_call_self(_spell.on_fire)
+		while player_could_shoot() {
+			list_call_all
 		}
 	}
+	
 
     
     
@@ -243,8 +249,17 @@ return tips[irandom(array_length(tips) - 1)]
 #define angle_approach(a, b, n, dn)
 	return angle_difference(a, b) * (1 - power((n - 1)/n, dn))
 	
-#define script_ref_call_self(scr)
-	return mod_script_call_self(scr[0], scr[1], scr[2])
+	
+#define script_ref_call_self
+/// script_ref_call_self(scr, args = -1)
+	var scr = argument[0];
+var args = argument_count > 1 ? argument[1] : -1;
+	return mod_script_call_self(scr[0], scr[1], scr[2], args)
+	
+#define list_call_all(list)
+	for var i = 0; i < array_length(list); i++) {
+		script_ref_call_self(list[i])
+	}
 	
 #define blob_draw
 	if visible {
@@ -260,11 +275,17 @@ return tips[irandom(array_length(tips) - 1)]
 	    draw_set_blend_mode(bm_normal)
 	}
 
+
+#define player_could_shoot
+/// player_could_shoot(_p = self)
+	var _p = argument_count > 0 ? argument[0] : self;
+	return (_p.reload <= 0 and (_p.clicked or ((button_pressed(_p.index, "fire") or (weapon_get_auto(_p.wep) and button_check(_p.index, "fire")))) and weapon_can_fire(_p.wep);
+
 #define weapon_can_fire
 /// weapon_can_fire(_wep, _times = 1)
-var _wep = argument[0];
+	var _wep = argument[0];
 var _times = argument_count > 1 ? argument[1] : 1;
-return (infammo != 0) or ((weapon_get_cost(_wep) * _times) <= ammo[weapon_get_type(_wep)])
+	return (infammo != 0) or ((weapon_get_cost(_wep) * _times) <= ammo[weapon_get_type(_wep)])
 
 
 #define doubleshot_fire

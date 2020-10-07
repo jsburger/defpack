@@ -23,3 +23,6 @@
 /loadwep mega pest revolver
 /loadwep rusty pest revolver
 /loadwep golden pest revolver
+/loadwep golden pest machinegun
+/loadwep golden assault pest rifle
+/loadwep pest rogue rifle

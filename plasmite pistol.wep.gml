@@ -28,10 +28,9 @@ repeat(2)
 	sound_pitch(
 		sound_play_gun(skill_get(17) > 0 ? sndPlasmaUpg : sndPlasma, 0, .7), 2 + random(.1)
 	)
-	with mod_script_call("mod", "defpack tools", "create_plasmite", x, y)
-	{
-		fric = random_range(.06,.08) + .08
-		motion_set(other.gunangle + random_range(6, 16) * other.accuracy * _flip, 16 * random_range(.8, 1.2))
+	with mod_script_call("mod", "defpack tools", "create_plasmite", x, y){
+		fric = random_range(.06,.08) + .12
+		motion_set(other.gunangle + random_range(8, 14) * other.accuracy * _flip, 16 * random_range(.9, 1.1))
 		maxspeed = speed
 		projectile_init(other.team, other)
 		image_angle = direction

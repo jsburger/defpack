@@ -56,7 +56,7 @@ if !is_object(w){
 else{
     var q = lq_defget(w, "charge", 1)
     w.charge = min(q + 2/q, maxchrg)
-    w.persist = 5
+    w.persist = 15
 }
 
 with instance_create(x,y,Shell){motion_add(other.gunangle+other.right*100+random(80)-40,3+random(3))}
@@ -117,7 +117,7 @@ if w.persist > 0{
 }
 else if w.charge > 1{
     if random(100) <= 50 * current_time_scale with instance_create(x+lengthdir_x(16,gunangle),y+lengthdir_y(16,gunangle),Smoke) {vspeed -= random(1); image_xscale/=2;image_yscale/=2; hspeed/=2}
-    w.charge = max (w.charge - current_time_scale*.5, 1)
+    w.charge = max (w.charge - current_time_scale*.25, 1)
 }
 if lq_get(w, "defcharge") == undefined{
     w.defcharge = charge_base()

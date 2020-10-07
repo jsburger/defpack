@@ -9,7 +9,7 @@ return 5
 #define weapon_cost
 return 2
 #define weapon_area
-return 6
+return 8
 #define weapon_load
 return 18
 #define weapon_swap
@@ -36,7 +36,7 @@ repeat(5)
 {
 	with mod_script_call("mod","defpack tools","create_plasmite",x,y)
 	{
-		fric = random_range(.06,.08) + .08
+		fric = random_range(.06,.08) + .12
 		motion_set(other.gunangle+random_range(-28,28)*other.accuracy,16 * random_range(.8, 1.2))
 		maxspeed = speed
 		projectile_init(other.team,other)

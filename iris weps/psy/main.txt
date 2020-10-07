@@ -23,3 +23,6 @@
 /loadwep mega psy revolver
 /loadwep rusty psy revolver
 /loadwep golden psy revolver
+/loadwep golden psy machinegun
+/loadwep golden assault psy rifle
+/loadwep psy rogue rifle

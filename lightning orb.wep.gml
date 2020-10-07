@@ -1,6 +1,6 @@
 #define init
-global.sprLightningOrb = sprite_add_weapon("sprites/sprLightningOrb.png", 3, 2);
-global.sprUmbrellaOrb  = sprite_add("sprites/projectiles/sprRainOrb.png",2,9,9);
+global.sprLightningOrb = sprite_add_weapon("sprites/weapons/sprLightningOrb.png", 3, 2);
+global.sprUmbrellaOrb  = sprite_add("sprites/projectiles/sprRainOrb.png",2,7,7);
 
 #define weapon_name
 return "LIGHTNING ORB"
@@ -79,8 +79,8 @@ repeat(1)
     sprite_index = global.sprUmbrellaOrb
     image_speed = .5
     mask_index = mskDebris
-    image_xscale = .5
-    image_yscale = .5
+    image_xscale = .75
+    image_yscale = .75
     motion_add(other.gunangle +random_range(-7,7)*other.accuracy,choose(5,6))
     creator = other
     team = other.team

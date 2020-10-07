@@ -19,6 +19,8 @@
 		//Toxic Bullets
 		ToxicBullet         = sprite_add(i + "iris/pest/sprPestBullet.png",    2, 8, 8);
 		ToxicBulletHit      = sprite_add(i + "iris/pest/sprPestBulletHit.png", 4, 8, 8);
+		ToxicShell          = sprite_add(i + "iris/pest/sprPestShell.png", 2, 8, 8);
+		ToxicShellHit       = sprite_add(i + "iris/pest/sprPestShellDisappear.png", 4, 8, 8);
 		HeavyToxicBullet    = sprite_add(i + "iris/pest/sprHeavyPestBullet.png",    2, 12, 12);
 		HeavyToxicBulletHit = sprite_add(i + "iris/pest/sprHeavyPestBulletHit.png", 4, 12, 12);
 
@@ -144,7 +146,9 @@
 	}
 
 
-
+	global.AbrisCustomColor = false;
+	mod_script_call("mod","defpermissions","permission_register","mod",mod_current,"AbrisCustomColor","Use Player colors for Abris weapons")
+	
 	global.SAKmode = 0
 	//mod_script_call("mod","defpermissions","permission_register","mod",mod_current,"SAKmode","SAK Mode")
 
@@ -501,21 +505,19 @@ var q = audio_play_sound_at(snd, p[0] - x, 0, p[1] - y, 100, 300, 1, false, 1);
 audio_sound_pitch(q, pitch);
 audio_sound_gain(q, vol, 0);
 return q;
-
  //very good and epic sound stuff
  //thank you yokin for coding ntte really good and also letting me copy from it
 #define sound_play_hit_ext(_sound, _pitch, _volume)
 	var s = sound_play_hit(_sound, 0);
 	sound_pitch(s, _pitch);
-	sound_volume(s, _volume);
+	sound_volume(s, audio_sound_get_gain(s) * _volume);
 	return s;
 
 #define sound_play_hit_big_ext(_sound, _pitch, _volume)
 	var s = sound_play_hit_big(_sound, 0);
 	sound_pitch(s, _pitch);
-	sound_volume(s, _volume);
+	sound_volume(s, audio_sound_get_gain(s) * _volume);
 	return s;
-
 
 
 #define chance(percentage)
@@ -686,6 +688,35 @@ image_speed = 0
 
 #define shell_hit
 projectile_hit(other, (current_frame < fallofftime? damage : (damage - falloff)), force, direction);
+
+#define create_shell(x, y)
+with instance_create(x, y, CustomProjectile){
+    name = "Shell"
+	
+	sprite_index = sprBullet1
+    spr_dead = sprBulletHit
+    mask_index = mskBullet1
+    image_speed = 1
+
+    defbloom = {
+        xscale : 2,
+        yscale : 2,
+        alpha : .1
+    }
+
+    recycle_amount = 1
+    force = 8
+    damage = 3
+    typ = 1
+
+    on_anim = bullet_anim
+    on_wall = bullet_wall
+    on_hit = bullet_hit
+    on_destroy = bullet_destroy
+
+    return id
+}
+
 
 #define create_bullet(x, y)
 with instance_create(x, y, CustomProjectile){
@@ -1572,6 +1603,7 @@ for (var i = 0; i <= precision; i++){
 }
 draw_primitive_end();
 
+
 #define draw_arc_wave(x, y, angle, radius, thickness, degrees, precision, col, inneralpha, outeralpha, stiff)
 x += prim_offset
 y += prim_offset
@@ -1746,17 +1778,7 @@ if instance_exists(creator){
         }
         if hand creator.breload = max(reload, creator.breload)
         else creator.reload = max(reload, creator.reload)
-        if place_meeting(x, y, Wall){
-            if acc < accbase{
-                acc += abs(creator.accuracy*3) * timescale
-            }
-            else{
-                acc = accbase;
-            }
-        }
-        else{
-            acc /= power(accspeed, timescale)
-        }
+        acc /= power(accspeed, timescale)
         if !button_check(index, btn) or (auto and acc <= 2){
             instance_destroy()
         }
@@ -1798,8 +1820,8 @@ with instance_create(x, y, CustomProjectile){
 if instance_exists(creator){
     var _x, _y, c = creator, ang;
     if targeting == abris_mouse{
-        _x = mouse_x[index]
-        _y = mouse_y[index]
+        _x = c.x + lengthdir_x(point_distance(c.x, c.y, mouse_x[index], mouse_y[index]), c.gunangle) 
+        _y = c.y + lengthdir_y(point_distance(c.x, c.y, mouse_x[index], mouse_y[index]), c.gunangle)
         ang = c.gunangle
     }
     else if targeting == abris_manual{
@@ -1817,12 +1839,13 @@ if instance_exists(creator){
     y = w[1]
 
     var kick = hand ? creator.bwkick : creator.wkick, yoff = -4 * hand;
-    draw_sprite_ext(sprHeavyGrenadeBlink, 0, c.x + lengthdir_x(14 - kick, ang), c.y + lengthdir_y(14 - kick, ang) + 1 + yoff, 1, 1, ang, lasercolour, 1)
-    var r = acc + accmin, sides = 16, a = 1 - acc/accbase;
-    mod_script_call_nc("mod", "defpack tools", "draw_polygon_striped", sides, r, scrollang, x, y, stripecolour, .1 + .3*a, scroll)
-    mod_script_call_nc("mod", "defpack tools", "draw_circle_width_colour", sides, r, 1, acc + image_angle, x, y, ringcolour, .2 + a * .8)
-    mod_script_call_nc("mod", "defpack tools", "draw_circle_width_colour", sides, accmin, 1, acc + image_angle, x, y, ringcolour, .2 + a * .2)
-    draw_line_width_color(c.x + lengthdir_x(16 - kick, ang), c.y + lengthdir_y(16 - kick, ang) + yoff, x, y, 1, lasercolour, lasercolour)
+    var r = acc + accmin, sides = 16, a = 1 - acc/accbase, _c = global.AbrisCustomColor = true && instance_is(creator, Player) ? player_get_color(creator.index) : lasercolour
+    draw_sprite_ext(sprHeavyGrenadeBlink, 0, c.x + lengthdir_x(14 - kick, ang), c.y + lengthdir_y(14 - kick, ang) + 1 + yoff, 1, 1, ang, _c, 1)
+    mod_script_call_nc("mod", "defpack tools", "draw_circle_width_colour", sides, r, 1, acc + image_angle, x, y, _c, .2 + a * .8)
+    mod_script_call_nc("mod", "defpack tools", "draw_circle_width_colour", sides, accmin, 1, acc + image_angle, x, y, _c, .2 + a * .2)
+    draw_line_width_color(c.x + lengthdir_x(16 - kick, ang), c.y + lengthdir_y(16 - kick, ang) + yoff, x, y, 1, _c, _c)
+    mod_script_call_nc("mod", "defpack tools", "draw_polygon_striped", sides, r, scrollang, x, y, _c, .1 + .3*a, scroll)
+    draw_sprite_ext(sprGrenadeBlink, 0, x, y, 1, 1, image_angle * -.7, _c, 1)
 }
 
 #define abris_hit
@@ -2072,8 +2095,9 @@ with instance_create(_x, _y, CustomProjectile) {
 if chance(8 + 6 * skill_get(mut_laser_brain)) instance_create(x, y, PlasmaTrail)
 
 var closeboy = instance_nearest_matching_ne(x, y, hitme, "team", team);
-if instance_exists(closeboy) && distance_to_object(closeboy) <= 24 {
-    motion_add(point_direction(x, y, closeboy.x, closeboy.y), 4 * current_time_scale)
+if instance_exists(closeboy) && distance_to_object(closeboy) <= 16 {
+	motion_add(direction + 180, current_time_scale)
+    motion_add(point_direction(x, y, closeboy.x, closeboy.y), (4) * current_time_scale)
     maxspeed += .5 * current_time_scale
 }
 image_angle = direction
@@ -2086,7 +2110,9 @@ if maxspeed <= 1 + fric instance_destroy();
 #define plasmite_wall
 move_bounce_solid(false)
 image_angle = direction
-sound_play_pitchvol(sndPlasmaHit, random_range(3, 6), .3)
+var s = audio_play_sound(sndPlasmaHit, 1, 0);
+audio_sound_gain(s, .5, 0)
+audio_sound_pitch(s, random_range(3, 6))
 var n = irandom_range(2, 6), int = 360/n;
 for (var i = 0; i < 360; i += int) {
     with mod_script_call("mod", "defparticles", "create_spark", x, y) {
@@ -2096,13 +2122,14 @@ for (var i = 0; i < 360; i += int) {
         color = c_white
         fadecolor = c_lime
         gravity = .8
-        gravity_direction = other.direction
+        gravity_direction = other.direction 
     }
 }
 
 #define plasmite_draw
 var _x = image_xscale
 image_xscale = _x + (sqr(speed/(sprite_width * 1.5))) * _x
+defbloom.xscale = image_xscale * 2
 draw_self()
 image_xscale = _x;
 
@@ -2408,13 +2435,7 @@ with instance_create(_x, _y, CustomProjectile){
 }
 
 #define rocket_step
-var _q = instance_nearest(x, y, enemy), _g = direction_goal, _s = 8;
-if _q > -4 && distance_to_object(_q) <= 32 {
-	_g = point_direction(x, y, _q.x, _q.y)
-	_s = 1.5
-}
-
-direction -= angle_approach(direction, _g, _s, current_time_scale)
+direction -= angle_approach(direction, direction_goal, 8, current_time_scale)
 if speed > maxspeed
 	speed = maxspeed
 image_angle = direction
@@ -2527,9 +2548,9 @@ with instance_create(x-lengthdir_x(speed,direction),y-lengthdir_y(speed,directio
 with instance_create(_x,_y,CustomProjectile) {
     name = "Laser Flak"
 	image_speed = 1
-	damage = 8 + skill_get(17)*3
+	damage = 8
 	friction = .5
-	ammo = 10
+	ammo = 6 + skill_get(mut_laser_brain) * 2;
 	typ = 1
 	size = 1
 	sprite_index = spr.LaserFlakBullet
@@ -2875,9 +2896,10 @@ else if skill_get(mut_bolt_marrow){
 }
 
 #define stickydisc_hit
+var _dmg = instance_is(other, Player) = true ? 1 : damage;
 if projectile_canhit_melee(other){
     sound_play_hit(sndDiscHit,.2)
-    projectile_hit(other, damage, 5, direction)
+    projectile_hit(other, _dmg, 5, direction)
     if other.my_health > 0{
         if stuckto != other{
             stuckto = other
@@ -2956,7 +2978,7 @@ if current_frame_active{
     }
     x -= hspeed/2
     y -= vspeed/2
-    projectile_hit(other,damage,0,direction)
+    projectile_hit(other,damage,speed/4,direction)
     if other.my_health <= 0{
         sleep (other.size*2)
     }
@@ -3087,33 +3109,33 @@ if bounce > 0 {
 	}
 }
 else {
-  sound_play_hit_ext(sndChickenSword, 1.5 * _p, .8)
-  sound_play_hit_ext(sndBoltHitWall, .8 * _p, .8)
-  sleep(4)
-  view_shake_at(x, y, force * 2)
-  with instance_create(x, y, CustomObject){
-      sprite_index = other.spr_dead
-      image_angle = other.direction
-      move_contact_solid(image_angle, 0)
-      x += lengthdir_x(other.length, image_angle)
-      y += lengthdir_y(other.length, image_angle)
-      repeat(12){
-          with instance_create(x, y, Dust){
-              direction = other.image_angle + 180 + random_range(-35,35)
-              speed = random(5)+1
-              depth = choose(1,-1)
-          }
-      }
-      if fork(){
-          wait(45)
-          if instance_exists(self) instance_destroy()
-          exit
-      }
-      other.x = x
-      other.y = y
-  }
-  sword_end_step()
-  instance_destroy()
+	sound_play_hit_ext(sndChickenSword, 1.5 * _p, .8)
+	sound_play_hit_ext(sndBoltHitWall, .8 * _p, .8)
+	sleep(4)
+	view_shake_at(x, y, force * 2)
+	with instance_create(x, y, CustomObject){
+	    sprite_index = other.spr_dead
+	    image_angle = other.direction
+	    move_contact_solid(image_angle, 0)
+	    x += lengthdir_x(other.length, image_angle)
+	    y += lengthdir_y(other.length, image_angle)
+	    repeat(12){
+	        with instance_create(x, y, Dust){
+	            direction = other.image_angle + 180 + random_range(-35,35)
+	            speed = random(5)+1
+	            depth = choose(1,-1)
+	        }
+	    }
+	    if fork(){
+	        wait(45)
+	        if instance_exists(self) instance_destroy()
+	        exit
+	    }
+	    other.x = x
+	    other.y = y
+	}
+	sword_end_step()
+	instance_destroy()
 }
 
 #define sword_hit
@@ -3500,7 +3522,8 @@ with w{
     var wantx = c.x + 24 * p
     var wanty = c.y - 24
 
-    var q = collision_line_first(c.x, c.y, wantx, wanty, Wall, 0, 0), a = point_direction(c.x, c.y, wantx, wanty);
+	//with other is to change the scope back to an instance so 9944 doesnt shit down my throat
+    with other { var q = collision_line_first(c.x, c.y, wantx, wanty, Wall, 0, 0), a = point_direction(c.x, c.y, wantx, wanty); }
     xgoal = q[0] - lengthdir_x(d, a)
     ygoal = q[1] - lengthdir_y(d, a)
 

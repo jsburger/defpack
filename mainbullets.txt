@@ -17,8 +17,6 @@
 //SPAM
 
 /loadwep spam gun
-/loadwep fire spam gun
-/loadwep ultra spam gun
 
 //COMPLEMENTARY
 

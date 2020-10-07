@@ -25,7 +25,7 @@ return 12;
 return false;
 
 #define weapon_load
-return 21;
+return 17;
 
 #define weapon_cost
 return 0;
@@ -41,7 +41,7 @@ return "KEEP YOUR DISTANCE";
 
 #define weapon_fire
 var _p = random_range(.8,1.2);
-sound_play_pitchvol(sndEliteShielderShield,1.6*_p,.6)
+sound_play_pitchvol(sndEliteShielderShield,1.3*_p,.6)
 sound_play_pitch(sndUltraShotgun,1.3*_p)
 sound_play_pitch(sndExplosionS,.6*_p)
 sound_play_pitch(sndBasicUltra,1.8*_p)
@@ -60,9 +60,10 @@ repeat(3)
 			move_contact_solid(other.gunangle,2)
 			team     = other.team
 			creator  = other
-			typ 	 = 1
+			typ 	   = 1
 			force    = 5
-			damage   = 6
+			damage   = 15
+			lifetime = 3;
 			friction = 2+1.1*(i-1)
 			sprite_index = global.sprShieldBullet
 			mask_index   = mskHeavyBullet
@@ -93,11 +94,16 @@ with instances_matching_ne(projectile, "team", team){
 	if distance_to_object(other) <= 11{
 		sleep(4)
 		sound_play_pitchvol(sndShielderDeflect,random_range(1.8,2.2),.4)
-		view_shake_at(x,y,2)
+		view_shake_max_at(x,y,2)
 		instance_destroy()
 	}
 }
-if speed <= friction{instance_destroy()}
+if speed <= friction{
+	lifetime -= current_time_scale;
+	if lifetime <= 0{
+		instance_destroy()
+	}
+}
 
 #define def_wall
 instance_destroy()
@@ -110,6 +116,7 @@ with instance_create(x,y,BulletHit){
 if place_meeting(x + hspeed,y +vspeed,Wall){sound_play_hit(sndHitWall,.2)}
 
 #define def_hit
-view_shake_at(x,y,8)
-projectile_hit(other, damage, force, direction)
-instance_destroy()
+view_shake_max_at(x,y,8)
+sleep(10)
+if projectile_canhit_melee(other) = true projectile_hit(other, damage, force, direction)
+//instance_destroy()
