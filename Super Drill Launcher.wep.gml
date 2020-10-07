@@ -215,6 +215,7 @@ return "WALL DIVERS"
     timer++;
 
   #define drillstick_destroy
+  sleep(20)
     instance_create(x + lengthdir_x(8, direction), y + lengthdir_y(8, direction), SmallExplosion);
     sound_play(sndExplosionS);
 
