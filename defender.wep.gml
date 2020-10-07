@@ -60,9 +60,9 @@ repeat(3)
 			move_contact_solid(other.gunangle,2)
 			team     = other.team
 			creator  = other
-			typ 	 = 1
+			typ 	   = 1
 			force    = 5
-			damage   = 6
+			damage   = 15
 			lifetime = 3;
 			friction = 2+1.1*(i-1)
 			sprite_index = global.sprShieldBullet
@@ -102,7 +102,7 @@ if speed <= friction{
 	lifetime -= current_time_scale;
 	if lifetime <= 0{
 		instance_destroy()
-	}	
+	}
 }
 
 #define def_wall
@@ -117,5 +117,6 @@ if place_meeting(x + hspeed,y +vspeed,Wall){sound_play_hit(sndHitWall,.2)}
 
 #define def_hit
 view_shake_max_at(x,y,8)
+sleep(10)
 if projectile_canhit_melee(other) = true projectile_hit(other, damage, force, direction)
 //instance_destroy()
