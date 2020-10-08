@@ -15,6 +15,7 @@
 /loadwep heavy toxic crossbow
 /loadwep hot crossbow
 /loadwep huge shotgun
+/loadwep heavy split shotgun
 /loadwep laser flak cannon
 /loadwep lightning orb
 /loadwep plasma charger

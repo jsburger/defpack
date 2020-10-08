@@ -145,9 +145,6 @@
 
 	}
 
-
-	global.AbrisCustomColor = false;
-	mod_script_call("mod","defpermissions","permission_register","mod",mod_current,"AbrisCustomColor","Use Player colors for Abris weapons")
 	
 	global.SAKmode = 0
 	//mod_script_call("mod","defpermissions","permission_register","mod",mod_current,"SAKmode","SAK Mode")
@@ -162,8 +159,12 @@
 	vertex_format_add_position()
 	global.lightningformat = vertex_format_end()
 
+	global.AbrisCustomColor = false;
+
 	global.chargeType = 1
 	global.chargeSmooth = [0, 0]
+
+	mod_script_call("mod","defpermissions","permission_register","mod",mod_current,"AbrisCustomColor","Use Player colors for Abris weapons")
 
 	mod_script_call_nc("mod", "defpermissions", "permission_register_options", "mod", mod_current, "chargeType", "Weapon Charge Indicators", ["Off", "Wep Specific", "Bar Only", "Arc Only"])
 

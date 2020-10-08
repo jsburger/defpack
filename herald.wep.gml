@@ -61,8 +61,19 @@ if fork(){
 }
 
 #define make_shader
-return shader_create(
-	"/// Vertex Shader ///
+var _beta = true;
+
+// hidden technique for detecting GMS2 versions
+try{
+	_beta = !null;
+}
+
+catch(_error){
+	_beta = false;
+};
+
+var _vertex = /*hlsl*/'
+	/// Vertex Shader ///
 
 	struct VertexShaderInput
 	{
@@ -82,15 +93,15 @@ return shader_create(
 	{
 		VertexShaderOutput OUT;
 
-		OUT.vPosition = mul(matrix_world_view_projection, INPUT.vPosition); // (x,y,z,w)
+		OUT.vPosition = mul(' + (_beta ? "transpose(" : "") + /*hlsl*/'matrix_world_view_projection' + (_beta ? ")" : "") + /*hlsl*/', INPUT.vPosition); // (x,y,z,w)
 		OUT.vTexcoord = INPUT.vTexcoord;
 
 		return OUT;
 	}
-	",
+';
 
-
-	"/// Fragment/Pixel Shader ///
+var _fragment = /*hlsl*/'
+	/// Fragment/Pixel Shader ///
 
 
 	struct PixelShaderInput
@@ -103,7 +114,7 @@ return shader_create(
 
 	float4 main(PixelShaderInput INPUT) : SV_TARGET
 	{
-		 // Get Pixel's Color:
+		 // Get Pixel Color:
 		float4 MyColor = tex2D(s0, INPUT.vTexcoord); // (r,g,b,a)
 
 		 // Break Down MyColor:
@@ -122,7 +133,7 @@ return shader_create(
     		float Precision = 0.05;
     		float num = Radius/Precision;
 			for(float dist = 1.0; dist < Radius; dist += Precision){
-			    float4 nCol = tex2D(s0, INPUT.vTexcoord + float2((floor(dist) * cos((dist - floor(dist)) * 2 * 3.14159))/" + string(game_width) + ".0, (floor(dist) * sin((dist - floor(dist)) * 2 * 3.14159))/" + string(game_height) + ".0));
+			    float4 nCol = tex2D(s0, INPUT.vTexcoord + float2((floor(dist) * cos((dist - floor(dist)) * 2 * 3.14159))/' + string(game_width) + /*hlsl*/'.0, (floor(dist) * sin((dist - floor(dist)) * 2 * 3.14159))/' + string(game_height) + /*hlsl*/'.0));
 			    if(nCol.r == 0.0){
 			        ill += (1-sqrt(INPUT.vTexcoord.y))*10;
 			    };
@@ -131,7 +142,9 @@ return shader_create(
 			  return float4(R,G,B,min(MyColor.a,1-ill/num));
 		}
 	}
-");
+';
+
+return (_beta ? script_execute(shader_create, _vertex, _fragment, shader_kind_hlsl) : shader_create(_vertex, _fragment));
 
 #define weapon_chrg
 return true;
