@@ -74,7 +74,7 @@ with instance_create(x,y,Slash){
 			sound_play_pitchvol(sndDoubleShotgun,.8*p,.7)
 			sound_play_pitchvol(sndTripleMachinegun,.8*p,.7)
 			with instance_create(x,y,UltraShell){
-				motion_set(other.direction + random_range(-20,20)*other.creator.accuracy, 18)
+				motion_set(other.direction + random_range(-30,30)*other.creator.accuracy, 12)
 				image_angle = direction
 				creator = other.creator
 				team = other.team
