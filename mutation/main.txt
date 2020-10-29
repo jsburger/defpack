@@ -1,7 +1,17 @@
-/loadskill prismatic iris
-/loadskill irisslave1
-/loadskill irisslave2
-/loadskill irisslave3
-/loadskill irisslave4
-/loadskill irisslave5
-/loadskill irisslave6
+/loadskill irises/fantasticrefractions
+/loadskill irises/blazingvisage
+/loadskill irises/quiveringsight
+/loadskill irises/pestilentgaze
+/loadskill irises/cloudedstare
+/loadskill irises/allseeingeye
+/loadskill irises/filteredlens
+/loadskill irises/warpedperspective
+/loadskill prismaticiris
+
+//loadskill prismatic iris
+//loadskill irisslave1
+//loadskill irisslave2
+//loadskill irisslave3
+//loadskill irisslave4
+//loadskill irisslave5
+//loadskill irisslave6
