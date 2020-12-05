@@ -1,6 +1,6 @@
 #define init
 global.sprAssaultSonicLauncher = sprite_add_weapon("sprites/weapons/sprAssaultSonicLauncher.png", 4, 2);
-global.sprTripleSonicNade      = sprite_add("sprites/projectiles/sprTripleSonicGrenade.png",1,3,3);
+global.sprTripleSonicNade      = sprite_add("sprites/projectiles/sprSonicGrenade.png",1,3,3);
 global.sprSonicStreak          = sprite_add("sprites/projectiles/sprSonicStreak.png",6,8,32);
 
 #define weapon_name
@@ -28,7 +28,7 @@ return sndSwapExplosive;
 return 9;
 
 #define weapon_text
-return "340 KM/H";
+return "SO LOUD";
 
 #define weapon_fire
 	repeat(3)
@@ -89,49 +89,21 @@ return "340 KM/H";
 	}
 
 #define sonic_launcher_destroy
-	with instance_create(x,y,CustomObject){
-		it      = 2
-		it2     = 0
-		team    = other.team
-		creator = other.creator
-		on_step = dispense_step
-	}
-	with mod_script_call("mod","defpack tools","create_sonic_explosion",x,y){
-		scalefac = random_range(0.6,0.75)
+	with mod_script_call("mod","defpack tools","create_sonic_explosion",x - lengthdir_x(2, direction),y - lengthdir_y(2, direction)){
+		var scalefac = random_range(0.6,0.75);
 		image_xscale = scalefac
 		image_yscale = scalefac
-		image_speed = 0.75
+		image_speed = 0.6
 		team = other.team
 		creator = other.creator
 		sound_play(sndExplosion)
-		repeat(round(scalefac*10)){ with instance_create(x,y,Dust) {motion_add(random(360),3)}}
+		repeat(round(scalefac*10)){ with instance_create(x,y,Dust) {sprite_index = sprExtraFeet; motion_add(random(360),3)}}
 	}
 	var _a = random(360)
 	repeat(3){
-		with instance_create(x+lengthdir_x(12,_a),y+lengthdir_y(12,_a),AcidStreak){
+		with instance_create(x+lengthdir_x(36,_a),y+lengthdir_y(36,_a),AcidStreak){
 			sprite_index = global.sprSonicStreak
 			image_angle = _a - 90
-			motion_add(image_angle+90,12)
-			friction = 2.1
 		}
 		_a += 120
 	}
-
-#define dispense_step
-it -= current_time_scale
-if it <= 0{
-	with mod_script_call("mod", "defpack tools", "create_sonic_explosion", x+random_range(-30,30),y+random_range(-30,30)){
-
-		scalefac = random_range(0.24,0.4)
-		image_xscale = scalefac
-		image_yscale = scalefac
-		image_speed = .5
-		team = other.team
-		creator = other.creator
-		superdirection = undefined;
-		repeat(round(scalefac*10)){ with instance_create(x,y,Dust) {motion_add(random(360),3)}}
-	}
-	it  = 3
-	it2++
-	if it2 >= 4 instance_destroy()
-}

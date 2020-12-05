@@ -140,6 +140,12 @@ return -4;
         {
           repeat(2+_s) instance_create(x+random_range(-8,8),y+random_range(-8,8),Smoke)
           projectile_hit(other,damage[min(frames,1)],force,direction)
+          x -= lengthdir_x(other.size * 2, direction)
+          y -= lengthdir_y(other.size * 2, direction)
+          with other{
+            x += lengthdir_x(speed * .7, direction)
+            y += lengthdir_y(speed * .7, direction)
+          }
           sleep(12*_s)
           view_shake_at(x,y,8*_s)
           x -= hspeed/3
@@ -207,8 +213,8 @@ return -4;
 
 #define step
 
-  with instances_matching(Player, "wep", mod_current) || instances_matching(instances_matching(Player, "race", "steroids"), "bwep", mod_current){speed *= min(1, .8 + .2 * (skill_get(mut_extra_feet)))}
-
+  with instances_matching(Player, "wep", mod_current){speed *= min(1, .8 + .2 * (skill_get(mut_extra_feet)))}
+  with instances_matching(instances_matching(Player, "race", "steroids"), "bwep", mod_current){speed *= min(1, .8 + .2 * (skill_get(mut_extra_feet)))}
 
   if "extraspeed" in self
   {

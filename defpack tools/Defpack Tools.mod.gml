@@ -69,9 +69,11 @@
 		RockletFlame = sprite_add(i + "sprRockletFlame.png", 0, 8, 3);
 
 		//Sonic Explosions
-		SonicExplosion     = sprite_add(  i + "sprSonicExplosion.png", 8, 61, 59);
-		msk.SonicExplosion = sprite_add_p(i + "mskSonicExplosion.png", 9, 61, 59);
-		SonicStreak        = sprite_add(i + "sprSonicStreak.png",6,8,32);
+		SonicExplosion          = sprite_add(  i + "sprSonicExplosion.png", 8, 61, 59);
+		SmallSonicExplosion     = sprite_add(  i + "sprSonicExplosionSmall.png", 8, 20, 20);
+		msk.SonicExplosion      = sprite_add_p(i + "mskSonicExplosion.png", 9, 61, 59);
+		msk.SmallSonicExplosion = sprite_add_p(i + "mskSonicExplosionSmall.png", 9, 20, 20);
+		SonicStreak             = sprite_add(i + "sprSonicStreak.png",6,8,32);
 
 		//Abris Stripes
 		Stripes = sprite_add("../sprites/other/sprBigStripes.png", 1, 1, 1);
@@ -145,7 +147,7 @@
 
 	}
 
-	
+
 	global.SAKmode = 0
 	//mod_script_call("mod","defpermissions","permission_register","mod",mod_current,"SAKmode","SAK Mode")
 
@@ -693,7 +695,7 @@ projectile_hit(other, (current_frame < fallofftime? damage : (damage - falloff))
 #define create_shell(x, y)
 with instance_create(x, y, CustomProjectile){
     name = "Shell"
-	
+
 	sprite_index = sprBullet1
     spr_dead = sprBulletHit
     mask_index = mskBullet1
@@ -1289,7 +1291,6 @@ instance_create(x,y,SmallExplosion)
 sound_play_pitchvol(sndExplosionS,2,.3)
 bullet_destroy()
 
-
 #define create_dark_bullet(x,y)
 with instance_create(x, y, CustomSlash){
 	name = "Dark Bullet"
@@ -1399,21 +1400,21 @@ if other != lasthit{
     }
 }
 
-#define create_sonic_explosion(_x,_y)
+#define create_small_sonic_explosion(_x,_y)
 	with instance_create(_x,_y,CustomSlash){
-		name = "Sonic Explosion"
+		name = "Small Sonic Explosion"
 
-		sprite_index = spr.SonicExplosion
-		mask_index = msk.SonicExplosion
+		sprite_index = spr.SmallSonicExplosion
+		mask_index = msk.SmallSonicExplosion
 
 		typ = 0
 		damage = 1
 		candeflect = 1
-		image_speed = .7
-		force = 20
-		shake = 10
+		image_speed = .85
+		force = 4
+		shake = 2
 		if GameCont.area = 101{synstep = 0}else{synstep = 1} //oasis synergy
-		hitid = [sprite_index,"Sonic Explosion"]
+		hitid = [sprite_index,"Small Sonic Explosion"]
 		on_step       = sonic_step
 		on_projectile = sonic_projectile
 		on_grenade    = sonic_grenade
@@ -1423,6 +1424,42 @@ if other != lasthit{
 
 		return id
 	}
+
+	#define create_sonic_explosion(_x,_y)
+		with instance_create(_x,_y,CustomSlash){
+			name = "Sonic Explosion"
+
+			sprite_index = spr.SonicExplosion
+			mask_index = msk.SonicExplosion
+
+			typ = 0
+			damage = 1
+			candeflect = 1
+			image_speed = .7
+			force = 20
+			shake = 10
+			if GameCont.area = 101{synstep = 0}else{synstep = 1} //oasis synergy
+			hitid = [sprite_index,"Sonic Explosion"]
+			on_step       = sonic_step
+			on_projectile = sonic_projectile
+			on_grenade    = sonic_grenade
+			on_hit        = sonic_hit
+			on_wall       = nothing
+			on_anim       = sonic_anim
+
+			if crown_current = crwn_death{
+				var _r = sprite_get_width(sprite_index) / 3,
+				    _d = random(360);
+				repeat(3){
+					with create_small_sonic_explosion(x + lengthdir_x(_r * random_range(.6, 1), _d), y + lengthdir_y(_r * random_range(.6, 1), _d)){
+						team = 2
+						creator = other.creator
+					}
+					_d += 360 / 3;
+				}
+			}
+			return id
+		}
 
 #define nothing
 
@@ -1477,7 +1514,7 @@ if other != lasthit{
 			sprite_index = mskNothing;
 			with _explo
 			{
-				if "superforce"     in self other.force 				 = superforce else other.force = 18;
+				if "superforce"     in self other.force 				 = superforce else {if _explo.name = "Small Sonic Explosion" other.force =  4 else other.force = 18};
 				if "superfriction"  in self other.superfriction  = superfriction else other.superfriction = 1;
 				if "superdirection" in self other.superdirection = superdirection;
 			}
@@ -1508,7 +1545,7 @@ if other != lasthit{
 		sleep(32)
 		view_shake_max_at(x, y, 8 * clamp(creator.size, 1, 3))
 		repeat(creator.size) instance_create(x, y, Debris)
-		with creator
+		if force > 4 with creator 
 		{
 			projectile_hit(self,round(ceil(other.force) * 1.5),1	,direction)
 			if my_health <= 0
@@ -1519,7 +1556,7 @@ if other != lasthit{
 			}
 		}
 		force *= .7
-		repeat(3) with instance_create(x+lengthdir_x(12,direction),y+lengthdir_y(12,direction),AcidStreak){
+		with instance_create(x+lengthdir_x(12,direction),y+lengthdir_y(12,direction),AcidStreak){
 			sprite_index = spr.SonicStreak
 			image_angle = other.direction + random_range(-32, 32) - 90
 			motion_add(image_angle+90,12)
@@ -1528,12 +1565,12 @@ if other != lasthit{
 	}
 	if place_meeting(x + hspeed, y + vspeed, hitme)
 	{
-		if !instance_is(self, Player) && projectile_canhit_melee(other)
+		var _h = instance_nearest(x + hspeed, y + vspeed, hitme);
+		if !instance_is(_h, Player) && projectile_canhit_melee(_h)
 		{
-			projectile_hit(other,(ceil(force) + size) * 2, force, direction)
+			projectile_hit(_h,(ceil(force) + _h.size) * 2, force, direction)
 		}
 	}
-
 //ok i guess im stealing stuff from gunlocker too but its a good idea alright
 #define shell_yeah(_angle, _spread, _speed, _color)
 	with instance_create(x, y, Shell){
@@ -1821,7 +1858,7 @@ with instance_create(x, y, CustomProjectile){
 if instance_exists(creator){
     var _x, _y, c = creator, ang;
     if targeting == abris_mouse{
-        _x = c.x + lengthdir_x(point_distance(c.x, c.y, mouse_x[index], mouse_y[index]), c.gunangle) 
+        _x = c.x + lengthdir_x(point_distance(c.x, c.y, mouse_x[index], mouse_y[index]), c.gunangle)
         _y = c.y + lengthdir_y(point_distance(c.x, c.y, mouse_x[index], mouse_y[index]), c.gunangle)
         ang = c.gunangle
     }
@@ -2123,7 +2160,7 @@ for (var i = 0; i < 360; i += int) {
         color = c_white
         fadecolor = c_lime
         gravity = .8
-        gravity_direction = other.direction 
+        gravity_direction = other.direction
     }
 }
 

@@ -29,7 +29,7 @@ return sndSwapExplosive;
 return 11;
 
 #define weapon_text
-return "WOOMY";
+return "FULL REMOTE ACCESS";
 
 #define weapon_fire
 var _p = random_range(.8,1.2)
@@ -73,16 +73,22 @@ with instance_create(x,y,CustomProjectile){
 		}
 	}
 	sprite_index = global.sprBusterBomb
-    mask_index   = sprDiscTrail
-	on_step 	 = buster_step
-	on_hit 		 = buster_hit
+  mask_index   = sprDiscTrail
+  on_step 	   = buster_step
+  on_hit 		   = buster_hit
 	on_wall      = buster_wall
 	on_destroy   = buster_destroy
-    on_draw      = buster_draw
+  on_draw      = buster_draw
 }
 
 #define buster_step
 if !instance_exists(creator){instance_destroy();exit}else{with creator{weapon_post(3,-20,0)}}
+
+if place_meeting(x, y, Explosion){
+  instance_destroy();
+  exit;
+}
+
 image_angle += speed * 3 * current_time_scale
 if current_frame_active{
     with instance_create(x+lengthdir_x(-sprite_get_height(sprite_index)/2.2,image_angle-90),y+lengthdir_y(-sprite_get_height(sprite_index)/2.2,image_angle-90),Smoke){
@@ -105,6 +111,7 @@ if !button_check(creator.index,btn) && lifetime <= (5 * 30 - 6){
     instance_destroy()
     exit
 }
+deflect();
 
 #define buster_hit
 if current_frame_active {
@@ -146,3 +153,55 @@ draw_self()
 if lifetime <= 30{
   draw_sprite_ext(global.sprBusterBombBlink,image_index,x,y,image_xscale,image_yscale,image_angle,image_blend,image_alpha)
 }
+
+#define deflect()
+  with instances_matching(projectile, "walled", false){
+    if place_meeting(x, y, other){
+      with other{
+        motion_add(other.direction, max(0, 12 - speed))
+        if lifetime = 2 * 30{
+          lifetime = 2 * 30;
+        }
+        with instance_create(x, y, Deflect){
+          image_angle = other.direction;
+        }
+      }
+    }
+  }
+  with instances_matching(CustomSlash, "candeflect", true){
+    if place_meeting(x, y, other){
+      with other{
+        motion_add(other.direction, max(0, 12 - speed))
+        if lifetime = 2 * 30{
+          lifetime = 2 * 30;
+        }
+        with instance_create(x, y, Deflect){
+          image_angle = other.direction;
+        }
+      }
+    }
+  }
+  with Shank{
+    if place_meeting(x, y, other){
+      with other{
+        instance_destroy()
+        exit
+      }
+    }
+  }
+  with EnergyShank{
+    if place_meeting(x, y, other){
+      with other{
+        instance_destroy()
+        exit
+      }
+    }
+  }
+  with instances_matching(CustomSlash, "candeflect", false){
+    if place_meeting(x, y, other){
+      with other{
+        instance_destroy()
+        exit
+      }
+    }
+  }
