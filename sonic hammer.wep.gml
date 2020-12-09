@@ -5,10 +5,10 @@ global.sprSonicHammer = sprite_add_weapon("sprites/weapons/sprSonicHammer.png", 
 return "SONIC HAMMER";
 
 #define weapon_type
-return 0;
+return 4;
 
 #define weapon_cost
-return 0;
+return 2;
 
 #define weapon_area
 return -1;
@@ -41,6 +41,7 @@ sleep(10);
 
 var _p = random_range(.8, 1.2);
 sound_play_pitchvol(sndHammer, .8 * _p, 1);
+sound_play_pitchvol(sndUltraShovel, 1.6 * _p, 1);
 sound_play_pitchvol(sndHyperLauncher, .7 * _p, 1);
 sound_play_pitchvol(sndHyperSlugger, .7 * _p, 1);
 sound_play_pitchvol(sndBouncerSmg, .3 * _p, 1);
@@ -50,8 +51,8 @@ with instance_create(x, y, CustomSlash)
   image_speed = .5;
   creator = other;
   team    = other.team;
-  damage = 8;
-  force = 24;
+  damage = 0;
+  force = 28;
   motion_add(creator.gunangle + random_range(-4, 4) * creator.accuracy, 3 + skill_get(mut_long_arms) * 4);
   superforce     = force;
   superdirection = direction;

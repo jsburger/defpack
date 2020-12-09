@@ -18,7 +18,7 @@ return true;
 return 16;
 
 #define weapon_cost
-return 2;
+return 1;
 
 #define weapon_swap
 return sndSwapExplosive;
@@ -27,16 +27,16 @@ return sndSwapExplosive;
 return 5;
 
 #define weapon_text
-return "SPREAD THE WORDs";
+return "SPREAD THE WORD";
 
 #define weapon_fire
 var _e = crown_current = crwn_death ? 2 : 0;
-repeat(7 + _e) with instance_create(x+lengthdir_x(3,gunangle),y+lengthdir_y(3,gunangle),CustomProjectile){
+repeat(5 + _e) with instance_create(x+lengthdir_x(3,gunangle),y+lengthdir_y(3,gunangle),CustomProjectile){
 	sprite_index = global.sprSonicNade
 	team = other.team
 	creator = other
 	friction = .5 * random_range(.6, 1.2)
-	damage = 3
+	damage = 4
 	lifetime = 4 + irandom(10)
 	force = 18
 	bounce = 3
@@ -46,7 +46,7 @@ repeat(7 + _e) with instance_create(x+lengthdir_x(3,gunangle),y+lengthdir_y(3,gu
 	if other.object_index = Player{
 		var _x = mouse_x[other.index];
 		var _y = mouse_y[other.index];
-		motion_add(point_direction(x,y,_x,_y) + random_range(-24, 24) * creator.accuracy,max(sqrt(point_distance(_x,_y,x,y)),irandom_range(8, 12)))
+		motion_add(point_direction(x,y,_x,_y) + random_range(-20, 20) * creator.accuracy,max(sqrt(point_distance(_x,_y,x,y)),irandom_range(8, 12)))
 	}else{
 		motion_add(other.gunangle,10)
 	}

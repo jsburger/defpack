@@ -3,7 +3,7 @@ global.sprSonicLauncher = sprite_add_weapon("sprites/weapons/sprGrenadeRifle.png
 global.sprSonicStreak   = sprite_add("sprites/projectiles/sprSonicStreak.png",6,8,32);
 global.sprSonicNade     = sprite_add("sprites/projectiles/sprTripleSonicGrenade.png",1,2,2);
 #define weapon_name
-return "SONIC SHOTGUN"
+return "SONIC RIFLE"
 
 #define weapon_sprt
 return global.sprSonicLauncher;
@@ -31,12 +31,12 @@ return "SHATTER THEIR EARS";
 
 #define weapon_fire
 var _e = crown_current = crwn_death ? 1 : 0;
-repeat(1 + _e) with instance_create(x+lengthdir_x(3,gunangle),y+lengthdir_y(3,gunangle),CustomProjectile){
+repeat(2 + _e) with instance_create(x+lengthdir_x(3,gunangle),y+lengthdir_y(3,gunangle),CustomProjectile){
 	sprite_index = global.sprSonicNade
 	team = other.team
 	creator = other
 	friction = .5 * random_range(.9, 1)
-	damage = 3
+	damage = 4
 	lifetime = 15 + irandom(2)
 	force = 18
 	bounce = 3

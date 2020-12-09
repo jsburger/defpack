@@ -69,6 +69,13 @@ with instance_create(x,y,CustomObject)
 
 #define bow_step
 if !instance_exists(creator){instance_delete(self);exit}
+if creator.bwep != 0 && button_check(creator.index, "swap") && creator.canswap = true{
+  var _t = weapon_get_type(mod_current);
+  creator.ammo[_t] += weapon_get_cost(mod_current)
+  if creator.ammo[_t] > creator.typ_amax[_t] creator.ammo[_t] = creator.typ_amax[_t]
+  instance_delete(self)
+  exit
+}
 var timescale = (mod_variable_get("weapon", "stopwatch", "slowed") == 1) ? 30/room_speed : current_time_scale;
 if button_check(index,"swap"){instance_destroy();exit}
 if reload = -1{
@@ -200,11 +207,11 @@ with instance_create(x,y,CustomProjectile){
 }
 
 #define bolt_step
-if random(100) < (50 + 25*charged)*current_time_scale{
-    repeat(random(3+charged * 4))with instance_create(x,y,Flame){
+if random(100) < (50 + 40*charged)*current_time_scale{
+    repeat(irandom_range(1 + charged * 5,1 + charged * 9))with instance_create(x,y,Flame){
         team = other.team
         creator = other.creator
-        motion_set(other.direction + choose(-30,30) * choose(0,1,1,1) + random_range(-8,8), random(3)+ 3)
+        motion_set(other.direction + choose(-30,30) + random_range(-8,8), random(3)+ 3 + other.charged * 3)
     }
 }
 

@@ -14,10 +14,10 @@ return 4;
 return true;
 
 #define weapon_load
-return 18;
+return 8;
 
 #define weapon_cost
-return 1;
+return 2;
 
 #define weapon_melee
 return 0;
@@ -60,6 +60,13 @@ with instance_create(x,y,CustomObject){
 
 #define blaster_step
   if !instance_exists(creator){instance_delete(self);exit}
+	if creator.bwep != 0 && button_check(creator.index, "swap") && creator.canswap = true{
+	  var _t = weapon_get_type(mod_current);
+	  creator.ammo[_t] += weapon_get_cost(mod_current)
+	  if creator.ammo[_t] > creator.typ_amax[_t] creator.ammo[_t] = creator.typ_amax[_t]
+	  instance_delete(self)
+	  exit
+	}
   var timescale = (mod_variable_get("weapon", "stopwatch", "slowed") == 1) ? 30/room_speed : current_time_scale;
   with creator{
     weapon_post(3 * other.charge / other.maxcharge, 0, 0);
@@ -110,11 +117,11 @@ with instance_create(x,y,CustomObject){
                   sleep(30)
                   _pitch += .1
               }
-              if _c > 1 && i = 0 if fork(){
+              if _c > 1 if fork(){
                 wait(1);
                 sleep(40);
                 weapon_post(12,24,4);
-                motion_add(gunangle - 180, 3);
+                motion_add(gunangle - 180, 2);
                 sound_play_pitchvol(sndExplosionL,1.2*_pitch, .4)
                 exit
               }

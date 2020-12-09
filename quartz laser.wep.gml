@@ -1,7 +1,11 @@
 #define init
-global.sprQuartzLaser = sprite_add_weapon("sprites/weapons/sprQuartzLaser.png", 6, 4);
+global.sprQuartzLaser  = sprite_add_weapon("sprites/weapons/sprQuartzLaser.png" , 6, 4);
+global.sprQuartzLaser1 = sprite_add_weapon("sprites/weapons/sprQuartzLaser1.png", 6, 4);
+global.sprQuartzLaser2 = sprite_add_weapon("sprites/weapons/sprQuartzLaser2.png", 6, 4);
 global.sprBeam = sprite_add("sprites/projectiles/sprQuartzBeam.png",1,2,5)
-global.sprHud = sprite_add("sprites/interface/sprQuartzLaserHud.png", 1, 6, 4)
+global.sprHud  = sprite_add("sprites/interface/sprQuartzLaserHud.png" , 1, 6, 4);
+global.sprHud1 = sprite_add("sprites/interface/sprQuartzLaserHud1.png", 1, 6, 4);
+global.sprHud2 = sprite_add("sprites/interface/sprQuartzLaserHud2.png", 1, 6, 4);
 
 #define weapon_name
 return "QUARTZ LASER"
@@ -19,19 +23,53 @@ return sndSwapEnergy
 return true
 #define weapon_melee
 return 0
-#define weapon_sprt_hud
-return global.sprHud
+#define weapon_sprt_hud(wep)
+	if is_object(wep){
+	  switch wep.health{
+	    default: return global.sprHud;
+	    case 1: return global.sprHud1;
+	    case 0: return global.sprHud2;
+	  }
+	}
+	return global.sprHud;
+
 #define weapon_laser_sight
-return 0
-#define weapon_sprt
-return global.sprQuartzLaser
+	return 0
+
+#define weapon_sprt(wep)
+	if is_object(wep){
+	  switch wep.health{
+	    default: return global.sprQuartzLaser;
+	    case 1: return global.sprQuartzLaser1;
+	    case 0: return global.sprQuartzLaser2;
+	  }
+	}
+	return global.sprQuartzLaser;
+
 #define weapon_text
 return choose("FRAGILE APPARATUS","BE CAREFUL WITH IT")
 
-#define step
-mod_script_call("mod","defpack tools","quartz_penalty",mod_current)
+#define step(p)
+  if p && is_object(wep){
+    mod_script_call_self("mod","defpack tools","quartz_penalty",mod_current, wep, p)
+    mod_script_call_self("mod","defpack tools","quartz_step", self, wep);
+  }
+  if !p && is_object(bwep) && race = "steroids"{
+    mod_script_call_self("mod","defpack tools","quartz_penalty",mod_current, bwep, p)
+    mod_script_call_self("mod","defpack tools","quartz_step", self, bwep);
+  }
 
-#define weapon_fire
+#define weapon_fire(w)
+  if !is_object(w){
+      w = {
+          wep: w,
+          prevhealth: other.my_health,
+          maxhealth: 2,
+          health: 2,
+          is_quartz: true
+      }
+      wep = w
+  }
 with instance_create(x,y,Laser){
 	creator = other
   xstart = x

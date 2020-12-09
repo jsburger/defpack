@@ -132,8 +132,9 @@
 
 
 		//Quartz Shards
-		Shard      = sprite_add_weapon("../sprites/weapons/sprShard.png", 0, 3);
-		GlassShard = sprite_add("../sprites/other/sprGlassShard.png", 5, 4, 4)
+		Shard        = sprite_add_weapon("../sprites/weapons/sprShard.png", 0, 3);
+		GlassShard   = sprite_add("../sprites/other/sprGlassShard.png", 5, 4, 4)
+		QuartzPickup = sprite_add_weapon("../sprites/other/sprQuartzPickup.png", 5, 5);
 
 		//Crits
 		Killslash = sprite_add(i + "sprKillslash.png", 8, 16, 16);
@@ -573,6 +574,85 @@ if is_string(w){
 return 0
 
 #define step
+	// custom pickup stuff
+	with(instances_matching(Player, "race", "eyes")){
+		if(canspec && button_check(index, "spec"))
+		{
+			var _vx = view_xview[index],
+					_vy = view_yview[index];
+
+			with(instances_matching(Pickup, "name", "QuartzPickup")) if point_in_rectangle(x, y, _vx, _vy, _vx + game_width, _vy + game_height)
+			{
+					var l = (1 + skill_get(mut_throne_butt)) * current_time_scale,
+							d = point_direction(x, y, other.x, other.y),
+						 _x = x + lengthdir_x(l, d),
+						 _y = y + lengthdir_y(l, d);
+
+						if(place_free(_x, y)) x = _x;
+						if(place_free(x, _y)) y = _y;
+			}
+	 }
+	}
+	// pickup step
+	with instances_matching(Pickup, "name", "QuartzPickup"){
+		//fx
+		/*if tag = "infammo"
+		{
+			if irandom(19) = 0 with instance_create(x + random_range(-3, 3), y + random_range(-3, 3), GunWarrantEmpty) {image_xscale = .5; image_yscale = .5; image_angle = random(360)}
+		}*/
+
+		//collision
+		if(mask_index == mskPickup && place_meeting(x, y, Pickup))
+		{
+			with(instances_meeting(x, y, instances_matching(Pickup, "mask_index", mskPickup)))
+			{
+				if(place_meeting(x, y, other))
+				{
+					if(object_index == AmmoPickup || object_index == HPPickup || object_index == RoguePickup)
+					{
+						motion_add_ct(point_direction(other.x, other.y, x, y) + random_range(-10, 10), 0.8);
+					}
+					with(other)
+					{
+						motion_add_ct(point_direction(other.x, other.y, x, y) + random_range(-10, 10), 0.8);
+					}
+				}
+			}
+		}
+
+		if place_meeting(x + hspeed, y + vspeed, Wall){move_bounce_solid(false)}
+
+		//animations
+		if anim > 0 anim-- else{
+			if image_index = 0 && image_speed = .5
+			{
+				image_speed = 0
+				anim = 70 + irandom(20)
+			}
+			else{image_speed = .5}
+		}
+
+		//close range attraction
+		if distance_to_object(Player) <= (20 + 12 * skill_get(mut_plutonium_hunger)) motion_set(point_direction(x, y, Player.x, Player.y), 4)
+
+		//get picked up
+		if place_meeting(x, y, Player) || place_meeting(x, y, PortalShock) || instance_exists(BigPortal)
+		{
+				 // run open code
+				script_execute(on_pickup)
+
+				 // fx
+				instance_create(x, y,SmallChestPickup)
+				instance_delete(id);
+				exit;
+		}
+		//blink
+		if lifetime <= room_speed * 3{if current_frame mod 2 = 0 image_alpha++; if image_alpha > 1 image_alpha = 0}
+
+		//disappear after a while
+		if lifetime > 0 {lifetime -= current_time_scale} else{sound_play_pitch(sndPickupDisappear, random_range(.8, 1.2)); instance_create(x, y,SmallChestFade); instance_destroy()}
+	}
+
  //gets rid of dummy weapons, i dont know why vanilla doesnt do this
 with instances_matching(WepPickup, "wep", 0) instance_destroy()
 
@@ -627,7 +707,11 @@ with SodaMachine{
     		    if !irandom(99) wep = "soda popper"
     		    else{
         		    var a = ["lightning blue lifting drink(tm)", "extra double triple coffee", "expresso","saltshake", "munitions mist", "vinegar", "guardian juice"]
-        			if skill_get(14) > 0
+							if mod_exists("mod", "yokinLigthning")
+									array_push(a, "canned posion")
+							if mod_exists("mod", "ntte")
+									array_push(a, "pheromone fizz")
+							if skill_get(14) > 0
         			    array_push(a, "sunset mayo")
         			if array_length(instances_matching(Player, "notoxic", 0))
         			    array_push(a, "frog milk")
@@ -1545,7 +1629,7 @@ if other != lasthit{
 		sleep(32)
 		view_shake_max_at(x, y, 8 * clamp(creator.size, 1, 3))
 		repeat(creator.size) instance_create(x, y, Debris)
-		if force > 4 with creator 
+		if force > 4 with creator
 		{
 			projectile_hit(self,round(ceil(other.force) * 1.5),1	,direction)
 			if my_health <= 0
@@ -1568,7 +1652,10 @@ if other != lasthit{
 		var _h = instance_nearest(x + hspeed, y + vspeed, hitme);
 		if !instance_is(_h, Player) && projectile_canhit_melee(_h)
 		{
-			projectile_hit(_h,(ceil(force) + _h.size) * 2, force, direction)
+			var _s = (ceil(force) + _h.size) * 2;
+			sleep(_s / 3 * max(1, _h.size))
+			projectile_hit(_h,_s, force, direction)
+			force *= .9;
 		}
 	}
 //ok i guess im stealing stuff from gunlocker too but its a good idea alright
@@ -1797,6 +1884,14 @@ instance_destroy()
 #define abris_step
 if instance_exists(creator){
     var timescale = (mod_variable_get("weapon", "stopwatch", "slowed") == 1) ? 30/room_speed : current_time_scale;
+
+		if creator.bwep != 0 && button_check(creator.index, "swap") && creator.canswap = true{
+		  var _t = weapon_get_type(name);
+		  creator.ammo[_t] += weapon_get_cost(name)
+		  if creator.ammo[_t] > creator.typ_amax[_t] creator.ammo[_t] = creator.typ_amax[_t]
+		  instance_delete(self)
+		  exit
+		}
 
     image_angle += rotspeed * timescale
     scroll += timescale
@@ -2675,118 +2770,216 @@ if chance(66){
 }
 if speed < friction instance_destroy()
 
+#define quartz_pickup_create(_x, _y)
+	_obj = instance_create(_x, _y, Pickup);
+	with _obj
+	{
+		name = "QuartzPickup";
+		sprite_index = spr.QuartzPickup
+		mask_index   = mskPickup
+		image_speed  = 0
+		friction = .2
+		num = 1
+		anim = 20 + irandom(30)
+		if (irandom(9) + 1) <= skill_get(mut_rabbit_paw) * 4 instance_create(x, y, RabbitPaw)
+		lifetime = room_speed * 10 - (crown_current = 4 ? room_speed * 5 : 0) + irandom(15)
+		on_pickup = quartz_pickup_open
+	}
+	return _obj;
 
-#define quartz_penalty(_mod) //this is for player step only stupid
-if chance(4){
-  with instance_create(x+random_range(-8,8),y+random_range(-8,8),WepSwap){
-    image_xscale = .75
-    image_yscale = .75
-    image_speed = choose(.7,.7,.7,.45)
-  }
-}
-if lsthealth > my_health {
-  if wep  = _mod {
-    quartz_break()
-    with instance_create(x,y,ThrownWep){
-      wep = "shard"
-      sprite_index = spr.Shard
-      curse = other.curse
-      motion_set(other.gunangle-180-random_range(-2,2),3)
-    }
-    wep = bwep
-    bwep = 0
-    curse = bcurse
-    bcurse = 0
-  }
-  //steroids hnnnnnnnnnnnng
-  if bwep = _mod && race = "steroids"{
-    quartz_break()
-    with instance_create(x,y,ThrownWep){
-      wep = "shard"
-      sprite_index = spr.Shard
-      curse = other.bcurse
-      motion_set(other.gunangle-180-random_range(-2,2),3)
-    }
-    bcurse = 0
-    bwep = 0
-  }
-}
+#define quartz_pickup_open
+	var _pitch = random_range(1.3, 1.5);
+	sound_play_pitch(sndAmmoPickup, _pitch);
+
+	var _p = instance_nearest(x, y, Player),
+	    _q = self;
+	with _p{
+		if is_object(_p.wep) && "is_quartz" in _p.wep{
+			var _val = ((irandom(99) + 1) < frac(_q.num) * 100) + (_q.num - frac(_q.num)),
+				  _str = `+` + string(_val) + ` @(color:${make_colour_rgb(201, 223, 255)})QUARTZ @wHP`;
+
+			_p.wep.health += _val;
+
+			if _p.wep.health >= _p.wep.maxhealth{
+				_p.wep.health = _p.wep.maxhealth;
+				_str = `MAX @(color:${make_colour_rgb(201, 223, 255)})QUARTZ @wHP`;
+			}else{
+				_p.gunshine = 6;
+			}
+
+			with instance_create(_p.x, _p.y, PopupText){
+				mytext = _str;
+			}
+		}
+		if is_object(_p.bwep) && "is_quartz" in _p.bwep{
+			var _val = ((irandom(99) + 1) < frac(_q.num) * 100) + (_q.num - frac(_q.num)),
+				  _str = `+` + string(_val) + ` @(color:${make_colour_rgb(201, 223, 255)})QUARTZ @wHP`;
+
+			_p.bwep.health += _val;
+
+			if _p.bwep.health >= _p.bwep.maxhealth{
+				_p.bwep.health = _p.bwep.maxhealth;
+				_str = `MAX @(color:${make_colour_rgb(201, 223, 255)})QUARTZ @wHP`;
+			}else{
+				_p.gunshine = 6;
+			}
+
+			with instance_create(_p.x, _p.y, PopupText){
+				mytext = _str;
+			}
+		}
+	}
+
+#define quartz_step(_creator, _w)
+	if is_object(_w){
+		_w.prevhealth = _creator.my_health;
+
+		if _w.health < _w.maxhealth{
+			with HPPickup{
+				if "quartz_check" not in self && ((irandom(99) + 1) < (85 * (1 - _w.health/_w.maxhealth))){
+					quartz_pickup_create(x, y);
+					instance_delete(self);
+					exit;
+				}
+				quartz_check = true;
+			}
+		}
+
+	}
+
+#define instances_meeting(_x, _y, _obj)
+		var _tx = x,
+		    _ty = y;
+
+		    x = _x;
+		    y = _y;
+		    var r = instances_matching_ne(instances_matching_le(instances_matching_ge(instances_matching_le(instances_matching_ge(_obj, "bbox_right", bbox_left), "bbox_left", bbox_right), "bbox_bottom", bbox_top), "bbox_top", bbox_bottom), "id", id);
+		    x = _tx;
+		    y = _ty;
+				return r;
+
+#define quartz_penalty(_mod, _w, _p) //this is for player step only stupid
+	if chance(4){
+	  with instance_create(x+random_range(-8,8),y+random_range(-8,8),WepSwap){
+	    image_xscale = .75
+	    image_yscale = .75
+	    image_speed = choose(.7,.7,.7,.45)
+	  }
+	}
+
+	if _w.prevhealth > my_health {
+		if _w.wep = _mod{
+			_w.health--;
+			if _w.health < 0{
+	    	quartz_break();
+		    with instance_create(x,y,ThrownWep){
+		      wep = "shard"
+		      sprite_index = spr.Shard
+		      curse = _p ? other.curse : other.bcurse
+		      motion_set(other.gunangle-180-random_range(-2,2),3)
+		    }
+				if _p {
+			    wep = bwep
+			    bwep = 0
+			    curse = bcurse
+			    bcurse = 0
+					if is_object(wep) && lq_defget(wep, "is_quartz", false) {
+						quartz_penalty(_mod, wep, _p);
+					}
+				}
+			}else{
+				quartz_hurt();
+			}
+	  }
+	}
+
+#define quartz_hurt()
+	var _pitch = random_range(.9,1.1);
+	sound_play_pitchvol(sndCrystalTB, 1.8, 2);
+	sound_play_pitch(sndLaserCrystalHit, .7);
+	sleep(75);
+	view_shake_at(x,y,6)
+	repeat(5) with instance_create(x,y,Feather){
+		motion_add(random(360),random_range(2,4))
+		sprite_index = spr.GlassShard
+		image_speed = random_range(.4,.7)
+		image_index = irandom(5)
+	}
 
 #define quartz_break()
-var _pitch = random_range(.9,1.1)
-sound_play_pitch(sndHyperCrystalHurt,.8*_pitch)
-sound_play_pitch(sndLaserCrystalHit,.7*_pitch)
-sound_play_pitchvol(sndHyperCrystalHalfHP,2*_pitch,.4)
-sound_play_gun(sndLaserCrystalDeath,.1,.0001)//mute action
-sleep(400)
-view_shake_at(x,y,45)
-repeat(14) with instance_create(x,y,Feather){
-	motion_add(random(360),random_range(3,6))
-	sprite_index = spr.GlassShard
-	image_speed = random_range(.4,.7)
-	image_index = irandom(5)
-}
-
+	var _pitch = random_range(.9,1.1)
+	sound_play_pitch(sndHyperCrystalHurt,.8*_pitch)
+	sound_play_pitch(sndLaserCrystalHit,.7*_pitch)
+	sound_play_pitchvol(sndHyperCrystalHalfHP,2*_pitch,.4)
+	sound_play_gun(sndLaserCrystalDeath,.1,.0001)//mute action
+	sleep(400)
+	view_shake_at(x,y,45)
+	repeat(14) with instance_create(x,y,Feather){
+		motion_add(random(360),random_range(3,6))
+		sprite_index = spr.GlassShard
+		image_speed = random_range(.4,.7)
+		image_index = irandom(5)
+	}
 
 #define crit() //add this to on_hit effects in order to not be stupid
-var _t = team;
-view_shake_max_at(x, y, 150)
-sleep(100)
-sound_play_pitchvol(sndHammerHeadEnd,random_range(1.23,1.33),20)
-sound_play_pitchvol(sndBasicUltra,random_range(0.9,1.1),20)
-sound_play_pitch(sndCoopUltraA,random_range(3.8,4.05))
-sound_play_pitch(sndBasicUltra,random_range(.6,.8))
-sound_play_gun(sndClickBack,1,.5)
-sound_stop(sndClickBack)
-with instance_create(x+lengthdir_x(sprite_get_width(sprite_index),image_angle),y+lengthdir_y(sprite_get_width(sprite_index),image_angle),CustomObject){
-    with instance_create(x,y,CustomSlash){
-        lifetime = 63
-        team = _t
-        image_xscale = 2.5
-        image_yscale = 2.5
-        mask_index  = sprPortalShock
-        image_blend = c_black
-        image_speed = 0
-        image_alpha = 0
-        damage = 0
-        on_projectile = crit_proj
-        on_step       = crit_step
-        on_wall       = nothing
-        on_hit        = crit_hit
-    }
-    image_angle = random(360)
-    depth = other.depth -1
-    image_speed = .6
-    sprite_index = spr.Killslash
-    image_xscale = random_range(1.3,1.5)
-    image_yscale = image_xscale
-    on_step = Killslash_step
-    with instance_create(x,y,CustomObject){
-        image_angle = other.image_angle - 90 + random_range(-8,8)
-        depth = other.depth
-        image_speed = .8
-        sprite_index = spr.Killslash
-        image_blend = c_black
-        image_xscale = other.image_xscale-.5
-        image_yscale = image_xscale
-        on_step = Killslash_step
-    }
-}
+	var _t = team;
+	view_shake_max_at(x, y, 150)
+	sleep(100)
+	sound_play_pitchvol(sndHammerHeadEnd,random_range(1.23,1.33),20)
+	sound_play_pitchvol(sndBasicUltra,random_range(0.9,1.1),20)
+	sound_play_pitch(sndCoopUltraA,random_range(3.8,4.05))
+	sound_play_pitch(sndBasicUltra,random_range(.6,.8))
+	sound_play_gun(sndClickBack,1,.5)
+	sound_stop(sndClickBack)
+	with instance_create(x+lengthdir_x(sprite_get_width(sprite_index),image_angle),y+lengthdir_y(sprite_get_width(sprite_index),image_angle),CustomObject){
+	    with instance_create(x,y,CustomSlash){
+	        lifetime = 63
+	        team = _t
+	        image_xscale = 2.5
+	        image_yscale = 2.5
+	        mask_index  = sprPortalShock
+	        image_blend = c_black
+	        image_speed = 0
+	        image_alpha = 0
+	        damage = 0
+	        on_projectile = crit_proj
+	        on_step       = crit_step
+	        on_wall       = nothing
+	        on_hit        = crit_hit
+	    }
+	    image_angle = random(360)
+	    depth = other.depth -1
+	    image_speed = .6
+	    sprite_index = spr.Killslash
+	    image_xscale = random_range(1.3,1.5)
+	    image_yscale = image_xscale
+	    on_step = Killslash_step
+	    with instance_create(x,y,CustomObject){
+	        image_angle = other.image_angle - 90 + random_range(-8,8)
+	        depth = other.depth
+	        image_speed = .8
+	        sprite_index = spr.Killslash
+	        image_blend = c_black
+	        image_xscale = other.image_xscale-.5
+	        image_yscale = image_xscale
+	        on_step = Killslash_step
+	    }
+	}
 
 #define Killslash_step
-if image_index = 1.2 sleep(200)
-if image_index >= 7 instance_destroy();
+	if image_index = 1.2 sleep(200)
+	if image_index >= 7 instance_destroy();
 
 #define crit_proj
-with other{
-    if typ > 0 instance_destroy()
-}
+	with other{
+	    if typ > 0 instance_destroy()
+	}
 
 #define crit_step
-if lifetime > 0
-	lifetime -= current_time_scale
-else
-	instance_destroy()
+	if lifetime > 0
+		lifetime -= current_time_scale
+	else
+		instance_destroy()
 
 #define crit_hit
 if projectile_canhit_melee(other){
@@ -2843,82 +3036,82 @@ if instance_exists(creator) && team != -1 && !place_meeting(x,y,creator){
 }
 
 #define disc_destroy()
-sound_play_hit(sndDiscDie, .2)
-with instance_create(x, y, DiscTrail)
-    sprite_index = other.spr_dead
+	sound_play_hit(sndDiscDie, .2)
+	with instance_create(x, y, DiscTrail)
+	    sprite_index = other.spr_dead
 
 #define create_bouncerdisc(_x,_y)
-with instance_create(_x,_y,CustomProjectile) {
-    damage = 2
-    image_speed = .5
-    name = "Bouncer Disc"
-    sprite_index = spr.BouncerDisc
+	with instance_create(_x,_y,CustomProjectile) {
+	    damage = 2
+	    image_speed = .5
+	    name = "Bouncer Disc"
+	    sprite_index = spr.BouncerDisc
 
-    disc_init()
+	    disc_init()
 
-    on_step = bouncerdisc_step
-    on_hit = bouncerdisc_hit
-    on_wall = bouncerdisc_wall
+	    on_step = bouncerdisc_step
+	    on_hit = bouncerdisc_hit
+	    on_wall = bouncerdisc_wall
 
-    return id
-}
+	    return id
+	}
 
 #define bouncerdisc_step
-disc_step(speed/4)
-if skill_get(mut_bolt_marrow){
-    var q = instance_nearest_matching_ne(x,y,hitme,"team",lastteam)
-    if instance_exists(q){
-        if distance_to_object(q) < 30{
-            var dir = point_direction(x,y,q.x,q.y)
-            x += lengthdir_x(current_time_scale,dir)
-            y += lengthdir_y(current_time_scale,dir)
-        }
-    }
-};
+	disc_step(speed/4)
+	if skill_get(mut_bolt_marrow){
+	    var q = instance_nearest_matching_ne(x,y,hitme,"team",lastteam)
+	    if instance_exists(q){
+	        if distance_to_object(q) < 30{
+	            var dir = point_direction(x,y,q.x,q.y)
+	            x += lengthdir_x(current_time_scale,dir)
+	            y += lengthdir_y(current_time_scale,dir)
+	        }
+	    }
+	};
 
 #define bouncerdisc_hit
-projectile_hit(other,damage+floor(speed/2),5,direction)
-if other.my_health > 0{
-    direction = point_direction(other.x,other.y,x,y)
-    if speed < 12 speed += .6
-}
-sound_play_pitch(sndDiscBounce,random_range(.8,1.2))
-sound_play_pitch(sndBouncerBounce,random_range(1,1))
-image_angle = direction
+	projectile_hit(other,damage+floor(speed/2),5,direction)
+	if other.my_health > 0{
+	    direction = point_direction(other.x,other.y,x,y)
+	    if speed < 12 speed += .6
+	}
+	sound_play_pitch(sndDiscBounce,random_range(.8,1.2))
+	sound_play_pitch(sndBouncerBounce,random_range(1,1))
+	image_angle = direction
 
 #define bouncerdisc_wall
-move_bounce_solid(false)
-direction += random_range(-6,6)
-instance_create(x,y,DiscBounce)
-image_angle = direction
-sound_play_pitch(sndDiscBounce,random_range(.9,1.1)+((speed/4)-1)*.2)
-sound_play_pitch(sndBouncerBounce,random_range(1,1))
-if dist > 250{instance_destroy();exit}
-if speed < 12{speed+=.6}
+	move_bounce_solid(false)
+	direction += random_range(-6,6)
+	instance_create(x,y,DiscBounce)
+	image_angle = direction
+	sound_play_pitch(sndDiscBounce,random_range(.9,1.1)+((speed/4)-1)*.2)
+	sound_play_pitch(sndBouncerBounce,random_range(1,1))
+	if dist > 250{instance_destroy();exit}
+	if speed < 12{speed+=.6}
 
 
 #define create_stickydisc(_x,_y)
-with instance_create(_x, _y, CustomProjectile){
-    damage = 4
-    image_speed = .4
-    name = "Sticky Disc"
-    sprite_index = spr.StickyDisc
+	with instance_create(_x, _y, CustomProjectile){
+	    damage = 4
+	    image_speed = .4
+	    name = "Sticky Disc"
+	    sprite_index = spr.StickyDisc
 
-    disc_init()
+	    disc_init()
 
-    stuckto = -4
-    orspeed = 0
-    depth = -3
-    on_step    = stickydisc_step
-    on_hit     = stickydisc_hit
-    on_wall    = stickydisc_wall
+	    stuckto = -4
+	    orspeed = 0
+	    depth = -3
+	    on_step    = stickydisc_step
+	    on_hit     = stickydisc_hit
+	    on_wall    = stickydisc_wall
 
-    return id
-}
+	    return id
+	}
 
 #define stickydisc_step
-disc_step(1)
-if dist > 200{instance_destroy();exit}
+	disc_step(1)
+	if dist > 200{instance_destroy();exit}
 
 if instance_exists(stuckto){
     x = stuckto.x - xoff + stuckto.hspeed_raw

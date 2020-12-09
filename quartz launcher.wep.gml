@@ -1,18 +1,36 @@
 #define init
-global.sprQuartzLauncher = sprite_add_weapon("sprites/weapons/sprQuartzLauncher.png", 7, 4);
+global.sprQuartzLauncher  = sprite_add_weapon("sprites/weapons/sprQuartzLauncher.png" , 7, 4);
+global.sprQuartzLauncher1 = sprite_add_weapon("sprites/weapons/sprQuartzLauncher1.png", 7, 4);
+global.sprQuartzLauncher2 = sprite_add_weapon("sprites/weapons/sprQuartzLauncher2.png", 7, 4);
 global.sprQuartzGrenade  = sprite_add("sprites/projectiles/sprQuartzGrenade.png",0,4,4);
-global.sprHud 			  = sprite_add("sprites/interface/sprQuartzLauncherHud.png", 1, 7, 4)
+global.sprHud 			  = sprite_add("sprites/interface/sprQuartzLauncherHud.png" , 1, 7, 4);
+global.sprHud1 			  = sprite_add("sprites/interface/sprQuartzLauncherHud1.png", 1, 7, 4);
+global.sprHud2 			  = sprite_add("sprites/interface/sprQuartzLauncherHud2.png", 1, 7, 4);
 global.sprGlassShard  = sprite_add("sprites/other/sprGlassShard.png",5,4,4)
 global.sprSonicStreak = sprite_add("sprites/projectiles/sprSonicStreak.png",6,8,32);
 
 #define weapon_name
 return "QUARTZ LAUNCHER";
 
-#define weapon_sprt
-return global.sprQuartzLauncher;
+#define weapon_sprt(wep)
+	if is_object(wep){
+	  switch wep.health{
+	    default: return global.sprQuartzLauncher;
+	    case 1: return global.sprQuartzLauncher1;
+	    case 0: return global.sprQuartzLauncher2;
+	  }
+	}
+	return global.sprQuartzLauncher;
 
-#define weapon_sprt_hud
-return global.sprHud
+#define weapon_sprt_hud(wep)
+	if is_object(wep){
+	  switch wep.health{
+	    default: return global.sprHud;
+	    case 1: return global.sprHud1;
+	    case 0: return global.sprHud2;
+	  }
+	}
+	return global.sprHud;
 
 #define weapon_type
 return 4;
@@ -38,7 +56,17 @@ sound_play(sndNadeReload)
 #define weapon_text
 return choose("BE CAREFUL WITH IT","ENERGIC FORTUNE TELLING");
 
-#define weapon_fire
+#define weapon_fire(w)
+  if !is_object(w){
+      w = {
+          wep: w,
+          prevhealth: other.my_health,
+          maxhealth: 2,
+          health: 2,
+          is_quartz: true
+      }
+      wep = w
+  }
 sound_play_pitch(sndHeavyNader,random_range(1.3,1.5))
 sound_play_pitch(sndLaserCrystalHit,random_range(1.2,1.3))
 sound_play_pitchvol(sndLaserCrystalDeath,random_range(1.6,2),.5)
@@ -50,7 +78,7 @@ with instance_create(x,y,CustomProjectile)
 	damage = 14
 	force = 3
 	friction = 1
-	motion_add(other.gunangle+random_range(-4,4)*other.accuracy,24)
+	motion_add(other.gunangle+random_range(-4,4) * (other.accuracy + (2 - 2 * w.health/w.maxhealth)),24)
 	image_angle = direction
 	lifetime = 20
 	pierce = 1
@@ -146,5 +174,12 @@ repeat(3)
 }
 sound_play(sndExplosion)
 
-#define step
-mod_script_call("mod","defpack tools","quartz_penalty",mod_current)
+#define step(p)
+  if p && is_object(wep){
+    mod_script_call_self("mod","defpack tools","quartz_penalty",mod_current, wep, p)
+    mod_script_call_self("mod","defpack tools","quartz_step", self, wep);
+  }
+  if !p && is_object(bwep) && race = "steroids"{
+    mod_script_call_self("mod","defpack tools","quartz_penalty",mod_current, bwep, p)
+    mod_script_call_self("mod","defpack tools","quartz_step", self, bwep);
+  }

@@ -93,6 +93,14 @@ with instance_create(x,y,CustomObject){
 
 #define bow_step
 if !instance_exists(creator){instance_delete(self);exit}
+if creator.bwep != 0 && button_check(creator.index, "swap") && creator.canswap = true{
+  var _t = weapon_get_type(mod_current);
+  creator.ammo[_t] += weapon_get_cost(mod_current)
+  if creator.ammo[_t] > creator.typ_amax[_t] creator.ammo[_t] = creator.typ_amax[_t]
+  instance_delete(self)
+  exit
+}
+
 var timescale = (mod_variable_get("weapon", "stopwatch", "slowed") == 1) ? 30/room_speed : current_time_scale;
 if button_check(index,"swap"){instance_destroy();exit}
 if reload = -1{

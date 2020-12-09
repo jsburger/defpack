@@ -46,6 +46,8 @@
 /loadwep lightning blue lifting drink(tm)
 /loadwep guardian juice
 /loadwep frog milk
+/loadwep canned poison
+/loadwep pheromone fizz
 /loadwep soda popper
 /loadmod sodaeffect
 /loadwep donut box

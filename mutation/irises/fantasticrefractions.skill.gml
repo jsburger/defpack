@@ -6,7 +6,7 @@
 	return "FANTASTIC REFRACTIONS";
 
 #define skill_text
-	return "@yBULLET@s WEAPONS BECOME " + `@(color:${make_colour_hsv(current_frame mod 255, 220, 255)})ANYTHING@s`;
+return "@yBULLET@s WEAPONS BECOME " + `@(color:${make_colour_hsv(current_frame mod 255, 220, 255)})ANYTHING@s`;
 
 #define skill_tip
 	return mod_current;
@@ -15,17 +15,17 @@
 	if(crown_current = 8 or mod_variable_get("skill", "prismaticiris", "color") = mod_current) {
 		var s = mod_get_names("skill");
 		var i = [];
-	
+
 		for(var f = 0; f < array_length(s); f++) {
 	    	 // Checks for if a modded skill happens to have a script for being an iris mutation,
 	    	if(s[f] != mod_current and
-	    	   mod_exists("skill", s[f]) and 
-	    	   mod_script_exists("skill", s[f], "skill_iris") and 
+	    	   mod_exists("skill", s[f]) and
+	    	   mod_script_exists("skill", s[f], "skill_iris") and
 	    	   mod_script_call("skill", s[f], "skill_iris") != false) {
 	    	   	array_push(i, mod_script_call("skill", s[f], "skill_iris")); // Add iris prefix to array
 	    	}
 		}
-	
+
 		if(array_length(s) > 0) return i[irandom(array_length(i) - 1)]; // Return random prefix
 		else return ""; // Return nothing if there were no iris skills found, SUPER weird case but still worth checking for
 	}
@@ -56,9 +56,9 @@
 		if(skill_get("prismaticiris") = 0) skill_set("prismaticiris", _num); // apply iris if it exists but isnt applied, just for weird cases with skill_set
 		mod_variable_set("skill", "prismaticiris", "color", mod_current);
 	}
-	
+
 	skill_set(mod_current, 0); // Remove the skill
-	
+
 	player_convert(skill_iris());
-	
+
 #define player_convert(c) return mod_script_call_nc("skill", "prismaticiris", "player_convert", c);
