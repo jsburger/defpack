@@ -9,6 +9,9 @@
  // im picky and also lazy
 #macro color_current global.color
 
+#define skill_wepspec
+return 1;
+
 #define game_start
 	global.color = mod_current;
 
@@ -41,48 +44,48 @@
 	if(_num > 0 && instance_exists(LevCont)){
 		 // Sound:
 		sound_play_iris();
-		
+
 		 // Increase important GameCont variables to account for a new selection of mutations
 		GameCont.skillpoints++;
 		GameCont.endpoints++;
-		
+
 		if(fork()){
 		    wait(0); // Very miniscule pause so the game can catch up
 		    GameCont.endpoints--; // Fix what we did before
 		    with(SkillIcon) instance_destroy(); // Obliterate all leftover skill icons
-		    
+
 		    if(crown_current = 8) { // Crown of Destiny stuff
 		    	LevCont.maxselect++;
-		    	
+
 		    	skill_create("fantasticrefractions", 0.5);
 		    	if(array_length(instances_matching(Player, "race", "horror")) > 0) {
 		    		skill_create("warpedperspective", 1.5);
 		    	}
 		    }
-		    
+
 		    else {
 	            var s = mod_get_names("skill"); // Store all skills
-	            
+
 	             // Find all skills that have something to do with this
 	            for(var f = 0; f < array_length(s); f++) {
 	            	 // Checks for if a modded skill happens to have a script for being an iris mutation,
-	            	if(mod_exists("skill", s[f]) and 
+	            	if(mod_exists("skill", s[f]) and
 	            	   mod_script_exists("skill", s[f], "skill_iris") and
 	            	   mod_script_call("skill", s[f], "skill_iris") != false) {
 	            		LevCont.maxselect++;
 	            		skill_create(s[f], instance_number(mutbutton) + 2);
 	            	}
 	            }
-	            
+
 	             // For uneven amount of muts
 	            var n = instance_number(mutbutton)/2;
 	            if(n != round(n)) with(SkillIcon) num += 0.5;
 		    }
-            
+
 		    exit;
 		}
 	}
-	
+
 	else global.color = "fantasticrefractions"; // for those who would cheat prismatic iris in
 
 #define step
@@ -94,7 +97,7 @@
 					prismatic = mod_script_call("skill", color_current, "skill_iris");
 				}
 				else prismatic = false;
-				
+
 				 // Make sure it's able to be changed
 				if(prismatic != false and weapon_get_type(wep) == 1) {
 					if(prismatic = "") {
@@ -103,19 +106,19 @@
 							array_push(w, wep)
 							array_push(w, bwep)
 						}
-						
+
 						scrGimmeWep(x, y, 6 * ultra_get("robot", 1), GameCont.hard + array_length(instances_matching(Player, "race", "robot")) + (2 * curse), curse, w);
-						
+
 						 // Visuals
 						with instance_create(x, y, ImpactWrists){
 		                    sprite_index = global.effect;
 		                    sound_play_pitchvol(sndStatueXP, 0.5 * random_range(0.8, 1.2), 0.4);
 		                    image_angle = 0;
 		                }
-		                
+
 		                instance_destroy();
 					}
-					
+
 					else {
 						var prismwep = convert(wep, prismatic);
 						if(wep != prismwep and prismwep != false) {
@@ -123,7 +126,7 @@
 							chargecheck = 0;
 							sprite_index = weapon_get_sprt(wep);
 							name = weapon_get_name(wep);
-							
+
 							 // Visuals
 							with instance_create(x, y, ImpactWrists){
 		                		sprite_index = global.effect;
@@ -141,14 +144,14 @@
 	with(instances_matching(SkillIcon, "name", "FANTASTIC REFRACTIONS")) {
 		text = "@yBULLET@s WEAPONS BECOME " + `@(color:${make_colour_hsv(current_frame mod 255, 220, 255)})ANYTHING@s`;
 	}
-	
+
 	with(GenCont) {
 		if(tip = "fantasticrefractions") {
 			refract_tip = "true";
 		}
 		if("refract_tip" in self) tip = `@(color:${make_colour_hsv(current_frame mod 255, 220, 255)})IT'S SO BEAUTIFUL`;
 	}
-	
+
  // MISCELLANEOUS SCRIPTS //
 #define convert(w, c)
 	 // Converts the given (w)eapon to the given (c)olor
@@ -158,12 +161,12 @@
 		if(mod_exists("weapon", w)) {
 			if(mod_script_exists("weapon", w, "weapon_iris")) _wep = mod_script_call("weapon", w, "weapon_iris");
 		}
-		
+
 		else {
 			_wep = wep_none;
 		}
 	}
-	
+
 	 // Base game weapons
 	else switch(w) {
 		case wep_revolver: _wep = "x revolver"; break;
@@ -187,7 +190,7 @@
 	    case wep_heavy_machinegun: _wep = "heavy x machinegun"; break;
 	    case wep_heavy_revolver: _wep = "heavy x revolver"; break;
 	}
-	
+
 	if(is_string(_wep)) _wep = string_replace(_wep, "x ", c + " ");
 	if(_wep = "bouncer smg") return wep_bouncer_smg;
 	else if(_wep = "bouncer shotgun") return wep_bouncer_shotgun;
@@ -246,14 +249,14 @@
 				array_push(w, wep)
 				array_push(w, bwep)
 			}
-			
+
 			if(weapon_get_type(wep) = 1) {
 				with(scrGimmeWep(x, y, 6 * ultra_get("robot", 1), GameCont.hard + array_length(instances_matching(Player, "race", "robot")) + (2 * curse), curse, w)) {
 					other.wep = wep;
 					instance_delete(self);
 				}
 			}
-			
+
 			if(weapon_get_type(bwep) = 1) {
 				with(scrGimmeWep(x, y, 6 * ultra_get("robot", 1), GameCont.hard + array_length(instances_matching(Player, "race", "robot")) + (2 * curse), curse, w)) {
 					other.bwep = wep;
@@ -273,12 +276,12 @@
 		num     = _num;
 		alarm0  = num + 3;
 		skill   = _skill;
-		
+
 		 // Apply relevant scripts
         mod_script_call("skill", _skill, "skill_button");
         name = mod_script_call("skill", _skill, "skill_name");
         text = mod_script_call("skill", _skill, "skill_text");
-        
+
         var c = mod_script_call("skill", skill, "skill_iris");
         if(instance_exists(Player) and mod_exists("skill", skill) and c != false){
 	    	if(c != "") { //not filtered lens
@@ -287,7 +290,7 @@
 		    	if(prismwep != false){
 		    		text += `#@0(${weapon_get_sprite(Player.wep)}:0)   @0(${global.arrow}:0)   @0(${weapon_get_sprite(prismwep)}:0)`
 		    	}
-		    	
+
 		    	prismwep = convert(Player.bwep, c);
 		    	if(prismwep != false){
 		    		text += `#@0(${weapon_get_sprite(Player.bwep)}:0)   @0(${global.arrow}:0)   @0(${weapon_get_sprite(prismwep)}:0)`

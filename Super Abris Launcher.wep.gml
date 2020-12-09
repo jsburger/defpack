@@ -45,6 +45,7 @@ with mod_script_call("mod","defpack tools","create_abris",self,100,72,argument0)
     payload = script_ref_create(pop)
     damage = 10
     maxdamage = 30
+    name = mod_current
     olddraw = on_draw
     on_draw = abris_draw_super
 }
@@ -74,16 +75,16 @@ repeat(8){
 }
 
 #define abris_draw_super
-if current_frame % 25 <= current_time_scale {
-    //sound_play_pitch(sndVanWarning,.6)
-    var q = audio_play_sound(sndVanWarning, 1, 0);
-    audio_sound_set_track_position(q, 1.2)
-    audio_sound_pitch(q, .6)
-}
-mod_script_call_self(olddraw[0], olddraw[1], olddraw[2])
-var r = accmin + acc;
-draw_circle_color(x, y, 3, ringcolour, ringcolour, 0)
-for var i = 0; i <= 2; i++{
-    mod_script_call_nc("mod", "defpack tools", "draw_arc", x, y, image_angle + 120 * i, 8, r - 8, 45, 2, ringcolour, 1, 1)
-    //draw_sprite_ext(global.sprDanger, 0, x, y, r/80, r/80, image_angle + 120 * i, c_red, accbase-acc)
-}
+  if current_frame % 25 <= current_time_scale {
+      //sound_play_pitch(sndVanWarning,.6)
+      var q = audio_play_sound(sndVanWarning, 1, 0);
+      audio_sound_set_track_position(q, 1.2)
+      audio_sound_pitch(q, .6)
+  }
+  mod_script_call_self(olddraw[0], olddraw[1], olddraw[2])
+  var r = accmin + acc;
+  draw_circle_color(x, y, 3, ringcolour, ringcolour, 0)
+  for var i = 0; i <= 2; i++{
+      mod_script_call_nc("mod", "defpack tools", "draw_arc", x, y, image_angle + 120 * i, 8, r - 8, 45, 2, ringcolour, 1, 1)
+      //draw_sprite_ext(global.sprDanger, 0, x, y, r/80, r/80, image_angle + 120 * i, c_red, accbase-acc)
+  }

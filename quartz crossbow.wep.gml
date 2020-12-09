@@ -1,16 +1,34 @@
 #define init
-global.sprQuartzCrossbow = sprite_add_weapon("sprites/weapons/sprQuartzCrossbow.png", 11, 6);
+global.sprQuartzCrossbow  = sprite_add_weapon("sprites/weapons/sprQuartzCrossbow.png" , 11, 6);
+global.sprQuartzCrossbow1 = sprite_add_weapon("sprites/weapons/sprQuartzCrossbow1.png", 11, 6);
+global.sprQuartzCrossbow2 = sprite_add_weapon("sprites/weapons/sprQuartzCrossbow2.png", 11, 6);
 global.sprQuartzBolt 	   = sprite_add("sprites/projectiles/sprQuartzBolt.png",0, 13, 4);
 global.mskQuartzBolt 	   = sprite_add("sprites/projectiles/mskQuartzBolt.png",0, 6, 8);
-global.sprHud = sprite_add("sprites/interface/sprQuartzCrossbowHud.png", 1, 11, 4)
+global.sprHud  = sprite_add("sprites/interface/sprQuartzCrossbowHud.png" , 1, 11, 4);
+global.sprHud1 = sprite_add("sprites/interface/sprQuartzCrossbowHud1.png", 1, 11, 4);
+global.sprHud2 = sprite_add("sprites/interface/sprQuartzCrossbowHud2.png", 1, 11, 4);
 
 #define weapon_name
 return "QUARTZ CROSSBOW"
 
-#define weapon_sprt_hud
-return global.sprHud
+#define weapon_sprt_hud(wep)
+if is_object(wep){
+  switch wep.health{
+    default: return global.sprHud;
+    case 1: return global.sprHud1;
+    case 0: return global.sprHud2;
+  }
+}
+return global.sprHud;
 
-#define weapon_sprt
+#define weapon_sprt(wep)
+if is_object(wep){
+  switch wep.health{
+    default: return global.sprQuartzCrossbow;
+    case 1: return global.sprQuartzCrossbow1;
+    case 0: return global.sprQuartzCrossbow2;
+  }
+}
 return global.sprQuartzCrossbow;
 
 #define weapon_type
@@ -34,24 +52,41 @@ return 14;
 #define weapon_text
 return choose("BREAKTHROUGH","BE CAREFUL WITH IT");
 
-#define weapon_fire
-weapon_post(12,-150,16)
-sleep(50)
-sound_play_pitch(sndHeavyCrossbow,random_range(.6,.8))
-sound_play_pitch(sndLaserCrystalHit,random_range(1.5,1.6))
-sound_play_pitch(sndHyperCrystalHurt,random_range(1.5,1.6))
-sound_play_pitchvol(sndLaserCrystalDeath,random_range(1.6,2),.5)
-with instance_create(x+lengthdir_x(6,gunangle),y+lengthdir_y(6,gunangle),HeavyBolt)
-{
-	team = other.team
-	creator = other
-	sprite_index = global.sprQuartzBolt
-	mask_index   = global.mskQuartzBolt
-	damage = 60
-	motion_add(other.gunangle,30)
-	image_angle = direction
-	repeat(3) with instance_create(x+random_range(-4,4),y+random_range(-4,4),Dust){sprite_index = sprExtraFeetDust}
-}
+#define weapon_fire(w)
+  if !is_object(w){
+      w = {
+          wep: w,
+          prevhealth: other.my_health,
+          maxhealth: 2,
+          health: 2,
+          is_quartz: true
+      }
+      wep = w
+  }
+	weapon_post(12,-150,16)
+	sleep(50)
+	sound_play_pitch(sndHeavyCrossbow,random_range(.6,.8))
+	sound_play_pitch(sndLaserCrystalHit,random_range(1.5,1.6))
+	sound_play_pitch(sndHyperCrystalHurt,random_range(1.5,1.6))
+	sound_play_pitchvol(sndLaserCrystalDeath,random_range(1.6,2),.5)
+	with instance_create(x+lengthdir_x(6,gunangle),y+lengthdir_y(6,gunangle),HeavyBolt)
+	{
+		team = other.team
+		creator = other
+		sprite_index = global.sprQuartzBolt
+		mask_index   = global.mskQuartzBolt
+		damage = 60
+		motion_add(other.gunangle + (3 - 3 * w.health/w.maxhealth),30)
+		image_angle = direction
+		repeat(3) with instance_create(x+random_range(-4,4),y+random_range(-4,4),Dust){sprite_index = sprExtraFeetDust}
+	}
 
-#define step
-mod_script_call("mod","defpack tools","quartz_penalty",mod_current)
+#define step(p)
+  if p && is_object(wep){
+    mod_script_call_self("mod","defpack tools","quartz_penalty",mod_current, wep, p)
+    mod_script_call_self("mod","defpack tools","quartz_step", self, wep);
+  }
+  if !p && is_object(bwep) && race = "steroids"{
+    mod_script_call_self("mod","defpack tools","quartz_penalty",mod_current, bwep, p)
+    mod_script_call_self("mod","defpack tools","quartz_step", self, bwep);
+  }

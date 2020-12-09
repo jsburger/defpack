@@ -59,6 +59,14 @@ if !instance_exists(creator) or !button_check(index, btn){
     instance_destroy()
     exit
 }
+if creator.bwep != 0 && button_check(creator.index, "swap") && creator.canswap = true{
+  var _t = weapon_get_type(mod_current);
+  creator.ammo[_t] += ammo
+  if creator.ammo[_t] > creator.typ_amax[_t] creator.ammo[_t] = creator.typ_amax[_t]
+  instance_delete(self)
+  exit
+}
+
 var timescale = (mod_variable_get("weapon", "stopwatch", "slowed") == 1) ? 30/room_speed : current_time_scale;
 if reload = -1{
     reload = hand ? creator.breload : creator.reload
