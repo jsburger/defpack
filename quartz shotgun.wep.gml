@@ -34,15 +34,17 @@ return global.sprQuartzShotgun;
 return 2;
 
 #define weapon_cost
-return 1;
+return 2;
 
 #define weapon_area
 return 13;
 
 #define weapon_load
-return 12;
+return 15;
 
-#define weapon_swap
+#define weapon_swap(w)
+if is_object(w) w.prevhealth = my_health
+sound_play_pitchvol(sndHyperCrystalHurt, 1.3, .6)
 return sndSwapShotgun;
 
 #define weapon_auto
@@ -69,9 +71,11 @@ return choose("PRODUCT OF PRISMATIC FORGERY","BE CAREFUL WITH IT")
       wep = w
   }
   weapon_post(7,30,25)
-  sound_play_pitch(sndSawedOffShotgun,random_range(1.2,1.4))
-  sound_play_pitch(sndSlugger,random_range(.7,.8))
-  sound_play_pitch(sndLaserCrystalHit,random_range(1.4,1.7))
+  var _c = 1 - w.health / w.maxhealth,
+      _p = random_range(.9 - .2 * _c, 1.1 + .2 * _c)
+  sound_play_pitch(sndSawedOffShotgun,1.3 * _p)
+  sound_play_pitch(sndSlugger,.75 * _p)
+  sound_play_pitch(sndLaserCrystalHit,1.55 * _p)
   repeat(5) with instance_create(x,y,CustomProjectile){
       name = "Quartz Shell"
       sprite_index = global.sprQuartzBullet2
@@ -86,7 +90,7 @@ return choose("PRODUCT OF PRISMATIC FORGERY","BE CAREFUL WITH IT")
       friction = random_range(.6,2)
       image_speed = 1
       wallbounce = 3 + skill_get(15) * 5;
-      motion_add(other.gunangle+random_range(-9,9) * (other.accuracy + (4 - 4 * w.health/w.maxhealth)),26)
+      motion_add(other.gunangle+random_range(-9,9) * (other.accuracy + (4 - 4 * w.health/w.maxhealth)),26 * random_range(1 * (1 - _c * .45), 1))
       image_angle = direction
       defbloom = {
           xscale : 2,

@@ -43,7 +43,10 @@ return 27;
 #define weapon_cost
 return 1;
 
-#define weapon_swap
+#define weapon_swap(w)
+if is_object(w) w.prevhealth = my_health
+//sound_play_pitchvol(sndLaserCrystalHit, .5, .6) really good creaky door sound
+sound_play_pitchvol(sndHyperCrystalHurt, 1.3, .6)
 return sndSwapBow;
 
 #define weapon_area

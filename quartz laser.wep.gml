@@ -17,7 +17,9 @@ return 1
 return 15
 #define weapon_load
 return 18
-#define weapon_swap
+#define weapon_swap(w)
+if is_object(w) w.prevhealth = my_health
+sound_play_pitchvol(sndHyperCrystalHurt, 1.3, .6)
 return sndSwapEnergy
 #define weapon_auto
 return true

@@ -21,7 +21,7 @@
 //SONIC
 
 /loadwep sonic launcher
-/loadwep assault sonic launcher
+/loadwep sonic charger
 /loadwep supersonic launcher
 /loadwep sonic hammer
 /loadwep sonic shotgun

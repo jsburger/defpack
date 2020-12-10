@@ -60,7 +60,7 @@ with instance_create(x,y,CustomObject){
 
 #define blaster_step
   if !instance_exists(creator){instance_delete(self);exit}
-	if creator.bwep != 0 && button_check(creator.index, "swap") && creator.canswap = true{
+	if button_check(creator.index, "swap") && (creator.canswap = true || creator.bwep != 0){
 	  var _t = weapon_get_type(mod_current);
 	  creator.ammo[_t] += weapon_get_cost(mod_current)
 	  if creator.ammo[_t] > creator.typ_amax[_t] creator.ammo[_t] = creator.typ_amax[_t]

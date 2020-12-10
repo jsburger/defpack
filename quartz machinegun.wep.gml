@@ -39,10 +39,13 @@ return 0;
 #define weapon_area
 return 13;
 
-#define weapon_load
-return 4;
+#define weapon_load(w)
+var _l = 4;
+if is_object(w) return _l - (w.health - w.maxhealth) * .5 else return _l;
 
-#define weapon_swap
+#define weapon_swap(w)
+if is_object(w) w.prevhealth = my_health
+sound_play_pitchvol(sndHyperCrystalHurt, 1.3, .6)
 return sndSwapMachinegun;
 
 #define weapon_auto

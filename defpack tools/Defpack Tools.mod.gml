@@ -633,7 +633,7 @@ return 0
 		}
 
 		//close range attraction
-		if distance_to_object(Player) <= (20 + 12 * skill_get(mut_plutonium_hunger)) motion_set(point_direction(x, y, Player.x, Player.y), 4)
+		if distance_to_object(Player) <= (20 + 12 * skill_get(mut_plutonium_hunger)) ||instance_exists(Portal) motion_set(point_direction(x, y, Player.x, Player.y), 4 + instance_exists(Portal) * 2)
 
 		//get picked up
 		if place_meeting(x, y, Player) || place_meeting(x, y, PortalShock) || instance_exists(BigPortal)
@@ -1492,7 +1492,7 @@ if other != lasthit{
 		mask_index = msk.SmallSonicExplosion
 
 		typ = 0
-		damage = 1
+		damage = 0
 		candeflect = 1
 		image_speed = .85
 		force = 4
@@ -1517,7 +1517,7 @@ if other != lasthit{
 			mask_index = msk.SonicExplosion
 
 			typ = 0
-			damage = 1
+			damage = 0
 			candeflect = 1
 			image_speed = .7
 			force = 20
@@ -1574,6 +1574,8 @@ if other != lasthit{
 #define sonic_hit
 	if projectile_canhit_melee(other){
 
+		if object_get_name(other.object_index) = "MeleeFake"{projectile_hit(other, 1, force, direction)}
+		if object_get_name(other.object_index) = "JungleAssassinHide"{projectile_hit(other, 1, force, direction)}
 		// incredibly lazy approach of me not wanting to copy paste the event into the sonic hammer file
 		if "fx_sleep" in self sleep(fx_sleep);
 		if "fx_shake" in self view_shake_max_at(x, y, fx_shake);
@@ -1620,6 +1622,14 @@ if other != lasthit{
 		other.force -= other.superfriction * max(1, size);
 		if other.force <= 0 {with other {instance_delete(self);exit}}
 	}
+	with instance_create(creator.x + random_range(-3, 3), creator.y + random_range(-3, 3), ImpactWrists){
+		var _fac = .6
+		image_xscale = _fac
+		image_yscale = _fac
+		image_speed = .75
+		motion_add(other.creator.direction, random_range(1, 3) + 1)
+		image_angle = direction
+	}
 	if place_meeting(x + hspeed, y + vspeed, Wall)
 	{
 	  with instance_create(x, y, MeleeHitWall){image_angle = other.direction}	move_bounce_solid(false);
@@ -1645,6 +1655,15 @@ if other != lasthit{
 			image_angle = other.direction + random_range(-32, 32) - 90
 			motion_add(image_angle+90,12)
 			friction = 2.1
+		}
+		with instance_create(x, y, ChickenB) image_speed = .65
+		repeat(max(1, creator.size)) with instance_create(x, y, ImpactWrists){
+			var _fac = random_range(.2, .5)
+			image_xscale = _fac
+			image_yscale = _fac * 1.5
+			image_speed = 1 - _fac
+			motion_add(random(360), random_range(1, 3) + 1)
+			image_angle = direction
 		}
 	}
 	if place_meeting(x + hspeed, y + vspeed, hitme)
@@ -1885,7 +1904,7 @@ instance_destroy()
 if instance_exists(creator){
     var timescale = (mod_variable_get("weapon", "stopwatch", "slowed") == 1) ? 30/room_speed : current_time_scale;
 
-		if creator.bwep != 0 && button_check(creator.index, "swap") && creator.canswap = true{
+		if button_check(creator.index, "swap") && (creator.canswap = true || creator.bwep != 0){
 		  var _t = weapon_get_type(name);
 		  creator.ammo[_t] += weapon_get_cost(name)
 		  if creator.ammo[_t] > creator.typ_amax[_t] creator.ammo[_t] = creator.typ_amax[_t]
@@ -2782,23 +2801,32 @@ if speed < friction instance_destroy()
 		num = 1
 		anim = 20 + irandom(30)
 		if (irandom(9) + 1) <= skill_get(mut_rabbit_paw) * 4 instance_create(x, y, RabbitPaw)
-		lifetime = room_speed * 10 - (crown_current = 4 ? room_speed * 5 : 0) + irandom(15)
+		lifetime = room_speed * 6 - (crown_current = 4 ? room_speed * 2 : 0) + irandom(15)
 		on_pickup = quartz_pickup_open
 	}
 	return _obj;
 
 #define quartz_pickup_open
-	var _pitch = random_range(1.3, 1.5);
-	sound_play_pitch(sndAmmoPickup, _pitch);
+	var _pitch = random_range(.9, 1.1);
+	sound_play_pitch(skill_get(mut_second_stomach) > 0 ? sndHPPickupBig : sndHPPickup, 1.5 * _pitch);
+	sound_play_pitchvol(sndHyperCrystalSearch, 6 * _pitch, .6)
 
 	var _p = instance_nearest(x, y, Player),
 	    _q = self;
 	with _p{
 		if is_object(_p.wep) && "is_quartz" in _p.wep{
-			var _val = ((irandom(99) + 1) < frac(_q.num) * 100) + (_q.num - frac(_q.num)),
+			var _val = ((irandom(99) + 1) < frac(_q.num) * 100) + (_q.num - frac(_q.num)) + ((irandom(99) + 1) < frac(skill_get(mut_second_stomach)) * 100) + (skill_get(mut_second_stomach) - frac(skill_get(mut_second_stomach))),
 				  _str = `+` + string(_val) + ` @(color:${make_colour_rgb(201, 223, 255)})QUARTZ @wHP`;
 
 			_p.wep.health += _val;
+
+			repeat(_val * 4 + 3){
+			  with instance_create(x+random_range(-8,8),y+random_range(-8,8),WepSwap){
+			    image_xscale = .75
+			    image_yscale = .75
+			    image_speed = choose(.7,.7,.7,.45)
+			  }
+			}
 
 			if _p.wep.health >= _p.wep.maxhealth{
 				_p.wep.health = _p.wep.maxhealth;
@@ -2836,7 +2864,7 @@ if speed < friction instance_destroy()
 
 		if _w.health < _w.maxhealth{
 			with HPPickup{
-				if "quartz_check" not in self && ((irandom(99) + 1) < (85 * (1 - _w.health/_w.maxhealth))){
+				if "quartz_check" not in self && ((irandom(99) + 1) < (20 * (1 - _w.health/_w.maxhealth))){
 					quartz_pickup_create(x, y);
 					instance_delete(self);
 					exit;
@@ -2883,7 +2911,7 @@ if speed < friction instance_destroy()
 			    bwep = 0
 			    curse = bcurse
 			    bcurse = 0
-					if is_object(wep) && lq_defget(wep, "is_quartz", false) {
+					if is_object(wep) && lq_defget(wep, "is_quartz", false){
 						quartz_penalty(_mod, wep, _p);
 					}
 				}
@@ -2895,15 +2923,22 @@ if speed < friction instance_destroy()
 
 #define quartz_hurt()
 	var _pitch = random_range(.9,1.1);
-	sound_play_pitchvol(sndCrystalTB, 1.8, 2);
-	sound_play_pitch(sndLaserCrystalHit, .7);
-	sleep(75);
+	sound_play_pitchvol(sndCrystalTB, 1.8, 2 * _pitch);
+	sound_play_pitch(sndLaserCrystalHit, .7 * _pitch);
+	sound_play_pitch(sndHyperCrystalHurt, 1.4 * _pitch);
+	sleep(100);
 	view_shake_at(x,y,6)
 	repeat(5) with instance_create(x,y,Feather){
 		motion_add(random(360),random_range(2,4))
 		sprite_index = spr.GlassShard
 		image_speed = random_range(.4,.7)
 		image_index = irandom(5)
+	}
+	repeat(8) with instance_create(x+random_range(-8,8),y+random_range(-8,8),WepSwap){
+		image_xscale = .75
+		image_yscale = .75
+		image_speed = choose(.7,.7,.7,.45)
+		motion_add(random(360), random_range(4, 7))
 	}
 
 #define quartz_break()
@@ -2919,6 +2954,11 @@ if speed < friction instance_destroy()
 		sprite_index = spr.GlassShard
 		image_speed = random_range(.4,.7)
 		image_index = irandom(5)
+	}repeat(12)with instance_create(x+random_range(-8,8),y+random_range(-8,8),WepSwap){
+		image_xscale = .75
+		image_yscale = .75
+		image_speed = choose(.45,.45,.45,.3)
+		motion_add(random(360), random_range(2, 3))
 	}
 
 #define crit() //add this to on_hit effects in order to not be stupid
