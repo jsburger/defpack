@@ -21,13 +21,13 @@
 //SONIC
 
 /loadwep sonic launcher
-/loadwep sonic charger
 /loadwep supersonic launcher
 /loadwep sonic hammer
 /loadwep sonic shotgun
 /loadwep sonic rifle
 
-//MINI EXPLOSIONS
+//SMALL EXPLOSIONS
+
 /loadwep grenade minigun
 
 //DRILL

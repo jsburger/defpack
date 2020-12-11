@@ -14,7 +14,7 @@ return 4;
 return 1;
 
 #define weapon_load
-return 21;
+return 17;
 
 #define weapon_cost
 return 2;
@@ -59,6 +59,7 @@ with instance_create(x, y, CustomObject){
 }
 
 #define pop_step
+if !instance_exists(creator){instance_delete(self);exit}
 if timer-- <= 0
 {
 

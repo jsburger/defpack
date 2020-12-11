@@ -34,7 +34,7 @@ return global.sprQuartzMachinegun;
 return 1;
 
 #define weapon_cost
-return 0;
+return 2;
 
 #define weapon_area
 return 13;

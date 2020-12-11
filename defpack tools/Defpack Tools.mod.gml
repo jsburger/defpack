@@ -1619,7 +1619,8 @@ if other != lasthit{
 		other.x = x;
 		other.y = y;
 		motion_set(other.direction, other.force);
-		other.force -= other.superfriction * max(1, size);
+		var _s = "size" in self ? size : 0;
+		other.force -= other.superfriction * max(1, _s);
 		if other.force <= 0 {with other {instance_delete(self);exit}}
 	}
 	with instance_create(creator.x + random_range(-3, 3), creator.y + random_range(-3, 3), ImpactWrists){
@@ -1674,7 +1675,7 @@ if other != lasthit{
 			var _s = (ceil(force) + _h.size) * 2;
 			sleep(_s / 3 * max(1, _h.size))
 			projectile_hit(_h,_s, force, direction)
-			force *= .9;
+			force *= .85 + .15 * min(skill_get(mut_impact_wrists), 1);
 		}
 	}
 //ok i guess im stealing stuff from gunlocker too but its a good idea alright
@@ -2926,8 +2927,8 @@ if speed < friction instance_destroy()
 	sound_play_pitchvol(sndCrystalTB, 1.8, 2 * _pitch);
 	sound_play_pitch(sndLaserCrystalHit, .7 * _pitch);
 	sound_play_pitch(sndHyperCrystalHurt, 1.4 * _pitch);
-	sleep(100);
-	view_shake_at(x,y,6)
+	sleep(250);
+	view_shake_at(x,y,8)
 	repeat(5) with instance_create(x,y,Feather){
 		motion_add(random(360),random_range(2,4))
 		sprite_index = spr.GlassShard

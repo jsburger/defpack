@@ -61,6 +61,7 @@ with instance_create(x, y, CustomObject){
 }
 
 #define pop_step
+if !instance_exists(creator){instance_delete(self);exit}
 if n > 0 {
 	if --timer <= 0 repeat(1){
 		n--

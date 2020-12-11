@@ -28,6 +28,7 @@
 /loadwep quartz crossbow
 /loadwep quartz launcher
 /loadwep quartz laser
+/loadwep quartz sword
 
 ///TOOLS///
 

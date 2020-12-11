@@ -60,6 +60,7 @@ with instance_create(x, y, CustomObject){
 }
 
 #define pop_step
+if !instance_exists(creator){instance_delete(self);exit}
 sound_play_pitch(sndGrenadeShotgun,random_range(1.5,1.8))
 sound_play_pitch(sndGrenade,random_range(1.5,1.8))
 sound_play(sndExplosionS)

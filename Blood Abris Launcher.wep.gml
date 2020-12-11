@@ -71,6 +71,7 @@ with instance_create(x, y, CustomObject){
 }
 
 #define pop_step
+if !instance_exists(creator){instance_delete(self);exit}
 if timer-- <= 0
 {
 	with instance_create((x + creator.x)/2, (y + creator.y)/2, BloodStreak){

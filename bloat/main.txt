@@ -24,6 +24,7 @@
 /loadwep rocklet shotgun
 /loadwep scorcher
 /loadwep screecher
+/loadwep sonic charger
 /loadwep smart bazooka
 /loadwep smartsword
 /loadwep spear

@@ -12,24 +12,24 @@ global.sprHud2 = sprite_add("sprites/interface/sprQuartzCrossbowHud2.png", 1, 11
 return "QUARTZ CROSSBOW"
 
 #define weapon_sprt_hud(wep)
-if is_object(wep){
-  switch wep.health{
-    default: return global.sprHud;
-    case 1: return global.sprHud1;
-    case 0: return global.sprHud2;
+  if is_object(wep){
+    switch wep.health{
+      default: return global.sprHud;
+      case 1: return global.sprHud1;
+      case 0: return global.sprHud2;
+    }
   }
-}
-return global.sprHud;
+  return global.sprHud;
 
 #define weapon_sprt(wep)
-if is_object(wep){
-  switch wep.health{
-    default: return global.sprQuartzCrossbow;
-    case 1: return global.sprQuartzCrossbow1;
-    case 0: return global.sprQuartzCrossbow2;
+  if is_object(wep){
+    switch wep.health{
+      default: return global.sprQuartzCrossbow;
+      case 1: return global.sprQuartzCrossbow1;
+      case 0: return global.sprQuartzCrossbow2;
+    }
   }
-}
-return global.sprQuartzCrossbow;
+  return global.sprQuartzCrossbow;
 
 #define weapon_type
 return 3;
@@ -41,7 +41,7 @@ return false;
 return 27;
 
 #define weapon_cost
-return 1;
+return 2;
 
 #define weapon_swap(w)
 if is_object(w) w.prevhealth = my_health
@@ -66,7 +66,7 @@ return choose("BREAKTHROUGH","BE CAREFUL WITH IT");
       }
       wep = w
   }
-	weapon_post(12,-150,16)
+	weapon_post(12,-100,16)
 	sleep(50)
 	sound_play_pitch(sndHeavyCrossbow,random_range(.6,.8))
 	sound_play_pitch(sndLaserCrystalHit,random_range(1.5,1.6))
