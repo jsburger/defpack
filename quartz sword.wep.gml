@@ -79,7 +79,7 @@ return choose("THEIR METHODS REMAIN SECRET","BE CAREFUL WITH IT");
   }
 	weapon_post(6,15 + w.health * 7.5,0)
   wepangle = -wepangle
-	with instance_create(x+lengthdir_x(6,gunangle),y+lengthdir_y(6,gunangle),Slash)
+	with instance_create(x+lengthdir_x(6,gunangle),y+lengthdir_y(6,gunangle),w.health > 0 ? Slash : Shank)
 	{
     switch w.health{
       case 2:
@@ -106,6 +106,7 @@ return choose("THEIR METHODS REMAIN SECRET","BE CAREFUL WITH IT");
       sound_play_pitch(sndHyperCrystalHurt,random_range(1.5,1.6));
       sound_play_pitchvol(sndLaserCrystalDeath,random_range(1.6,2),.5);
       damage = 6;
+      canfix = false;
       break;
     }
 		team = other.team

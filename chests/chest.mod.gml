@@ -102,7 +102,7 @@ chest_add("Energy",    -1, 5)
 #define step
      // replacing chests
     if !instance_exists(GenCont){
-        with instances_matching(WeaponChest, "defcustomchestcheck", null){
+        with instances_matching(instances_matching(WeaponChest, "object_index", 458), "defcustomchestcheck", null){
             defcustomchestcheck = 1
             var _chance = min(GameCont.wepmuts * 12, 45);
             if skill_get(mut_heavy_heart) > 0 _chance = 100 * skill_get(mut_heavy_heart)

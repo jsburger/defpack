@@ -1493,7 +1493,7 @@ if other != lasthit{
 
 		typ = 0
 		damage = 0
-		candeflect = 1
+		candeflect = 0
 		image_speed = .85
 		force = 4
 		shake = 2
@@ -1596,6 +1596,7 @@ if other != lasthit{
 			name         = "SuperForce";
 			team         = other.team;
 			creator      = other;
+			or_maxspeed  = "maxspeed" in other ? other.maxspeed : -1
 			mask_index   = other.mask_index;
 			sprite_index = mskNothing;
 			with _explo
@@ -1618,10 +1619,17 @@ if other != lasthit{
 		repeat(2) with instance_create(x, y, Dust){motion_add(other.direction + random_range(-8, 8), choose(1, 2, 2, 3)); sprite_index = sprExtraFeet}
 		other.x = x;
 		other.y = y;
+		if "maxspeed" in self maxspeed = other.force
 		motion_set(other.direction, other.force);
 		var _s = "size" in self ? size : 0;
 		other.force -= other.superfriction * max(1, _s);
-		if other.force <= 0 {with other {instance_delete(self);exit}}
+		if other.force <= 0 {with other {
+			if or_maxspeed > -1 {
+				other.maxspeed = or_maxspeed
+			}
+			instance_delete(self)
+			exit}
+		}
 	}
 	with instance_create(creator.x + random_range(-3, 3), creator.y + random_range(-3, 3), ImpactWrists){
 		var _fac = .6
@@ -2974,13 +2982,13 @@ if speed < friction instance_destroy()
 	sound_stop(sndClickBack)
 	with instance_create(x+lengthdir_x(sprite_get_width(sprite_index),image_angle),y+lengthdir_y(sprite_get_width(sprite_index),image_angle),CustomObject){
 	    with instance_create(x,y,CustomSlash){
-	        lifetime = 63
+	        lifetime = 10
 	        team = _t
-	        image_xscale = 2.5
-	        image_yscale = 2.5
-	        mask_index  = sprPortalShock
+	        image_xscale = 1
+	        image_yscale = 1
+	        sprite_index  = sprPortalShock
 	        image_blend = c_black
-	        image_speed = 0
+	        image_speed = .5
 	        image_alpha = 0
 	        damage = 0
 	        on_projectile = crit_proj
@@ -3013,7 +3021,7 @@ if speed < friction instance_destroy()
 
 #define crit_proj
 	with other{
-	    if typ > 0 instance_destroy()
+	    instance_destroy()
 	}
 
 #define crit_step
@@ -3024,7 +3032,7 @@ if speed < friction instance_destroy()
 
 #define crit_hit
 if projectile_canhit_melee(other){
-    projectile_hit(other, 2, 10, point_direction(other.x, other.y, x, y,))
+    projectile_hit(other, 5, 10, point_direction(other.x, other.y, x, y,))
 }
 
 #define create_miniexplosion(_x, _y)

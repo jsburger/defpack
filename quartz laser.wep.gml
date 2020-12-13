@@ -3,6 +3,8 @@ global.sprQuartzLaser  = sprite_add_weapon("sprites/weapons/sprQuartzLaser.png" 
 global.sprQuartzLaser1 = sprite_add_weapon("sprites/weapons/sprQuartzLaser1.png", 6, 4);
 global.sprQuartzLaser2 = sprite_add_weapon("sprites/weapons/sprQuartzLaser2.png", 6, 4);
 global.sprBeam = sprite_add("sprites/projectiles/sprQuartzBeam.png",1,2,5)
+global.sprBeamStart = sprite_add("sprites/projectiles/sprQuartzBeamStart.png",1,4,5)
+global.sprBeamEnd   = sprite_add("sprites/projectiles/sprQuartzBeamEnd.png",1,4,5)
 global.sprHud  = sprite_add("sprites/interface/sprQuartzLaserHud.png" , 1, 6, 4);
 global.sprHud1 = sprite_add("sprites/interface/sprQuartzLaserHud1.png", 1, 6, 4);
 global.sprHud2 = sprite_add("sprites/interface/sprQuartzLaserHud2.png", 1, 6, 4);
@@ -48,6 +50,8 @@ return 0
 	}
 	return global.sprQuartzLaser;
 
+#macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)
+
 #define weapon_text
 return choose("FRAGILE APPARATUS","BE CAREFUL WITH IT")
 
@@ -72,71 +76,97 @@ return choose("FRAGILE APPARATUS","BE CAREFUL WITH IT")
       }
       wep = w
   }
-with instance_create(x,y,Laser){
-	creator = other
-  xstart = x
-  ystart = y
-	image_angle = creator.gunangle
-	team = other.team
-  image_yscale = 1 + skill_get(mut_laser_brain)*.2
-  event_perform(ev_alarm,0)
-	startscale = image_yscale
-	damage = 1
-	spec = other.specfiring
-	index = other.index
-	sprite_index = global.sprBeam
-	time = weapon_load()+1
-	kicknegate = 1
-	race = other.race
-	beam = 1
-	if fork(){
-	    while instance_exists(self){
-      if x != xstart and y != ystart
-      {
-        with instance_create(x+random_range(-2,2),y+random_range(-2,2),Dust)
-        {
-          sprite_index = sprExtraFeetDust
-          motion_set(random(360),random_range(2,3))
-        }
-      }
-	        if button_check(index,spec ? "spec" : "fire"){
-	            if instance_exists(creator){
-                  sound_play_pitch(sndLaser,2)
-	                sound_set_track_position(sndLaser,.078)
-	                if spec && !kicknegate creator.bwkick = 5
-	                else{
-	                    creator.wkick = 5
-	                    kicknegate = 0
-                      image_yscale += .5
-	                }
-	                x = creator.x
-	                y = creator.y -4*(spec && race = "steroids")
-	                image_xscale = 1
-	                image_yscale = startscale
-	                xstart = x
-	                ystart = y
-	                image_angle = creator.gunangle + random_range(-.2,.2)
-	                direction = image_angle
-	                with hitme x += 10000
-	                event_perform(ev_alarm,0)
-	                with hitme x -= 10000
-	                with Smoke if distance_to_point(other.x,other.y) < 5 {
-	                    with instance_create(x,y,Dust){
-	                        sprite_index = sprExtraFeetDust
-	                        motion_set(other.direction,other.speed)
-	                    }
-	                    instance_destroy()
-	                }
-	                x+=lengthdir_x(4,image_angle)
-	                y+=lengthdir_y(4,image_angle)
-	                image_xscale += 2
-	            }
-	        }
-	        time -= current_time_scale
-	        if time <= 0 instance_destroy()
-	        wait(0)
-	    }
-	    if !array_length(instances_matching(Laser,"beam",1))sound_set_track_position(sndLaser,0)
-	    exit
+	with instance_create(x, y, CustomProjectile){
+		sprite_start = global.sprBeamEnd;
+		sprite_mid   = global.sprBeam;
+		sprite_end   = global.sprBeamStart;
+		mask_index   = mskDisc;
+
+		creator = other;
+		team = other.team;
+
+		hyperspeed = 4;
+		bounce = 3;
+		damage = 4;
+		force  = 4;
+		xprev = x;
+		yprev = y;
+		image_yscale = 1;
+
+		direction = creator.gunangle
+		on_step = laser_step;
+		on_draw = laser_draw;
+		on_hit  = void;
 	}
-}
+
+#define void
+
+#define laser_step
+	var _d = 0,
+			_h = 0;
+
+			xprev = x;
+			yprev = y;
+	do{
+		var _hspd = lengthdir_x(hyperspeed / 2, direction),
+		    _vspd = lengthdir_y(hyperspeed / 2, direction);
+
+		_d += hyperspeed
+		if _h <= 0 && place_meeting(x + _hspd, y, Wall){
+			_hspd *= -1;
+			bounce--;
+			_h++;
+
+			repeat(4) with instance_create(x+random_range(-4,4),y+random_range(-4,4),Dust){sprite_index = sprExtraFeetDust}
+			with instance_create(x, y, ImpactWrists) {image_speed = .7}
+		}
+		if _h <= 0 && place_meeting(x, y + _vspd, Wall){
+			_vspd *= -1;
+			bounce--;
+			_h++;
+
+			repeat(4) with instance_create(x+random_range(-4,4),y+random_range(-4,4),Dust){sprite_index = sprExtraFeetDust}
+			with instance_create(x, y, ImpactWrists) {image_speed = .7}
+		}
+		if _h <= 0 && place_meeting(x + _hspd, y + _vspd, Wall){
+			_hspd *= -1;
+			_vspd *= -1;
+			bounce--;
+			_h++;
+			repeat(4) with instance_create(x+random_range(-4,4),y+random_range(-4,4),Dust){sprite_index = sprExtraFeetDust}
+			with instance_create(x, y, ImpactWrists) {image_speed = .7}
+		}
+		direction = point_direction(0, 0, _hspd, _vspd);
+
+		if current_frame_active{
+			with instances_matching_ne(hitme, "team", team){
+				var _xx = lengthdir_x(sprite_get_width(other.sprite_start) * image_xscale, direction + 90),
+				    _yy = lengthdir_y(sprite_get_width(other.sprite_start) * image_xscale, direction + 90),
+						 _h = false;
+				if collision_line(other.xprev + _xx, other.yprev + _yy, other.x + _xx, other.y + _yy, self, false, false) = self{
+					_h = true;
+				}
+				var _xx = lengthdir_x(sprite_get_width(other.sprite_start) * image_xscale, direction - 90),
+				    _yy = lengthdir_y(sprite_get_width(other.sprite_start) * image_xscale, direction - 90);
+				if collision_line(other.xprev + _xx, other.yprev + _yy, other.x + _xx, other.y + _yy, self, false, false) = self{
+					_h = true;
+				}
+			if _h = true{
+				if current_frame mod 2 = current_time_scale with other{
+					projectile_hit(other, damage, force, direction)
+					_d += hyperspeed * other.size;
+					}
+				}
+			}
+		}
+
+		 x += _hspd;
+		 y += _vspd;
+
+	}until _d >= 60 || bounce < 0
+	if bounce <= 0 instance_destroy();
+
+#define laser_draw
+	draw_sprite_ext(sprite_mid  , 0, x, y, point_distance(x, y, xprev, yprev)/2, image_yscale, direction, image_blend, image_alpha);
+	draw_sprite_ext(sprite_start, 0, x - lengthdir_x(point_distance(x, y, xprev, yprev)/2, direction), y - lengthdir_y(point_distance(x, y, xprev, yprev)/2, direction), 1, image_yscale, direction, image_blend, image_alpha);
+	draw_sprite_ext(sprite_end  , 0, x - lengthdir_x(point_distance(x, y, xprev, yprev), direction), y - lengthdir_y(point_distance(x, y, xprev, yprev), direction), 1, image_yscale, direction, image_blend, image_alpha);
