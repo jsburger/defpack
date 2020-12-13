@@ -43,6 +43,7 @@ with mod_script_call("mod","defpack tools","create_abris",self,_strtsize,_endsiz
 	auto = 1
 	damage = 1
 	maxdamage = 3
+	name = mod_current
 	payload = script_ref_create(pop)
 }
 sound_play_pitch(sndSniperTarget,1/accuracy+1)
@@ -59,6 +60,7 @@ with instance_create(x, y, CustomObject){
 }
 
 #define pop_step
+if !instance_exists(creator){instance_delete(self);exit}
 sound_play_pitch(sndGrenadeShotgun,random_range(1.5,1.8))
 sound_play_pitch(sndGrenade,random_range(1.5,1.8))
 sound_play(sndExplosionS)
@@ -94,7 +96,7 @@ var _num    = 25,												  //subdivisions of the distance in line segments
 	_xscale = _dist/_num,										  //xscale of all bolt trails
 	_speed  = (_dist * (_pivot/_num)/_width * .2),				  //speed of all of the bolt trails, _width * .2 represents the most time itll take for the trails to disperse
 	_yscale;
-	
+
 	for (var i = 1; i <= _num; i++) {
 		_yscale = 1 - (min(abs(_pivot - i), _length)/_length)	  //i mean, its the width of the bolt trail, idk what the min is for
 		if _yscale > 0 {

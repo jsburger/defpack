@@ -22,7 +22,14 @@ return 18;
 return 5;
 
 #define weapon_swap
-return sndSwapPistol
+if instance_is(self, Player){
+	view_shake_at(x, y, 20);
+	sleep(10);
+}
+sound_play_pitchvol(sndBasicUltra, 1.2, .6);
+sound_play_pitch(sndSwapPistol, .9);
+return -4;
+
 
 #define weapon_melee
 return 0;
@@ -117,3 +124,7 @@ if timer <= 0{
 image_index = 1
 image_speed = 0
 sleep(15)
+
+#define step
+  with instances_matching(Player, "wep", mod_current){speed *= min(1, .8 + .2 * (skill_get(mut_extra_feet)))}
+  with instances_matching(instances_matching(Player, "race", "steroids"), "bwep", mod_current){speed *= min(1, .8 + .2 * (skill_get(mut_extra_feet)))}

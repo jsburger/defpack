@@ -31,7 +31,6 @@
 
 //OTHER BOLT
 /loadwep marker
-/loadwep heavy toxic crossbow
 /loadwep hyper crossbow
 
 /load mainexplosives

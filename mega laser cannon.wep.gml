@@ -76,8 +76,8 @@ with instance_create(x,y,CustomProjectile){
 }
 
 #define step
-with instances_matching(Player, "wep", mod_current) || instances_matching(instances_matching(Player, "race", "steroids"), "bwep", mod_current){speed *= min(1, .8 + .2 * (skill_get(mut_extra_feet)))}
-
+with instances_matching(Player, "wep", mod_current){speed *= min(1, .8 + .2 * (skill_get(mut_extra_feet)))}
+with instances_matching(instances_matching(Player, "race", "steroids"), "bwep", mod_current){speed *= min(1, .8 + .2 * (skill_get(mut_extra_feet)))}
 #define nothing
 
 #define sphere_hit

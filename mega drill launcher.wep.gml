@@ -79,8 +79,8 @@ return "PIERCE THE HEAVENS"
   }
 
 #define step
-with instances_matching(Player, "wep", mod_current) || instances_matching(instances_matching(Player, "race", "steroids"), "bwep", mod_current){speed *= min(1, .8 + .2 * (skill_get(mut_extra_feet)))}
-
+with instances_matching(Player, "wep", mod_current){speed *= min(1, .8 + .2 * (skill_get(mut_extra_feet)))}
+with instances_matching(instances_matching(Player, "race", "steroids"), "bwep", mod_current){speed *= min(1, .8 + .2 * (skill_get(mut_extra_feet)))}
 #define bolt_step
   if skill_get(mut_bolt_marrow){
       var q = mod_script_call("mod","defpack tools","instance_nearest_matching_ne",x,y,hitme,"team",team)
@@ -233,6 +233,7 @@ with instances_matching(Player, "wep", mod_current) || instances_matching(instan
     timer++;
 
   #define drillstick_destroy
+		sleep(50)
     var _l = 24;
     instance_create(x + lengthdir_x(_l, direction), y + lengthdir_y(_l, direction), Explosion)
     instance_create(x + lengthdir_x(_l, direction + 90), y + lengthdir_y(_l, direction + 90), Explosion)

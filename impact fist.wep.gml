@@ -114,23 +114,23 @@ if lifespan <= 4 and (floor(current_frame) < current_frame + current_time_scale)
 if instance_exists(creator){
     var c = creator
     image_yscale = c.right * sign(!hand - .1)
-    var k = hand ? c.bwkick : c.wkick
+    var _k = hand ? c.bwkick : c.wkick
     if lifespan >= 10{
         with c{
             weapon_post(0, 4 * current_time_scale, 4 * current_time_scale)
             if other.hand bwkick = other.lifespan/3
             else wkick = other.lifespan/3
         }
-        sound_play_pitchvol(sndCrossReload, (k + 2)/12, .7)
+        sound_play_pitchvol(sndCrossReload, (_k + 2)/12, .7)
         image_xscale += approach(image_xscale, 0, 3.5, current_time_scale)
     }
     else{
         if lifespan <= 3 and lifespan > 1 image_xscale += approach(image_xscale, .6, 1.5, current_time_scale)
         else if lifespan > 3 image_xscale += approach(image_xscale, 1, 1.5, current_time_scale)
     }
-    var k = hand ? c.bwkick : c.wkick
-    x = c.x + lengthdir_x(14 - k - current_time_scale, c.gunangle)
-    y = c.y + lengthdir_y(14 - k - current_time_scale, c.gunangle) - 4 * hand
+    var _k = hand ? c.bwkick : c.wkick
+    x = c.x + lengthdir_x(14 - _k - current_time_scale, c.gunangle)
+    y = c.y + lengthdir_y(14 - _k - current_time_scale, c.gunangle) - 4 * hand
     if c.back or hand depth = -2
     else depth = -3
     direction = c.gunangle

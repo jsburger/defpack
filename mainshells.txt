@@ -9,7 +9,6 @@
 //SPLIT SHELL
 
 /loadwep split shotgun
-/loadwep heavy split shotgun
 /loadwep steel diver
 
 //SHOT CANNON
@@ -28,7 +27,6 @@
 /loadwep big shotgun
 /loadwep wide slugger
 /loadwep apergig tanat
-/loadwep good shotgun
-/loadwep mega shotgun
+/loadwep mega slugger
 
 /load mainbolts

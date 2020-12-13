@@ -21,11 +21,13 @@
 //SONIC
 
 /loadwep sonic launcher
-/loadwep assault sonic launcher
 /loadwep supersonic launcher
 /loadwep sonic hammer
+/loadwep sonic shotgun
+/loadwep sonic rifle
 
-//MINI EXPLOSIONS
+//SMALL EXPLOSIONS
+
 /loadwep grenade minigun
 
 //DRILL
@@ -47,7 +49,7 @@
 
 /loadwep chainsaw
 /loadwep claymore
-/loadwep kaboomerang	
+/loadwep kaboomerang
 /loadwep heavy nuke launcher
 /loadwep firestorm
 /loadwep andromeda launcher

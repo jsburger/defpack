@@ -17,3 +17,7 @@
 //PSY BULLET
 
 /load psy
+
+//HORROR BULLET
+
+/load horror

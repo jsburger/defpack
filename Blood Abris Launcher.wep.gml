@@ -54,6 +54,7 @@ with mod_script_call_self("mod","defpack tools","create_abris",self,_strtsize,_e
 	accspeed = 1.15
 	cost = 2
 	damage = 2
+  name = mod_current
     maxdamage = 5
 	payload = script_ref_create(pop)
 }
@@ -70,6 +71,7 @@ with instance_create(x, y, CustomObject){
 }
 
 #define pop_step
+if !instance_exists(creator){instance_delete(self);exit}
 if timer-- <= 0
 {
 	with instance_create((x + creator.x)/2, (y + creator.y)/2, BloodStreak){
@@ -108,7 +110,7 @@ var _num    = 25,												  //subdivisions of the distance in line segments
 	_xscale = _dist/_num,										  //xscale of all bolt trails
 	_speed  = (_dist * (_pivot/_num)/_width * .2),				  //speed of all of the bolt trails, _width * .2 represents the most time itll take for the trails to disperse
 	_yscale;
-	
+
 	for (var i = 1; i <= _num; i++) {
 		_yscale = 1 - (min(abs(_pivot - i), _length)/_length)	  //i mean, its the width of the bolt trail, idk what the min is for
 		if _yscale > 0 {
@@ -117,7 +119,7 @@ var _num    = 25,												  //subdivisions of the distance in line segments
 				image_xscale = _xscale
 				image_angle = _dir
 				image_yscale = _yscale * _width
-				
+
 				motion_set(image_angle, _speed)
 				if i < _num - 2 and !irandom(7)
 					make_trail(image_xscale, image_angle + 180)

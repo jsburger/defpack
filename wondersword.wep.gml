@@ -68,6 +68,14 @@ with instance_create(x, y, CustomObject){
 
 #define charge_step
 if (instance_exists(creator) and button_check(index, btn)) and !button_pressed(index, "swap"){
+    if creator.bwep != 0 && button_check(creator.index, "swap") && creator.canswap = true{
+      var _t = weapon_get_type(mod_current);
+      creator.ammo[_t] += weapon_get_cost(mod_current)
+      if creator.ammo[_t] > creator.typ_amax[_t] creator.ammo[_t] = creator.typ_amax[_t]
+      instance_delete(self)
+      exit
+    }
+
     var _reloads = [0, 26, 12, 32];
     if hand creator.breload = max(_reloads[tier] + 12, creator.breload)
     else creator.reload = max(_reloads[tier] + 12, creator.reload)

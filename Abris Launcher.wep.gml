@@ -43,6 +43,7 @@ with mod_script_call("mod","defpack tools","create_abris",self,_strtsize,_endsiz
 	accspeed = 1.15
 	damage = 3
 	maxdamage = 10
+	name = mod_current
 	payload = script_ref_create(pop)
 }
 sound_play_pitch(sndSniperTarget, 1/accuracy + .5)
@@ -64,27 +65,26 @@ with instance_create(x, y, CustomObject) {
 }
 
 #define pop_step
+if !instance_exists(creator){instance_delete(self);exit}
 if n > 0 {
-	if --timer <= 0 repeat(1){
+	timer -= current_time_scale;
+	if timer <= 0 repeat(2){
 		n--
 		var _d = explodir + random(360), _r = accmin + random(acc);
 		if n != 0 with instance_create(x + lengthdir_x(_r, _d), y + lengthdir_y(_r, _d), SmallExplosion) {
-			hitid = [sprite_index,"small explosion"]
 			sound_play(sndExplosionS)
 			sleep(5)
 			view_shake_at(x, y, 4)
 			line(x, y, other.creator.x, other.creator.y)
 		}
 		else with instance_create(x + lengthdir_x(_r, _d), y + lengthdir_y(_r, _d), Explosion) {
-			hitid = [sprite_index,"explosion"]
 			sound_play(sndExplosion)
 			sleep(20)
 			view_shake_at(x, y, 24)
 			line(x, y, other.creator.x, other.creator.y)
 		}
 		explodir = _d
-		timer = 1
-		if n = 1 timer = 5 else timer = 3
+		if n = 1 timer = 3 + irandom(1) else timer = 1 + irandom(1)
 	}
 }
 else {
@@ -113,7 +113,7 @@ var _num    = 25,												  //subdivisions of the distance in line segments
 	_xscale = _dist/_num,										  //xscale of all bolt trails
 	_speed  = (_dist * (_pivot/_num)/_width * .2),				  //speed of all of the bolt trails, _width * .2 represents the most time itll take for the trails to disperse
 	_yscale;
-	
+
 	for (var i = 1; i <= _num; i++) {
 		_yscale = 1 - (min(abs(_pivot - i), _length)/_length)	  //i mean, its the width of the bolt trail, idk what the min is for
 		if _yscale > 0 {
@@ -127,4 +127,3 @@ var _num    = 25,												  //subdivisions of the distance in line segments
 			}
 		}
 	}
-	

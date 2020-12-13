@@ -27,7 +27,7 @@ return sndSwapExplosive;
 return 5;
 
 #define weapon_text
-return "NOISY";
+return "MAKE SOME NOISE";
 
 #define weapon_fire
 with instance_create(x+lengthdir_x(3,gunangle),y+lengthdir_y(3,gunangle),CustomProjectile){

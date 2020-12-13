@@ -66,7 +66,7 @@ with instance_create(x,y,CustomProjectile){
     }
     force  = 7
     wallbounce = 5 * skill_get(mut_shotgun_shoulders)
-    friction = .8 - _a * .2
+    friction = 1 - _a * .3
      _f = fallofftime >= current_frame
     on_hit     = b_hit
     on_step    = b_step
@@ -82,7 +82,7 @@ image_index = 1
 #define b_hit
 var dmg = fallofftime >= current_frame ? damage : damage - falloff
 projectile_hit(other,dmg,force,direction)
-if other.my_health <= 0{
+if instance_exists(other) && other.my_health <= 0{
     var o = other
     sleep(6)
     if instance_exists(creator){
