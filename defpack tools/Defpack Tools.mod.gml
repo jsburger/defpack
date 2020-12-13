@@ -40,7 +40,45 @@
 	with spr {
 		msk = {};
 		
-		 //Bullet sprites added in defpack bullets.mod
+		//Fire Bullets
+		FireBullet         = sprite_add(i + "iris/fire/sprFireBullet.png",    2, 8, 8);
+		FireBulletHit      = sprite_add(i + "iris/fire/sprFireBulletHit.png", 4, 8, 8);
+		HeavyFireBullet    = sprite_add(i + "iris/fire/sprHeavyFireBullet.png",    2, 12, 12);
+		HeavyFireBulletHit = sprite_add(i + "iris/fire/sprHeavyFireBulletHit.png", 4, 12, 12);
+
+		//Bouncers
+		HeavyBouncerBullet = sprite_add(i + "iris/bouncer/sprHeavyBouncerBullet.png", 2, 12, 12);
+
+		//Toxic Bullets
+		ToxicBullet         = sprite_add(i + "iris/pest/sprPestBullet.png",    2, 8, 8);
+		ToxicBulletHit      = sprite_add(i + "iris/pest/sprPestBulletHit.png", 4, 8, 8);
+		HeavyToxicBullet    = sprite_add(i + "iris/pest/sprHeavyPestBullet.png",    2, 12, 12);
+		HeavyToxicBulletHit = sprite_add(i + "iris/pest/sprHeavyPestBulletHit.png", 4, 12, 12);
+
+		//Lightning Bullets
+		LightningBullet         = sprite_add(i + "iris/thunder/sprThunderBullet.png",    2, 8, 8);
+		LightningBulletUpg      = sprite_add(i + "iris/thunder/sprThunderBulletUpg.png", 2, 8, 8);
+		LightningBulletHit      = sprite_add(i + "iris/thunder/sprThunderBulletHit.png", 4, 8, 8);
+		HeavyLightningBullet    = sprite_add(i + "iris/thunder/sprHeavyThunderBullet.png",    2, 12, 12);
+		HeavyLightningBulletUpg = sprite_add(i + "iris/thunder/sprHeavyThunderBulletUpg.png", 2, 12, 12);
+		HeavyLightningBulletHit = sprite_add(i + "iris/thunder/sprHeavyThunderBulletHit.png", 4, 12, 12);
+
+		//Psy Bullets
+		PsyBullet         = sprite_add  (i + "iris/psy/sprPsyBullet.png",    2, 8, 8);
+		PsyBulletHit      = sprite_add  (i + "iris/psy/sprPsyBulletHit.png", 4, 8, 8);
+		msk.PsyBullet     = sprite_add_p(i + "iris/psy/mskPsyBullet.png",    0, 7, 3);
+		HeavyPsyBullet    = sprite_add  (i + "iris/psy/sprHeavyPsyBullet.png",    2, 12, 12);
+		HeavyPsyBulletHit = sprite_add  (i + "iris/psy/sprHeavyPsyBulletHit.png", 4, 12, 12);
+
+		//Dark Bullets
+		DarkBullet     = sprite_add  (i + "sprBlackBullet.png",    2, 8, 8);
+		DarkBulletHit  = sprite_add  (i + "sprBlackBulletHit.png", 4, 8, 8);
+		msk.DarkBullet = sprite_add_p(i + "mskBlackBullet.png",    0, 3, 5);
+
+		//Light Bullets
+		LightBullet    = sprite_add(i + "sprWhiteBullet.png",    2, 8, 8);
+		LightBulletHit = sprite_add(i + "sprWhiteBulletHit.png", 4, 8, 8);
+
 
 		//Iris Casings
 		GenShell      = sprite_add("../sprites/other/sprGenShell.png",   7, 2, 2);
@@ -67,9 +105,11 @@
 		RockletFlame = sprite_add(i + "sprRockletFlame.png", 0, 8, 3);
 
 		//Sonic Explosions
-		SonicExplosion     = sprite_add(  i + "sprSonicExplosion.png", 8, 61, 59);
-		msk.SonicExplosion = sprite_add_p(i + "mskSonicExplosion.png", 9, 61, 59);
-		SonicStreak        = sprite_add(i + "sprSonicStreak.png",6,8,32);
+		SonicExplosion          = sprite_add(  i + "sprSonicExplosion.png", 8, 61, 59);
+		SmallSonicExplosion     = sprite_add(  i + "sprSonicExplosionSmall.png", 8, 20, 20);
+		msk.SonicExplosion      = sprite_add_p(i + "mskSonicExplosion.png", 9, 61, 59);
+		msk.SmallSonicExplosion = sprite_add_p(i + "mskSonicExplosionSmall.png", 9, 20, 20);
+		SonicStreak             = sprite_add(i + "sprSonicStreak.png",6,8,32);
 
 		//Abris Stripes
 		Stripes = sprite_add("../sprites/other/sprBigStripes.png", 1, 1, 1);
@@ -128,8 +168,9 @@
 
 
 		//Quartz Shards
-		Shard      = sprite_add_weapon("../sprites/weapons/sprShard.png", 0, 3);
-		GlassShard = sprite_add("../sprites/other/sprGlassShard.png", 5, 4, 4)
+		Shard        = sprite_add_weapon("../sprites/weapons/sprShard.png", 0, 3);
+		GlassShard   = sprite_add("../sprites/other/sprGlassShard.png", 5, 4, 4)
+		QuartzPickup = sprite_add_weapon("../sprites/other/sprQuartzPickup.png", 5, 5);
 
 		//Crits
 		Killslash = sprite_add(i + "sprKillslash.png", 8, 16, 16);
@@ -144,9 +185,6 @@
 	}
 
 
-	global.AbrisCustomColor = false;
-	mod_script_call("mod","defpermissions","permission_register","mod",mod_current,"AbrisCustomColor","Use Player colors for Abris weapons")
-	
 	global.SAKmode = 0
 	//mod_script_call("mod","defpermissions","permission_register","mod",mod_current,"SAKmode","SAK Mode")
 
@@ -160,8 +198,12 @@
 	vertex_format_add_position()
 	global.lightningformat = vertex_format_end()
 
+	global.AbrisCustomColor = false;
+
 	global.chargeType = 1
 	global.chargeSmooth = [0, 0]
+
+	mod_script_call("mod","defpermissions","permission_register","mod",mod_current,"AbrisCustomColor","Use Player colors for Abris weapons")
 
 	mod_script_call_nc("mod", "defpermissions", "permission_register_options", "mod", mod_current, "chargeType", "Weapon Charge Indicators", ["Off", "Wep Specific", "Bar Only", "Arc Only"])
 	
@@ -191,6 +233,14 @@
         yscale : 2,
         alpha : .1
     };
+
+//notes on excited neurons
+// bullets retain their damage
+// bouncers get 2 extra bounces
+// bullets lose speed when transformed ( set to 11, from 16 default )
+// all bullets gain 1 damage on bounce
+#macro nuerons skill_get("excitedneurons")
+
 
 
 #define sprite_add_d(sprite, subimages, xoffset, yoffset)
@@ -465,6 +515,10 @@ with Player if visible{
 			}
 		}
 	}
+		// if mod_exists("mod", "yokinLigthning")
+		// 		array_push(a, "canned posion")
+		// if mod_exists("mod", "ntte")
+		// 		array_push(a, "pheromone fizz")
 	// Soda Drops
 	with SodaMachine {
 		if fork(){
@@ -478,6 +532,79 @@ with Player if visible{
 	    	}
 	    	exit
 		}
+	}
+
+
+	// Custom pickup stuff
+	with instances_matching(Player, "race", "eyes") {
+		if (canspec && button_check(index, "spec")) {
+			var _vx = view_xview[index],
+				_vy = view_yview[index];
+			with instances_in_bbox(_vx, _vy, _vx + game_width, _vy + game_height, instances_matching(Pickup, "name", "QuartzPickup"))) {
+				var l = (1 + skill_get(mut_throne_butt)) * current_time_scale,
+					d = point_direction(x, y, other.x, other.y),
+					_x = x + lengthdir_x(l, d),
+					_y = y + lengthdir_y(l, d);
+
+					if(place_free(_x, y)) x = _x;
+					if(place_free(x, _y)) y = _y;
+			}
+		}
+	}
+	
+	// Pickup step
+	with instances_matching(Pickup, "name", "QuartzPickup"){
+		//Collision
+		if(mask_index == mskPickup && place_meeting(x, y, Pickup)) {
+			with(instances_meeting(x, y, instances_matching(Pickup, "mask_index", mskPickup))) {
+				if(place_meeting(x, y, other)) {
+					if(object_index == AmmoPickup || object_index == HPPickup || object_index == RoguePickup) {
+						motion_add_ct(point_direction(other.x, other.y, x, y) + random_range(-10, 10), 0.8);
+					}
+					with(other) {
+						motion_add_ct(point_direction(other.x, other.y, x, y) + random_range(-10, 10), 0.8);
+					}
+				}
+			}
+		}
+
+		if place_meeting(x + hspeed, y + vspeed, Wall){move_bounce_solid(false)}
+
+		// Animations
+		if anim > 0
+			anim -= current_time_scale 
+		else {
+			if image_index = 0 && image_speed = .5 {
+				image_speed = 0
+				anim = 70 + irandom(20)
+			}
+			else{image_speed = .5}
+		}
+
+		// Close range attraction
+		if distance_to_object(Player) <= (20 + 12 * skill_get(mut_plutonium_hunger)) || instance_exists(Portal) motion_set(point_direction(x, y, Player.x, Player.y), 4 + instance_exists(Portal) * 2)
+
+		// Get picked up
+		if place_meeting(x, y, Player) || place_meeting(x, y, PortalShock) || instance_exists(BigPortal) {
+			 // run open code
+			script_execute(on_pickup)
+
+			 // fx
+			instance_create(x, y,SmallChestPickup)
+			instance_delete(id);
+			exit;
+		}
+		
+		// Blink
+		if lifetime <= room_speed * 3 {
+			if current_frame mod 2 < current_time_scale
+				image_alpha++;
+			if image_alpha > 1
+				image_alpha = 0
+		}
+
+		// Disappear after a while
+		if lifetime > 0 {lifetime -= current_time_scale} else{sound_play_pitch(sndPickupDisappear, random_range(.8, 1.2)); instance_create(x, y,SmallChestFade); instance_destroy()}
 	}
 
 
@@ -630,6 +757,9 @@ return q;
 #define chance(percentage)
 return random(100) <= percentage * current_time_scale
 
+#define chance_raw(percentage)
+return random(100) <= percentage
+
 #define approach(a, b, n, dn)
 return (b - a) * (1 - power((n - 1)/n, dn))
 
@@ -712,14 +842,48 @@ draw_line_width_color(x2 - 1, y3, x2 + w + 1, y3, 1, 0, 0)
 #define shell_hit
 projectile_hit(other, (current_frame < fallofftime? damage : (damage - falloff)), force, direction);
 
-#define def_bullet_create(scr, x, y)
-return mod_script_call("mod", "defpack bullets", scr, x, y)
+#define create_bullet(x, y)
+with instance_create(x, y, CustomProjectile){
+    name = "Bullet"
+
+    sprite_index = sprBullet1
+    spr_dead = sprBulletHit
+    mask_index = mskBullet1
+    image_speed = 1
+
+    defbloom = {
+        xscale : 2,
+        yscale : 2,
+        alpha : .1
+    }
+
+    recycle_amount = 1
+    force = 8
+    damage = 3
+    typ = 1
+
+    on_anim = bullet_anim
+    on_wall = bullet_wall
+    on_hit = bullet_hit
+    on_destroy = bullet_destroy
+
+    return id
+}
 
 #define create_heavy_bullet(x, y)
-return def_bullet_create("create_heavy_bullet", x, y)
+with create_bullet(x, y){
+    name = "Heavy Bullet"
 
-#define create_bullet(x, y)
-return def_bullet_create("create_bullet", x, y)
+    sprite_index = sprHeavyBullet
+    spr_dead = sprHeavyBulletHit
+    mask_index = mskHeavyBullet
+
+    recycle_amount = 2
+    force = 12
+    damage = 7
+
+    return id
+}
 
 #define bullet_hit
 	projectile_hit(other, damage, force, direction);
@@ -737,9 +901,6 @@ return def_bullet_create("create_bullet", x, y)
 	instance_create(x, y, Dust)
 	sound_play_hit(sndHitWall, .2)
 	instance_destroy()
-
-#define chance_raw(percentage)
-return random(100) <= percentage
 
 
 #define recycle_gland_roll
@@ -760,7 +921,6 @@ var _chance = argument_count > 0 ? argument[0] : 60;
 
 
 #define create_heavy_bouncer_bullet(x, y)
-return def_bullet_create("create_heavy_bouncer_bullet", x, y)
 with create_heavy_bullet(x, y){
     name = "Heavy Bouncer Bullet"
     sprite_index = spr.HeavyBouncerBullet
@@ -769,7 +929,7 @@ with create_heavy_bullet(x, y){
     bounce = 2
 
     on_step = bouncer_step
-    on_wall = bouncer_wall
+    on_wall = heavy_bouncer_wall
 
     return id
 }
@@ -1287,7 +1447,6 @@ instance_create(x,y,SmallExplosion)
 sound_play_pitchvol(sndExplosionS,2,.3)
 bullet_destroy()
 
-
 #define create_dark_bullet(x,y)
 with instance_create(x, y, CustomSlash){
 	name = "Dark Bullet"
@@ -1397,21 +1556,21 @@ if other != lasthit{
     }
 }
 
-#define create_sonic_explosion(_x,_y)
+#define create_small_sonic_explosion(_x,_y)
 	with instance_create(_x,_y,CustomSlash){
-		name = "Sonic Explosion"
+		name = "Small Sonic Explosion"
 
-		sprite_index = spr.SonicExplosion
-		mask_index = msk.SonicExplosion
+		sprite_index = spr.SmallSonicExplosion
+		mask_index = msk.SmallSonicExplosion
 
 		typ = 0
-		damage = 1
-		candeflect = 1
-		image_speed = .7
-		force = 20
-		shake = 10
+		damage = 0
+		candeflect = 0
+		image_speed = .85
+		force = 4
+		shake = 2
 		if GameCont.area = 101{synstep = 0}else{synstep = 1} //oasis synergy
-		hitid = [sprite_index,"Sonic Explosion"]
+		hitid = [sprite_index,"Small Sonic Explosion"]
 		on_step       = sonic_step
 		on_projectile = sonic_projectile
 		on_grenade    = sonic_grenade
@@ -1421,6 +1580,42 @@ if other != lasthit{
 
 		return id
 	}
+
+	#define create_sonic_explosion(_x,_y)
+		with instance_create(_x,_y,CustomSlash){
+			name = "Sonic Explosion"
+
+			sprite_index = spr.SonicExplosion
+			mask_index = msk.SonicExplosion
+
+			typ = 0
+			damage = 0
+			candeflect = 1
+			image_speed = .7
+			force = 20
+			shake = 10
+			if GameCont.area = 101{synstep = 0}else{synstep = 1} //oasis synergy
+			hitid = [sprite_index,"Sonic Explosion"]
+			on_step       = sonic_step
+			on_projectile = sonic_projectile
+			on_grenade    = sonic_grenade
+			on_hit        = sonic_hit
+			on_wall       = nothing
+			on_anim       = sonic_anim
+
+			if crown_current = crwn_death{
+				var _r = sprite_get_width(sprite_index) / 3,
+				    _d = random(360);
+				repeat(3){
+					with create_small_sonic_explosion(x + lengthdir_x(_r * random_range(.6, 1), _d), y + lengthdir_y(_r * random_range(.6, 1), _d)){
+						team = 2
+						creator = other.creator
+					}
+					_d += 360 / 3;
+				}
+			}
+			return id
+		}
 
 #define nothing
 
@@ -1451,6 +1646,8 @@ if other != lasthit{
 #define sonic_hit
 	if projectile_canhit_melee(other){
 
+		if object_get_name(other.object_index) = "MeleeFake"{projectile_hit(other, 1, force, direction)}
+		if object_get_name(other.object_index) = "JungleAssassinHide"{projectile_hit(other, 1, force, direction)}
 		// incredibly lazy approach of me not wanting to copy paste the event into the sonic hammer file
 		if "fx_sleep" in self sleep(fx_sleep);
 		if "fx_shake" in self view_shake_max_at(x, y, fx_shake);
@@ -1471,11 +1668,12 @@ if other != lasthit{
 			name         = "SuperForce";
 			team         = other.team;
 			creator      = other;
+			or_maxspeed  = "maxspeed" in other ? other.maxspeed : -1
 			mask_index   = other.mask_index;
 			sprite_index = mskNothing;
 			with _explo
 			{
-				if "superforce"     in self other.force 				 = superforce else other.force = 18;
+				if "superforce"     in self other.force 				 = superforce else {if _explo.name = "Small Sonic Explosion" other.force =  4 else other.force = 18};
 				if "superfriction"  in self other.superfriction  = superfriction else other.superfriction = 1;
 				if "superdirection" in self other.superdirection = superdirection;
 			}
@@ -1493,9 +1691,25 @@ if other != lasthit{
 		repeat(2) with instance_create(x, y, Dust){motion_add(other.direction + random_range(-8, 8), choose(1, 2, 2, 3)); sprite_index = sprExtraFeet}
 		other.x = x;
 		other.y = y;
+		if "maxspeed" in self maxspeed = other.force
 		motion_set(other.direction, other.force);
-		other.force -= other.superfriction * max(1, size);
-		if other.force <= 0 {with other {instance_delete(self);exit}}
+		var _s = "size" in self ? size : 0;
+		other.force -= other.superfriction * max(1, _s);
+		if other.force <= 0 {with other {
+			if or_maxspeed > -1 {
+				other.maxspeed = or_maxspeed
+			}
+			instance_delete(self)
+			exit}
+		}
+	}
+	with instance_create(creator.x + random_range(-3, 3), creator.y + random_range(-3, 3), ImpactWrists){
+		var _fac = .6
+		image_xscale = _fac
+		image_yscale = _fac
+		image_speed = .75
+		motion_add(other.creator.direction, random_range(1, 3) + 1)
+		image_angle = direction
 	}
 	if place_meeting(x + hspeed, y + vspeed, Wall)
 	{
@@ -1506,7 +1720,7 @@ if other != lasthit{
 		sleep(32)
 		view_shake_max_at(x, y, 8 * clamp(creator.size, 1, 3))
 		repeat(creator.size) instance_create(x, y, Debris)
-		with creator
+		if force > 4 with creator
 		{
 			projectile_hit(self,round(ceil(other.force) * 1.5),1	,direction)
 			if my_health <= 0
@@ -1517,21 +1731,33 @@ if other != lasthit{
 			}
 		}
 		force *= .7
-		repeat(3) with instance_create(x+lengthdir_x(12,direction),y+lengthdir_y(12,direction),AcidStreak){
+		with instance_create(x+lengthdir_x(12,direction),y+lengthdir_y(12,direction),AcidStreak){
 			sprite_index = spr.SonicStreak
 			image_angle = other.direction + random_range(-32, 32) - 90
 			motion_add(image_angle+90,12)
 			friction = 2.1
 		}
+		with instance_create(x, y, ChickenB) image_speed = .65
+		repeat(max(1, creator.size)) with instance_create(x, y, ImpactWrists){
+			var _fac = random_range(.2, .5)
+			image_xscale = _fac
+			image_yscale = _fac * 1.5
+			image_speed = 1 - _fac
+			motion_add(random(360), random_range(1, 3) + 1)
+			image_angle = direction
+		}
 	}
 	if place_meeting(x + hspeed, y + vspeed, hitme)
 	{
-		if !instance_is(self, Player) && projectile_canhit_melee(other)
+		var _h = instance_nearest(x + hspeed, y + vspeed, hitme);
+		if !instance_is(_h, Player) && projectile_canhit_melee(_h)
 		{
-			projectile_hit(other,(ceil(force) + size) * 2, force, direction)
+			var _s = (ceil(force) + _h.size) * 2;
+			sleep(_s / 3 * max(1, _h.size))
+			projectile_hit(_h,_s, force, direction)
+			force *= .85 + .15 * min(skill_get(mut_impact_wrists), 1);
 		}
 	}
-
 //ok i guess im stealing stuff from gunlocker too but its a good idea alright
 #define shell_yeah(_angle, _spread, _speed, _color)
 	with instance_create(x, y, Shell){
@@ -1759,6 +1985,14 @@ instance_destroy()
 if instance_exists(creator){
     var timescale = (mod_variable_get("weapon", "stopwatch", "slowed") == 1) ? 30/room_speed : current_time_scale;
 
+		if button_check(creator.index, "swap") && (creator.canswap = true || creator.bwep != 0){
+		  var _t = weapon_get_type(name);
+		  creator.ammo[_t] += weapon_get_cost(name)
+		  if creator.ammo[_t] > creator.typ_amax[_t] creator.ammo[_t] = creator.typ_amax[_t]
+		  instance_delete(self)
+		  exit
+		}
+
     image_angle += rotspeed * timescale
     scroll += timescale
     offset += offspeed * timescale
@@ -1819,7 +2053,7 @@ with instance_create(x, y, CustomProjectile){
 if instance_exists(creator){
     var _x, _y, c = creator, ang;
     if targeting == abris_mouse{
-        _x = c.x + lengthdir_x(point_distance(c.x, c.y, mouse_x[index], mouse_y[index]), c.gunangle) 
+        _x = c.x + lengthdir_x(point_distance(c.x, c.y, mouse_x[index], mouse_y[index]), c.gunangle)
         _y = c.y + lengthdir_y(point_distance(c.x, c.y, mouse_x[index], mouse_y[index]), c.gunangle)
         ang = c.gunangle
     }
@@ -2121,7 +2355,7 @@ for (var i = 0; i < 360; i += int) {
         color = c_white
         fadecolor = c_lime
         gravity = .8
-        gravity_direction = other.direction 
+        gravity_direction = other.direction
     }
 }
 
@@ -2636,122 +2870,241 @@ if chance(66){
 }
 if speed < friction instance_destroy()
 
+#define quartz_pickup_create(_x, _y)
+	_obj = instance_create(_x, _y, Pickup);
+	with _obj
+	{
+		name = "QuartzPickup";
+		sprite_index = spr.QuartzPickup
+		mask_index   = mskPickup
+		image_speed  = 0
+		friction = .2
+		num = 1
+		anim = 20 + irandom(30)
+		if (irandom(9) + 1) <= skill_get(mut_rabbit_paw) * 4 instance_create(x, y, RabbitPaw)
+		lifetime = room_speed * 6 - (crown_current = 4 ? room_speed * 2 : 0) + irandom(15)
+		on_pickup = quartz_pickup_open
+	}
+	return _obj;
 
-#define quartz_penalty(_mod) //this is for player step only stupid
-if chance(4){
-  with instance_create(x+random_range(-8,8),y+random_range(-8,8),WepSwap){
-    image_xscale = .75
-    image_yscale = .75
-    image_speed = choose(.7,.7,.7,.45)
-  }
-}
-if lsthealth > my_health {
-  if wep  = _mod {
-    quartz_break()
-    with instance_create(x,y,ThrownWep){
-      wep = "shard"
-      sprite_index = spr.Shard
-      curse = other.curse
-      motion_set(other.gunangle-180-random_range(-2,2),3)
-    }
-    wep = bwep
-    bwep = 0
-    curse = bcurse
-    bcurse = 0
-  }
-  //steroids hnnnnnnnnnnnng
-  if bwep = _mod && race = "steroids"{
-    quartz_break()
-    with instance_create(x,y,ThrownWep){
-      wep = "shard"
-      sprite_index = spr.Shard
-      curse = other.bcurse
-      motion_set(other.gunangle-180-random_range(-2,2),3)
-    }
-    bcurse = 0
-    bwep = 0
-  }
-}
+#define quartz_pickup_open
+	var _pitch = random_range(.9, 1.1);
+	sound_play_pitch(skill_get(mut_second_stomach) > 0 ? sndHPPickupBig : sndHPPickup, 1.5 * _pitch);
+	sound_play_pitchvol(sndHyperCrystalSearch, 6 * _pitch, .6)
+
+	var _p = instance_nearest(x, y, Player),
+	    _q = self;
+	with _p{
+		if is_object(_p.wep) && "is_quartz" in _p.wep{
+			var _val = ((irandom(99) + 1) < frac(_q.num) * 100) + (_q.num - frac(_q.num)) + ((irandom(99) + 1) < frac(skill_get(mut_second_stomach)) * 100) + (skill_get(mut_second_stomach) - frac(skill_get(mut_second_stomach))),
+				  _str = `+` + string(_val) + ` @(color:${make_colour_rgb(201, 223, 255)})QUARTZ @wHP`;
+
+			_p.wep.health += _val;
+
+			repeat(_val * 4 + 3){
+			  with instance_create(x+random_range(-8,8),y+random_range(-8,8),WepSwap){
+			    image_xscale = .75
+			    image_yscale = .75
+			    image_speed = choose(.7,.7,.7,.45)
+			  }
+			}
+
+			if _p.wep.health >= _p.wep.maxhealth{
+				_p.wep.health = _p.wep.maxhealth;
+				_str = `MAX @(color:${make_colour_rgb(201, 223, 255)})QUARTZ @wHP`;
+			}else{
+				_p.gunshine = 6;
+			}
+
+			with instance_create(_p.x, _p.y, PopupText){
+				mytext = _str;
+			}
+		}
+		if is_object(_p.bwep) && "is_quartz" in _p.bwep{
+			var _val = ((irandom(99) + 1) < frac(_q.num) * 100) + (_q.num - frac(_q.num)),
+				  _str = `+` + string(_val) + ` @(color:${make_colour_rgb(201, 223, 255)})QUARTZ @wHP`;
+
+			_p.bwep.health += _val;
+
+			if _p.bwep.health >= _p.bwep.maxhealth{
+				_p.bwep.health = _p.bwep.maxhealth;
+				_str = `MAX @(color:${make_colour_rgb(201, 223, 255)})QUARTZ @wHP`;
+			}else{
+				_p.gunshine = 6;
+			}
+
+			with instance_create(_p.x, _p.y, PopupText){
+				mytext = _str;
+			}
+		}
+	}
+
+#define quartz_step(_creator, _w)
+	if is_object(_w){
+		_w.prevhealth = _creator.my_health;
+
+		if _w.health < _w.maxhealth{
+			with HPPickup{
+				if "quartz_check" not in self && ((irandom(99) + 1) < (20 * (1 - _w.health/_w.maxhealth))){
+					quartz_pickup_create(x, y);
+					instance_delete(self);
+					exit;
+				}
+				quartz_check = true;
+			}
+		}
+
+	}
+
+#define instances_meeting(_x, _y, _obj)
+		var _tx = x,
+		    _ty = y;
+
+		    x = _x;
+		    y = _y;
+		    var r = instances_matching_ne(instances_matching_le(instances_matching_ge(instances_matching_le(instances_matching_ge(_obj, "bbox_right", bbox_left), "bbox_left", bbox_right), "bbox_bottom", bbox_top), "bbox_top", bbox_bottom), "id", id);
+		    x = _tx;
+		    y = _ty;
+				return r;
+
+#define quartz_penalty(_mod, _w, _p) //this is for player step only stupid
+	if chance(4){
+	  with instance_create(x+random_range(-8,8),y+random_range(-8,8),WepSwap){
+	    image_xscale = .75
+	    image_yscale = .75
+	    image_speed = choose(.7,.7,.7,.45)
+	  }
+	}
+
+	if _w.prevhealth > my_health {
+		if _w.wep = _mod{
+			_w.health--;
+			if _w.health < 0{
+	    	quartz_break();
+		    with instance_create(x,y,ThrownWep){
+		      wep = "shard"
+		      sprite_index = spr.Shard
+		      curse = _p ? other.curse : other.bcurse
+		      motion_set(other.gunangle-180-random_range(-2,2),3)
+		    }
+				if _p {
+			    wep = bwep
+			    bwep = 0
+			    curse = bcurse
+			    bcurse = 0
+					if is_object(wep) && lq_defget(wep, "is_quartz", false){
+						quartz_penalty(_mod, wep, _p);
+					}
+				}
+			}else{
+				quartz_hurt();
+			}
+	  }
+	}
+
+#define quartz_hurt()
+	var _pitch = random_range(.9,1.1);
+	sound_play_pitchvol(sndCrystalTB, 1.8, 2 * _pitch);
+	sound_play_pitch(sndLaserCrystalHit, .7 * _pitch);
+	sound_play_pitch(sndHyperCrystalHurt, 1.4 * _pitch);
+	sleep(250);
+	view_shake_at(x,y,8)
+	repeat(5) with instance_create(x,y,Feather){
+		motion_add(random(360),random_range(2,4))
+		sprite_index = spr.GlassShard
+		image_speed = random_range(.4,.7)
+		image_index = irandom(5)
+	}
+	repeat(8) with instance_create(x+random_range(-8,8),y+random_range(-8,8),WepSwap){
+		image_xscale = .75
+		image_yscale = .75
+		image_speed = choose(.7,.7,.7,.45)
+		motion_add(random(360), random_range(4, 7))
+	}
 
 #define quartz_break()
-var _pitch = random_range(.9,1.1)
-sound_play_pitch(sndHyperCrystalHurt,.8*_pitch)
-sound_play_pitch(sndLaserCrystalHit,.7*_pitch)
-sound_play_pitchvol(sndHyperCrystalHalfHP,2*_pitch,.4)
-sound_play_gun(sndLaserCrystalDeath,.1,.0001)//mute action
-sleep(400)
-view_shake_at(x,y,45)
-repeat(14) with instance_create(x,y,Feather){
-	motion_add(random(360),random_range(3,6))
-	sprite_index = spr.GlassShard
-	image_speed = random_range(.4,.7)
-	image_index = irandom(5)
-}
-
+	var _pitch = random_range(.9,1.1)
+	sound_play_pitch(sndHyperCrystalHurt,.8*_pitch)
+	sound_play_pitch(sndLaserCrystalHit,.7*_pitch)
+	sound_play_pitchvol(sndHyperCrystalHalfHP,2*_pitch,.4)
+	sound_play_gun(sndLaserCrystalDeath,.1,.0001)//mute action
+	sleep(400)
+	view_shake_at(x,y,45)
+	repeat(14) with instance_create(x,y,Feather){
+		motion_add(random(360),random_range(3,6))
+		sprite_index = spr.GlassShard
+		image_speed = random_range(.4,.7)
+		image_index = irandom(5)
+	}repeat(12)with instance_create(x+random_range(-8,8),y+random_range(-8,8),WepSwap){
+		image_xscale = .75
+		image_yscale = .75
+		image_speed = choose(.45,.45,.45,.3)
+		motion_add(random(360), random_range(2, 3))
+	}
 
 #define crit() //add this to on_hit effects in order to not be stupid
-var _t = team;
-view_shake_max_at(x, y, 150)
-sleep(100)
-sound_play_pitchvol(sndHammerHeadEnd,random_range(1.23,1.33),20)
-sound_play_pitchvol(sndBasicUltra,random_range(0.9,1.1),20)
-sound_play_pitch(sndCoopUltraA,random_range(3.8,4.05))
-sound_play_pitch(sndBasicUltra,random_range(.6,.8))
-sound_play_gun(sndClickBack,1,.5)
-sound_stop(sndClickBack)
-with instance_create(x+lengthdir_x(sprite_get_width(sprite_index),image_angle),y+lengthdir_y(sprite_get_width(sprite_index),image_angle),CustomObject){
-    with instance_create(x,y,CustomSlash){
-        lifetime = 63
-        team = _t
-        image_xscale = 2.5
-        image_yscale = 2.5
-        mask_index  = sprPortalShock
-        image_blend = c_black
-        image_speed = 0
-        image_alpha = 0
-        damage = 0
-        on_projectile = crit_proj
-        on_step       = crit_step
-        on_wall       = nothing
-        on_hit        = crit_hit
-    }
-    image_angle = random(360)
-    depth = other.depth -1
-    image_speed = .6
-    sprite_index = spr.Killslash
-    image_xscale = random_range(1.3,1.5)
-    image_yscale = image_xscale
-    on_step = Killslash_step
-    with instance_create(x,y,CustomObject){
-        image_angle = other.image_angle - 90 + random_range(-8,8)
-        depth = other.depth
-        image_speed = .8
-        sprite_index = spr.Killslash
-        image_blend = c_black
-        image_xscale = other.image_xscale-.5
-        image_yscale = image_xscale
-        on_step = Killslash_step
-    }
-}
+	var _t = team;
+	view_shake_max_at(x, y, 150)
+	sleep(100)
+	sound_play_pitchvol(sndHammerHeadEnd,random_range(1.23,1.33),20)
+	sound_play_pitchvol(sndBasicUltra,random_range(0.9,1.1),20)
+	sound_play_pitch(sndCoopUltraA,random_range(3.8,4.05))
+	sound_play_pitch(sndBasicUltra,random_range(.6,.8))
+	sound_play_gun(sndClickBack,1,.5)
+	sound_stop(sndClickBack)
+	with instance_create(x+lengthdir_x(sprite_get_width(sprite_index),image_angle),y+lengthdir_y(sprite_get_width(sprite_index),image_angle),CustomObject){
+	    with instance_create(x,y,CustomSlash){
+	        lifetime = 10
+	        team = _t
+	        image_xscale = 1
+	        image_yscale = 1
+	        sprite_index  = sprPortalShock
+	        image_blend = c_black
+	        image_speed = .5
+	        image_alpha = 0
+	        damage = 0
+	        on_projectile = crit_proj
+	        on_step       = crit_step
+	        on_wall       = nothing
+	        on_hit        = crit_hit
+	    }
+	    image_angle = random(360)
+	    depth = other.depth -1
+	    image_speed = .6
+	    sprite_index = spr.Killslash
+	    image_xscale = random_range(1.3,1.5)
+	    image_yscale = image_xscale
+	    on_step = Killslash_step
+	    with instance_create(x,y,CustomObject){
+	        image_angle = other.image_angle - 90 + random_range(-8,8)
+	        depth = other.depth
+	        image_speed = .8
+	        sprite_index = spr.Killslash
+	        image_blend = c_black
+	        image_xscale = other.image_xscale-.5
+	        image_yscale = image_xscale
+	        on_step = Killslash_step
+	    }
+	}
 
 #define Killslash_step
-if image_index = 1.2 sleep(200)
-if image_index >= 7 instance_destroy();
+	if image_index = 1.2 sleep(200)
+	if image_index >= 7 instance_destroy();
 
 #define crit_proj
-with other{
-    if typ > 0 instance_destroy()
-}
+	with other{
+	    instance_destroy()
+	}
 
 #define crit_step
-if lifetime > 0
-	lifetime -= current_time_scale
-else
-	instance_destroy()
+	if lifetime > 0
+		lifetime -= current_time_scale
+	else
+		instance_destroy()
 
 #define crit_hit
 if projectile_canhit_melee(other){
-    projectile_hit(other, 2, 10, point_direction(other.x, other.y, x, y,))
+    projectile_hit(other, 5, 10, point_direction(other.x, other.y, x, y,))
 }
 
 #define create_miniexplosion(_x, _y)
@@ -2804,82 +3157,82 @@ if instance_exists(creator) && team != -1 && !place_meeting(x,y,creator){
 }
 
 #define disc_destroy()
-sound_play_hit(sndDiscDie, .2)
-with instance_create(x, y, DiscTrail)
-    sprite_index = other.spr_dead
+	sound_play_hit(sndDiscDie, .2)
+	with instance_create(x, y, DiscTrail)
+	    sprite_index = other.spr_dead
 
 #define create_bouncerdisc(_x,_y)
-with instance_create(_x,_y,CustomProjectile) {
-    damage = 2
-    image_speed = .5
-    name = "Bouncer Disc"
-    sprite_index = spr.BouncerDisc
+	with instance_create(_x,_y,CustomProjectile) {
+	    damage = 2
+	    image_speed = .5
+	    name = "Bouncer Disc"
+	    sprite_index = spr.BouncerDisc
 
-    disc_init()
+	    disc_init()
 
-    on_step = bouncerdisc_step
-    on_hit = bouncerdisc_hit
-    on_wall = bouncerdisc_wall
+	    on_step = bouncerdisc_step
+	    on_hit = bouncerdisc_hit
+	    on_wall = bouncerdisc_wall
 
-    return id
-}
+	    return id
+	}
 
 #define bouncerdisc_step
-disc_step(speed/4)
-if skill_get(mut_bolt_marrow){
-    var q = instance_nearest_matching_ne(x,y,hitme,"team",lastteam)
-    if instance_exists(q){
-        if distance_to_object(q) < 30{
-            var dir = point_direction(x,y,q.x,q.y)
-            x += lengthdir_x(current_time_scale,dir)
-            y += lengthdir_y(current_time_scale,dir)
-        }
-    }
-};
+	disc_step(speed/4)
+	if skill_get(mut_bolt_marrow){
+	    var q = instance_nearest_matching_ne(x,y,hitme,"team",lastteam)
+	    if instance_exists(q){
+	        if distance_to_object(q) < 30{
+	            var dir = point_direction(x,y,q.x,q.y)
+	            x += lengthdir_x(current_time_scale,dir)
+	            y += lengthdir_y(current_time_scale,dir)
+	        }
+	    }
+	};
 
 #define bouncerdisc_hit
-projectile_hit(other,damage+floor(speed/2),5,direction)
-if other.my_health > 0{
-    direction = point_direction(other.x,other.y,x,y)
-    if speed < 12 speed += .6
-}
-sound_play_pitch(sndDiscBounce,random_range(.8,1.2))
-sound_play_pitch(sndBouncerBounce,random_range(1,1))
-image_angle = direction
+	projectile_hit(other,damage+floor(speed/2),5,direction)
+	if other.my_health > 0{
+	    direction = point_direction(other.x,other.y,x,y)
+	    if speed < 12 speed += .6
+	}
+	sound_play_pitch(sndDiscBounce,random_range(.8,1.2))
+	sound_play_pitch(sndBouncerBounce,random_range(1,1))
+	image_angle = direction
 
 #define bouncerdisc_wall
-move_bounce_solid(false)
-direction += random_range(-6,6)
-instance_create(x,y,DiscBounce)
-image_angle = direction
-sound_play_pitch(sndDiscBounce,random_range(.9,1.1)+((speed/4)-1)*.2)
-sound_play_pitch(sndBouncerBounce,random_range(1,1))
-if dist > 250{instance_destroy();exit}
-if speed < 12{speed+=.6}
+	move_bounce_solid(false)
+	direction += random_range(-6,6)
+	instance_create(x,y,DiscBounce)
+	image_angle = direction
+	sound_play_pitch(sndDiscBounce,random_range(.9,1.1)+((speed/4)-1)*.2)
+	sound_play_pitch(sndBouncerBounce,random_range(1,1))
+	if dist > 250{instance_destroy();exit}
+	if speed < 12{speed+=.6}
 
 
 #define create_stickydisc(_x,_y)
-with instance_create(_x, _y, CustomProjectile){
-    damage = 4
-    image_speed = .4
-    name = "Sticky Disc"
-    sprite_index = spr.StickyDisc
+	with instance_create(_x, _y, CustomProjectile){
+	    damage = 4
+	    image_speed = .4
+	    name = "Sticky Disc"
+	    sprite_index = spr.StickyDisc
 
-    disc_init()
+	    disc_init()
 
-    stuckto = -4
-    orspeed = 0
-    depth = -3
-    on_step    = stickydisc_step
-    on_hit     = stickydisc_hit
-    on_wall    = stickydisc_wall
+	    stuckto = -4
+	    orspeed = 0
+	    depth = -3
+	    on_step    = stickydisc_step
+	    on_hit     = stickydisc_hit
+	    on_wall    = stickydisc_wall
 
-    return id
-}
+	    return id
+	}
 
 #define stickydisc_step
-disc_step(1)
-if dist > 200{instance_destroy();exit}
+	disc_step(1)
+	if dist > 200{instance_destroy();exit}
 
 if instance_exists(stuckto){
     x = stuckto.x - xoff + stuckto.hspeed_raw
