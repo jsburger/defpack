@@ -9,3 +9,5 @@
 /loadmod sodaeffect
 /loadwep sunset mayo
 /loadwep vinegar
+/loadwep canned poison
+/loadwep pheromone fizz

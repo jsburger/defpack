@@ -293,9 +293,9 @@
 	        blevel = min(ceil(bwep.cursecharge/10),5)
 	    }
 	    lv = max(blevel,level)
-	    if lv > 0{
-	        draw_circle_color(x,y,180 + 20*lv + random(5), c_gray,c_gray,0)
-	        draw_circle_color(x,y,70  + 20*lv + random(5), c_black,c_black,0)
+	    if lv > 0 {
+	        draw_circle_color(x, y, 180 + 20 * lv + random(5), c_gray, c_gray,0)
+	        draw_circle_color(x, y, 70  + 20 * lv + random(5), c_black,c_black,0)
 	    }
 	}
 	with instances_matching(CustomProjectile,"name","Lightning Bolt"){
