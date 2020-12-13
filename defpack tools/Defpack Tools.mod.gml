@@ -312,8 +312,8 @@
 	if (array_length(q) > 0) with instances_matching_gt(q, "index", -1) if player_is_local_nonsync(index) {
 
 		var _col = player_get_color(index),
-			_h = holdtime <= 60;
-			_cyc = _h ? 3 : 5,
+			_h = holdtime <= 60,
+			_cyc = _h ? 3 : 5;
 		
 		// Flash white
 		if current_frame mod _cyc < current_time_scale {
@@ -578,7 +578,7 @@ with Player if visible{
 				image_speed = 0
 				anim = 70 + irandom(20)
 			}
-			else{image_speed = .5}
+			else{image_speed = .5} 
 		}
 
 		// Close range attraction
