@@ -79,7 +79,7 @@ return choose("PRODUCT OF PRISMATIC FORGERY","BE CAREFUL WITH IT")
   repeat(5) with instance_create(x,y,CustomProjectile){
       name = "Quartz Shell"
       sprite_index = global.sprQuartzBullet2
-      mask_index   = mskBullet2
+      mask_index   = mskHeavyBolt
       team    = other.team
       creator = other
       force  = 4

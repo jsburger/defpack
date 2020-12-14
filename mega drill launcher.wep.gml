@@ -182,16 +182,13 @@ with instances_matching(instances_matching(Player, "race", "steroids"), "bwep", 
 #define sound_play_drill(_vol)
   if fork(){
       repeat(10) if instance_exists(self){
-          sound_set_track_position(sndFlakExplode,.11)
-          sound_play_hit_big(sndFlakExplode,.1)
+          sound_play_hit_big(sndWallBreakScrap,.1)
           //sound_play_pitchvol(sndJackHammer,.4,_vol)
           //sound_play_pitchvol(sndCrossbow,1.6,_vol)
-          //sound_play_pitchvol(sndFlakExplode,1,_vol)
           //sound_play_pitchvol(sndHyperRifle,.6,_vol)
           //sound_play_pitchvol(sndDiscHit,1.5,_vol)
           wait(1)
       }
-      sound_set_track_position(sndFlakExplode,0)
       exit
   }
 
