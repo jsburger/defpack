@@ -45,6 +45,8 @@
 		FireBulletHit      = sprite_add(i + "iris/fire/sprFireBulletHit.png", 4, 8, 8);
 		HeavyFireBullet    = sprite_add(i + "iris/fire/sprHeavyFireBullet.png",    2, 12, 12);
 		HeavyFireBulletHit = sprite_add(i + "iris/fire/sprHeavyFireBulletHit.png", 4, 12, 12);
+		FireBulletBounce   = sprite_add(i + "iris/fire/sprFireBulletBounce.png", 2, 6, 8);
+		HeavyFireBulletBounce = sprite_add(i + "iris/fire/sprHeavyFireBulletBounce.png", 2, 9, 13);
 
 		//Bouncers
 		HeavyBouncerBullet = sprite_add(i + "iris/bouncer/sprHeavyBouncerBullet.png", 2, 12, 12);
@@ -54,6 +56,9 @@
 		ToxicBulletHit      = sprite_add(i + "iris/pest/sprPestBulletHit.png", 4, 8, 8);
 		HeavyToxicBullet    = sprite_add(i + "iris/pest/sprHeavyPestBullet.png",    2, 12, 12);
 		HeavyToxicBulletHit = sprite_add(i + "iris/pest/sprHeavyPestBulletHit.png", 4, 12, 12);
+		ToxicBulletBounce   = sprite_add(i + "iris/pest/sprPestBulletBounce.png", 2, 6, 8);
+		HeavyToxicBulletBounce = sprite_add(i + "iris/pest/sprHeavyPestBulletBounce.png", 2, 9, 13);
+
 
 		//Lightning Bullets
 		LightningBullet         = sprite_add(i + "iris/thunder/sprThunderBullet.png",    2, 8, 8);
@@ -62,6 +67,10 @@
 		HeavyLightningBullet    = sprite_add(i + "iris/thunder/sprHeavyThunderBullet.png",    2, 12, 12);
 		HeavyLightningBulletUpg = sprite_add(i + "iris/thunder/sprHeavyThunderBulletUpg.png", 2, 12, 12);
 		HeavyLightningBulletHit = sprite_add(i + "iris/thunder/sprHeavyThunderBulletHit.png", 4, 12, 12);
+		LightningBulletBounce   = sprite_add(i + "iris/thunder/sprThunderBulletBounce.png", 2, 6, 8);
+		LightningBulletBounceUpg   = sprite_add(i + "iris/thunder/sprThunderBulletUpgBounce.png", 2, 6, 8);
+		HeavyLightningBulletBounce = sprite_add(i + "iris/thunder/sprHeavyThunderBulletBounce.png", 2, 9, 13);
+		HeavyLightningBulletUpgBounce = sprite_add(i + "iris/thunder/sprHeavyThunderBulletUpgBounce.png", 2, 9, 13);
 
 		//Psy Bullets
 		PsyBullet         = sprite_add  (i + "iris/psy/sprPsyBullet.png",    2, 8, 8);
@@ -69,6 +78,9 @@
 		msk.PsyBullet     = sprite_add_p(i + "iris/psy/mskPsyBullet.png",    0, 7, 3);
 		HeavyPsyBullet    = sprite_add  (i + "iris/psy/sprHeavyPsyBullet.png",    2, 12, 12);
 		HeavyPsyBulletHit = sprite_add  (i + "iris/psy/sprHeavyPsyBulletHit.png", 4, 12, 12);
+		PsyBulletBounce   = sprite_add(i + "iris/psy/sprPsyBulletBounce.png", 2, 6, 8);
+		HeavyPsyBulletBounce = sprite_add(i + "iris/psy/sprHeavyPsyBulletBounce.png", 2, 9, 13);
+
 
 		//Dark Bullets
 		DarkBullet     = sprite_add  (i + "sprBlackBullet.png",    2, 8, 8);
@@ -208,7 +220,7 @@
 	mod_script_call_nc("mod", "defpermissions", "permission_register_options", "mod", mod_current, "chargeType", "Weapon Charge Indicators", ["Off", "Wep Specific", "Bar Only", "Arc Only"])
 	
 	global.sodaList = []
-
+	game_start()
 	//todo:
 	//find out if bolt marrow should be split into step on bolts
 
@@ -237,9 +249,10 @@
 //notes on excited neurons
 // bullets retain their damage
 // bouncers get 2 extra bounces
+// base amount of bounces is 4
 // bullets lose speed when transformed ( set to 11, from 16 default )
 // all bullets gain 1 damage on bounce
-#macro nuerons skill_get("excitedneurons")
+#macro neurons skill_get("excitedneurons")
 
 
 
@@ -308,7 +321,7 @@
 	}
 
 #define draw_gui
-	var q = instances_matching(CustomObject, "parent", "sniperCharge");
+	var q = instances_matching(CustomObject, "parent", "SniperCharge");
 	if (array_length(q) > 0) with instances_matching_gt(q, "index", -1) if player_is_local_nonsync(index) {
 
 		var _col = player_get_color(index),
@@ -507,7 +520,7 @@ with Player if visible{
 	
 	// Donut Drops
 	if mod_exists("weapon", "donut box") {
-		with instances_matching_le(instances_matching_ne(instances_matching_ne(enemy, "freeze", null), object_index, Grunt), "my_health", 0) {
+		with instances_matching_le(instances_matching_ne(instances_matching_ne(enemy, "freeze", null), "object_index", Grunt), "my_health", 0) {
 			if !irandom(97) {
 				with instance_create(x, y, WepPickup) {
 					wep = "donut box"
@@ -515,10 +528,7 @@ with Player if visible{
 			}
 		}
 	}
-		// if mod_exists("mod", "yokinLigthning")
-		// 		array_push(a, "canned posion")
-		// if mod_exists("mod", "ntte")
-		// 		array_push(a, "pheromone fizz")
+
 	// Soda Drops
 	with SodaMachine {
 		if fork(){
@@ -540,7 +550,7 @@ with Player if visible{
 		if (canspec && button_check(index, "spec")) {
 			var _vx = view_xview[index],
 				_vy = view_yview[index];
-			with instances_in_bbox(_vx, _vy, _vx + game_width, _vy + game_height, instances_matching(Pickup, "name", "QuartzPickup"))) {
+			with instances_in_bbox(_vx, _vy, _vx + game_width, _vy + game_height, instances_matching(Pickup, "name", "QuartzPickup")) {
 				var l = (1 + skill_get(mut_throne_butt)) * current_time_scale,
 					d = point_direction(x, y, other.x, other.y),
 					_x = x + lengthdir_x(l, d),
@@ -838,9 +848,32 @@ draw_line_width_color(x2, y, x2 + w, y, h + 1, 0, 0)
 var y3 = ceil(y + (h + 3)/2);
 draw_line_width_color(x2 - 1, y3, x2 + w + 1, y3, 1, 0, 0)
 
+// PROJECTILES
 
 #define shell_hit
-projectile_hit(other, (current_frame < fallofftime? damage : (damage - falloff)), force, direction);
+	projectile_hit(other, (current_frame < fallofftime? damage : (damage - falloff)), force, direction);
+
+#define iris_bullet_anim
+	bullet_anim()
+	if neurons > 0 {
+		speed -= speed/4 + 1
+		image_angle = random(360)
+		// Layers the spinning effect onto bullets with an on_step event
+		if on_step != null {
+			bouncer_step_wrap = on_step
+			on_step = iris_bouncer_step
+		}
+		else {
+			on_step = bouncer_spin
+		}
+	}
+
+#define iris_bouncer_step
+	bouncer_spin()
+	script_ref_call_self(bouncer_step_wrap)
+	
+#define bouncer_spin
+	image_angle += bouncer_turn_dir * bouncer_turn_speed * current_time_scale
 
 #define create_bullet(x, y)
 with instance_create(x, y, CustomProjectile){
@@ -861,8 +894,19 @@ with instance_create(x, y, CustomProjectile){
     force = 8
     damage = 3
     typ = 1
-
-    on_anim = bullet_anim
+    
+    bounce = 0 + 4 * neurons
+    bounce_color = c_orange
+    snd_bounce = {
+    	snd: sndBouncerBounce,
+    	pitch: 1,
+    	vol: 1
+    }
+    bouncer_turn_dir = choose(-1, 1)
+    bouncer_turn_speed = 6
+    bouncer_step_wrap = null
+    
+    on_anim = iris_bullet_anim
     on_wall = bullet_wall
     on_hit = bullet_hit
     on_destroy = bullet_destroy
@@ -877,7 +921,11 @@ with create_bullet(x, y){
     sprite_index = sprHeavyBullet
     spr_dead = sprHeavyBulletHit
     mask_index = mskHeavyBullet
-
+    
+    snd_bounce.pitch = .7
+    snd_bounce.vol = .7
+    bouncer_turn_speed = 6
+    
     recycle_amount = 2
     force = 12
     damage = 7
@@ -899,8 +947,23 @@ with create_bullet(x, y){
 
 #define bullet_wall
 	instance_create(x, y, Dust)
+	if bounce-- > 0 {
+		// bouncer_turn_dir = choose(-1, 1)
+		image_blend = merge_color(image_blend, bounce_color, .2)
+		
+		move_bounce_solid(false)
+		instance_create(x + hspeed, y + vspeed, CaveSparkle)
+		direction += random_range(-bouncer_turn_speed, bouncer_turn_speed)
+		damage += 1
+		speed += .5
+		
+		sound_play_hit_ext(snd_bounce.snd, snd_bounce.pitch + random_nonsync(.1), snd_bounce.vol)
+		
+		return true
+	}
 	sound_play_hit(sndHitWall, .2)
 	instance_destroy()
+	return false
 
 
 #define recycle_gland_roll
@@ -924,35 +987,25 @@ var _chance = argument_count > 0 ? argument[0] : 60;
 with create_heavy_bullet(x, y){
     name = "Heavy Bouncer Bullet"
     sprite_index = spr.HeavyBouncerBullet
+    
     damage = 9
-    turn = choose(-1, 1)
-    bounce = 2
+    bounce += 2
 
-    on_step = bouncer_step
-    on_wall = heavy_bouncer_wall
-
+	// Has normal anim because its already being treated as a bouncer,
+	// so it doesnt need conversion
+	on_anim = bullet_anim
+	on_step = bouncer_spin
+	
     return id
 }
-
-#define bouncer_step
-image_angle += 6*turn * current_time_scale
-
-#define bouncer_wall
-if bounce > 0{
-    bounce--
-    instance_create(x, y, Dust)
-    sound_play_pitchvol(sndBouncerBounce, random_range(.7, .8), .7)
-    move_bounce_solid(false)
-    direction += random_range(6, 6)
-}
-else instance_destroy()
 
 #define create_psy_bullet(x, y)
 with create_bullet(x,y){
     name = "Psy Bullet"
-    sprite_index = spr.PsyBullet
+    sprite_index = (neurons > 0) ? spr.PsyBulletBounce : spr.PsyBullet
     mask_index = msk.PsyBullet
     spr_dead = spr.PsyBulletHit
+    bounce_color = c_purple
 
     damage = 4
     typ = 2
@@ -1039,9 +1092,10 @@ with create_psy_bullet_new(x, y){
 #define create_heavy_psy_bullet(x, y)
 with create_heavy_bullet(x, y){
     name = "Heavy Psy Bullet"
-    sprite_index = spr.HeavyPsyBullet
+    sprite_index = (neurons > 0) ? spr.HeavyPsyBulletBounce : spr.HeavyPsyBullet
     //mask_index = msk.PsyBullet
     spr_dead = spr.HeavyPsyBulletHit
+    bounce_color = c_purple
 
     damage = 8
     typ = 2
@@ -1271,8 +1325,14 @@ return create_lightning_bullet(x, y)
 #define create_lightning_bullet(x, y)
 with create_bullet(x, y){
     name = "Lightning Bullet"
-    sprite_index = skill_get(mut_laser_brain) ? spr.LightningBulletUpg : spr.LightningBullet
+    
+    var s = "LightningBullet";
+    if skill_get(mut_laser_brain) > 0 s += "Upg"
+    if neurons > 0 s += "Bounce"
+    sprite_index = lq_get(spr, s)
+    
     spr_dead = spr.LightningBulletHit
+    bounce_color = c_aqua
 
     force = 7
     damage = 2
@@ -1287,8 +1347,14 @@ with create_bullet(x, y){
 #define create_heavy_lightning_bullet(x, y)
 with create_heavy_bullet(x, y){
     name = "Heavy Lightning Bullet"
-    sprite_index = skill_get(mut_laser_brain) ? spr.HeavyLightningBulletUpg : spr.HeavyLightningBullet
+    
+    var s = "HeavyLightningBullet";
+    if skill_get(mut_laser_brain) > 0 s += "Upg"
+    if neurons > 0 s += "Bounce"
+    sprite_index = lq_get(spr, s)
+    
     spr_dead = spr.HeavyLightningBulletHit
+    bounce_color = c_aqua
 
     typ = 2
     damage = 4
@@ -1336,8 +1402,9 @@ return create_toxic_bullet(x,y)
 #define create_toxic_bullet(x, y)
 with create_bullet(x, y){
     name = "Toxic Bullet"
-    sprite_index = spr.ToxicBullet
+    sprite_index = (neurons > 0) ? spr.ToxicBulletBounce : spr.ToxicBullet
     spr_dead = spr.ToxicBulletHit
+    bounce_color = c_lime
 
     force = 8
     damage = 2
@@ -1351,8 +1418,9 @@ with create_bullet(x, y){
 #define create_heavy_toxic_bullet(x, y)
 with create_heavy_bullet(x, y){
     name = "Heavy Toxic Bullet"
-    sprite_index = spr.HeavyToxicBullet
+    sprite_index = (neurons > 0) ? spr.HeavyToxicBulletBounce : spr.HeavyToxicBullet
     spr_dead = spr.HeavyToxicBulletHit
+    bounce_color = c_lime
 
     damage = 5
     force = 11
@@ -1400,8 +1468,9 @@ return create_fire_bullet(x,y)
 #define create_fire_bullet(x,y)
 with create_bullet(x,y){
     name = "Fire Bullet"
-    sprite_index = spr.FireBullet
+    sprite_index = (neurons > 0) ? spr.FireBulletBounce : spr.FireBullet
     spr_dead = spr.FireBulletHit
+    bounce_color = c_red
 
     damage = 3
 
@@ -1414,8 +1483,9 @@ with create_bullet(x,y){
 #define create_heavy_fire_bullet(x,y)
 with create_heavy_bullet(x, y){
     name = "Heavy Fire Bullet"
-    sprite_index = spr.HeavyFireBullet
+    sprite_index = (neurons > 0) ? spr.HeavyFireBulletBounce : spr.HeavyFireBullet
     spr_dead = spr.HeavyFireBulletHit
+    bounce_color = c_red
 
     damage = 4
 
@@ -1461,6 +1531,17 @@ with instance_create(x, y, CustomSlash){
 	ringang = random(360)
 	recycle_amount = 1
 	image_speed = 1
+	
+    bounce = 0 + 4 * neurons
+    bounce_color = c_black
+    snd_bounce = {
+    	snd: sndBouncerBounce,
+    	pitch: 1,
+    	vol: 1
+    }
+    bouncer_turn_dir = choose(-1, 1)
+    bouncer_turn_speed = 3
+    bouncer_step_wrap = null
 
 	on_projectile = dark_proj
 	on_destroy = dark_destroy
