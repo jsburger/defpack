@@ -38,21 +38,9 @@
 
 /loadwep defender
 /loadwep punisher
-/loadwep vinegar
-/loadwep munitions mist
-/loadwep sunset mayo
-/loadwep saltshake
-/loadwep expresso
-/loadwep extra double triple coffee
-/loadwep lightning blue lifting drink(tm)
-/loadwep guardian juice
-/loadwep frog milk
-/loadwep canned poison
-/loadwep pheromone fizz
-/loadwep soda popper
-/loadmod sodaeffect
 /loadwep donut box
 /loadwep infinipistol
+/load soda
 
 ///IRIS WEPS///
 
