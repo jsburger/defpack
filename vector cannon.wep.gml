@@ -82,7 +82,9 @@ sound_stop(sndEnergyHammerUpg)
 if instance_exists(creator){
     with creator weapon_post(5,5*current_time_scale,0)
 	sound_set_track_position(sndEnergyHammerUpg,.3)
-	sound_play_pitch(sndEnergyHammerUpg,.5)
+	sound_pitch(sndEnergyHammerUpg,0)
+	sound_play_pitchvol(sndEnergyHammerUpg,.4 * random_range(.9, 1.1), .35)
+	sound_set_track_position(sndEnergyHammerUpg,0)
 
     time -= current_time_scale
     if time <= 0 {instance_destroy(); exit}
@@ -127,12 +129,12 @@ else instance_destroy()
 #define beam_hit
 if current_frame_active{
     with other motion_set(other.direction,max((4+skill_get(17)*2-size/2),1))
-    view_shake_at(other.x,other.y,min(other.size,4))
+    view_shake_max_at(other.x,other.y,min(other.size,4))
     projectile_hit(other,1,1,direction)
     with other{
         if place_meeting(x+lengthdir_x(speed+1,other.direction)+hspeed,y+lengthdir_y(speed+1,other.direction)+vspeed,Wall){
     	    with other projectile_hit(other,other.speed ,1,direction)
-    		view_shake_at(x,y,4*min(size,4))
+    		view_shake_max_at(x,y,4*min(size,4))
     	}
     }
     if other.my_health <= 0{

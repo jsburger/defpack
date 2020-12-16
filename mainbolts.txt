@@ -23,6 +23,7 @@
 
 /loadwep bow
 /loadwep explosive bow
+/loadwep arc classique
 
 //KNIVES
 /loadwep knife thrower

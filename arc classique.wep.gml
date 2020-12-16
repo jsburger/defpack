@@ -10,7 +10,7 @@ return "ARC CLASSIQUE"
 return 3
 
 #define weapon_cost
-return 2
+return 1
 
 #define weapon_area
 return 8
