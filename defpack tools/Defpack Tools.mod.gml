@@ -5,7 +5,7 @@
 	Init
 		Sprite/Mask adding
 		Create Globals, Rocklet Surface, Charge and Abris Color permission registry
-		
+
 	Macros
 	Init Relevant Functions (sprite_add_p)
 	Cleanup
@@ -16,14 +16,14 @@
 			Sniper cursors
 			Charge Indicators
 		draw_pause (sets Stopwatch variables)
-		draw_bloom 
+		draw_bloom
 			defbloom handling
 			Misc bloom (Marker, Vector Cannon)
 		draw_shadows (Smarter Gun shadows)
-		
+
 	Game_Start
 	Step
-	
+
 	Helper Functions
 		drone_shadow (draws smarter gun shadows)
 		soda_add soda_get (soda api)
@@ -39,7 +39,7 @@
 	//Sprites, sorted by ammo type, misc at the bottom
 	with spr {
 		msk = {};
-		
+
 		//Fire Bullets
 		FireBullet         = sprite_add(i + "iris/fire/sprFireBullet.png",    2, 8, 8);
 		FireBulletHit      = sprite_add(i + "iris/fire/sprFireBulletHit.png", 4, 8, 8);
@@ -218,7 +218,7 @@
 	mod_script_call("mod","defpermissions","permission_register","mod",mod_current,"AbrisCustomColor","Use Player colors for Abris weapons")
 
 	mod_script_call_nc("mod", "defpermissions", "permission_register_options", "mod", mod_current, "chargeType", "Weapon Charge Indicators", ["Off", "Wep Specific", "Bar Only", "Arc Only"])
-	
+
 	global.sodaList = []
 	game_start()
 	//todo:
@@ -327,17 +327,17 @@
 		var _col = player_get_color(index),
 			_h = holdtime <= 60,
 			_cyc = _h ? 3 : 5;
-		
+
 		// Flash white
 		if current_frame mod _cyc < current_time_scale {
 			_col = _col == c_white ? c_gray : c_white
 			if _h sound_play_pitch(sndCursedReminder, 5)
 		}
-		
+
 	    var _vpf = 3,
 	    	_mx  = mouse_x_nonsync - view_xview_nonsync + 1,
 	    	_my  = mouse_y_nonsync - view_yview_nonsync + 1;
-		
+
 	    for (var i = -1; i <= 1; i += 2) {
 	        for (var o = -1; o <= 1; o += 2) {
 	            draw_sprite_ext(spr.Aim, 0, _mx + (_vpf - charge + 100) * i, _my + (_vpf - charge + 100) * o, -i, -o, 0, _col, .1 + .9 * charge/maxcharge)
@@ -481,7 +481,7 @@ with Player if visible{
 #define step
 	// Gets rid of dummy weapons, I don't know why vanilla doesn't do this
 	with instances_matching(WepPickup, "wep", 0) instance_destroy()
-	
+
 	// Hold Icons for dropped weapons
 	with instances_matching_ne(WepPickup, "chargecheck", 1) {
 	    chargecheck = 1
@@ -489,7 +489,7 @@ with Player if visible{
 	        name += ` @0(${spr.Charge}:0) `//-.35
 	    }
 	}
-	
+
 	// Surface for Rocklet trails
 	if !surface_exists(global.trailsf) {
 	    global.trailsf = surface_create(game_width * 4, game_height * 4)
@@ -504,7 +504,7 @@ with Player if visible{
 	        persistent = 1
 	    }
 	}
-	
+
 	// SAK city rolls
 	if global.SAKmode && mod_exists("weapon", "sak"){
 	    with instances_matching(instances_matching(WepPickup, "roll", 1), "saked", undefined) {
@@ -512,12 +512,12 @@ with Player if visible{
 	        wep = mod_script_call_nc("weapon", "sak", "make_gun_random")
 	    }
 	}
-	
+
 	// Give all explosions a hitid since manually setting them is stupid
 	with instances_matching([Explosion, SmallExplosion, GreenExplosion, PopoExplosion], "hitid", -1) {
 	    hitid = [sprite_index, string_replace(string_upper(object_get_name(object_index)), "EXPLOSION", " EXPLOSION")]
 	}
-	
+
 	// Donut Drops
 	if mod_exists("weapon", "donut box") {
 		with instances_matching_le(instances_matching_ne(instances_matching_ne(enemy, "freeze", null), "object_index", Grunt), "my_health", 0) {
@@ -561,7 +561,7 @@ with Player if visible{
 			}
 		}
 	}
-	
+
 	// Pickup step
 	with instances_matching(Pickup, "name", "QuartzPickup"){
 		//Collision
@@ -582,13 +582,13 @@ with Player if visible{
 
 		// Animations
 		if anim > 0
-			anim -= current_time_scale 
+			anim -= current_time_scale
 		else {
 			if image_index = 0 && image_speed = .5 {
 				image_speed = 0
 				anim = 70 + irandom(20)
 			}
-			else{image_speed = .5} 
+			else{image_speed = .5}
 		}
 
 		// Close range attraction
@@ -604,7 +604,7 @@ with Player if visible{
 			instance_delete(id);
 			exit;
 		}
-		
+
 		// Blink
 		if lifetime <= room_speed * 3 {
 			if current_frame mod 2 < current_time_scale
@@ -871,7 +871,7 @@ draw_line_width_color(x2 - 1, y3, x2 + w + 1, y3, 1, 0, 0)
 #define iris_bouncer_step
 	bouncer_spin()
 	script_ref_call_self(bouncer_step_wrap)
-	
+
 #define bouncer_spin
 	image_angle += bouncer_turn_dir * bouncer_turn_speed * current_time_scale
 
@@ -894,7 +894,7 @@ with instance_create(x, y, CustomProjectile){
     force = 8
     damage = 3
     typ = 1
-    
+
     bounce = 0 + 4 * neurons
     bounce_color = c_orange
     snd_bounce = {
@@ -905,7 +905,7 @@ with instance_create(x, y, CustomProjectile){
     bouncer_turn_dir = choose(-1, 1)
     bouncer_turn_speed = 6
     bouncer_step_wrap = null
-    
+
     on_anim = iris_bullet_anim
     on_wall = bullet_wall
     on_hit = bullet_hit
@@ -921,11 +921,11 @@ with create_bullet(x, y){
     sprite_index = sprHeavyBullet
     spr_dead = sprHeavyBulletHit
     mask_index = mskHeavyBullet
-    
+
     snd_bounce.pitch = .7
     snd_bounce.vol = .7
     bouncer_turn_speed = 6
-    
+
     recycle_amount = 2
     force = 12
     damage = 7
@@ -937,7 +937,7 @@ with create_bullet(x, y){
 	projectile_hit(other, damage, force, direction);
 	recycle_gland_roll()
 	instance_destroy()
-	
+
 #define bullet_destroy
 	with instance_create(x, y, BulletHit) sprite_index = other.spr_dead
 
@@ -950,15 +950,15 @@ with create_bullet(x, y){
 	if bounce-- > 0 {
 		// bouncer_turn_dir = choose(-1, 1)
 		image_blend = merge_color(image_blend, bounce_color, .2)
-		
+
 		move_bounce_solid(false)
 		instance_create(x + hspeed, y + vspeed, CaveSparkle)
 		direction += random_range(-bouncer_turn_speed, bouncer_turn_speed)
 		damage += 1
 		speed += .5
-		
+
 		sound_play_hit_ext(snd_bounce.snd, snd_bounce.pitch + random_nonsync(.1), snd_bounce.vol)
-		
+
 		return true
 	}
 	sound_play_hit(sndHitWall, .2)
@@ -969,7 +969,7 @@ with create_bullet(x, y){
 #define recycle_gland_roll
 /// recycle_gland_roll(_chance = 60)
 var _chance = argument_count > 0 ? argument[0] : 60;
-	
+
 	var _gland = skill_get(mut_recycle_gland) + (10 * skill_get("recycleglandx10"));
 	if chance_raw(_chance * _gland) {
 		if recycle_amount != 0 {
@@ -987,7 +987,7 @@ var _chance = argument_count > 0 ? argument[0] : 60;
 with create_heavy_bullet(x, y){
     name = "Heavy Bouncer Bullet"
     sprite_index = spr.HeavyBouncerBullet
-    
+
     damage = 9
     bounce += 2
 
@@ -995,7 +995,7 @@ with create_heavy_bullet(x, y){
 	// so it doesnt need conversion
 	on_anim = bullet_anim
 	on_step = bouncer_spin
-	
+
     return id
 }
 
@@ -1325,12 +1325,12 @@ return create_lightning_bullet(x, y)
 #define create_lightning_bullet(x, y)
 with create_bullet(x, y){
     name = "Lightning Bullet"
-    
+
     var s = "LightningBullet";
     if skill_get(mut_laser_brain) > 0 s += "Upg"
     if neurons > 0 s += "Bounce"
     sprite_index = lq_get(spr, s)
-    
+
     spr_dead = spr.LightningBulletHit
     bounce_color = c_aqua
 
@@ -1347,12 +1347,12 @@ with create_bullet(x, y){
 #define create_heavy_lightning_bullet(x, y)
 with create_heavy_bullet(x, y){
     name = "Heavy Lightning Bullet"
-    
+
     var s = "HeavyLightningBullet";
     if skill_get(mut_laser_brain) > 0 s += "Upg"
     if neurons > 0 s += "Bounce"
     sprite_index = lq_get(spr, s)
-    
+
     spr_dead = spr.HeavyLightningBulletHit
     bounce_color = c_aqua
 
@@ -1531,7 +1531,7 @@ with instance_create(x, y, CustomSlash){
 	ringang = random(360)
 	recycle_amount = 1
 	image_speed = 1
-	
+
     bounce = 0 + 4 * neurons
     bounce_color = c_black
     snd_bounce = {
@@ -1648,7 +1648,8 @@ if other != lasthit{
 		damage = 0
 		candeflect = 0
 		image_speed = .85
-		force = 4
+		force = 10
+		superfriction = 3;
 		shake = 2
 		if GameCont.area = 101{synstep = 0}else{synstep = 1} //oasis synergy
 		hitid = [sprite_index,"Small Sonic Explosion"]
@@ -1662,7 +1663,7 @@ if other != lasthit{
 		return id
 	}
 
-	#define create_sonic_explosion(_x,_y)
+#define create_sonic_explosion(_x,_y)
 		with instance_create(_x,_y,CustomSlash){
 			name = "Sonic Explosion"
 
@@ -1673,7 +1674,7 @@ if other != lasthit{
 			damage = 0
 			candeflect = 1
 			image_speed = .7
-			force = 20
+			force = 18
 			shake = 10
 			if GameCont.area = 101{synstep = 0}else{synstep = 1} //oasis synergy
 			hitid = [sprite_index,"Sonic Explosion"]
@@ -1754,11 +1755,11 @@ if other != lasthit{
 			sprite_index = mskNothing;
 			with _explo
 			{
-				if "superforce"     in self other.force 				 = superforce else {if _explo.name = "Small Sonic Explosion" other.force =  4 else other.force = 18};
+				if "force"          in self other.superforce 		 = force else {other.superforce = 18};
 				if "superfriction"  in self other.superfriction  = superfriction else other.superfriction = 1;
 				if "superdirection" in self other.superdirection = superdirection;
 			}
-			motion_set("superdirection" in self ? superdirection : other.direction, force); // for easier direction manipulation on wall hit
+			motion_set("superdirection" in self ? superdirection : other.direction, superforce); // for easier direction manipulation on wall hit
 
 			on_step = superforce_step;
 		}
@@ -1772,11 +1773,11 @@ if other != lasthit{
 		repeat(2) with instance_create(x, y, Dust){motion_add(other.direction + random_range(-8, 8), choose(1, 2, 2, 3)); sprite_index = sprExtraFeet}
 		other.x = x;
 		other.y = y;
-		if "maxspeed" in self maxspeed = other.force
-		motion_set(other.direction, other.force);
+		if "maxspeed" in self maxspeed = other.superforce
+		motion_set(other.direction, other.superforce);
 		var _s = "size" in self ? size : 0;
-		other.force -= other.superfriction * max(1, _s);
-		if other.force <= 0 {with other {
+		other.superforce -= other.superfriction * max(1, _s);
+		if other.superforce <= 0 {with other {
 			if or_maxspeed > -1 {
 				other.maxspeed = or_maxspeed
 			}
@@ -1784,7 +1785,7 @@ if other != lasthit{
 			exit}
 		}
 	}
-	with instance_create(creator.x + random_range(-3, 3), creator.y + random_range(-3, 3), ImpactWrists){
+	if superforce >= 3 with instance_create(creator.x + random_range(-3, 3), creator.y + random_range(-3, 3), ImpactWrists){
 		var _fac = .6
 		image_xscale = _fac
 		image_yscale = _fac
@@ -1801,9 +1802,9 @@ if other != lasthit{
 		sleep(32)
 		view_shake_max_at(x, y, 8 * clamp(creator.size, 1, 3))
 		repeat(creator.size) instance_create(x, y, Debris)
-		if force > 4 with creator
+		if superforce > 4 with creator
 		{
-			projectile_hit(self,round(ceil(other.force) * 1.5),1	,direction)
+			projectile_hit(self,round(ceil(other.superforce) * 1.5),1 ,direction)
 			if my_health <= 0
 			{
 				sleep(30)
@@ -1811,7 +1812,7 @@ if other != lasthit{
 				repeat(3) instance_create(x, y, Dust){sprite_index = sprExtraFeet}
 			}
 		}
-		force *= .7
+		superforce *= .7
 		with instance_create(x+lengthdir_x(12,direction),y+lengthdir_y(12,direction),AcidStreak){
 			sprite_index = spr.SonicStreak
 			image_angle = other.direction + random_range(-32, 32) - 90
@@ -1833,10 +1834,10 @@ if other != lasthit{
 		var _h = instance_nearest(x + hspeed, y + vspeed, hitme);
 		if !instance_is(_h, Player) && projectile_canhit_melee(_h)
 		{
-			var _s = (ceil(force) + _h.size) * 2;
+			var _s = (ceil(superforce) + _h.size) + creator.meleedamage * 2;
 			sleep(_s / 3 * max(1, _h.size))
-			projectile_hit(_h,_s, force, direction)
-			force *= .85 + .15 * min(skill_get(mut_impact_wrists), 1);
+			projectile_hit(_h,_s, superforce, direction)
+			superforce *= .85 + .15 * min(skill_get(mut_impact_wrists), 1);
 		}
 	}
 //ok i guess im stealing stuff from gunlocker too but its a good idea alright
@@ -4041,7 +4042,7 @@ if _dist > 12 {
 
 #define vector_head_hit
 if other != lasthit {
-	projectile_hit(other, damage, force, direction)
+	projectile_hit(other, damage, 0, direction)
 	sound_play_hit_ext(sndPlasmaReload, 3, 1)
 	lasthit = other
 }
@@ -4058,6 +4059,9 @@ sound_play_hit_big(sndPlasmaHit, .2)
 with instance_create(x, y, PlasmaImpact) {
 	creator = other.creator
 	team = other.team
+	force = 0
+	damage += 2
+	image_speed *= .65
 	sprite_index = spr.VectorImpact
 }
 
@@ -4096,6 +4100,12 @@ with instances_in_bbox(bbox_left, bbox_top, bbox_right, bbox_bottom, hit_list) {
 	if place_meeting(x, y, other) {
 		motion_set(other.direction, vectorspeed)
 	}
+	with other{
+		if place_meeting(x + hspeed, y + vspeed, Wall){
+			x = xprevious
+			y = yprevious
+		}
+	}
 }
 image_yscale -= shrinkspeed * current_time_scale
 if image_yscale <= 0 instance_destroy()
@@ -4109,7 +4119,8 @@ if current_frame_active {
 	if "vectorspeed" not in other {
 		other.vectorspeed = 0
 	}
-	other.vectorspeed = min(other.vectorspeed + .5/other.size, 12)
+	other.vectorspeed = min((other.vectorspeed + .5/other.size), 12)
+	with other if place_meeting(x + lengthdir_x(vectorspeed, direction), y + lengthdir_y(vectorspeed, direction), Wall) vectorspeed /= 2
 	var _found;
 	with hit_list {
 		if self == _t {

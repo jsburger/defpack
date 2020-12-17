@@ -20,7 +20,7 @@ return 3;
 return 1;
 
 #define weapon_load
-return 8;
+return 17;
 
 #define weapon_cost
 return 2;
@@ -142,7 +142,7 @@ with bolt_create(creator.x, creator.y){
     creator = other.creator
     team = creator.team
     charged = other.charged
-    motion_add(creator.gunangle+random_range(-8,8)*creator.accuracy*(1-(other.charge/other.maxcharge)),16+8*other.charge/other.maxcharge)
+    motion_add(creator.gunangle+random_range(-10,10)*creator.accuracy*(1-(other.charge/other.maxcharge)),16+8*other.charge/other.maxcharge)
 	damage = 12 + charged * 8
 	image_angle = direction
 }
@@ -277,10 +277,14 @@ instance_destroy()
 #define bolt_destroy
 if charged{
     instance_create(x+hspeed,y+vspeed,Explosion)
+    instance_create(x+lengthdir_x(24, direction + 45),y+lengthdir_y(24, direction + 45),SmallExplosion)
+    instance_create(x+lengthdir_x(24, direction - 45),y+lengthdir_y(24, direction - 45),SmallExplosion)
+    instance_create(x + hspeed + sign(hspeed) * 28,y + sign(vspeed) * 28,SmallExplosion)
     sound_play(sndExplosion)
+    sound_play(sndExplosionS)
 }
 else
 {
-  instance_create(x+hspeed,y+vspeed,SmallExplosion)
-  sound_play(sndExplosionS)
+  instance_create(x+hspeed,y+vspeed,Explosion)
+  sound_play(sndExplosion)
 }
