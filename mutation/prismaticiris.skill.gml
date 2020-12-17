@@ -287,12 +287,12 @@ return 1;
 	    	if(c != "") { //not filtered lens
 	    		 //smartest code youll ever see
 		    	var prismwep = convert(Player.wep, c);
-		    	if(prismwep != false){
+		    	if(prismwep != false and prismwep != Player.wep){
 		    		text += `#@0(${weapon_get_sprite(Player.wep)}:0)   @0(${global.arrow}:0)   @0(${weapon_get_sprite(prismwep)}:0)`
 		    	}
 
 		    	prismwep = convert(Player.bwep, c);
-		    	if(prismwep != false){
+		    	if(prismwep != false and prismwep != Player.bwep){
 		    		text += `#@0(${weapon_get_sprite(Player.bwep)}:0)   @0(${global.arrow}:0)   @0(${weapon_get_sprite(prismwep)}:0)`
 		    	}
 	    	}

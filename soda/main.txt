@@ -11,3 +11,4 @@
 /loadwep vinegar
 /loadwep canned poison
 /loadwep pheromone fizz
+/loadwep cocaineum cola
