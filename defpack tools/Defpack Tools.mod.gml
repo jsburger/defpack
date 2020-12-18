@@ -1800,7 +1800,7 @@ if other != lasthit{
 		sound_play_pitchvol(sndWallBreak, .7, .8)
 		sound_play_pitchvol(sndHitRock, .8, .8)
 		sleep(32)
-		view_shake_max_at(x, y, 8 * clamp(creator.size, 1, 3))
+		view_shake_at(x, y, 8 * clamp(creator.size, 1, 3))
 		repeat(creator.size) instance_create(x, y, Debris)
 		if superforce > 4 with creator
 		{
@@ -1977,7 +1977,7 @@ with instance_create(0, 0, CustomObject){
     name = "Abris Target"
     team = -1
     sprite_index = mskNone
-    mask_index   = sprGrenade
+    mask_index   = sprMapDot
 
     on_step    = abris_step
     on_draw    = abris_draw
@@ -1985,7 +1985,7 @@ with instance_create(0, 0, CustomObject){
     on_destroy = abris_destroy
 
     index = -1
-    accbase = startsize * creator.accuracy
+    accbase = startsize
     acc = accbase
     accmin = endsize
     accspeed = 1.2
@@ -1994,6 +1994,8 @@ with instance_create(0, 0, CustomObject){
     maxdamage = 8
     wep = weapon
     auto = 0
+		margin = 12
+		lockon = false;
 
     scroll = random(16)
     scrollang = random(360)
@@ -2080,10 +2082,14 @@ if instance_exists(creator){
     offset += offspeed * timescale
 
     if isplayer{
-        var _a = 1 - acc/accbase;
+        var _a = 1 - acc/accmin;
         view_pan_factor[index] = 4 - (_a * 1.3)
         defcharge.charge = _a
-        if button_pressed(index, "swap") and creator.bwep != 0{
+				if _a > 0.99 && _a < 1 && lq_get(defcharge, "blinked") = 0{
+					weapon_charged(creator, sprite_get_width(weapon_get_sprt(hand ? creator.wep : creator.bwep)) / 2)
+				}
+
+        if button_pressed(index, "swap"){
             abris_refund()
             exit
         }
@@ -2093,14 +2099,19 @@ if instance_exists(creator){
         }
         if hand creator.breload = max(reload, creator.breload)
         else creator.reload = max(reload, creator.reload)
-        acc /= power(accspeed, timescale)
-        if !button_check(index, btn) or (auto and acc <= 2){
+
+				if acc > 0{
+					acc /= power(accspeed, timescale)
+				}else{acc = 0}
+        if !button_check(index, btn) or (auto and acc <= 0){
             instance_destroy()
         }
     }
     else{
-        acc /= power(accspeed, timescale)
-        if acc <= 2{
+				if acc > 0{
+					acc /= power(accspeed, timescale)
+				}else{acc = 0}
+        if acc <= 0{
             instance_destroy()
         }
     }
@@ -2119,7 +2130,7 @@ with instance_create(x, y, CustomProjectile){
     image_alpha = 0
     team = other.creator.team
     var size = 2 * (other.acc+other.accmin)/(sprite_width)
-    damage = ceil(other.damage + (other.maxdamage - other.damage)*(1 - (other.acc/other.accbase)))
+    damage = other.defcharge.charge >= other.defcharge.maxcharge *.99 ? other.maxdamage : other.damage
     image_xscale = size
     image_yscale = size
     on_wall = nothing
@@ -2149,23 +2160,47 @@ if instance_exists(creator){
         ang = c.gunangle + angle
     }
 
+		//experimental autoaim
+		var   _e = instance_nearest_matching_ne(mouse_x[index], mouse_y[index], hitme, "team", creator.team),
+		    _dis = _e > -4 ? point_distance(creator.x, creator.y, _e.x, _e.y) : 0,
+				_dir = _e > -4 ? point_direction(creator.x, creator.y, _e.x, _e.y) : 0
+		if _e > -4 && point_distance(mouse_x[index], mouse_y[index], _e.x, _e.y) <= margin + (lockon * 24 * !lq_get(defcharge, "blinked")){
+			_x = c.x + lengthdir_x(_dis + _e.hspeed, _dir);
+			_y = c.y + lengthdir_y(_dis + _e.vspeed, _dir);
+			lockon = true
+		}else{lockon = false}
+
     var w = collision_line_first(creator.x, creator.y, _x, _y, Wall, 0, 0);
     x = w[0]
     y = w[1]
 
     var kick = hand ? creator.bwkick : creator.wkick, yoff = -4 * hand;
     var r = acc + accmin, sides = 16, a = 1 - acc/accbase, _c = global.AbrisCustomColor = true && instance_is(creator, Player) ? player_get_color(creator.index) : lasercolour
+
+		var _c2 = defcharge.charge > 0.99 && defcharge.charge < 1 && lq_get(defcharge, "blinked") = 0 ? c_white : _c
+		if _c2 = c_white creator.gunshine = 1
     draw_sprite_ext(sprHeavyGrenadeBlink, 0, c.x + lengthdir_x(14 - kick, ang), c.y + lengthdir_y(14 - kick, ang) + 1 + yoff, 1, 1, ang, _c, 1)
-    mod_script_call_nc("mod", "defpack tools", "draw_circle_width_colour", sides, r, 1, acc + image_angle, x, y, _c, .2 + a * .8)
-    mod_script_call_nc("mod", "defpack tools", "draw_circle_width_colour", sides, accmin, 1, acc + image_angle, x, y, _c, .2 + a * .2)
+    mod_script_call_nc("mod", "defpack tools", "draw_circle_width_colour", sides, r, 1, acc + image_angle, x, y, _c2, .5 + a * .5)
+    mod_script_call_nc("mod", "defpack tools", "draw_circle_width_colour", sides, accmin, 1, acc + image_angle, x, y, _c2, .2 + a * .2)
     draw_line_width_color(c.x + lengthdir_x(16 - kick, ang), c.y + lengthdir_y(16 - kick, ang) + yoff, x, y, 1, _c, _c)
-    mod_script_call_nc("mod", "defpack tools", "draw_polygon_striped", sides, r, scrollang, x, y, _c, .1 + .3*a, scroll)
-    draw_sprite_ext(sprGrenadeBlink, 0, x, y, 1, 1, image_angle * -.7, _c, 1)
+    mod_script_call_nc("mod", "defpack tools", "draw_polygon_striped", sides, r, scrollang, x, y, _c2, .1 + .3*a, scroll)
+    draw_sprite_ext(sprGrenadeBlink, 0, x, y, 1, 1, image_angle * -.7, _c2, 1)
+		with instances_matching_ne(hitme, "team", creator.team){
+			if !instance_is(self, prop) && point_distance(x, y, other.x, other.y) <= r{
+				draw_set_fog(true, _c2, 0, 0)
+				draw_sprite_ext(sprite_index, image_index, x - 1, y - 1, image_xscale * right, image_yscale, image_angle, c_white, 1)
+				draw_sprite_ext(sprite_index, image_index, x + 1, y - 1, image_xscale * right, image_yscale, image_angle, c_white, 1)
+				draw_sprite_ext(sprite_index, image_index, x - 1, y + 1, image_xscale * right, image_yscale, image_angle, c_white, 1)
+				draw_sprite_ext(sprite_index, image_index, x + 1, y + 1, image_xscale * right, image_yscale, image_angle, c_white, 1)
+				draw_set_fog(false, c_white, 0, 0)
+			}
+		}
 }
 
 #define abris_hit
-projectile_hit(other,damage,0,0)
-
+projectile_hit(other,damage,0,point_direction(x, y, other.x, other.y))
+sleep(min(damage * 3, 20))
+other.speed = 0
 #define collision_line_first(x1,y1,x2,y2,object,prec,notme)
 /// collision_line_first(x1,y1,x2,y2,object,prec,notme)
 //
@@ -3022,7 +3057,7 @@ if speed < friction instance_destroy()
 	}
 
 #define quartz_step(_creator, _w)
-	if is_object(_w){
+	if is_object(_w) && "is_quartz" in _w && _w.is_quartz = true{
 		_w.prevhealth = _creator.my_health;
 
 		if _w.health < _w.maxhealth{
@@ -3186,7 +3221,7 @@ if speed < friction instance_destroy()
 
 #define crit_hit
 if projectile_canhit_melee(other){
-    projectile_hit(other, 5, 10, point_direction(other.x, other.y, x, y,))
+    projectile_hit(other, 5, 10, point_direction(x, y, other.x, other.y,))
 }
 
 #define create_miniexplosion(_x, _y)

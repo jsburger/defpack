@@ -118,8 +118,8 @@ chest_add("Energy",    -1, 5)
                   if skill_get("recycleglandx10")     > 0 array_push(_a, 3);
                   if skill_get("prismatic iris")      > 0 array_push(_a, 3);
                   if skill_get("excitedneurons")      > 0 array_push(_a, 3);
-                  if skill_get("vote2")               > 0 array_push(_a, 2);
-                  if skill_get("Rocket Casings")      > 0 array_push(_a, 2);
+                  if skill_get("vote2")               > 0 array_push(_a, 3);
+                  if skill_get("Rocket Casings")      > 0 array_push(_a, 3);
                   if skill_get(mut_shotgun_shoulders) > 0 array_push(_a, 0);
                   if skill_get("shotgunshouldersx10") > 0 array_push(_a, 0);
                   if skill_get("powderedgums")        > 0 array_push(_a, 0);

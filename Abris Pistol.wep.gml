@@ -14,10 +14,10 @@ return 4;
 return 1;
 
 #define weapon_load
-return 17;
+return 16;
 
 #define weapon_cost
-return 2;
+return 1;
 
 #define weapon_chrg
 return true;
@@ -36,16 +36,16 @@ sound_play_pitchvol(sndNadeReload,1.4,.6)
 return "AIM DOWN SIGHTS";
 
 #define weapon_fire
-var _strtsize = 30;
-var _endsize  = 15;
+var _strtsize = 28;
+var _endsize  = 20;
 with mod_script_call("mod","defpack tools","create_abris",self,_strtsize,_endsize,argument0){
-	accspeed = 1.15
-	damage = 1
-	maxdamage = 3
+	accspeed = 1.3
+	damage = 8
+	maxdamage = 16
 	name = mod_current
 	payload = script_ref_create(pop)
 }
-sound_play_pitch(sndSniperTarget,1/accuracy+1.5)
+sound_play_pitch(sndSniperTarget,1.5)
 
 #define pop
 with instance_create(x, y, CustomObject){
@@ -68,7 +68,7 @@ if timer-- <= 0
 	sound_play(sndExplosionS)
 	n--
 	if instance_is(creator, Player) with creator weapon_post(4,12,6)
-	with instance_create(x + lengthdir_x((accmin + random(acc)) * .8, random(360)), y + lengthdir_y((accmin + random(acc)) * .8, random(360)), SmallExplosion){
+	with instance_create(x + lengthdir_x(max((random(accmin + acc)), accmin + acc * .7), random(360)), y + lengthdir_y(max((random(accmin + acc) * 1.35), accmin + acc), random(360)), SmallExplosion){
 	    hitid = [sprite_index, "small explosion"]
 	    line(x, y, other.creator.x, other.creator.y)
     }

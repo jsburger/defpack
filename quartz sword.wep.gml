@@ -1,5 +1,5 @@
 #define init
-global.sprQuartzSword  = sprite_add_weapon("sprites/weapons/sprQuartzSword.png" , 3, 5);
+global.sprQuartzSword  = sprite_add_weapon("sprites/weapons/sprQuartzSword.png" , 3, 6);
 global.sprQuartzSword1 = sprite_add_weapon("sprites/weapons/sprQuartzSword1.png", 5, 6);
 global.sprQuartzSword2 = sprite_add_weapon("sprites/weapons/sprQuartzSword2.png", 5, 6);
 global.sprHeavyQuartzSlash = sprite_add("sprites/projectiles/sprHeavyQuartzSlash.png", 3, 0, 24);
