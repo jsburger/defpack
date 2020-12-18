@@ -671,6 +671,23 @@ if instance_exists(obj){
 }
 return found
 
+#define instance_nearest_matching_los_ne(_x,_y,obj,varname,value)
+var num = instance_number(obj),
+    man = instance_nearest(_x,_y,obj),
+    mans = [],
+    n = 0,
+    found = -4;
+if instance_exists(obj){
+    while ++n <= num && variable_instance_get(man,varname) = value || (instance_is(man,prop) && !instance_is(man,Generator)) && collision_line(_x,_y,man.x,man.y,Wall,0,0) > 0{
+        man.x += 10000
+        array_push(mans,man)
+        man = instance_nearest(_x,_y,obj)
+    }
+    if variable_instance_get(man,varname) != value && (!instance_is(man,prop) || instance_is(man,Generator)) found = man
+    with mans x-= 10000
+}
+return found
+
 #define get_n_targets(_x, _y, obj, varname, value, amount)
 var num = instance_number(obj),
     man = instance_nearest(_x, _y, obj),
@@ -2161,10 +2178,10 @@ if instance_exists(creator){
     }
 
 		//experimental autoaim
-		var   _e = instance_nearest_matching_ne(mouse_x[index], mouse_y[index], hitme, "team", creator.team),
+		var   _e = instance_nearest_matching_los_ne(mouse_x[index], mouse_y[index], hitme, "team", creator.team),
 		    _dis = _e > -4 ? point_distance(creator.x, creator.y, _e.x, _e.y) : 0,
 				_dir = _e > -4 ? point_direction(creator.x, creator.y, _e.x, _e.y) : 0
-		if _e > -4 && point_distance(mouse_x[index], mouse_y[index], _e.x, _e.y) <= margin + (lockon * 24 * !lq_get(defcharge, "blinked")){
+		if _e > -4 && point_distance(mouse_x[index], mouse_y[index], _e.x, _e.y) <= margin + (lockon * 24 * !lq_get(defcharge, "blinked") + 8 * !lq_get(defcharge, "blinked")){
 			_x = c.x + lengthdir_x(_dis + _e.hspeed, _dir);
 			_y = c.y + lengthdir_y(_dis + _e.vspeed, _dir);
 			lockon = true

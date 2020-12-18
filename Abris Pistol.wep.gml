@@ -33,14 +33,14 @@ weapon_post(-1,-3,0)
 sound_play_pitchvol(sndNadeReload,1.4,.6)
 
 #define weapon_text
-return "AIM DOWN SIGHTS";
+return choose("AIM DOWN SIGHTS", "A SPECIALIZED WEAPON");
 
 #define weapon_fire
-var _strtsize = 28;
+var _strtsize = 26;
 var _endsize  = 20;
 with mod_script_call("mod","defpack tools","create_abris",self,_strtsize,_endsize,argument0){
 	accspeed = 1.3
-	damage = 8
+	damage = 6
 	maxdamage = 16
 	name = mod_current
 	payload = script_ref_create(pop)
@@ -68,7 +68,7 @@ if timer-- <= 0
 	sound_play(sndExplosionS)
 	n--
 	if instance_is(creator, Player) with creator weapon_post(4,12,6)
-	with instance_create(x + lengthdir_x(max((random(accmin + acc)), accmin + acc * .7), random(360)), y + lengthdir_y(max((random(accmin + acc) * 1.35), accmin + acc), random(360)), SmallExplosion){
+	with instance_create(x + lengthdir_x(max((random(accmin + acc)), accmin + acc * .35), random(360)), y + lengthdir_y(max((random(accmin + acc)), accmin + acc * .35), random(360)), SmallExplosion){
 	    hitid = [sprite_index, "small explosion"]
 	    line(x, y, other.creator.x, other.creator.y)
     }
