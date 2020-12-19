@@ -15,7 +15,7 @@ return 4;
 return 1;
 
 #define weapon_load
-return 19;
+return 25;
 
 #define weapon_cost
 return 2
@@ -47,15 +47,15 @@ if ammo[weapon_type()] < weapon_cost(){
 }
 
 #define weapon_fire
-var _strtsize = 45;
-var _endsize  = 25;
-sound_play_pitch(sndSniperTarget,1/accuracy+1.5)
+var _strtsize = 20;
+var _endsize  = 40;
+sound_play_pitch(sndSniperTarget,1.5)
 with mod_script_call_self("mod","defpack tools","create_abris",self,_strtsize,_endsize,argument0){
-	accspeed = 1.15
+	accspeed = 1.3
 	cost = 2
-	damage = 2
-  name = mod_current
-    maxdamage = 5
+	damage = 8
+    maxdamage = 16
+    name = mod_current
 	payload = script_ref_create(pop)
 }
 
@@ -76,14 +76,14 @@ if timer-- <= 0
 {
 	with instance_create((x + creator.x)/2, (y + creator.y)/2, BloodStreak){
 	    image_angle = point_direction(x, y, other.x, other.y)
-	    line(x, y, other.creator.x, other.creator.y)
 	}
 	n--;
 	sound_play_pitch(sndBloodLauncher, random_range(.8, 1.2))
 	sound_play_pitch(sndBloodLauncherExplo, random_range(.8, 1.2))
-	if instance_is(creator, Player) with creator weapon_post(5,12,45)
-    repeat(2)with instance_create(x + lengthdir_x((accmin + random(acc)) * .8, random(360)), y  + lengthdir_x((accmin + random(acc)) * .8, random(360)), MeatExplosion){
+	if instance_is(creator, Player) with creator weapon_post(5,12,24)
+    repeat(2 + (n = 3 ? 3 : 0))with instance_create(x + lengthdir_x((accmin + random(acc)) * .5, random(360)), y  + lengthdir_x((accmin + random(acc)) * .5, random(360)), MeatExplosion){
         team = other.creator.team
+	    line(x, y, other.creator.x, other.creator.y)
     }
     timer = 3;
 }

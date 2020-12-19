@@ -36,20 +36,24 @@ sound_play_pitchvol(sndNadeReload,1.4,.6)
 return "CARPET BOMBING";
 
 #define weapon_fire
-var _strtsize = 40;
-var _endsize  = 30;
-sound_play_pitch(sndSniperTarget,3)
+var _strtsize = 14;
+var _endsize  = 44;
 with mod_script_call("mod","defpack tools","create_abris",self,_strtsize,_endsize,argument0){
-	accspeed = 1.2
+	accspeed = 1.6
 	payload = script_ref_create(pop)
 	auto = 1
-	damage = 3
-	maxdamage = 10
+	damage = 6
+	maxdamage = 14
+	lockon = -1;
 	name = mod_current
 }
-sound_play_pitch(sndSniperTarget,1/accuracy+3)
+sound_play_pitch(sndSniperTarget,1.9)
 
 #define pop
+
+sound_play_pitch(sndGrenadeRifle,random_range(.7,1))
+sound_play_pitch(sndGrenade,random_range(.7,1))
+sound_play_pitch(sndGrenadeShotgun,random_range(.7,1))
 with instance_create(x, y, CustomObject){
 	creator = other.creator
 	team = other.team
@@ -65,7 +69,7 @@ if !instance_exists(creator){instance_delete(self);exit}
 if n > 0 {
 	if --timer <= 0 repeat(1){
 		n--
-		var _d = random(360), _r = accmin + random(acc);
+		var _d = random(360), _r = (accmin + random(acc)) * .75;
 		if n != 0 with instance_create(x + lengthdir_x(_r, _d), y + lengthdir_y(_r, _d), SmallExplosion) {
 			hitid = [sprite_index,"small explosion"]
 			sound_play(sndExplosionS)

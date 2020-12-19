@@ -36,17 +36,16 @@ sound_play_pitchvol(sndNadeReload,1.4,.6)
 return "INCOMING";
 
 #define weapon_fire
-var _strtsize = 40;//never thought id have to nerf eagle eyes im so proud of you
-var _endsize  = 20;
-var _accspeed = 1.2;
+var _strtsize = 32;
+var _endsize  = 26;
 with mod_script_call("mod","defpack tools","create_abris",self,_strtsize,_endsize,argument0){
-	accspeed = 1.15
-	damage = 3
-	maxdamage = 10
+	accspeed = 1.3
+	damage = 10
+	maxdamage = 26
 	name = mod_current
 	payload = script_ref_create(pop)
 }
-sound_play_pitch(sndSniperTarget, 1/accuracy + .5)
+sound_play_pitch(sndSniperTarget,1.5)
 
 #define pop
 sound_play_pitch(sndGrenadeRifle,random_range(.5,.8))

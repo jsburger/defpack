@@ -119,7 +119,7 @@ if skill_get(mut_bolt_marrow){
 with instance_create(x,y,BoltTrail){
     image_xscale = point_distance(x,y,other.xprevious,other.yprevious)
     image_angle = point_direction(x,y,other.xprevious,other.yprevious)
-    image_yscale++
+    image_yscale += .2
 }
 if hitem with q with other bolt_hit()
 

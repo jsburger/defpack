@@ -118,4 +118,4 @@ explo(3, direction - 180,  1.1, .6, 12, 7)
 explo(3, direction - 180,   .9, .4, 6, 7)
 view_shake_max_at(x, y, 36)
 
-repeat(12){with instance_nearest(x,y,Wall){if distance_to_object(other)<= 32{instance_create(x,y,FloorExplo);instance_destroy()}}}
+repeat(24){with instance_nearest(x,y,Wall){if distance_to_object(other)<= 48{instance_create(x,y,FloorExplo);instance_destroy()}}}

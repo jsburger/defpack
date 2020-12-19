@@ -2120,14 +2120,14 @@ if instance_exists(creator){
 				if acc > 0{
 					acc /= power(accspeed, timescale)
 				}else{acc = 0}
-        if !button_check(index, btn) or (auto and acc <= 0){
+        if !button_check(index, btn) or (auto and acc <= 0.01){
             instance_destroy()
         }
     }
     else{
 				if acc > 0{
 					acc /= power(accspeed, timescale)
-				}else{acc = 0}
+				}else{acc = 0.01}
         if acc <= 0{
             instance_destroy()
         }
@@ -2178,14 +2178,16 @@ if instance_exists(creator){
     }
 
 		//experimental autoaim
-		var   _e = instance_nearest_matching_los_ne(mouse_x[index], mouse_y[index], hitme, "team", creator.team),
-		    _dis = _e > -4 ? point_distance(creator.x, creator.y, _e.x, _e.y) : 0,
-				_dir = _e > -4 ? point_direction(creator.x, creator.y, _e.x, _e.y) : 0
-		if _e > -4 && point_distance(mouse_x[index], mouse_y[index], _e.x, _e.y) <= margin + (lockon * 24 * !lq_get(defcharge, "blinked") + 8 * !lq_get(defcharge, "blinked")){
-			_x = c.x + lengthdir_x(_dis + _e.hspeed, _dir);
-			_y = c.y + lengthdir_y(_dis + _e.vspeed, _dir);
-			lockon = true
-		}else{lockon = false}
+		if lockon >= 0{
+			var   _e = instance_nearest_matching_los_ne(mouse_x[index], mouse_y[index], hitme, "team", creator.team),
+			    _dis = _e > -4 ? point_distance(creator.x, creator.y, _e.x, _e.y) : 0,
+					_dir = _e > -4 ? point_direction(creator.x, creator.y, _e.x, _e.y) : 0
+			if _e > -4 && point_distance(mouse_x[index], mouse_y[index], _e.x, _e.y) <= (margin + ((lockon * 24 / creator.accuracy) * !lq_get(defcharge, "blinked") + 8 * !lq_get(defcharge, "blinked"))){
+				_x = c.x + lengthdir_x(_dis + _e.hspeed, _dir);
+				_y = c.y + lengthdir_y(_dis + _e.vspeed, _dir);
+				lockon = true
+			}else{lockon = false}
+		}
 
     var w = collision_line_first(creator.x, creator.y, _x, _y, Wall, 0, 0);
     x = w[0]
@@ -3179,7 +3181,7 @@ if speed < friction instance_destroy()
 #define crit() //add this to on_hit effects in order to not be stupid
 	var _t = team;
 	view_shake_max_at(x, y, 150)
-	sleep(100)
+	sleep(70)
 	sound_play_pitchvol(sndHammerHeadEnd,random_range(1.23,1.33),20)
 	sound_play_pitchvol(sndBasicUltra,random_range(0.9,1.1),20)
 	sound_play_pitch(sndCoopUltraA,random_range(3.8,4.05))
@@ -3222,7 +3224,7 @@ if speed < friction instance_destroy()
 	}
 
 #define Killslash_step
-	if image_index = 1.2 sleep(200)
+	if image_index = 1.2 sleep(100)
 	if image_index >= 7 instance_destroy();
 
 #define crit_proj

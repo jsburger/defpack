@@ -20,7 +20,7 @@ return 3;
 return 1;
 
 #define weapon_load
-return 17;
+return 14;
 
 #define weapon_cost
 return 2;
@@ -142,8 +142,8 @@ with bolt_create(creator.x, creator.y){
     creator = other.creator
     team = creator.team
     charged = other.charged
-    motion_add(creator.gunangle+random_range(-10,10)*creator.accuracy*(1-(other.charge/other.maxcharge)),16+8*other.charge/other.maxcharge)
-	damage = 12 + charged * 8
+    motion_add(creator.gunangle+random_range(-4,4)*creator.accuracy*(1-(other.charge/other.maxcharge)),24+2*other.charge/other.maxcharge)
+	damage = 15 + charged * 9
 	image_angle = direction
 }
 /*with instance_create(creator.x,creator.y,Bolt)

@@ -105,7 +105,7 @@ var timescale = (mod_variable_get("weapon", "stopwatch", "slowed") == 1) ? 30/ro
 if button_check(index,"swap"){instance_destroy();exit}
 if reload = -1{
     reload = hand ? creator.breload : creator.reload
-    reload += mod_script_call_nc("mod", "defpack tools", "get_reloadspeed", creator) * timescale
+    reload += mod_script_call_nc("mod", "defpack tools", "get_reloadspeed", creator) * timescale * 1.2
 }
 else{
     if hand creator.breload = max(creator.breload, reload)
@@ -115,7 +115,7 @@ view_pan_factor[index] = 3 - (charge/maxcharge * .5)
 defcharge.charge = charge
 if button_check(index, btn){
     if charge < maxcharge{
-        charge += mod_script_call_nc("mod", "defpack tools", "get_reloadspeed", creator) * timescale;
+        charge += mod_script_call_nc("mod", "defpack tools", "get_reloadspeed", creator) * timescale * 1.2;
         charged = 0
         sound_play_pitchvol(sound,sqr((charge/maxcharge) * 3.5) + 6,1 - charge/maxcharge)
     }
@@ -150,9 +150,9 @@ if charged = 0{
         mask_index   = mskBullet1
         creator = other.creator
         team    = creator.team
-        damage = 10
+        damage = 14
         move_contact_solid(creator.gunangle,6)
-        motion_add(creator.gunangle+random_range(-8,8)*creator.accuracy*(1-(other.charge/other.maxcharge)),16+6*other.charge/other.maxcharge)
+        motion_add(creator.gunangle+random_range(-2,2)*creator.accuracy*(1-(other.charge/other.maxcharge)),24+2*other.charge/other.maxcharge)
         image_angle = direction
     }
 }
@@ -174,7 +174,7 @@ else
             mask_index   = mskBullet1
             creator = other.creator
             team    = creator.team
-            damage = i = 0 ? 10 : 5
+            damage = 9
             move_contact_solid(creator.gunangle,6)
             motion_add(ang + i,20)
             image_angle = direction

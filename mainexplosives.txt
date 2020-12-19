@@ -6,6 +6,7 @@
 /loadwep abris pistol
 /loadwep abris launcher
 /loadwep abris rifle
+/loadwep smart abris rifle
 /loadwep auto abris launcher
 /loadwep super abris launcher
 /loadwep blood abris launcher

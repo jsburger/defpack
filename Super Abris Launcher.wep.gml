@@ -15,10 +15,10 @@ return 4;
 return 1;
 
 #define weapon_load
-return 44;
+return 72;
 
 #define weapon_cost
-return 4;
+return 6;
 
 #define weapon_chrg
 return true;
@@ -37,42 +37,42 @@ sound_play_pitchvol(sndNadeReload,1.4,.6)
 return "HAIL MARY";
 
 #define weapon_fire
-var _strtsize = 90-skill_get(13)*15;
+var _strtsize = 34;
 var _endsize  = 64;
-with mod_script_call("mod","defpack tools","create_abris",self,100,72,argument0){
+with mod_script_call("mod","defpack tools","create_abris",self,_strtsize,_endsize,argument0){
     //sound_set_track_position(sndVanWarning,1.2)
-    accspeed = 1.04
+    accspeed = 1.1
     payload = script_ref_create(pop)
-    damage = 10
-    maxdamage = 30
+    damage = 15
+    maxdamage = 35
     name = mod_current
     olddraw = on_draw
     on_draw = abris_draw_super
 }
 //nonono this isnt working no no no
-sound_play_pitch(sndSniperTarget,exp((_strtsize-_endsize)/room_speed/current_time_scale/accuracy*(1.07))/12)
+sound_play_pitch(sndSniperTarget,1.075)
 
 #define pop
 sound_play_pitch(sndGrenadeRifle,random_range(.5,.8))
 sleep(200)
 with instance_create(x, y, CustomObject){
-	creator = other.creator
-	team = other.team
-	accmin = other.accmin
-	acc = other.acc
-	timer = 1;
-  n = 3
+  creator = other.creator
+  team = other.team
+  accmin = other.accmin
+  acc = other.acc
+  timer = 1;
+  n = 24//3
   radius = 0;
   offset = random(360)
 
-	on_step = pop_step
+  on_step = pop_step
 }
 
 #define pop_step
 if !instance_exists(creator){instance_delete(self);exit}
 if timer-- <= 0
 {
-  sound_play(sndExplosionL)
+  /*sound_play(sndExplosionL)
   sound_play_pitch(sndGrenadeShotgun,random_range(.5,.8))
   sound_play_pitch(sndGrenadeRifle,random_range(.5,.8))
   sound_play_pitch(sndUltraGrenade,.9)
@@ -95,9 +95,30 @@ if timer-- <= 0
   	    hitid = [sprite_index,"small explosion"]
     offset += 45
   }
-  radius += 24
-  timer = 6
+  radius += 24*/
+  timer = 1 + irandom(2)//6
+  var _d = random(360), _r = (random(accmin) + random(acc)) * .9;
+	instance_create(x + lengthdir_x(_r, _d), y + lengthdir_y(_r, _d), SmallExplosion)
+	sound_play_pitchvol(sndExplosionS, .8 + (18 - n) / 45, 1.2)
+	view_shake_at(x, y, 12)
+  if n <= 12{
+	instance_create(x + lengthdir_x(_r, _d), y + lengthdir_y(_r, _d), Explosion)
+	instance_create(x + lengthdir_x(_r, _d), y + lengthdir_y(_r, _d), SmallExplosion)
+	sound_play_pitchvol(sndExplosion, .8 + (18 - n) / 50, .5)
+  }if n <= 6{
+  	instance_create(x + lengthdir_x(_r, _d), y + lengthdir_y(_r, _d), GreenExplosion)
+	instance_create(x + lengthdir_x(_r, _d), y + lengthdir_y(_r, _d), Explosion)
+	sound_play_pitchvol(sndExplosionL, .8 + (18 - n) / 50, .5)
+	if n = 1{timer = 8}
+  }
   n--
+  if n = 0{
+  	sound_play_pitchvol(sndExplosionXL,  1, 2)
+	sound_play_pitchvol(sndExplosionCar,.7, 2)
+  	sleep(150)
+  	view_shake_at(x, y, 128)
+  	repeat(8)instance_create(x + random_range(-4, 4), y + random_range(-4, 4), GreenExplosion)
+  }
 } if n <= 0 instance_destroy()
 
 #define abris_draw_super

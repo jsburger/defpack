@@ -1,6 +1,6 @@
 #define init
-global.sprBow      = sprite_add_weapon("sprites/weapons/sprArchClassique.png", 2, 7)
-global.sprArrow    = sprite_add("sprites/projectiles/sprArchClassiqueArrow.png", 1, 3, 4)
+global.sprBow      = sprite_add_weapon("sprites/weapons/sprArchClassique.png", 2, 9)
+global.sprArrow    = sprite_add("sprites/projectiles/sprArchClassiqueArrow.png", 1, 4, 4)
 global.sprArrowHUD = sprite_add_weapon("sprites/projectiles/sprArchClassiqueArrow.png", 5, 3)
 
 #define weapon_name
@@ -37,7 +37,7 @@ return false
 
 #define weapon_sprt
 if instance_is(self, Player){
-    with instances_matching(instances_matching(CustomObject, "name", "bow charge"), "creator", id){
+    with instances_matching(instances_matching(CustomObject, "name", "CritBowCharge"), "creator", id){
         var yoff = (creator.race = "steroids" and btn = "spec") ? -1 : 1;
         with creator{
             var l = other.charge/other.maxcharge * 4 - 1;
@@ -59,7 +59,7 @@ with instance_create(x, y, CustomObject){
 	name    = "CritBowCharge"
 	creator = other
 	charge    = 0
-    maxcharge = 28
+    maxcharge = 20
     defcharge = {
         style : 0,
         width : 14,
@@ -146,9 +146,9 @@ if charged = 0 {
         mask_index   = mskBullet1
         creator = other.creator
         team    = creator.team
-        damage = 10
+        damage = 20
         move_contact_solid(creator.gunangle, 6)
-        motion_add(creator.gunangle + random_range(-4, 4) * creator.accuracy * (1 - (other.charge/other.maxcharge)), 18 + (2 * other.charge/other.maxcharge))
+        motion_add(creator.gunangle + random_range(-2, 2) * creator.accuracy * (1 - (other.charge/other.maxcharge)), 24 + (2 * other.charge/other.maxcharge))
         image_angle = direction
     }
 }
@@ -167,9 +167,9 @@ else {
       mask_index   = mskBullet1
       creator = other.creator
       team    = creator.team
-      damage = 10
+      damage = 30
       move_contact_solid(creator.gunangle, 6)
-      motion_add(ang, 20)
+      motion_add(ang, 26)
       image_angle = direction
       charged = other.charged
     }

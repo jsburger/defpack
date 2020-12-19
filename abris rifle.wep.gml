@@ -17,7 +17,7 @@ return true;
 return 5;
 
 #define weapon_cost
-return 2;
+return 1;
 
 #define weapon_chrg
 return true;
@@ -26,7 +26,7 @@ return true;
 return sndSwapExplosive;
 
 #define weapon_area
-return 9;
+return 6;
 
 #define weapon_reloaded
 weapon_post(-1,-3,0)
@@ -36,17 +36,18 @@ sound_play_pitchvol(sndNadeReload,1.4,.6)
 return "IN YOUR SIGHTS";
 
 #define weapon_fire
-var _strtsize = 50;
-var _endsize  = 15;
+var _strtsize = 26;
+var _endsize  = 20;
 with mod_script_call("mod","defpack tools","create_abris",self,_strtsize,_endsize,argument0){
-	accspeed = 1.2
+	accspeed = 1.5
 	auto = 1
-	damage = 1
-	maxdamage = 3
+	damage = 6
+	maxdamage = 16
+	margin += 16
 	name = mod_current
 	payload = script_ref_create(pop)
 }
-sound_play_pitch(sndSniperTarget,1/accuracy+1)
+sound_play_pitch(sndSniperTarget,1.75)
 
 #define pop
 with instance_create(x, y, CustomObject){
