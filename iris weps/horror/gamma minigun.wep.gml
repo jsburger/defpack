@@ -1,5 +1,5 @@
 #define init
-global.sprHorrorMinigun = sprite_add_weapon("../../sprites/weapons/iris/horror/on/sprHorrorMinigunOn.png", 3, 1);
+global.sprHorrorMinigun = sprite_add_weapon("../../sprites/weapons/iris/horror/on/sprHorrorMinigunOn.png", 3, 3);
 
 #define weapon_name
 return "GAMMA MINIGUN";

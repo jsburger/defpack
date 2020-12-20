@@ -149,7 +149,7 @@ return 1;
 		if(tip = "fantasticrefractions") {
 			refract_tip = "true";
 		}
-		if("refract_tip" in self) tip = `@(color:${make_colour_hsv(current_frame mod 255, 220, 255)})IT'S SO BEAUTIFUL`;
+		if("refract_tip" in self) tip = `IT'S SO @(color:${make_colour_hsv(current_frame mod 255, 220, 255)})BEAUTIFUL`;
 	}
 
  // MISCELLANEOUS SCRIPTS //

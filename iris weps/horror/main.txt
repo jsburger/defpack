@@ -1,8 +1,14 @@
 /loadwep gamma revolver
 /loadwep gamma machinegun
+/loadwep triple gamma machinegun
 /loadwep gamma smg
 /loadwep assault gamma rifle
 /loadwep gamma minigun
+/loadwep double gamma minigun
+/loadwep heavy gamma revolver
+/loadwep heavy gamma machinegun
+/loadwep heavy assault gamma rifle
+/loadwep gamma bullet cannon
 /loadwep rusty gamma revolver
 /loadwep golden gamma revolver
 /loadwep golden gamma machinegun

@@ -1344,6 +1344,29 @@ with instance_create(x,y,BulletHit){
 
 //}
 
+#define create_heavy_gamma_bullet(x, y)
+with create_bullet(x, y){
+    name = "heavy gamma Bullet"
+
+	var s = "HeavyGammaBullet";
+    if neurons > 0 s += "Bounce"
+    sprite_index = lq_get(spr, s)
+
+    spr_dead = spr.GammaBulletHit
+    bounce_color = c_lime
+
+    force = 7
+    damage = 3
+    typ = 1
+    pierce = 2
+    lasthit = -4
+
+	on_step = gamma_step
+	on_hit  = gamma_hit
+
+    return id
+}
+
 #define create_gamma_bullet(x, y)
 with create_bullet(x, y){
     name = "gamma Bullet"
@@ -1356,7 +1379,7 @@ with create_bullet(x, y){
     bounce_color = c_lime
 
     force = 4
-    damage = 3
+    damage = 2
     typ = 1
     pierce = 1
     lasthit = -4
@@ -1372,6 +1395,7 @@ with instances_matching_ne(projectile, "team", other.team){
 	if distance_to_object(other) <= 0{
 		instance_destroy()
 		with other {
+			sleep(4)
 			pierce--
 			if pierce < 0 instance_destroy()
 		}
@@ -1382,7 +1406,10 @@ with instances_matching_ne(projectile, "team", other.team){
 if projectile_canhit(other) = true{
 	if lasthit != other{
 		lasthit = other
+		sleep(damage * 2 + 3)
+		view_shake_max_at(x, y, damage * 2)
 		projectile_hit(other, damage, force, direction)
+		recycle_gland_roll()
 		pierce--
 		if pierce < 0 instance_destroy()
 	}

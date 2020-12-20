@@ -1,6 +1,6 @@
 #define init
 global.sprBow      = sprite_add_weapon("sprites/weapons/sprSplinterBow.png",2,8)
-global.sprArrow    = sprite_add("sprites/projectiles/sprArrow.png",1,3,4)
+global.sprArrow    = sprite_add("sprites/projectiles/sprSplinterArrow.png",1,3,4)
 
 #define weapon_name
 return "SPLINTER BOW"
@@ -55,7 +55,7 @@ if instance_is(self,Player){
 return global.sprBow
 
 #define weapon_sprt_hud
-return sprSplinter
+return global.sprArrow
 
 #define weapon_text
 return "WOODCHIPPER"
@@ -184,7 +184,7 @@ if timer <= 0{
 	          creator = other.creator
 	          team    = creator.team
 	          move_contact_solid(creator.gunangle,6)
-	          motion_add(creator.gunangle ,20 + irandom(4))
+	          motion_add(creator.gunangle ,24 + irandom(4))
 	          image_angle = direction
 	        }
 	    }
