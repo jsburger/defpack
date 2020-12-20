@@ -74,7 +74,7 @@ chest_add("Blood",   9,  [wep_blood_hammer,"bone","big bone",wep_blood_launcher,
 chest_add("Hyper",   9,  [wep_hyper_rifle,wep_hyper_slugger,wep_hyper_launcher,"hyper crossbow"])
 chest_add("Zenith",  13, ["herald","andromeda launcher","stopwatch","sak",/*"antiprism",*/"defender","flex","punisher","rapier"])
 var _l = ds_list_create();
-weapon_get_list(_l, clamp(GameCont.hard, 0, 6), GameCont.hard + 2 * array_length(instances_matching(Player,"race","robot")) + 3);
+weapon_get_list(_l, clamp(GameCont.hard, 0, 4), GameCont.hard + 2 * array_length(instances_matching(Player,"race","robot")) + 3);
 var _a = ds_list_to_array(_l),
    _c0 = [],
    _c1 = [],
@@ -105,7 +105,7 @@ chest_add("Energy",    -1, 5)
         with instances_matching(instances_matching(WeaponChest, "object_index", 458), "defcustomchestcheck", null){
             defcustomchestcheck = 1
             var _chance = min(GameCont.wepmuts * 12, 45);
-            if skill_get(mut_heavy_heart) > 0 _chance = 100 * skill_get(mut_heavy_heart)
+            if skill_get(mut_heavy_heart) > 0 && _chance > 0 _chance = 100 * skill_get(mut_heavy_heart)
             var _mwr = (irandom(99) + 1) <= (_chance)
             if _mwr = true{
               var _a = [];
@@ -238,12 +238,16 @@ chest_add("Energy",    -1, 5)
   repeat(2){
     var _w = wep_screwdriver
     sound_play(sndAmmoChest);
-    var _i = 0;
+    var _i = 0,
+        _j = 0;
+        _d = [0, 0]
     do{
         _w = weps[irandom(array_length(weps)-1)]
-        if weapon_get_area(_w) <= max(0, GameCont.hard + 3){
+        if weapon_get_area(_w) <= max(0, GameCont.hard + 3) && _d[_j] != _w{
           with instance_create(x,y,WepPickup){
             wep = _w
+            _d[_j] = wep;
+            _j++;
             if weapon_get_type(wep) != 0 ammo = 1
             _i = 100;
           }
