@@ -1,0 +1,9 @@
+/loadwep gamma revolver
+/loadwep gamma machinegun
+/loadwep gamma smg
+/loadwep assault gamma rifle
+/loadwep gamma minigun
+/loadwep rusty gamma revolver
+/loadwep golden gamma revolver
+/loadwep golden gamma machinegun
+/loadwep golden assault gamma rifle

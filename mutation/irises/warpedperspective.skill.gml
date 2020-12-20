@@ -38,7 +38,6 @@
 		mod_variable_set("skill", "prismaticiris", "color", mod_current);
 	}
 	
-	skill_set_active(mut_recycle_gland, 0);
 	skill_set(mod_current, 0); // Remove the skill
 	
 	player_convert(skill_iris());

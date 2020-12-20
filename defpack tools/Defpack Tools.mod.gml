@@ -40,6 +40,14 @@
 	with spr {
 		msk = {};
 
+		//Horror Bullets
+		GammaBullet         = sprite_add(i + "iris/horror/sprGammaBullet.png",    2, 8, 8);
+		GammaBulletHit      = sprite_add(i + "iris/horror/sprGammaBulletHit.png", 4, 8, 8);
+		HeavyGammaBullet    = sprite_add(i + "iris/horror/sprHeavyGammaBullet.png",    2, 12, 12);
+		HeavyGammaBulletHit = sprite_add(i + "iris/horror/sprHeavyGammaBulletHit.png", 4, 12, 12);
+		GammaBulletBounce   = sprite_add(i + "iris/horror/sprGammaBulletBounce.png", 2, 6, 8);
+		HeavyGammaBulletBounce = sprite_add(i + "iris/horror/sprHeavyGammaBulletBounce.png", 2, 9, 13);
+
 		//Fire Bullets
 		FireBullet         = sprite_add(i + "iris/fire/sprFireBullet.png",    2, 8, 8);
 		FireBulletHit      = sprite_add(i + "iris/fire/sprFireBulletHit.png", 4, 8, 8);
@@ -93,10 +101,10 @@
 
 
 		//Iris Casings
-		GenShell      = sprite_add("../sprites/other/sprGenShell.png",   7, 2, 2);
-		GenShellLong  = sprite_add("../sprites/other/sprGenShellL.png",  7, 2, 3);
-		GenShellHeavy = sprite_add("../sprites/other/sprGenShellH.png",  7, 2, 3);
-		GenShellBig   = sprite_add("../sprites/other/sprGenShellXL.png", 7, 3, 3);
+		GenShell      = sprite_add("../sprites/other/sprGenShell.png",   8, 2, 2);
+		GenShellLong  = sprite_add("../sprites/other/sprGenShellL.png",  8, 2, 3);
+		GenShellHeavy = sprite_add("../sprites/other/sprGenShellH.png",  8, 2, 3);
+		GenShellBig   = sprite_add("../sprites/other/sprGenShellXL.png", 8, 3, 3);
 
 		//Psy Shells
 		PsyPellet          = sprite_add(i + "sprPsyShell.png", 2, 8, 8);
@@ -1336,6 +1344,50 @@ with instance_create(x,y,BulletHit){
 
 //}
 
+#define create_gamma_bullet(x, y)
+with create_bullet(x, y){
+    name = "gamma Bullet"
+
+	var s = "GammaBullet";
+    if neurons > 0 s += "Bounce"
+    sprite_index = lq_get(spr, s)
+
+    spr_dead = spr.GammaBulletHit
+    bounce_color = c_lime
+
+    force = 4
+    damage = 3
+    typ = 1
+    pierce = 1
+    lasthit = -4
+
+	on_step = gamma_step
+	on_hit  = gamma_hit
+
+    return id
+}
+
+#define gamma_step
+with instances_matching_ne(projectile, "team", other.team){
+	if distance_to_object(other) <= 0{
+		instance_destroy()
+		with other {
+			pierce--
+			if pierce < 0 instance_destroy()
+		}
+	}
+}
+
+#define gamma_hit
+if projectile_canhit(other) = true{
+	if lasthit != other{
+		lasthit = other
+		projectile_hit(other, damage, force, direction)
+		pierce--
+		if pierce < 0 instance_destroy()
+	}
+}
+
 #define create_thunder_bullet(x, y)
 return create_lightning_bullet(x, y)
 
@@ -1872,6 +1924,7 @@ if other != lasthit{
 			case c_navy  : image_index = 4;break
 			case c_white : image_index = 5;break
 			case c_black : image_index = 6;break
+			case c_lime  : image_index = 7;break
 		}
 		return id
 	}

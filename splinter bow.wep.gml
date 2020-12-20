@@ -1,5 +1,5 @@
 #define init
-global.sprBow      = sprite_add_weapon("sprites/weapons/sprBow.png",2,8)
+global.sprBow      = sprite_add_weapon("sprites/weapons/sprSplinterBow.png",2,8)
 global.sprArrow    = sprite_add("sprites/projectiles/sprArrow.png",1,3,4)
 
 #define weapon_name
@@ -100,7 +100,7 @@ var timescale = (mod_variable_get("weapon", "stopwatch", "slowed") == 1) ? 30/ro
 if button_check(index,"swap"){instance_destroy();exit}
 if reload = -1{
     reload = hand ? creator.breload : creator.reload
-    reload += mod_script_call_nc("mod", "defpack tools", "get_reloadspeed", creator) * timescale * 1.2
+    reload += mod_script_call_nc("mod", "defpack tools", "get_reloadspeed", creator) * timescale * 1.5
 }
 else{
     if hand creator.breload = max(creator.breload, reload)
@@ -110,7 +110,7 @@ view_pan_factor[index] = 3 - (charge/maxcharge * .5)
 defcharge.charge = charge
 if button_check(index, btn){
     if charge < maxcharge{
-        charge += mod_script_call_nc("mod", "defpack tools", "get_reloadspeed", creator) * timescale * 1.2;
+        charge += mod_script_call_nc("mod", "defpack tools", "get_reloadspeed", creator) * timescale * 1.5;
         charged = 0
         sound_play_pitchvol(sound,sqr((charge/maxcharge) * 3.5) + 6,1 - charge/maxcharge)
     }
@@ -138,6 +138,7 @@ var _p = random_range(.8,1.2)
 sound_play_pitchvol(sndSwapGuitar,4*_p,.8)
 sound_play_pitchvol(sndAssassinAttack,2*_p,.8)
 sound_play_pitchvol(sndClusterOpen,2*_p,.2)
+sound_play_pitchvol(sndSplinterGun,1.6*_p,.7)
 if charged = 0{
     with creator weapon_post(1,-10,0)
     repeat(7) with instance_create(creator.x,creator.y,Splinter){
@@ -175,9 +176,10 @@ if timer <= 0{
 	       motion_add(random(360),choose(5,6))
 	    }
 	}
+	sound_play_pitchvol(sndSplinterPistol, random_range(1.4, 1.6),.7)
 	sound_play_pitchvol(sndShovel,2,.8)
 	sound_play_pitchvol(sndUltraCrossbow,3,.8)
-	repeat(2){
+	repeat(2 + (ammo = 2 ? 2 : 0)){
 	     with instance_create(creator.x + lengthdir_x( 1 + irandom(5) * creator.accuracy, creator.gunangle + choose(-90, 90)),creator.y + lengthdir_y( 1 + irandom(5) * creator.accuracy, creator.gunangle + choose(-90, 90)),Splinter){
 	          creator = other.creator
 	          team    = creator.team
