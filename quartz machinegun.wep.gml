@@ -44,7 +44,7 @@ var _l = 4;
 if is_object(w) return _l - (w.health - w.maxhealth) * .5 else return _l;
 
 #define weapon_swap(w)
-if is_object(w) w.prevhealth = my_health
+if instance_is(self, Player) if is_object(w){w.prevhealth = my_health}
 sound_play_pitchvol(sndHyperCrystalHurt, 1.3, .6)
 return sndSwapMachinegun;
 
@@ -67,7 +67,8 @@ return choose("GLASS CANNON","BE CAREFUL WITH IT")
           prevhealth: other.my_health,
           maxhealth: 2,
           health: 2,
-          is_quartz: true
+          is_quartz: true,
+          shinebonus:0
       }
       wep = w
   }

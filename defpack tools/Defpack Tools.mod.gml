@@ -104,7 +104,7 @@
 		GenShell      = sprite_add("../sprites/other/sprGenShell.png",   8, 2, 2);
 		GenShellLong  = sprite_add("../sprites/other/sprGenShellL.png",  8, 2, 3);
 		GenShellHeavy = sprite_add("../sprites/other/sprGenShellH.png",  8, 2, 3);
-		GenShellBig   = sprite_add("../sprites/other/sprGenShellXL.png", 8, 3, 3);
+		GenShellBig   = sprite_add("../sprites/other/sprGenShellXL.png", 8, 2, 3);
 
 		//Psy Shells
 		PsyPellet          = sprite_add(i + "sprPsyShell.png", 2, 8, 8);
@@ -3117,13 +3117,7 @@ if speed < friction instance_destroy()
 
 			_p.wep.health += _val;
 
-			repeat(_val * 4 + 3){
-			  with instance_create(x+random_range(-8,8),y+random_range(-8,8),WepSwap){
-			    image_xscale = .75
-			    image_yscale = .75
-			    image_speed = choose(.7,.7,.7,.45)
-			  }
-			}
+			_p.wep.shinebonus += 20
 
 			if _p.wep.health >= _p.wep.maxhealth{
 				_p.wep.health = _p.wep.maxhealth;
@@ -3141,12 +3135,11 @@ if speed < friction instance_destroy()
 				  _str = `+` + string(_val) + ` @(color:${make_colour_rgb(201, 223, 255)})QUARTZ @wHP`;
 
 			_p.bwep.health += _val;
-
+			_p.gunshine = 6;
+			
 			if _p.bwep.health >= _p.bwep.maxhealth{
 				_p.bwep.health = _p.bwep.maxhealth;
 				_str = `MAX @(color:${make_colour_rgb(201, 223, 255)})QUARTZ @wHP`;
-			}else{
-				_p.gunshine = 6;
 			}
 
 			with instance_create(_p.x, _p.y, PopupText){
@@ -3184,8 +3177,14 @@ if speed < friction instance_destroy()
 				return r;
 
 #define quartz_penalty(_mod, _w, _p) //this is for player step only stupid
-	if chance(4){
-	  with instance_create(x+random_range(-8,8),y+random_range(-8,8),WepSwap){
+	if wep.shinebonus > 0{
+		wep.shinebonus -= current_time_scale;
+	}
+	if chance(6 + (wep.shinebonus > 0 ? 74 : 0)){
+		var _spr = weapon_get_sprite(wep),
+		    _wth = sprite_get_width(_spr) - sprite_get_xoffset(_spr),
+		    _hth = sprite_get_width(_spr) - sprite_get_yoffset(_spr);
+	  with instance_create(x + lengthdir_x(random(_wth), wepangle + gunangle) + random_range(-3, 3), y + lengthdir_y(random(_hth), wepangle + gunangle) + random_range(-3, 3),WepSwap){
 	    image_xscale = .75
 	    image_yscale = .75
 	    image_speed = choose(.7,.7,.7,.45)

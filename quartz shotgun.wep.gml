@@ -43,7 +43,7 @@ return 13;
 return 15;
 
 #define weapon_swap(w)
-if is_object(w) w.prevhealth = my_health
+if instance_is(self, Player) if is_object(w){w.prevhealth = my_health}
 sound_play_pitchvol(sndHyperCrystalHurt, 1.3, .6)
 return sndSwapShotgun;
 
@@ -66,7 +66,8 @@ return choose("PRODUCT OF PRISMATIC FORGERY","BE CAREFUL WITH IT")
           prevhealth: other.my_health,
           maxhealth: 2,
           health: 2,
-          is_quartz: true
+          is_quartz: true,
+          shinebonus:0
       }
       wep = w
   }

@@ -44,7 +44,7 @@ return 27;
 return 2;
 
 #define weapon_swap(w)
-if is_object(w) w.prevhealth = my_health
+if instance_is(self, Player) if is_object(w){w.prevhealth = my_health}
 //sound_play_pitchvol(sndLaserCrystalHit, .5, .6) really good creaky door sound
 sound_play_pitchvol(sndHyperCrystalHurt, 1.3, .6)
 return sndSwapBow;
@@ -62,7 +62,8 @@ return choose("BREAKTHROUGH","BE CAREFUL WITH IT");
           prevhealth: other.my_health,
           maxhealth: 2,
           health: 2,
-          is_quartz: true
+          is_quartz: true,
+          shinebonus:0
       }
       wep = w
   }
@@ -93,3 +94,11 @@ return choose("BREAKTHROUGH","BE CAREFUL WITH IT");
     mod_script_call_self("mod","defpack tools","quartz_penalty",mod_current, bwep, p)
     mod_script_call_self("mod","defpack tools","quartz_step", self, bwep);
   }
+  with instances_matching(HeavyBolt, "sprite_index", global.sprQuartzBolt){
+	if chance(speed * 2 + 15)with instance_create(x + random_range(-8, 8), y + random_range(-8, 8), WepSwap){
+		image_xscale = .75
+	    image_yscale = .75
+	    image_speed = choose(.7,.7,.7,.45)
+	}	
+  }
+#define chance(_v) return mod_script_call("mod", "defpack tools", "chance", _v);

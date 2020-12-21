@@ -45,7 +45,7 @@ return 28;
 return 2;
 
 #define weapon_swap(w)
-if is_object(w) w.prevhealth = my_health
+if instance_is(self, Player) if is_object(w){w.prevhealth = my_health}
 sound_play_pitchvol(sndHyperCrystalHurt, 1.3, .6)
 return sndSwapExplosive;
 
@@ -65,7 +65,8 @@ return choose("BE CAREFUL WITH IT","ENERGIC FORTUNE TELLING");
           prevhealth: other.my_health,
           maxhealth: 2,
           health: 2,
-          is_quartz: true
+          is_quartz: true,
+          shinebonus:0
       }
       wep = w
   }
@@ -123,6 +124,11 @@ image_angle = direction
 
 #define quartznade_step
 	if speed <= 0{lifetime -= current_time_scale}
+	if chance(speed * 2 + 10)with instance_create(x + random_range(-5, 5), y + random_range(-5, 5), WepSwap){
+		image_xscale = .75
+	    image_yscale = .75
+	    image_speed = choose(.7,.7,.7,.45)
+	}
 	if lifetime <= 10 sprite_index = sprHeavyGrenadeBlink
 	with Slash
 	{
@@ -187,3 +193,5 @@ image_angle = direction
     mod_script_call_self("mod","defpack tools","quartz_penalty",mod_current, bwep, p)
     mod_script_call_self("mod","defpack tools","quartz_step", self, bwep);
   }
+
+#define chance(_v) return mod_script_call("mod", "defpack tools", "chance", _v);

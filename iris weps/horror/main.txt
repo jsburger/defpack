@@ -1,15 +1,26 @@
 /loadwep gamma revolver
 /loadwep gamma machinegun
 /loadwep triple gamma machinegun
+/loadwep quadruple gamma machinegun
 /loadwep gamma smg
 /loadwep assault gamma rifle
+/loadwep hyper gamma rifle
 /loadwep gamma minigun
 /loadwep double gamma minigun
+/loadwep smart gamma gun
+/loadwep gamma gunhammer
+/loadwep heavy gamma gunhammer
 /loadwep heavy gamma revolver
 /loadwep heavy gamma machinegun
 /loadwep heavy assault gamma rifle
 /loadwep gamma bullet cannon
+/loadwep heavy smart gamma gun
+/loadwep sniper gamma rifle
+/loadwep mega gamma revolver
 /loadwep rusty gamma revolver
 /loadwep golden gamma revolver
 /loadwep golden gamma machinegun
 /loadwep golden assault gamma rifle
+/loadwep gamma rogue rifle
+/loadwep smarter gamma gun
+/loadwep gamma shotgun

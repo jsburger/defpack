@@ -20,7 +20,7 @@ return 15
 #define weapon_load
 return 18
 #define weapon_swap(w)
-if is_object(w) w.prevhealth = my_health
+if instance_is(self, Player) if is_object(w){w.prevhealth = my_health}
 sound_play_pitchvol(sndHyperCrystalHurt, 1.3, .6)
 return sndSwapEnergy
 #define weapon_auto
@@ -72,7 +72,8 @@ return choose("FRAGILE APPARATUS","BE CAREFUL WITH IT")
           prevhealth: other.my_health,
           maxhealth: 2,
           health: 2,
-          is_quartz: true
+          is_quartz: true,
+          shinebonus:0
       }
       wep = w
   }

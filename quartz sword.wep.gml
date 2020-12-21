@@ -52,7 +52,7 @@ return false;
 return 0;
 
 #define weapon_swap(w)
-if is_object(w) w.prevhealth = my_health
+if instance_is(self, Player) if is_object(w){w.prevhealth = my_health}
 //sound_play_pitchvol(sndLaserCrystalHit, .5, .6) good creaky door sound
 sound_play_pitchvol(sndHyperCrystalHurt, 1.3, .6)
 return sndSwapSword;
@@ -73,7 +73,8 @@ return choose("THEIR METHODS REMAIN SECRET","BE CAREFUL WITH IT");
           prevhealth: other.my_health,
           maxhealth: 2,
           health: 2,
-          is_quartz: true
+          is_quartz: true,
+          shinebonus:0
       }
       wep = w
   }
@@ -113,6 +114,11 @@ return choose("THEIR METHODS REMAIN SECRET","BE CAREFUL WITH IT");
 		creator = other
 		motion_add(other.gunangle + random_range(-3, 3) * (other.accuracy + (1 - w.health/w.maxhealth)), 4 + w.health - w.maxhealth + (skill_get(13) * 3.5))
 		image_angle = direction
+		repeat(3 + irandom(2)) with instance_create(x + lengthdir_x(sprite_get_width(sprite_index) * (.6 + random(.4)) + speed, direction) + random_range(-12, 12), y + lengthdir_y(sprite_get_width(sprite_index) * (.6 + random(.4)) + speed, direction) + random_range(-12, 12), WepSwap){
+			image_xscale = .75
+		    image_yscale = .75
+		    image_speed = choose(.7,.7,.7,.45)
+		}
 		repeat(3) with instance_create(x+random_range(-4,4),y+random_range(-4,4),Dust){sprite_index = sprExtraFeetDust}
 	}
   motion_add(gunangle, 4)
