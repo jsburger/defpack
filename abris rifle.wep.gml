@@ -36,10 +36,10 @@ sound_play_pitchvol(sndNadeReload,1.4,.6)
 return "IN YOUR SIGHTS";
 
 #define weapon_fire
-var _strtsize = 26;
-var _endsize  = 20;
+var _strtsize = 16;
+var _endsize  = 16;
 with mod_script_call("mod","defpack tools","create_abris",self,_strtsize,_endsize,argument0){
-	accspeed = 1.5
+	accspeed = 1.9
 	auto = 1
 	damage = 6
 	maxdamage = 16

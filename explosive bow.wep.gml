@@ -198,6 +198,7 @@ with instance_create(x,y,CustomProjectile){
     charged = 0
     damage = 12
     force = 3
+    bounce = round(skill_get("compoundelbow") * 5)
     on_step = bolt_step
     on_end_step = bolt_end_step
     on_hit = bolt_hit
@@ -260,20 +261,39 @@ if hp > damage/2{
 }
 
 #define bolt_wall
-if !charged{
-    with instance_create(x+hspeed,y+vspeed,CustomObject){
-        sprite_index = other.sprite_index
-        image_angle = other.image_angle
-        if fork(){
-            wait(10)
-            if instance_exists(self) instance_destroy()
-            exit
-        }
-    }
+if bounce > 0{
+	bounce--
+	move_bounce_solid(false)
+	image_angle = direction
+	speed *= .9
+	if !charged{
+		sound_play(sndExplosionS)
+		instance_create(x, y, SmallExplosion)
+	}else{
+		sound_play(sndExplosion)
+		sound_play_pitchvol(sndBurn, random_range(1.3, 1.5), .4)
+		instance_create(x, y, Explosion)
+		repeat(8) with instance_create(x, y, Flame){
+			team = other.team
+        creator = other.creator
+        motion_set(random(360), random(3)+ 2)
+		}
+	}	
+}else{
+	if !charged{
+	    with instance_create(x+hspeed,y+vspeed,CustomObject){
+	        sprite_index = other.sprite_index
+	        image_angle = other.image_angle
+	        if fork(){
+	            wait(10)
+	            if instance_exists(self) instance_destroy()
+	            exit
+	        }
+	    }
+	}
+	sound_play_hit(sndBoltHitWall,.1)
+	instance_destroy()
 }
-sound_play_hit(sndBoltHitWall,.1)
-instance_destroy()
-
 #define bolt_destroy
 if charged{
     instance_create(x+hspeed,y+vspeed,Explosion)

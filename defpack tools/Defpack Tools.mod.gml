@@ -2091,8 +2091,9 @@ with instance_create(0, 0, CustomObject){
     maxdamage = 8
     wep = weapon
     auto = 0
-		margin = 12
-		lockon = false;
+	margin = 12
+	lockon = false;
+	hover  = 3;
 
     scroll = random(16)
     scrollang = random(360)
@@ -2178,8 +2179,10 @@ if instance_exists(creator){
     scroll += timescale
     offset += offspeed * timescale
 
+	if hover > 0{hover -= current_time_scale}else{hover = 0}
+
     if isplayer{
-        var _a = 1 - acc/accmin;
+        var _a = (hover > 0 ? 0 : 1 - acc/accmin);
         view_pan_factor[index] = 4 - (_a * 1.3)
         defcharge.charge = _a
 				if _a > 0.99 && _a < 1 && lq_get(defcharge, "blinked") = 0{
@@ -2197,17 +2200,17 @@ if instance_exists(creator){
         if hand creator.breload = max(reload, creator.breload)
         else creator.reload = max(reload, creator.reload)
 
-				if acc > 0{
+				if acc > 0 && hover = 0{
 					acc /= power(accspeed, timescale)
-				}else{acc = 0}
+				}if acc <= 0{acc = 0}
         if !button_check(index, btn) or (auto and acc <= 0.01){
             instance_destroy()
         }
     }
     else{
-				if acc > 0{
+				if acc > 0 && hover = 0{
 					acc /= power(accspeed, timescale)
-				}else{acc = 0.01}
+				} if acc <= 0{acc = 0.01}
         if acc <= 0{
             instance_destroy()
         }
@@ -2226,7 +2229,7 @@ with instance_create(x, y, CustomProjectile){
     sprite_index = sprGammaBlast
     image_alpha = 0
     team = other.creator.team
-    var size = 2 * (other.acc+other.accmin)/(sprite_width)
+    var size = 2 * (other.hover > 0 ? other.accbase+other.accmin : other.acc+other.accmin)/(sprite_width)
     damage = other.defcharge.charge >= other.defcharge.maxcharge *.99 ? other.maxdamage : other.damage
     image_xscale = size
     image_yscale = size
@@ -2262,7 +2265,7 @@ if instance_exists(creator){
 			var   _e = instance_nearest_matching_los_ne(mouse_x[index], mouse_y[index], hitme, "team", creator.team),
 			    _dis = _e > -4 ? point_distance(creator.x, creator.y, _e.x, _e.y) : 0,
 					_dir = _e > -4 ? point_direction(creator.x, creator.y, _e.x, _e.y) : 0
-			if _e > -4 && point_distance(mouse_x[index], mouse_y[index], _e.x, _e.y) <= (margin + ((lockon * 24 / creator.accuracy) * !lq_get(defcharge, "blinked") + 8 * !lq_get(defcharge, "blinked"))){
+			if _e > -4 && point_distance(mouse_x[index], mouse_y[index], _e.x, _e.y) <= (margin + ((lockon * 28 / creator.accuracy) * !lq_get(defcharge, "blinked") + 8 * !lq_get(defcharge, "blinked"))){
 				_x = c.x + lengthdir_x(_dis + _e.hspeed, _dir);
 				_y = c.y + lengthdir_y(_dis + _e.vspeed, _dir);
 				lockon = true
@@ -2274,7 +2277,7 @@ if instance_exists(creator){
     y = w[1]
 
     var kick = hand ? creator.bwkick : creator.wkick, yoff = -4 * hand;
-    var r = acc + accmin, sides = 16, a = 1 - acc/accbase, _c = global.AbrisCustomColor = true && instance_is(creator, Player) ? player_get_color(creator.index) : lasercolour
+    var r = (hover > 0 ? accbase+accmin : acc+accmin), sides = 16, a = 1 - acc/accbase, _c = global.AbrisCustomColor = true && instance_is(creator, Player) ? player_get_color(creator.index) : lasercolour
 
 		var _c2 = defcharge.charge > 0.99 && defcharge.charge < 1 && lq_get(defcharge, "blinked") = 0 ? c_white : _c
 		if _c2 = c_white creator.gunshine = 1
@@ -3564,7 +3567,7 @@ with create_sword(x, y){
     sprite_index = spr.Knife
     spr_dead     = spr.KnifeStick
     maxwhoosh = 3
-    bounce = 1
+    bounce = 1 + round(skill_get("compoundelbow") * 5)
     anglespeed = 120
 
     defbloom.sprite = sprite_index
@@ -3598,7 +3601,7 @@ with instance_create(x, y, melee ? CustomSlash : CustomProjectile){
     length = 6
     whooshtime = 0
     maxwhoosh = 4
-    bounce = 1
+    bounce = 1 + round(skill_get("compoundelbow") * 5)
 
     if melee{
         on_anim = nothing
@@ -3634,7 +3637,7 @@ if skill_get(mut_bolt_marrow){
     }
 }
 whooshtime = (whooshtime + current_time_scale) mod maxwhoosh
-if whooshtime < current_time_scale audio_play_ext(sndMeleeFlip, x, y, 2 - length/6 + random_range(-.1, .1), length/6, 0);
+if whooshtime < current_time_scale audio_play_ext(sndMeleeFlip, x, y, 2 - length/6 + random_range(-.1, .1) + (skill_get("compoundelbow") > 0 ? .3 : 0), length/6, 0);
 
 #define sword_end_step
 var e = 0, w = 1.5;
@@ -3668,8 +3671,8 @@ if bounce > 0 {
 	sound_play_hit_ext(sndDiscBounce, 2 * _p, .8)
 	sound_play_hit_ext(sndChickenSword, 1.5 * _p, .5)
 	move_bounce_solid(false)
-	speed *= .8;
-	length *= 1.2;
+	speed *= .8 + (skill_get("compoundelbow") > 0 ? .08 : 0);
+	length *= 1.2 - (skill_get("compoundelbow") > 0 ? .05 : 0);
 	direction += random_range(-7,7)
 	with instance_create(x, y, MeleeHitWall) {
 		image_angle = other.direction - 180
@@ -3727,7 +3730,7 @@ if instance_exists(q) and q != other and q.mask_index != mskNone and distance_to
         image_yscale = -2
         depth = -3
         sleep(30)
-        view_shake_at(x, y, 7)
+        view_shake_max_at(x, y, 7)
         on_step = slasheffect_step
     }
 }

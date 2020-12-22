@@ -34,6 +34,7 @@ with instance_create(x,y,CustomProjectile){
     motion_set(other.gunangle + random_range(-2,2) * other.accuracy, 20)
     projectile_init(other.team, other)
     damage = 35
+    bounce = round(skill_get("compoundelbow") * 5)
     sprite_index = global.sprSuperSplinter
     mask_index = mskHeavyBolt
     image_angle = direction
@@ -56,30 +57,56 @@ repeat(12){
 }
 
 #define bolt_wall
-repeat(8) with instance_create(x+random_range(-5,5),y+random_range(-5,5),Dust){
+if bounce > 0{
+    bounce--
+    speed *= .95
+    repeat(2)with instance_create(x,y,Shell){
+            image_index = choose(3,4);
+            image_speed = 0;
+            sprite_index = sprTutorialSplinter
+            motion_add(random(360),random_range(3,6))
+    }
+    move_bounce_solid(false)
+    image_angle = direction
+    repeat(4) with instance_create(x+random_range(-5,5),y+random_range(-5,5),Dust){
     motion_add(other.direction-180+random_range(-20,20),random_range(1,7))
+    }
+    repeat(3)with instance_create(x,y,Splinter){
+        team = other.team
+        creator = other.creator
+        motion_set(other.direction + 180 + random_range(-45,45), random_range(14,18))
+        image_angle = direction
+    }
+    sound_play_pitch(sndBoltHitWall,.7)
+    view_shake_at(x, y, 6)
+    sound_play_pitchvol(sndExplosionS,random_range(.7,.9), .3)
 }
-
-wall = 1
-with other {
-    instance_create(x,y,FloorExplo)
+else{
+    repeat(8) with instance_create(x+random_range(-5,5),y+random_range(-5,5),Dust){
+    motion_add(other.direction-180+random_range(-20,20),random_range(1,7))
+    }
+    
+    wall = 1
+    with other {
+        instance_create(x,y,FloorExplo)
+        instance_destroy()
+    }
+    repeat(3){
+        with instance_create(x,y,Shell){
+            image_index = choose(3,4);
+            image_speed = 0;
+            sprite_index = sprTutorialSplinter
+            motion_add(random(360),random_range(3,6))
+        }
+    }
+    view_shake_at(x, y, 48);
+    if fork(){
+      sleep(40)
+    }
+    sound_play_pitch(sndBoltHitWall,.7)
+    sound_play_pitch(sndExplosionS,random_range(.4,.6))
     instance_destroy()
 }
-repeat(3){
-    with instance_create(x,y,Shell){
-        image_index = choose(3,4);
-        image_speed = 0;
-        sprite_index = sprTutorialSplinter
-        motion_add(random(360),random_range(3,6))
-    }
-}
-view_shake_at(x, y, 48);
-if fork(){
-  sleep(40)
-}
-sound_play_pitch(sndBoltHitWall,.7)
-sound_play_pitch(sndExplosionS,random_range(.4,.6))
-instance_destroy()
 
 
 #define bolt_hit

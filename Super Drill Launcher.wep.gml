@@ -48,6 +48,7 @@ return "WALL DIVERS"
         image_speed = .4
         maxspeed = 14
         damage = 2
+        bounce = round(skill_get("compoundelbow") * 5)
         sprite_index = global.sprDrill
         lasthit = -4
         hits = 0
@@ -114,7 +115,16 @@ return "WALL DIVERS"
     }
 
   #define drill_wall
-    if walls > 0
+    if bounce > 0{
+        bounce--;
+        view_shake_max_at(x, y, 2)
+        repeat(3)instance_create(x, y, Dust)
+        move_bounce_solid(false)
+        with other{
+            instance_create(x, y, FloorExplo)
+            instance_destroy()
+        }
+    }else if walls > 0
     {
       sound_play_drill(.4)
        with other{instance_create(x,y,FloorExplo);instance_destroy()}

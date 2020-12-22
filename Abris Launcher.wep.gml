@@ -17,7 +17,7 @@ return 1;
 return 22;
 
 #define weapon_cost
-return 3;
+return 2;
 
 #define weapon_chrg
 return true;
@@ -36,10 +36,10 @@ sound_play_pitchvol(sndNadeReload,1.4,.6)
 return "INCOMING";
 
 #define weapon_fire
-var _strtsize = 32;
-var _endsize  = 26;
+var _strtsize = 18;
+var _endsize  = 24;
 with mod_script_call("mod","defpack tools","create_abris",self,_strtsize,_endsize,argument0){
-	accspeed = 1.3
+	accspeed = 1.75
 	damage = 10
 	maxdamage = 26
 	name = mod_current

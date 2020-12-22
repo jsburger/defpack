@@ -36,10 +36,10 @@ sound_play_pitchvol(sndNadeReload,1.4,.6)
 return choose("AIM DOWN SIGHTS", "A SPECIALIZED WEAPON");
 
 #define weapon_fire
-var _strtsize = 26;
-var _endsize  = 20;
+var _strtsize = 16;
+var _endsize  = 16;
 with mod_script_call("mod","defpack tools","create_abris",self,_strtsize,_endsize,argument0){
-	accspeed = 1.3
+	accspeed = 1.75
 	damage = 6
 	maxdamage = 16
 	name = mod_current

@@ -14,7 +14,7 @@ return 4;
 return true;
 
 #define weapon_load
-return 8;
+return 7;
 
 #define weapon_cost
 return 1;
@@ -39,7 +39,7 @@ return "LOCKED ON";
 var _strtsize = 6;
 var _endsize  = 14;
 with mod_script_call("mod","defpack tools","create_abris",self,_strtsize,_endsize,argument0){
-	accspeed = 4
+	accspeed = 4.5
 	auto = 1
 	damage = 6
 	maxdamage = 20

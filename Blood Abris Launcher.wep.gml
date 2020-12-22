@@ -51,7 +51,7 @@ var _strtsize = 20;
 var _endsize  = 40;
 sound_play_pitch(sndSniperTarget,1.5)
 with mod_script_call_self("mod","defpack tools","create_abris",self,_strtsize,_endsize,argument0){
-	accspeed = 1.3
+	accspeed = 1.75
 	cost = 2
 	damage = 8
     maxdamage = 16

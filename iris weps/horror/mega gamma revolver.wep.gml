@@ -75,6 +75,7 @@ repeat(2)with instance_create(x,y,CustomProjectile)
     on_destroy = mega_destroy
     on_wall    = mega_wall
     on_anim    = mega_anim
+    on_step    = mega_step
     on_hit     = mega_hit
     repeat(4)with instance_create(x+lengthdir_x(5,direction),y+lengthdir_y(5,direction),Smoke){
         gravity = -.1
@@ -82,6 +83,14 @@ repeat(2)with instance_create(x,y,CustomProjectile)
         image_yscale/=2
     }
 }
+
+#define mega_step
+with instances_matching_ne(projectile, "team", team){
+	if distance_to_object(other) <= 0{
+		instance_destroy()	
+	}
+}
+
 #define mega_hit
 if current_frame_active{
     x -= lengthdir_x(speed / 5, direction) * clamp(other.size, 2, 4)
