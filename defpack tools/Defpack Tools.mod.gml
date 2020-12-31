@@ -686,7 +686,7 @@ var num = instance_number(obj),
     n = 0,
     found = -4;
 if instance_exists(obj){
-    while ++n <= num && variable_instance_get(man,varname) = value || (instance_is(man,prop) && !instance_is(man,Generator)) && collision_line(_x,_y,man.x,man.y,Wall,0,0) > 0{
+    while ++n <= num && variable_instance_get(man,varname) = value || (instance_is(man,prop) && !instance_is(man,Generator)) && collision_line(_x,_y,man.x,man.y,Wall,0,0) > -4{
         man.x += 10000
         array_push(mans,man)
         man = instance_nearest(_x,_y,obj)
@@ -1744,9 +1744,11 @@ if other != lasthit{
 		damage = 0
 		candeflect = 0
 		image_speed = .85
-		force = 10
-		superfriction = 3;
+		force = 3
+		superfriction = 1;
 		shake = 2
+		dontwait = false
+		canwallhit = false
 		if GameCont.area = 101{synstep = 0}else{synstep = 1} //oasis synergy
 		hitid = [sprite_index,"Small Sonic Explosion"]
 		on_step       = sonic_step
@@ -1772,6 +1774,8 @@ if other != lasthit{
 			image_speed = .7
 			force = 18
 			shake = 10
+			dontwait = false
+			canwallhit = true
 			if GameCont.area = 101{synstep = 0}else{synstep = 1} //oasis synergy
 			hitid = [sprite_index,"Sonic Explosion"]
 			on_step       = sonic_step
@@ -1823,7 +1827,8 @@ if other != lasthit{
 
 #define sonic_hit
 	if projectile_canhit_melee(other){
-
+		var _cwh = canwallhit
+		var _dwt = dontwait
 		if object_get_name(other.object_index) = "MeleeFake"{projectile_hit(other, 1, force, direction)}
 		if object_get_name(other.object_index) = "JungleAssassinHide"{projectile_hit(other, 1, force, direction)}
 		// incredibly lazy approach of me not wanting to copy paste the event into the sonic hammer file
@@ -1849,9 +1854,12 @@ if other != lasthit{
 			or_maxspeed  = "maxspeed" in other ? other.maxspeed : -1
 			mask_index   = other.mask_index;
 			sprite_index = mskNothing;
+			canwallhit   = _cwh
+			timer = 4
+			dontwait = _dwt
 			with _explo
 			{
-				if "force"          in self other.superforce 		 = force else {other.superforce = 18};
+				if "force"          in self other.superforce 	 = force else {other.superforce = 18};
 				if "superfriction"  in self other.superfriction  = superfriction else other.superfriction = 1;
 				if "superdirection" in self other.superdirection = superdirection;
 			}
@@ -1863,6 +1871,7 @@ if other != lasthit{
 
 #define superforce_step
 	//apply "super force" to enemies
+	if timer > 0 && dontwait = false{timer -= current_time_scale; exit}
 	if !instance_exists(creator) ||instance_is(creator, Nothing) ||instance_is(creator, TechnoMancer) ||instance_is(creator, Turret) ||instance_is(creator, MaggotSpawn) ||instance_is(creator, Nothing) ||instance_is(creator, LilHunterFly) || instance_is(creator, RavenFly){instance_delete(self); exit}
 	with creator
 	{
@@ -1889,7 +1898,7 @@ if other != lasthit{
 		motion_add(other.creator.direction, random_range(1, 3) + 1)
 		image_angle = direction
 	}
-	if place_meeting(x + hspeed, y + vspeed, Wall)
+	if place_meeting(x + hspeed, y + vspeed, Wall) && canwallhit = true
 	{
 	  with instance_create(x, y, MeleeHitWall){image_angle = other.direction}	move_bounce_solid(false);
 		sound_play_pitchvol(sndImpWristKill, 1.2, .8)
@@ -2094,6 +2103,7 @@ with instance_create(0, 0, CustomObject){
 	margin = 12
 	lockon = false;
 	hover  = 3;
+	view_factor = 1;
 
     scroll = random(16)
     scrollang = random(360)
@@ -2183,7 +2193,7 @@ if instance_exists(creator){
 
     if isplayer{
         var _a = (hover > 0 ? 0 : 1 - acc/accmin);
-        view_pan_factor[index] = 4 - (_a * 1.3)
+        view_pan_factor[index] = 4 - (_a * 1.3 * view_factor)
         defcharge.charge = _a
 				if _a > 0.99 && _a < 1 && lq_get(defcharge, "blinked") = 0{
 					weapon_charged(creator, sprite_get_width(weapon_get_sprt(hand ? creator.wep : creator.bwep)) / 2)
@@ -2262,10 +2272,10 @@ if instance_exists(creator){
 
 		//experimental autoaim
 		if lockon >= 0{
-			var   _e = instance_nearest_matching_los_ne(mouse_x[index], mouse_y[index], hitme, "team", creator.team),
+			var   _e = instance_nearest_matching_los_ne(creator.x, creator.y, hitme, "team", creator.team),
 			    _dis = _e > -4 ? point_distance(creator.x, creator.y, _e.x, _e.y) : 0,
 					_dir = _e > -4 ? point_direction(creator.x, creator.y, _e.x, _e.y) : 0
-			if _e > -4 && point_distance(mouse_x[index], mouse_y[index], _e.x, _e.y) <= (margin + ((lockon * 28 / creator.accuracy) * !lq_get(defcharge, "blinked") + 8 * !lq_get(defcharge, "blinked"))){
+			if _e > -4 && collision_line(creator.x, creator.y, _e.x ,_e.y, Wall, 0, 0) = noone && point_distance(mouse_x[index], mouse_y[index], _e.x, _e.y) <= (margin + ((lockon * 28 / creator.accuracy) * !lq_get(defcharge, "blinked") + 8 * !lq_get(defcharge, "blinked"))){
 				_x = c.x + lengthdir_x(_dis + _e.hspeed, _dir);
 				_y = c.y + lengthdir_y(_dis + _e.vspeed, _dir);
 				lockon = true

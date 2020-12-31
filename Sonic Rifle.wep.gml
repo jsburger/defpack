@@ -31,14 +31,14 @@ return "SHATTER THEIR EARS";
 
 #define weapon_fire
 	var _e = crown_current = crwn_death ? 1 : 0;
-	repeat(2 + _e) with instance_create(x+lengthdir_x(3,gunangle),y+lengthdir_y(3,gunangle),CustomProjectile){
+	repeat(3 + _e) with instance_create(x+lengthdir_x(3,gunangle),y+lengthdir_y(3,gunangle),CustomProjectile){
 		sprite_index = global.sprSonicNade
 		team = other.team
 		creator = other
 		friction = .5 * random_range(.9, 1)
-		damage = 4
+		damage = 5
 		lifetime = 15 + irandom(2)
-		force = 18
+		force = 8
 		bounce = 3
 		typ = 1
 		anglefac = choose(1,-1)
@@ -46,7 +46,7 @@ return "SHATTER THEIR EARS";
 		if other.object_index = Player{
 			var _x = mouse_x[other.index];
 			var _y = mouse_y[other.index];
-			motion_add(point_direction(x,y,_x,_y) + random_range(-8, 8) * creator.accuracy,max(sqrt(point_distance(_x,_y,x,y)),irandom_range(9, 11)))
+			motion_add(point_direction(x,y,_x,_y) + random_range(-4, 4) * creator.accuracy,max(sqrt(point_distance(_x,_y,x,y)),irandom_range(9, 11)))
 		}else{
 			motion_add(other.gunangle,10)
 		}
@@ -54,6 +54,8 @@ return "SHATTER THEIR EARS";
 		on_step    = sonic_launcher_step
 		on_wall    = sonic_wall
 		on_destroy = sonic_launcher_destroy
+		wait(1)
+		if !instance_exists(self)exit
 	}
 	sound_play_pitch(sndGrenadeRifle,random_range(3.2, 3.4))
 	sound_play_pitch(sndNothingFire,.7)

@@ -48,11 +48,15 @@ sound_play_pitchvol(sndBouncerSmg, .3 * _p, 1);
 
 with instance_create(x, y, CustomSlash)
 {
+    
+  dontwait = true
   image_speed = .5;
   creator = other;
   team    = other.team;
   damage = 0;
   force = 28;
+  canwallhit = true
+  dontwait = true
   motion_add(creator.gunangle + random_range(-4, 4) * creator.accuracy, 3 + skill_get(mut_long_arms) * 4);
   superforce     = force;
   superdirection = direction;

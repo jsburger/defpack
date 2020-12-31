@@ -34,7 +34,7 @@ return -4;
 return 0;
 
 #define weapon_area
-return 14;
+return -1;
 
 #define weapon_text
 return "TOO BIG FOR THE HOLSTER"

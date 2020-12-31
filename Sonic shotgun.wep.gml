@@ -36,9 +36,9 @@ repeat(5 + _e) with instance_create(x+lengthdir_x(3,gunangle),y+lengthdir_y(3,gu
 	team = other.team
 	creator = other
 	friction = .5 * random_range(.6, 1.2)
-	damage = 4
+	damage = 5	
 	lifetime = 4 + irandom(10)
-	force = 18
+	force = 8
 	bounce = 3
 	typ = 1
 	anglefac = choose(1,-1)
