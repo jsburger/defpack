@@ -45,7 +45,6 @@ return false;
 return global.sprBeamer;
 
 #define weapon_text
-if !irandom(50) return "IT'S NOT A SLUR"
 return "MASSIVE POWER";
 
 #define weapon_fire

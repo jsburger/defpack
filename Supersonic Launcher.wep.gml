@@ -47,7 +47,7 @@ with instance_create(x,y,CustomProjectile){
 	mask_index = sprNuke
 	index = other.index
 	team  = other.team
-	damage = 0
+	damage = 20
 	dir = 0
 	image_angle = other.gunangle
 	Ring1Amount = 6

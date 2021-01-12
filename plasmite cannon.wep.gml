@@ -76,19 +76,6 @@ with instance_create(x,y,CustomSlash)
 }
 
 #define atom_hit
-	if projectile_canhit_melee(other) = true{
-		var _k = other.my_health > (damage + ammo) ? false : true;
-		projectile_hit(other, damage + ammo, speed, direction);
-		with create_electron() index = other.eindex++;
-		ammo++;
-		sleep(15);
-		view_shake_at(x, y, 8);
-    	sound_play_pitchvol(sndPlasmaHit, random_range(2, 4), .3)
-		with instance_create(x+random_range(-12,12),y+random_range(-12,12),GunGun){image_index=2-skill_get(17)}
-		if !_k{
-			instance_destroy()
-		}
-	}
 	
 #define atom_step
 	angle += (3 + speed * 3) * current_time_scale;
@@ -98,6 +85,8 @@ with instance_create(x,y,CustomSlash)
 	image_yscale = _scl
 	
 	var _me = noone;
+	x += hspeed * 2
+	y += vspeed * 2
 	with instances_matching_ne(hitme, "team", other.team){
 		if !instance_is(self, prop) && collision_line(x, y, other.x, other.y, Wall, 0, 0) < 0
 		{
@@ -115,13 +104,33 @@ with instance_create(x,y,CustomSlash)
 			speed = _s;
 		}
 	}
-
+	
+	with instances_matching_ne(hitme, "team", team){
+		if distance_to_object(other) <= ((3 + other.ammo * 2 + other.speed * 1.5) * .5) && sprite_index != spr_hurt{
+			var _k = my_health > (other.damage + other.ammo) ? false : true;
+			projectile_hit(self, other.damage + other.ammo, other.speed, other.direction);
+			with other with create_electron() index = other.eindex++;
+			other.ammo++;
+			sleep(15);
+			view_shake_at(other.x, other.y, 8);
+	    	sound_play_pitchvol(skill_get(mut_laser_brain) > 0 ? sndPlasmaMinigunUpg : sndPlasmaMinigun, other.ammo / 10, 1)
+			with instance_create(other.x+random_range(-12,12),other.y+random_range(-12,12),GunGun){image_index=2-skill_get(17)}
+			if !_k with other{
+				instance_destroy()
+				exit
+			}
+		}
+	}
+	x -= hspeed * 2
+	y -= vspeed * 2
+	
 	timer -= current_time_scale;
 	if speed <= friction || timer <= 0{instance_destroy()}
 
 #define atom_wall
 	move_bounce_solid(false);
 	sound_play_pitchvol(sndPlasmaHit, random_range(2, 4), .3);
+	
 #define atom_square
     ammo += 5*other.size
     repeat(5*other.size){
@@ -144,9 +153,9 @@ with instance_create(x,y,CustomSlash)
         exit
     }
 
-
-
 #define atom_destroy
+	x += hspeed * 2
+	y += vspeed * 2
 	sleep(70)
 	view_shake_at(x,y,16)
 	sound_play_pitch(sndPlasmaBigExplodeUpg,random_range(1.2,1.4))

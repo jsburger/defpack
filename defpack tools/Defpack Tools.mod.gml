@@ -2911,6 +2911,71 @@ with instance_create(x, y, SmallExplosion)
 draw_self()
 draw_sprite_ext(spr.RockletFlame, -1, x, y, 1, 1, image_angle, c_white, image_alpha)
 
+#define determine_gore(_id)
+	switch (_id.object_index){
+		//FEATHER BLEEDERS
+		case Raven : return Feather;
+		//CURSED BLEEDERS
+		case InvSpider  	 :
+		case InvCrystal      :
+		case InvLaserCrystal : return Curse;
+		//CRYSTAL BLEEDERS
+		case LaserCrystal :
+		case HyperCrystal :
+		case CrystalProp  :
+		case Spider		:
+		case RhinoFreak	: return Hammerhead;
+		//WHITE BLEEDERS
+		case YVStatue :
+		case BigSkull :
+		case SnowMan  : return MeleeHitWall;
+		//ROBOT BLEEDERS
+		case SnowBot       :
+		case SnowTank      :
+		case GoldSnowTank  :
+		case Barrel        :
+		case OasisBarrel   :
+		case ToxicBarrel   :
+		case Wolf          :
+		case StreetLight   :
+		case SodaMachine   :
+		case Hydrant	   :
+		case Turret	       :
+		case TechnoMancer  :
+		case Terminal      :
+		case MutantTube    :
+		case DogMissile    :
+		case Sniper        :
+		case Car           :
+		case Pipe          :
+		case Anchor 	   :
+		case WaterMine	   :
+		case VenuzTV       :
+		case CarVenus	   :
+		case CarVenus2	   :
+		case CarVenusFixed :
+		case Van		   : return BulletHit;
+		//LIGHTNING BLEEDERS
+		case LightningCrystal : return LightningSpawn;
+		// BIG BLEEDERS
+		case JungleFly  :
+		case BigMaggot  :
+		case BanditBoss : return BloodGamble;
+		//BIG GREEN BLEEDERS
+		case Scorpion 	:
+		case GoldScorpion :
+		case GoldScorpion : return AcidStreak;
+		// ULTRA BOYS
+		case EnemyHorror      :
+		case CrownGuardianOld :
+		case CrownGuardian    :
+		case Guardian         :
+		case GhostGuardian    :
+		case ExploGuardian    :
+		case DogGuardian      : return ScorpionBulletHit;
+		default : return AllyDamage;
+	}
+
 #define laserflak_hit
 if projectile_canhit_melee(other) == true{
 	var k = other.my_health;
