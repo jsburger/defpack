@@ -17,6 +17,11 @@
 /loadwep shard
 /loadwep hex needle
 
+///FISTS///
+
+/loadwep vanguard
+/loadwep scrapper
+
 ///GOLD///
 
 /loadwep lucky machinegun
@@ -49,3 +54,4 @@
 ///NON-WEAPONS///
 /load mutation
 /load crown
+/loadmod defpack tools/defpunching
