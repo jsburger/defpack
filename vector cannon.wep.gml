@@ -144,4 +144,4 @@ if current_frame_active{
 #define beam_draw
 draw_sprite_ext(sprite_index, image_index, xstart, ystart, image_xscale, image_yscale, image_angle, image_blend, 1.0);
 	if x != xstart draw_sprite_ext(spr_tail, 0, xstart, ystart, 1, image_yscale, image_angle, image_blend, 1.0);
-	if x != xstart draw_sprite_ext(spr_head, 0, x, y, 2, image_yscale*2, image_angle-45, image_blend, 1.0);
+	if x != xstart draw_sprite_ext(spr_head, 0, x, y, image_yscale*2, image_yscale*2, image_angle-45, image_blend, 1.0);

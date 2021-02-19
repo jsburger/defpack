@@ -4218,6 +4218,7 @@ with instance_create(_x, _y, CustomProjectile) {
 	trail_length = 12
 	homing_range = 120
 	homing_scope = 45
+	head_scale = 1
 
 	defbloom = {
 		sprite : spr_head,
@@ -4295,7 +4296,7 @@ with instance_create(x, y, PlasmaImpact) {
 #define vector_head_draw
 var _dis = point_distance(x, y, trail_x, trail_y), _dir = point_direction(x, y, trail_x, trail_y);
 draw_sprite_ext(spr_trail, 0, x, y, _dis/2, image_yscale, _dir, image_blend, image_alpha)
-draw_sprite_ext(spr_head, 0, x, y, image_xscale, image_yscale, image_angle - 45, image_blend, image_alpha)
+draw_sprite_ext(spr_head, 0, x, y, image_xscale, image_xscale, image_angle - 45, image_blend, image_alpha)
 
 
 #define create_vector_trail(_x, _y)
