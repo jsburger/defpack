@@ -39,6 +39,10 @@ return 21;
 #define weapon_text
 return "KEEP YOUR DISTANCE";
 
+#define nts_weapon_examine
+return{
+    "d": "A close-ranged powerhouse of both damage and protection. #It used to be the weapon of choice for the Palace's last line of defense. ",
+}
 #define weapon_fire
 var _p = random_range(.8,1.2);
 sound_play_pitchvol(sndEliteShielderShield,1.3*_p,.6)
@@ -62,7 +66,7 @@ repeat(3)
 			creator  = other
 			typ 	   = 1
 			force    = 5
-			damage   = 15
+			damage   = 12
 			lifetime = 3;
 			friction = 2+1.1*(i-1)
 			sprite_index = global.sprShieldBullet

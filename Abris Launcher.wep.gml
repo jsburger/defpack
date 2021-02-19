@@ -32,6 +32,11 @@ return 6;
 weapon_post(-1,-3,0)
 sound_play_pitchvol(sndNadeReload,1.4,.6)
 
+#define nts_weapon_examine
+return{
+    "d": "A Bigger Abris Pistol with more explosions and spread. ",
+}
+
 #define weapon_text
 return "INCOMING";
 

@@ -66,6 +66,11 @@ return 14;
 #define weapon_text
 return choose("THEIR METHODS REMAIN SECRET","BE CAREFUL WITH IT");
 
+#define nts_weapon_examine
+return{
+    "d": "A shiny and frail sword. #It's surprisingly light. ",
+}
+
 #define weapon_fire(w)
   if !is_object(w){
       w = {

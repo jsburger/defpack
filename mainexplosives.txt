@@ -49,6 +49,7 @@
 //OTHER EXPLOSIVE
 
 /loadwep chainsaw
+/loadwep push piston
 /loadwep claymore
 /loadwep kaboomerang
 /loadwep heavy nuke launcher

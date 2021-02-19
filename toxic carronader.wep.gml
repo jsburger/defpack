@@ -4,6 +4,11 @@ global.sprToxicCarronader = sprite_add_weapon("sprites/weapons/sprToxicCarronade
 return global.sprToxicCarronader
 #define weapon_text
 return "shotfun"
+#define nts_weapon_examine
+return{
+	"frog": "Ol' reliable. ",
+    "d": "Releases a large blast of noxious gas. #Deals extra damage up close. ",
+}
 #define weapon_name
 return "TOXIC CARRONADER"
 #define weapon_type

@@ -62,6 +62,7 @@
   sound_play_pitchvol(sndBlackSword, 2 * _p, .8);
   sound_play_pitchvol(sndAssassinAttack, 1.7 * _p, 1.5);
   sound_play_pitchvol(sndCursedPickup,   1.5 * _p, 1);
+  sound_play_pitchvol(sndCrystalShield,  1.6 * _p, 1);
 
 
   weapon_post(-_offset, _offset * 3 / 5, 0);

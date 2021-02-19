@@ -24,6 +24,11 @@ return 50;
 #define weapon_text
 return "OBLITERATE"
 
+#define nts_weapon_examine
+return{
+    "d": "A comically large fist to pound your enemies into a fine paste with. ",
+}
+
 #define weapon_melee
 return 0;
 

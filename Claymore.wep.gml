@@ -46,7 +46,11 @@ return 1
 //im going to scream until the sky itself parts and lets loose a cascade of justice upon Karmelyth
 //those who create flavor texts such as this deserve to be smitten by only the highest powers
 return "ABSOLUTELY LUNATIC";
-
+#define nts_weapon_examine
+return{
+	"jsburg":"get nae naed on nerd :*)",
+    "d": "A weaponized accident for the most daredevil of mutantkind. ",
+}
 #define weapon_fire
 var _p = random_range(.8, 1.2);
 sound_play_pitch(sndHammer, 1.2 * _p)

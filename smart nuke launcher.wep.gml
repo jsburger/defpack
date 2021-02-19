@@ -42,7 +42,7 @@ with instance_create(x,y,CustomProjectile){
 	team = other.team
 	creator = other
 	maxspeed = speed
-	damage = 60
+	damage = 40
 	ang = random(359)
 	sprite_index = global.sprSmartNuke
 	mask_index   = global.mskSmartNuke

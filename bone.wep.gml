@@ -51,7 +51,10 @@ with instance_create(x+lengthdir_x(12+(20*skill_get(13)),gunangle),y+lengthdir_y
 return global.sprBone
 #define weapon_text
 return "GHOULISH"
-
+#define nts_weapon_examine
+return{
+    "d": "A point-blank melee weapon. #Missing with this will hurt the wielder. ",
+}
 #define bone_wall
 speed = 0
 

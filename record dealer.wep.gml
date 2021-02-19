@@ -7,6 +7,15 @@ global.sprStickyVinyl     = sprite_add("sprites/projectiles/sprStickyVinyl.png",
 global.sprBouncerVinyl    = sprite_add("sprites/projectiles/sprBouncerVinyl.png",2,7,7)
 global.sprMegaVinyl       = sprite_add("sprites/projectiles/sprMegaVinyl.png",2,12,12)
 global.sprNTVinyl         = sprite_add("sprites/projectiles/sprNTVinyl.png",2,12,12)
+global.sprToxicVinyl      = sprite_add("sprites/projectiles/sprToxicVinyl.png",2,7,7)
+global.sprLightningVinyl  = sprite_add("sprites/projectiles/sprLightningVinyl.png",2,7,7)
+global.sprFireVinyl       = sprite_add("sprites/projectiles/sprFireVinyl.png",2,7,7)
+global.sprSmartVinyl      = sprite_add("sprites/projectiles/sprSmartVinyl.png",2,7,7)
+global.sprBloodVinyl      = sprite_add("sprites/projectiles/sprBloodVinyl.png",2,7,7)
+global.sprSeekerVinyl     = sprite_add("sprites/projectiles/sprSeekerVinyl.png",2,7,7)
+global.sprHyperVinyl      = global.sprBouncerVinyl;
+global.sprHyperVinylGlow  = sprite_add("sprites/projectiles/sprHyperVinylGlow.png",2,7,7)
+
 #define weapon_name
 return "RECORD DEALER";
 
@@ -44,7 +53,15 @@ return global.sprRecordDealerHUD;
 return "WRITE A LOVE SONG";
 
 #define weapon_fire
-var _disc = choose("normal","golden","sticky","bouncer","mega");
+var _da = ["normal","golden","sticky","bouncer","mega"];
+if mod_exists("mod", "Disc Tools"){
+    array_push(_da, "toxic");
+    array_push(_da, "fire");
+    array_push(_da, "lightning");
+    array_push(_da, "seeker");
+}
+
+var _disc = _da[irandom(array_length_1d(_da) - 1)];
 repeat(4)
 {
   sound_play_slowdown(sndSuperDiscGun,.8)
@@ -99,6 +116,103 @@ switch disc{
             speed = 4
             maxspeed = speed
             return id
+        }
+    case "toxic":
+        with (mod_script_call("mod", "Disc Tools", "disc_fire", 2, 5, 3)) {
+            sprite_index = global.sprToxicVinyl
+            hitid = [sprite_index, "TOXIC VINYL"]
+            timer = 0
+        	if fork()do {
+        		if ++timer > 10 && irandom(1) instance_create(x, y, ToxicGas);
+        		wait 1;
+        	} while (instance_exists(self));
+        if !instance_exists(self) exit
+        return id
+        }
+    case "lightning":
+        with (mod_script_call("mod", "Disc Tools", "disc_fire", 2, 5, 5)) {
+            sprite_index = global.sprLightningVinyl
+            hitid = [sprite_index, "LIGHTNING VINYL"]
+            var t = 0;
+            timer = 0;
+            if fork()do {
+            	if ++timer >= 10 && (random(4) < 1) with (instance_create(x, y, Lightning)) {
+            		image_angle = random(360);
+            		team = other.team;
+            		hitid = other.hitid;
+            		ammo = round(lerp(3, min(3 + t / 5, 7), power(random(1), 2)));
+            		alarm0 = 1;
+            		visible = false;
+            		with (instance_create(x, y, LightningSpawn)) image_angle = other.image_angle;
+            	}
+            	t += 1;
+            	wait 1;
+            } while (instance_exists(self));
+            if !instance_exists(self) exit
+        return id
+        }
+    case "fire":
+        with (mod_script_call("mod", "Disc Tools", "disc_fire", 2, 8, 5)) {
+            sprite_index = global.sprFireVinyl
+            hitid = [sprite_index, "FLAME VINYL"]
+            timer = 0;
+            if fork()while (instance_exists(self)) {
+            	if ++timer >= 7 with (instance_create(x, y, Flame)) motion_add(random(360), random_range(0.4, 1.1));
+            	wait 1;
+            }
+            if !instance_exists(self) exit
+            return id
+        }
+    case "smart":
+        with (mod_script_call("mod", "Disc Tools", "disc_fire", 0, 5, 8)) {
+            sprite_index = global.sprSmartVinyl
+            hitid = [sprite_index, "SMART VINYL"]
+            on_post_hit = script_ref_create_ext("wep", "Smart Disc Gun", "disc_post_hit");
+            on_bounce = script_ref_create_ext("wep", "Smart Disc Gun", "disc_bounce");
+            guide = noone;
+            return id
+        }
+    case "hyper":
+        with (mod_script_call("mod", "Disc Tools", "disc_fire", 2, 14, 7)) {
+            sprite_index = global.sprHyperVinyl
+            glow_sprite  = global.sprHyperVinylGlow
+            hitid = [sprite_index, "HYPER VINYL"]
+        	_team = other.team;
+        	trail = false;
+        	on_move = script_ref_create_ext("wep", "Hyper Disc Gun", "disc_trail_make");
+        	on_bounce = script_ref_create_ext("wep", "Hyper Disc Gun", "disc_trail_bounce");
+        	on_draw = script_ref_create_ext("wep", "Hyper Disc Gun", "disc_draw");
+        	frame = current_frame;
+        	image_blend = make_color_hsv(frame * 16 % 256, 240, 255);
+        	name = "Hyper Disc";
+            return id
+        }
+    case "seeker":
+        with (mod_script_call("mod", "Disc Tools", "disc_fire", 2, 5, 6)) {
+            sprite_index = global.sprSeekerVinyl
+            hitid = [sprite_index, "SEEKER VINYL"]
+        	_team = other.team;
+        	if fork()do {
+        		var t = instance_nearest(x, y, hitme);
+        		if (t && (t.team == _team || instance_is(t, prop) && t.object_index != Generator)) {
+        			t = instance_nearest(x, y, enemy);
+        			if (t && t.team == _team) t = noone;
+        		}
+        		if (t) {
+        			var tx = t.x, ty = t.y;
+        			if (!collision_line(x, y, tx, ty, Wall, 0, 0)) {
+        				var dir = point_direction(x, y, tx, ty);
+        				motion_add(point_direction(x, y, tx, ty),
+        					0.5 + (point_distance(x, y, tx, ty) < 48 + skill_get(21) * 48) * 4);
+        			}
+        			image_angle = direction;
+        		}
+        		direction += random(4) - 2;
+        		speed = 4 + random(4);
+        		wait 1;
+        	} while (instance_exists(self));
+            if !instance_exists(self) exit
+             return id
         }
 }
 

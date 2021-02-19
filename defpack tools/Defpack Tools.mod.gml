@@ -1409,7 +1409,7 @@ if projectile_canhit(other) = true{
 		sleep(damage * 2 + 3)
 		view_shake_max_at(x, y, damage * 2)
 		projectile_hit(other, damage, force, direction)
-		recycle_gland_roll()
+		recycle_gland_roll(pierce > 0 ? 40 : 0)
 		pierce--
 		if pierce < 0 instance_destroy()
 	}
@@ -1792,6 +1792,9 @@ if other != lasthit{
 					with create_small_sonic_explosion(x + lengthdir_x(_r * random_range(.6, 1), _d), y + lengthdir_y(_r * random_range(.6, 1), _d)){
 						team = 2
 						creator = other.creator
+						force = other.force
+						canwallhit = true
+						superdirection = _d
 					}
 					_d += 360 / 3;
 				}
@@ -1900,7 +1903,7 @@ if other != lasthit{
 	}
 	if place_meeting(x + hspeed, y + vspeed, Wall) && canwallhit = true
 	{
-	  with instance_create(x, y, MeleeHitWall){image_angle = other.direction}	move_bounce_solid(false);
+	  with instance_create(x, y, MeleeHitWall){image_angle = other.direction} move_bounce_solid(false);
 		sound_play_pitchvol(sndImpWristKill, 1.2, .8)
 		sound_play_pitchvol(sndWallBreak, .7, .8)
 		sound_play_pitchvol(sndHitRock, .8, .8)
@@ -1909,6 +1912,7 @@ if other != lasthit{
 		repeat(creator.size) instance_create(x, y, Debris)
 		if superforce > 4 with creator
 		{
+			//trace("wall hit")
 			projectile_hit(self,round(ceil(other.superforce) * 1.5),1 ,direction)
 			if my_health <= 0
 			{
@@ -1937,11 +1941,14 @@ if other != lasthit{
 	if place_meeting(x + hspeed, y + vspeed, hitme)
 	{
 		var _h = instance_nearest(x + hspeed, y + vspeed, hitme);
-		if !instance_is(_h, Player) && projectile_canhit_melee(_h)
+		if !instance_is(_h, Player) && _h != creator && projectile_canhit_melee(_h)
 		{
 			var _s = (ceil(superforce) + _h.size) + creator.meleedamage * 2;
-			sleep(_s / 3 * max(1, _h.size))
-			projectile_hit(_h,_s, superforce, direction)
+			sleep(_s / 3 * max(1, _h.size))	
+			view_shake_at(x, y, _s / 3 * max(1, _h.size))	
+			projectile_hit(_h,_s, superforce, direction);
+			projectile_hit(creator, round(superforce / 2), 0, direction);
+			//trace("enemy hit")
 			superforce *= .85 + .15 * min(skill_get(mut_impact_wrists), 1);
 		}
 	}
@@ -3255,44 +3262,46 @@ if speed < friction instance_destroy()
 				return r;
 
 #define quartz_penalty(_mod, _w, _p) //this is for player step only stupid
-	if wep.shinebonus > 0{
-		wep.shinebonus -= current_time_scale;
-	}
-	if chance(6 + (wep.shinebonus > 0 ? 74 : 0)){
-		var _spr = weapon_get_sprite(wep),
-		    _wth = sprite_get_width(_spr) - sprite_get_xoffset(_spr),
-		    _hth = sprite_get_width(_spr) - sprite_get_yoffset(_spr);
-	  with instance_create(x + lengthdir_x(random(_wth), wepangle + gunangle) + random_range(-3, 3), y + lengthdir_y(random(_hth), wepangle + gunangle) + random_range(-3, 3),WepSwap){
-	    image_xscale = .75
-	    image_yscale = .75
-	    image_speed = choose(.7,.7,.7,.45)
-	  }
-	}
-
-	if _w.prevhealth > my_health {
-		if _w.wep = _mod{
-			_w.health--;
-			if _w.health < 0{
-	    	quartz_break();
-		    with instance_create(x,y,ThrownWep){
-		      wep = "shard"
-		      sprite_index = spr.Shard
-		      curse = _p ? other.curse : other.bcurse
-		      motion_set(other.gunangle-180-random_range(-2,2),3)
-		    }
-				if _p {
-			    wep = bwep
-			    bwep = 0
-			    curse = bcurse
-			    bcurse = 0
-					if is_object(wep) && lq_defget(wep, "is_quartz", false){
-						quartz_penalty(_mod, wep, _p);
+	if is_object(_w) && "is_quartz" in _w && _w.is_quartz = true{
+		if wep.shinebonus > 0{
+			wep.shinebonus -= current_time_scale;
+		}
+		if chance(6 + (wep.shinebonus > 0 ? 73 : 0)){
+			var _spr = weapon_get_sprite(wep),
+			    _wth = sprite_get_width(_spr) - sprite_get_xoffset(_spr),
+			    _hth = sprite_get_width(_spr) - sprite_get_yoffset(_spr);
+		  with instance_create(x + lengthdir_x(random(_wth), wepangle + gunangle) + random_range(-3, 3), y + lengthdir_y(random(_hth), wepangle + gunangle) + random_range(-3, 3),WepSwap){
+		    image_xscale = .75
+		    image_yscale = .75
+		    image_speed = choose(.7,.7,.7,.45)
+		  }
+		}
+	
+		if _w.prevhealth > my_health {
+			if _w.wep = _mod{
+				_w.health--;
+				if _w.health < 0{
+		    	quartz_break();
+			    with instance_create(x,y,ThrownWep){
+			      wep = "shard"
+			      sprite_index = spr.Shard
+			      curse = _p ? other.curse : other.bcurse
+			      motion_set(other.gunangle-180-random_range(-2,2),3)
+			    }
+					if _p {
+				    wep = bwep
+				    bwep = 0
+				    curse = bcurse
+				    bcurse = 0
+						if is_object(wep) && lq_defget(wep, "is_quartz", false){
+							quartz_penalty(_mod, wep, _p);
+						}
 					}
+				}else{
+					quartz_hurt();
 				}
-			}else{
-				quartz_hurt();
-			}
-	  }
+		  }
+		}
 	}
 
 #define quartz_hurt()
@@ -4228,6 +4237,13 @@ with instance_create(_x, _y, CustomProjectile) {
 }
 
 #define vector_head_step
+var _r = 90 * choose(-1, 1)
+if !irandom(2 - skill_get(mut_laser_brain) > 0) with instance_create(x-lengthdir_x(10,direction + _r)+random_range(-2,2),y-lengthdir_y(10,direction + _r)+random_range(-2,2),BulletHit)
+        {
+        	sprite_index = spr.VectorEffect
+        	image_angle = other.direction
+        	motion_set(other.direction,choose(1,2))
+        }
 var _targ = instance_nearest_matching_ne(x, y, hitme, "team", team), _diff = angle_difference(direction, basedir);
 if instance_exists(_targ) {
 	if distance_to_object(_targ) < homing_range and !collision_line(x, y, _targ.x, _targ.y, Wall, 0, 0) {

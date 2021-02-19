@@ -59,6 +59,11 @@ return false;
 #define weapon_text
 return choose("PRODUCT OF PRISMATIC FORGERY","BE CAREFUL WITH IT")
 
+#define nts_weapon_examine
+return{
+    "d": "A shiny and frail shotgun. #Shells fired are overwhelmingly bright. ",
+}
+
 #define weapon_fire(w)
   if !is_object(w){
       w = {
@@ -91,7 +96,7 @@ return choose("PRODUCT OF PRISMATIC FORGERY","BE CAREFUL WITH IT")
       friction = random_range(.6,2)
       image_speed = 1
       wallbounce = 3 + skill_get(15) * 5;
-      motion_add(other.gunangle+random_range(-9,9) * (other.accuracy + (4 - 4 * w.health/w.maxhealth)),26 * random_range(1 * (1 - _c * .45), 1))
+      motion_add(other.gunangle+random_range(-9,9) * (other.accuracy + (2 - 2 * w.health/w.maxhealth)),26 * random_range(1 * (1 - _c * .45), 1))
       image_angle = direction
       defbloom = {
           xscale : 2,

@@ -27,7 +27,10 @@ return global.sprSmarterGunHUD
 return mod_script_call_self("mod", "defpack tools", "smarter_gun_sprite", global.sprSmarterGun, w)
 #define weapon_text
 return "THINK FASTER"
-
+#define nts_weapon_examine
+return{
+    "d": "Smart enough to aim and fire on its own. #If only your friends were that reliable. ",
+}
 #define weapon_fire
 shoot(wep, 1)
 

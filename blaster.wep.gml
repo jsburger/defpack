@@ -31,6 +31,11 @@ return 5;
 #define weapon_text
 return "HEAT WAVES";
 
+#define nts_weapon_examine
+return{
+    "d": "A combat pistol from a long-lost war. #Can be charged for more range. ",
+}
+
 #define weapon_chrg
 return true;
 

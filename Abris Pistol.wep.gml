@@ -28,6 +28,11 @@ return sndSwapExplosive;
 #define weapon_area
 return 3;
 
+#define nts_weapon_examine
+return{
+    "d": "Creates explosions where you aim it at. Charge it to narrow the spread. ",
+}
+
 #define weapon_reloaded
 weapon_post(-1,-3,0)
 sound_play_pitchvol(sndNadeReload,1.4,.6)

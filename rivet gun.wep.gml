@@ -28,6 +28,11 @@ return 10;
 #define weapon_text
 return "RIVETING";
 
+#define nts_weapon_examine
+return{
+    "d": "More powerful than a Nail Gun. #And harder to control, too. ",
+}
+
 #define weapon_fire
 var _p = random_range(.8, 1.2), _v = .6
 sound_play_pitchvol(sndHeavyCrossbow, .7 * _p, _v)

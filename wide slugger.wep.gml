@@ -36,6 +36,11 @@ return global.sprWideSlugger;
 #define weapon_text
 return "GOODBYE BODY"
 
+#define nts_weapon_examine
+return{
+    "d": "A hugely improved slugger. #Slugs sustain more mass at the cost of punch and speed. ",
+}
+
 #define weapon_fire
 weapon_post(7,-40,15)
 var _p = random_range(.8,1.2);

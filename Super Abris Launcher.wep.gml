@@ -29,6 +29,11 @@ return sndSwapExplosive;
 #define weapon_area
 return 12;
 
+#define nts_weapon_examine
+return{
+    "d": "Chances are you'll regret firing this weapon. ",
+}
+
 #define weapon_reloaded
 weapon_post(-1,-3,0)
 sound_play_pitchvol(sndNadeReload,1.4,.6)

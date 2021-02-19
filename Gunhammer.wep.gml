@@ -39,6 +39,10 @@ return "x gunhammer"
 #define weapon_text
 return "BULLET BASHING";
 
+#define nts_weapon_examine
+return{
+    "d": "A melee weapon that fires bullets. #Works without bullets too, just not as well. ",
+}
 #define weapon_fire
 
 var p = random_range(.8,1.2)

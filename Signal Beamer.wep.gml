@@ -54,7 +54,10 @@ if irandom(4)<3 and instance_is(self,Player)
 	}
 }
 else return "BULLET TRAFFICKING";
-
+#define nts_weapon_examine
+return{
+    "d": "Freshly harvested from the elusive street light tree in Frozen City. #Changes bullet color depending on how many bullets you have. ",
+}
 #define weapon_fire
 motion_add(gunangle+180,1)
 repeat(3)

@@ -22,6 +22,10 @@ return 0
 return global.sprStickyDiscGun
 #define weapon_text
 return "THIS IS YOUR OWN FAULT"
+#define nts_weapon_examine
+return{
+    "d": "Sticky Discs are an almost guaranteed deathsentence #for anything that touches them.",
+}
 #define weapon_fire
 weapon_post(5,-30,0)
 var _p = random_range(.8,1.2)

@@ -61,3 +61,8 @@ return global.sprMegaDiscGun;
 
 #define weapon_text
 return "watch out"
+
+#define nts_weapon_examine
+return{
+    "d": "Are you really tough enough to wield one of these?",
+}
