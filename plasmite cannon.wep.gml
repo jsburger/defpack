@@ -20,6 +20,10 @@ return sndSwapEnergy
 return 1
 #define weapon_laser_sight
 return 0
+#define nts_weapon_examine
+return{
+    "d": "A little bit of mass splits off the main projectile whenever it hits something. ",
+}
 #define weapon_text
 return "HEH";
 #define weapon_fire

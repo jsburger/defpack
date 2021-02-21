@@ -394,6 +394,9 @@ with(instance_create(_x, _y, CustomEnemy)){
 	
 	candie = false;
 	
+	startx = x;
+	starty = y;
+	
 	pool = ["quiveringsight", "blazingvisage", "pestilentgaze", "cloudedstare", "allseeingeye"];
 	for( var _i = 0; _i < 3; _i++){
 		with _i{
@@ -434,6 +437,9 @@ with(instance_create(_x, _y, CustomEnemy)){
 if (!instance_exists(my_prompt)){
 	my_prompt = prompt_create("Change" + textcol + " Iris");
 }
+
+x = startx;
+y = starty;
 
 if (player_is_active(my_prompt.pick)){
 	

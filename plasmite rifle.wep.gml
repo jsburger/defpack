@@ -22,7 +22,7 @@ return 0
 return "LONG RANGE ENGAGEMENT";
 #define nts_weapon_examine
 return{
-    "d": "A Plasmite Pistol, but longer and automatic. #. Comes with a higher range and rate of fire",
+    "d": "A Plasmite Pistol, but longer and automatic. #Comes with a higher range and rate of fire. ",
 }
 #define weapon_fire
 repeat(2)

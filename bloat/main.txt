@@ -1,12 +1,11 @@
 /loadwep antiprism
 /loadwep auto flak cannon
 /loadwep auto grenade launcher
-/loadwep bullak machinegun
 /loadwep chris knife
 /loadwep cube gun
 /loadwep dart rifle
 /loadwep dart shotgun
-/loadwep dart cannon
+/loadwep dart bazooka
 /loadwep evolver
 /loadwep first aid soda
 /loadwep flak canon

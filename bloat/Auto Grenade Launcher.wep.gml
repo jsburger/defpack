@@ -1,6 +1,6 @@
 #define init
 global.sprAutoNader = sprite_add_weapon("../sprites/weapons/sprAutoGrenadeLauncher.png", 2, 1);
-global.sprAutoGrenade = sprite_add("sprites/projectiles/sprAutoGrenade.png",0,3,3);
+global.sprAutoGrenade = sprGrenade//sprite_add("sprites/projectiles/sprAutoGrenade.png",0,3,3);
 
 #define weapon_name
 return "AUTO GRENADE LAUNCHER";

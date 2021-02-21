@@ -30,6 +30,11 @@ return 0;
 #define weapon_area
 return 4;
 
+#define nts_weapon_examine
+return{
+    "d": "The exception to most rules. ",
+}
+
 #define weapon_text
 return "POTENTIAL"
 

@@ -9,6 +9,10 @@ if(fork()){
 }
 global.shells = [sprite_add("sprites/other/sprFatShell.png",1,3,5),sprite_add("sprites/other/sprFatShellUpg.png",1,3,5)]
 
+#define nts_weapon_examine
+return{
+    "d": "A big shotgun. #In comparison with the regular shotgun, this one is bigger. ",
+}
 #define weapon_name
 return "BIG SHOTGUN"
 #define weapon_type

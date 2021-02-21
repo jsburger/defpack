@@ -25,6 +25,11 @@ return sndSwapMachinegun;
 #define weapon_area
 return 6;
 
+#define nts_weapon_examine
+return{
+    "d": "This gun uses a a prism to turn light into various kinds of bullets. ",
+}
+
 #define weapon_text
 return choose("/CANDELA","0/10 USES TOXIC");
 

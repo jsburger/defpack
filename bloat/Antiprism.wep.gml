@@ -1,11 +1,11 @@
 #define init
-global.sprPrism[0] = sprite_add_weapon("sprites/sprWhitePrism.png", 2, 6);
-global.sprPrism[1] = sprite_add_weapon("sprites/sprRedPrism.png", 2, 6);
-global.sprPrism[2] = sprite_add_weapon("sprites/sprYellowPrism.png", 2, 6);
-global.sprPrism[3] = sprite_add_weapon("sprites/sprGreenPrism.png", 2, 6);
-global.sprPrism[4] = sprite_add_weapon("sprites/sprBluePrism.png", 2, 6);
-global.sprPrism[5] = sprite_add_weapon("sprites/sprPurplePrism.png", 2, 6);
-global.sprPrism[6] = sprite_add_weapon("sprites/sprBlackPrism.png", 2, 6);
+global.sprPrism[0] = sprite_add_weapon("../sprites/weapons/sprPrism.png", 2, 6);
+global.sprPrism[1] = global.sprPrism[0]//sprite_add_weapon("../sprites/weapons/sprRedPrism.png", 2, 6);
+global.sprPrism[2] = global.sprPrism[0]//sprite_add_weapon("../sprites/weapons/sprYellowPrism.png", 2, 6);
+global.sprPrism[3] = global.sprPrism[0]//sprite_add_weapon("../sprites/weapons/sprGreenPrism.png", 2, 6);
+global.sprPrism[4] = global.sprPrism[0]//sprite_add_weapon("../sprites/weapons/sprBluePrism.png", 2, 6);
+global.sprPrism[5] = global.sprPrism[0]//sprite_add_weapon("../sprites/weapons/sprPurplePrism.png", 2, 6);
+global.sprPrism[6] = global.sprPrism[0]//sprite_add_weapon("../sprites/weapons/sprBlackPrism.png", 2, 6);
 //light, fire, regular, toxic, lightning, psy, dark
 global.colors = [c_white, c_red, c_yellow, c_lime, c_blue, c_purple, c_black]
 global.reloads = [2, 1, 7, 12, 47, 3, 9]

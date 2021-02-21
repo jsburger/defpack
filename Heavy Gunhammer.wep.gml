@@ -37,6 +37,12 @@ return 1;
 #define weapon_iris
 return "heavy x gunhammer"
 
+#define nts_weapon_examine
+return{
+	"steroids": "Perfectly suits you. ",
+    "d": "You better have a lot of muscles for this Gunhammer. ",
+}
+
 #define weapon_text
 return "ADVANCED HAMMERING";
 

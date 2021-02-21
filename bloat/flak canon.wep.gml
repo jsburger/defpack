@@ -1,5 +1,5 @@
 #define init
-global.sprFlakCanon = sprite_add_weapon("sprites/sprFlakCanon.png", 3, 2);
+global.sprFlakCanon = sprite_add_weapon("../sprites/weapons/sprFlakCanon.png", 3, 2);
 
 while 1{
     with instances_matching(WepPickup, "wep", mod_current){

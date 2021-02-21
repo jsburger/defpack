@@ -25,6 +25,10 @@ return sndSwapPistol;
 #define weapon_area
 return 7;
 
+#define nts_weapon_examine
+return{
+    "d": "Can you believe it? #There is a gun in this can! ",
+}
 #define weapon_text
 return choose("DOING NOBODY A FAVOUR","STALE");
 

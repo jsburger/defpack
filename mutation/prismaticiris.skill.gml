@@ -58,7 +58,7 @@ return 1;
 		    	LevCont.maxselect++;
 
 		    	skill_create("fantasticrefractions", 0.5);
-		    	if(array_length(instances_matching(Player, "race", "horror")) > 0) {
+		    	if(array_length(instances_matching(Player, "race", "horror")) > 0) || GameCont.horror > 0 {
 		    		skill_create("warpedperspective", 1.5);
 		    	}
 		    }
@@ -340,8 +340,14 @@ return 1;
 			}
 		}
 		else {
-			if(convert(wep, c) != false)  wep = convert(wep, c);
+			if(convert(wep, c) != false) wep = convert(wep, c);
 			if(convert(bwep, c) != false) bwep = convert(bwep, c);
+			if(convert(wep, c) != false) || (convert(bwep, c) != false) with Player with instance_create(x, y, ImpactWrists){
+		        sprite_index = global.effect;
+		        sound_play_pitchvol(sndStatueXP, 0.5 * random_range(0.8, 1.2), 0.4);
+		        image_angle = 0;
+		        depth = other.depth-1;
+		    }
 		}
 	}
 

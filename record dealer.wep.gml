@@ -49,6 +49,11 @@ return global.sprRecordDealer;
 #define weapon_sprt_hud
 return global.sprRecordDealerHUD;
 
+#define nts_weapon_examine
+return{
+    "d": "The various sounds of neverending pain. ",
+}
+
 #define weapon_text
 return "WRITE A LOVE SONG";
 

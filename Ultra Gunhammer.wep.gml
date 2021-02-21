@@ -36,6 +36,11 @@ return sndSwapHammer;
 #define weapon_area
 return 24;
 
+#define nts_weapon_examine
+return{
+    "d": "Contrary to poular belief it fires shells rather than bullets. ",
+}
+
 #define weapon_text
 return "UNBELIEVABLE HAMMERING";
 #define weapon_rads

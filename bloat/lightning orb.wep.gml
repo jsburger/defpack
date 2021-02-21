@@ -1,6 +1,6 @@
 #define init
-global.sprLightningOrb = sprite_add_weapon("sprites/weapons/sprLightningOrb.png", 3, 2);
-global.sprUmbrellaOrb  = sprite_add("sprites/projectiles/sprRainOrb.png",2,7,7);
+global.sprLightningOrb = sprite_add_weapon("../sprites/weapons/sprLightningOrb.png", 3, 2);
+global.sprUmbrellaOrb  = sprite_add("../sprites/projectiles/sprRainOrb.png",2,7,7);
 
 #define weapon_name
 return "LIGHTNING ORB"

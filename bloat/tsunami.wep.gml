@@ -1,6 +1,6 @@
 #define init
 
-global.sprTsunami = sprite_add_weapon("sprites/sprTsunami.png", 3, 2);
+global.sprTsunami = sprite_add_weapon("../sprites/weapons/sprTsunami.png", 3, 2);
 while 1{
     with instances_matching_ne(UltraShell,"tsunamiturn",null){
         direction+=tsunamiturn *current_time_scale

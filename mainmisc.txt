@@ -15,7 +15,7 @@
 /loadwep crystal torch
 /loadwep impact fist
 /loadwep shard
-/loadwep hex needle
+/loadwep blood needle
 
 ///FISTS///
 

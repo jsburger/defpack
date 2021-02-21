@@ -191,5 +191,9 @@ return global.smacker
 #define weapon_sprt
 if instance_is(self,Player) if array_length(instances_matching(instances_matching(CustomObject, "name", "Ultra Hand"), "creator", id)) return mskNone
 if GameCont.rad >= weapon_rads() return global.smacker else return global.smackerOff
+#define nts_weapon_examine
+return{
+    "d": "The proper gloves allows for easy rad manipulation    . ",
+}
 #define weapon_text
 return "THE POWER OF INFINITY"

@@ -1,6 +1,6 @@
 #define init
-global.sprSpear     = sprite_add_weapon("sprites/sprSpear.png", 6, 5);
-global.sprGoldSlash = sprite_add("sprites/projectiles/Gunhammer Slash.png",3,0,24)
+global.sprSpear     = sprite_add_weapon("../sprites/weapons/sprSpear.png", 6, 5);
+global.sprGoldSlash = sprite_add("../sprites/projectiles/sprGunhammerSlash.png",3,0,24)
 
 #define weapon_name
 return "SPEAR";

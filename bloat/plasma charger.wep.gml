@@ -1,6 +1,6 @@
 #define init
-global.sprPlasmaCharger = sprite_add_weapon("sprites/sprPlasmaCharger.png",4,4);
-global.sprPlasmaBall    = sprite_add("sprites/projectiles/sprPlasmaBall.png",2,12,12);
+global.sprPlasmaCharger = sprite_add_weapon("../sprites/weapons/sprPlasmaCharger.png",4,4);
+global.sprPlasmaBall    = sprite_add("../sprites/projectiles/sprPlasmaBall.png",2,12,12);
 
 #define weapon_name
 return "PLASMA CHARGER"
