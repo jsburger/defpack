@@ -55,6 +55,11 @@ image_angle += 4*speed_raw
 speed /= 1 + (.2*current_time_scale)
 if speed <= .01 instance_destroy()
 
+#define nts_weapon_examine
+return{
+    "d": "These pistols were used in battles of honor between mutants. ",
+}
+
 #define weapon_text
 return choose("CHOOSE YOUR TARGET WISELY","THIS IS THE @yWAY");
 

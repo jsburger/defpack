@@ -23,6 +23,10 @@ return false
 return false
 #define weapon_sprt
 return global.sprGrenadeMinigun
+#define nts_weapon_examine
+return{
+    "d": "Pondering on why some weapons were made can end up futile. ",
+}
 #define weapon_text
 return choose("LOAD IT UP", "HARD TO BE CAREFUL")
 #define weapon_chrg

@@ -3,11 +3,8 @@ global.sprBow      = sprite_add_weapon("sprites/weapons/sprThunderBow.png",2,8)
 global.sprArrow    = sprite_add("sprites/projectiles/sprArrow.png",1,3,4)
 global.sprArrowHUD = sprite_add_weapon("sprites/projectiles/sprArrow.png",5,3)
 
-global.sprBow2     = sprite_add_weapon_base64("iVBORw0KGgoAAAANSUhEUgAAAAoAAAASCAYAAABit09LAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7BAAAOwQG4kWvtAAAAB3RJTUUH4wEXBQ8FXZOvsQAAARBJREFUKM+Nkr9Kw1AUxn8ndJF2MlQQQ4OLNGSJgxXBIdAphYKPEOe+QZ31YXwAu3a1DrqEbkqhRTDoVHA8DnpvExP//OAul+/e833nHFFVBsc7yhc3ty9CDdLtNPU88ezF9P4NQCazvCIEUIA4ctnf3aoVO/PFGu/ghPliLdOHV56e34kPtwE06bU3Qvu1yK/iRsmHCIB8WnFLHq1QVUtvAr+l/WEKoKMjxOEH+sOUMAzrPdZhxLb05R5ceQXx2QiALMuqYQzjpRL4LSCthhkvN2ECv6Vx5PJ4dw0gp6scx3gTEXu+c7EqhDEt6naaakZZxDH9U1Vbsm7e/16KBqBx5P69ZgBJr20jT2Z5bec/ACvpa0JPoQuCAAAAAElFTkSuQmCC", 1, 8)
-global.sprArrow2   = sprite_add_base64("iVBORw0KGgoAAAANSUhEUgAAABIAAAAHCAYAAAAF1R1/AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7BAAAOwQG4kWvtAAAAB3RJTUUH4wEXBQMR6/w0wAAAANRJREFUGNOV0bFKxEAQxvH/iI2vsAipdC1trYKwaXwWayGFbxG2PbCztrjiIHZTW2ax2eIIvoGdn8XpNYdRfzDNDAzMN1Zr5dvt3T0AT48PLCmlABBj3PfM3QkhaJ5nQgg0TWMAzx8nPy4Kry8AApjPLu366H03aNtWtVa5u2qt4hc5Z3LOkqRpmiQJk4SZ0batbi7e+IvVesvp+RXDMBBjpJTCsZnh7vR9z2q95b9KKYzjCO5+cJokliqlREpJOWellHanfX3tIOwlXdftw95sNgbwCTnnhjndldg9AAAAAElFTkSuQmCC",1, 3, 4)
-
 #define weapon_name
-return "THUNDER BOW"
+return "HYPER BOW"
 
 #define weapon_type
 return 3

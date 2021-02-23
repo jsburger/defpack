@@ -50,6 +50,10 @@ return global.sprBow
 #define weapon_sprt_hud
 return global.sprArrowHUD
 
+#define nts_weapon_examine
+return{
+    "d": "A fancy hunting weapon. #Guaranteed to hit a weakspot with. ",
+}
 #define weapon_text
 return "CLASSIC"
 

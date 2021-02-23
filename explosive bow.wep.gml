@@ -34,6 +34,11 @@ return sndSwapHammer;
 #define weapon_area
 return 6;
 
+#define nts_weapon_examine
+return{
+    "d": "A new-fashioned hunting weapon. #Instantly cooks slain prey perfectly. ",
+}
+
 #define weapon_text
 return choose("CHECK THE ROUTES","HOW DO I HOLD THIS");
 

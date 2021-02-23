@@ -1,5 +1,8 @@
 #define init
-global.sprAndromedaLauncher = sprite_add_weapon("sprites/weapons/sprAndromedaLauncher.png", 8, 5);
+global.sprAndromedaLauncher1 = sprite_add_weapon("sprites/weapons/sprAndromedaLauncher1.png", 8, 5);
+global.sprAndromedaLauncher2 = sprite_add_weapon("sprites/weapons/sprAndromedaLauncher2.png", 8, 5);
+global.sprAndromedaLauncher3 = sprite_add_weapon("sprites/weapons/sprAndromedaLauncher3.png", 2, 5);
+global.sprAndromedaLauncher4 = sprite_add_weapon("sprites/weapons/sprAndromedaLauncher4.png", 1, 3);
 //global.sprAndromedaBullet = sprite_add("sprites/projectiles/sprAndromedaBullet.png",2, 9, 9);
 global.space  = sprite_add("sprites/other/sprStarfieldForeground.png",1,0,0)
 global.space2 = sprite_add("sprites/other/sprStarfieldBackground.png",1,0,0)
@@ -15,11 +18,21 @@ global.space3 = sprite_add("sprites/other/sprSpaceBackground.png",1,0,0);
 	}
 }*/
 
+global.wepsprite = 0
+mod_script_call_nc("mod", "defpermissions", "permission_register_options", "weapon", mod_current, "wepsprite", "Andromeda Launcher Sprite", ["Newest", "Version 3", "Version 2", "Original"])
+
 #define weapon_name
 return "ANDROMEDA LAUNCHER"
 
 #define weapon_sprt
-return global.sprAndromedaLauncher;
+var _s = 0;
+switch global.wepsprite{
+	case 0: _s = global.sprAndromedaLauncher1; break;
+	case 1: _s = global.sprAndromedaLauncher2; break;
+	case 2: _s = global.sprAndromedaLauncher3; break;
+	case 3: _s = global.sprAndromedaLauncher4; break;
+}
+return _s;
 
 #define weapon_type
 return 4;

@@ -42,3 +42,4 @@
 /loadwep fire spam gun
 /loadwep ultra spam gun
 /loadwep toxic cannon
+/loadwep splinter bow

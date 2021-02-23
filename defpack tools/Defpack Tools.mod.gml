@@ -1943,7 +1943,8 @@ if other != lasthit{
 		var _h = instance_nearest(x + hspeed, y + vspeed, hitme);
 		if !instance_is(_h, Player) && _h != creator && projectile_canhit_melee(_h)
 		{
-			var _s = (ceil(superforce) + _h.size) + creator.meleedamage * 2;
+			var _d = "meleedamage" in creator ? creator.meleedamage * 2 : 5;
+			var _s = (ceil(superforce) + _h.size) + _d;
 			sleep(_s / 3 * max(1, _h.size))	
 			view_shake_at(x, y, _s / 3 * max(1, _h.size))	
 			projectile_hit(_h,_s, superforce, direction);

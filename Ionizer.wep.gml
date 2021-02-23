@@ -29,6 +29,11 @@ return sndSwapEnergy;
 #define weapon_area
 return 10;
 
+#define nts_weapon_examine
+return{
+    "d": "Assembled out of bits and pieces of many different energy weapons. ",
+}
+
 #define weapon_text
 return "CATASTROPHIC";
 

@@ -1,12 +1,16 @@
 #define init
-global.sprSuperAbrisLauncher = sprite_add_weapon("sprites/weapons/sprSuperAbrisLauncher.png", 3, 4);
+global.sprSuperAbrisLauncher   = sprite_add_weapon("sprites/weapons/sprSuperAbrisLauncher.png",   3, 4);
+global.sprSuperAbrisLauncherHD = sprite_add_weapon("sprites/weapons/sprSuperAbrisLauncherHD.png", 3, 4);
 //global.sprDanger 					 = sprite_add("sprites/projectiles/Danger.png",0,1,29);
+global.wepsprite = 0
+mod_script_call_nc("mod", "defpermissions", "permission_register_options", "weapon", mod_current, "wepsprite", "Super Abris Launcher Sprite", ["Regular", "HD"])
 
 #define weapon_name
 return "SUPER ABRIS LAUNCHER"
 
 #define weapon_sprt
-return global.sprSuperAbrisLauncher;
+var _s = global.wepsprite = true ? global.sprSuperAbrisLauncherHD : global.sprSuperAbrisLauncher;
+return _s;
 
 #define weapon_type
 return 4;

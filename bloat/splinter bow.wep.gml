@@ -1,6 +1,6 @@
 #define init
-global.sprBow      = sprite_add_weapon("sprites/weapons/sprSplinterBow.png",2,8)
-global.sprArrow    = sprite_add("sprites/projectiles/sprSplinterArrow.png",1,3,4)
+global.sprBow      = sprite_add_weapon("../sprites/weapons/sprSplinterBow.png",2,8)
+global.sprArrow    = sprite_add("../sprites/projectiles/sprSplinterArrow.png",1,3,4)
 
 #define weapon_name
 return "SPLINTER BOW"

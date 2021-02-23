@@ -31,6 +31,11 @@ return sndSwapBow;
 #define weapon_area
 return 9;
 
+#define nts_weapon_examine
+return{
+    "d": "Marks a spot in the world than can be seen from any plane of existence. ",
+}
+
 #define weapon_text
 return "UNSEEN ALLIES";
 

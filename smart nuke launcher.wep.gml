@@ -29,6 +29,11 @@ return sndSwapExplosive;
 #define weapon_area
 return 11;
 
+#define nts_weapon_examine
+return{
+    "d": "This gun uses an advanced neural network to guide its rockets. ",
+}
+
 #define weapon_text
 return "AT ITS MERCY";
 
