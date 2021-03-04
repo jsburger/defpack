@@ -42,6 +42,11 @@ return -4;
 #define weapon_sprt
   return global.sprMassiveSlugger;
 
+#define nts_weapon_examine
+return{
+    "d": "Said to be forged and wielded by the worlds largest gator. ",
+}
+
 #define weapon_text
   return choose("HEFTY");
 

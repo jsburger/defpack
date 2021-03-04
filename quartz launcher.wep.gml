@@ -151,7 +151,7 @@ image_angle = direction
 			}
 		}
 	}
-	if place_meeting(x,y,Shank){instance_destroy()}
+	if place_meeting(x,y,Shank) || place_meeting(x,y,Explosion){instance_destroy(); exit}
 	if lifetime <= 0{instance_destroy();exit}
 
 #define quartznade_destroy

@@ -106,8 +106,8 @@
             var meety = (y + other.y)/2 + random_range(-3, 3) * other.size;
             instance_create(meetx,meety,SmallExplosion);
             projectile_hit(other, 3, speed / 4, direction)
-            sleep(7 * other.size);
-            view_shake_at(x, y, 5 * other.size);
+            sleep(9 * other.size);
+            view_shake_at(x, y, 6 * other.size);
           }
         }
       }
@@ -185,7 +185,7 @@
 
 #define nts_weapon_examine
 return{
-    "d": "It always returns to its wielder.# Use at a safe distance. ",
+    "d": "It always returns to its wielder. # Use at a safe distance. ",
 }
 
 #define weapon_text

@@ -39,7 +39,7 @@ return "GRUESOME";
 #define nts_weapon_examine
 return{
     "d": "We can only wonder if these weapons are alive or not. ",
-    "plant": "MORE BLOOD",
+    "plant": "MORE BLOOD ",
 }
 
 #define step(p)

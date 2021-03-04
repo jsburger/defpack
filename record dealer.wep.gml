@@ -51,7 +51,7 @@ return global.sprRecordDealerHUD;
 
 #define nts_weapon_examine
 return{
-    "d": "The various sounds of neverending pain. ",
+    "d": "The various symphonies of neverending pain. ",
 }
 
 #define weapon_text

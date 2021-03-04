@@ -28,7 +28,10 @@ return 13;
 
 #define weapon_iris
 return "heavy smart x gun"
-
+#define nts_weapon_examine
+return{
+    "d": "Increased brain mass translates to smarter guns. ",
+}
 #define weapon_text
 return choose("PERFECTION","TRUE BEAUTY","A SIGHT TO BEHOLD","SMARTER THAN ITS SIBLING");
 

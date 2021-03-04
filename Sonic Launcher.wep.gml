@@ -26,6 +26,11 @@ return sndSwapExplosive;
 #define weapon_area
 return 5;
 
+#define nts_weapon_examine
+return{
+    "d": "Launches rubber grenades. #The explosion deals no damage but launches enemies far away. ",
+}
+
 #define weapon_text
 return "MAKE SOME NOISE";
 

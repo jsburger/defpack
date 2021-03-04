@@ -206,7 +206,7 @@ with creator{
 		sprite_index = mskNothing
 		mask_index = mskBullet2
 		force = 7
-		damage = 12 + round(28*(_c/100))
+		damage = 20 + round(20*(_c/100))
 		lasthit = -4
 		dir = 0
 		recycleset = 0

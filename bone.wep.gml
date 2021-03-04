@@ -74,6 +74,11 @@ with other instance_destroy()
 instance_destroy()
 
 #define bone_hit
+var _splat = -4;
+_splat = determine_gore(other)
+repeat(3) with instance_create((other.x*other.size+x)/(other.size+1),(other.y*other.size+y)/(other.size+1),_splat){image_angle = random(360)}
+	    
+	    
 hit = 1
 sound_play_pitchvol(sndHammerHeadEnd,random_range(1.23,1.33),20)
 sound_play_pitch(sndGruntHurtF,.8)
@@ -91,3 +96,5 @@ for (var i = 1; i <= 3; i++){
     }
 }
 instance_destroy()
+
+#define determine_gore(_id) return mod_script_call("mod", "defpack tools", "determine_gore", _id);

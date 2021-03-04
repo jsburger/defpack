@@ -196,7 +196,7 @@
 		Killslash = sprite_add(i + "sprKillslash.png", 8, 16, 16);
 
 		//Charge Icon
-		Charge = sprite_add("../sprites/interface/sprHoldIcon.png", 35, 12, 12);
+		Charge = sprite_add("../sprites/interface/sprHoldIcon.png", 1, 5, 7);
 
 		//Sniper Sights
 		Aim          = sprite_add("../sprites/interface/sprAim.png", 0, 10, 10);
@@ -624,8 +624,6 @@ with Player if visible{
 		// Disappear after a while
 		if lifetime > 0 {lifetime -= current_time_scale} else{sound_play_pitch(sndPickupDisappear, random_range(.8, 1.2)); instance_create(x, y,SmallChestFade); instance_destroy()}
 	}
-
-
 
 #define drone_shadow(w)
 if !is_object(w) exit
@@ -3357,13 +3355,13 @@ if speed < friction instance_destroy()
 	sound_stop(sndClickBack)
 	with instance_create(x+lengthdir_x(sprite_get_width(sprite_index),image_angle),y+lengthdir_y(sprite_get_width(sprite_index),image_angle),CustomObject){
 	    with instance_create(x,y,CustomSlash){
-	        lifetime = 10
+	        lifetime = 4
 	        team = _t
 	        image_xscale = 1
 	        image_yscale = 1
 	        sprite_index  = sprPortalShock
 	        image_blend = c_black
-	        image_speed = .5
+	        image_speed = 0
 	        image_alpha = 0
 	        damage = 0
 	        on_projectile = crit_proj
@@ -3400,10 +3398,7 @@ if speed < friction instance_destroy()
 	}
 
 #define crit_step
-	if lifetime > 0
-		lifetime -= current_time_scale
-	else
-		instance_destroy()
+	if lifetime > 0 lifetime -= current_time_scale else instance_destroy()
 
 #define crit_hit
 if projectile_canhit_melee(other){
@@ -3840,13 +3835,13 @@ with instance_create(x, y, CustomObject){
 	parent  = name
 	creator = -4
 	charge  = 0
-	acc     = 1
+	acc     = .75
 	charged = 1
 	maxcharge = 100
 	chargespeed = 3.2
 	holdtime = 150
-	depth = TopCont.depth
-	index = -1
+	depth  = TopCont.depth
+	index  = -1
 	reload = -1
 	cost = 0
     spr_flash  = sprBullet1
@@ -3931,6 +3926,7 @@ if button_check(index, btn) = false || holdtime <= 0
 		on_draw = muzzle_draw
 	}
     script_ref_call_self(on_fire)
+    if !instance_exists(self) exit
 	instance_destroy()
 }
 else {
@@ -3949,27 +3945,26 @@ sound_play_pitch(sndHeavyRevoler,.7-_ptch/3)
 sound_play_pitch(sndSawedOffShotgun,1.8-_ptch)
 sound_play_pitch(sndSniperFire,random_range(.6,.8))
 sound_play_pitch(sndHeavySlugger,1.3+_ptch/2)
-var _c = charge, _cc = charge/maxcharge;
+var _c = charge, _cc = charge/maxcharge, _ccc = _cc = 1 ? 1 : 0;
 with creator{
 	weapon_post(12,2,158)
 	motion_add(gunangle -180,_c / 20)
 	sleep(120)
-	var q = sniper_fire(x + lengthdir_x(10, gunangle), y + lengthdir_y(10, gunangle), gunangle, team, 1 + _cc)
+	var q = sniper_fire(x + lengthdir_x(10, gunangle), y + lengthdir_y(10, gunangle), gunangle, team, 1 + _cc, _ccc)
 	with q{
 	    creator = other
-	    damage = 12 + round(28 * _cc)
+	    damage = 20 + round(20 * _cc)
 	    worth = 12
 	    instance_create(x, y, BulletHit)
 	}
-	bolt_line_bulk(q, 2 * _cc, c_yellow, c_orange)
 }
 sleep(charge*3)
 
 
-#define sniper_fire(xx, yy, angle, t, width)
-return sniper_fire_r(xx, yy, angle, t, width, 20, -1)
+#define sniper_fire(xx, yy, angle, t, width, chrg)
+return sniper_fire_r(xx, yy, angle, t, width, 20, -1, chrg)
 
-#define sniper_fire_r(xx, yy, angle, t, width, tries, pierces)
+#define sniper_fire_r(xx, yy, angle, t, width, tries, pierces, chrg)
 //FUCK YOU YOKIN FUCK YOU YOKIN FUCK YOU FUCK YOU FUCKYOU
 if tries <= 0 return [-4]
 var junk = [], _p = pierces;
@@ -3986,7 +3981,11 @@ with instance_create(xx, yy, CustomProjectile){
     worth = 12
     damage = 20
     force = 7
-
+    charged = chrg
+	c1 = c_white
+	c2 = c_yellow
+	x1 = xx
+	y1 = yy
     name = "Sniper Bullet"
     on_wall = nothing
     on_hit = sniper_hit
@@ -4002,18 +4001,19 @@ with instance_create(xx, yy, CustomProjectile){
     if _p{
         hitmes = instances_matching_ne(hitme, "team", team);
     }
+    var _charged = charged
     do {
         dir += hyperspeed
     	x += _x
     	y += _y
     	with shields if place_meeting(x, y, other) {
     	    var a = point_direction(x, y, other.x, other.y);
-    	    array_push(junk, sniper_fire_r(other.x, other.y, a, team, width, tries - 1, _p))
+    	    array_push(junk, sniper_fire_r(other.x, other.y, a, team, width, tries - 1, _p, _charged))
     	    stop = 1
     	    break
     	}
     	with slashes if place_meeting(x, y, other){
-    	    array_push(junk, sniper_fire_r(other.x, other.y, direction, team, width, tries - 1, _p))
+    	    array_push(junk, sniper_fire_r(other.x, other.y, direction, team, width, tries - 1, _p, _charged))
     	    stop = 1
     	    break
     	}
@@ -4062,6 +4062,10 @@ for var i = 0; i < array_length(stuff); i++{
 }
 
 #define sniper_end_step
+with sniper_trail(2, c1, c2){
+	fade_speed -= .015 * other.charged
+	image_alpha += .2 * other.charged
+}
 instance_destroy()
 
 #define sniper_hit
@@ -4079,6 +4083,29 @@ if skill_get(mut_recycle_gland) and recycle < worth and !irandom(1){
     }
 }
 
+
+#define sniper_trail(width, col1, col2)
+with instance_create(x, y, CustomObject){
+	col_start = col1;
+	col_end   = col2;
+	image_xscale = 1;
+	image_yscale = width;
+	
+	depth = -1;
+	creator = other.creator;
+	x1 = other.x1;
+	y1 = other.y1;
+	x2 = x;
+	y2 = y;
+	image_yscale = 1.7;
+	image_alpha = 1.2;
+	image_blend = col_start;
+	fade_speed = .1;
+	image_angle = other.direction + 90;
+	
+	on_draw = snipertrail_draw;
+	return self;
+}
 
 #define bolt_line_bulk(dudes, width, col1, col2)
 var total = 0, count = array_length(dudes)
@@ -4100,6 +4127,15 @@ with dudes{
     n2 += s
     n += w*s
 }
+
+#define snipertrail_draw
+if !instance_exists(creator){instance_delete(self); exit}
+image_alpha -= fade_speed;
+image_yscale -= fade_speed;
+var _c = merge_colour(col_start, col_end, image_alpha),
+    _l = point_distance(x1, y1, x2, y2) / sprite_get_width(spr.CursorCentre);
+if image_alpha <= 0{instance_delete(self); exit}
+draw_sprite_ext(spr.CursorCentre, 0, x1 + lengthdir_x(_l, image_angle - 90), y1 + lengthdir_y(_l, image_angle - 90), image_yscale, _l, image_angle, _c, image_alpha);
 
 #define bolt_line(x1, y1, x2, y2, width, col1, col2)
 var dis = point_distance(x1, y1, x2, y2) + 1;

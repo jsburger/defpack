@@ -21,6 +21,10 @@ return 1
 #define weapon_sprt
 return global.sprAutoKnifeThrower
 #define weapon_reloaded
+#define nts_weapon_examine
+return{
+        "d": "Can be used to slice a high quantity of bread. ",
+}
 
 #define weapon_text
 return choose("CIRCUS TRICK")

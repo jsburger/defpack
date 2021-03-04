@@ -32,7 +32,7 @@ return sndSwapMachinegun;
 #define weapon_laser_sight
 with instances_matching(instances_matching(CustomObject, "name", "ThunderSniperCharge"), "creator", self) {
     with other{
-        with mod_script_call_self("mod", "defpack tools", "sniper_fire", x, y, gunangle, team, 1 + other.charge/other.maxcharge){
+        with mod_script_call_self("mod", "defpack tools", "sniper_fire", x, y, gunangle, team, 1 + other.charge/other.maxcharge, 1){
             draw_line_width_color(xstart, ystart, x, y, 1, global.color, global.color)
             instance_destroy()
         }
@@ -69,8 +69,8 @@ with mod_script_call_self("mod", "defpack tools", "create_sniper_charge", x, y){
 }
 
 #define thunder_rifle_fire
-var _c = charge, _cc = charge/maxcharge, cr = creator;
-repeat(2) {
+var _c = charge, _cc = charge/maxcharge, _ccc = _cc = 1 ? 1 : 0, cr = creator;
+repeat(1) {
     var _ptch = random_range(-.5, .5)
     sound_play_pitch(sndHeavyRevoler, .7 - _ptch/3)
     sound_play_pitch(sndSawedOffShotgun, 1.8 - _ptch)
@@ -83,10 +83,11 @@ repeat(2) {
     	weapon_post(12,2,158)
     	motion_add(gunangle -180,_c / 20)
     	sleep(120)
-    	var q = mod_script_call_self("mod", "defpack tools", "sniper_fire", x + lengthdir_x(10, gunangle), y + lengthdir_y(10, gunangle), gunangle, team, 1 + _cc)
+    	var q = mod_script_call_self("mod", "defpack tools", "sniper_fire", x + lengthdir_x(10, gunangle), y + lengthdir_y(10, gunangle), gunangle, team, 1 + _cc, _ccc)
     	with q {
+    		c2 = merge_color(c_aqua, c_blue, .3)
     	    creator = other
-    	    damage = 12 + round(28 * _cc)
+    	    damage = 20 + round(20 * _cc)
     	    worth = 12
     	    with instance_create(x, y, BulletHit) sprite_index = global.sprLightningBulletHit
     	    var n = 3*hyperspeed/(_cc + .2)
@@ -103,10 +104,4 @@ repeat(2) {
     	}
     	mod_script_call_nc("mod", "defpack tools", "bolt_line_bulk", q, 2 * _cc, c_blue, c_aqua)
     }
-    sleep(_c*3)
-	if (mod_variable_get("weapon", "stopwatch", "slowed") == 1){
-	    repeat(5) wait(0)
-	}
-	else wait(5)
-	if !instance_exists(cr) exit
 }

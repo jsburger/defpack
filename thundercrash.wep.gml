@@ -35,7 +35,7 @@ return 14;
 
 #define nts_weapon_examine
 return{
-    "d": "Uses the most advanced weather technology to summon lightning wherever it discharges. ",
+    "d": "Uses the most advanced weather technology #to summon lightning wherever it discharges. ",
 }
 
 #define weapon_text

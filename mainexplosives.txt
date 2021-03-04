@@ -24,8 +24,6 @@
 /loadwep sonic launcher
 /loadwep supersonic launcher
 /loadwep sonic hammer
-/loadwep sonic shotgun
-/loadwep sonic rifle
 
 //SMALL EXPLOSIONS
 

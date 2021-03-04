@@ -117,3 +117,8 @@ return global.sprInfinigun2
 
 #define weapon_text
 return choose("KILLING @wENEMIES#@sGIVES YOU @wINFINITE AMMO")
+
+#define nts_weapon_examine
+return{
+    "d": "The absolute pinnacle of pop gun technology. #This gun senses fallen enemies and provides infinite ammo everytime it does so. ",
+}

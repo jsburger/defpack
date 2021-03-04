@@ -25,6 +25,11 @@ return sndSwapPistol;
 #define weapon_area
 return 11;
 
+#define nts_weapon_examine
+return{
+    "d": "These were once used to keep outlaws in check. #It didn't work out too well. ",
+}
+
 #define weapon_text
 return "ONE AND NINETEEN MORE";
 

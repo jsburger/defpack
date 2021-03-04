@@ -34,7 +34,7 @@ sound_play_pitchvol(sndNadeReload,1.4,.6)
 
 #define nts_weapon_examine
 return{
-    "d": "A Bigger Abris Pistol with more explosions and spread. ",
+    "d": "A bigger Abris Pistol with more explosions and spread. ",
 }
 
 #define weapon_text

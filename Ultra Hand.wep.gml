@@ -193,7 +193,7 @@ if instance_is(self,Player) if array_length(instances_matching(instances_matchin
 if GameCont.rad >= weapon_rads() return global.smacker else return global.smackerOff
 #define nts_weapon_examine
 return{
-    "d": "The proper gloves allows for easy rad manipulation    . ",
+    "d": "The proper gloves allows for easy rad manipulation. ",
 }
 #define weapon_text
 return "THE POWER OF INFINITY"

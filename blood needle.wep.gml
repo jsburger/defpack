@@ -14,9 +14,6 @@
 // V. 4: on kill -> create blood explo on top of enemies (covered by the bones)
 // V. 5: on kill -> +1 HP
 
-#define weapon_chrg
-  return true;
-
 #define weapon_name
   return "BLOOD NEEDLE";
 
@@ -79,7 +76,7 @@ return{
 
       team       = other.team;
       creator    = other;
-      damage     = 6;
+      damage     = 10;
       force      = 4;
       can_fix    = false;
       canreflect = false;
@@ -106,6 +103,16 @@ return{
     if _e.my_health <= 0 && !instance_is(_e, prop){
         view_shake_at(x, y, 16);
         sleep(10 + min(_e.size, 3) * 12);
+        
+        var _splat = -4;
+		_splat = determine_gore(other)
+	    repeat(3) with instance_create((other.x*other.size+x)/(other.size+1),(other.y*other.size+y)/(other.size+1),_splat){image_angle = random(360)}
+	    
+	    if other.my_health <= 0{
+	        view_shake_at(x, y, 16);
+            sleep(10 + min(_e.size, 3) * 12);
+            
+	    }
             sound_play(sndBloodlustProc);
             with _c{
                var _a = my_health < maxhealth,
@@ -125,3 +132,5 @@ return{
 
 #define needle_projectile
   with other instance_destroy();
+
+#define determine_gore(_id) return mod_script_call("mod", "defpack tools", "determine_gore", _id);

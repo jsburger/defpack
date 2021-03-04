@@ -11,7 +11,6 @@
 /loadwep fire bullet cannon
 /loadwep fire gunhammer
 /loadwep fire bullet cannon
-/loadwep fire bullak cannon
 /loadwep sniper fire rifle
 /loadwep heavy fire revolver
 /loadwep heavy fire machinegun

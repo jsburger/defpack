@@ -168,3 +168,7 @@ speed *= .8
 return global.sprGun
 #define weapon_text
 return "They can't miss this one"
+#define nts_weapon_examine
+return{
+    "d": "In case youre stranded on a veeeeery far away island. ",
+}

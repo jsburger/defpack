@@ -11,7 +11,6 @@
 /loadwep thunder bullet cannon
 /loadwep thunder gunhammer
 /loadwep thunder bullet cannon
-/loadwep thunder bullak cannon
 /loadwep sniper thunder rifle
 /loadwep heavy thunder revolver
 /loadwep heavy thunder machinegun

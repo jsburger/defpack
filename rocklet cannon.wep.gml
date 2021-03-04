@@ -26,6 +26,11 @@ return sndSwapExplosive;
 #define weapon_area
 return 11;
 
+#define nts_weapon_examine
+return{
+    "d": "A gun that fires rockets that fires rockets. ",
+}
+
 #define weapon_text
 return "WHIRLWIND";
 

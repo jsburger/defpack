@@ -5,6 +5,10 @@ global.sprTempoGun = sprite_add_weapon("sprites/weapons/sprTempoGun.png",2,3);
 //Credit to Smash Brothers (aka matt on the discord) for this gun
 
 #define weapon_name             return "TEMPO GUN";
+#define nts_weapon_examine
+return{
+    "d": "Forged by the great skycat. #Every 4th beat is a real banger. ",
+}
 #define weapon_text             return ["TO THE RHYTHM"];
 
 #define weapon_sprt             return global.sprTempoGun;

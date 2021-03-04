@@ -31,6 +31,11 @@ return false;
 #define weapon_sprt
 return global.sprSonicHammer;
 
+#define nts_weapon_examine
+return{
+    "d": "A repurposed boombox. #Uses a powerful base sound to launch enemies. ",
+}
+
 #define weapon_text
 return "BASS IN YOUR EAR";
 

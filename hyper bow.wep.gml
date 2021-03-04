@@ -1,7 +1,7 @@
 #define init
-global.sprBow      = sprite_add_weapon("sprites/weapons/sprThunderBow.png",2,8)
-global.sprArrow    = sprite_add("sprites/projectiles/sprArrow.png",1,3,4)
-global.sprArrowHUD = sprite_add_weapon("sprites/projectiles/sprArrow.png",5,3)
+global.sprBow      = sprite_add_weapon("sprites/weapons/sprThunderBow.png",6,12)
+global.sprArrow    = sprite_add("sprites/projectiles/sprThunderArrow.png",1,4,2)
+global.sprArrowHUD = sprite_add_weapon("sprites/projectiles/sprThunderArrow.png",5,3)
 
 #define weapon_name
 return "HYPER BOW"
@@ -10,16 +10,16 @@ return "HYPER BOW"
 return 3
 
 #define weapon_cost
-return 1
+return 2
 
 #define weapon_area
-return 4
+return 11
 
 #define weapon_chrg
 return 1
 
 #define weapon_load
-return 8
+return 14
 
 #define weapon_swap
 return sndSwapHammer
@@ -34,7 +34,7 @@ return false
 return false
 
 #define weapon_reloaded
-s
+
 #define weapon_sprt
 if instance_is(self,Player){
     with instances_matching(instances_matching(CustomObject, "name", "thunder bow charge"),"creator", id){
@@ -45,28 +45,30 @@ if instance_is(self,Player){
                 for var i = -.5; i <= .5; i++{
                     draw_sprite_ext(other.spr_arrow, 0, x - lengthdir_x(l, gunangle), y - lengthdir_y(l, gunangle) + yoff, 1, 1, gunangle + 12*i, c_white, 1)
                 }
-            else
-                draw_sprite_ext(other.spr_arrow, 0, x - lengthdir_x(l, gunangle), y - lengthdir_y(l, gunangle) + yoff, 1, 1, gunangle, c_white, 1)
-
+            else draw_sprite_ext(other.spr_arrow, 0, x - lengthdir_x(l, gunangle), y - lengthdir_y(l, gunangle) + yoff, 1, 1, gunangle, c_white, 1)
         }
     }
-    if race = "skeleton" return global.sprBow2
 }
 return global.sprBow
 
 #define weapon_sprt_hud
 return global.sprArrowHUD
 
+#define nts_weapon_examine
+return{
+    "d": "The limit of hunting weapon technology. #Fires arrows in a spread or straight ahead. ",
+}
+
 #define weapon_text
-return "CLASSIC"
+return "MOST ADVANCED TECHNOLOGY"
 
 #define weapon_fire
 with instance_create(x,y,CustomObject){
-    sound   = sndMeleeFlip
+    sound   = sndHyperRifle
 	name    = "thunder bow charge"
 	creator = other
 	charge    = 0
-    maxcharge = 25
+    maxcharge = 8
     defcharge = {
         style : 0,
         width : 14,
@@ -77,7 +79,7 @@ with instance_create(x,y,CustomObject){
 	depth = TopCont.depth
 	spr_arrow = global.sprArrow
 	index = creator.index
-  accuracy = other.accuracy
+    accuracy = other.accuracy
 	on_step    = bow_step
 	on_destroy = bow_destroy
 	on_cleanup = bow_cleanup
@@ -90,7 +92,7 @@ with instance_create(x,y,CustomObject){
 #define bow_step
 if !instance_exists(creator){instance_delete(self);exit}
 var timescale = (mod_variable_get("weapon", "stopwatch", "slowed") == 1) ? 30/room_speed : current_time_scale;
-if button_check(index,"swap"){instance_destroy();exit}
+if button_check(index,"swap"){instance_delete(self);exit}
 if reload = -1{
     reload = hand ? creator.breload : creator.reload
     reload += mod_script_call_nc("mod", "defpack tools", "get_reloadspeed", creator) * timescale
@@ -105,7 +107,7 @@ if button_check(index, btn){
     if charge < maxcharge{
         charge += mod_script_call_nc("mod", "defpack tools", "get_reloadspeed", creator) * timescale;
         charged = 0
-        sound_play_pitchvol(sound,sqr((charge/maxcharge) * 3.5) + 6,1 - charge/maxcharge)
+        sound_play_pitchvol(sound,sqr((charge/maxcharge) * 4) * .2,1 - charge/maxcharge * .4)
     }
     else{
         if current_frame mod 6 < current_time_scale {
@@ -130,43 +132,68 @@ bow_cleanup()
 var _p = random_range(.8,1.2)
 sound_play_pitchvol(sndSwapGuitar,4*_p,.8)
 sound_play_pitchvol(sndAssassinAttack,2*_p,.8)
-sound_play_pitchvol(sndClusterOpen,2*_p,.2)
-if charged = 0{
-    with creator weapon_post(1,-10,0)
-    with instance_create(creator.x,creator.y,Bolt){
-        sprite_index = other.spr_arrow
-        mask_index   = mskBullet1
-        creator = other.creator
-        team    = creator.team
-        damage = 10
-        move_contact_solid(creator.gunangle,6)
-        motion_add(creator.gunangle+random_range(-8,8)*creator.accuracy*(1-(other.charge/other.maxcharge)),16+6*other.charge/other.maxcharge)
-        image_angle = direction
-    }
-}
-else
-{
-    with creator{
-        weapon_post(1,-30,0)
-        repeat(6) with instance_create(x,y,Dust){
-            motion_add(random(360),choose(5,6))
-        }
-    }
-    sound_play_pitchvol(sndShovel,2,.8)
-    sound_play_pitchvol(sndUltraCrossbow,3,.8)
-    var ang = creator.gunangle + random_range(-5,5) * creator.accuracy
-    var i = -12 * accuracy;
-    repeat(3){
+sound_play_pitchvol(sndClusterOpen,1.6*_p,.5)
+sound_play_pitchvol(sndHyperLauncher,3.5*_p,1)
+sound_play_pitchvol(sndSuperCrossbow,.7*_p,.4)
+
+var _c = charge/maxcharge;
+
+if charged = 1{
+    sleep(50)
+    with instance_create(x, y, CustomObject){
+		creator = other.creator;
+	
+		spr_arrow = other.spr_arrow;
+		timer = 1
+		ammo  = 5
+		
+		on_step = hyperbow_step
+	}
+    instance_destroy()
+}else{
+    with creator weapon_post(1,-20,0)
+    
+    var ang = creator.gunangle + random_range(-5,5) * creator.accuracy,
+	    i   = -30 * accuracy * (1 - _c * .6);
+    repeat(5){
         with instance_create(creator.x,creator.y,Bolt){
             sprite_index = other.spr_arrow
             mask_index   = mskBullet1
             creator = other.creator
             team    = creator.team
-            damage = i = 0 ? 10 : 5
-            move_contact_solid(creator.gunangle,6)
-            motion_add(ang + i,20)
+            damage = 8
+            move_contact_solid(creator.gunangle,2)
+            motion_add(ang + i,30)
             image_angle = direction
         }
-        i += 12 * accuracy;
+        i += 15 * accuracy * (1 - _c * .6);
     }
 }
+
+#define hyperbow_step
+	timer -= current_time_scale
+	if timer <= 0{
+		timer = 2
+		ammo--
+		
+		with creator{
+	        weapon_post(1,-10,0)
+	        repeat(6) with instance_create(x,y,Dust){
+	            motion_add(random(360),choose(5,6))
+	        }
+	    }
+	    sound_play_pitchvol(sndShovel,2,.8)
+    sound_play_pitchvol(sndUltraCrossbow,3,.8)
+		
+	    with instance_create(creator.x + lengthdir_x(2 + irandom(5), creator.gunangle + choose(-90, 90)),creator.y + lengthdir_y(2 + irandom(5), creator.gunangle + choose(-90, 90)),HeavyBolt){
+            sprite_index = global.sprArrow
+            mask_index   = mskBullet1
+            creator = other.creator
+            team    = creator.team
+            damage = 11
+            move_contact_solid(creator.gunangle,4)
+            motion_add(creator.gunangle,32)
+            image_angle = direction
+        }
+    }
+    if ammo <= 0 instance_destroy()
