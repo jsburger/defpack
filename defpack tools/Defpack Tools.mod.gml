@@ -3840,6 +3840,8 @@ with instance_create(x, y, CustomObject){
 	maxcharge = 100
 	chargespeed = 3.2
 	holdtime = 150
+	amount   = 1;
+	deviation = 0;
 	depth  = TopCont.depth
 	index  = -1
 	reload = -1
@@ -3940,22 +3942,38 @@ snipercharge_delete()
 
 #define snipercharge_fire
 //default sniper shot
+if amount <= 1{
 var _ptch = random_range(-.5,.5)
-sound_play_pitch(sndHeavyRevoler,.7-_ptch/3)
-sound_play_pitch(sndSawedOffShotgun,1.8-_ptch)
-sound_play_pitch(sndSniperFire,random_range(.6,.8))
-sound_play_pitch(sndHeavySlugger,1.3+_ptch/2)
+	sound_play_pitch(sndHeavyRevoler,.7-_ptch/3)
+	sound_play_pitch(sndSawedOffShotgun,1.8-_ptch)
+	sound_play_pitch(sndSniperFire,random_range(.6,.8))
+	sound_play_pitch(sndHeavySlugger,1.3+_ptch/2)
+}else{
+	sound_play_pitch(sndHeavySlugger,.55-_ptch/8)
+	sound_play_pitch(sndHeavyNader,.4-_ptch/8)
+	sound_play_pitch(sndNukeExplosion,5-_ptch*2)
+	sound_play_pitch(sndSawedOffShotgun,1.8-_ptch)
+	sound_play_pitch(sndSniperFire,random_range(.6,.8))
+}
 var _c = charge, _cc = charge/maxcharge, _ccc = _cc = 1 ? 1 : 0;
 with creator{
-	weapon_post(12,2,158)
-	motion_add(gunangle -180,_c / 20)
-	sleep(120)
-	var q = sniper_fire(x + lengthdir_x(10, gunangle), y + lengthdir_y(10, gunangle), gunangle, team, 1 + _cc, _ccc)
-	with q{
-	    creator = other
-	    damage = 20 + round(20 * _cc)
-	    worth = 12
-	    instance_create(x, y, BulletHit)
+	if other.amount <= 1{
+		weapon_post(12,2,158)
+		motion_add(gunangle -180,_c / 20)
+		sleep(120)
+	}else{
+		weapon_post(15,10,210)
+		motion_add(gunangle -180,_c / 5)
+		sleep(150)
+	}
+	repeat(other.amount){
+		var q = sniper_fire(x + lengthdir_x(10, gunangle), y + lengthdir_y(10, gunangle), gunangle + random(other.deviation) * choose(-1, 1) * (1 - other.charge/other.maxcharge), team, 1 + _cc, _ccc)
+		with q{
+		    creator = other
+		    damage = 20 + round(20 * _cc)
+		    worth = 12
+		    instance_create(x, y, BulletHit)
+		}
 	}
 }
 sleep(charge*3)
@@ -3970,7 +3988,7 @@ if tries <= 0 return [-4]
 var junk = [], _p = pierces;
 with instance_create(xx, yy, CustomProjectile){
     mask_index = mskLaser
-    image_yscale = 2
+    image_yscale = 2.5
     image_xscale = 3
     team = t
     image_angle = angle;
@@ -4063,7 +4081,7 @@ for var i = 0; i < array_length(stuff); i++{
 
 #define sniper_end_step
 with sniper_trail(2, c1, c2){
-	fade_speed -= .015 * other.charged
+	fade_speed -= .0225 * other.charged
 	image_alpha += .2 * other.charged
 }
 instance_destroy()

@@ -21,10 +21,10 @@ return 1;
 return 1;
 
 #define weapon_load
-return 20;
+return 30;
 
 #define weapon_cost
-return 24;
+return 30;
 
 #define weapon_swap
 return sndSwapMachinegun;
@@ -87,7 +87,7 @@ repeat(1) {
     	with q {
     		c2 = merge_color(c_aqua, c_blue, .3)
     	    creator = other
-    	    damage = 20 + round(20 * _cc)
+    	    damage = 12 + round(12 * _cc)
     	    worth = 12
     	    with instance_create(x, y, BulletHit) sprite_index = global.sprLightningBulletHit
     	    var n = 3*hyperspeed/(_cc + .2)
@@ -101,7 +101,47 @@ repeat(1) {
     	            with instance_create(x, y, LightningSpawn) image_angle = other.image_angle
     	        }
     	    }
-    	}
     	mod_script_call_nc("mod", "defpack tools", "bolt_line_bulk", q, 2 * _cc, c_blue, c_aqua)
+    	}
+    	var q = mod_script_call_self("mod", "defpack tools", "sniper_fire", x + lengthdir_x(10, gunangle), y + lengthdir_y(10, gunangle), gunangle - 12 * accuracy, team, 1 + _cc, _ccc)
+    	with q {
+    		c2 = merge_color(c_aqua, c_blue, .3)
+    	    creator = other
+    	    damage = 12 + round(12 * _cc)
+    	    worth = 12
+    	    with instance_create(x, y, BulletHit) sprite_index = global.sprLightningBulletHit
+    	    var n = 3*hyperspeed/(_cc + .2)
+    	    for var i = 12; i < image_xscale; i += random(n){
+    	        with instance_create(xstart + lengthdir_x(2*i, direction), ystart + lengthdir_y(2*i, direction), Lightning){
+    	            creator = cr
+    	            team = cr.team
+    	            ammo = choose(1, 2) * ceil(3*(.1 + _cc))
+    	            alarm0 = ceil(i/12)
+    	            image_angle = other.direction + random_range(-90, 90)
+    	            with instance_create(x, y, LightningSpawn) image_angle = other.image_angle
+    	        }
+    	    }
+    	mod_script_call_nc("mod", "defpack tools", "bolt_line_bulk", q, 2 * _cc, c_blue, c_aqua)
+    	}
+    	var q = mod_script_call_self("mod", "defpack tools", "sniper_fire", x + lengthdir_x(10, gunangle), y + lengthdir_y(10, gunangle), gunangle + 12 * accuracy, team, 1 + _cc, _ccc)
+    	with q {
+    		c2 = merge_color(c_aqua, c_blue, .3)
+    	    creator = other
+    	    damage = 12 + round(12 * _cc)
+    	    worth = 12
+    	    with instance_create(x, y, BulletHit) sprite_index = global.sprLightningBulletHit
+    	    var n = 3*hyperspeed/(_cc + .2)
+    	    for var i = 12; i < image_xscale; i += random(n){
+    	        with instance_create(xstart + lengthdir_x(2*i, direction), ystart + lengthdir_y(2*i, direction), Lightning){
+    	            creator = cr
+    	            team = cr.team
+    	            ammo = choose(1, 2) * ceil(3*(.1 + _cc))
+    	            alarm0 = ceil(i/12)
+    	            image_angle = other.direction + random_range(-90, 90)
+    	            with instance_create(x, y, LightningSpawn) image_angle = other.image_angle
+    	        }
+    	    }
+    	mod_script_call_nc("mod", "defpack tools", "bolt_line_bulk", q, 2 * _cc, c_blue, c_aqua)
+    	}
     }
 }
