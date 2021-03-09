@@ -1,5 +1,5 @@
 #define init
-global.sprSniperShotgun = sprite_add_weapon("sprites/weapons/sprSniperRifle.png", 5, 3);
+global.sprSniperShotgun = sprite_add_weapon("sprites/weapons/sprSniperShotgun.png", 5, 3);
 global.deviation = 25;
 
 #define weapon_chrg
@@ -30,16 +30,15 @@ return "sniper x shotgun"
 return sndSwapMachinegun;
 
 #define weapon_laser_sight
-with instances_matching(instances_matching(CustomObject, "name", "SniperCharge"), "creator", self) {
+with instances_matching(instances_matching(CustomObject, "name", "SniperCharge"), "creator", self){
     with other {
         draw_set_alpha(.3 + .7  * (other.charge/other.maxcharge))
         var _c = 14074;
-        if 
-        with mod_script_call_self("mod", "defpack tools", "sniper_fire", x, y, gunangle - global.deviation * (1 - other.charge/other.maxcharge), team, 1 + other.charge/other.maxcharge, 1){
+        with mod_script_call_self("mod", "defpack tools", "sniper_fire", x, y, gunangle - (global.deviation * (1 - other.charge/other.maxcharge)) * accuracy, team, 1 + other.charge/other.maxcharge, 1){
             draw_line_width_color(xstart, ystart, x, y, 1, _c, _c)
             instance_destroy()
         }
-        with mod_script_call_self("mod", "defpack tools", "sniper_fire", x, y, gunangle + global.deviation * (1 - other.charge/other.maxcharge), team, 1 + other.charge/other.maxcharge, 1){
+        with mod_script_call_self("mod", "defpack tools", "sniper_fire", x, y, gunangle + (global.deviation * (1 - other.charge/other.maxcharge)) * accuracy, team, 1 + other.charge/other.maxcharge, 1){
             draw_line_width_color(xstart, ystart, x, y, 1, _c, _c)
             instance_destroy()
         }
@@ -58,7 +57,7 @@ weapon_post(-2, -4, 5)
 return -1;
 
 #define weapon_area
-return 9;
+return 13;
 
 #define weapon_text
 return choose("THE PARADOX");

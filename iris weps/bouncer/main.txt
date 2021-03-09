@@ -11,6 +11,7 @@
 /loadwep bouncer gunhammer
 /loadwep bouncer bullet cannon
 /loadwep sniper bouncer rifle
+/loadwep sniper bouncer shotgun
 /loadwep heavy bouncer revolver
 /loadwep heavy bouncer machinegun
 /loadwep heavy assault bouncer rifle

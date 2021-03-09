@@ -62,7 +62,7 @@ with mod_script_call_self("mod", "defpack tools", "create_sniper_charge", x, y){
     creator = other
     team = other.team
     index = other.index
-    chargespeed = 2.8
+    chargespeed = 2
     cost = weapon_cost()
     on_fire = script_ref_create(thunder_rifle_fire)
     spr_flash = global.sprThunderMuzzle
@@ -70,15 +70,18 @@ with mod_script_call_self("mod", "defpack tools", "create_sniper_charge", x, y){
 
 #define thunder_rifle_fire
 var _c = charge, _cc = charge/maxcharge, _ccc = _cc = 1 ? 1 : 0, cr = creator;
+var _s = skill_get(mut_laser_brain)
 repeat(1) {
     var _ptch = random_range(-.5, .5)
-    sound_play_pitch(sndHeavyRevoler, .7 - _ptch/3)
-    sound_play_pitch(sndSawedOffShotgun, 1.8 - _ptch)
-    sound_play_pitch(sndHeavyMachinegun, 1.7 + _ptch)
-    sound_play_pitch(sndLightningRifleUpg, random_range(1.8, 2.1))
-    sound_play_pitchvol(sndGammaGutsKill, random_range(1.8, 2.1), 1 * skill_get(17))
-    sound_play_pitch(sndSniperFire, random_range(.6, .8))
-    sound_play_pitch(sndHeavySlugger, 1.3 + _ptch/2)
+    sound_play_pitch(sndHeavySlugger,.55-_ptch/8)
+    sound_play_pitch(sndHeavyNader,.4-_ptch/8)
+    sound_play_pitch(sndSawedOffShotgun,1.3-_ptch)
+    sound_play_pitch(sndSniperFire,random_range(.6,.8))
+    sound_play_pitch(sndLightningCannon,.6*_ptch)
+  sound_play_pitch(sndLightningCannonEnd,.5*_ptch)
+  sound_play_pitch(sndGammaGutsKill,.5*_ptch*_s)
+  sound_play_pitch(sndLightningRifleUpg,.7*_s*_ptch)
+  sound_play_pitch(sndLightningReload,.6*_ptch*(1-_s))
     with cr {
     	weapon_post(12,2,158)
     	motion_add(gunangle -180,_c / 20)

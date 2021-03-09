@@ -3962,9 +3962,9 @@ with creator{
 		motion_add(gunangle -180,_c / 20)
 		sleep(120)
 	}else{
-		weapon_post(15,10,210)
+		weapon_post(15,40,210)
 		motion_add(gunangle -180,_c / 5)
-		sleep(150)
+		sleep(200)
 	}
 	repeat(other.amount){
 		var q = sniper_fire(x + lengthdir_x(10, gunangle), y + lengthdir_y(10, gunangle), gunangle + random(other.deviation) * choose(-1, 1) * (1 - other.charge/other.maxcharge), team, 1 + _cc, _ccc)

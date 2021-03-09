@@ -64,6 +64,7 @@ with mod_script_call_self("mod", "defpack tools", "create_sniper_charge", x, y){
     cost = weapon_cost()
     on_fire = script_ref_create(fire_rifle_fire)
     spr_flash = global.sprFireMuzzle
+    deviation = 7 * other.accuracy
 }
 
 #define fire_rifle_fire
@@ -81,7 +82,7 @@ with creator{
 	weapon_post(12,2,158)
 	motion_add(gunangle -180,_c / 20)
 	sleep(120)
-	var q = mod_script_call_self("mod", "defpack tools", "sniper_fire", x + lengthdir_x(10, gunangle), y + lengthdir_y(10, gunangle), gunangle, team, 1 + _cc, _ccc)
+	var q = mod_script_call_self("mod", "defpack tools", "sniper_fire", x + lengthdir_x(10, gunangle), y + lengthdir_y(10, gunangle), gunangle + random(other.deviation) * choose(-1, 1) * (1 - other.charge/other.maxcharge), team, 1 + _cc, _ccc)
 	with q{
 		c1 = c_red
 		c2 = c_yellow
