@@ -41,9 +41,9 @@ return false;
 #define weapon_load(wep)
   if is_object(wep){
     switch wep.health{
-      case 2: return 24;
-      case 1: return 18;
-      case 0: return 10;
+      case 2: return 19;
+      case 1: return 14;
+      case 0: return 9;
     }
   }
   return 24;
