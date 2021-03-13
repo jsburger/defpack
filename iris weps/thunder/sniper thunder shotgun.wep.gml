@@ -80,13 +80,17 @@ with mod_script_call_self("mod", "defpack tools", "create_sniper_charge", x, y){
     var _c = charge, _cc = charge/maxcharge, _ccc = _cc = 1 ? 1 : 0, cr = creator;
     var _ptch = random_range(-.5, .5)
     sound_play_pitch(sndHeavySlugger,.55-_ptch/8)
-    sound_play_pitch(sndHeavyNader,.4-_ptch/8)
-    sound_play_pitch(sndExplosionL,1.5-_ptch/2)
-    sound_play_pitch(sndNukeExplosion,9-_ptch*2)
-    sound_play_pitch(sndSawedOffShotgun,1.8-_ptch)
-    sound_play_pitch(sndSniperFire,random_range(.6,.8))
-    sound_play_pitch(sndLightningRifleUpg, random_range(1.4, 1.7))
-    sound_play_pitchvol(sndGammaGutsKill, random_range(1.3, 1.6), 1 * skill_get(17))
+  	sound_play_pitch(sndHeavyNader,.4-_ptch/8)
+  	sound_play_pitch(sndNukeExplosion,5-_ptch*2)
+  	sound_play_pitch(sndSawedOffShotgun,1.8-_ptch)
+  	sound_play_pitch(sndSniperFire,random_range(.6,.8))
+    if skill_get(mut_laser_brain) > 0{
+      sound_play_pitch(sndLightningCannonEnd,.8*random_range(.8, 1.2))
+      sound_play_pitch(sndGammaGutsKill,.6*random_range(.8, 1.2))
+    }
+    sound_play_pitch(sndLightningRifleUpg,1.4*random_range(.8, 1.2))
+    sound_play_pitch(sndLaserUpg,.8*random_range(.8, 1.2))
+    sound_play_pitch(sndLightningReload,.8*random_range(.8, 1.2))
     with cr {
     	weapon_post(15,40,210)
 		motion_add(gunangle -180,_c / 5)
@@ -94,7 +98,7 @@ with mod_script_call_self("mod", "defpack tools", "create_sniper_charge", x, y){
 
 
         var _a = -other.deviation;
-            
+
         repeat(other.amount){
         	var q = mod_script_call_self("mod", "defpack tools", "sniper_fire", x + lengthdir_x(10, gunangle), y + lengthdir_y(10, gunangle), gunangle + _a * (1-other.charge/other.maxcharge), team, 1 + _cc, _ccc)
         	with q {

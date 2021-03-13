@@ -60,6 +60,7 @@ with instance_create(x,y,CustomProjectile){
     creator = other
     sprite_index = global.sprWideSlug
     mask_index = global.mskWideSlug
+    move_contact_solid(other.gunangle, 6)
     motion_add(other.gunangle+random_range(-4,4)*other.accuracy,6)
     maxspeed = speed
     image_angle = direction

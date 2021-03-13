@@ -33,7 +33,7 @@
 /loadwep tsunami
 /loadwep ultra claymore
 /loadwep tempest blade
-
+/loadwep auto sniper rifle
 /loadwep square gun
 /loadwep square rifle
 /loadwep square cannon
