@@ -66,7 +66,7 @@
   repeat(2){
       with instance_create(x - lengthdir_x(_o, direction) + lengthdir_x(_w, direction + 90), y - lengthdir_y(_o, direction) + lengthdir_y(_w, direction + 90), BoltTrail){
        image_xscale = _o * .85;
-       image_yscale = (.7 + other.speed / 30) * .7;   
+       image_yscale = (.7 + other.speed / 30) * .7;
        image_angle  = other.direction;
       }
       _w *= -1;
@@ -75,7 +75,7 @@
   if instance_exists(creator)
   {
       whooshtime = (whooshtime + current_time_scale) mod (maxwhoosh + phase)
-      if whooshtime < current_time_scale audio_play_ext(sndMeleeFlip, x, y, 2.4 - length/6 + random_range(-.1, .1) - phase * .4, length/6, 0); 
+      if whooshtime < current_time_scale audio_play_ext(sndMeleeFlip, x, y, 2.4 - length/6 + random_range(-.1, .1) - phase * .4, length/6, 0);
   }
   with Pickup
   {
@@ -138,7 +138,10 @@
     if instance_exists(creator)
     {
       var _d = point_direction(x,y,creator.x,creator.y)
-      if phase = 1 {motion_add(_d,8*current_time_scale)}
+      if phase = 1 {
+        if irandom(3) <= current_time_scale{repeat(1 + irandom(2)) with instance_create(x + random_range(-4, 4), y + random_range(-4, 4), Dust){motion_add(other.direction, random_range(2, 4))}}
+        motion_add(_d,8*current_time_scale)
+      }
       var _r = weapon_get_load(mod_current)
       if distance_to_object(creator) <= 9+skill_get(17)*3
       {
@@ -193,5 +196,5 @@ return{
 
 #define boom_draw
   draw_sprite_ext(sprite_index,image_index,x,y, image_xscale, image_yscale, ang, image_blend, image_alpha);
-  
+
 #define audio_play_ext(snd, x, y, pitch, vol, stack) mod_script_call("mod", "defpack tools", "audio_play_ext", snd, x, y, pitch, vol, stack)

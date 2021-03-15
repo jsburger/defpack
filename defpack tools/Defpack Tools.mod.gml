@@ -1943,8 +1943,8 @@ if other != lasthit{
 		{
 			var _d = "meleedamage" in creator ? creator.meleedamage * 2 : 5;
 			var _s = (ceil(superforce) + _h.size) + _d;
-			sleep(_s / 3 * max(1, _h.size))	
-			view_shake_at(x, y, _s / 3 * max(1, _h.size))	
+			sleep(_s / 3 * max(1, _h.size))
+			view_shake_at(x, y, _s / 3 * max(1, _h.size))
 			projectile_hit(_h,_s, superforce, direction);
 			projectile_hit(creator, round(superforce / 2), 0, direction);
 			//trace("enemy hit")
@@ -3220,7 +3220,7 @@ if speed < friction instance_destroy()
 
 			_p.bwep.health += _val;
 			_p.gunshine = 6;
-			
+
 			if _p.bwep.health >= _p.bwep.maxhealth{
 				_p.bwep.health = _p.bwep.maxhealth;
 				_str = `MAX @(color:${make_colour_rgb(201, 223, 255)})QUARTZ @wHP`;
@@ -3275,7 +3275,7 @@ if speed < friction instance_destroy()
 		    image_speed = choose(.7,.7,.7,.45)
 		  }
 		}
-	
+
 		if _w.prevhealth > my_health {
 			if _w.wep = _mod{
 				_w.health--;
@@ -4108,7 +4108,7 @@ with instance_create(x, y, CustomObject){
 	col_end   = col2;
 	image_xscale = 1;
 	image_yscale = width;
-	
+
 	depth = -1;
 	creator = other.creator;
 	x1 = other.x1;
@@ -4120,7 +4120,7 @@ with instance_create(x, y, CustomObject){
 	image_blend = col_start;
 	fade_speed = .1;
 	image_angle = other.direction + 90;
-	
+
 	on_draw = snipertrail_draw;
 	return self;
 }
@@ -4298,6 +4298,7 @@ if !irandom(2 - skill_get(mut_laser_brain) > 0) with instance_create(x-lengthdir
         {
         	sprite_index = spr.VectorEffect
         	image_angle = other.direction
+					image_speed = .4 - (skill_get(mut_laser_brain) > 0 ? .2 : 0);
         	motion_set(other.direction,choose(1,2))
         }
 var _targ = instance_nearest_matching_ne(x, y, hitme, "team", team), _diff = angle_difference(direction, basedir);

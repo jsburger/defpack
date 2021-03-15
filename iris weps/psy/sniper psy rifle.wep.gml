@@ -1,5 +1,5 @@
 #define init
-global.sprSniperPsyRifle = sprite_add_weapon("../../sprites/weapons/iris/psy/sprSniperPsyRifle.png", 5, 3);
+global.sprSniperPsyRifle = sprite_add_weapon("../../sprites/weapons/iris/psy/sprSniperPsyRifle.png", 5, 4);
 global.sprPsyBullet 		 = sprite_add("../../sprites/projectiles/iris/psy/sprPsyMuzzle.png", 1, 8, 8);
 global.sprPsyBulletHit   = sprite_add("../../sprites/projectiles/iris/psy/sprPsyBulletHit.png", 4, 8, 8);
 global.epic = 1

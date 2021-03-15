@@ -1,5 +1,5 @@
 #define init
-global.sprSniperThunderRifle = sprite_add_weapon("../../sprites/weapons/iris/thunder/sprSniperThunderRifle.png", 5, 3);
+global.sprSniperThunderRifle = sprite_add_weapon("../../sprites/weapons/iris/thunder/sprSniperThunderRifle.png", 5, 4);
 global.sprThunderMuzzle   	 = sprite_add("../../sprites/projectiles/iris/thunder/sprThunderMuzzle.png", 1, 7, 7)
 global.sprLightningBulletHit = sprite_add("../../sprites/projectiles/iris/thunder/sprThunderBulletHit.png", 4, 8, 8)
 

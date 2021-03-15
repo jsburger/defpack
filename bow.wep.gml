@@ -63,7 +63,7 @@ return global.sprArrowHUD
 
 #define nts_weapon_examine
 return{
-    "d": "An old-fashioned hunting weapon. # Can hold up to 3 arrows. ",
+    "d": "An old-fashioned hunting weapon. #Can hold up to 3 arrows. ",
 }
 
 #define weapon_text

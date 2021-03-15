@@ -1,5 +1,5 @@
 #define init
-global.sprSniperBouncerRifle = sprite_add_weapon("../../sprites/weapons/iris/bouncer/sprSniperBouncerRifle.png", 6, 2);
+global.sprSniperBouncerRifle = sprite_add_weapon("../../sprites/weapons/iris/bouncer/sprSniperBouncerRifle.png", 6, 3);
 global.color = 14074
 #define weapon_name
 return "BOUNCER SNIPER RIFLE"

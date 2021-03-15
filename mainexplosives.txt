@@ -46,6 +46,7 @@
 
 //OTHER EXPLOSIVE
 
+/loadwep satchel charge
 /loadwep chainsaw
 /loadwep push piston
 /loadwep claymore
