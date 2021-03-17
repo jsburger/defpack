@@ -61,7 +61,7 @@ return choose("ROCK AND STONE")
   }
 
 #define chrg_step
-  if !instance_exists(creator){instance_delete(self);exit}
+  if !instance_exists(creator){instance_delete(self);exit;sound_stop(sndIDPDNadeAlmost)}
   x = creator.x + creator.hspeed
   y = creator.y + creator.vspeed
   if button_check(creator.index, "swap") && (creator.canswap = true || creator.bwep != 0){
@@ -69,13 +69,14 @@ return choose("ROCK AND STONE")
     creator.ammo[_t] += weapon_get_cost(mod_current)
     if creator.ammo[_t] > creator.typ_amax[_t] creator.ammo[_t] = creator.typ_amax[_t]
     instance_delete(self)
+    sound_stop(sndIDPDNadeAlmost)
     exit
   }
   var timescale = (mod_variable_get("weapon", "stopwatch", "slowed") == 1) ? 30/room_speed : current_time_scale;
   with creator{
     weapon_post(2 * other.charge / other.maxcharge, 0, 0);
   }
-  if button_check(index,"swap"){instance_destroy();exit}
+  if button_check(index,"swap"){instance_destroy();exit;sound_stop(sndIDPDNadeAlmost)}
   if reload = -1{
       reload = hand ? creator.breload : creator.reload
       reload += mod_script_call_nc("mod", "defpack tools", "get_reloadspeed", creator) * timescale
@@ -89,7 +90,7 @@ return choose("ROCK AND STONE")
       if charge < maxcharge{
           charge += mod_script_call_nc("mod", "defpack tools", "get_reloadspeed", creator) * timescale;
           charged = 0
-          sound_play_pitchvol(sndMeleeFlip, charge/maxcharge * 2 + .5, .4)
+          sound_play_pitchvol(sndIDPDNadeAlmost, charge/maxcharge * .45 + .25, .05 + .95 * charge/maxcharge)
       }
       else{
           if current_frame mod 6 < current_time_scale {
@@ -103,7 +104,7 @@ return choose("ROCK AND STONE")
           }
       }
   }
-  else{instance_destroy()}
+  else{instance_destroy();sound_stop(sndIDPDNadeAlmost)}
 
 #define chrg_destroy
 if instance_exists(creator) with creator{

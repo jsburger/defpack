@@ -1,5 +1,5 @@
 #define init
-global.sprFlakCanon = sprite_add_weapon("../sprites/weapons/sprFlakCanon.png", 3, 2);
+global.sprFlakCanon = sprite_add_weapon("sprites/weapons/sprFlakCanon.png", 3, 2);
 
 while 1{
     with instances_matching(WepPickup, "wep", mod_current){
@@ -28,7 +28,7 @@ return false;
 return 47;
 
 #define weapon_cost
-return 8;
+return 25;
 
 #define weapon_swap
 return sndSwapExplosive;

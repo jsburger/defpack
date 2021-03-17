@@ -1,6 +1,6 @@
 #define init
-global.sprLightningFlareGun = sprite_add_weapon("sprites/weapons/sprLightningFlareGun.png",2,3)
-global.sprLightingGrenade   = sprite_add("sprites/projectiles/sprLightingNade.png", 0, 3, 3)
+global.sprLightningFlareGun = sprite_add_weapon("../sprites/weapons/sprLightningFlareGun.png",2,3)
+global.sprLightingGrenade   = sprite_add("../sprites/projectiles/sprLightingNade.png", 0, 3, 3)
 return "LIGHTNING FLARE GUN"
 #define weapon_type
 return 4 // cmon burg
@@ -57,7 +57,7 @@ repeat(3) instance_create(x, y, Smoke)
 #define lflare_step
 if irandom(2) = 0
 {
-  with instance_create(x,y,EnemyLightning)
+  with instance_create(x,y,Lightning)
   {
     image_angle = random(360)
     team = other.team
@@ -90,17 +90,17 @@ if timer > 0
   repeat(2)
   {
     sound_play_pitchvol(sndLightningHit, random_range(.8, 1.2), .6)
-    with instance_create(x,y,EnemyLightning)
+    with instance_create(x,y,Lightning)
     {
       image_angle = random(360)
-      team = -500
+      team = other.team
       creator = other.creator
       ammo = 7 + irandom(1) + 2 * (skill_get(mut_laser_brain))
       alarm0 = 1
       visible = 0
       with instance_create(x,y,LightningSpawn){image_angle = other.image_angle}
     }
-    with instances_matching(EnemyLightning, "team", -500){if "dflag" not in self{dflag = "E"; damage += 5}}
+    with instances_matching(Lightning, "team", -500){if "dflag" not in self{dflag = "E"; damage += 5}}
   }
 }
 else instance_delete(self)

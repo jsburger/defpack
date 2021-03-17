@@ -8,7 +8,6 @@
 /loadwep dart bazooka
 /loadwep evolver
 /loadwep first aid soda
-/loadwep flak canon
 /loadwep good shotgun
 /loadwep heavy blood crossbow
 /loadwep heavy toxic crossbow
@@ -45,3 +44,4 @@
 /loadwep splinter bow
 /loadwep sonic shotgun
 /loadwep sonic rifle
+/loadwep lightning flare gun

@@ -323,6 +323,10 @@
 		draw_circle_color(x,y,550 + random(10), c_gray,c_gray,0)
 		draw_circle_color(x,y,250 + random(10), c_black,c_black,0)
 	}
+	with instances_matching(CustomObject,"name","Lightning Wheel"){
+		draw_circle_color(x,y,32 + random(4), c_gray,c_gray,0)
+		draw_circle_color(x,y,24 + random(4), c_black,c_black,0)
+	}
 	with instances_matching([Bolt,BoltStick],"name","marker bolt"){
 		draw_circle_color(x+lengthdir_x(sprite_width/2+2,direction),y+lengthdir_y(sprite_width/2+2,direction),35 + random(3), c_gray,c_gray,0)
 		draw_circle_color(x+lengthdir_x(sprite_width/2+2,direction),y+lengthdir_y(sprite_width/2+2,direction),20 + random(3), c_black,c_black,0)
@@ -455,6 +459,13 @@ with instances_matching_ne(CustomProjectile, "defbloom", undefined) {
         lq_defget(defbloom, "angle", image_angle), image_blend, defbloom.alpha * image_alpha
     )
 }
+with instances_matching_ne(CustomObject, "defbloom", undefined) {
+    draw_sprite_ext(
+        lq_defget(defbloom,"sprite",sprite_index), image_index, x, y,
+        defbloom.xscale * image_xscale, defbloom.yscale * image_yscale,
+        lq_defget(defbloom, "angle", image_angle), image_blend, defbloom.alpha * image_alpha
+    )
+}
 with instances_matching(CustomProjectile,"name","vector beam"){
   draw_sprite_ext(sprite_index, image_index, xstart, ystart, image_xscale, 1.5*image_yscale, image_angle, image_blend, 0.15+skill_get(17)*.05);
 	if x != xstart draw_sprite_ext(spr_tail, 0, xstart, ystart, 1.5, image_yscale*1.5, image_angle, image_blend, .15+skill_get(17)*.05);
@@ -524,6 +535,17 @@ with Player if visible{
 	// Give all explosions a hitid since manually setting them is stupid
 	with instances_matching([Explosion, SmallExplosion, GreenExplosion, PopoExplosion], "hitid", -1) {
 	    hitid = [sprite_index, string_replace(string_upper(object_get_name(object_index)), "EXPLOSION", " EXPLOSION")]
+	}
+
+	// Shot cannon epic troll transformation (why is it called flak canon?)
+	with instances_matching(WepPickup, "wep", "shot cannon"){
+		if "defcheck" not in self{
+			defcheck = true;
+			if curse && irandom(4) = 0{
+				wep = "flak canon";
+				curse = false;
+			}
+		}
 	}
 
 	// Donut Drops
@@ -4148,8 +4170,8 @@ with dudes{
 
 #define snipertrail_draw
 if !instance_exists(creator){instance_delete(self); exit}
-image_alpha -= fade_speed;
-image_yscale -= fade_speed;
+image_alpha -= fade_speed * current_time_scale;
+image_yscale -= fade_speed * current_time_scale;
 var _c = merge_colour(col_start, col_end, image_alpha),
     _l = point_distance(x1, y1, x2, y2) / sprite_get_width(spr.CursorCentre);
 if image_alpha <= 0{instance_delete(self); exit}
@@ -4294,7 +4316,7 @@ with instance_create(_x, _y, CustomProjectile) {
 
 #define vector_head_step
 var _r = 90 * choose(-1, 1)
-if !irandom(2 - skill_get(mut_laser_brain) > 0) with instance_create(x-lengthdir_x(10,direction + _r)+random_range(-2,2),y-lengthdir_y(10,direction + _r)+random_range(-2,2),BulletHit)
+if !irandom((2 - skill_get(mut_laser_brain)) > 0) with instance_create(x-lengthdir_x(10,direction + _r)+random_range(-2,2),y-lengthdir_y(10,direction + _r)+random_range(-2,2),BulletHit)
         {
         	sprite_index = spr.VectorEffect
         	image_angle = other.direction
