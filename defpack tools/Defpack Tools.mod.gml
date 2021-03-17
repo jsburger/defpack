@@ -1546,7 +1546,7 @@ with target{
 
 #define toxic_destroy
 repeat(2){
-	with instance_create(x,y,ToxicGas){friction *= 4}
+	with instance_create(x,y,ToxicGas){friction *= 4; growspeed /= 4}
 }
 bullet_destroy()
 
@@ -3237,8 +3237,8 @@ if speed < friction instance_destroy()
 		_w.prevhealth = _creator.my_health;
 
 		if _w.health < _w.maxhealth{
-			with HPPickup{
-				if "quartz_check" not in self && ((irandom(99) + 1) < (20 * (1 - _w.health/_w.maxhealth))){
+			with AmmoPickup{
+				if "quartz_check" not in self && ((irandom(99) + 1) < (10 * (1 - _w.health/_w.maxhealth))){
 					quartz_pickup_create(x, y);
 					instance_delete(self);
 					exit;

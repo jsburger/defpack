@@ -2,9 +2,19 @@
 global.sprInfinigun2   = sprite_add_weapon("sprites/weapons/sprFlex.png",8,4)
 global.sprBluellet2    = sprite_add("sprites/projectiles/sprFlexBullet.png",2,12,12)
 global.sprBluellet2Hit = sprite_add("sprites/projectiles/sprFlexBulletHit.png",6,12,12)
+global.sprHUD1 = sprite_add("sprites/interface/sprFlexHUD1.png", 1, 8, 4);
+global.sprHUD2 = sprite_add("sprites/interface/sprFlexHUD2.png", 1, 8, 4);
 
 #define weapon_name
 return "FLEX"
+
+#define weapon_sprt_hud
+if "infammo" in self{
+  if infammo > 0{
+    return global.sprHUD2;
+  }else return global.sprHUD1;
+}
+return global.sprHUD1;
 
 #define weapon_type
 return 1
