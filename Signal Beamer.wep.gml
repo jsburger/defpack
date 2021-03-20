@@ -32,7 +32,7 @@ if "ammo" in self
 else{return global.sprSignalBeamer}
 
 #define weapon_sprt
-if "ammo" in self
+if "ammo" in self && "race" in self
 {
 	//if !is_array(ammo){return global.sprSignalBeamer;exit}
 	if my_health/maxhealth >= (margin_yellow){return global.sprSignalBeamerG}

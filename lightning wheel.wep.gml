@@ -3,6 +3,7 @@
   global.sprLightningWheelHUD  = sprite_add_weapon("sprites/weapons/sprLightningWheel.png",3,5);
   global.sprLightningWheelProj = sprite_add("sprites/projectiles/sprLightningWheelProj.png", 4, 17, 17);
   global.sprBounce = sprite_add("sprites/projectiles/sprKaboomerangBounce.png", 3, 12, 12);
+  global.msk = sprite_add_weapon("sprites/weapons/sprKaboomerang.png", 3, 12);
 
 #define weapon_name
   return "LIGHTNING WHEEL";
@@ -40,10 +41,12 @@
 #define weapon_fire
   var _pitch = random_range(.8, 1.2)
   sound_play(sndChickenThrow);
-  sound_play_pitch(skill_get(mut_laser_brain) > 0 ? sndEnergyHammerUpg : sndEnergyHammer, 1.25 * _pitch)
+  sound_play_pitchvol(sndLightningShotgunUpg, 2 * _pitch, skill_get(mut_laser_brain) > 0)
+  sound_play_pitch(skill_get(mut_laser_brain) > 0 ? sndEnergyHammerUpg : sndEnergyHammer, 1.5 * _pitch)
   sound_play_pitch(skill_get(mut_laser_brain) > 0 ? sndEnergyScrewdriverUpg : sndEnergyScrewdriver, 1.6 * _pitch)
   sound_play_pitch(sndLightningReload, .7 * _pitch)
-  with instance_create(x,y,CustomObject)
+
+  with instance_create(x - lengthdir_x(4, gunangle), y - lengthdir_y(4, gunangle), CustomObject)
   {
     defbloom = {
           xscale : 1.33,
@@ -56,31 +59,35 @@
     team = other.team
     creator = other
     sprite_index = global.sprLightningWheelProj
-    mask_index   = sprBullet1
+    mask_index   = sprHeavyGrenadeBlink
     image_speed = .49
     curse = other.curse
     other.curse = 0
     other.wep = 0
-    maxspeed = 20 + skill_get(13)*4
+    maxspeed = 20
     phase = 0
     ang = 0
     damage = 6
     whooshtime = 0
     maxwhoosh = 3
     length = 6
-    friction = 1.4
+    friction = 1.4 - skill_get(mut_long_arms)*.25
+    imang = random(360)
 
     potential = .2;
     motion_add(other.gunangle, maxspeed)
     on_end_step = boom_step
+    on_draw = boom_draw
     //on_draw = boom_draw
     with instance_create(x,y,LightningHit){image_angle = other.direction}
-    if place_meeting(x + hspeed, y + vspeed, Wall){speed = 16; move_bounce_solid(false)}
+    if place_meeting(x + hspeed, y + vspeed, Wall){speed = 12; move_bounce_solid(false)}
   }
 
-#define boom_step
+#define boom_draw
+  draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, image_yscale, imang, image_blend, image_alpha)
 
-  if image_index >= 3.5{image_angle = random(360)}
+#define boom_step
+  if image_index >= 3.5{imang = random(360)}
   var _w = 10,
       _o = other.speed * 2;
   repeat(2){
@@ -110,9 +117,11 @@
         y = rang.y
     }
   }
+
+  mask_index = mskSnowTank;
   with instances_matching_ne(hitme,"team",team)
   {
-    if distance_to_object(other) <= 12
+    if distance_to_object(other) <= 3
     {
       if projectile_canhit(other) = true
       {
@@ -125,12 +134,19 @@
             var meetx = (x + other.x)/2 + random_range(-3, 3) * other.size;
             var meety = (y + other.y)/2 + random_range(-3, 3) * other.size;
             with instance_create(x ,y, LightningHit) image_angle = other.image_angle
-
-            if !instance_is(other, prop){
-              x -= lengthdir_x(2 * other.size, direction)
-              y -= lengthdir_y(2 * other.size, direction)
+            with other{
+              var _xx = lengthdir_x(other.speed / (1 + size), other.direction),
+                  _yy = lengthdir_y(other.speed / (1 + size), other.direction);
+              if !place_meeting(x + _xx, y + _yy, Wall){
+                x += _xx
+                y += _yy
+              }
             }
             projectile_hit(other, damage, speed, direction)
+            if !instance_is(other, prop){
+              x -= lengthdir_x(speed / 3, direction)
+              y -= lengthdir_y(speed / 3, direction)
+            }
 
             sleep(3 + 14 * clamp(1 + other.size / 3, 1, 4));
             view_shake_max_at(x, y, 2 + 6 * clamp(other.size, 1, 4));
@@ -146,6 +162,8 @@
       with other if other.team != team with other instance_destroy()
     }
   }
+  mask_index = sprHeavyGrenadeBlink;
+
   if curse = true and current_frame < floor(current_frame) + current_time_scale {instance_create(x+random_range(-2,2),y+random_range(-2,2),Curse)}
   if phase = 0 //move regularly
   {
@@ -162,7 +180,7 @@
       with instance_create(x ,y, LightningHit) image_angle = other.image_angle
       sound_play_pitchvol(sndLightningReload, random_range(.6, .8), .6)
       sound_play_pitchvol(sndLightningPistol, random_range(1.4, 1.6), 1)
-      sound_play_pitchvol(sndGammaGutsKill,8*random_range(.8, 1.2), .6)
+      sound_play_pitchvol(sndGammaGutsKill,8*random_range(.8, 1.2), .3)
     }
 
     if speed <= friction
@@ -178,7 +196,7 @@
 
       if button_check(creator.index, btn) and creator.mask_index != mskNone{
           speed = 0
-          if timer > 0 timer -= current_time_scale
+          if timer > 0 timer -= current_time_scale * creator.reloadspeed
           else{
               timer = 7
                   if collision_line(creator.x,creator.y,x,y,Wall,0,0) <= -4{
@@ -285,8 +303,5 @@ return{
 
 #define weapon_text
   return choose("HOLD FIRE TO HOLD THE SPIN","TESLA COIL")
-
-#define boom_draw
-  draw_sprite_ext(sprite_index,image_index,x,y, image_xscale, image_yscale, ang, image_blend, image_alpha);
 
 #define audio_play_ext(snd, x, y, pitch, vol, stack) mod_script_call("mod", "defpack tools", "audio_play_ext", snd, x, y, pitch, vol, stack)

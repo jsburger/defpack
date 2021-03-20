@@ -11,7 +11,7 @@ return 4;
 return 2;
 
 #define weapon_area
-return -1;
+return 6;
 
 #define weapon_load
 return 36;
@@ -53,7 +53,7 @@ sound_play_pitchvol(sndBouncerSmg, .3 * _p, 1);
 
 with instance_create(x, y, CustomSlash)
 {
-    
+
   dontwait = true
   image_speed = .5;
   creator = other;

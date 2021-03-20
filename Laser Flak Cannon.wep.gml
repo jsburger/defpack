@@ -1,5 +1,5 @@
 #define init
-global.sprLaserFlakCannon = sprite_add_weapon("../sprites/weapons/sprLaserFlakCannon.png", 5, 4);
+global.sprLaserFlakCannon = sprite_add_weapon("sprites/weapons/sprLaserFlakCannon.png", 4, 3);
 
 #define weapon_name
 return "LASER FLAK CANNON";
@@ -17,19 +17,19 @@ return false;
 return 30;
 
 #define weapon_cost
-return 4;
+return 2;
 
 #define weapon_swap
 return sndSwapEnergy;
 
 #define weapon_area
-return 9;
+return 5;
 
 #define weapon_text
 return "ENJOY THE SHOW";
 
 #define weapon_fire
-weapon_post(8,-13,53)
+weapon_post(8,-22,0)
 if !skill_get(17)
 {
 	sound_play_pitch(sndFlakCannon,random_range(.6,.8))
@@ -48,7 +48,7 @@ with mod_script_call("mod","defpack tools","create_laser_flak",x,y)
 {
 	creator = other
 	move_contact_solid(other.gunangle,8)
-	motion_add(other.gunangle+random_range(-6,6)*other.accuracy,14)
+	motion_add(other.gunangle+random_range(-3,3)*other.accuracy,14)
 	image_angle = direction
 	team = other.team
 	accuracy = other.accuracy

@@ -47,7 +47,7 @@
 /loadwep infinipistol
 /load soda
 
-/loadwep flak canon // ;)
+/loadwep flak canon
 
 
 ///IRIS WEPS///

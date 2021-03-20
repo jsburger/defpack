@@ -1568,13 +1568,13 @@ with target{
 
 #define toxic_destroy
 repeat(2){
-	with instance_create(x,y,ToxicGas){friction *= 4; growspeed /= 4}
+	with instance_create(x,y,ToxicGas){friction *= 10; growspeed /= 8}
 }
 bullet_destroy()
 
 #define heavy_toxic_destroy
 repeat(3){
-	with instance_create(x,y,ToxicGas){motion_add(random(360),1)}
+	with instance_create(x,y,ToxicGas){friction *= 3; growspeed /= 4}
 }
 bullet_destroy()
 
@@ -3006,15 +3006,14 @@ draw_sprite_ext(spr.RockletFlame, -1, x, y, 1, 1, image_angle, c_white, image_al
 
 #define laserflak_hit
 if projectile_canhit_melee(other) == true{
-	var k = other.my_health;
+	var k = other.maxhealth;
 	projectile_hit(other, damage, ammo, direction)
 	repeat(3) with instance_create(x, y, PlasmaTrail){
 		view_shake_at(x, y, 8)
 		motion_add(random(180), random_range(7, 8))
 	}
 	sleep(damage * 2)
-	damage -= floor(k/size)
-	if damage <= 0 instance_destroy()
+	if k > damage instance_destroy()
 }
 
 //SPIKEBALL
@@ -3103,9 +3102,9 @@ with instance_create(x-lengthdir_x(speed,direction),y-lengthdir_y(speed,directio
 with instance_create(_x,_y,CustomProjectile) {
     name = "Laser Flak"
 	image_speed = 1
-	damage = 8
+	damage = 12
 	friction = .5
-	ammo = 6 + skill_get(mut_laser_brain) * 2;
+	ammo = 5 + skill_get(mut_laser_brain) * 3;
 	typ = 1
 	size = 1
 	sprite_index = spr.LaserFlakBullet
@@ -3124,7 +3123,14 @@ with instance_create(_x,_y,CustomProjectile) {
 }
 
 #define laserflak_destroy
-view_shake_at(x,y,32)
+with instance_create(x, y, GunGun){image_index = 2; image_angle = random(360)}
+sleep(15)
+view_shake_max_at(x,y,24)
+with instance_create(x, y, PlasmaImpact){
+	team = other.team;
+	image_speed = .6;
+}
+sound_play(sndPlasmaHit)
 var i = random(360);
 var _p = random_range(.8,1.2);
 sound_play_pitch(sndBouncerSmg,.4*_p)
@@ -3170,9 +3176,10 @@ repeat(ammo){
 }
 
 #define laserflak_particle_step
-	if !place_meeting(x, y, Floor) || image_index + image_speed >= 3{instance_destroy()}
+	if !place_meeting(x, y, Floor) || image_index + image_speed >= 3{instance_destroy(); exit}
 
 #define laserflak_step
+image_speed = speed * 1.2 / 14
 if chance(66){
 	with instance_create(x+random_range(-8,8),y+random_range(-8,8),PlasmaTrail){
 		image_xscale += skill_get(17)/3

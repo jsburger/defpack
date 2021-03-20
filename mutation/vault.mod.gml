@@ -2,12 +2,12 @@
 global.new_level = (instance_exists(GenCont) || instance_exists(Menu));
 global.generated = false;
 
-global.sprShrineBouncer = sprite_add("../sprites/shrine/sprShrineBouncer.png", 27, 12, 14);
-global.sprShrinePest    = sprite_add("../sprites/shrine/sprShrinePest.png",    27, 12, 14);
-global.sprShrineThunder = sprite_add("../sprites/shrine/sprShrineThunder.png", 27, 12, 14);
-global.sprShrineFire    = sprite_add("../sprites/shrine/sprShrineFire.png",    27, 12, 14);
-global.sprShrinePsy     = sprite_add("../sprites/shrine/sprShrinePsy.png",     27, 12, 14);
-global.sprShrineGamma   = sprite_add("../sprites/shrine/sprShrineGamma.png",   27, 12, 14);
+global.sprShrineFire    = sprite_add("../sprites/shrine/sprShrinePest.png", 5, 21, 23);
+global.sprShrineBouncer = sprite_add("../sprites/shrine/sprShrinePest.png", 5, 21, 23);
+global.sprShrinePest    = sprite_add("../sprites/shrine/sprShrinePest.png", 5, 21, 23);
+global.sprShrineThunder = sprite_add("../sprites/shrine/sprShrinePest.png", 5, 21, 23);
+global.sprShrinePsy     = sprite_add("../sprites/shrine/sprShrinePest.png", 5, 21, 23);
+global.sprShrineGamma   = sprite_add("../sprites/shrine/sprShrinePest.png", 5, 21, 23);
 
 global.binds = [
 	[noone, CustomStep, 0, script_ref_create(prompt_step)]
@@ -380,7 +380,7 @@ with(instance_create(_x, _y, CustomProp)){
 
 	name = "Iris Shrine";
 
-	sprite_index = sprTargetIdle;
+	sprite_index = sprBullet1
 	mask_index = mskNone;
 	spr_shadow = shd32;
 	spr_shadow_y = 4;
@@ -418,14 +418,14 @@ with(instance_create(_x, _y, CustomProp)){
 		}
 	}until (mod_variable_get("skill", "prismaticiris", "color") != color || _i = 29)
 		switch color{
-		case "quiveringsight":		skill = "bouncer"; textcol = "@y"; spr_idle = global.sprShrineBouncer; break;
-		case "blazingvisage":		  skill = "fire";    textcol = "@r"; spr_idle = global.sprShrineFire;    break;
+		case "quiveringsight":		skill = "bouncer"; textcol = "@y"; spr_idle = global.sprShrineFire;    break;
+		case "blazingvisage":		  skill = "fire";    textcol = "@r"; spr_idle = global.sprShrineBouncer; break;
 		case "pestilentgaze":   	skill = "pest";    textcol = "@g"; spr_idle = global.sprShrinePest;    break;
 		case "cloudedstare":      skill = "thunder"; textcol = "@b"; spr_idle = global.sprShrineThunder; break;
-		case "allseeingeye":      skill = "psy";     textcol = "@p"; spr_idle = global.sprShrinePsy;		 break;
-		case "warpedperspective": skill = "gamma";   textcol = "@g"; spr_idle = global.sprShrineGamma;	 break;
+		case "allseeingeye":      skill = "psy";     textcol = "@p"; spr_idle = global.sprShrinePsy;     break;
+		case "warpedperspective": skill = "gamma";   textcol = "@g"; spr_idle = global.sprShrineGamma;   break;
 	}
-
+	sprite_index = spr_idle;
 
 	my_prompt = prompt_create("Change" + textcol + " Iris");
 
