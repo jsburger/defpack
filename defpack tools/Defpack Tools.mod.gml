@@ -458,7 +458,7 @@ with instances_matching_ne(CustomProjectile, "defbloom", undefined) {
 with instances_matching(CustomProjectile,"name","vector beam"){
   draw_sprite_ext(sprite_index, image_index, xstart, ystart, image_xscale, 1.5*image_yscale, image_angle, image_blend, 0.15+skill_get(17)*.05);
 	if x != xstart draw_sprite_ext(spr_tail, 0, xstart, ystart, 1.5, image_yscale*1.5, image_angle, image_blend, .15+skill_get(17)*.05);
-	if x != xstart draw_sprite_ext(spr_head, 0, x, y, 2.5, image_yscale*2.5, image_angle-45, image_blend, .15+skill_get(17)*.05);
+	if x != xstart draw_sprite_ext(spr_head, 0, x, y, image_yscale*2.5, image_yscale*2.5, image_angle-45, image_blend, .15+skill_get(17)*.05);
 }
 with instances_matching(CustomProjectile,"name","mega lightning bullet"){
   draw_sprite_ext(sprite_index, image_index, x, y, 2*image_xscale+(1-image_index)*2, 2*image_yscale+(1-image_index)*2, image_angle, image_blend, 0.2+(1-image_index)*.4);
