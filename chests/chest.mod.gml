@@ -141,6 +141,7 @@ chest_add("Energy",    -1, 5)
                   if skill_get("powderedgums")        > 0 array_push(_a, 0);
                   if skill_get("vote3")               > 0 array_push(_a, 0);
                   if skill_get("Shattered Skull")     > 0 array_push(_a, 0);
+                  if skill_get("Shocked Skin")        > 0 array_push(_a, 0);
                   if skill_get("shells to shots")     > 0 array_push(_a, 0);
                   if skill_get(mut_bolt_marrow)       > 0 array_push(_a, 4);
                   if skill_get("boltmarrowx10")       > 0 array_push(_a, 4);
@@ -161,9 +162,15 @@ chest_add("Energy",    -1, 5)
                   if skill_get("laserbrainx10")       > 0 array_push(_a, 1);
                   if skill_get("concentration")       > 0 array_push(_a, 1);
                   if skill_get("vote6")               > 0 array_push(_a, 1);
-                  if skill_get("Shocked Skin")        > 0 array_push(_a, 1);
-                  if skill_get("Saline Breath")       > 0 array_push(_a, 1);
-                  if skill_get("Burning Eyes")        > 0 array_push(_a, 1);
+                  if skill_get("Neural Network")      > 0 array_push(_a, 1);
+                  if skill_get("Deep Convolutional Network")     > 0 array_push(_a, 1);
+                  if skill_get("Deep Residual Network")          > 0 array_push(_a, 1);
+                  if skill_get("Echo State Network")             > 0 array_push(_a, 1);
+                  if skill_get("Feed Forward Network")           > 0 array_push(_a, 1);
+                  if skill_get("Generative Adversarial Network") > 0 array_push(_a, 1);
+                  if skill_get("Markov Chain")                   > 0 array_push(_a, 1);
+                  if skill_get("Recurrent Neural Network")       > 0 array_push(_a, 1);
+                  if skill_get("Support Vector Machines")        > 0 array_push(_a, 1);
                   if skill_get("conductivity")        > 0 array_push(_a, 1);
               var q = get_chests(-1, -1)
               if array_length(q){
