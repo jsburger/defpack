@@ -51,6 +51,11 @@ return sndSwapExplosive;
 #define weapon_area
 return 11;
 
+#define nts_weapon_examine
+return{
+    "d": "You should be able to easily shoot down airplanes with this #if there ever were any. ",
+}
+
 #define weapon_text
 return "TOP RATED";
 

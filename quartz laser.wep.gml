@@ -56,6 +56,11 @@ return 0
 #define weapon_text
 return choose("FRAGILE APPARATUS","BE CAREFUL WITH IT")
 
+#define nts_weapon_examine
+return{
+    "d": "A shiny and frail laser gun. #Firing the weapon makes you feel tingly. ",
+}
+
 #define step(p)
   if p && is_object(wep){
     mod_script_call_self("mod","defpack tools","quartz_penalty",mod_current, wep, p)
@@ -122,8 +127,8 @@ if instance_exists(creator){
     }
     time -= current_time_scale
     if time <= 0 {instance_destroy(); exit}
-    x = creator.x + creator.hspeed_raw + lengthdir_x(10 + _o,creator.gunangle)
-    y = creator.y + creator.vspeed_raw + lengthdir_y(10 + _o,creator.gunangle)
+    x = creator.x + creator.hspeed_raw + lengthdir_x(8 + _o,creator.gunangle)
+    y = creator.y + creator.vspeed_raw + lengthdir_y(8 + _o,creator.gunangle)
     xstart = x
     ystart = y
     image_xscale = 1

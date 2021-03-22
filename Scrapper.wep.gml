@@ -29,7 +29,7 @@ return "@bCOMBO@s turns projectiles into splinters"
 #define weapon_reloaded
 
 #define fist_stats(w)
-w.combocost = 7
+w.combocost = 6
 
 #define script_ref_call_self(scr)
 return mod_script_call_self(scr[0], scr[1], scr[2])

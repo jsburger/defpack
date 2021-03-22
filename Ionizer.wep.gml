@@ -29,6 +29,11 @@ return sndSwapEnergy;
 #define weapon_area
 return 10;
 
+#define nts_weapon_examine
+return{
+    "d": "Assembled out of bits and pieces of many different energy weapons. ",
+}
+
 #define weapon_text
 return "CATASTROPHIC";
 
@@ -36,6 +41,7 @@ return "CATASTROPHIC";
 sleep(20)
 var _p = random_range(.8,1.2)
 sound_play_pitch(sndLaser,.3*_p)
+sound_play_pitch(sndLaserCannon,.6*_p)
 if !skill_get(17)
 {
   sound_play_pitch(sndUltraLaser,1.5*_p)
@@ -45,11 +51,12 @@ else
 {
   sound_play_pitch(sndUltraLaserUpg,1.5*_p)
   sound_play_pitch(sndPlasmaUpg,.7*_p)
+  sound_play_pitch(sndLaserCannonUpg,.6*_p)
 }
 sound_play_gun(sndClickBack,1,.6)
 sound_stop(sndClickBack)
-weapon_post(8,-10,16)
-with lightning_create(x,y,irandom_range(16,18) + 5 * skill_get(mut_laser_brain),gunangle+random_range(-10,10)){
+weapon_post(9,-20,16)
+with lightning_create(x,y,irandom_range(15,17) + 10 * skill_get(mut_laser_brain),gunangle+random_range(-10,10)){
     team = other.team
     creator = other
     lightning_grow();
@@ -67,7 +74,7 @@ motion_add(gunangle-180,4)
         direction = _direction;
         image_angle = direction;
         creator = noone;
-        damage = 14;
+        damage = 20;
         force = 4;
         ammo = _ammo;
         typ = 0;
@@ -77,7 +84,7 @@ motion_add(gunangle-180,4)
         on_hit = lightning_hit;
         on_anim = lightning_anim;
 
-        timer = 1
+        timer = 24
 
         return id;
     }
@@ -88,14 +95,13 @@ motion_add(gunangle-180,4)
         if(alarm0 <= 0) lightning_grow();
     }
     timer -= current_time_scale
-    if timer<= 0
+    if timer mod 2 <= current_time_scale
     {
       with instance_create(x,y,PlasmaImpact)
       {
         s = choose(.5,.75)
         image_xscale = s
         image_yscale = s
-        damage += 5
         image_speed = random_range(.3,.6)
         team = other.team
         creator = other.creator
@@ -109,6 +115,7 @@ motion_add(gunangle-180,4)
         team = other.team
         creator = other.creator
       }
+      if skill_get(mut_laser_brain) > 0 with instance_create(x+random_range(-18,18),y+random_range(-18,18),GunGun){image_index = 3 + irandom(2)}
       instance_destroy()
     }
 
@@ -116,9 +123,9 @@ motion_add(gunangle-180,4)
     var _target = instance_nearest(x + lengthdir_x(80, direction), y + lengthdir_y(80, direction), enemy);
 
      // Find Direction to Move:
-    direction += random_range(-15, 15);
+    direction += random_range(-2, 2);
     if(instance_exists(_target) && point_distance(x, y, _target.x, _target.y) < 120){ /// Weird homing system
-        speed = 4;
+        speed = 3;
         motion_add(point_direction(x, y, _target.x, _target.y), 1);
         speed = 0;
     }
@@ -166,7 +173,6 @@ motion_add(gunangle-180,4)
     draw_set_blend_mode(bm_normal);
 
 #define lightning_hit
-/*
     if(projectile_canhit_melee(other)){
          // Hit:
         projectile_hit(other, damage, force, image_angle);
@@ -175,7 +181,6 @@ motion_add(gunangle-180,4)
         instance_create(x, y, Smoke);
         sound_play(sndLightningHit);
     }
-*/
 if other.team != team other.speed = 0
 #define lightning_anim
     instance_destroy();

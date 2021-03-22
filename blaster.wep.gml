@@ -17,7 +17,7 @@ return true;
 return 8;
 
 #define weapon_cost
-return 2;
+return 1;
 
 #define weapon_melee
 return 0;
@@ -30,6 +30,11 @@ return 5;
 
 #define weapon_text
 return "HEAT WAVES";
+
+#define nts_weapon_examine
+return{
+    "d": "A combat pistol from a long-lost war. #Can be charged for more range. ",
+}
 
 #define weapon_chrg
 return true;
@@ -103,6 +108,7 @@ with instance_create(x,y,CustomObject){
   else{instance_destroy()}
 
 #define blaster_destroy
+  var _h = hand;
   var _c = max(1, floor(charge / maxcharge) + 1);
   with creator{
   var things = [SmallExplosion,CustomObject,Explosion],
@@ -116,6 +122,7 @@ with instance_create(x,y,CustomObject){
                if i = 2{
                   sleep(30)
                   _pitch += .1
+                  if _h = true breload += 12 else reload += 12;
               }
               if _c > 1 if fork(){
                 wait(1);
@@ -131,6 +138,7 @@ with instance_create(x,y,CustomObject){
               sound_play_pitch(sndExplosion,_pitch)
               with instance_create(_x+lengthdir_x(lengths[i] + speed,ang),_y+lengthdir_y(lengths[i]+speed,ang),things[i]){
                   if i = 0 team = other.team
+                  if i = 0 damage += 3;
                   creator = other
                   if i > 0{
                       repeat(2 + (1 * (GameCont.crown == crwn_death)))with instance_create(x,y,SmallExplosion) creator = other.creator

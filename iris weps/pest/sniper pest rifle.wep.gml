@@ -21,7 +21,7 @@ return 1;
 return true;
 
 #define weapon_load
-return 20;
+return 30;
 
 #define weapon_cost
 return 12;
@@ -32,7 +32,7 @@ return sndSwapMachinegun;
 #define weapon_laser_sight
 with instances_matching(instances_matching(CustomObject, "name", "PestSniperCharge"),"creator",self){
     with other{
-        with mod_script_call_self("mod", "defpack tools", "sniper_fire", x, y, gunangle, team, 1 + other.charge/other.maxcharge){
+        with mod_script_call_self("mod", "defpack tools", "sniper_fire", x, y, gunangle, team, 1 + other.charge/other.maxcharge, 1){
             draw_line_width_color(xstart, ystart, x, y, 1, global.color, global.color)
             instance_destroy()
         }
@@ -74,15 +74,16 @@ sound_play_pitch(sndSniperFire,random_range(.6,.8))
 sound_play_pitch(sndHeavySlugger,1.3+_ptch/2)
 sound_play_pitch(sndDoubleMinigun,random_range(.2,.4))
 sound_play_pitch(sndToxicBarrelGas,random_range(.7,.8))
-var _c = charge, _cc = charge/maxcharge;
+var _c = charge, _cc = charge/maxcharge, _ccc = _cc = 1 ? 1 : 0;
 with creator{
 	weapon_post(12,2,158)
 	motion_add(gunangle -180,_c / 20)
 	sleep(120)
-	var q = mod_script_call_self("mod", "defpack tools", "sniper_fire", x + lengthdir_x(10, gunangle), y + lengthdir_y(10, gunangle), gunangle, team, 1 + _cc)
+	var q = mod_script_call_self("mod", "defpack tools", "sniper_fire", x + lengthdir_x(10, gunangle), y + lengthdir_y(10, gunangle), gunangle, team, 1 + _cc, _ccc)
 	with q{
+		c2 = c_lime
 	    creator = other
-	    damage = 12 + round(28 * _cc)
+	    damage = 20 + round(20 * _cc)
 	    worth = 12
 	    with instance_create(x, y, BulletHit) sprite_index = global.sprToxicBulletHit
 	    var n = hyperspeed/(_cc + .2)
@@ -96,6 +97,5 @@ with creator{
 	        }
 	    }
 	}
-	mod_script_call_nc("mod", "defpack tools", "bolt_line_bulk", q, 2 * _cc, c_yellow, c_lime)
 }
 sleep(charge*3)

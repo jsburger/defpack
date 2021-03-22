@@ -20,6 +20,10 @@ return false
 return false
 #define weapon_sprt
 return global.sprTurboMurderizer3000
+#define nts_weapon_examine
+return{
+    "d": "Vapourizes enemies as well as your ammo reserves in seconds. ",
+}
 #define weapon_text
 return "COMEDY GREEN"
 #define weapon_fire

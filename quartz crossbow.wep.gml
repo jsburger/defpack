@@ -55,6 +55,11 @@ return 14;
 #define weapon_text
 return choose("BREAKTHROUGH","BE CAREFUL WITH IT");
 
+#define nts_weapon_examine
+return{
+    "d": "A shiny and frail crossbow. #The bolts never shatter. ",
+}
+
 #define weapon_fire(w)
   if !is_object(w){
       w = {

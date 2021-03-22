@@ -15,7 +15,7 @@
 #define weapon_area
 	return 6;
 #define weapon_load
-	return 7;
+	return 9;
 #define weapon_swap
 	return sndSwapMotorized
 #define weapon_auto
@@ -28,7 +28,10 @@
 	return global.sprChainsaw
 #define weapon_text
 	return choose("RIP AND TEAR", "KAR EN TUK", "KILLED ENEMIES ALWAYS#DROP SOME @yAMMO")
-
+#define nts_weapon_examine
+return{
+    "d": "A point-blank melee weapon. #Killing with this weapon feels glorious! ",
+}
 #define weapon_fire
 	with instance_create(x,y,CustomObject){
 		creator = other
@@ -102,9 +105,12 @@
 			sound_play_pitch(sndDiscBounce,random_range(.5,.6))
 			sleep(other.size * 80)
 			view_shake_at(x,y,other.size * 80)
-			if other.size > 0 && instance_is(other, enemy) repeat(max(choose(other.size, other.size - 1), 1)){
-				with instance_create(other.x,other.y,AmmoPickup){num = .5;sprite_index = global.sprMiniAmmo}
+			var _c = crown_current
+			crown_current = crwn_haste
+			if other.size > 1 && instance_is(other, enemy) repeat(min(5, other.size)){
+				 with instance_create(other.x,other.y,AmmoPickup){num = .5; blink = 200}
 			}
+			crown_current = _c
 		}
 	}
 

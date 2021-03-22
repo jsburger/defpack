@@ -1,7 +1,7 @@
 #define init
-global.sprTempestBlade = sprite_add_weapon("sprites/weapons/sprTempestBlade.png",0,7)
-global.sprAirSlash 	   = sprite_add("sprites/projectiles/sprAirSlash.png",4,0,24)
-global.mskAirSlash     = sprite_add("comboweps/rapiermask.png",3,3,28)
+global.sprTempestBlade = sprite_add_weapon("../sprites/weapons/sprTempestBlade.png",0,7)
+global.sprAirSlash 	   = sprite_add("../sprites/projectiles/sprAirSlash.png",4,0,24)
+global.mskAirSlash     = global.sprAirSlash//sprite_add("../comboweps/rapiermask.png",3,3,28)
 #define weapon_name
 return "TEMPEST BLADE"
 #define weapon_type

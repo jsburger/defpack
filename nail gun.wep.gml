@@ -28,6 +28,10 @@ return 3;
 #define weapon_text
 return "TAC TAC TAC";
 
+#define nts_weapon_examine
+return{
+    "d": "An ex-tool repurposed for combat. #The label on the back says `KEEP AWAY FROM CHILDREN`. ",
+}
 #define weapon_fire
 sound_play_pitchvol(sndSplinterGun,random_range(1.3,1.6),.4)
 sound_play_pitchvol(sndRustyRevolver,random_range(1.5,1.8),.4)

@@ -34,6 +34,11 @@ return sndSwapHammer;
 #define weapon_area
 return 6;
 
+#define nts_weapon_examine
+return{
+    "d": "A new-fashioned hunting weapon. #Instantly cooks slain prey perfectly. ",
+}
+
 #define weapon_text
 return choose("CHECK THE ROUTES","HOW DO I HOLD THIS");
 
@@ -143,7 +148,7 @@ with bolt_create(creator.x, creator.y){
     team = creator.team
     charged = other.charged
     motion_add(creator.gunangle+random_range(-4,4)*creator.accuracy*(1-(other.charge/other.maxcharge)),24+2*other.charge/other.maxcharge)
-	damage = 15 + charged * 9
+	damage = 10
 	image_angle = direction
 }
 /*with instance_create(creator.x,creator.y,Bolt)

@@ -25,6 +25,11 @@ return sndSwapExplosive;
 #define weapon_area
 return 14;
 
+#define nts_weapon_examine
+return{
+    "d": "A rocket minigun from the future. #The rockets fan out to make more space for rockets. ",
+}
+
 #define weapon_text
 return "HURRICANE";
 

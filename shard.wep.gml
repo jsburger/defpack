@@ -36,6 +36,11 @@ return false;
 #define weapon_text
 return "BROKEN"
 
+#define nts_weapon_examine
+return{
+    "d": "The shattered remains of a once pristine quartz weapon. ",
+}
+
 #define weapon_reloaded
 
 #define weapon_fire

@@ -28,6 +28,11 @@ return 10;
 #define weapon_text
 return "WHO NEEDS VOODOO";
 
+#define nts_weapon_examine
+return{
+    "d": "An oversized splinter gun. #Reserved for only the most dangerous of prey. ",
+}
+
 #define weapon_fire
 var i = 0;
 repeat(7)

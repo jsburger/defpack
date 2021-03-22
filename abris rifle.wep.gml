@@ -35,6 +35,11 @@ sound_play_pitchvol(sndNadeReload,1.4,.6)
 #define weapon_text
 return "IN YOUR SIGHTS";
 
+#define nts_weapon_examine
+return{
+    "d": "Making weapons longer turns them into rifles. ",
+}
+
 #define weapon_fire
 var _strtsize = 16;
 var _endsize  = 16;

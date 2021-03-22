@@ -21,6 +21,10 @@ return 1
 #define weapon_sprt
 return global.sprSwordThrower
 #define weapon_reloaded
+#define nts_weapon_examine
+return{
+    "d": "This gun is known to be the cause of a lot of accidental casualties. ",
+}
 
 #define weapon_text
 return choose("SHARP AS ALL CAN BE", "@wSWORDS@s CAN HIT TWO THINGS AT ONCE")

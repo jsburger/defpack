@@ -127,7 +127,8 @@ with instance_create(x + lengthdir_x(15, dir), y + lengthdir_y(15, dir), CustomS
 	
 	on_step = dust_step
 	
-	sprite_index = mskScorpion
+	sprite_index = mskNone
+	mask_index   = mskScorpion
 	image_angle = dir
 	image_xscale = 1 + .5 * skill_get(mut_long_arms)
 	length = 15 * (1 + .5 * skill_get(mut_long_arms))

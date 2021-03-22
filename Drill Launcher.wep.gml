@@ -25,6 +25,10 @@
   return 1
 #define weapon_sprt
   return global.sprDrillLauncher
+#define nts_weapon_examine
+return{
+    "d": "They were once used to dig tunnels for water pipelines. ",
+}
 #define weapon_text
   return "HOLLOW THE EARTH"
 

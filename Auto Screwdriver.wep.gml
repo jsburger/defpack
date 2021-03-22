@@ -4,6 +4,11 @@
 #define weapon_name
   return "AUTO SCREWDRIVER";
 
+#define nts_weapon_examine
+return{
+    "d": "A tool designed to fix tings up very quickly. #I'ts tiring to wield. ",
+}
+
 #define weapon_sprt
   return global.sprAutoScrewdriver;
 

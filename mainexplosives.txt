@@ -24,8 +24,6 @@
 /loadwep sonic launcher
 /loadwep supersonic launcher
 /loadwep sonic hammer
-/loadwep sonic shotgun
-/loadwep sonic rifle
 
 //SMALL EXPLOSIONS
 
@@ -48,7 +46,9 @@
 
 //OTHER EXPLOSIVE
 
+/loadwep satchel charge
 /loadwep chainsaw
+/loadwep push piston
 /loadwep claymore
 /loadwep kaboomerang
 /loadwep heavy nuke launcher

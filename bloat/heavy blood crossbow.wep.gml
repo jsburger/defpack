@@ -1,6 +1,6 @@
 #define init
 global.sprHeavyBloodCrossbow = sprite_add_weapon("../sprites/weapons/sprHeavyBloodCrossbow.png", 3, 6);
-global.sprHeavyBloodBolt = sprite_add("../sprites/ptojectiles/sprHeavyBloodBolt.png",0, 1, 5);
+global.sprHeavyBloodBolt = sprHeavyBolt//sprite_add("../sprites/ptojectiles/sprHeavyBloodBolt.png",0, 1, 5);
 
 #define weapon_name
 return "HEAVY BLOOD CROSSBOW"

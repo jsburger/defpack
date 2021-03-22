@@ -54,6 +54,12 @@ return 15;
 sound_play(sndShotReload)
 if p wkick = -1
 else bwkick = -1
+
+#define nts_weapon_examine
+return{
+    "d": "Superheated projectiles melt through thick armor like butter. ",
+}
+
 #define weapon_text
 return "BURNING COMETS";
 

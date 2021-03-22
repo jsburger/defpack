@@ -11,8 +11,8 @@
 /loadwep pest bullet cannon
 /loadwep pest gunhammer
 /loadwep pest bullet cannon
-/loadwep pest bullak cannon
 /loadwep sniper pest rifle
+/loadwep sniper pest shotgun
 /loadwep heavy pest revolver
 /loadwep heavy pest machinegun
 /loadwep heavy assault pest rifle

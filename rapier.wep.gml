@@ -70,6 +70,12 @@ if rapiers != 2{
 wepangle*=-1
 #define weapon_sprt
 return global.sword
+
+#define nts_weapon_examine
+return{
+    "d": "Lunging at your enemies may strike fear in their hearts. ",
+}
+
 #define weapon_text
 return "FANCY FOOTWORK"
 

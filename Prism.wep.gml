@@ -28,6 +28,25 @@ return 8;
 #define weapon_text
 return choose("DARK SIDE","@rP @yR @gI @bS @pM");
 
+#define nts_weapon_examine
+return{
+	
+	"fish"     : "You can see a faint hue in the reflections, #brown like mud. ",
+	"crystal"  : "You can see a faint hue in the reflections, #yellow like your family. ",
+	"eyes"     : "You can see a faint hue in the reflections, #the purple of indescribable mysteries",
+	"plant"    : "You can see a faint hue in the reflections, #red like fresh blood. ",
+    "melting"  : "You can see a faint hue in the reflections, #black as your fate. ",
+    "venuz"    : "You can see a faint hue in the reflections, #green like endless piles of money. ",
+    "robot"    : "You can see a faint hue in the reflections, #blue like those guns you love. ",
+    "rebel"    : "You can see a faint hue in the reflections, #orange like the endless desert. ",
+    "horror"   : "You can see a faint hue in the reflections, #a pink not from this world. ",
+    "rogue"    : "You can see a faint hue in the reflections, #her indigo reflection ingrained in your head. ",
+    "chicken"  : "You can see a faint hue in the reflections, #gray like your fondest memories. ",
+    "skeleton" : "You can see a faint hue in the reflections, #white like your hope. ",
+    "frog"     : "You can see a faint hue in the reflections, #gold as your voice. ",
+    "d": "You can see a color shifting in the reflections. ",
+}
+
 #define weapon_fire
 
 sound_play_pitchvol(sndLaserCannonUpg,random_range(2.2,3),.7)

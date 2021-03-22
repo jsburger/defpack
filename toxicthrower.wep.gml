@@ -29,6 +29,11 @@ return -1;
 #define weapon_text
 return "FOUL REPTILE";
 
+#define nts_weapon_examine
+return{
+	"frog": "A lovely little weapon. ",
+    "d": "Fires a stream of noxious gas. #You have to have the right nose to find one of these. ",
+}
 #define weapon_fire
 sleep(6)
 //huge fuckin props to yokin for letting me use code from GunLocker for this

@@ -22,6 +22,8 @@
 //OTHER ENERGY
 
 /loadwep lightning wheel
+/loadwep psd
+/loadwep laser flak cannon
 /loadwep mega laser cannon
 /loadwep ionizer
 /loadwep stopwatch

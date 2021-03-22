@@ -6,10 +6,14 @@ global.sprQuartzBullet     = sprite_add("sprites/projectiles/sprQuartzBullet.png
 global.sprHud  = sprite_add("sprites/interface/sprQuartzMachinegunHud.png" , 1, 12, 3)
 global.sprHud1 = sprite_add("sprites/interface/sprQuartzMachinegunHud1.png", 1, 12, 3)
 global.sprHud2 = sprite_add("sprites/interface/sprQuartzMachinegunHud2.png", 1, 12, 3)
-
+    
 #define weapon_name
 return "QUARTZ MACHINEGUN"
 
+#define nts_weapon_examine
+return{
+    "d": "A shiny and frail machinegun. #The clear bullets it fires are mesmerizing. ",
+}
 #define weapon_sprt_hud(wep)
 if is_object(wep){
   switch wep.health{

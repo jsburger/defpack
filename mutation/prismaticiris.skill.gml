@@ -58,7 +58,7 @@ return 1;
 		    	LevCont.maxselect++;
 
 		    	skill_create("fantasticrefractions", 0.5);
-		    	if(array_length(instances_matching(Player, "race", "horror")) > 0) {
+		    	if(array_length(instances_matching(Player, "race", "horror")) > 0) || GameCont.horror > 0 {
 		    		skill_create("warpedperspective", 1.5);
 		    	}
 		    }
@@ -84,13 +84,18 @@ return 1;
 
 		    exit;
 		}
+
+		  // reset existing iris weapons
+		 with(instances_matching_ne(WepPickup, "prismatic", null)){
+		 	prismatic = null;
+		 }
 	}
 
 	else global.color = "fantasticrefractions"; // for those who would cheat prismatic iris in
 
 #define step
 	if(color_current = mod_current and !instance_exists(LevCont)) global.color = "fantasticrefractions"; // Make sure that if you reload the mod you still have some form of color
-	else if(instance_exists(Player)) {
+	else if(instance_exists(Player) and !instance_exists(LevCont)) {
 		with(instances_matching(WepPickup, "prismatic", null)) {
 			if(distance_to_object(Player) < 128) {
 				if(mod_exists("skill", color_current) and mod_script_exists("skill", color_current, "skill_iris")) {
@@ -153,13 +158,83 @@ return 1;
 	}
 
  // MISCELLANEOUS SCRIPTS //
+#define get_colors()
+	var _colors = [];
+
+	with(mod_get_names("skill")){
+		if (mod_script_exists("skill", self, "skill_iris")){
+			var _color = mod_script_call("skill", self, "skill_iris");
+			
+			if (_color != false){
+				array_push(_colors, _color);
+			}
+		}
+	}
+
+	return _colors;
+
 #define convert(w, c)
 	 // Converts the given (w)eapon to the given (c)olor
+	w = (is_object(w) ? lq_defget(w, "wep", wep_none) : w);
 	var _wep = w;
 	 // Modded weapons
 	if(is_string(w)) {
 		if(mod_exists("weapon", w)) {
 			if(mod_script_exists("weapon", w, "weapon_iris")) _wep = mod_script_call("weapon", w, "weapon_iris");
+
+			else {
+				 // if it's a modded weapon with an iris prefix but no weapon_iris, scan for the non-iris version
+				var wep_lower = string_lower(w);
+
+				with(get_colors()){
+					var color_lower = string_lower(self);
+					var _pos = string_pos(color_lower + " ", wep_lower);
+
+					if (_pos >= 1) {
+						var _search = string_lower(string_delete(w, _pos, string_length(self + " ")));
+
+						var _found = false;
+
+						 // combat inconsistent capitalization
+						with(mod_get_names("weapon")){
+							if (string_lower(self) == _search){
+								if (mod_script_exists("weapon", self, "weapon_iris")){
+									_wep = mod_script_call("weapon", self, "weapon_iris");
+									_found = true;
+									break;
+								}
+							}
+						}
+
+						 // if weapon is an iris variant of a vanilla weapon
+						if (!_found) {
+							switch(_search) {
+								case "revolver": _wep = "x revolver"; break;
+								case "golden revolver": _wep = "golden x revolver"; break;
+								case "rusty revolver": _wep = "rusty x revolver"; break;
+								case "golden machinegun": _wep = "golden x machinegun"; break;
+								case "golden assault rifle": _wep = "golden assault x rifle"; break;
+								case "rogue rifle": _wep = "x rogue rifle"; break;
+								case "machinegun": _wep = "x machinegun"; break;
+								case "assault rifle": _wep = "assault x rifle"; break;
+								case "double minigun": _wep = "double x minigun"; break;
+								case "minigun": _wep = "x minigun"; break;
+								case "smg": _wep = "x smg"; break;
+								case "triple machinegun": _wep = "triple x machinegun"; break;
+								case "quad machinegun": _wep = "quad x machinegun"; break;
+								case "smart gun": _wep = "smart x gun"; break;
+								case "shotgun": _wep = "x shotgun"; break;
+								case "hyper rifle": _wep = "hyper x rifle"; break;
+								case "heavy assault rifle": _wep = "heavy assault x rifle"; break;
+								case "heavy machinegun": _wep = "heavy x machinegun"; break;
+								case "heavy revolver": _wep = "heavy x revolver"; break;
+							}
+						}
+
+						break;
+					}
+				}
+			}
 		}
 
 		else {
@@ -265,8 +340,14 @@ return 1;
 			}
 		}
 		else {
-			if(convert(wep, c) != false)  wep = convert(wep, c);
+			if(convert(wep, c) != false) wep = convert(wep, c);
 			if(convert(bwep, c) != false) bwep = convert(bwep, c);
+			if(convert(wep, c) != false) || (convert(bwep, c) != false) with Player with instance_create(x, y, ImpactWrists){
+		        sprite_index = global.effect;
+		        sound_play_pitchvol(sndStatueXP, 0.5 * random_range(0.8, 1.2), 0.4);
+		        image_angle = 0;
+		        depth = other.depth-1;
+		    }
 		}
 	}
 

@@ -29,6 +29,11 @@ return sndSwapExplosive;
 #define weapon_area
 return 11;
 
+#define nts_weapon_examine
+return{
+    "d": "This gun uses an advanced neural network to guide its rockets. ",
+}
+
 #define weapon_text
 return "AT ITS MERCY";
 
@@ -42,7 +47,7 @@ with instance_create(x,y,CustomProjectile){
 	team = other.team
 	creator = other
 	maxspeed = speed
-	damage = 60
+	damage = 40
 	ang = random(359)
 	sprite_index = global.sprSmartNuke
 	mask_index   = global.mskSmartNuke

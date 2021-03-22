@@ -1,6 +1,6 @@
 #define init
-global.sprUltraClaymore = sprite_add_weapon("../sprites/Ultra Claymore.png", 2, 6);
-global.sprUltraClaymoreOff = sprite_add_weapon("../sprites/Ultra Claymore Off.png", 2, 6);
+global.sprUltraClaymore = sprite_add_weapon("../sprites/weapons/sprUltraClaymore.png", 2, 6);
+global.sprUltraClaymoreOff = sprite_add_weapon("../sprites/weapons/sprUltraClaymoreOff.png", 2, 6);
 global.sprUltraMegaSlash = sprite_add("../sprites/projectiles/Ultra Mega Slash.png",3,36,36)
 global.sprNotsoMegaSlash = sprite_add("../sprites/projectiles/Not so Mega Slash.png",3,36,36)
 

@@ -40,6 +40,11 @@ if !button_check(index,"fire") || (race = "steroids" and bwep = mod_current and 
 #define weapon_text
 return "BEAMING";
 
+#define nts_weapon_examine
+return{
+    "d": "Continuous vectors aren't as good at pulling enemies #but great in dealing damage. ",
+}
+
 #define weapon_fire
 if !skill_get(17){
 	sound_set_track_position(sndLaser,.09)
@@ -56,6 +61,7 @@ with instance_create(x,y,CustomProjectile){
     team = other.team
     direction = creator.gunangle
     image_angle = direction
+    created = false
 	sprite_index = global.sprWaterBeam
 	mask_index   = global.mskWaterBeam
 	spr_tail     = global.sprVectorBeamStart
@@ -81,11 +87,14 @@ sound_stop(sndEnergyHammerUpg)
 #define beam_step
 if instance_exists(creator){
     with creator weapon_post(5,5*current_time_scale,0)
-	sound_set_track_position(sndEnergyHammerUpg,.3)
-	sound_pitch(sndEnergyHammerUpg,0)
-	sound_play_pitchvol(sndEnergyHammerUpg,.4 * random_range(.9, 1.1), .35)
-	sound_set_track_position(sndEnergyHammerUpg,0)
-
+	if created = false{
+		created = true
+		sound_set_track_position(sndEnergyHammerUpg,.3)
+		sound_pitch(sndEnergyHammerUpg,0)
+		sound_play_pitchvol(sndEnergyHammerUpg,.4 * random_range(.9, 1.1), .35)
+		sound_set_track_position(sndEnergyHammerUpg,0)
+	}
+	
     time -= current_time_scale
     if time <= 0 {instance_destroy(); exit}
     x = creator.x + creator.hspeed_raw + lengthdir_x(16,creator.gunangle)

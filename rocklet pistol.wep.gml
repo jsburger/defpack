@@ -25,6 +25,11 @@ return sndSwapExplosive;
 #define weapon_area
 return 6;
 
+#define nts_weapon_examine
+return{
+    "d": "A small-arms rocket pistol from the future. #The gun is rather shiny. ",
+}
+
 #define weapon_text
 return "DRIZZLE";
 

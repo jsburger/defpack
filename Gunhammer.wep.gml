@@ -1,5 +1,5 @@
 #define init
-global.sprGunhammer 		 = sprite_add_weapon("sprites/weapons/sprGunhammer.png", 0, 8);
+global.sprGunhammer 	 = sprite_add_weapon("sprites/weapons/sprGunhammer.png", 0, 8);
 global.sprGunhammerHUD 	 = sprite_add_weapon("sprites/weapons/sprGunhammer.png", 11, 5);
 global.sprGunhammerSlash = sprite_add("sprites/projectiles/sprGunhammerSlash.png",3,0,24)
 
@@ -39,6 +39,10 @@ return "x gunhammer"
 #define weapon_text
 return "BULLET BASHING";
 
+#define nts_weapon_examine
+return{
+    "d": "A melee weapon that fires bullets. #Works without bullets too, just not as well. ",
+}
 #define weapon_fire
 
 var p = random_range(.8,1.2)

@@ -19,7 +19,7 @@ return 8
 return 1
 
 #define weapon_load
-return 6
+return 8
 
 #define weapon_swap
 return sndSwapHammer
@@ -50,6 +50,10 @@ return global.sprBow
 #define weapon_sprt_hud
 return global.sprArrowHUD
 
+#define nts_weapon_examine
+return{
+    "d": "A fancy hunting weapon. #Guaranteed to hit a weakspot with. ",
+}
 #define weapon_text
 return "CLASSIC"
 
@@ -135,6 +139,7 @@ else {
 
 #define bow_destroy
 bow_cleanup()
+
 var _p = random_range(.8, 1.2);
 sound_play_hit_ext(sndSwapGuitar, 4 * _p, .8)
 sound_play_hit_ext(sndAssassinAttack, 2 * _p, .8)
@@ -148,7 +153,7 @@ if charged = 0 {
         team    = creator.team
         damage = 20
         move_contact_solid(creator.gunangle, 6)
-        motion_add(creator.gunangle + random_range(-2, 2) * creator.accuracy * (1 - (other.charge/other.maxcharge)), 24 + (2 * other.charge/other.maxcharge))
+        motion_add(creator.gunangle + random_range(-2, 2) * creator.accuracy * (1 - (other.charge/other.maxcharge)), 26 + (2 * other.charge/other.maxcharge))
         image_angle = direction
     }
 }
@@ -159,17 +164,19 @@ else {
             motion_add(random(360), choose(5, 6))
         }
     }
+    
     sound_play_pitchvol(sndShovel, 2, .8)
     sound_play_pitchvol(sndUltraCrossbow, 3, .8)
-    var ang = creator.gunangle + random_range(-5, 5) * creator.accuracy
+    var ang = creator.gunangle
     with bolt_create(creator.x,creator.y){
       sprite_index = other.spr_arrow
       mask_index   = mskBullet1
+      hand = other.hand;
       creator = other.creator
       team    = creator.team
-      damage = 30
+      damage = 20
       move_contact_solid(creator.gunangle, 6)
-      motion_add(ang, 26)
+      motion_add(ang, 28)
       image_angle = direction
       charged = other.charged
     }
@@ -180,20 +187,28 @@ with instance_create(x,y,CustomProjectile){
     sprite_index = global.sprArrow
     mask_index = mskBolt
     charged = 0
-    damage = 15
     force = 3
+	cooldown = 0; // time in frames the arrow needs from a hit to be critical again (only applies if charged)
     bounce = round(skill_get("compoundelbow") * 5)
     on_step = bolt_step
     on_end_step = bolt_end_step
     on_hit = bolt_hit
     on_wall = bolt_wall
     on_destroy = bolt_destroy
+    reloadcheck = false;
     return id
 }
 
 #define bolt_step
+if reloadcheck = false{
+	reloadcheck = true;
+	var _r = 8; //extra reload gained from fully charging
+	if instance_exists(creator) if !hand creator.reload += _r else creator.breload += _r;
+}
 
 #define bolt_end_step
+
+cooldown--;
 var hitem = 0
 if skill_get(mut_bolt_marrow){
     var q = mod_script_call_nc("mod","defpack tools","instance_nearest_matching_ne",x,y,hitme,"team",team)
@@ -221,10 +236,11 @@ if hitem with q with other bolt_hit()
 sleep(10)
 var o = other, hp = other.my_health;
 projectile_hit(o, damage, force, direction)
-if charged{
+if charged && cooldown <= 0{
+  cooldown = 3;
   mod_script_call_self("mod","defpack tools","crit")
 }
-if hp > damage/2{
+if hp > damage{
     with instance_create(x,y,BoltStick){
         target = o
         sprite_index = other.sprite_index

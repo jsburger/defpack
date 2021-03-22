@@ -20,6 +20,10 @@ return 1
 return 0
 #define weapon_text
 return "JOY BURST";
+#define nts_weapon_examine
+return{
+    "d": "Several Plasmite Pistols strapped together#to create a large burst of miniature plasma. ",
+}
 #define weapon_fire
 weapon_post(6,0,18)
 if !skill_get(17)

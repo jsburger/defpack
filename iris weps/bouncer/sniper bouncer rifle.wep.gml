@@ -1,5 +1,5 @@
 #define init
-global.sprSniperBouncerRifle = sprite_add_weapon("../../sprites/weapons/iris/bouncer/sprSniperBouncerRifle.png", 6, 2);
+global.sprSniperBouncerRifle = sprite_add_weapon("../../sprites/weapons/iris/bouncer/sprSniperBouncerRifle.png", 6, 3);
 global.color = 14074
 #define weapon_name
 return "BOUNCER SNIPER RIFLE"
@@ -17,7 +17,7 @@ return 1;
 return true;
 
 #define weapon_load
-return 20;
+return 30;
 
 #define weapon_cost
 return 12;
@@ -81,24 +81,25 @@ with creator{
 	    worth = 12
 	    friends = q
 	}
-	mod_script_call_nc("mod", "defpack tools", "bolt_line_bulk", q, 2 * _cc, c_white, c_yellow)
 }
 sleep(charge*3)
 
 #define shoot(_x, _y, dir, t, w, bounces)
 var ar = []
-var q = mod_script_call_self("mod", "defpack tools", "sniper_fire", _x, _y, dir, t, w);
+var q = mod_script_call_self("mod", "defpack tools", "sniper_fire", _x, _y, dir, t, w, 0);
 unpack(ar, q)
 if bounces > 0{
-    with q[array_length(q)-1] if instance_exists(Wall){
-        var hsp = lengthdir_x(2, direction), vsp = lengthdir_y(2, direction);
-        var x2 = x, y2 = y, l = 3, l2 = .5;
-        x -= hsp; y -= vsp;
-        if collision_rectangle(x - l, y + l2, x + l, y - l2, Wall, 1, 0) hsp *= -1
-        if collision_rectangle(x + l2, y - l, x - l2, y + l, Wall, 1, 0) vsp *= -1
-        x = x2; y = y2;
-        var d = point_direction(0, 0, hsp, vsp)
-        unpack(ar, shoot(x, y, d, team, w, bounces - 1))
+    with q[array_length(q)-1]{
+	    	if instance_exists(Wall){
+	        var hsp = lengthdir_x(2, direction), vsp = lengthdir_y(2, direction);
+	        var x2 = x, y2 = y, l = 3, l2 = .5;
+	        x -= hsp; y -= vsp;
+	        if collision_rectangle(x - l, y + l2, x + l, y - l2, Wall, 1, 0) hsp *= -1
+	        if collision_rectangle(x + l2, y - l, x - l2, y + l, Wall, 1, 0) vsp *= -1
+	        x = x2; y = y2;
+	        var d = point_direction(0, 0, hsp, vsp)
+	        unpack(ar, shoot(x, y, d, team, w, bounces - 1))
+	    }
     }
 }
 return ar;

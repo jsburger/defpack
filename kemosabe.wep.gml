@@ -27,6 +27,11 @@ return sndSwapMachinegun;
 #define weapon_area
 return 6;
 
+#define nts_weapon_examine
+return{
+    "d": "The perfect fit for organized crime. ",
+}
+
 #define weapon_text
 return choose("SO CLEAN FOR#SUCH DIRTY WORK", "LIL FRIEND");
 

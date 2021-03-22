@@ -59,6 +59,11 @@ return false;
 #define weapon_text
 return choose("PRODUCT OF PRISMATIC FORGERY","BE CAREFUL WITH IT")
 
+#define nts_weapon_examine
+return{
+    "d": "A shiny and frail shotgun. #Shells fired are overwhelmingly bright. ",
+}
+
 #define weapon_fire(w)
   if !is_object(w){
       w = {
@@ -80,7 +85,7 @@ return choose("PRODUCT OF PRISMATIC FORGERY","BE CAREFUL WITH IT")
   repeat(5) with instance_create(x,y,CustomProjectile){
       name = "Quartz Shell"
       sprite_index = global.sprQuartzBullet2
-      mask_index   = mskHeavyBolt
+      mask_index   = mskBullet2
       team    = other.team
       creator = other
       force  = 4
@@ -91,7 +96,8 @@ return choose("PRODUCT OF PRISMATIC FORGERY","BE CAREFUL WITH IT")
       friction = random_range(.6,2)
       image_speed = 1
       wallbounce = 3 + skill_get(15) * 5;
-      motion_add(other.gunangle+random_range(-9,9) * (other.accuracy + (4 - 4 * w.health/w.maxhealth)),26 * random_range(1 * (1 - _c * .45), 1))
+      motion_add(other.gunangle+random_range(-9,9) * (other.accuracy + (2 - 2 * w.health/w.maxhealth)),24 * random_range(1 * (1 - _c * .45), 1))
+      if place_meeting(x, y, Wall){mask_index = sprGrenade;speed = 10; move_contact_solid(direction - 180, 12)}
       image_angle = direction
       defbloom = {
           xscale : 2,

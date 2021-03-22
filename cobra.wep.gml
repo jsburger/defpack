@@ -29,6 +29,11 @@ return -1;
 #define weapon_text
 return choose("HEY, IT'S DPS","DO THE SERPENT SWAY");
 
+#define nts_weapon_examine
+return{
+	"frog": "Why them and not mom? ",
+    "d": "A beefed up Toxicthrower. #Cobras used to be a common - and deadly sight in the Desert. ",
+}
 #define weapon_fire
 //huge fuckin props to yokin for letting me use code from GunLocker for this
 //thank you yokin!

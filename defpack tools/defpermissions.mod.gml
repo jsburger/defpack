@@ -335,11 +335,19 @@ repeat(3){
 draw_primitive_end()
 
 #define draw_pause
-draw_set_projection(0)
-global.pause = 1
-draw_menu()
-global.pause = 0
-draw_reset_projection()
+var _e = instance_exists(menubutton);
+with OptionMenuButton  _e = false
+with AudioMenuButton   _e = false
+with VisualsMenuButton _e = false
+with GameMenuButton    _e = false
+with ControlMenuButton _e = false
+if _e = true{
+    draw_set_projection(0)
+    global.pause = 1
+    draw_menu()
+    global.pause = 0
+    draw_reset_projection()
+}
 
 #define draw_gui
 if instance_exists(CharSelect) draw_menu()
@@ -356,8 +364,8 @@ for (var i = 0; i < maxp; i++) if player_is_active(i){
     var press = button_pressed(i, "fire"), check = button_check(i, "fire"), released = button_released(i, "fire")
 
     if i = 0 and !player_is_active(1){
-        mousex = mouse_x_nonsync - view_xview_nonsync
-        mousey = mouse_y_nonsync - view_yview_nonsync
+        mousex = mouse_x[i] - view_xview_nonsync 
+        mousey = mouse_y[i] - view_yview_nonsync
         press = button_pressed_nonsync(0,"fire")
         check = button_check_nonsync(0,"fire")
         released = button_released_nonsync(0,"fire")

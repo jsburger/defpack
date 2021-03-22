@@ -21,6 +21,10 @@ return 1
 #define weapon_sprt
 return global.sprKnifeThrower
 #define weapon_reloaded
+#define nts_weapon_examine
+return{
+    "d": "Launches cheaply made knife blades forwards. #The knives are surprisingly bouncy. ",
+}
 
 #define weapon_text
 return choose("REN FAIRE", "@wKNIVES@s CAN HIT TWO THINGS AT ONCE")

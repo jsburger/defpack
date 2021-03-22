@@ -33,8 +33,13 @@ return sndSwapEnergy;
 #define weapon_area
 return 14;
 
+#define nts_weapon_examine
+return{
+    "d": "Uses the most advanced weather technology #to summon lightning wherever it discharges. ",
+}
+
 #define weapon_text
-return choose("MACBETH");
+return choose("END OF THE WORLD");
 
 #define weapon_fire
 sound_play_pitch(sndDevastatorUpg,1.4)

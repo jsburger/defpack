@@ -1,5 +1,5 @@
 #define init
-global.sprSmartSword = sprite_add_weapon("SmartSword.png",1,7)
+global.sprSmartSword = sprite_add_weapon("../sprites/weapons/sprSmartSword.png",1,7)
 #define weapon_name
 return "SMART SWORD"
 #define weapon_type

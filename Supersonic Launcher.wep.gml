@@ -26,6 +26,11 @@ return sndSwapExplosive;
 #define weapon_area
 return 15;
 
+#define nts_weapon_examine
+return{
+    "d": "The projectile is fast enough to break the sound barrier. #Shifts a lot of smoke. ",
+}
+
 #define weapon_text
 return "DEAFENING";
 

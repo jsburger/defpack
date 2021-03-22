@@ -22,7 +22,7 @@
 //BOWS
 
 /loadwep bow
-/loadwep splinter bow
+/loadwep hyper bow
 /loadwep explosive bow
 /loadwep arc classique
 

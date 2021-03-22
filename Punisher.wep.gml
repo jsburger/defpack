@@ -32,8 +32,9 @@ var _amount = 10,
      _angle = random(360),
          _i = 0;
 repeat(_amount){
-  with instance_create(x, y, BloodStreak){
-    motion_add(_angle + 360 / _amount * _i, 4);
+  var _o = _i mod 2 = 0 ? BloodStreak : BloodGamble
+  with instance_create(x, y, _o){
+    if _i mod 2 = 0 motion_add(_angle + 360 / _amount * _i, 4);
     image_angle = direction;
     _i++;
   }
@@ -79,7 +80,11 @@ repeat(2){
 return global.gun
 #define weapon_text
 return "@rLIFE@s AND @dDEATH@s"
-
+#define nts_weapon_examine
+return{
+    "plant": "You and your gun think alike. ",
+    "d": "Blood for Blood. ",
+}
 #define instance_nearest_matching_ne(_x,_y,obj,varname,value)
 var num = instance_number(obj),
     man = instance_nearest(_x,_y,obj),

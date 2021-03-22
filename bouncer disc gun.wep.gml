@@ -21,6 +21,10 @@ return 0
 return global.sprBouncerDiscGun
 #define weapon_text
 return "OOPS"
+#define nts_weapon_examine
+return{
+    "d": "The faster the Disc, the higher the damage. ",
+}
 #define weapon_fire
 weapon_post(3,4,0)
 sound_play_pitch(sndDiscgun,random_range(.85,.95))

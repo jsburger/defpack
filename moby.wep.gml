@@ -30,6 +30,12 @@ return sndSwapMachinegun;
 #define weapon_area
 return 14;
 
+#define nts_weapon_examine
+return{
+    "d": "Ball bearings keep the barrel spinning for a bit after firing. ",
+}
+
+
 #define weapon_text
 return "HEAVY OCEAN";
 

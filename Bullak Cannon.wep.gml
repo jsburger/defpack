@@ -29,6 +29,11 @@ return sndSwapMachinegun;
 #define weapon_area
 return 7;
 
+#define nts_weapon_examine
+return{
+    "d": "If you remove the stock it makes for an impractical vase, too. ",
+}
+
 #define weapon_iris
 return "x bullak cannon"
 

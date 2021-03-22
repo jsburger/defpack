@@ -35,6 +35,11 @@ sound_play_pitchvol(sndNadeReload,1.4,.6)
 #define weapon_text
 return "CARPET BOMBING";
 
+#define nts_weapon_examine
+return{
+    "d": "Fires when fully charged, doesnt snap onto enemies. ",
+}
+
 #define weapon_fire
 var _strtsize = 14;
 var _endsize  = 44;

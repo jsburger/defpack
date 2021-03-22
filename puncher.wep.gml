@@ -24,7 +24,10 @@ return 0
 return global.sprPuncher
 #define weapon_text
 return "breaking through"
-
+#define nts_weapon_examine
+return{
+    "d": "A rocket launcher from a long-lost war. #Good at breaking through walls and frontlines alike. ",
+}
 #define weapon_fire
 var r = random_range(.8,1.2);
 if fork(){

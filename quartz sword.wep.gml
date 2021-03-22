@@ -41,9 +41,9 @@ return false;
 #define weapon_load(wep)
   if is_object(wep){
     switch wep.health{
-      case 2: return 24;
-      case 1: return 18;
-      case 0: return 10;
+      case 2: return 19;
+      case 1: return 14;
+      case 0: return 9;
     }
   }
   return 24;
@@ -66,6 +66,11 @@ return 14;
 #define weapon_text
 return choose("THEIR METHODS REMAIN SECRET","BE CAREFUL WITH IT");
 
+#define nts_weapon_examine
+return{
+    "d": "A shiny and frail sword. #It's surprisingly light. ",
+}
+
 #define weapon_fire(w)
   if !is_object(w){
       w = {
@@ -85,10 +90,10 @@ return choose("THEIR METHODS REMAIN SECRET","BE CAREFUL WITH IT");
     switch w.health{
       case 2:
         sprite_index = global.sprHeavyQuartzSlash;
-        sound_play_pitch(sndShovel, random_range(.6, .8));
+        sound_play_pitch(sndShovel, 1.4*random_range(.8, 1.2));
         sound_play_pitch(sndScrewdriver, random_range(.7, .8));
-        sound_play_pitch(sndBlackSwordMega, random_range(1.8, 2));
-      	sound_play_pitch(sndHyperCrystalHurt,random_range(1.5,1.6));
+        sound_play_pitch(sndCrystalRicochet, 3*random_range(.8, 1.2));
+      	sound_play_pitch(sndHyperCrystalHurt,random_range(1.8,2));
       	sound_play_pitchvol(sndLaserCrystalDeath,random_range(1.6,2),.5);
         damage = 22
         break;

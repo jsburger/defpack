@@ -50,12 +50,28 @@ global.sprShellChest     = sprite_add_weapon("../sprites/chests/sprWepMutChestSh
 global.sprBoltChest      = sprite_add_weapon("../sprites/chests/sprWepMutChestBolt.png"     , 11, 8);
 global.sprEnergyChest    = sprite_add_weapon("../sprites/chests/sprWepMutChestEnergy.png"   , 11, 8);
 global.sprExplosiveChest = sprite_add_weapon("../sprites/chests/sprWepMutChestExplosive.png", 11, 8);
+
+global.sprMeleeChestC     = sprite_add_weapon("../sprites/chests/sprWepMutChestMeleeCursed.png"    , 11, 8);
+global.sprBulletChestC    = sprite_add_weapon("../sprites/chests/sprWepMutChestBulletCursed.png"   , 11, 8);
+global.sprShellChestC     = sprite_add_weapon("../sprites/chests/sprWepMutChestShellCursed.png"    , 11, 8);
+global.sprBoltChestC      = sprite_add_weapon("../sprites/chests/sprWepMutChestBoltCursed.png"     , 11, 8);
+global.sprEnergyChestC    = sprite_add_weapon("../sprites/chests/sprWepMutChestEnergyCursed.png"   , 11, 8);
+global.sprExplosiveChestC = sprite_add_weapon("../sprites/chests/sprWepMutChestExplosiveCursed.png", 11, 8);
+
 global.sprMeleeChestOpen     = sprite_add("../sprites/chests/sprWepMutChestOpen.png", 1, 11, 8);
+global.sprMeleeChestOpenC    = sprite_add("../sprites/chests/sprWepMutChestOpenCursed.png", 1, 11, 8);
+
 global.sprBulletChestOpen    = global.sprMeleeChestOpen;
 global.sprShellChestOpen     = global.sprMeleeChestOpen;
 global.sprBoltChestOpen      = global.sprMeleeChestOpen;
 global.sprExplosiveChestOpen = global.sprMeleeChestOpen;
 global.sprEnergyChestOpen    = global.sprMeleeChestOpen;
+
+global.sprBulletChestOpenC    = global.sprMeleeChestOpenC;
+global.sprShellChestOpenC     = global.sprMeleeChestOpenC;
+global.sprBoltChestOpenC      = global.sprMeleeChestOpenC;
+global.sprExplosiveChestOpenC = global.sprMeleeChestOpenC;
+global.sprEnergyChestOpenC    = global.sprMeleeChestOpenC;
 
 global.chests = ds_map_create()
 chest_add("Ultra",   14, [wep_ultra_shovel,wep_ultra_shotgun,wep_ultra_laser_pistol,wep_ultra_revolver,wep_ultra_crossbow,wep_ultra_grenade_launcher,"ultra spam gun","ultra hand","defender","ultra gunhammer"])
@@ -158,9 +174,11 @@ chest_add("Energy",    -1, 5)
                   if skill_get("conductivity")        > 0 array_push(_a, 1);
               var q = get_chests(-1, -1)
               if array_length(q){
-                  with customchest_create(x, y, q[_a[irandom(array_length(_a) - 1)]]) {
+                  with customchest_create(x, y, q[_a[irandom(array_length(_a) - 1)]]){
+                    curse = other.curse
+                   
                     var _l = ds_list_create();
-                    weapon_get_list(_l, clamp(GameCont.hard, 0, 6), GameCont.hard + 2 * array_length(instances_matching(Player,"race","robot")) + 3);
+                    weapon_get_list(_l, clamp(GameCont.hard, 0, 6), GameCont.hard + 2 * array_length(instances_matching(Player,"race","robot")) + 3^+ curse);
                     var _weparray = ds_list_to_array(_l),
                         _weapons  = [];
                     with _weparray {
@@ -169,6 +187,33 @@ chest_add("Energy",    -1, 5)
                       }
                     }
                     weps = _weapons;
+                    
+                    if curse = true switch subname{
+                        case "Bullet":
+                            sprite_index = global.sprBulletChestC;
+                            spr_open = global.sprBulletChestOpenC;
+                            break;
+                        case "Shell":
+                            sprite_index = global.sprShellChestC;
+                            spr_open = global.sprShellChestOpenC;
+                            break;
+                        case "Bolt":
+                            sprite_index = global.sprBoltChestC;
+                            spr_open = global.sprBoltChestOpenC;
+                            break;
+                        case "Explosive":
+                            sprite_index = global.sprExplosiveChestC;
+                            spr_open = global.sprExplosiveChestOpenC;
+                            break;
+                        case "Energy":
+                            sprite_index = global.sprEnergyChestC;
+                            spr_open = global.sprEnergyChestOpenC;
+                            break;
+                        case "Melee":
+                            sprite_index = global.sprMeleeChestC;
+                            spr_open = global.sprMeleeChestOpenC;
+                            break;
+                    }
                   }
                   instance_delete(self)
               }
@@ -184,6 +229,9 @@ chest_add("Energy",    -1, 5)
 
      // chest step
     with instances_matching(chestprop, "name", "DefCustomChest"){
+        if curse = true{
+            if irandom(1) instance_create(x + random_range(-6, 6), y - 4 + random_range(-1, 1), Curse)
+        }
         if place_meeting(x, y, Player) sound_play(instance_nearest(x, y, Player).snd_chst)
         if place_meeting(x, y, Player) || place_meeting(x, y, PortalShock) || instance_exists(BigPortal){
              // run open code
@@ -202,6 +250,7 @@ chest_add("Energy",    -1, 5)
             instance_create(x, y, FXChestOpen);
             with instance_create(x, y, ChestOpen)
                 sprite_index = other.spr_open;
+            if curse = true sound_play(sndCursedChest)
 
             instance_delete(id);
         }
@@ -228,20 +277,22 @@ chest_add("Energy",    -1, 5)
   }
   return a
 
-  #define customchest_create(xx, yy, Type)
+#define customchest_create(xx, yy, Type)
       var o = instance_create(xx, yy, chestprop);
       with(o){
+          curse = false
           name = "DefCustomChest";
           type = Type// specifc chest type
           var q = global.chests[? Type]
           spr_open = q.spr_open
           sprite_index = q.spr_idle
           weps = q.weps
+          subname = q.name
           on_open = customchest_open;
       }
       return o;
 
-  #define customchest_open
+#define customchest_open
   repeat(2){
     var _w = wep_screwdriver
     sound_play(sndAmmoChest);
@@ -252,6 +303,7 @@ chest_add("Energy",    -1, 5)
         _w = weps[irandom(array_length(weps)-1)]
         if weapon_get_area(_w) <= max(0, GameCont.hard + 3) && _d[_j] != _w{
           with instance_create(x,y,WepPickup){
+            curse = other.curse
             wep = _w
             _d[_j] = wep;
             _j++;

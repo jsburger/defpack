@@ -20,6 +20,10 @@ return 0
 return 0
 #define weapon_text
 return "EHE";
+#define nts_weapon_examine
+return{
+    "d": "A lesser known younger brother of the Plasma Gun. #Fires miniature plasma. ",
+}
 #define weapon_fire
 var _flip = instance_is(self, Player) ? wepflip : choose(-1, 1)
 repeat(2)

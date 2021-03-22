@@ -58,6 +58,11 @@ with instance_create(x + lengthdir_x(6, gunangle), y + lengthdir_y(6, gunangle),
 #define weapon_sprt
 return global.gun
 
+#define nts_weapon_examine
+return{
+    "d": "A full-size, double-action, six-shot revolver with ivory grip. ",
+}
+
 #define weapon_text
 return choose("oops i meant psy","damn typos","psy among us");
 

@@ -31,6 +31,10 @@ return 11;
 #define weapon_text
 return "FULL REMOTE ACCESS";
 
+#define nts_weapon_examine
+return{
+    "d": "A bomb launcher from a long-lost war. #The bomb is controlled remotely. ",
+}
 #define weapon_fire
 var _p = random_range(.8,1.2)
 sound_play_pitch(sndRocketFly,2.1*_p)

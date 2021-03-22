@@ -1,6 +1,6 @@
 #define init
 global.sprPlasmiteCannon = sprite_add_weapon("sprites/weapons/sprPlasmiteCannon.png",0,1)
-global.sprPlasmiteBig = sprite_add("sprites/projectiles/sprPlasmiteBig.png",0,9,9)
+global.sprPlasmiteBig = sprite_add("sprites/projectiles/sprPlasmiteBig.png",2,9,9)
 
 #define weapon_name
 return "PLASMITE CANNON"
@@ -20,6 +20,10 @@ return sndSwapEnergy
 return 1
 #define weapon_laser_sight
 return 0
+#define nts_weapon_examine
+return{
+    "d": "A little bit of mass splits off the main projectile whenever it hits something. ",
+}
 #define weapon_text
 return "HEH";
 #define weapon_fire
@@ -39,13 +43,12 @@ with instance_create(x,y,CustomSlash)
 {
 	name = "plasmite cannon"
 	move_contact_solid(other.gunangle,12)
-	
-	image_speed  = 0;
-	image_index  = 0;
+
+	image_speed  = .5;
 	sprite_index = global.sprPlasmiteBig;
 	mask_index   = mskBullet1;
 	friction     = .2;
-	
+
 	creator    = other;
 	team	   = other.team;
 	ammo       = 3 + skill_get(mut_laser_brain) * 3;
@@ -55,35 +58,45 @@ with instance_create(x,y,CustomSlash)
 	timer	   = 30 * 6;
 	damage	   = 15;
 	margin     = 48;
-	
+
 	motion_set(other.gunangle+random_range(-2,2)*other.accuracy, startspeed);
-	
+  image_angle = direction;
+
 	defbloom = {
         xscale : 1.5+skill_get(mut_laser_brain),
         yscale : 1.5+skill_get(mut_laser_brain),
         alpha : .1 + skill_get(mut_laser_brain) * .025
     }
 	accuracy = other.accuracy
-	
+
 	on_hit		  = atom_hit
 	on_step 	  = atom_step
 	on_wall 	  = atom_wall
+  on_anim     = atom_anim
 	on_destroy    = atom_destroy
 	on_projectile = atom_projectile
 	on_square     = script_ref_create(atom_square)
-	
+
 	repeat(ammo){with create_electron() index = other.eindex++}
 }
 
 #define atom_hit
-	
+
+#define atom_anim
+  image_index = 1;
+  image_speed = 0;
+
 #define atom_step
 	angle += (3 + speed * 3) * current_time_scale;
-	
+
+  var _o = max(1, 3 - speed);
+  x += random_range(-_o, _o);
+  y += random_range(-_o, _o);
+
 	var _scl = random_range(.8,1.2);
 	image_xscale = _scl
 	image_yscale = _scl
-	
+
 	var _me = noone;
 	x += hspeed * 2
 	y += vspeed * 2
@@ -104,13 +117,15 @@ with instance_create(x,y,CustomSlash)
 			speed = _s;
 		}
 	}
-	
+
 	with instances_matching_ne(hitme, "team", team){
-		if distance_to_object(other) <= ((3 + other.ammo * 2 + other.speed * 1.5) * .5) && sprite_index != spr_hurt{
+		if distance_to_object(other) <= 0 && sprite_index != spr_hurt{
 			var _k = my_health > (other.damage + other.ammo) ? false : true;
 			projectile_hit(self, other.damage + other.ammo, other.speed, other.direction);
 			with other with create_electron() index = other.eindex++;
 			other.ammo++;
+      image_index = 0;
+      image_speed = .5;
 			sleep(15);
 			view_shake_at(other.x, other.y, 8);
 	    	sound_play_pitchvol(skill_get(mut_laser_brain) > 0 ? sndPlasmaMinigunUpg : sndPlasmaMinigun, other.ammo / 10, 1)
@@ -123,14 +138,14 @@ with instance_create(x,y,CustomSlash)
 	}
 	x -= hspeed * 2
 	y -= vspeed * 2
-	
+
 	timer -= current_time_scale;
 	if speed <= friction || timer <= 0{instance_destroy()}
 
 #define atom_wall
 	move_bounce_solid(false);
 	sound_play_pitchvol(sndPlasmaHit, random_range(2, 4), .3);
-	
+
 #define atom_square
     ammo += 5*other.size
     repeat(5*other.size){
@@ -203,14 +218,14 @@ with instance_create(x,y,CustomSlash)
 		image_index = 0;
 		sprite_index = sprPlasmaTrail;
 		mask_index   = sprAllyBullet;
-		
+
 		creator  = other.creator;
 		team     = other.team;
 		damage   = 3;
 		radius   = 1;
 		target   = other;
 		index    = 0;
-		
+
 		on_hit       = mb_hit
 		on_step 	 = mb_step
 		on_wall 	 = mb_wall
@@ -230,7 +245,7 @@ with instance_create(x,y,CustomSlash)
 
 #define mb_step
 	if !instance_exists(target){instance_destroy(); exit}else{
-		var _ra = 3 * radius + target.ammo * 2 + target.speed * 1.5,
+		var _ra = 3 * radius + 8 + target.speed * 1.5,
 		    _dr = target.angle + 360 / target.ammo * index,
 		    _tx = target.x + target.hspeed + lengthdir_x(_ra, _dr),
 		    _ty = target.y + target.vspeed + lengthdir_y(_ra, _dr);

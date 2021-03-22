@@ -32,7 +32,7 @@ return sndSwapMachinegun;
 #define weapon_laser_sight
 with instances_matching(instances_matching(CustomObject, "name", "FireSniperCharge"), "creator", self){
     with other{
-        with mod_script_call_self("mod", "defpack tools", "sniper_fire", x, y, gunangle, team, 1 + other.charge/other.maxcharge){
+        with mod_script_call_self("mod", "defpack tools", "sniper_fire", x, y, gunangle, team, 1 + other.charge/other.maxcharge, 1){
             draw_line_width_color(xstart, ystart, x, y, 1, global.color, global.color)
             instance_destroy()
         }
@@ -64,6 +64,7 @@ with mod_script_call_self("mod", "defpack tools", "create_sniper_charge", x, y){
     cost = weapon_cost()
     on_fire = script_ref_create(fire_rifle_fire)
     spr_flash = global.sprFireMuzzle
+    deviation = 7 * other.accuracy
 }
 
 #define fire_rifle_fire
@@ -76,15 +77,17 @@ sound_play_pitch(sndFlareExplode,1.8)
 sound_play_pitch(sndFlameCannonEnd,.7)
 sound_play_pitch(sndQuadMachinegun,.7)
 sound_play_pitch(sndSniperFire,random_range(.6,.8))
-var _c = charge, _cc = charge/maxcharge;
+var _c = charge, _cc = charge/maxcharge, _ccc = _cc = 1 ? 1 : 0;
 with creator{
 	weapon_post(12,2,158)
 	motion_add(gunangle -180,_c / 20)
 	sleep(120)
-	var q = mod_script_call_self("mod", "defpack tools", "sniper_fire", x + lengthdir_x(10, gunangle), y + lengthdir_y(10, gunangle), gunangle, team, 1 + _cc)
+	var q = mod_script_call_self("mod", "defpack tools", "sniper_fire", x + lengthdir_x(10, gunangle), y + lengthdir_y(10, gunangle), gunangle + random(other.deviation) * choose(-1, 1) * (1 - other.charge/other.maxcharge), team, 1 + _cc, _ccc)
 	with q{
+		c1 = c_red
+		c2 = c_yellow
 	    creator = other
-	    damage = 12 + round(28 * _cc)
+	    damage = 20 + round(20 * _cc)
 	    worth = 12
 	    with instance_create(x, y, BulletHit) sprite_index = global.sprFireBulletHit
 	    var n = hyperspeed/(_cc + .2)
@@ -96,6 +99,5 @@ with creator{
 	        }
 	    }
 	}
-	mod_script_call_nc("mod", "defpack tools", "bolt_line_bulk", q, 2 * _cc, c_red, c_yellow)
 }
 sleep(charge*3)

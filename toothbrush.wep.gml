@@ -49,3 +49,9 @@ if mod_exists("skill", "prismatic iris") return global.brush[mod_variable_get("s
 return global.brush[0]
 #define weapon_text
 return "no toothpaste"
+#define nts_weapon_examine
+return{
+	"eyes" : "But you dont have any use for this, or do you? ",
+	"plant": "Keep them pearly whites nice and shiny. ",
+    "d": "Keep your enemies clean. ",
+}
