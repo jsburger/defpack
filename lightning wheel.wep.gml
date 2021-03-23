@@ -2,7 +2,7 @@
   global.sprLightningWheel     = sprite_add_weapon("sprites/weapons/sprLightningWheel.png",9,8);
   global.sprLightningWheelHUD  = sprite_add_weapon("sprites/weapons/sprLightningWheel.png",3,5);
   global.sprLightningWheelProj = sprite_add("sprites/projectiles/sprLightningWheelProj.png", 4, 17, 17);
-  global.sprBounce = sprite_add("sprites/projectiles/sprKaboomerangBounce.png", 3, 12, 12);
+  global.sprBounce = sprImpactWrists//prite_add("sprites/projectiles/sprKaboomerangBounce.png", 3, 12, 12);
   global.msk = sprite_add_weapon("sprites/weapons/sprKaboomerang.png", 3, 12);
 
 #define weapon_name
@@ -174,7 +174,7 @@
 
     if _b
     {
-      with instance_create(x, y, DiscBounce){sprite_index = global.sprBounce}
+      with instance_create(x, y, DiscBounce){sprite_index = global.sprBounce; image_index = 1; image_speed = 1}
       speed *= (1 + potential);
       potential *= .5
       with instance_create(x ,y, LightningHit) image_angle = other.image_angle
@@ -196,7 +196,7 @@
 
       if button_check(creator.index, btn) and creator.mask_index != mskNone{
           speed = 0
-          if timer > 0 timer -= current_time_scale * creator.reloadspeed
+          if timer > 0 timer -= current_time_scale * mod_script_call_nc("mod", "defpack tools", "get_reloadspeed", creator)
           else{
               timer = 7
                   if collision_line(creator.x,creator.y,x,y,Wall,0,0) <= -4{
@@ -247,7 +247,7 @@
         friction *= -1
         maxspeed += 6
         with instance_create(x, y, ChickenB) image_speed *= 2;
-        with instance_create(x, y, DiscBounce){sprite_index = global.sprBounce}
+        with instance_create(x, y, DiscBounce){sprite_index = global.sprBounce; image_index = 1; image_speed = 1}
       }
     }
     ang += 21*current_time_scale

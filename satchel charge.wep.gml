@@ -1,7 +1,7 @@
 #define init
-global.sprSatchelCharge = sprite_add_weapon("sprites/weapons/sprSatchelCharge.png", 4, 6);
-global.sprSatchelHUD    = sprite_add_weapon("sprites/weapons/sprSatchelCharge.png", -1, 6);
-global.sprSatchelReady  = sprite_add("sprites/weapons/sprSatchelReady.png", 7, 4, 6);
+global.sprSatchelCharge = sprite_add_weapon("../sprites/weapons/sprSatchelCharge.png", 4, 6);
+global.sprSatchelHUD    = sprite_add_weapon("../sprites/weapons/sprSatchelCharge.png", -1, 6);
+global.sprSatchelReady  = sprite_add("../sprites/weapons/sprSatchelReady.png", 7, 4, 6);
 
 #define weapon_name
 return "SATCHEL CHARGE"
@@ -12,7 +12,7 @@ return 2
 #define weapon_area
 return 5
 #define weapon_load
-return 15
+return 10
 #define weapon_swap
 return sndSwapHammer
 #define weapon_auto
@@ -61,7 +61,7 @@ return choose("ROCK AND STONE")
   }
 
 #define chrg_step
-  if !instance_exists(creator){instance_delete(self);exit;sound_stop(sndIDPDNadeAlmost)}
+  if !instance_exists(creator){instance_delete(self);exit;sound_stop(sndMeleeFlip)}
   x = creator.x + creator.hspeed
   y = creator.y + creator.vspeed
   if button_check(creator.index, "swap") && (creator.canswap = true || creator.bwep != 0){
@@ -69,17 +69,17 @@ return choose("ROCK AND STONE")
     creator.ammo[_t] += weapon_get_cost(mod_current)
     if creator.ammo[_t] > creator.typ_amax[_t] creator.ammo[_t] = creator.typ_amax[_t]
     instance_delete(self)
-    sound_stop(sndIDPDNadeAlmost)
+    sound_stop(sndMeleeFlip)
     exit
   }
   var timescale = (mod_variable_get("weapon", "stopwatch", "slowed") == 1) ? 30/room_speed : current_time_scale;
   with creator{
     weapon_post(2 * other.charge / other.maxcharge, 0, 0);
   }
-  if button_check(index,"swap"){instance_destroy();exit;sound_stop(sndIDPDNadeAlmost)}
+  if button_check(index,"swap"){instance_destroy();exit;sound_stop(sndMeleeFlip)}
   if reload = -1{
       reload = hand ? creator.breload : creator.reload
-      reload += mod_script_call_nc("mod", "defpack tools", "get_reloadspeed", creator) * timescale
+      reload += mod_script_call_nc("mod", "defpack tools", "get_reloadspeed", creator) * timescale * 2;
   }
   else{
       if hand creator.breload = max(creator.breload, reload)
@@ -88,9 +88,9 @@ return choose("ROCK AND STONE")
   defcharge.charge = charge
   if button_check(index, btn){
       if charge < maxcharge{
-          charge += mod_script_call_nc("mod", "defpack tools", "get_reloadspeed", creator) * timescale;
+          charge += mod_script_call_nc("mod", "defpack tools", "get_reloadspeed", creator) * timescale * 2;
           charged = 0
-          sound_play_pitchvol(sndIDPDNadeAlmost, charge/maxcharge * .45 + .25, .05 + .95 * charge/maxcharge)
+          sound_play_pitchvol(sndMeleeFlip, charge/maxcharge * .4 + .4, .05 + .95 * charge/maxcharge)
       }
       else{
           if current_frame mod 6 < current_time_scale {
@@ -104,7 +104,7 @@ return choose("ROCK AND STONE")
           }
       }
   }
-  else{instance_destroy();sound_stop(sndIDPDNadeAlmost)}
+  else{instance_destroy();sound_stop(sndMeleeFlip)}
 
 #define chrg_destroy
 if instance_exists(creator) with creator{
@@ -124,7 +124,7 @@ if charge/maxcharge = 1{
     with instance_create(x, y, PopupText){
       text = "NO SATCHELS PLACED"
       target = other.creator.index
-      sound_play(sndCursedReminder)
+      sound_play(sndEmpty)
     }
   }
 }else{
@@ -146,12 +146,12 @@ if charge/maxcharge = 1{
       my_health = maxhealth;
       team = other.creator.team;
       sticky = true;
-      friction = .5;
+      friction = 1;
       creator = other.creator;
       stick_target = -4;
       name = "Satchel Charge"
 
-      motion_set(creator.gunangle + random_range(-4,4) * creator.accuracy, 10 + 3 * other.charge/other.maxcharge);
+      motion_set(creator.gunangle + random_range(-4,4) * creator.accuracy, 14);
       image_xscale = creator.right
 
       on_hit  = satchel_hit;

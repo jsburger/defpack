@@ -67,25 +67,23 @@ with instance_create(x,y,CustomProjectile)
 	motion_add(other.gunangle+random_range(-1,1)*other.accuracy,26)
 	projectile_init(other.team,other)
 	sprite_index = global.sprUmbrella
-    mask_index   = global.mskUmbrella
-	image_speed = .45;
+  mask_index   = global.mskUmbrella
+
 	image_angle = direction
 	damage  = 20
 	friction = 0
-    force = 30
-    image_speed = 1
-    on_anim = stop_anim
-    on_wall = lightningcluster_wall
-    on_hit  = lightningcluster_hit
+  force = 30
+  image_speed = 1
+
+  on_anim = stop_anim
+  on_wall = lightningcluster_wall
+  on_hit  = lightningcluster_hit
 	on_destroy = lightningcluster_destroy
+
   if GameCont.area = 101 instance_destroy()
 }
 
 #define lightningcluster_wall
-if GameCont.area != 101
-{
-  create_lightningorb()
-}
 with other{instance_create(x,y,FloorExplo);instance_destroy()}
 instance_destroy()
 
@@ -96,7 +94,9 @@ image_index = 1
 #define lightningcluster_hit
 if projectile_canhit(other) = true
 {
-  sleep(20)
+  sleep(5 + 15 * clamp(other.size, 1, 3))
+  with instance_create(x + random_range(-3, 3), y + random_range(-3, 3), LightningHit){image_angle = random(360)}
+  view_shake_max_at(x, y, 4 + 7 * clamp(other.size, 1, 3))
   var _dmg = other.my_health
   projectile_hit(other,damage,force,direction)
   if _dmg > damage {sleep(80);instance_destroy()}
@@ -113,6 +113,10 @@ if speed <= 0
 move_bounce_solid(false)
 
 #define lightningcluster_destroy
+if GameCont.area != 101
+{
+  create_lightningorb()
+}
 sleep(20)
 play_sound_lightning()
 with mod_script_call("mod","defpack tools","create_lightning",x+lengthdir_x(sprite_width,direction),y+lengthdir_y(sprite_width,direction)){

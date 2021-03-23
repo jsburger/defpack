@@ -41,7 +41,7 @@ return{
 }
 
 #define weapon_text
-return "PERSONAL SECURITY DEVICE";
+return choose("PERSONAL SECURITY DEVICE", "ABSORB THEIR @wBULLETS");
 
 #define weapon_fire
   wepangle = -wepangle
@@ -81,6 +81,7 @@ return "PERSONAL SECURITY DEVICE";
     team    = other.team;
     damage  = 12;
     force   = 5;
+    refund  = false;
     candeflect = true;
     can_fix    = false;
 
@@ -116,13 +117,23 @@ return "PERSONAL SECURITY DEVICE";
     }
     with instances_matching_ne(projectile, "team", other.team){
       if distance_to_object(other) <= (other.radius + 6){
+        var _o = self,
+            _s = other;
+        with other.creator{
+          if _s.refund = false && ammo[5] < typ_amax[5]{
+            ammo[5]++;
+            sound_play(sndRecGlandProc)
+            instance_create(_o.x, _o.y, RecycleGland)
+            _s.refund = true;
+          }
+        }
         instance_destroy();
       }
     }
   }
 
 #define step
-  var _active = ((wep = mod_current) || (race = "steroids" && bwep = mod_current));
+  var _active = ((wep = mod_current) || (bwep = mod_current)) && ammo[5] > 0;
 
   if _active > 0{
     with instance_create(x + hspeed, y + vspeed, CustomSlash){

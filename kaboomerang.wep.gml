@@ -2,8 +2,8 @@
   global.sprboomerang     = sprite_add_weapon("sprites/weapons/sprKaboomerang.png",  3, 12);
   global.sprboomerangHUD  = sprite_add_weapon("sprites/weapons/sprKaboomerang.png", -1,  4);
   global.sprboomerangProj = sprite_add("sprites/projectiles/sprKaboomerangProj.png", 4, 11, 11);
-  global.sprBounce = sprite_add("sprites/projectiles/sprKaboomerangBounce.png", 3, 12, 12);
-  
+  global.sprBounce = sprImpactWrists//sprite_add("sprites/projectiles/sprKaboomerangBounce.png", 3, 12, 11);
+
 #define weapon_name
   return "KABOOMERANG";
 
@@ -131,7 +131,7 @@
       friction *= -1
       maxspeed += 6
       with instance_create(x, y, ChickenB) image_speed *= 2;
-      with instance_create(x, y, DiscBounce){sprite_index = global.sprBounce}
+      with instance_create(x, y, DiscBounce){sprite_index = global.sprBounce; image_index = 1; image_speed = 1}
     }
     ang += 21*current_time_scale
   }

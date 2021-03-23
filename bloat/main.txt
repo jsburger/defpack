@@ -44,3 +44,4 @@
 /loadwep sonic shotgun
 /loadwep sonic rifle
 /loadwep lightning flare gun
+/loadwep satchel charge

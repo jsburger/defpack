@@ -3821,7 +3821,7 @@ else {
 var d = other.my_health > damage/2;
 var a = other;
 sleep(force * 5)
-view_shake_at(x, y, force * 6)
+view_shake_max_at(x, y, force * 5)
 projectile_hit(other, damage, force, direction)
 with instance_create(x, y, AcidStreak){sprite_index = spr.SwordImpact; image_angle = other.direction; image_speed = .5}
 other.x += 10000
