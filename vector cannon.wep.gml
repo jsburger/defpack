@@ -94,7 +94,7 @@ if instance_exists(creator){
 		sound_play_pitchvol(sndEnergyHammerUpg,.4 * random_range(.9, 1.1), .35)
 		sound_set_track_position(sndEnergyHammerUpg,0)
 	}
-	
+
     time -= current_time_scale
     if time <= 0 {instance_destroy(); exit}
     x = creator.x + creator.hspeed_raw + lengthdir_x(16,creator.gunangle)
@@ -120,9 +120,10 @@ if instance_exists(creator){
     if current_frame_active{
         var _r = random_range(0,image_xscale*2+12)
         with instance_create(x-lengthdir_x(_r,direction)+random_range(-5,5),y-lengthdir_y(_r,direction)+random_range(-5,5),BulletHit)
-        {
+				{
         	sprite_index = global.sprVectorBeamEnd
         	image_angle = other.direction
+					image_speed = .4 - (skill_get(mut_laser_brain) > 0 ? .2 : 0);
         	motion_set(other.direction,choose(1,2))
         }
     }

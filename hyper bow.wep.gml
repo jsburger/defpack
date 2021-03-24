@@ -140,19 +140,17 @@ var _c = charge/maxcharge;
 
 if charged = 1{
     sleep(50)
-    with instance_create(x, y, CustomObject){
-		creator = other.creator;
-	
-		spr_arrow = other.spr_arrow;
-		timer = 1
-		ammo  = 5
-		
-		on_step = hyperbow_step
+    with HitscanBouncerBolt_create(creator.x + creator.hspeed, creator.y + creator.vspeed){
+      direction = other.creator.gunangle;
+      team = other.creator.team;
+      creator = other.creator;
+      damage = 50;
+
 	}
     instance_destroy()
 }else{
     with creator weapon_post(1,-20,0)
-    
+
     var ang = creator.gunangle + random_range(-5,5) * creator.accuracy,
 	    i   = -30 * accuracy * (1 - _c * .6);
     repeat(5){
@@ -170,12 +168,13 @@ if charged = 1{
     }
 }
 
+
 #define hyperbow_step
 	timer -= current_time_scale
 	if timer <= 0{
 		timer = 2
 		ammo--
-		
+
 		with creator{
 	        weapon_post(1,-10,0)
 	        repeat(6) with instance_create(x,y,Dust){
@@ -184,7 +183,7 @@ if charged = 1{
 	    }
 	    sound_play_pitchvol(sndShovel,2,.8)
     sound_play_pitchvol(sndUltraCrossbow,3,.8)
-		
+
 	    with instance_create(creator.x + lengthdir_x(2 + irandom(5), creator.gunangle + choose(-90, 90)),creator.y + lengthdir_y(2 + irandom(5), creator.gunangle + choose(-90, 90)),HeavyBolt){
             sprite_index = global.sprArrow
             mask_index   = mskBullet1
@@ -197,3 +196,305 @@ if charged = 1{
         }
     }
     if ammo <= 0 instance_destroy()
+
+#define HitscanBouncerBolt_create(_x, _y)
+    	with(BouncerBolt_create(_x, _y)){
+    		hitscan = true;
+    		speed = 0;
+
+    		return self;
+    	}
+
+#define BouncerBolt_create(_x, _y)
+    	with(instance_create(_x, _y, CustomProjectile)){
+    		team = ("team" in other ? other.team : id);
+    		creator = ("creator" in other ? other.creator : other);
+    		typ = 2;
+    		damage = 20;
+    		destroy_timer = 30;
+
+    		projectile_init(team, creator);
+
+    		max_bounces = 4;
+    		homing_dist = 24;
+    		old_x = x;
+    		old_y = y;
+    		hitscan = false;
+    		trail_yscale = 1;
+    		walled = false;
+
+    		sprite_index = sprBolt;
+    		mask_index = mskBolt;
+    		image_speed = 0.4;
+
+    		on_step = script_ref_create(BouncerBolt_step);
+    		on_anim = script_ref_create(BouncerBolt_anim);
+    		on_wall = script_ref_create(BouncerBolt_wall);
+    		on_hit = script_ref_create(BouncerBolt_hit);
+
+    		on_bounce = [];
+
+    		return self;
+    	}
+
+#define BouncerBolt_step
+      	if (distance_to_point(xstart, ystart) >= 16384){
+      		instance_destroy();
+      		exit;
+      	}
+
+      	if (image_speed > 0 && (image_index + image_speed_raw >= image_number || image_index + image_speed_raw < 0)){
+      		image_speed = 0;
+      	}
+
+      	if (walled){
+      		if (destroy_timer){
+      			destroy_timer -= current_time_scale;
+
+      			if (!destroy_timer){
+      				instance_destroy();
+      			}
+      		}
+
+      		exit;
+      	}
+
+      	if (!hitscan){
+      		BouncerBolt_home();
+      		BouncerBolt_trail();
+      		BouncerBolt_deflect();
+      	}
+
+      	else{
+      		var _length = 4;
+      		var _dir = direction;
+      		var _ox = lengthdir_x(_length, _dir);
+      		var _oy = lengthdir_y(_length, _dir);
+      		var _tries = 256;
+
+      		while (_tries -- > 0){
+      			if (!distance_to_object(Wall)){
+      				break;
+      			}
+
+      			var _dist = homing_dist;
+      			homing_dist = 0;
+
+      			if (BouncerBolt_home()){
+      				homing_dist = _dist;
+      				break;
+      			}
+
+      			else if (!instance_exists(self)){
+      				break;
+      			}
+
+      			homing_dist = _dist;
+
+      			if (BouncerBolt_home() || !instance_exists(self)){
+      				break;
+      			}
+
+      			if (BouncerBolt_deflect()){
+      				break;
+      			}
+
+      			xprevious = x;
+      			yprevious = y;
+      			x += _ox;
+      			y += _oy;
+      		}
+      	}
+
+#define BouncerBolt_anim
+
+#define BouncerBolt_wall
+      	if (walled){
+      		exit;
+      	}
+
+      	BouncerBolt_trail();
+
+      	if (max_bounces > 0){
+      		move_bounce_solid(true);
+
+      		image_angle = direction;
+
+      		max_bounces -= 1;
+
+      		if (is_array(on_bounce) && array_length(on_bounce) >= 3){
+      			var _type = on_bounce[0];
+      			var _name = on_bounce[1];
+      			var _script = on_bounce[2];
+
+      			if (mod_script_exists(_type, _name, _script)){
+      				mod_script_call(_type, _name, _script);
+      			}
+      		}
+      	}
+
+      	else{
+      		move_contact_solid(direction, speed_raw);
+      		walled = true;
+      		speed = 0;
+      	}
+
+#define BouncerBolt_hit
+      	if (walled){
+      		exit;
+      	}
+
+      	if (projectile_canhit(other)){
+      		var _damage = damage;
+      		var _destroy = false;
+
+      		var _x = x;
+      		var _y = y;
+      		var _angle = direction;
+
+      		var _sprite = sprite_index;
+
+      		with(other){
+
+            sleep(10 + 15 * clamp(size, 1, 3));
+            view_shake_max_at(x, y, 6 + 10 * clamp(size, 1, 3));
+
+      			if (my_health > _damage){
+      				_destroy = true;
+
+      				with(instance_create(_x, _y, BoltStick)){
+      					target = other;
+      					image_angle = _angle;
+      					sprite_index = _sprite;
+      					image_index = image_number - 1;
+      					image_speed = 0;
+      				}
+      			}
+
+      			projectile_hit(self, _damage);
+      		}
+
+      		BouncerBolt_trail();
+
+      		if (_destroy){
+      			instance_destroy();
+      		}
+      	}
+
+#define BouncerBolt_trail()
+        	var _dist = point_distance(old_x, old_y, x, y);
+        	var _dir = point_direction(old_x, old_y, x, y);
+        	var _scale = trail_yscale;
+
+        	with(instance_create(old_x, old_y, BoltTrail)){
+        		image_xscale = _dist;
+        		image_angle = _dir;
+        		image_yscale = _scale;
+        	}
+
+        	old_x = x;
+        	old_y = y;
+
+#define BouncerBolt_home()
+        	if (instance_exists(self)){
+        		var _dist = homing_dist * skill_get(mut_bolt_marrow);
+
+        		if (distance_to_object(hitme) <= _dist){
+        			with(instance_rectangle_bbox(bbox_left - homing_dist, bbox_top - homing_dist, bbox_right + homing_dist, bbox_bottom + homing_dist, instances_matching_ne(instances_matching_ne(hitme, "team", team, 0), "object_index", IceFlower, ThroneStatue, GeneratorInactive, ProtoStatue, GuardianStatue))){
+        				if (distance_to_object(other) <= _dist){
+        					var _x = x;
+        					var _y = y;
+
+        					with(other){
+        						if (_dist){
+        							BouncerBolt_trail();
+
+        							x = _x;
+        							y = _y;
+        						}
+
+        						BouncerBolt_hit();
+
+        						if (!instance_exists(self)){
+        							return false;
+        						}
+        					}
+        				}
+        			}
+
+        			return true;
+        		}
+        	}
+
+        	return false;
+
+#define BouncerBolt_deflect()
+        	if (!distance_to_object(CrystalShield) || !distance_to_object(PopoShield)){
+        		with(instance_rectangle_bbox(bbox_left, bbox_top, bbox_right, bbox_bottom, instances_matching_ne([CrystalShield, PopoShield], "team", team))){
+        			if (!distance_to_object(other)){
+        				with(other){
+        					instance_destroy();
+        					return true;
+        				}
+        			}
+        		}
+        	}
+
+        	// Slash, GuitarSlash, BloodSlash, EnergySlash, Shank, EnergyShank, EnergyHammerSlash, LightningSlash, EnemySlash, CustomSlash
+        	else if (!distance_to_object(Slash) || !distance_to_object(GuitarSlash) || !distance_to_object(BloodSlash) || !distance_to_object(EnergySlash) || !distance_to_object(Shank) || !distance_to_object(EnergyShank) || !distance_to_object(EnergyHammerSlash) || !distance_to_object(LightningSlash) || !distance_to_object(EnemySlash)){
+        		with(instance_rectangle_bbox(bbox_left, bbox_top, bbox_right, bbox_bottom, instances_matching_ne([Slash, GuitarSlash, BloodSlash, EnergySlash, Shank, EnergyShank, EnergyHammerSlash, LightningSlash, EnemySlash], "team", team))){
+        			if (!distance_to_object(other)){
+        				with(other){
+        					instance_destroy();
+        					return true;
+        				}
+        			}
+        		}
+        	}
+
+        	else if (!distance_to_object(CustomSlash)){
+        		with(instance_rectangle_bbox(bbox_left, bbox_top, bbox_right, bbox_bottom, instances_matching_ne(CustomSlash, "team", team))){
+        			if (!distance_to_object(other)){
+        				if (is_array(on_projectile) && array_length(on_projectile) >= 3){
+        					var _type = on_projectile[0];
+        					var _name = on_projectile[1];
+        					var _script = on_projectile[2];
+
+        					if (mod_script_exists(_type, _name, _script)){
+        						mod_script_call(_type, _name, _script);
+
+        						if (!instance_exists(other)){
+        							return true;
+        						}
+        					}
+
+        					else if (candeflect){
+        						with(other){
+        							instance_destroy();
+        							return true;
+        						}
+        					}
+        				}
+
+        				else if (candeflect){
+        					with(other){
+        						instance_destroy();
+        						return true;
+        					}
+        				}
+        			}
+        		}
+        	}
+
+        	return false;
+
+#define instance_rectangle_bbox(_x1, _y1, _x2, _y2, _obj)
+          	var _x = _x1;
+          	var _y = _y1;
+
+          	_x1 = min(_x, _x2);
+          	_y1 = min(_y, _y2);
+          	_x2 = max(_x, _x2);
+          	_y2 = max(_y, _y2);
+
+          	return instances_matching_le(instances_matching_le(instances_matching_ge(instances_matching_ge(_obj, "bbox_right", _x1), "bbox_bottom", _y1), "bbox_left", _x2), "bbox_top", _y2);

@@ -36,7 +36,7 @@ sound_play_pitchvol(sndHeavySlugger, 12 * _p, .5)
 sound_play_pitchvol(sndSwapSword, 1.5 * _p, .6)
 weapon_post(3, -20, 10)
 with mod_script_call_nc("mod", "defpack tools", "create_knife", x, y){
-    motion_set(other.gunangle + random_range(-4,4) * other.accuracy, random_range(18, 22))
+    motion_set(other.gunangle + random_range(-3,3) * other.accuracy, random_range(18, 22))
     image_yscale = -other.right
     projectile_init(other.team, other)
     image_angle = direction

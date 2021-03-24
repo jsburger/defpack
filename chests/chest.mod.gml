@@ -81,6 +81,12 @@ global.sprDownwellChestOpen =  sprite_add("../sprites/chests/sprDownwellChestOpe
 global.sprDeltaChest     =  sprite_add_weapon("../sprites/chests/sprDeltaChest.png", 8, 6);
 global.sprDeltaChestOpen =  sprite_add("../sprites/chests/sprDeltaChestOpen.png", 1, 8, 6);
 
+global.sprCloudChest     =  sprite_add_weapon("../sprites/chests/sprCloudChest.png", 8, 6);
+global.sprCloudChestOpen =  sprite_add("../sprites/chests/sprCloudChestOpen.png", 1, 8, 6);
+
+global.sprThunderCloudChest     =  sprite_add_weapon("../sprites/chests/sprThunderCloudChest.png", 8, 6);
+global.sprThunderCloudChestOpen =  sprite_add("../sprites/chests/sprThunderCloudChestOpen.png", 1, 8, 6);
+
 global.sprChargeChest     =  sprite_add_weapon("../sprites/chests/sprChargeChest.png", 8, 6);
 global.sprChargeChestOpen =  sprite_add("../sprites/chests/sprChargeChestOpen.png", 1, 8, 6);
 
@@ -157,7 +163,6 @@ chest_add("Explosive", -1, 4)
 chest_add("Energy",    -1, 5)
 
 #define game_start
-  trace("added")
   // weapon mods innate support because the original creators aint going to touch their own stuff again
   if mod_exists("weapon", "NetheriteSword"){ //minecraft weapons
     chest_add("Minecraft", 3, ["WoodenSword", "WoodenShovel", "WoodenPickaxe", "WoodenHod", "WoodenAxe", "Bow", "Crossbow", "StoneSword", "StoneShovel", "StonePickaxe", "StoneHod", "StoneAxe", "IronSword", "IronShovel", "IronPickaxe", "IronHod", "IronAxe", "GoldenSword", "GoldenPickaxe", "GoldenHod", "GoldenAxe", "DiamondSword", "DiamondShovel", "DiamondPickaxe", "DiamondHod", "DiamondAxe", "NetheriteSword", "NetheriteShovel", "NetheritePickaxe", "NetheriteHod", "NetheriteAxe"])
@@ -192,7 +197,10 @@ chest_add("Energy",    -1, 5)
   if mod_exists("weapon", "accuserhand"){ //charge weps
     chest_add("Charge", 7, ["chargegun", "chargeslugger", "chargeflak", "chargecrossbow", "chargedisc", "chargebazooka", "chargeflamethrower", "chargelaser", "chargeplasma", "chargeblade"])
   }
-
+  if mod_exists("weapon", "cannondemnation"){ //xefsweps: cloud, thundercloud
+    chest_add("Cloud"       , 4, ["cloud pistol", "cloud rifle", "cloud shotgun", "cloud cannon", "cloud minigun"])
+    chest_add("ThunderCloud", 8, ["thunder cloud pistol", "thunder cloud rifle", "thunder cloud shotgun", "thunder cloud cannon", "thunder cloud minigun"])
+  }
 #define step
      // replacing chests
     if !instance_exists(GenCont){

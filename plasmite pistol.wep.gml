@@ -26,7 +26,7 @@ return{
 }
 #define weapon_fire
 var _flip = instance_is(self, Player) ? wepflip : choose(-1, 1)
-repeat(2)
+repeat(2 + skill_get(mut_laser_brain))
 {
 	weapon_post(5,0,4)
 	sound_pitch(

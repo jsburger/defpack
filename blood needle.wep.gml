@@ -27,7 +27,7 @@
   return 5;
 
 #define weapon_load
-  return 18;
+  return 14;
 
 #define weapon_swap
   return sndSwapSword;
@@ -103,15 +103,15 @@ return{
     if _e.my_health <= 0 && !instance_is(_e, prop){
         view_shake_at(x, y, 16);
         sleep(10 + min(_e.size, 3) * 12);
-        
+
         var _splat = -4;
 		_splat = determine_gore(other)
 	    repeat(3) with instance_create((other.x*other.size+x)/(other.size+1),(other.y*other.size+y)/(other.size+1),_splat){image_angle = random(360)}
-	    
+
 	    if other.my_health <= 0{
 	        view_shake_at(x, y, 16);
             sleep(10 + min(_e.size, 3) * 12);
-            
+
 	    }
             sound_play(sndBloodlustProc);
             with _c{

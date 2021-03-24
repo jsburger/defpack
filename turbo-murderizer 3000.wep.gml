@@ -29,7 +29,7 @@ return "COMEDY GREEN"
 #define weapon_fire
 motion_add(gunangle - 180, 2)
 var i = wepflip, flip = wepflip
-repeat(3)
+repeat(3 + skill_get(mut_laser_brain))
 {
   weapon_post(9, 5, 12)
   var _p = random_range(.8, 1.2)

@@ -42,7 +42,7 @@ return 22;
 return 1;
 
 #define weapon_reloaded
-sound_play_pitchvol(sndCrossReload, .7, .4);
+sound_play_pitchvol(sndSpiderMelee, .6, .35);
 
 #define weapon_swap
 return sndSwapExplosive;
@@ -99,7 +99,7 @@ if reload = -1{
     reload = hand ? creator.breload : creator.reload
     reload = .1
     reload += mod_script_call_nc("mod", "defpack tools", "get_reloadspeed", creator) * timescale * 1.2
-	
+
 }
 else{
     if hand creator.breload = max(creator.breload, reload)
@@ -151,19 +151,19 @@ if !charged sound_stop(sound)
     reload += mod_script_call_nc("mod", "defpack tools", "get_reloadspeed", creator) * timescale * 1.2
 	var _ch = other.charged,
 	    _c  = 10 + 8 * _ch;
-	
+
 	if !charged sound_stop(sound)
-	
+
 	var _p = random_range(.8, 1.2);
 	sound_play_pitchvol(sndImpWristKill, .6 * _p, 1.4);
 	sound_play_pitchvol(sndGeneratorBreak, 2 * _p, 1.4);
 	if _ch sound_play_pitchvol(sndSuperBazooka, 2 * _p, .6);
-	
+
 	with creator{
 		weapon_post(12 + _ch * 8, 24 + _ch * 16, 12 + _ch * 8);
 		sleep(100 * _ch);
 	}
-	    
+
 	with mod_script_call("mod","defpack tools","create_sonic_explosion",creator.x + lengthdir_x(18, creator.gunangle),creator.y + lengthdir_y(18, creator.gunangle)){
 		with instance_create(x, y, BubblePop){
 			image_index = 1;
@@ -185,6 +185,7 @@ if !charged sound_stop(sound)
 		fx_check = false;
 		superdirection = creator.gunangle;
 		dontwait = true;
+		can_crown = false;
 		var _e = self;
 		with instances_matching_ne(hitme, "team", other.creator.team){
 			if !_e.fx_check && distance_to_object(other) <= 0{

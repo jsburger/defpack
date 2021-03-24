@@ -33,10 +33,11 @@ return choose("SHARP AS ALL CAN BE", "@wSWORDS@s CAN HIT TWO THINGS AT ONCE")
 var _p = random_range(.8, 1.2)
 sound_play_pitch(sndHeavyCrossbow, 2 * _p)
 sound_play_pitchvol(sndHeavySlugger, 6 * _p, .7)
-sound_play_pitch(sndSwapSword, 1.5 * _p)
+sound_play_pitch(sndSwapSword, 1.25 * _p)
+sound_play_pitchvol(sndCrystalShield, 2 * _p, 2)
 weapon_post(7, -44, 10)
 with mod_script_call_nc("mod", "defpack tools", "create_sword", x, y){
-    motion_set(other.gunangle + random_range(-3,3) * other.accuracy, 20)
+    motion_set(other.gunangle + random_range(-2,2) * other.accuracy, 20)
     image_yscale = -other.right
     projectile_init(other.team, other)
     image_angle = direction

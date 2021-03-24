@@ -36,7 +36,7 @@ else
 	sound_play_pitch(sndPlasmaUpg,2)
 	sound_play_pitch(sndPlasmaRifleUpg,random_range(1.3,1.45))
 }
-repeat(5)
+repeat(5 + skill_get(mut_laser_brain) * 2)
 {
 	with mod_script_call("mod","defpack tools","create_plasmite",x,y)
 	{

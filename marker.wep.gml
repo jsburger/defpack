@@ -139,8 +139,12 @@ return "UNSEEN ALLIES";
 			image_angle = 270
 			force = 0
 			damage = 8
+      bounce = skill_get("compoundelbow") * 5
+      zfriction = 1.5
 			team = other.team
 			z = irandom_range(300,350)
+      maxzspd = 20
+      zspd = maxzspd;
 			zstart = z
 			on_step = rainarrow_step
 			on_wall = rainarrow_wall
@@ -180,8 +184,14 @@ return "UNSEEN ALLIES";
 
 
 #define rainarrow_step
+  if zspd < maxzspd{
+    zspd += zfriction;
+  }else{
+    zspd = maxzspd;
+  }
+
 	var dn = z
-	z -= current_time_scale*20
+	z -= current_time_scale*zspd
 	if z <= 25 and z > -25{
 	    mask_index = sprHeavyGrenadeBlink;
 	    depth = TopCont.depth+1
@@ -210,41 +220,49 @@ return "UNSEEN ALLIES";
 	}
 
 	if z < 0{
-	    var yoff = -8, dep = -10
-	    if place_meeting(x, y, Floor){
-	        yoff = 0
-	        dep = -1
-	    }
-	    else{
-	        if (instance_exists(InvisiWall)){
-	            depth = 11
-	            if z < -400 instance_destroy()
-	            exit
-	        }
-	    }
-	    with instance_create(x,y + yoff,CustomObject){
-	        image_angle = 0
-	        sprite_index = global.sprBoltStickGround
-	        image_index = random(1)
-	        image_xscale = choose(-1,1)
-	        image_speed = .5
-	        depth = dep
-	        on_step = stickstep
-	        if fork(){
-	            repeat(60){
-	                wait(1)
-	            }
-	            if instance_exists(self) instance_destroy()
-	            exit
-	        }
-	    }
-		instance_create(x,y-z,Dust)
-		sound_play_pitch(sndBoltHitWall,random_range(.8,1.2))
-		sound_play_pitch(sndHitWall,random_range(.8,1.2))
-		view_shake_at(x,y,2)
-		instance_destroy()
-	}
 
+        if zspd > 0{image_angle = 270}else{image_angle = 90}
+      if bounce > 0{
+          bounce--
+          zspd *= choose(-.65, -.8, -.8, -.9)
+          instance_create(x,y-z,Dust)
+          view_shake_at(x,y,!irandom(2))
+        }else{
+        var yoff = -8, dep = -10
+  	    if place_meeting(x, y, Floor){
+  	        yoff = 0
+  	        dep = -1
+  	    }
+  	    else{
+  	        if (instance_exists(InvisiWall)){
+  	            depth = 11
+  	            if z < -400 instance_destroy()
+  	            exit
+  	        }
+  	    }
+  	    with instance_create(x,y + yoff,CustomObject){
+  	        image_angle = 0
+  	        sprite_index = global.sprBoltStickGround
+  	        image_index = random(1)
+  	        image_xscale = choose(-1,1)
+  	        image_speed = .5
+  	        depth = dep
+  	        on_step = stickstep
+  	        if fork(){
+  	            repeat(60){
+  	                wait(1)
+  	            }
+  	            if instance_exists(self) instance_destroy()
+  	            exit
+  	        }
+  	    }
+  		instance_create(x,y-z,Dust)
+  		sound_play_pitch(sndBoltHitWall,random_range(.8,1.2))
+  		sound_play_pitch(sndHitWall,random_range(.8,1.2))
+  		view_shake_at(x,y,2)
+  		instance_destroy()
+  	}
+}
 #define rainarrow_draw
 	draw_sprite_ext(shd16, 0, x, y, .3, 1, 0, c_white, (1-z/zstart)*.4)
 	draw_sprite_ext(sprite_index,image_index,x,y-z,image_xscale,image_yscale,270,image_blend,image_index)

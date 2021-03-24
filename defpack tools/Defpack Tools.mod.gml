@@ -1683,6 +1683,8 @@ with other{
 			image_blend = c_black
 			team = t
 			candeflect = 0
+			force = 0;
+			can_crown = false;
 		}
 		repeat(3){
 			with create_sonic_explosion(other.x+lengthdir_x(other.speed*1.3,other.offset+ringang),other.y+lengthdir_y(other.speed*1.3,other.offset+ringang)){
@@ -1695,6 +1697,8 @@ with other{
 				image_blend = c_black
 				team = t
 				candeflect = 0
+				force = 0;
+				can_crown = false;
 			}
 			ringang += 120
 		}
@@ -1713,6 +1717,8 @@ with create_sonic_explosion(x,y){
 	damage = 8
 	image_speed = 0.8
 	image_blend = c_black
+	force = 0;
+	can_crown = false;
 }
 bullet_destroy()
 
@@ -1769,6 +1775,7 @@ if other != lasthit{
 		shake = 2
 		dontwait = false
 		canwallhit = false
+		can_crown = false;
 		if GameCont.area = 101{synstep = 0}else{synstep = 1} //oasis synergy
 		hitid = [sprite_index,"Small Sonic Explosion"]
 		on_step       = sonic_step
@@ -1795,6 +1802,7 @@ if other != lasthit{
 			force = 18
 			shake = 10
 			dontwait = false
+			can_crown = true
 			canwallhit = true
 			if GameCont.area = 101{synstep = 0}else{synstep = 1} //oasis synergy
 			hitid = [sprite_index,"Sonic Explosion"]
@@ -1805,20 +1813,6 @@ if other != lasthit{
 			on_wall       = nothing
 			on_anim       = sonic_anim
 
-			if crown_current = crwn_death{
-				var _r = sprite_get_width(sprite_index) / 3,
-				    _d = random(360);
-				repeat(3){
-					with create_small_sonic_explosion(x + lengthdir_x(_r * random_range(.6, 1), _d), y + lengthdir_y(_r * random_range(.6, 1), _d)){
-						team = 2
-						creator = other.creator
-						force = other.force
-						canwallhit = true
-						superdirection = _d
-					}
-					_d += 360 / 3;
-				}
-			}
 			return id
 		}
 
@@ -1835,7 +1829,25 @@ if other != lasthit{
 		image_yscale *= 1.25
 		image_speed  *= .8
 	}
-	if shake {view_shake_at(x,y,shake);shake = 0}
+
+	if shake {
+		view_shake_at(x,y,shake)
+		shake = 0
+		if crown_current = crwn_death && can_crown{
+			var _r = sprite_get_width(sprite_index) / 3,
+					_d = random(360);
+			repeat(3){
+				with create_small_sonic_explosion(x + lengthdir_x(_r * random_range(.6, 1), _d), y + lengthdir_y(_r * random_range(.6, 1), _d)){
+					team = 2
+					creator = other.creator
+					force = other.force
+					canwallhit = true
+					superdirection = _d
+				}
+				_d += 360 / 3;
+			}
+		}
+	}
 
 #define sonic_projectile
 	with other{
@@ -2567,7 +2579,7 @@ with instance_create(_x, _y, CustomProjectile) {
         alpha : .1
     }
 	image_speed = 0
-	damage = 4 + 3*skill_get(mut_laser_brain)
+	damage = 4 //+ 3*skill_get(mut_laser_brain)
 	sprite_index = skill_get(mut_laser_brain) ? spr.PlasmiteUpg : spr.Plasmite
  	fric = random_range(.2, .3)
     force = 2
@@ -2625,11 +2637,12 @@ image_xscale = _x;
 
 #define plasmite_destroy
 sound_play_hit_ext(sndPlasmaHit, random_range(1.45, 1.83), 1)
-with instance_create(x,y,PlasmaImpact) {
+with instance_create(x + lengthdir_x(hspeed, direction), y + lengthdir_y(hspeed, direction), PlasmaImpact) {
 	image_xscale = .5;
 	image_yscale = .5;
+	image_speed *= random_range(.9, 1.1);
 	team = other.team;
-	damage = floor(damage/2)
+	damage = 4;
 }
 
 #define create_supersquare(_x,_y)

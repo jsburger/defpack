@@ -45,3 +45,5 @@
 /loadwep sonic rifle
 /loadwep lightning flare gun
 /loadwep satchel charge
+/loadwep recycler
+/loadwep corpse gun

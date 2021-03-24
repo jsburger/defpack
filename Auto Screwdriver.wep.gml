@@ -55,7 +55,7 @@ return{
   sound_play_pitch(sndScrewdriver,random_range(.9,1.2))
   wepangle = -wepangle
   motion_add(gunangle, 4)
-  var l = 20 * skill_get(mut_long_arms)
+  var l = 10 * skill_get(mut_long_arms)
   with instance_create(x + lengthdir_x(l, gunangle), y + lengthdir_y(l, gunangle), Shank)
   {
   	damage = 4
