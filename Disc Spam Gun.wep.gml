@@ -44,6 +44,10 @@ return 0
 return global.sprDiscSpamGun
 #define weapon_text
 return "SORRIES WON'T COVER THIS"
+#define nts_weapon_examine
+return{
+    "d": "Evil. ",
+}
 #define weapon_fire
 var _p = random_range(.6, 1.3)
 sound_play_pitch(sndSwapExplosive, 1.7 * _p)

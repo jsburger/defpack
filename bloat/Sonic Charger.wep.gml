@@ -21,6 +21,9 @@ return 19;
 #define weapon_cost
 return 2;
 
+#define weapon_chrg
+return 1
+
 #define weapon_swap
 return sndSwapExplosive;
 

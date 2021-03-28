@@ -42,6 +42,11 @@ return -4;
 #define weapon_sprt
   return global.sprMassiveSlugger;
 
+#define nts_weapon_examine
+return{
+    "d": "Said to be forged and wielded by the worlds largest gator. ",
+}
+
 #define weapon_text
   return choose("HEFTY");
 
@@ -60,7 +65,7 @@ return -4;
     }
     exit
   }
-  if "extraspeed" not in self{extraspeed = 12 + gunangle / 10000}else{extraspeed += 12   + gunangle / 10000} //knockback, adding variables to the player is a sin
+  if "extraspeed2" not in self{extraspeed2 = 12 + gunangle / 10000}else{extraspeed2 += 12   + gunangle / 10000} //knockback, adding variables to the player is a sin
 
   with instance_create(x,y,CustomProjectile) //the projectile
   {
@@ -216,16 +221,16 @@ return -4;
   with instances_matching(Player, "wep", mod_current){speed *= min(1, .8 + .2 * (skill_get(mut_extra_feet)))}
   with instances_matching(instances_matching(Player, "race", "steroids"), "bwep", mod_current){speed *= min(1, .8 + .2 * (skill_get(mut_extra_feet)))}
 
-  if "extraspeed" in self
+  if "extraspeed2" in self
   {
-    if extraspeed > 30{extraspeed = 30} //cap speed for safety reasons
-  	if extraspeed > 0
+    if extraspeed2 > 30{extraspeed2 = 30} //cap speed for safety reasons
+  	if extraspeed2 > 0
   	{
       sleep(1)
       sound_play_gun(sndFootOrgSand4,999999999999999999999999999999999999999999999999,.00001)//mute action
   		instance_create(x + random_range(-4, 4),y + random_range(-4, 4), Dust);
   		canaim = false;
-  		with instance_create(x+lengthdir_x(extraspeed+20*skill_get(13),frac(extraspeed)*10000),y+lengthdir_y(extraspeed+20*skill_get(13),frac(extraspeed)*10000),Shank)
+  		with instance_create(x+lengthdir_x(extraspeed2+20*skill_get(13),frac(extraspeed2)*10000),y+lengthdir_y(extraspeed2+20*skill_get(13),frac(extraspeed2)*10000),Shank)
       {
   			team = other.team;
         creator = other;
@@ -236,10 +241,10 @@ return -4;
         image_yscale = 2;
   			image_angle = other.gunangle;
   		}
-  		motion_add(frac(extraspeed)*10000-180,extraspeed-frac(extraspeed));
-  		extraspeed -= current_time_scale;
+  		motion_add(frac(extraspeed2)*10000-180,extraspeed2-frac(extraspeed2));
+  		extraspeed2 -= current_time_scale;
   	}
-  	else{extraspeed = 0;canaim = true}
+  	else{extraspeed2 = 0;canaim = true}
   }
 
 #define weapon_reloaded

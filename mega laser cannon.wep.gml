@@ -45,7 +45,6 @@ return false;
 return global.sprBeamer;
 
 #define weapon_text
-if !irandom(50) return "IT'S NOT A SLUR"
 return "MASSIVE POWER";
 
 #define weapon_fire
@@ -150,7 +149,7 @@ if ammo <= 0{
         sound_play_pitch(sndLaserCannonUpg,.6*p);
         sound_play_pitch(sndLaserCannon,2*p)
     }
-	sleep(100)
+	sleep(20)
 	sound_play_pitchvol(sndDevastatorExplo,5,.7)
 	view_shake_at(x,y,100)
 	with creator weapon_post(-20,100,40)
@@ -202,7 +201,8 @@ if instance_exists(creator){
     until dir >= 1800 || place_meeting(x,y,Wall)
 		if place_meeting(x, y, Wall)
 		{
-			with instance_nearest(x, y, Wall)
+			var _w = instance_nearest(x, y, Wall);
+			if point_distance(creator.x, creator.y, _w.x, _w.y) <= 240 with _w
 			{
 				instance_create(x, y, FloorExplo)
 				instance_destroy()

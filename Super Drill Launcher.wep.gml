@@ -24,6 +24,10 @@ return 0
 return 1
 #define weapon_sprt
 return global.sprSuperDrillLauncher
+#define nts_weapon_examine
+return{
+    "d": "Ideal for probing walls for rare ores and gems. ",
+}
 #define weapon_text
 return "WALL DIVERS"
 #define weapon_fire

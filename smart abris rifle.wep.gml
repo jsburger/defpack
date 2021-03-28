@@ -35,6 +35,11 @@ sound_play_pitchvol(sndNadeReload,1.4,.6)
 #define weapon_text
 return "LOCKED ON";
 
+#define nts_weapon_examine
+return{
+    "d": "This weapon aims for you!#It grips your hand as tight as you grip the handle. ",
+}
+
 #define weapon_fire
 var _strtsize = 6;
 var _endsize  = 14;

@@ -1,21 +1,21 @@
 #define init
-global.sprRockletChest     = sprite_add_weapon("../sprites/chests/sprRockletChest.png", 8, 7);
-global.sprRockletChestOpen = sprite_add("../sprites/chests/sprRockletChestOpen.png", 1, 8, 7);
+global.sprRockletChest     = sprite_add_weapon("../sprites/chests/sprRockletChest.png", 8, 6);
+global.sprRockletChestOpen = sprite_add("../sprites/chests/sprRockletChestOpen.png", 1, 8, 6);
 
-global.sprVectorChest     = sprite_add_weapon("../sprites/chests/sprVectorChest.png", 9, 7);
-global.sprVectorChestOpen = sprite_add("../sprites/chests/sprVectorChestOpen.png", 1, 9, 7);
+global.sprVectorChest     = sprite_add_weapon("../sprites/chests/sprVectorChest.png", 9, 6);
+global.sprVectorChestOpen = sprite_add("../sprites/chests/sprVectorChestOpen.png", 1, 9, 6);
 
-global.sprZenithChest     = sprite_add_weapon("../sprites/chests/sprZenithChest.png", 8, 7);
-global.sprZenithChestOpen = sprite_add("../sprites/chests/sprZenithChestOpen.png", 1, 8, 7);
+global.sprZenithChest     = sprite_add_weapon("../sprites/chests/sprZenithChest.png", 8, 6);
+global.sprZenithChestOpen = sprite_add("../sprites/chests/sprZenithChestOpen.png", 1, 8, 6);
 
-global.sprQuartzChest     = sprite_add_weapon("../sprites/chests/sprQuartzChest.png", 8, 7);
-global.sprQuartzChestOpen = sprite_add("../sprites/chests/sprQuartzChestOpen.png", 1, 8, 7);
+global.sprQuartzChest     = sprite_add_weapon("../sprites/chests/sprQuartzChest.png", 8, 6);
+global.sprQuartzChestOpen = sprite_add("../sprites/chests/sprQuartzChestOpen.png", 1, 8, 6);
 
-global.sprRegalChest     = sprite_add_weapon("../sprites/chests/sprRegalChest.png", 8, 7);
-global.sprRegalChestOpen = sprite_add("../sprites/chests/sprRegalChestOpen.png", 1, 8, 7);
+global.sprRegalChest     = sprite_add_weapon("../sprites/chests/sprRegalChest.png", 8, 6);
+global.sprRegalChestOpen = sprite_add("../sprites/chests/sprRegalChestOpen.png", 1, 8, 6);
 
-global.sprUltraChest     = sprite_add_weapon("../sprites/chests/sprUltraChest.png", 8, 7);
-global.sprUltraChestOpen = sprite_add("../sprites/chests/sprUltraChestOpen.png", 1, 8, 7);
+global.sprUltraChest     = sprite_add_weapon("../sprites/chests/sprUltraChest.png", 8, 6);
+global.sprUltraChestOpen = sprite_add("../sprites/chests/sprUltraChestOpen.png", 1, 8, 6);
 
 global.sprToxicChest     = sprite_add_weapon("../sprites/chests/sprToxicChest.png", 8, 6);
 global.sprToxicChestOpen = sprite_add("../sprites/chests/sprToxicChestOpen.png", 1, 8, 6);
@@ -23,26 +23,73 @@ global.sprToxicChestOpen = sprite_add("../sprites/chests/sprToxicChestOpen.png",
 global.sprComboChest     = sprite_add_weapon("../sprites/chests/sprComboChest.png", 8, 7);
 global.sprComboChestOpen = sprite_add("../sprites/chests/sprComboChestOpen.png", 1, 8, 7);
 
-global.sprSmartChest     = sprite_add_weapon("../sprites/chests/sprSmartChest.png", 8, 7);
-global.sprSmartChestOpen = sprite_add("../sprites/chests/sprSmartChestOpen.png", 1, 8, 7);
+global.sprSmartChest     = sprite_add_weapon("../sprites/chests/sprSmartChest.png", 8, 6);
+global.sprSmartChestOpen = sprite_add("../sprites/chests/sprSmartChestOpen.png", 1, 8, 6);
 
-global.sprFlameChest     = sprite_add_weapon("../sprites/chests/sprFlameChest.png", 8, 7);
-global.sprFlameChestOpen = sprite_add("../sprites/chests/sprFlameChestOpen.png", 1, 8, 7);
+global.sprFlameChest     = sprite_add_weapon("../sprites/chests/sprFlameChest.png", 8, 6);
+global.sprFlameChestOpen = sprite_add("../sprites/chests/sprFlameChestOpen.png", 1, 8, 6);
 
-global.sprBloodChest     = sprite_add_weapon("../sprites/chests/sprBloodChest.png", 8, 7);
-global.sprBloodChestOpen = sprite_add("../sprites/chests/sprBloodChestOpen.png", 1, 8, 7);
+global.sprBloodChest     = sprite_add_weapon("../sprites/chests/sprBloodChest.png", 8, 6);
+global.sprBloodChestOpen = sprite_add("../sprites/chests/sprBloodChestOpen.png", 1, 8, 6);
 
-global.sprHyperChest     = sprite_add_weapon("../sprites/chests/sprHyperChest.png", 8, 7);
-global.sprHyperChestOpen = sprite_add("../sprites/chests/sprHyperChestOpen.png", 1, 8, 7);
+global.sprHyperChest     = sprite_add_weapon("../sprites/chests/sprHyperChest.png", 8, 6);
+global.sprHyperChestOpen = sprite_add("../sprites/chests/sprHyperChestOpen.png", 1, 8, 6);
 
-global.sprAutoChest     = sprite_add_weapon("../sprites/chests/sprAutoChest.png", 8, 7);
-global.sprAutoChestOpen = sprite_add("../sprites/chests/sprAutoChestOpen.png", 1, 8, 7);
+global.sprAutoChest     = sprite_add_weapon("../sprites/chests/sprAutoChest.png", 8, 6);
+global.sprAutoChestOpen = sprite_add("../sprites/chests/sprAutoChestOpen.png", 1, 8, 6);
 
-global.sprToolChest     = sprite_add_weapon("../sprites/chests/sprToolChest.png", 10, 7);
-global.sprToolChestOpen = sprite_add("../sprites/chests/sprToolChestOpen.png", 1, 10, 7);
+global.sprToolChest     = sprite_add_weapon("../sprites/chests/sprToolChest.png", 10, 6);
+global.sprToolChestOpen = sprite_add("../sprites/chests/sprToolChestOpen.png", 1, 10, 6);
 
-global.sprAoEChest     = sprite_add_weapon("../sprites/chests/sprAoEChest.png", 9, 7);
-global.sprAoEChestOpen = sprite_add("../sprites/chests/sprAoEChestOpen.png", 1, 9, 7);
+global.sprAoEChest     = sprite_add_weapon("../sprites/chests/sprAoEChest.png", 9, 6);
+global.sprAoEChestOpen = sprite_add("../sprites/chests/sprAoEChestOpen.png", 1, 9, 6);
+
+
+global.sprMinecraftChest     =  sprite_add_weapon("../sprites/chests/sprMinecraftChest.png", 7, 7);
+global.sprMinecraftChestOpen =  sprite_add("../sprites/chests/sprMinecraftChestOpen.png", 1, 7, 7);
+
+global.sprRustyChest     =  sprite_add_weapon("../sprites/chests/sprRustyChest.png", 8, 6);
+global.sprRustyChestOpen =  sprite_add("../sprites/chests/sprRustyChestOpen.png", 1, 8, 6);
+
+global.sprTinyChest     =  sprite_add_weapon("../sprites/chests/sprTinyChest.png", 6, 3);
+global.sprTinyChestOpen =  sprite_add("../sprites/chests/sprTinyChestOpen.png", 1, 6, 3);
+
+global.sprLoopChest     =  sprite_add_weapon("../sprites/chests/sprLoopChest.png", 8, 6);
+global.sprLoopChestOpen =  sprite_add("../sprites/chests/sprLoopChestOpen.png", 1, 8, 6);
+
+global.sprNintendoChest     =  sprite_add_weapon("../sprites/chests/sprNintendoChest.png", 8, 6);
+global.sprNintendoChestOpen =  sprite_add("../sprites/chests/sprNintendoChestOpen.png", 1, 8, 6);
+
+global.sprIDPDChest     =  sprite_add_weapon("../sprites/chests/sprIDPDChest.png", 8, 6);
+global.sprIDPDChestOpen =  sprite_add("../sprites/chests/sprIDPDChestOpen.png", 1, 8, 6);
+
+global.sprEplasmaChest     =  sprite_add_weapon("../sprites/chests/sprEplasmaChest.png", 8, 6);
+global.sprEplasmaChestOpen =  sprite_add("../sprites/chests/sprEplasmaChestOpen.png", 1, 8, 6);
+
+global.sprBubbleChest     =  sprite_add_weapon("../sprites/chests/sprBubbleChest.png", 9, 6);
+global.sprBubbleChestOpen =  sprite_add("../sprites/chests/sprBubbleChestOpen.png", 1, 9, 6);
+
+global.sprQuasarChest     =  sprite_add_weapon("../sprites/chests/sprQuasarChest.png", 8, 6);
+global.sprQuasarChestOpen =  sprite_add("../sprites/chests/sprQuasarChestOpen.png", 1, 8, 6);
+
+global.sprSawbladeChest     =  sprite_add_weapon("../sprites/chests/sprSawbladeChest.png", 8, 6);
+global.sprSawbladeChestOpen =  sprite_add("../sprites/chests/sprSawbladeChestOpen.png", 1, 8, 6);
+
+global.sprDownwellChest     =  sprite_add_weapon("../sprites/chests/sprDownwellChest.png", 8, 6);
+global.sprDownwellChestOpen =  sprite_add("../sprites/chests/sprDownwellChestOpen.png", 1, 8, 6);
+
+global.sprDeltaChest     =  sprite_add_weapon("../sprites/chests/sprDeltaChest.png", 8, 6);
+global.sprDeltaChestOpen =  sprite_add("../sprites/chests/sprDeltaChestOpen.png", 1, 8, 6);
+
+global.sprCloudChest     =  sprite_add_weapon("../sprites/chests/sprCloudChest.png", 8, 6);
+global.sprCloudChestOpen =  sprite_add("../sprites/chests/sprCloudChestOpen.png", 1, 8, 6);
+
+global.sprThunderCloudChest     =  sprite_add_weapon("../sprites/chests/sprThunderCloudChest.png", 8, 6);
+global.sprThunderCloudChestOpen =  sprite_add("../sprites/chests/sprThunderCloudChestOpen.png", 1, 8, 6);
+
+global.sprChargeChest     =  sprite_add_weapon("../sprites/chests/sprChargeChest.png", 8, 6);
+global.sprChargeChestOpen =  sprite_add("../sprites/chests/sprChargeChestOpen.png", 1, 8, 6);
+
 
 global.sprMeleeChest     = sprite_add_weapon("../sprites/chests/sprWepMutChestMelee.png"    , 11, 8);
 global.sprBulletChest    = sprite_add_weapon("../sprites/chests/sprWepMutChestBullet.png"   , 11, 8);
@@ -50,12 +97,28 @@ global.sprShellChest     = sprite_add_weapon("../sprites/chests/sprWepMutChestSh
 global.sprBoltChest      = sprite_add_weapon("../sprites/chests/sprWepMutChestBolt.png"     , 11, 8);
 global.sprEnergyChest    = sprite_add_weapon("../sprites/chests/sprWepMutChestEnergy.png"   , 11, 8);
 global.sprExplosiveChest = sprite_add_weapon("../sprites/chests/sprWepMutChestExplosive.png", 11, 8);
+
+global.sprMeleeChestC     = sprite_add_weapon("../sprites/chests/sprWepMutChestMeleeCursed.png"    , 11, 8);
+global.sprBulletChestC    = sprite_add_weapon("../sprites/chests/sprWepMutChestBulletCursed.png"   , 11, 8);
+global.sprShellChestC     = sprite_add_weapon("../sprites/chests/sprWepMutChestShellCursed.png"    , 11, 8);
+global.sprBoltChestC      = sprite_add_weapon("../sprites/chests/sprWepMutChestBoltCursed.png"     , 11, 8);
+global.sprEnergyChestC    = sprite_add_weapon("../sprites/chests/sprWepMutChestEnergyCursed.png"   , 11, 8);
+global.sprExplosiveChestC = sprite_add_weapon("../sprites/chests/sprWepMutChestExplosiveCursed.png", 11, 8);
+
 global.sprMeleeChestOpen     = sprite_add("../sprites/chests/sprWepMutChestOpen.png", 1, 11, 8);
+global.sprMeleeChestOpenC    = sprite_add("../sprites/chests/sprWepMutChestOpenCursed.png", 1, 11, 8);
+
 global.sprBulletChestOpen    = global.sprMeleeChestOpen;
 global.sprShellChestOpen     = global.sprMeleeChestOpen;
 global.sprBoltChestOpen      = global.sprMeleeChestOpen;
 global.sprExplosiveChestOpen = global.sprMeleeChestOpen;
 global.sprEnergyChestOpen    = global.sprMeleeChestOpen;
+
+global.sprBulletChestOpenC    = global.sprMeleeChestOpenC;
+global.sprShellChestOpenC     = global.sprMeleeChestOpenC;
+global.sprBoltChestOpenC      = global.sprMeleeChestOpenC;
+global.sprExplosiveChestOpenC = global.sprMeleeChestOpenC;
+global.sprEnergyChestOpenC    = global.sprMeleeChestOpenC;
 
 global.chests = ds_map_create()
 chest_add("Ultra",   14, [wep_ultra_shovel,wep_ultra_shotgun,wep_ultra_laser_pistol,wep_ultra_revolver,wep_ultra_crossbow,wep_ultra_grenade_launcher,"ultra spam gun","ultra hand","defender","ultra gunhammer"])
@@ -72,7 +135,7 @@ chest_add("Quartz",  10, ["quartz machinegun","quartz shotgun","quartz crossbow"
 chest_add("Flame",   8,  [wep_flare_gun,wep_dragon,wep_flamethrower,wep_flame_cannon,"firestorm"])
 chest_add("Blood",   9,  [wep_blood_hammer,"bone","big bone",wep_blood_launcher,wep_blood_cannon,"blood abris launcher","blood crossbow"])
 chest_add("Hyper",   9,  [wep_hyper_rifle,wep_hyper_slugger,wep_hyper_launcher,"hyper crossbow"])
-chest_add("Zenith",  13, ["herald","andromeda launcher","stopwatch","sak",/*"antiprism",*/"defender","flex","punisher","rapier"])
+chest_add("Zenith",  13, ["herald","andromeda launcher","stopwatch","sak", "defender", "flex", "punisher", "rapier", "record dealer"])
 var _l = ds_list_create();
 weapon_get_list(_l, clamp(GameCont.hard, 0, 4), GameCont.hard + 2 * array_length(instances_matching(Player,"race","robot")) + 3);
 var _a = ds_list_to_array(_l),
@@ -99,6 +162,45 @@ chest_add("Bolt",      -1, 3)
 chest_add("Explosive", -1, 4)
 chest_add("Energy",    -1, 5)
 
+#define game_start
+  // weapon mods innate support because the original creators aint going to touch their own stuff again
+  if mod_exists("weapon", "NetheriteSword"){ //minecraft weapons
+    chest_add("Minecraft", 3, ["WoodenSword", "WoodenShovel", "WoodenPickaxe", "WoodenHod", "WoodenAxe", "Bow", "Crossbow", "StoneSword", "StoneShovel", "StonePickaxe", "StoneHod", "StoneAxe", "IronSword", "IronShovel", "IronPickaxe", "IronHod", "IronAxe", "GoldenSword", "GoldenPickaxe", "GoldenHod", "GoldenAxe", "DiamondSword", "DiamondShovel", "DiamondPickaxe", "DiamondHod", "DiamondAxe", "NetheriteSword", "NetheriteShovel", "NetheritePickaxe", "NetheriteHod", "NetheriteAxe"])
+  }
+  if mod_exists("mod", "yokinLightning"){ //goodmod
+    chest_add("Rusty", 3, [wep_rusty_revolver, "rusty crossbow", "rusty grenade launcher", "rusty laser pistol", "rusty shotgun", "old engine"])
+  }
+  if mod_exists("weapon", "tiny crossbow"){ //tinyweps
+    chest_add("Tiny", 1, ["tiny crossbow", "tiny grenade launcher", "tiny laser pistol", "tiny machinegun", "tiny shotgun", "tiny wrench"])
+  }
+  if mod_exists("weapon", "loopgatlingslugger"){ //loopwep
+    chest_add("Loop", 16, ["loopgatlingslugger", "loopplasmaminigun", "looplaserminigun", "loopgatlingbazooka", "loopminigun", "loopheavyautocrossbow", "loopautocrossbow"])
+  }
+  if mod_exists("weapon", "pow block"){ //nintendo weps
+    chest_add("Nintendo", 6, ["arm cannon", "master sword", "mega buster", "pow block"])
+  }
+  if mod_exists("weapon", "idpdfreakgrenadelauncher"){ //idpd weps
+    chest_add("IDPD", 10, ["idpdgun", "idpdrifle", "idpdgrenadelauncher", "idpdheavygun", "idpdslugger", "idpdheavyslugger", "idpdelitegun", "idpdrocketlauncher", "idpdplasmaminigun", "idpdenergybaton", "idpdfreakgun", "idpdfreakgrenadelauncher"])
+  }
+  if mod_exists("mod", "ntte"){//sawblade, quasar, bubble, eplasma
+    chest_add("Bubble"  ,  5, ["bubble rifle", "bubble shotgun", "bubble minigun", "bubble cannon", "bubble bat", "hyper bubbler"])
+    chest_add("Eplasma" ,  8, ["eleptroplasma rifle", "electroplasma shotgun", "electroplasma cannon"])
+    chest_add("Sawblade",  7, ["bat disc launcher", "bat disc cannon", "pizza cutter"])
+    chest_add("Quasar"  , 12, ["quasar blaster", "quasar rifle", "quasar cannon"])
+  }
+  if mod_exists("weapon", "gemhighmachinegunmodule"){ //downwell weps
+    chest_add("Downwell", 4, ["gemhighmachinegunmodule", "burstmodule", "gemhighburstmodule", "lasermodule", "gemhighlasermodule", "laserriflemodule", "gemhighlaserriflemodule", "noppymodule", "gemhighnoppymodule", "punchermodule", "gemhighpunchermodule", "shotgunmodule", "gemhighshotgunmodule", "triplemodule", "gemhightriplemodule"])
+  }
+  if mod_exists("weapon", "delta rifle"){ //delta weps
+    chest_add("Delta", 15, ["delta rifle", "delta slugger", "delta splinter gun", "delta bazooka", "delta plasma gun", "delta saber"])
+  }
+  if mod_exists("weapon", "accuserhand"){ //charge weps
+    chest_add("Charge", 7, ["chargegun", "chargeslugger", "chargeflak", "chargecrossbow", "chargedisc", "chargebazooka", "chargeflamethrower", "chargelaser", "chargeplasma", "chargeblade"])
+  }
+  if mod_exists("weapon", "cannondemnation"){ //xefsweps: cloud, thundercloud
+    chest_add("Cloud"       , 4, ["cloud pistol", "cloud rifle", "cloud shotgun", "cloud cannon", "cloud minigun"])
+    chest_add("ThunderCloud", 8, ["thunder cloud pistol", "thunder cloud rifle", "thunder cloud shotgun", "thunder cloud cannon", "thunder cloud minigun"])
+  }
 #define step
      // replacing chests
     if !instance_exists(GenCont){
@@ -125,6 +227,7 @@ chest_add("Energy",    -1, 5)
                   if skill_get("powderedgums")        > 0 array_push(_a, 0);
                   if skill_get("vote3")               > 0 array_push(_a, 0);
                   if skill_get("Shattered Skull")     > 0 array_push(_a, 0);
+                  if skill_get("Shocked Skin")        > 0 array_push(_a, 0);
                   if skill_get("shells to shots")     > 0 array_push(_a, 0);
                   if skill_get(mut_bolt_marrow)       > 0 array_push(_a, 4);
                   if skill_get("boltmarrowx10")       > 0 array_push(_a, 4);
@@ -145,15 +248,23 @@ chest_add("Energy",    -1, 5)
                   if skill_get("laserbrainx10")       > 0 array_push(_a, 1);
                   if skill_get("concentration")       > 0 array_push(_a, 1);
                   if skill_get("vote6")               > 0 array_push(_a, 1);
-                  if skill_get("Shocked Skin")        > 0 array_push(_a, 1);
-                  if skill_get("Saline Breath")       > 0 array_push(_a, 1);
-                  if skill_get("Burning Eyes")        > 0 array_push(_a, 1);
+                  if skill_get("Neural Network")      > 0 array_push(_a, 1);
+                  if skill_get("Deep Convolutional Network")     > 0 array_push(_a, 1);
+                  if skill_get("Deep Residual Network")          > 0 array_push(_a, 1);
+                  if skill_get("Echo State Network")             > 0 array_push(_a, 1);
+                  if skill_get("Feed Forward Network")           > 0 array_push(_a, 1);
+                  if skill_get("Generative Adversarial Network") > 0 array_push(_a, 1);
+                  if skill_get("Markov Chain")                   > 0 array_push(_a, 1);
+                  if skill_get("Recurrent Neural Network")       > 0 array_push(_a, 1);
+                  if skill_get("Support Vector Machines")        > 0 array_push(_a, 1);
                   if skill_get("conductivity")        > 0 array_push(_a, 1);
               var q = get_chests(-1, -1)
               if array_length(q){
-                  with customchest_create(x, y, q[_a[irandom(array_length(_a) - 1)]]) {
+                  with customchest_create(x, y, q[_a[irandom(array_length(_a) - 1)]]){
+                    curse = other.curse
+
                     var _l = ds_list_create();
-                    weapon_get_list(_l, clamp(GameCont.hard, 0, 6), GameCont.hard + 2 * array_length(instances_matching(Player,"race","robot")) + 3);
+                    weapon_get_list(_l, clamp(GameCont.hard, 0, 6), GameCont.hard + 2 * array_length(instances_matching(Player,"race","robot")) + 3^+ curse);
                     var _weparray = ds_list_to_array(_l),
                         _weapons  = [];
                     with _weparray {
@@ -162,6 +273,33 @@ chest_add("Energy",    -1, 5)
                       }
                     }
                     weps = _weapons;
+
+                    if curse = true switch subname{
+                        case "Bullet":
+                            sprite_index = global.sprBulletChestC;
+                            spr_open = global.sprBulletChestOpenC;
+                            break;
+                        case "Shell":
+                            sprite_index = global.sprShellChestC;
+                            spr_open = global.sprShellChestOpenC;
+                            break;
+                        case "Bolt":
+                            sprite_index = global.sprBoltChestC;
+                            spr_open = global.sprBoltChestOpenC;
+                            break;
+                        case "Explosive":
+                            sprite_index = global.sprExplosiveChestC;
+                            spr_open = global.sprExplosiveChestOpenC;
+                            break;
+                        case "Energy":
+                            sprite_index = global.sprEnergyChestC;
+                            spr_open = global.sprEnergyChestOpenC;
+                            break;
+                        case "Melee":
+                            sprite_index = global.sprMeleeChestC;
+                            spr_open = global.sprMeleeChestOpenC;
+                            break;
+                    }
                   }
                   instance_delete(self)
               }
@@ -177,6 +315,9 @@ chest_add("Energy",    -1, 5)
 
      // chest step
     with instances_matching(chestprop, "name", "DefCustomChest"){
+        if curse = true{
+            if irandom(1) instance_create(x + random_range(-6, 6), y - 4 + random_range(-1, 1), Curse)
+        }
         if place_meeting(x, y, Player) sound_play(instance_nearest(x, y, Player).snd_chst)
         if place_meeting(x, y, Player) || place_meeting(x, y, PortalShock) || instance_exists(BigPortal){
              // run open code
@@ -195,6 +336,7 @@ chest_add("Energy",    -1, 5)
             instance_create(x, y, FXChestOpen);
             with instance_create(x, y, ChestOpen)
                 sprite_index = other.spr_open;
+            if curse = true sound_play(sndCursedChest)
 
             instance_delete(id);
         }
@@ -221,20 +363,22 @@ chest_add("Energy",    -1, 5)
   }
   return a
 
-  #define customchest_create(xx, yy, Type)
+#define customchest_create(xx, yy, Type)
       var o = instance_create(xx, yy, chestprop);
       with(o){
+          curse = false
           name = "DefCustomChest";
           type = Type// specifc chest type
           var q = global.chests[? Type]
           spr_open = q.spr_open
           sprite_index = q.spr_idle
           weps = q.weps
+          subname = q.name
           on_open = customchest_open;
       }
       return o;
 
-  #define customchest_open
+#define customchest_open
   repeat(2){
     var _w = wep_screwdriver
     sound_play(sndAmmoChest);
@@ -245,6 +389,7 @@ chest_add("Energy",    -1, 5)
         _w = weps[irandom(array_length(weps)-1)]
         if weapon_get_area(_w) <= max(0, GameCont.hard + 3) && _d[_j] != _w{
           with instance_create(x,y,WepPickup){
+            curse = other.curse
             wep = _w
             _d[_j] = wep;
             _j++;

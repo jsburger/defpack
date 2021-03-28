@@ -40,6 +40,11 @@ if !button_check(index,"fire") || (race = "steroids" and bwep = mod_current and 
 #define weapon_text
 return "BEAMING";
 
+#define nts_weapon_examine
+return{
+    "d": "Continuous vectors aren't as good at pulling enemies #but great in dealing damage. ",
+}
+
 #define weapon_fire
 if !skill_get(17){
 	sound_set_track_position(sndLaser,.09)
@@ -56,6 +61,7 @@ with instance_create(x,y,CustomProjectile){
     team = other.team
     direction = creator.gunangle
     image_angle = direction
+    created = false
 	sprite_index = global.sprWaterBeam
 	mask_index   = global.mskWaterBeam
 	spr_tail     = global.sprVectorBeamStart
@@ -81,10 +87,13 @@ sound_stop(sndEnergyHammerUpg)
 #define beam_step
 if instance_exists(creator){
     with creator weapon_post(5,5*current_time_scale,0)
-	sound_set_track_position(sndEnergyHammerUpg,.3)
-	sound_pitch(sndEnergyHammerUpg,0)
-	sound_play_pitchvol(sndEnergyHammerUpg,.4 * random_range(.9, 1.1), .35)
-	sound_set_track_position(sndEnergyHammerUpg,0)
+	if created = false{
+		created = true
+		sound_set_track_position(sndEnergyHammerUpg,.3)
+		sound_pitch(sndEnergyHammerUpg,0)
+		sound_play_pitchvol(sndEnergyHammerUpg,.4 * random_range(.9, 1.1), .35)
+		sound_set_track_position(sndEnergyHammerUpg,0)
+	}
 
     time -= current_time_scale
     if time <= 0 {instance_destroy(); exit}
@@ -111,9 +120,10 @@ if instance_exists(creator){
     if current_frame_active{
         var _r = random_range(0,image_xscale*2+12)
         with instance_create(x-lengthdir_x(_r,direction)+random_range(-5,5),y-lengthdir_y(_r,direction)+random_range(-5,5),BulletHit)
-        {
+				{
         	sprite_index = global.sprVectorBeamEnd
         	image_angle = other.direction
+					image_speed = .4 - (skill_get(mut_laser_brain) > 0 ? .2 : 0);
         	motion_set(other.direction,choose(1,2))
         }
     }
@@ -144,4 +154,4 @@ if current_frame_active{
 #define beam_draw
 draw_sprite_ext(sprite_index, image_index, xstart, ystart, image_xscale, image_yscale, image_angle, image_blend, 1.0);
 	if x != xstart draw_sprite_ext(spr_tail, 0, xstart, ystart, 1, image_yscale, image_angle, image_blend, 1.0);
-	if x != xstart draw_sprite_ext(spr_head, 0, x, y, 2, image_yscale*2, image_angle-45, image_blend, 1.0);
+	if x != xstart draw_sprite_ext(spr_head, 0, x, y, image_yscale*2, image_yscale*2, image_angle-45, image_blend, 1.0);

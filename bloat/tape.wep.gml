@@ -1,5 +1,5 @@
 #define init
-global.sprTape = sprite_add_weapon("sprites/sprTape.png", 4, 4);
+global.sprTape = sprite_add_weapon("../sprites/weapons/sprTape.png", 4, 4);
 
 #define weapon_name
 return "TAPE"

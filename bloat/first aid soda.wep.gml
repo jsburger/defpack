@@ -1,5 +1,5 @@
 #define init
-global.sprFirstAidSoda = sprite_add_weapon("sprites/weapons/sprFirstAidSoda.png",-2,1)
+global.sprFirstAidSoda = sprite_add_weapon("../sprites/weapons/sprFirstAidSoda.png",-2,1)
 #define weapon_sprt
 return global.sprFirstAidSoda
 #define weapon_name

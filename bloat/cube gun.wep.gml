@@ -1,6 +1,6 @@
 #define init
 
-global.sprCube = sprite_add("defpack tools/sprSquare.png", 1, 0, 0)
+global.sprCube = sprite_add("../sprites/projectiles/sprSquare.png", 1, 0, 0)
 
 //big thanks to abstractor for making the draw cube code, this weapon would not exist otherwise
 

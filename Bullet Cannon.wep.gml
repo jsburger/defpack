@@ -32,6 +32,11 @@ return 7;
 #define weapon_iris
 return "x bullet cannon"
 
+#define nts_weapon_examine
+return{
+    "d": "Plenty of space to cram in some bullets. ",
+}
+
 #define weapon_text
 return "YOU CAN FIT SO MANY @yBULLETS@s IN HERE";
 

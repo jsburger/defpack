@@ -20,6 +20,10 @@ return 1
 return 0
 #define weapon_text
 return "JOY BURST";
+#define nts_weapon_examine
+return{
+    "d": "Several Plasmite Pistols strapped together#to create a large burst of miniature plasma. ",
+}
 #define weapon_fire
 weapon_post(6,0,18)
 if !skill_get(17)
@@ -32,7 +36,7 @@ else
 	sound_play_pitch(sndPlasmaUpg,2)
 	sound_play_pitch(sndPlasmaRifleUpg,random_range(1.3,1.45))
 }
-repeat(5)
+repeat(5 + skill_get(mut_laser_brain) * 2)
 {
 	with mod_script_call("mod","defpack tools","create_plasmite",x,y)
 	{

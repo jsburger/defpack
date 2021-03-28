@@ -56,6 +56,11 @@ return global.sprBone
 #define weapon_sprt_hud
 return global.sprBoneHUD
 
+#define nts_weapon_examine
+return{
+    "d": "A point-blank melee weapon. #Do not miss with this. ",
+}
+
 #define weapon_text
 return "UNHOLY"
 

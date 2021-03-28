@@ -26,7 +26,10 @@ if !button_check(index, (!p and race == "steroids") ? "spec" : "fire"){
 return global.sprVectorShotgun
 #define weapon_text
 return "PARTICLE ACCELERATION"
-
+#define nts_weapon_examine
+return{
+    "d": "Useful for when too many enemies invade your personal space. ",
+}
 #define weapon_fire
 motion_add(gunangle - 180, 4)
 repeat(3) instance_create(x, y, Smoke)

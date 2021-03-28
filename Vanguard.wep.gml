@@ -101,7 +101,7 @@ else{
 view_pan_factor[index] = 3 - (charge/maxcharge * .5)
 defcharge.charge = charge
 if button_check(index, btn){
-    with instance_create(creator.x + random_range(-64, 64), creator.y + random_range(-64, 64), Wind) {
+    if !irandom(2) with instance_create(creator.x + creator.hspeed + random_range(-32, 32), creator.y + creator.vspeed + random_range(-32, 32), Wind) {
         var _f = choose(1, 2, 2)
         motion_add(point_direction(x, y, other.creator.x, other.creator.y), _f)
         image_speed = .22 * _f;
@@ -137,7 +137,7 @@ sound_stop(sound)
 #define vanguard_destroy
 if charged {
     sound_set_track_position(sndVanPortal, 300)
-    sound_play_pitch(sndVanPortal, 2)
+    sound_play_pitchvol(sndVanPortal, 1.8, .8)
 }
 var _c = self,
     _cmin = max((_c.charge/_c.maxcharge), .2);
@@ -159,7 +159,7 @@ with creator {
     weapon_post(max(-speed, -8), 0, 0);
 }
 if charged {
-    repeat(irandom(2) + 1) {
+    if irandom(3) != 0 repeat(irandom(2) + 1) {
         instance_create(x + random_range(-8, 8), y + random_range(-8, 8), BlueFlame)
     }
 }

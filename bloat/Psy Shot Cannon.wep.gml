@@ -1,7 +1,7 @@
 #define init
-global.sprPsyShotCannon = sprite_add_weapon("sprites/Psy Shot Cannon.png", 4, 2);
-global.ball = sprite_add("sprites/projectiles/psy flak ball.png",2,8,8)
-global.eye = sprite_add("sprites/projectiles/psy bullet eye.png",1,1,1)
+global.sprPsyShotCannon = sprite_add_weapon("../sprites/weapons/sprPsyShotCannon.png", 4, 2);
+global.ball = sprite_add("../sprites/projectiles/psy flak ball.png",2,8,8)
+global.eye = sprite_add("../sprites/projectiles/psy bullet eye.png",1,1,1)
 #define weapon_name
 return "PSY SHOT CANNON";
 

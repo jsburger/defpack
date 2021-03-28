@@ -31,6 +31,11 @@ return 10;
 #define weapon_text
 return "NOTHING GOES TO WASTE";
 
+#define nts_weapon_examine
+return{
+	"melting": "There is no peace for this creature. ",
+    "d": "A crossbow made out of the remains of a Scorpion. #The bones regrow in a fleshy compartment. ",
+}
 #define step(p)
 if ammo[weapon_type()] < weapon_cost(){
     if (p and button_pressed(index, "fire")) or (!p and race = "steroids" and button_pressed(index, "spec")){

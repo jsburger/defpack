@@ -110,5 +110,11 @@ if "bigcooldown" in self{
 
 #define weapon_sprt
 return global.sword
+
+#define nts_weapon_examine
+return{
+    "d": "A trophy of a folk that harvests vegetables from the top of mountains. ",
+}
+
 #define weapon_text
 return "A HEFTY SWING"

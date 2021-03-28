@@ -1,11 +1,16 @@
 #define init
-global.sprAndromedaLauncher = sprite_add_weapon("sprites/weapons/sprAndromedaLauncher.png", 8, 5);
+global.sprAndromedaLauncher1 = sprite_add_weapon("sprites/weapons/sprAndromedaLauncher1.png", 8, 5);
+global.sprAndromedaLauncher2 = sprite_add_weapon("sprites/weapons/sprAndromedaLauncher2.png", 8, 5);
+global.sprAndromedaLauncher3 = sprite_add_weapon("sprites/weapons/sprAndromedaLauncher3.png", 2, 5);
+global.sprAndromedaLauncher4 = sprite_add_weapon("sprites/weapons/sprAndromedaLauncher4.png", 1, 3);
 //global.sprAndromedaBullet = sprite_add("sprites/projectiles/sprAndromedaBullet.png",2, 9, 9);
 global.space  = sprite_add("sprites/other/sprStarfieldForeground.png",1,0,0)
 global.space2 = sprite_add("sprites/other/sprStarfieldBackground.png",1,0,0)
 global.space4 = sprite_add("sprites/other/sprSpaceForeground.png",1,0,0);
 global.space3 = sprite_add("sprites/other/sprSpaceBackground.png",1,0,0);
 
+global.disappear0 = [GroundFlame, CharredGround, Scorch, ScorchTop, Scorchmark, BlueFlame, Drip, Smoke, Dust]
+global.disappear1 = [chestprop, Feather, Shell, Debris, WepPickup, Pickup, Grenade, Confetti]
 
 //with CustomObject instance_destroy()
 /*with script_bind_draw(spacedraw,7.9) {
@@ -15,11 +20,21 @@ global.space3 = sprite_add("sprites/other/sprSpaceBackground.png",1,0,0);
 	}
 }*/
 
+global.wepsprite = 0
+mod_script_call_nc("mod", "defpermissions", "permission_register_options", "weapon", mod_current, "wepsprite", "Andromeda Launcher Sprite", ["Newest", "Version 3", "Version 2", "Original"])
+
 #define weapon_name
 return "ANDROMEDA LAUNCHER"
 
 #define weapon_sprt
-return global.sprAndromedaLauncher;
+var _s = 0;
+switch global.wepsprite{
+	case 0: _s = global.sprAndromedaLauncher1; break;
+	case 1: _s = global.sprAndromedaLauncher2; break;
+	case 2: _s = global.sprAndromedaLauncher3; break;
+	case 3: _s = global.sprAndromedaLauncher4; break;
+}
+return _s;
 
 #define weapon_type
 return 4;
@@ -119,10 +134,18 @@ with instances_in(x-succ,y-succ/2,x+succ,y+succ/2,Wall){
 }
 
 
-with instances_in(x-succ,y-succ/2,x+succ,y+succ/2,[Debris,ScorchTop,Scorch]){
+with instances_in(x-succ,y-succ/2,x+succ,y+succ/2,global.disappear0){
     var _x = clamp(other.x, bbox_left, bbox_right), _y = clamp(other.y, bbox_top, bbox_bottom);
     if (sqr(_x - other.x))/sqr(other.succ) + (sqr(_y - other.y))/sqr(other.succ/2) <= 1{
-        instance_destroy()
+				instance_destroy()
+    }
+}
+
+with instances_in(x-succ,y-succ/2,x+succ,y+succ/2,global.disappear1){
+    var _x = clamp(other.x, bbox_left, bbox_right), _y = clamp(other.y, bbox_top, bbox_bottom);
+    if (sqr(_x - other.x))/sqr(other.succ) + (sqr(_y - other.y))/sqr(other.succ/2) <= 1{
+				instance_disappear(x, y, 1)
+				instance_delete(self)
     }
 }
 
@@ -240,6 +263,36 @@ xn = (off+xref/size);
 yn = (off+yref/size);
 draw_vertex_texture(_x,_y,xn,yn)
 
+#define instance_disappear(X, Y, MODE)
+	with instance_create(X, Y, CustomObject){
+		mode = MODE;
+		sprite_index = other.sprite_index;
+		image_index  = other.image_index;
+		image_speed  = other.image_speed;
+
+		turn   = choose(-1, 1);
+		factor = random_range(.8, 1.2);
+
+		on_step = disappear_step;
+
+		return self;
+	}
+
+#define disappear_step
+	if mode = 0{
+		instance_destroy();
+	}
+	if mode = 1{
+		image_alpha -= .04 * current_time_scale;
+		image_blend = merge_color(c_black, c_white, image_alpha / 2);
+		image_xscale -= .04;
+		image_yscale -= .04;
+		image_angle += choose(2, 3, 3, 4) * turn * factor;
+		y +=  1.5 * current_time_scale * (1 - image_alpha);
+		if image_alpha <= 0{
+			instance_destroy();
+		}
+	}
 
 #define spacedraw
 var xref,yref,sprite;

@@ -30,6 +30,11 @@ return 0;
 #define weapon_area
 return 4;
 
+#define nts_weapon_examine
+return{
+    "d": "The exception to most rules. ",
+}
+
 #define weapon_text
 return "POTENTIAL"
 
@@ -46,7 +51,8 @@ return "POTENTIAL"
         name = "InfiniPellet"
         sprite_index = global.sprPellet
         mask_index   = global.sprPellet
-        
+
+        move_contact_solid(other.gunangle, 6);
         motion_add(other.gunangle + random_range(-7, 7) * other.accuracy, 5)
         image_angle = direction
         projectile_init(other.team, instance_is(other, FireCont) ? other.creator : other)
@@ -69,7 +75,7 @@ return "POTENTIAL"
                 reload += 20
             }
         }
-        
+
         on_destroy = pellet_destroy
         on_wall    = pellet_wall
         on_anim    = pellet_anim
@@ -87,9 +93,9 @@ return "POTENTIAL"
     image_angle = direction
     if --bounce < 0 {
         instance_destroy()
-    }    
+    }
     else {
-        with instance_create(x + h, y + v, MeleeHitWall) { 
+        with instance_create(x + h, y + v, MeleeHitWall) {
             image_angle = d - angle_difference(other.direction, d)/4 + 180
             image_yscale = .5
             image_speed *= 2
@@ -112,7 +118,7 @@ return "POTENTIAL"
         sound_play(sndExploGuardianDeadCharge)
         if fork() {
             var _x = x, _y = y, _l = 50;
-            repeat(12 + random(8)) { 
+            repeat(12 + random(8)) {
                 repeat(choose(1, 2)){
                     instance_create(_x + lengthdir_x(random(_l), random(360)), _y + lengthdir_y(random(_l), random(360)), LightningHit)
                 }
@@ -131,7 +137,7 @@ return "POTENTIAL"
 #define pellet_anim
     image_speed = 0
     image_index = 1
-    
+
 #define superpellet_step
     var flutes = 2, num = 360/(flutes)
     var w = 3;
@@ -159,8 +165,3 @@ return "POTENTIAL"
         }
         i-=off
     }
-
-    
-    
-    
-    

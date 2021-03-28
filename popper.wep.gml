@@ -28,7 +28,11 @@
 
 #define weapon_text
   return "POP (POP) POP";
-
+  
+#define nts_weapon_examine
+return{
+    "d": "A hugely unpopular high caliber pop gun. #The bursts of air used for firing are slowly tearing the gun apart. ",
+}
 #define weapon_fire
 
 weapon_post(4,5,3)

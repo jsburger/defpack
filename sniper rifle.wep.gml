@@ -1,5 +1,5 @@
 #define init
-global.sprSniperRifle = sprite_add_weapon("sprites/weapons/sprSniperRifle.png", 5, 3);
+global.sprSniperRifle = sprite_add_weapon("sprites/weapons/sprSniperRifle.png", 5, 4);
 
 #define weapon_chrg
 return true;
@@ -17,7 +17,7 @@ return 1;
 return 1;
 
 #define weapon_load
-return 43;
+return 35;
 
 #define weapon_cost
 return 12;
@@ -31,7 +31,7 @@ return sndSwapMachinegun;
 #define weapon_laser_sight
 with instances_matching(instances_matching(CustomObject, "name", "SniperCharge"), "creator", self) {
     with other {
-        with mod_script_call_self("mod", "defpack tools", "sniper_fire", x, y, gunangle, team, 1 + other.charge/other.maxcharge){
+        with mod_script_call_self("mod", "defpack tools", "sniper_fire", x, y, gunangle, team, 1 + other.charge/other.maxcharge, 1){
             draw_line_width_color(xstart, ystart, x, y, 1, 14074, 14074)
             instance_destroy()
         }

@@ -15,3 +15,5 @@
 //loadskill irisslave4
 //loadskill irisslave5
 //loadskill irisslave6
+
+/loadmod vault

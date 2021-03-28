@@ -29,6 +29,11 @@ return 14;
 #define weapon_text
 return choose("1 FAST BOLT PER SHOT","A CONTINUOUS STATE OF HYPE", "HYPER HYPER");
 
+#define nts_weapon_examine
+return{
+    "d": "The limit of bolt-based rapid-fire weaponry. ",
+}
+
 #define weapon_fire
 repeat(5)
 {

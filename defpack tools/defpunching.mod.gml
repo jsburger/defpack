@@ -13,7 +13,7 @@
 			couldspec: 0,
 			bounce : -bouncemax - 1
 		}
-		
+
 #macro dashmax 8
 
 global.mouseAim = 1
@@ -115,7 +115,7 @@ with instance_create(x + lengthdir_x(15, dir), y + lengthdir_y(15, dir), CustomS
 	name = "FistSlash"
 	creator = other
 	team = other.team
-	
+
 	on_step = hitbox_step
 	base_step = on_step
 	on_hit = hitbox_hit
@@ -124,10 +124,11 @@ with instance_create(x + lengthdir_x(15, dir), y + lengthdir_y(15, dir), CustomS
 	on_projectile = hitbox_proj
 	base_projectile = on_projectile
 	on_grenade = hitbox_grenade
-	
+
 	on_step = dust_step
-	
-	sprite_index = mskScorpion
+
+	sprite_index = mskNone
+	mask_index   = mskScorpion
 	image_angle = dir
 	image_xscale = 1 + .5 * skill_get(mut_long_arms)
 	length = 15 * (1 + .5 * skill_get(mut_long_arms))
@@ -135,12 +136,12 @@ with instance_create(x + lengthdir_x(15, dir), y + lengthdir_y(15, dir), CustomS
 	image_speed = 0
 	direction = dir
 	image_angle = dir
-	
+
 	damage = 8
 	force = 4
 	time = dashmax
 	fist = w
-	
+
 	return id
 }
 
@@ -188,7 +189,11 @@ with creator {
 	if w == wep reload /= 2
 	if w == bwep breload /= 2
 }
+sleep(10 + 12 * clamp(other.size, 1, 3))
+view_shake_max_at(x, y, 2 + 4 * clamp(other.size, 1, 3))
 sound_play_hit(sndImpWristHit, .1)
+sound_play_pitchvol(sndSpiderDead, 1.25, .6)
+sound_play_pitchvol(sndHitFlesh, 1, 1.25)
 if instance_exists(creator){
 	fist_hit(other, fist, creator)
 	with instance_create(other.x, other.y, MeleeHitWall){
@@ -246,7 +251,7 @@ if time <= 0 instance_destroy()
 #define fist_sprite(weapon, sprites)
 if instance_is(self, Player){
 	var _s = (race == "steroids" and bwep == weapon);
-	if _s 
+	if _s
 		return sprites[1]
 }
 return sprites[0]

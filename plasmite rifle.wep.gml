@@ -20,8 +20,12 @@ return 1
 return 0
 #define weapon_text
 return "LONG RANGE ENGAGEMENT";
+#define nts_weapon_examine
+return{
+    "d": "A Plasmite Pistol, but longer and automatic. #Comes with a higher range and rate of fire. ",
+}
 #define weapon_fire
-repeat(2)
+repeat(2 + skill_get(mut_laser_brain))
 {
 	weapon_post(4,0,4)
 	if !skill_get(17)

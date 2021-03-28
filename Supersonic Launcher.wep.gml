@@ -26,6 +26,11 @@ return sndSwapExplosive;
 #define weapon_area
 return 15;
 
+#define nts_weapon_examine
+return{
+    "d": "The projectile is fast enough to break the sound barrier. #Shifts a lot of smoke. ",
+}
+
 #define weapon_text
 return "DEAFENING";
 
@@ -47,7 +52,7 @@ with instance_create(x,y,CustomProjectile){
 	mask_index = sprNuke
 	index = other.index
 	team  = other.team
-	damage = 0
+	damage = 20
 	dir = 0
 	image_angle = other.gunangle
 	Ring1Amount = 6

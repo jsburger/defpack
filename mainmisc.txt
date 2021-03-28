@@ -15,7 +15,12 @@
 /loadwep crystal torch
 /loadwep impact fist
 /loadwep shard
-/loadwep hex needle
+/loadwep blood needle
+
+///FISTS///
+
+/loadwep vanguard
+/loadwep scrapper
 
 ///GOLD///
 
@@ -42,6 +47,9 @@
 /loadwep infinipistol
 /load soda
 
+/loadwep flak canon
+
+
 ///IRIS WEPS///
 
 /load iris weps
@@ -49,3 +57,4 @@
 ///NON-WEAPONS///
 /load mutation
 /load crown
+/loadmod defpack tools/defpunching

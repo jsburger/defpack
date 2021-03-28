@@ -27,7 +27,7 @@ return false
 #define weapon_laser_sight
 return false
 #define weapon_sprt
-return mod_variable_get("weapon", "grenade minigun", "sprGrenadeMinigun")
+return //mod_variable_get("weapon", "grenade minigun", "sprGrenadeMinigun")
 #define weapon_text
 return "THUNDER ACROSS THE LANDSCAPE"
 

@@ -26,7 +26,10 @@ if !button_check(index, (!p and race == "steroids") ? "spec" : "fire"){
 return global.sprVectorRifle
 #define weapon_text
 return "MOVING PARTICLES"
-
+#define nts_weapon_examine
+return{
+    "d": "Vectors drag enemies with them. ",
+}
 #define weapon_fire
 motion_add(gunangle-180,3)
 repeat(3)instance_create(x,y,Smoke)

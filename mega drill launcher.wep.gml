@@ -36,6 +36,10 @@ return 1
 return global.sprMegaDrillLauncher
 #define weapon_sprt_hud
 return global.sprMegaDrillLauncherHUD
+#define nts_weapon_examine
+return{
+    "d": "Once they were used to dig tunnels for underground railways. ",
+}
 #define weapon_text
 //how could you not
 return "PIERCE THE HEAVENS"

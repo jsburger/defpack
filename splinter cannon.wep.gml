@@ -5,7 +5,7 @@ return "SPLINTER CANNON"
 #define weapon_type
 return 3
 #define weapon_cost
-return 6
+return 3
 #define weapon_area
 return 11
 #define weapon_load
@@ -22,6 +22,10 @@ return 1
 return global.sprSplinterCannon
 #define weapon_text
 return "THAT HAS TO HURT"
+#define nts_weapon_examine
+return{
+    "d": "A very large splinter gun. #Fires a log that breaks into splinters on impact. ",
+}
 #define weapon_fire
 weapon_post(13,-72,30)
 sleep(15)
@@ -31,9 +35,9 @@ sound_play_pitch(sndSuperSplinterGun,.7)
 sound_play_pitch(sndSplinterPistol,.6)
 
 with instance_create(x,y,CustomProjectile){
-    motion_set(other.gunangle + random_range(-2,2) * other.accuracy, 20)
+    motion_set(other.gunangle + random_range(-1,1) * other.accuracy, 20)
     projectile_init(other.team, other)
-    damage = 35
+    damage = 30
     bounce = round(skill_get("compoundelbow") * 5)
     sprite_index = global.sprSuperSplinter
     mask_index = mskHeavyBolt
@@ -46,12 +50,13 @@ with instance_create(x,y,CustomProjectile){
 }
 
 #define bolt_destroy
+sleep(50)
 view_shake_max_at(x,y,34)
-repeat(12){
+repeat(8){
     with instance_create(x,y,Splinter){
         team = other.team
         creator = other.creator
-        motion_set(other.wall ? other.direction + 180 + random_range(-45,45) : random(360), random_range(14,18))
+        motion_set(other.wall ? other.direction + 180 + random_range(-45,45) : random(360), random_range(16,22))
         image_angle = direction
     }
 }
@@ -122,12 +127,12 @@ if hp > damage/2{
     instance_destroy()
 }
 else {
-    repeat(irandom_range(3, 5)){
-        with instance_create(x,y,Splinter){
-            team = other.team
-            creator = other.creator
-            motion_set(random(360), random_range(14,18))
-            image_angle = direction
+    repeat(1 + irandom_range(1, 3)){
+        with instance_create(x,y,Shell){
+            image_index = choose(3,4);
+            image_speed = 0;
+            sprite_index = sprTutorialSplinter
+            motion_add(random(360),random_range(3,6))
         }
     }
 }

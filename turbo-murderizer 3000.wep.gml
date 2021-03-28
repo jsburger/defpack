@@ -20,12 +20,16 @@ return false
 return false
 #define weapon_sprt
 return global.sprTurboMurderizer3000
+#define nts_weapon_examine
+return{
+    "d": "Vapourizes enemies as well as your ammo reserves in seconds. ",
+}
 #define weapon_text
 return "COMEDY GREEN"
 #define weapon_fire
 motion_add(gunangle - 180, 2)
 var i = wepflip, flip = wepflip
-repeat(3)
+repeat(3 + skill_get(mut_laser_brain))
 {
   weapon_post(9, 5, 12)
   var _p = random_range(.8, 1.2)

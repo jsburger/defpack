@@ -36,6 +36,12 @@ return 10;
 #define weapon_text
 return "GRUESOME";
 
+#define nts_weapon_examine
+return{
+    "d": "We can only wonder if these weapons are alive or not. ",
+    "plant": "MORE BLOOD ",
+}
+
 #define step(p)
 if ammo[weapon_type()] < weapon_cost(){
     if (p and button_pressed(index, "fire")) or (!p and race = "steroids" and button_pressed(index, "spec")){

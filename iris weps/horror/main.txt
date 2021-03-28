@@ -16,6 +16,7 @@
 /loadwep gamma bullet cannon
 /loadwep heavy smart gamma gun
 /loadwep sniper gamma rifle
+/loadwep sniper gamma shotgun
 /loadwep mega gamma revolver
 /loadwep rusty gamma revolver
 /loadwep golden gamma revolver

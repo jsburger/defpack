@@ -58,6 +58,11 @@ sound_play(sndNadeReload)
 #define weapon_text
 return choose("BE CAREFUL WITH IT","ENERGIC FORTUNE TELLING");
 
+#define nts_weapon_examine
+return{
+    "d": "A shiny and frail grenade launcher. #You can see a long hallway in the grenades reflections. ",
+}
+
 #define weapon_fire(w)
   if !is_object(w){
       w = {
@@ -146,7 +151,7 @@ image_angle = direction
 			}
 		}
 	}
-	if place_meeting(x,y,Shank){instance_destroy()}
+	if place_meeting(x,y,Shank) || place_meeting(x,y,Explosion){instance_destroy(); exit}
 	if lifetime <= 0{instance_destroy();exit}
 
 #define quartznade_destroy

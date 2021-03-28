@@ -36,6 +36,11 @@ return 0;
 #define weapon_area
 return 14;
 
+#define nts_weapon_examine
+return{
+    "d": "Very heavy, very powerful. ",
+}
+
 #define weapon_text
 return "TOO BIG FOR THE HOLSTER"
 
