@@ -125,9 +125,14 @@ if button_pressed(index, "spec"){
         wielder.canfire = 1
         wielder.canspec = 1
         wep = q.wep
-        q.wep = {
-            wep : other.wep,
-            index : i
+        if is_object(q.wep) {
+            q.index = i
+        }
+        else {
+            q.wep = {
+                wep : other.wep,
+                index : i
+            }
         }
         wielder = q
         with instance_create(q.x, q.y, FireFly){
@@ -152,10 +157,11 @@ if instance_exists(wielder){
 }
 else{
     with instance_create(x,y,WepPickup){
-        wep = {
-            wep : other.wep,
-            index : other.index
-        } 
+        wep = other.wep
+        if !is_object(wep) wep = {
+            wep: other.wep,
+            index: other.index
+        }
         view_object[other.index] = id
         other.wielder = id
     }

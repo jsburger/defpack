@@ -247,6 +247,7 @@
 
 #macro defcharge_bar 0
 #macro defcharge_arc 1
+#macro defcharge_lock 2
 
 #macro default_bloom {
         xscale : 2,
@@ -364,7 +365,7 @@ if global.chargeType with Player if player_is_local_nonsync(index){
         array_push(matches, wep)
     }
     if array_length(matches){
-        var _chargeCounter = array_create(2)
+        var _chargeCounter = array_create(3)
         with matches{
             with defcharge{
                 if power(charge/maxcharge, lq_defget(self, "power", 2)) >= .001{
@@ -376,7 +377,8 @@ if global.chargeType with Player if player_is_local_nonsync(index){
         var _x = mouse_x_nonsync - view_xview_nonsync, _y = mouse_y_nonsync - view_yview_nonsync + 1;
         var c = player_get_color(index), _col = c;
         //counters
-        var _arcCount = 0, _barCount = 0, _arcMax = _chargeCounter[defcharge_arc], _barMax = _chargeCounter[defcharge_bar];
+        var _arcCount = 0, _barCount = 0, _lockCount = 0,
+        _arcMax = _chargeCounter[defcharge_arc], _barMax = _chargeCounter[defcharge_bar] + _chargeCounter[defcharge_lock];
         //smoothing
         var _scale = global.chargeSmooth, _l = array_length(_scale);
         for var i = 0; i < _l; i++{
@@ -422,6 +424,22 @@ if global.chargeType with Player if player_is_local_nonsync(index){
                             draw_bar(_x, _yc, _dw, _barHeight, c_white)
                             draw_line_width_color(_x - _w, _yc + .5, _x - _w + cm * _dw, _yc + .5, _barHeight, _col, _col)
                         break
+                        case defcharge_lock:
+                        	var _barWidth = lq_defget(self, "width", 12),
+                        		_boxSize = 4,
+                    			_leftEdge = _x - (_barWidth + _boxSize)/2,
+                    			_boxCenter = _leftEdge + _barWidth + (_boxSize/2),
+                    			_barCenter = _x - (_boxSize/2);
+                			_barCount += max(_boxSize, _barHeight)/_barHeight;
+                			var _yCenter = _y + _barInc * _barCount + 4;
+                			
+                			draw_bar(_barCenter, _yCenter, _barWidth, _barHeight, c_white)
+                			draw_line_width_color(_leftEdge, _yCenter + .5, _leftEdge + _barWidth * cm, _yCenter + .5, _barHeight, _col, _col)
+                			draw_bar(_boxCenter, _yCenter, _boxSize, _boxSize, c_white)
+                			if (blinked > 0 || blinked == -1) {
+                				draw_line_width_color(_boxCenter - _boxSize/2, _yCenter + .5, _boxCenter + _boxSize/2, _yCenter + .5, _boxSize, _col, _col)
+                			}
+                    	break
                         case defcharge_arc:
                             var _d = _arcStart - _arcSpace * _arcCount++
                             draw_arc(_x, _y + 1, _d + _arcLength*(1 - cm)/2, _arcHeight, _arcTop + .9, _arcLength * cm, round(_arcPrecision * cm), _col, 1, 1)
@@ -3757,6 +3775,55 @@ if d {
 
 #define slasheffect_step
 if image_index + image_speed*current_time_scale > image_number instance_destroy()
+
+
+#define create_charge_obj(x, y)
+	with instance_create(x, y, CustomObject) {
+		name = "DefpackChargeObject"
+		parent = name
+		defpackChargeObject = true
+		creator = -4
+		
+		charge = 0
+		charged = 0
+		chargeSpeed = 1
+		maxCharge = 100
+		
+		index = -1
+		hand = -1
+		btn = "fire"
+		
+		reload = -1
+		type = 0
+		cost = 0
+		
+	    defcharge = {
+	        style: defcharge_bar,
+	        charge: 0,
+	        maxcharge: maxcharge,
+	        width : 16
+	    }
+	    
+	}
+	
+#define get_firing_context(instance)
+	// Assumptions in place;
+	// - Anything that calls a fire script has gunangle and accuracy (no backup checks on these values)
+	// - Firing a weapon from an object with gunangle means that they aim over time, with an offset based on what angle FireCont was firing at
+	// - Anything with a valid player index ([0, 4]) is looking to use button inputs over time
+	// - FireCont does not continue to be responsible for effects over time, that goes to its creator
+
+	var _isFireCont = instance_is(instance, FireCont),
+		_creator = (_isFireCont && "creator" in instance) ? instance.creator : instance,
+		_isPlayer = instance_is(_creator, Player),
+		_creatorCanAim = "gunangle" in _creator,
+		_accuracy = "accuracy" in _creator ? _creator.accuracy : instance.accuracy,
+		_aimOffset = (_creatorCanAim && _isFireCont) ? angle_difference(instance.gunangle, _creator.gunangle) : 0;
+		
+	return {
+		is_firecont : instance_is(self, FireCont)
+	}
+	
 
 
 #define create_sniper_charge(x, y)

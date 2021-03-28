@@ -12,30 +12,23 @@ if fork(){
     }
     exit
 }
-global.sprAmmo           = sprite_add("sprites/interface/sprSAKammo.png",8,0,0)
-global.sprAmmoM          = sprite_add("sprites/interface/sprSAKammoMini.png",9,0,0)
-global.sprBodyShell      = sprite_add("sprites/interface/sprSAKbodyShell.png",6,0,0)
-global.sprBodySlug       = sprite_add("sprites/interface/sprSAKbodySlug.png",6,0,0)
-global.sprBody           = sprite_add("sprites/interface/sprSAKbody.png", 6, 0, 0)
-global.sprBodyM          = sprite_add("sprites/interface/sprSAKbodyMini.png",7,0,0)
-global.sprMods  	     = sprite_add("sprites/interface/sprSAKmods.png",10,0,0)
-global.sprModsM  	     = sprite_add("sprites/interface/sprSAKmodsm.png",11,0,0)
-global.sprModsShotgun    = sprite_add("sprites/interface/sprSAKmodsShotgun.png",10,0,0)
-global.sprModsPopGun     = sprite_add("sprites/interface/sprSAKmodsPop.png",10,0,0)
-global.sprModsEraser     = sprite_add("sprites/interface/sprSAKmodsEraser.png",10,0,0)
-global.sprModsSlugger    = sprite_add("sprites/interface/sprSAKmodsSlugger.png",10,0,0)
-global.sprModsFlakCannon = sprite_add("sprites/interface/sprSAKmodsFlak.png",10,0,0)
-global.sprModsShotCannon = sprite_add("sprites/interface/sprSAKmodsShot.png",10,0,0)
-global.sprModsM          = sprite_add("sprites/interface/sprSAKammoMini.png",8,0,0)
+global.sprAmmo           = sprite_add("sprites/interface/sprSAKammo.png",      8, 9, 9)
+global.sprBody           = sprite_add("sprites/interface/sprSAKbody.png",      6, 9, 9)
+global.sprMods  	     = sprite_add("sprites/interface/sprSAKmods.png",     12, 9, 9)
+global.sprAmmoM          = sprite_add("sprites/interface/sprSAKammoMini.png",  8, 4, 4)
+global.sprBodyM          = sprite_add("sprites/interface/sprSAKbodyMini.png",  6, 4, 4)
+global.sprModsM  	     = sprite_add("sprites/interface/sprSAKmodsm.png",    12, 4, 4)
+global.sprMiniBlank		 = sprite_add("sprites/interface/sprSAKminiBlank.png", 1, 4, 4)
+global.sprSelector		 = sprite_add("sprites/interface/sprSAKselectIcon.png", 1, 11, 12)
+global.sprStats          = sprite_add("sprites/interface/sprSAKstatIcons.png", 4, 4, 5)
 
 global.loadCounter = 0
 
 global.shellbods = ["shotgun", "eraser", "flak cannon", "pop gun", "shot cannon"]
 global.slugbods = ["shotgun", "eraser", "flak cannon", "slugger", "shot cannon"]
 
-makethechoices()
-makethetexts()
-makethestats()
+maketheoptions()
+option_finalize()
 maketheprojectiles()
 wait(0)
 makethegunsprites()
@@ -366,9 +359,7 @@ if (++global.loadCounter mod loadGap == 0) {
 return sprite_add_weapon(_path, _xoff, _yoff)
 
 #define cleanup
-ds_map_destroy(global.textmap)
-ds_map_destroy(global.choicemap)
-ds_map_destroy(global.stats)
+ds_map_destroy(global.optionMap)
 ds_map_destroy(global.gunmap)
 ds_map_destroy(global.flakmap)
 
@@ -376,7 +367,7 @@ ds_map_destroy(global.flakmap)
 
 
 #define option_finalize
-var keys = ds_map_keys(global.optionmap),
+var keys = ds_map_keys(global.optionMap),
 defaultlq = {
 	bodies : -1,
 	mods : -1,
@@ -384,7 +375,8 @@ defaultlq = {
 	sound : -1,
 	sprite : mskNone,
 	spritem: mskNone,
-	index  : 0
+	index  : 0,
+	namecolor : c_white
 },
 defaultstats = {
 	ammo : 1,
@@ -394,34 +386,36 @@ defaultstats = {
 	radsproj : 0
 };
 for (var i = 0, l = array_length(keys); i < l; i++) {
-	var opt = global.optionmap[? keys[i]];
-	for (var d = 0; d < lq_size(defaultlq); d++) {
-	    var k = lq_get_key(defaultlq, d);
-	    lq_set(opt, k, lq_defget(opt, k, lq_get(defaultlq, k)))
+	var opt = global.optionMap[? keys[i]];
+	if !(is_array(opt)) {
+		for (var d = 0; d < lq_size(defaultlq); d++) {
+		    var k = lq_get_key(defaultlq, d);
+		    lq_set(opt, k, lq_defget(opt, k, lq_get(defaultlq, k)))
+		}
+		lq_set(opt, "name", lq_defget(opt, "name", keys[i]))  //set default display name to the key name
+		lq_set(opt, "stats", lq_defget(opt, "stats", {}))     //set up stats LWO if its not there
+		var _stats = opt.stats
+		for (var d = 0; d < lq_size(defaultstats); d++) {
+		    var k = lq_get_key(defaultstats, d);
+		    lq_set(_stats, k, lq_defget(_stats, k, lq_get(defaultstats, k)))
+		}
 	}
-	lq_set(opt, "name", lq_defget(opt, "name", keys[i]))  //set default display name to the key name
-	lq_set(opt, "stats", lq_defget(opt, "stats", {}))     //set up stats LWO if its not there
-	opt = opt.stats
-	for (var d = 0; d < lq_size(defaultstats); d++) {
-	    var k = lq_get_key(defaultstats, d);
-	    lq_set(opt, k, lq_defget(opt, k, lq_get(defaultstats, k)))
-	}
-
 }
 
 #define maketheoptions()
-global.optionmap = ds_map_create();
-var a = global.optionmap;
+global.optionMap = ds_map_create();
+var a = global.optionMap;
 
 /*stat ref:
 	name : display name, automatically defaults to key
+	namecolor : the color of the name when displayed, defaults to white
 	bodies : array of map keys
 	mods : as bodies
 	stats : {
 		ammo
 		reload
 		projcount
-		radsammo (multiplied by final ammo cost, default 0)
+		radsammo (multiplied by final ammo cost, default 0, final multiplier calculated via addition)
 		radsproj (multiplied by final projectile count, default 0, rad cost is selected from the lowest calculated number)
 	}
 	proj : {
@@ -437,10 +431,11 @@ var a = global.optionmap;
 	spritem : miniature icon sprite, also uses index
 	index : index used for button sprites
 */
-a[? -1] = ["shell", "slug", "heavy slug", "flame shell", "ultra shell", "psy shell", "split shell", "split slug"];
+a[? -1] = ["shell", "slug", "flame shell", "ultra shell", "psy shell", "split shell"];
 
 //ammo
 a[? "shell"] = {
+	namecolor : merge_colour(c_yellow, c_orange, .5),
 	bodies : global.shellbods,
 	stats : {
 		ammo : 1,
@@ -452,7 +447,7 @@ a[? "shell"] = {
 		speedmin : 12,
 		speedmax: 18
 	},
-	text : "Standard shells",
+	text : "Standard shells.",
 	sound : sndShotgun,
 	sprite : global.sprAmmo,
 	index : 0,
@@ -460,6 +455,7 @@ a[? "shell"] = {
 }
 
 a[? "slug"] = {
+	namecolor : merge_colour(c_yellow, c_orange, .5),
 	bodies : global.slugbods,
 	stats : {
 		ammo : 7,
@@ -470,7 +466,7 @@ a[? "slug"] = {
 		stockspeed : 16
 	},
 	mods : ["slug_heavy"],
-	text : "Really big, expensive",
+	text : "Really big, expensive.",
 	sound : sndSlugger,
 	sprite : global.sprAmmo,
 	index : 1,
@@ -478,6 +474,7 @@ a[? "slug"] = {
 }
 
 a[? "flame shell"] = {
+	namecolor : merge_colour(c_red, c_orange, .3),
 	bodies : global.shellbods,
 	stats : {
 		ammo : 1,
@@ -490,7 +487,7 @@ a[? "flame shell"] = {
 		speedmin : 12,
 		speedmax: 18
 	},
-	text : "Flames deal extra damage, but don't bounce well",
+	text : "Flames deal extra damage, but don't bounce off walls well.",
 	sound : sndFireShotgun,
 	sprite : global.sprAmmo,
 	index : 3,
@@ -498,11 +495,12 @@ a[? "flame shell"] = {
 }
 
 a[? "ultra shell"] = {
+	namecolor : merge_colour(c_yellow, c_lime, .7),
 	bodies : global.shellbods,
 	stats : {
 		ammo : 3,
 		reload : .7,
-		projcount: 9/7
+		projcount: 9/7,
 		radsammo : 14/3,
 		radsproj : 14/9
 	},
@@ -512,7 +510,7 @@ a[? "ultra shell"] = {
 		speedmin : 12,
 		speedmax: 18
 	},
-	text : "Radiation makes these shells stronger",
+	text : "Radiation makes these shells stronger.",
 	sound : sndUltraShotgun,
 	sprite : global.sprAmmo,
 	index : 4,
@@ -520,6 +518,7 @@ a[? "ultra shell"] = {
 }
 
 a[? "psy shell"] = {
+	namecolor : merge_colour(c_fuchsia, c_navy, .2),
 	bodies : global.shellbods,
 	stats : {
 		ammo : 2,
@@ -531,7 +530,7 @@ a[? "psy shell"] = {
 		speedmin : 12,
 		speedmax: 18
 	},
-	text : "Psy shells can home in on enemies",
+	text : "Psy shells can home in on enemies.",
 	sound : sndShotgun,
 	sprite : global.sprAmmo,
 	index : 5,
@@ -539,6 +538,7 @@ a[? "psy shell"] = {
 }
 
 a[? "split shell"] = {
+	namecolor : merge_colour(c_aqua, c_blue, .1),
 	bodies : global.shellbods,
 	mods : ["split_heavy"],
 	stats : {
@@ -552,11 +552,11 @@ a[? "split shell"] = {
 		speedmin : 12,
 		speedmax: 18
 	},
-	text : "Upon impact, splits into two shells",
+	text : "Upon impact, splits into two shells.",
 	sound : sndShotgun,
 	sprite : global.sprAmmo,
 	spritem : global.sprAmmoM,
-	index : 5
+	index : 6
 }
 
 
@@ -638,7 +638,7 @@ a[? "shot cannon"] = {
 		reload : 25,
 		projcount : 80
 	},
-	text : "Fires a projectile that disperses shells over time.",
+	text : "Fires a projectile that spits out shells over time.",
 	sound : sndFlakCannon,
 	sprite : global.sprBody,
 	spritem : global.sprBodyM,
@@ -679,7 +679,7 @@ a[? "auto"] = {
 		reload : .2,
 		projcount : 6/7
 	},
-	text : "Rapid fire! Accuracy and projectile count go down.",
+	text : "Rapid fire! Reduces accuracy and projectile count.",
 	sound : sndPopgun,
 	sprite : global.sprMods,
 	spritem: global.sprModsM,
@@ -830,106 +830,6 @@ a[? "none"] = {
 	index  : 10
 }
 
-#define makethechoices()
-global.choicemap = ds_map_create()
-var a = global.choicemap;
-var sg = global.slugbods;
-var sh = global.shellbods;
-
-//ammo
-a[? -1] = ["shell", "slug", "heavy slug", "flame shell", "ultra shell", "psy shell", "split shell", "split slug"]
-
-//bodies
-a[? "shell"] = sh
-a[? "slug"] = sg
-a[? "heavy slug"] = sg
-a[? "flame shell"] = sh
-a[? "ultra shell"] = sh
-a[? "psy shell"] = sh
-a[? "split shell"] = sh
-a[? "split slug"] = sg
-
-//mods for bodies
-a[? "shotgun"] = ["double", "sawed-off", "auto", "assault", "hyper", "none"]
-a[? "eraser"] = ["bird", "wave", "auto", "assault", "hyper", "none"]
-a[? "flak cannon"] = ["super", "auto", "hyper", "none"]
-a[? "pop gun"] = ["triple", "rifle", "hyper", "none"]
-a[? "slugger"] = ["super", "gatling", "assault", "hyper", "none"]
-a[? "shot cannon"] = ["super", "auto", "hyper", "none"]
-
-#define makethetexts()
-global.textmap = ds_map_create()
-var a = global.textmap;
-
-//mods
-a[? "double"] = "Double gun, slightly better than one."
-a[? "sawed-off"] = "Double gun, but faster and inaccurate"
-a[? "auto"] = "increased rate of fire and decreased accuracy"
-a[? "assault"] = "shoot three times in a row"
-a[? "hyper"] = "instant travel with more damage"
-a[? "none"] = "no mod because i respect ammo"
-a[? "bird"] = "shoot in a forking pattern"
-a[? "wave"] = "shoot in a wave pattern"
-a[? "triple"] = "shoot three projectiles in a regular spread"
-a[? "rifle"] = "shoot three times, for only two ammo"
-a[? "super"] = "five times the projectiles"
-a[? "gatling"] = a[? "auto"]
-
-//ammos
-a[? "shell"] = "Standard shells"
-a[? "slug"] = "Really big, expensive"
-a[? "heavy slug"] = "massive, slow, very expensive"
-a[? "flame shell"] = "flames for damage, dont bounce well"
-a[? "ultra shell"] = "uses rads for more damage"
-a[? "psy shell"] = "home in, bounce a lot, expensive"
-a[? "split shell"] = "deploys duplicates on bounce"
-a[? "split slug"] = "has a lot of dupes to deploy"
-
-//bodies
-a[? "shotgun"] = "shoot a random spray"
-a[? "eraser"] = "shoot a concentrated line"
-a[? "flak cannon"] = "shoot a flak projectile"
-a[? "pop gun"] = "rapid fire single shot, uses bullets"
-a[? "slugger"] = "shoots a single shot"
-a[? "shot cannon"] = "shoot a projectile that disperses others"
-
-#define makethestats()
-global.stats = ds_map_create()
-var a = global.stats;
-
-//[ammo*, reload*, sound, rads*]
-//based off of firing a shotgun of said type (the cost of 7 projectiles)
-a[? "shell"] = [1, 1, sndShotgun, 0]
-a[? "slug"] = [7, 2, sndSlugger, 0]
-a[? "heavy slug"] = [13, 1.8, sndHeavySlugger, 0]
-a[? "flame shell"] = [1, 1.2, sndFireShotgun, 0]
-a[? "ultra shell"] = [3, .7, sndUltraShotgun, 9]
-a[? "psy shell"] = [2, 1.3, sndShotgun, 0]
-a[? "split shell"] = [2.8, 1.2, sndShotgun, 0]
-a[? "split slug"] = [5.6, 1.2, sndSlugger, 0]
-
-//[ammo, reload base, sound]
-a[? "shotgun"] = [1, 17, sndShotgun]
-a[? "eraser"] = [2, 20, sndEraser]
-a[? "flak cannon"] = [2, 26, sndFlakCannon]
-a[? "pop gun"] = [1, 2, sndPopgun]
-a[? "slugger"] = [1/6, 11, sndSlugger]
-a[? "shot cannon"] = [6, 25, sndFlakCannon]
-
-//[ammo*, reload*, sound]
-a[? "double"] = [2, 1.6, sndDoubleShotgun]
-a[? "sawed-off"] = [2, 1.6, sndSawedOffShotgun]
-a[? "auto"] = [1, .2, sndPopgun]
-a[? "assault"] = [3, 2, -1]
-a[? "hyper"] = [1.2, 1, sndHyperSlugger]
-a[? "none"] = [1, 1, -1]
-a[? "bird"] = [1, 1.2, -1]
-a[? "wave"] = [1, 1.2, sndWaveGun]
-a[? "triple"] = [3, 1, sndIncinerator]
-a[? "rifle"] = [2, 5, -1]
-a[? "super"] = [5, 2.3, sndSuperSlugger]
-a[? "gatling"] = [1, .3, -1]
-
 
 #define take_wave(w)
 w.sounds = [sndWaveGun]
@@ -1001,222 +901,10 @@ return 0
 return 0
 
 #define weapon_fire(w)
-if is_object(w){
-	if w.done{
-		if fork(){
-			repeat(w.shots){
-				for (var i = 0; i<array_length_1d(w.sounds); i++){
-					sound_play_pitch(w.sounds[i],random_range(.8,1.2)) //XX
-				}
-				var num = sqrt(w.ammo + w.load)
-				weapon_post(num, num, num*2)
-				mod_script_call_self("weapon",mod_current,string_replace(w.info[2]," ","_"),w.info[1],w.info[3])
-				if w.time wait(w.time)
-			}
-			exit
-		}
-	}
-}else{
-    sound_play_gun(sndShotgun,.1,.8)
-    repeat(7){
-        with instance_create(x,y,Shell){
-            motion_set(other.gunangle + random_range(-20,20), 12 + random(4))
-            projectile_init(other.team,other)
-            image_angle = direction
-        }
-    }
-}
-
-#define pop_gun(p,m)
-switch m{
-	case "triple":
-		for (var i = -1; i<= 1; i++){
-			with proj_legacy(p){
-				fset(23,3,i,1)
-				speed = stockspeed
-			}
-		}
-		break
-	case "rifle":
-	    with proj_legacy(p){
-	        set(8)
-            speed = stockspeed
-	    }
-	    break
-	default:
-		with proj_legacy(p){
-			set(4)
-			speed = stockspeed
-			if m = "hyper" hyper_travel()
-		}
-		break
-}
-
-#define eraser(p,m)
-switch m {
-	case "bird":
-		if fork(){
-			repeat(5){
-				for (var i = -1; i<= 1; i++){
-					with proj_legacy(p){
-						fset(13,2*abs(i) + 2,i,1);
-						if i != 0 {birdspeed = i* .5* other.accuracy}
-					}
-				}
-				wait(1)
-			}
-			exit
-		}
-		break
-	case "wave":
-		if fork(){
-			for (var i = -3/8; i<= 3; i+= 3/8){
-				with proj_legacy(p){
-					direction = other.gunangle + 15*sin(i) *other.accuracy;
-					image_angle = direction
-					creator = other
-					team = other.team
-					speed = stockspeed
-				}
-				with proj_legacy(p){
-					direction = other.gunangle - 15*sin(i) *other.accuracy;
-					image_angle = direction
-					creator = other
-					team = other.team
-					speed = stockspeed
-				}
-				wait(1)
-			}
-			exit
-		}
-		break
-	case "auto":
-		repeat(15){
-			with proj_legacy(p){
-				set(1)
-				speed += random_range(-2,2)
-			}
-		}
-		break
-	default:
-		repeat(17){
-			with proj_legacy(p){
-				set(1)
-				speed += random_range(-2,2)
-				if m = "hyper" hyper_travel()
-			}
-		}
-		break
-}
-
-#define slugger(p,m)
-switch m{
-	case "super":
-		for (var i = -2; i<= 2; i++){
-			with proj_legacy(p) {
-				fset(12,3,i,1)
-			}
-		}
-		break
-	default:
-		with proj_legacy(p){
-			set(m == "auto" ? 8 : 5)
-			if m = "hyper" hyper_travel()
-		}
-		break
-}
-
-#define flak_cannon(p,m)
-switch m{
-	case "super":
-	    with superflak(p){
-			set(4)
-			speed = random_range(10,11)
-			if m = "hyper"{
-				hyper = 1
-				//hyper_travel()
-			}
-		}
-		break
-	default:
-		with flak(p){
-		    if m == "auto" ammo -= 3
-			set(3)
-			speed = random_range(11,13)
-			if m = "hyper"{
-				hyper = 1
-				//hyper_travel()
-			}
-		}
-}
-
-#define shot_cannon(p,m)
-switch m{
-	case "super":
-    	sound_play_pitchvol(sndSuperFlakExplode,random_range(.4,.6),.7)
-    	sound_play_pitchvol(sndDoubleShotgun,.8,7)
-        with supershotcannon(p){
-            set(0)
-            speed = 12 + random(1)
-        }
-        break
-    case "auto":
-		sound_play_pitchvol(sndFlakExplode,random_range(.4,.7),.7)
-		sound_play_pitchvol(sndDoubleShotgun,1.4,7)
-        with shotcannon(p){
-            set(2)
-            timer -= 2
-            speed = 14 + random(2)
-            if m = "hyper"{
-                hyper = 1
-            }
-        }
-        break
-    default:
-		sound_play_pitchvol(sndFlakExplode,random_range(.4,.7),.7)
-		sound_play_pitchvol(sndDoubleShotgun,1.2,7)
-        with shotcannon(p){
-            set(0)
-            speed = 15 + random(2)
-            if m = "hyper"{
-                hyper = 1
-            }
-        }
-}
-
-
-#define shotgun(p,m)
-switch m{
-	case "double":
-		repeat(14){
-			with proj_legacy(p) {
-				set(30)
-				speed += random_range(-2,1)
-			}
-		}
-		break
-	case "sawed-off":
-		repeat(20){
-			with proj_legacy(p) {
-				set(45)
-				speed += random_range(-2,1)
-			}
-		}
-		break
-	default:
-		repeat(7){
-			with proj_legacy(p){
-				set(20)
-				speed += random_range(-2,1)
-				if m = "hyper" hyper_travel()
-			}
-		}
-		break
-}
 
 //The idea here is that the proj scripts need to have a specific syntax, so an intermediary script is needed to get all the arguments out of the array.
 #define projectile_link(x, y, _args, _modifier) //These are the arguments always passed to all ammo.proj scripts
-	var _scriptname = (_modfier == "heavy" ? string_replace(_args[0], "create_", "create_heavy_"));
+	var _scriptname = (_modfier == "heavy" ? string_replace(_args[0], "create_", "create_heavy_") : _scriptname);
 	return mod_script_call_self("mod", "defpack tools", _scriptname, x, y)
 
 #define proj_create(_wep)
@@ -1225,331 +913,12 @@ var _p = -4, _proj = _wep.proj;
 		_p = instance_create(x, y, _proj.obj)
 	}
 	else if is_array(_proj.obj) {
-		_p = mod_script_call_self(_proj.obj[0], _proj.obj[1], _proj.obj[2], x, y, _proj.obj[3], _wep.mod) //_proj
+		_p = mod_script_call_self(_proj.obj[0], _proj.obj[1], _proj.obj[2], x, y, _proj.obj[3], _wep.modifier) //_proj
 	}
 	with _p {
 		speed = random_range(_proj.speedmin, _proj.speedmax)
 		stockspeed = _proj.stockspeed
 	}
-
-
-#define proj_legacy(thing)
-switch thing{
-	case "shell":
-		var a = instance_create(x,y,Bullet2)
-		with a{
-			speed = random_range(12,18)
-			stockspeed = 16
-		}
-		return a
-	case "slug":
-		var a = instance_create(x,y,Slug);
-		with a{
-			speed = 16
-			stockspeed = speed
-		}
-		return a
-	case "heavy slug":
-		with instance_create(x,y,HeavySlug){
-			speed = 13
-			stockspeed = speed
-			return id
-		}
-	case "flame shell":
-		with instance_create(x,y,FlameShell){
-			speed = random_range(12,18)
-			stockspeed = 16
-			return id
-		}
-	case "ultra shell":
-		with instance_create(x,y,UltraShell){
-			speed = random_range(12,18)
-			stockspeed = 16
-			return id
-		}
-	case "psy shell":
-		with mod_script_call("mod", "defpack tools", "create_psy_shell",x,y){
-			speed = random_range(12,18)
-			stockspeed = 16
-			return id
-		}
-	case "split shell":
-		with mod_script_call("mod", "defpack tools", "create_split_shell",x,y){
-			speed = random_range(15,18)
-			stockspeed = 17
-			ammo = 2
-			return id
-		}
-	case "split slug":
-		with mod_script_call("mod", "defpack tools", "create_heavy_split_shell",x,y){
-			speed = random_range(17,20)
-			stockspeed = 19
-			return id
-		}
-}
-
-#define flak(p)
-with instance_create(x,y,CustomProjectile){
-	mask_index = mskFlakBullet
-	if string_count(p, "slug") mask_index = mskSuperFlakBullet
-	var str = p + " flak"
-	sprite_index = global.flakmap[? str]
-	spr_dead = global.flakmap[? str + " hit"]
-	on_destroy = flakpop
-	on_step = flakstep
-	defbloom = {
-	    xscale: 2,
-	    yscale: 2,
-	    alpha: .2
-	}
-	with proj_legacy(p){
-	    other.damage = damage * 4
-	    instance_delete(self)
-	}
-	payload = p
-	friction = .4
-	ammo = 14
-	hyper = 0
-	return id
-}
-
-#define superflak(p)
-with instance_create(x,y,CustomProjectile){
-	mask_index = mskSuperFlakBullet
-	var str = "super " + p + " flak"
-	sprite_index = global.flakmap[? str]
-	spr_dead = global.flakmap[? str + " hit"]
-	on_destroy = superflakpop
-	on_step = superflakstep
-	defbloom = {
-	    xscale: 2,
-	    yscale: 2,
-	    alpha: .2
-	}
-    with proj_legacy(p){
-	    other.damage = damage * 15
-	    instance_delete(self)
-	}
-	payload = p
-	friction = .4
-	ammo = 5
-	hyper = 0
-	return id
-}
-
-
-#define flakdraw
-draw_self()
-draw_set_blend_mode(bm_add)
-draw_sprite_ext(sprite_index,image_index,x,y,image_xscale * 2, image_yscale * 2, image_angle, image_blend, image_alpha * .2)
-draw_set_blend_mode(bm_normal)
-
-#define superflakstep
-if random(100) < 40*current_time_scale instance_create(x,y,Smoke)
-flakstep()
-
-#define flakstep
-if random(100) < 40*current_time_scale instance_create(x,y,Smoke)
-image_speed = speed/10
-if speed < .01{
-	instance_destroy()
-}
-
-
-#define superflakpop
-with instance_create(x,y,BulletHit) sprite_index = other.spr_dead
-view_shake_at(x,y,12)
-sound_play_hit_big(sndSuperFlakExplode,.1)
-var ang = random(360)
-for var i = 0; i< 360; i+=360/ammo{
-	with (flak(payload)){
-		direction = ang + i
-		image_angle = direction
-		motion_set(direction, 12)
-		creator = other.creator
-		hyper = other.hyper
-		team = other.team
-		if other.hyper hyper_travel()
-	}
-}
-
-
-#define flakpop
-with instance_create(x,y,BulletHit) sprite_index = other.spr_dead
-sound_play_hit_big(sndFlakExplode,.1)
-view_shake_at(x,y,6)
-if skill_get(mut_eagle_eyes){
-    var ang = random(360)
-	for var i = 0; i< 360; i+=360/ammo{
-		with (proj_legacy(payload)){
-			direction = i + ang
-			image_angle = i + ang
-			creator = other.creator
-			team = other.team
-			if other.hyper hyper_travel()
-		}
-	}
-}
-else{
-	repeat(ammo){
-		with proj_legacy(payload){
-			direction = random(360)
-			image_angle = direction
-			creator = other.creator
-			team = other.team
-			if other.hyper hyper_travel()
-		}
-	}
-}
-
-#define shotcannon(p)
-with instance_create(x,y,CustomProjectile) {
-	var str = p + " shot"
-	sprite_index = global.flakmap[? str]
-	mask_index = mskFlakBullet
-	with proj_legacy(p){
-	    other.damage = damage
-	    other.force = force
-	    instance_delete(self)
-	}
-	image_speed = .4
-	timer = 16
-	ftimer = 1.5
-	time = ftimer
-	canshoot = 0
-	dirfac = random(360)
-	payload = p
-	hyper = 0
-	on_hit  = cannon_hit
-	on_wall = cannon_wall
-	on_step = cannon_step
-	on_draw = cannon_draw
-	on_anim = cannon_anim
-	on_shoot = script_ref_create(shotfire)
-
-	return id
-}
-
-#define supershotcannon(p)
-with instance_create(x,y,CustomProjectile) {
-	var str = "super " + p + " shot"
-	sprite_index = global.flakmap[? str]
-	mask_index = mskSuperFlakBullet
-	with proj_legacy(p){
-	    other.damage = damage * 5
-	    other.force = force
-	    instance_delete(self)
-	}
-	image_speed = .4
-	timer = 7
-	ftimer = 2
-	time = ftimer
-	canshoot = 0
-	dirfac = random(360)
-	payload = p
-	hyper = 0
-	on_hit = script_ref_create(cannon_hit)
-	on_wall = script_ref_create(cannon_wall)
-	on_step = script_ref_create(cannon_step)
-	on_draw = script_ref_create(cannon_draw)
-	on_anim = cannon_anim
-	on_shoot = script_ref_create(supershotfire)
-
-	return id
-}
-
-#define supershotfire(p)
-dirfac += 360/4.22
-var ang = dirfac
-sound_play_hit(sndShotgun, .4)
-view_shake_at(x,y,5)
-repeat(3){
-    with shotcannon(p){
-        motion_set(ang,11)
-        team = other.team
-        creator = other.creator
-        image_angle = direction
-        hyper = other.hyper
-        timer /= 4
-        ang += 360/3
-        //if other.hyper hyper_travel()
-    }
-}
-
-
-#define cannon_anim
-image_index = image_speed
-
-#define cannon_wall
-view_shake_at(x,y,12)
-sound_play_pitch(sndShotgunHitWall,.8)
-if skill_get(15){speed ++;image_index = 0}
-move_bounce_solid(1)
-speed *= .8
-repeat(irandom(1)+2){
-	with proj_legacy(payload){
-		motion_set(random(360), random_range(8, 12))
-		projectile_init(other.team,other.creator)
-		image_angle = direction
-	}
-}
-
-#define cannon_hit
-x = xprevious
-y = yprevious
-projectile_hit_push(other,damage,force)
-script_ref_call(on_shoot,payload)
-timer -= 1;
-if timer <= 0{
-	instance_destroy()
-}
-
-
-#define shotfire(p)
-dirfac += 12
-var ang = dirfac
-sound_play_hit(sndShotgun, .4)
-view_shake_at(x,y,5)
-repeat(5){
-    with proj_legacy(p){
-        motion_set(ang,stockspeed-5)
-        team = other.team
-        creator = other.creator
-        image_angle = direction
-        ang += 72
-        if other.hyper hyper_travel()
-    }
-}
-
-#define cannon_step
-image_angle += (6 + speed*3) * current_time_scale
-time -= current_time_scale
-
-image_xscale = clamp(image_xscale + (random_range(-.05, .05) * current_time_scale), 1.2, 1.4)
-image_yscale = image_xscale
-if timer = 4 ftimer = 3
-speed /= power(1.1, current_time_scale)
-if speed <= 1 {canshoot = 1; speed = 0}
-
-while time <= 0{
-    time += ftimer
-    if canshoot{
-        script_ref_call(on_shoot,payload)
-		timer -= 1;
-		if timer <= 0{
-			instance_destroy()
-			exit
-		}
-    }
-}
-
-#define cannon_draw
-if image_index < image_speed {var i = .5}else{var i = .1}
-draw_sprite_ext(sprite_index, image_index, x, y, .7*image_xscale+i, .7*image_yscale+i, image_angle, image_blend, 1.0);
-draw_set_blend_mode(bm_add);
-draw_sprite_ext(sprite_index, image_index, x, y, 1.25*image_xscale+i*2, 1.25*image_yscale+i*2, image_angle, image_blend, i);
-draw_set_blend_mode(bm_normal);
-
 
 #define hyper_travel
 damage = floor(damage*1.1)
@@ -1602,229 +971,335 @@ with instances_matching_ne(projectile,"birdspeed",null){
 }
 
 #define draw_text_ext_shadow(x, y, str, sep, width)
-draw_set_color(c_black)
-draw_text_ext(x + 1, y + 1, str, sep, width)
-draw_text_ext(x + 1, y, str, sep, width)
-draw_text_ext(x, y + 1, str, sep, width)
-draw_set_color(c_white)
-draw_text_ext(x, y, str, sep, width)
+	draw_set_color(c_black)
+	draw_text_ext(x + 1, y + 1, str, sep, width)
+	draw_text_ext(x + 1, y, str, sep, width)
+	draw_text_ext(x, y + 1, str, sep, width)
+	draw_set_color(c_white)
+	draw_text_ext(x, y, str, sep, width)
 
-#define get_blank()
-return {
-	wep: mod_current,
-	ammo: 1,
-	type: 2,
-	load: 1,
-	shots: 1,
-	sounds: [],
-	rads: 0,
-	sprite: sprShotgun,
-	auto: 0,
-	time: 0,
-	info: [-1,0,0],
-	numbers: [0,0,0],
-	name: "Custom Shotgun!",
-	phase: 0,
-	done: 0
-}
+#define draw_sprite_shadowed(spr, index, x, y, col)
+	draw_sprite_ext(spr, index, x + 1, y + 1, 1, 1, 0, c_black, 1)
+	draw_sprite_ext(spr, index, x    , y + 1, 1, 1, 0, c_black, 1)
+	draw_sprite_ext(spr, index, x + 1, y    , 1, 1, 0, c_black, 1)
+	draw_sprite_ext(spr, index, x    , y    , 1, 1, 0, col, 1)
+
+#define getNewSak()
+	return {
+		name: "Custom Shotgun",
+		wep: mod_current,
+		selections: [],
+		stats: {},
+		proj: {},
+		isDone: false,
+		done: false
+	}
 
 #define step(q)
-if q && !is_object(wep){
-	wep = get_blank()
+if (q && !is_object(wep)) || button_pressed(index, "horn"){
+	wep = getNewSak()
 }
-if q && is_object(wep) && wep.wep = mod_current && !wep.done{
-    script_bind_draw(makemycoolgun, -17, index, wep)
-}
-
-#define sak_stats(w)
-var sts = global.stats;
-w.load = max(1, floor(sts[? w.info[2]][1] * sts[? w.info[1]][1] * sts[? w.info[3]][1]))
-w.ammo = max(1, floor(sts[? w.info[2]][0] * sts[? w.info[1]][0] * sts[? w.info[3]][0]))
-var radbase = sts[? w.info[1]][3]
-if radbase > 0 w.rads = max(1, floor(radbase * sts[? w.info[2]][0] * sts[? w.info[3]][0]))
-for (var i = 1; i<= 3; i++){
-	array_push(w.sounds,sts[? w.info[i]][2])
-	if mod_script_exists("weapon", mod_current, "take_"+string_replace(w.info[i]," ","_")) mod_script_call("weapon", mod_current, "take_"+string_replace(w.info[i]," ","_"),w)
+if q && is_object(wep) && wep.wep = mod_current && !wep.isDone{
+    script_bind_draw(sakBuilder, -17, index, wep)
 }
 
-//this thing is the distance between shit
-#macro gx 22
+//Distance between buttons, doesn't really need to be a macro but it was this way when I found it
+#macro buttonSpace 22
 
-#define makemycoolgun(index, wep)
-instance_destroy()
-draw_set_halign(0)
-with player_find(index){
-    var w = wep
-	var tex = global.textmap;
-	var cho = global.choicemap;
-	var sts = global.stats;
-	var width = array_length(cho[? w.info[w.phase]]);
-	var height = 50;
-	var _x 		= view_xview[index]+game_width/2 - width*gx/2;
-	var _X 		= view_xview[index]+game_width/2 + width*gx/2-3;
-	var _y 		= view_yview[index] + 50;
-	var _Yline1 = view_yview[index] + 75;
-	var _Yline2 = view_yview[index] + 53;
-
-	var _a_index = 0
-	switch w.info[1]
-	{
-		case "shell" 	    : _a_index = 1 break;
-		case "slug"  	    : _a_index = 2 break;
-		case "heavy slug"   : _a_index = 3 break;
-		case "flame shell"  : _a_index = 4 break;
-		case "ultra shell"  : _a_index = 5 break;
-		case "psy shell"    : _a_index = 6 break;
-		case "split shell"  : _a_index = 7 break;
-		case "split slug"   : _a_index = 8 break;
-		default : _a_index = 0 break;
-	}
-	var _b_index = 0
-	switch w.info[2]
-	{
-		case "shotgun" 	   : _b_index = 1 break;
-		case "eraser"  	   : _b_index = 2 break;
-		case "flak cannon" : _b_index = 3 break;
-		case "pop gun"     : _b_index = 4 break;
-		case "shot cannon" : _b_index = 5 break;
-		case "slugger"     : _b_index = 6 break;
-		default : _b_index = 0 break;
-	}
-
-	var _str = "CREATE YOUR GUN"
-	draw_text_nt(floor((_X+_x)/2-string_width(_str)/2),_y-15,_str)
-
-	var _m_index = 0
-
-	draw_set_color(c_black)
-	draw_set_alpha(.3)
-	draw_rectangle(_x,_Yline1,_X,_Yline2+2,0)
-	draw_set_alpha(1)
-
-	draw_sprite_ext(global.sprAmmoM,_a_index,(_x+_X)/2-18,_y-5,1,1,0,c_black,1)
-	draw_sprite_ext(global.sprBodyM,_b_index,(_x+_X)/2-4,_y-5,1,1,0,c_black,1)
-	draw_sprite_ext(global.sprModsM,_m_index,(_x+_X)/2+11,_y-5,1,1,0,c_black,1)
-	draw_sprite(global.sprAmmoM,_a_index,(_x+_X)/2-18,_y-6)
-	draw_sprite(global.sprBodyM,_b_index,(_x+_X)/2-4,_y-6)
-	draw_sprite(global.sprModsM,_m_index,(_x+_X)/2+11,_y-6)
-
-	draw_line_width_color(_x,_Yline2+1,_X+2,_Yline2+1,1,c_black,c_black)
-	draw_line_width_color(_x-2,_Yline2,_X+1,_Yline2,1,c_white,c_white)
-
-	draw_line_width_color(_x,_Yline1+1,_X+2,_Yline1+1,1,c_black,c_black)
-	draw_line_width_color(_x-2,_Yline1,_X+1,_Yline1,1,c_white,c_white)
-
-	draw_set_color(make_color_rgb(9, 15, 25))
-
-	draw_set_color(c_white)
-	for (var i = 0; i< width; i++)
-	{
-		var x1 = _x+gx*i +1;
-		var y1 = _y + 6;
-		var x2 = _x+gx*(i+1) +1;
-		var y2 = y1 + 18;
-		var push = button_pressed(index,"key"+string(i+1));
-		var _btn = mskNone
-
-		switch w.phase
-		{
-			case 0 : var _btn = global.sprAmmo break;
-			case 1 : var _btn = global.sprBodyShell break;
-			case 2 : var _btn = global.sprMods break;
+#define sakBuilder(indexIn, wepIn)
+	instance_destroy();
+	draw_set_halign(0);
+	
+	draw_set_visible_all(false)
+	draw_set_visible(indexIn, true)
+	
+	//Various, useful variables
+	var l = array_length(wepIn.selections),
+		selectionIndex = l,
+		user = player_find(indexIn),
+		isLocal = player_is_local_nonsync(indexIn);
+	//The choices to select from
+	var options;
+	if (l > 0) {
+		//Before the mod selection phase, get bodies from the projectile
+		if (l == 1) {
+			options = global.optionMap[? wepIn.selections[0]].bodies;
 		}
-		if w.phase = 1{if w.info[1] = "slug" || w.info[1] = "heavy slug" || w.info[1] = "split slug" _btn = global.sprBodySlug}
-		if w.phase = 2
-		{
-			switch w.info[2]
-			{
-				case "shotgun"		: _btn = global.sprModsShotgun break;
-				case "pop gun"		: _btn = global.sprModsPopGun break;
-				case "slugger"		: _btn = global.sprModsSlugger break;
-				case "eraser" 		: _btn = global.sprModsEraser break;
-				case "flak cannon"  : _btn = global.sprModsFlakCannon break;
-				case "shot cannon"  : _btn = global.sprModsShotCannon break;
-			}
-		}
-		if point_in_rectangle(mouse_x[index], mouse_y[index], x1, y1, x1 + 18, y1 + 18) || push
-		{
-			if !button_check(index, "fire"){
-				draw_sprite(_btn,i,x1,y1-1)
-			}
-			else{
-				draw_sprite_ext(_btn,i,x1,y1,1,1,0,c_ltgray,1)
-			}
-
-			var access = cho[? w.info[w.phase]][i]
-
-			var p = ""
-			switch access{
-				case "shell"      :case "slug"    :case "heavy slug": p = `@(color:${merge_colour(c_yellow,c_orange,.5)})` break;
-				case "flame shell": p = `@(color:${merge_colour(c_red,c_orange,.3)})` break;
-				case "ultra shell": p = `@(color:${merge_colour(c_yellow,c_lime,.7)})` break;
-				case "psy shell"  : p = `@(color:${merge_colour(c_fuchsia,c_navy,.2)})` break;
-				case "split shell":case "split slug": p = `@(color:${merge_colour(c_aqua,c_blue,.1)})` break;
-			}
-
-			draw_text_nt(_x+1,y2+5,p+access)
-
-			draw_set_font(fntSmall)
-
-            var rel  = sts[? access][1]
-            var cost = sts[? access][0]
-            for var o = w.phase; o > 0; o--{
-                rel *= sts[? w.info[o]][1]
-                cost *= sts[? w.info[o]][0]
-            }
-            var t = tex[? access]
-            t += "#@sReload:@w " + string(w.phase = 0 ? rel : max(1, floor(rel)))
-            t += "#@sCost:@w " + string(w.phase = 0 ? cost : max(1, floor(cost)))
-            var ammo = w.phase == 0 ? access : w.info[1]
-            var rad = max(1, floor(sts[? ammo][3] * cost/sts[? ammo][0]))
-            if rad > 1 t += "#@sRads:@w " + string(rad)
-
-            draw_text_nt(_x+1, y2+16, t)
-
-			draw_set_font(fntM)
-
-			if button_released(index, "fire") || push{
-				weapon_post(-2,8,0)
-				sleep(9)
-				repeat(5) instance_create(x+random_range(-5,5),y+random_range(-5,5),Dust)
-				view_shake_at(x,y,3)
-				draw_sprite_ext(_btn,i,x1,y1-2,1,1,0,c_white,1)
-				w.info[++w.phase] = access
-				w.numbers[w.phase-1] = i
-				sound_play(sndClick)
-				if w.phase = 3{
-					with instance_create(x,y,Shell){
-						image_speed = 0
-						sprite_index = global.boxempty
-						image_angle = random(360)
-						speed = 5
-						friction = .2
-						creator = other
-						team = other.team
-						direction = other.gunangle
-					}
-					w.done = 1;
-					sak_stats(w)
-					sak_name(w)
-					sak_sprite(w)
+		//During and after the mod selection phase, get mods from projectiles and bodies
+		else {
+			options = [];
+			with (wepIn.selections) {
+				var opt = global.optionMap[? self];
+				if (opt.mods != -1) with (opt.mods) {
+					array_push(options, self);
 				}
 			}
 		}
-		else{
-			draw_sprite_ext(_btn,i,x1,y1,1,1,0,c_gray,1)
+	}
+	else {
+		//The first step, projectile selection
+		options = global.optionMap[? -1];
+	}
+	
+	//Coordinates
+	var _l = array_length(options);
+	var xCenter = view_xview[indexIn] + game_width/2,
+		leftSide = xCenter - _l * buttonSpace/2,
+		rightSide = xCenter + _l * buttonSpace/2,
+		yCenter = view_yview[indexIn] + 60,
+		yTop = yCenter - buttonSpace/2,
+		yBottom = yCenter + buttonSpace/2;
+	
+	//Prompt
+	draw_set_halign(1);
+	draw_text_nt(xCenter, yCenter - buttonSpace, "CREATE YOUR GUN");
+	draw_set_halign(0);
+	
+	//Backdrop
+	draw_set_alpha(.4);
+	draw_roundrect_color(leftSide - 1, yTop - 1, rightSide, yBottom, 0, 0, false);
+	draw_set_alpha(1);
+	
+	//Populate the mini icons, drawn later, modified in button loop below
+	var miniIcons = [],
+		miniIndexes = [];
+	with (wepIn.selections) {
+		var opt = global.optionMap[? self]
+		array_push(miniIcons, opt.spritem)
+		array_push(miniIndexes, opt.index)
+	}
+	while (array_length(miniIcons) < 3) {
+		array_push(miniIcons, global.sprMiniBlank)
+		array_push(miniIndexes, 0)
+	}
+	
+	var statParts = array_clone(wepIn.selections),
+		partText = -1,
+		miniBlink = false;
+	
+	var buttonX = leftSide + buttonSpace/2;
+	for (var i = 0; i < _l; i++) {
+		//Setting up button variables
+		var buttonChoice = global.optionMap[? options[i]],
+			buttonSpr = buttonChoice.sprite,
+			buttonIndex = buttonChoice.index,
+			buttonLeft = buttonX - sprite_get_xoffset(buttonSpr) - 2,
+			buttonRight = buttonLeft + sprite_get_width(buttonSpr) + 2,
+			buttonTop = yCenter - sprite_get_yoffset(buttonSpr),
+			buttonBottom = buttonTop + sprite_get_height(buttonSpr);
+			
+		//Input
+		var hovering = point_in_rectangle(mouse_x[indexIn], mouse_y[indexIn], buttonLeft, buttonTop, buttonRight, buttonBottom),
+			pushing = button_pressed(indexIn, "key" + string(i + 1)) || button_released(indexIn, "key" + string(i + 1)),
+			selected = button_released(indexIn, "fire") || button_released(indexIn, "key" + string(i + 1));
+			
+		//Nothing going on, just draw the button.
+		if !(hovering || pushing) {
+			draw_sprite_ext(buttonSpr, buttonIndex, buttonX, yCenter, 1, 1, 0, c_gray, 1)
+		}
+		else {
+			//'Pushing' the button
+			if (button_check(indexIn, "fire") || pushing) {
+				draw_sprite_ext(buttonSpr, buttonIndex, buttonX, yCenter, 1, 1, 0, c_ltgray, 1)
+			}
+			//Just looking
+			else {
+				draw_sprite(buttonSpr, buttonIndex, buttonX, yCenter - 1)
+			}
+			//Draw little select indicator
+			draw_sprite(global.sprSelector, 0, buttonX, yCenter)
+			
+			//Draw Name
+			var _name = `@(color:${buttonChoice.namecolor})` + buttonChoice.name;
+			draw_text_nt(leftSide + 1, yBottom + 16, _name)
+			
+			//Add this part to the stats for preview
+			array_push(statParts, options[i])
+			miniIcons[selectionIndex] = buttonChoice.spritem
+			miniIndexes[selectionIndex] = buttonChoice.index
+			
+			//Save the text so it is drawn later
+			partText = buttonChoice.text
+			//Allow the mini icon to blink in the preview
+			miniBlink = true
+			
+			//Selection
+			if (selected) {
+				array_push(wepIn.selections, options[i])
+				draw_sprite(buttonSpr, buttonIndex, buttonX, yCenter - 2)
+				//Prevents sounds for playing for players that can't see the menu (nonsync)
+				if (isLocal) {
+					sound_play(sndClick)
+				}
+				if (array_length(wepIn.selections) >= 3) {
+					wepIn.isDone = true;
+				}
+			}
+			
+		}
+		
+		buttonX += buttonSpace
+	}
+	
+	//Sub menu icons can have little mouseover texts
+	var cursorText = -1,
+		cursorTextX = mouse_x_nonsync + 6,
+		cursorTextY = mouse_y_nonsync + 6;
+	
+	//Draw mini icons
+	var iconYCenter = yBottom + 6,
+		iconSpace = 9,
+		_ml = array_length(miniIcons),
+		iconXLeft = xCenter - (_ml - 1)*iconSpace/2;
+	for (var i = 0; i < _ml; i++) {
+		//Draw icon
+		draw_sprite_ext(miniIcons[i], miniIndexes[i], iconXLeft + iconSpace*i + 1, iconYCenter + 1, 1, 1, 0, c_black, 1)
+		draw_sprite_ext(miniIcons[i], miniIndexes[i], iconXLeft + iconSpace*i, iconYCenter, 1, 1, 0,
+				i == selectionIndex && miniBlink ? merge_color(c_black, c_white, dsin(current_frame * 5)/8 + 7/8) : c_white,
+				1
+			)
+		//Mouseover text to tell you previous selections
+		if (i < selectionIndex && point_in_rectangle(
+				mouse_x_nonsync, mouse_y_nonsync,
+				iconXLeft + iconSpace*(i - .5), iconYCenter - iconSpace/2,
+				iconXLeft + iconSpace*(i + .5), iconYCenter + iconSpace/2
+			)) {
+				cursorText = global.optionMap[? wepIn.selections[i]].name
+				cursorTextX = xCenter + (xCenter - iconXLeft) + 8
+				cursorTextY = iconYCenter - 2
 		}
 	}
-}
-draw_set_halign(1)
+
+	//Dividing line
+	var _lineY = yBottom + 12;
+	draw_line_width_color(leftSide, _lineY + 1, rightSide + 1, _lineY + 1, 1, c_black, c_black)
+	draw_line_width_color(leftSide - 1, _lineY, rightSide, _lineY, 1, c_white, c_white)
+	
+	//Description
+	var _barGap = 27;
+	if (partText != -1) {
+		draw_set_font(fntSmall)
+		var _textboxWidth = rightSide - leftSide + 12;
+		draw_text_ext_shadow(leftSide + 1, yBottom + 25, partText, 7, _textboxWidth)
+		_barGap += string_height_ext(partText, 7, _textboxWidth)
+		draw_set_font(fntM)
+	}
+
+	//Another dividing line
+	var _lineLeft = leftSide + 4,
+		_lineRight = rightSide - 4,
+		_lineY = yBottom + _barGap;
+	draw_line_width_color(_lineLeft + 1, _lineY + 1, _lineRight + 1, _lineY + 1, 1, c_black, c_black)
+	draw_line_width_color(_lineLeft, _lineY, _lineRight, _lineY, 1, c_white, c_white)
+
+
+	//Draw stat preview
+	var _stats, _forceDraw = false;
+	//Gather Stats
+	if (array_length(statParts) > 0) {
+		_stats = calculate_stats(statParts)
+	}
+	else {
+		_stats = calculate_stats(-1)
+		//Makes the rad icon draw, so people can identify it
+		_forceDraw = true
+	}
+	var _statY = yBottom + _barGap + 8,
+		_statWidth = 32,
+		_statCount = 3 + (_stats.rads > 0 || _forceDraw),
+		_statLeft = xCenter - (_statCount - 1) * _statWidth/2,
+		_statList = [_stats.ammo, _stats.reload, _stats.projcount, _stats.rads],
+		_statName = ["ammo cost", "reload time", "projectile count", "rad cost"];
+		
+	draw_set_font(fntSmall)
+	draw_set_valign(1)
+	for (var s = 0; s < _statCount; s++) {
+		var _statX = _statLeft + _statWidth * s;
+		draw_sprite_shadowed(global.sprStats, s, _statX, _statY, c_white)
+		
+		//Check for mouse to display stat name
+		if (point_in_rectangle(
+			mouse_x_nonsync, mouse_y_nonsync,
+			_statX - 6, _statY - 5,
+			_statX + 6, _statY + 5
+			)) {
+			cursorText = _statName[s]
+			cursorTextX = _statX + 5
+			cursorTextY = _statY + 5
+		}
+		
+		var _statRounded = string_replace(string_format(_statList[s], 1, 1), ".0", "");
+		//Warn if ammo cost is above max
+		if (s == 0 && instance_exists(user) && user.typ_amax[2] < _statList[s]) {
+			draw_text_nt(_statX + 6, _statY, "@r@q" + _statRounded)
+		}
+		else {
+			draw_text_nt(_statX + 6, _statY, _statRounded)
+		}
+	}
+	draw_set_font(fntM)
+	draw_set_valign(0)
+
+	//Mouseover tooltips
+	if (cursorText != -1) {
+		draw_set_font(fntSmall)
+		var _width = string_width(cursorText);
+		
+		//Backdrop
+		draw_set_alpha(.4)
+		draw_roundrect_color(cursorTextX - 3, cursorTextY - 2, cursorTextX + _width, cursorTextY + 6, c_black, c_black, false)
+		draw_set_alpha(1)
+		//Text
+		draw_text_nt(cursorTextX, cursorTextY, `@(color:${merge_color(c_white, c_black, .1)})` + cursorText)
+		
+		draw_set_font(fntM)
+	}
+	
+	
+	draw_set_visible_all(true)
+	draw_set_halign(1);
+
+
+#define calculate_stats(partList)
+	if (!is_array(partList)) {
+		return {
+			ammo: 0,
+			reload: 0,
+			projcount: 0,
+			rads: 0,
+			radsproj: 0,
+			radsammo: 0
+		}
+	}
+	var finalStats = {
+		ammo: 1,
+		reload: 1,
+		projcount: 1,
+		radsammo: 0,
+		radsproj: 0
+	};
+	with (partList) {
+		with (global.optionMap[? self].stats) {
+			finalStats.reload *= reload
+			finalStats.ammo *= ammo
+			finalStats.projcount *= projcount
+			finalStats.radsammo += radsammo
+			finalStats.radsproj += radsproj
+		}
+	}
+	finalStats.rads = calculate_rad_cost(finalStats)
+	return finalStats;
+	
+#define calculate_rad_cost(statObject)
+	return min(statObject.ammo * statObject.radsammo, statObject.projcount * statObject.radsproj)
 
 #define sak_sprite(w)
 w.sprite = global.gunmap[? w.name]
 
+#define sak_stats
+
 #define make_gun_random
-var w = get_blank()
+var w = getNewSak();
 var cho = global.choicemap;
 for (var i = 0; i< 3; i+=0){
 	var n = irandom(array_length(cho[? w.info[i]]) -1);

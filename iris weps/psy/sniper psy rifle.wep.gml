@@ -62,6 +62,7 @@ for (var i = 0; i < lq_size(global.performanceCache); i += 1) {
 trace_color("total: " + string(acc), c_gray)
 
 #define weapon_laser_sight
+trace_time()
 with instances_matching(instances_matching(CustomObject, "name", "PsySniperCharge"), "creator", self) {
     with other
     if global.epic{
@@ -149,7 +150,7 @@ with instances_matching(instances_matching(CustomObject, "name", "PsySniperCharg
             }
 
         }
-        trace_time()
+        trace_time("e")
         draw_primitive_end()
         draw_set_color(c_white)
         // trace_time("draw_primitive_end")
