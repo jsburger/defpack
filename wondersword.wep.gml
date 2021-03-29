@@ -58,9 +58,10 @@ with instance_create(x, y, CustomObject){
     var p = {
         style: 1,
         charge: 0,
-        maxcharge: maxcharge
+        maxcharge: maxcharge,
+        power: 1
     }
-        defcharge = [p, lq_clone(p), lq_clone(p)]
+    defcharge = [p, lq_clone(p), lq_clone(p)]
 
     on_step = charge_step
     on_destroy = charge_destroy

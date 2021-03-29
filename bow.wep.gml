@@ -77,8 +77,8 @@ with instance_create(x,y,CustomObject){
 	charge    = 0
     maxcharge = 25
     defcharge = {
-        style : 0,
-        width : 14,
+        style : 2,
+        width : 13,
         charge : 0,
         maxcharge : maxcharge
     }
@@ -86,7 +86,7 @@ with instance_create(x,y,CustomObject){
 	depth = TopCont.depth
 	spr_arrow = other.race = "skeleton" ? global.sprArrow2 : global.sprArrow
 	index = creator.index
-  accuracy = other.accuracy
+	accuracy = other.accuracy
 	on_step    = bow_step
 	on_destroy = bow_destroy
 	on_cleanup = bow_cleanup

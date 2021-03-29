@@ -46,16 +46,16 @@ with instance_create(x,y,CustomObject){
 	charge    = 0
     maxcharge = 18
     defcharge = {
-        style : 0,
+        style : 2,
         width : 12,
         charge : 0,
-        power : 10,
+        power : 2,
         maxcharge : maxcharge
     }
 	charged = 0
 	depth = TopCont.depth
 	index = creator.index
-  accuracy = other.accuracy
+    accuracy = other.accuracy
 	on_step    = blaster_step
 	on_destroy = blaster_destroy
 	reload = -1

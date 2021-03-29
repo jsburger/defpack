@@ -1,7 +1,7 @@
 #define init
 global.sprSniperFireShotgun = sprite_add_weapon("../../sprites/weapons/iris/fire/sprSniperFireShotgun.png", 10, 3);
 global.sprFireMuzzle	    = sprite_add("../../sprites/projectiles/iris/fire/sprFireMuzzle.png", 1, 7, 7);
-global.sprFireBulletHit     = mod_variable_get("mod", "defpack tools", "spr").FireBulletHit
+global.spr = mod_variable_get("mod", "defpack tools", "spr");
 global.deviation = 45;
 
 #define weapon_chrg
@@ -91,23 +91,23 @@ with creator{
 	motion_add(gunangle -180,_c / 5)
 	sleep(200)
 	repeat(other.amount){
-	var q = mod_script_call_self("mod", "defpack tools", "sniper_fire", x + lengthdir_x(10, gunangle), y + lengthdir_y(10, gunangle), gunangle + random(other.deviation) * choose(-1, 1) * (1 - other.charge/other.maxcharge), team, 1 + _cc, _ccc)
-	with q{
-		c1 = c_red
-		c2 = c_yellow
-	    creator = other
-	    damage = 20 + round(20 * _cc)
-	    worth = 12
-	    with instance_create(x, y, BulletHit) sprite_index = global.sprFireBulletHit
-	    var n = hyperspeed/(_cc + .2)
-	    for var i = 0; i < image_xscale; i += random(n){
-	        with instance_create(xstart + lengthdir_x(2*i, direction), ystart + lengthdir_y(2*i, direction), Flame){
-	            motion_set(other.direction + 70 * choose(-1,1), random_range(1, 3) * _cc)
-	            motion_add(direction + random_range(-90, 90), 1 + _cc)
-	            projectile_init(other.team, other.creator)
-	        }
-	    }
-	 }
+		var q = mod_script_call_self("mod", "defpack tools", "sniper_fire", x + lengthdir_x(10, gunangle), y + lengthdir_y(10, gunangle), gunangle + random(other.deviation) * choose(-1, 1) * (1 - other.charge/other.maxcharge), team, 1 + _cc, _ccc)
+		with q{
+			c1 = c_red
+			c2 = c_yellow
+		    creator = other
+		    damage = 20 + round(20 * _cc)
+		    worth = 12
+		    with instance_create(x, y, BulletHit) sprite_index = global.spr.FireBulletHit
+		    var n = hyperspeed/(_cc + .2)
+		    for var i = 0; i < image_xscale; i += random(n){
+		        with instance_create(xstart + lengthdir_x(2*i, direction), ystart + lengthdir_y(2*i, direction), Flame){
+		            motion_set(other.direction + 70 * choose(-1,1), random_range(1, 3) * _cc)
+		            motion_add(direction + random_range(-90, 90), 1 + _cc)
+		            projectile_init(other.team, other.creator)
+		        }
+		    }
+	   }
    }
 }
 sleep(charge*3)

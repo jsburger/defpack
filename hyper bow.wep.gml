@@ -70,7 +70,7 @@ with instance_create(x,y,CustomObject){
 	charge    = 0
     maxcharge = 8
     defcharge = {
-        style : 0,
+        style : 2,
         width : 14,
         charge : 0,
         maxcharge : maxcharge

@@ -65,7 +65,7 @@ with instance_create(x, y, CustomObject){
 	charge    = 0
     maxcharge = 20
     defcharge = {
-        style : 0,
+        style : 2,
         width : 14,
         charge : 0,
         maxcharge : maxcharge
@@ -174,7 +174,7 @@ else {
       hand = other.hand;
       creator = other.creator
       team    = creator.team
-      damage = 20
+      damage = 25
       move_contact_solid(creator.gunangle, 6)
       motion_add(ang, 28)
       image_angle = direction
@@ -235,11 +235,11 @@ if hitem with q with other bolt_hit()
 #define bolt_hit
 sleep(10)
 var o = other, hp = other.my_health;
-projectile_hit(o, damage, force, direction)
-if charged && cooldown <= 0{
-  cooldown = 3;
-  mod_script_call_self("mod","defpack tools","crit")
+if charged && cooldown <= 0 {
+	cooldown = 3;
+	mod_script_call_self("mod","defpack tools","crit")
 }
+projectile_hit(o, damage, force, direction)
 if hp > damage{
     with instance_create(x,y,BoltStick){
         target = o

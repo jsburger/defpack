@@ -126,8 +126,8 @@ return 1;
 
 					else {
 						var prismwep = convert(wep, prismatic);
-						if(wep != prismwep and prismwep != false) {
-							wep = prismwep;
+						if(prismwep != false) {
+							wep = prismwep; //FIX
 							chargecheck = 0;
 							sprite_index = weapon_get_sprt(wep);
 							name = weapon_get_name(wep);
@@ -174,14 +174,16 @@ return 1;
 	return _colors;
 
 #define convert(w, c)
+	var _baseWep = weapon_get(w);
 	 // Converts the given (w)eapon to the given (c)olor
 	w = (is_object(w) ? lq_defget(w, "wep", wep_none) : w);
 	var _wep = w;
 	 // Modded weapons
 	if(is_string(w)) {
 		if(mod_exists("weapon", w)) {
-			if(mod_script_exists("weapon", w, "weapon_iris")) _wep = mod_script_call("weapon", w, "weapon_iris");
-
+			if(mod_script_exists("weapon", w, "weapon_iris")) {
+				_wep = mod_script_call("weapon", w, "weapon_iris");
+			}
 			else {
 				 // if it's a modded weapon with an iris prefix but no weapon_iris, scan for the non-iris version
 				var wep_lower = string_lower(w);
@@ -189,7 +191,7 @@ return 1;
 				with(get_colors()){
 					var color_lower = string_lower(self);
 					var _pos = string_pos(color_lower + " ", wep_lower);
-
+					
 					if (_pos >= 1) {
 						var _search = string_lower(string_delete(w, _pos, string_length(self + " ")));
 
@@ -269,8 +271,14 @@ return 1;
 	if(is_string(_wep)) _wep = string_replace(_wep, "x ", c + " ");
 	if(_wep = "bouncer smg") return wep_bouncer_smg;
 	else if(_wep = "bouncer shotgun") return wep_bouncer_shotgun;
-	else if(_wep != wep_none and (!is_string(_wep) or mod_exists("weapon", _wep))) return _wep;
+	else if(_wep != wep_none and (!is_string(_wep) or mod_exists("weapon", _wep)) && _wep != _baseWep) return _wep;
 	else return false;
+
+#define weapon_get(_w)
+	if is_object(_w) {
+		return _w.wep;
+	}
+	return _w;
 
 //thanks YOKIN you are truly my greatest ally
 // Spawns a Random WepPickup & Takes Into Account More Spawn Conditions: `with(Player) scrGimmeWep(x, y, 0, GameCont.hard, curse, [wep, bwep]);`

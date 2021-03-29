@@ -6,7 +6,7 @@
 	return "FILTERED LENS";
 
 #define skill_text
-	return "@yBULLET@s WEAPONS BECOME @wSOMETHING ELSE";
+	return "@yBULLET@s WEAPONS @wGO MISSING";
 
 #define skill_tip
 	return "@dNEVERMIND";

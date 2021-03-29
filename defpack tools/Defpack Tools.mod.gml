@@ -94,11 +94,12 @@
 		DarkBullet     = sprite_add  (i + "sprBlackBullet.png",    2, 8, 8);
 		DarkBulletHit  = sprite_add  (i + "sprBlackBulletHit.png", 4, 8, 8);
 		msk.DarkBullet = sprite_add_p(i + "mskBlackBullet.png",    0, 3, 5);
+		DarkBulletBounce = sprite_add(i + "sprBlackBulletBounce.png", 2, 8, 8);
 
 		//Light Bullets
 		LightBullet    = sprite_add(i + "sprWhiteBullet.png",    2, 8, 8);
 		LightBulletHit = sprite_add(i + "sprWhiteBulletHit.png", 4, 8, 8);
-
+		LightBulletBounce = sprite_add(i + "sprWhiteBulletBounce.png", 2, 8, 8);
 
 		//Iris Casings
 		GenShell      = sprite_add("../sprites/other/sprGenShell.png",   8, 2, 2);
@@ -221,11 +222,13 @@
 	global.AbrisCustomColor = false;
 
 	global.chargeType = 1
+	global.chargeLocation = charge_mouse;
 	global.chargeSmooth = [0, 0]
 
 	mod_script_call("mod","defpermissions","permission_register","mod",mod_current,"AbrisCustomColor","Use Player colors for Abris weapons")
 
 	mod_script_call_nc("mod", "defpermissions", "permission_register_options", "mod", mod_current, "chargeType", "Weapon Charge Indicators", ["Off", "Wep Specific", "Bar Only", "Arc Only"])
+	mod_script_call_nc("mod", "defpermissions", "permission_register_options", "mod", mod_current, "chargeLocation", "Charge Indicator Position", ["Around Cursor", "Around Player"])
 
 	global.sodaList = []
 	game_start()
@@ -248,6 +251,9 @@
 #macro defcharge_bar 0
 #macro defcharge_arc 1
 #macro defcharge_lock 2
+
+#macro charge_mouse 0
+#macro charge_player 1
 
 #macro default_bloom {
         xscale : 2,
@@ -379,6 +385,14 @@ if global.chargeType with Player if player_is_local_nonsync(index){
             }
         }
         var _x = mouse_x_nonsync - view_xview_nonsync, _y = mouse_y_nonsync - view_yview_nonsync + 1;
+        if (global.chargeLocation == charge_player) {
+        	var _p = player_find_local_nonsync();
+        	if !(instance_exists(_p)) break
+        	_x = _p.x - view_xview_nonsync
+        	_y = _p.y - view_yview_nonsync
+        }
+        
+        
         var c = player_get_color(index), _col = c;
         //counters
         var _arcCount = 0, _barCount = 0, _lockCount = 0,
@@ -386,7 +400,8 @@ if global.chargeType with Player if player_is_local_nonsync(index){
         //smoothing
         var _scale = global.chargeSmooth, _l = array_length(_scale);
         for var i = 0; i < _l; i++{
-            _scale[i] += approach(_scale[i], _chargeCounter[i], 3, 30/room_speed)
+        	var total = (i == defcharge_bar) ? _chargeCounter[defcharge_bar] + _chargeCounter[defcharge_lock] : _chargeCounter[i];
+            _scale[i] += approach(_scale[i], total, 3, 30/room_speed)
         }
         //arc vars
         if _arcMax{
@@ -434,7 +449,7 @@ if global.chargeType with Player if player_is_local_nonsync(index){
                     			_leftEdge = _x - (_barWidth + _boxSize)/2,
                     			_boxCenter = _leftEdge + _barWidth + (_boxSize/2),
                     			_barCenter = _x - (_boxSize/2);
-                			_barCount += max(_boxSize, _barHeight)/_barHeight;
+                			_barCount += max(_boxSize - 1, _barHeight)/_barHeight;
                 			var _yCenter = _y + _barInc * _barCount + 4;
                 			
                 			draw_bar(_barCenter, _yCenter, _barWidth, _barHeight, c_white)
@@ -724,7 +739,7 @@ var num = instance_number(obj),
     n = 0,
     found = -4;
 if instance_exists(obj){
-    while ++n <= num && variable_instance_get(man,varname) = value || (instance_is(man,prop) && !instance_is(man,Generator)) && collision_line(_x,_y,man.x,man.y,Wall,0,0) > -4{
+    while ++n <= num && (variable_instance_get(man,varname) = value || (instance_is(man,prop) && !instance_is(man,Generator))) && collision_line(_x,_y,man.x,man.y,Wall,0,0) > -4{
         man.x += 10000
         array_push(mans,man)
         man = instance_nearest(_x,_y,obj)
@@ -930,6 +945,7 @@ draw_line_width_color(x2 - 1, y3, x2 + w + 1, y3, 1, 0, 0)
 			on_step = bouncer_spin
 		}
 	}
+	on_anim = bullet_anim
 
 #define iris_bouncer_step
 	bouncer_spin()
@@ -1654,7 +1670,7 @@ bullet_destroy()
 #define create_dark_bullet(x,y)
 with instance_create(x, y, CustomSlash){
 	name = "Dark Bullet"
-	sprite_index = spr.DarkBullet
+	sprite_index = neurons ? spr.DarkBulletBounce : spr.DarkBullet
 	mask_index = msk.DarkBullet
 	spr_dead = spr.DarkBulletHit
 
@@ -1681,7 +1697,7 @@ with instance_create(x, y, CustomSlash){
 	on_destroy = dark_destroy
     on_wall = bullet_wall
     on_hit = bullet_hit
-	on_anim = bullet_anim
+	on_anim = iris_bullet_anim
 
 	return id
 }
@@ -1744,12 +1760,13 @@ bullet_destroy()
 with create_bullet(x, y){
     name = "Light Bullet"
     typ = 0
-    sprite_index = spr.LightBullet
+    sprite_index = neurons ? spr.LightBulletBounce : spr.LightBullet
     spr_dead = spr.LightBulletHit
 
     force = 4
     lasthit = -4
     pierces = 6
+    bounce_color = c_dkgray
 
     on_hit = light_hit
 
@@ -2235,51 +2252,46 @@ instance_destroy()
 if instance_exists(creator){
     var timescale = (mod_variable_get("weapon", "stopwatch", "slowed") == 1) ? 30/room_speed : current_time_scale;
 
-		if button_check(creator.index, "swap") && (creator.canswap = true || creator.bwep != 0){
-		  var _t = weapon_get_type(name);
-		  creator.ammo[_t] += weapon_get_cost(name)
-		  if creator.ammo[_t] > creator.typ_amax[_t] creator.ammo[_t] = creator.typ_amax[_t]
-		  instance_delete(self)
-		  exit
-		}
+	if (isplayer && (button_check(creator.index, "swap") && (creator.canswap = true || creator.bwep != 0))) {
+		abris_refund()
+		exit
+	}
 
     image_angle += rotspeed * timescale
     scroll += timescale
     offset += offspeed * timescale
 
-	if hover > 0{hover -= current_time_scale}else{hover = 0}
+	if hover > 0 {
+		hover = max(0, hover - current_time_scale)
+	}
 
-    if isplayer{
+	if (acc > 0 && hover = 0) {
+		acc = max(acc/power(accspeed, timescale), 0)
+	}
+
+    if isplayer {
         var _a = (hover > 0 ? 0 : 1 - acc/accmin);
         view_pan_factor[index] = 4 - (_a * 1.3 * view_factor)
         defcharge.charge = _a
-				if _a > 0.99 && _a < 1 && lq_get(defcharge, "blinked") = 0{
-					weapon_charged(creator, sprite_get_width(weapon_get_sprt(hand ? creator.wep : creator.bwep)) / 2)
-				}
+        
+		if _a > 0.99 && _a < 1 && lq_get(defcharge, "blinked") = 0 {
+			weapon_charged(creator, sprite_get_width(weapon_get_sprt(hand ? creator.wep : creator.bwep)) / 2)
+			creator.gunshine = 1
+		}
 
-        if button_pressed(index, "swap"){
-            abris_refund()
-            exit
-        }
-        if reload = -1{
+        if reload = -1 {
             reload = hand ? creator.breload : creator.reload
             reload += get_reloadspeed(creator) * timescale
         }
         if hand creator.breload = max(reload, creator.breload)
         else creator.reload = max(reload, creator.reload)
 
-				if acc > 0 && hover = 0{
-					acc /= power(accspeed, timescale)
-				}if acc <= 0{acc = 0}
         if !button_check(index, btn) or (auto and acc <= 0.01){
             instance_destroy()
         }
     }
-    else{
-				if acc > 0 && hover = 0{
-					acc /= power(accspeed, timescale)
-				} if acc <= 0{acc = 0.01}
-        if acc <= 0{
+    else {
+        if acc <= 0 {
             instance_destroy()
         }
     }
@@ -2329,15 +2341,18 @@ if instance_exists(creator){
     }
 
 		//experimental autoaim
-		if lockon >= 0{
-			var   _e = instance_nearest_matching_los_ne(creator.x, creator.y, hitme, "team", creator.team),
+		if lockon >= 0 {
+			var _e = instance_nearest_matching_los_ne(_x, _y, hitme, "team", creator.team),
 			    _dis = _e > -4 ? point_distance(creator.x, creator.y, _e.x, _e.y) : 0,
-					_dir = _e > -4 ? point_direction(creator.x, creator.y, _e.x, _e.y) : 0
-			if _e > -4 && collision_line(creator.x, creator.y, _e.x ,_e.y, Wall, 0, 0) = noone && point_distance(mouse_x[index], mouse_y[index], _e.x, _e.y) <= (margin + ((lockon * 28 / creator.accuracy) * !lq_get(defcharge, "blinked") + 8 * !lq_get(defcharge, "blinked"))){
+				_dir = _e > -4 ? point_direction(creator.x, creator.y, _e.x, _e.y) : 0;
+			if _e > -4 && collision_line(creator.x, creator.y, _e.x ,_e.y, Wall, 0, 0) = noone && point_distance(mouse_x[index], mouse_y[index], _e.x, _e.y) <= (margin + ((6 + (20 * lockon / max(creator.accuracy, 0.1))) * !lq_get(defcharge, "blinked"))){
 				_x = c.x + lengthdir_x(_dis + _e.hspeed, _dir);
 				_y = c.y + lengthdir_y(_dis + _e.vspeed, _dir);
 				lockon = true
-			}else{lockon = false}
+			}
+			else {
+				lockon = false
+			}
 		}
 
     var w = collision_line_first(creator.x, creator.y, _x, _y, Wall, 0, 0);
@@ -2345,23 +2360,31 @@ if instance_exists(creator){
     y = w[1]
 
     var kick = hand ? creator.bwkick : creator.wkick, yoff = -4 * hand;
-    var r = (hover > 0 ? accbase+accmin : acc+accmin), sides = 16, a = 1 - acc/accbase, _c = global.AbrisCustomColor = true && instance_is(creator, Player) ? player_get_color(creator.index) : lasercolour
-
-		var _c2 = defcharge.charge > 0.99 && defcharge.charge < 1 && lq_get(defcharge, "blinked") = 0 ? c_white : _c
-		if _c2 = c_white creator.gunshine = 1
+    var r = acc+accmin, sides = 16, a = 1 - acc/accbase,
+    	_c = (global.AbrisCustomColor = true && instance_is(creator, Player)) ? player_get_color(creator.index) : lasercolour,
+		_c2 = defcharge.charge > 0.99 && defcharge.charge < 1 && lq_get(defcharge, "blinked") = 0 ? c_white : _c;
+    
+    //Glow on gun
     draw_sprite_ext(sprHeavyGrenadeBlink, 0, c.x + lengthdir_x(14 - kick, ang), c.y + lengthdir_y(14 - kick, ang) + 1 + yoff, 1, 1, ang, _c, 1)
+    //Actual boundary
     mod_script_call_nc("mod", "defpack tools", "draw_circle_width_colour", sides, r, 1, acc + image_angle, x, y, _c2, .5 + a * .5)
+    //Minimim boundary (the one its approaching)
     mod_script_call_nc("mod", "defpack tools", "draw_circle_width_colour", sides, accmin, 1, acc + image_angle, x, y, _c2, .2 + a * .2)
+    //Laser pointer
     draw_line_width_color(c.x + lengthdir_x(16 - kick, ang), c.y + lengthdir_y(16 - kick, ang) + yoff, x, y, 1, _c, _c)
+    //Fill the circle with stripes
     mod_script_call_nc("mod", "defpack tools", "draw_polygon_striped", sides, r, scrollang, x, y, _c2, .1 + .3*a, scroll)
+    //Dot in the center
     draw_sprite_ext(sprGrenadeBlink, 0, x, y, 1, 1, image_angle * -.7, _c2, 1)
-		with instances_matching_ne(hitme, "team", creator.team){
-			if !instance_is(self, prop) && point_distance(x, y, other.x, other.y) <= r{
+    
+		with instances_matching_ne(hitme, "team", creator.team) {
+			if !instance_is(self, prop) && point_distance(x, y, other.x, other.y) <= r {
 				draw_set_fog(true, _c2, 0, 0)
-				draw_sprite_ext(sprite_index, image_index, x - 1, y - 1, image_xscale * right, image_yscale, image_angle, c_white, 1)
-				draw_sprite_ext(sprite_index, image_index, x + 1, y - 1, image_xscale * right, image_yscale, image_angle, c_white, 1)
-				draw_sprite_ext(sprite_index, image_index, x - 1, y + 1, image_xscale * right, image_yscale, image_angle, c_white, 1)
-				draw_sprite_ext(sprite_index, image_index, x + 1, y + 1, image_xscale * right, image_yscale, image_angle, c_white, 1)
+				var _xscale = image_xscale * ("right" in self ? right : sign(hspeed))
+				draw_sprite_ext(sprite_index, image_index, x - 1, y - 1, _xscale, image_yscale, image_angle, c_white, 1)
+				draw_sprite_ext(sprite_index, image_index, x + 1, y - 1, _xscale, image_yscale, image_angle, c_white, 1)
+				draw_sprite_ext(sprite_index, image_index, x - 1, y + 1, _xscale, image_yscale, image_angle, c_white, 1)
+				draw_sprite_ext(sprite_index, image_index, x + 1, y + 1, _xscale, image_yscale, image_angle, c_white, 1)
 				draw_set_fog(false, c_white, 0, 0)
 			}
 		}
@@ -3423,7 +3446,8 @@ if speed < friction instance_destroy()
 	        image_blend = c_black
 	        image_speed = 0
 	        image_alpha = 0
-	        damage = 0
+	        damage = 5
+	        force  = 10
 	        on_projectile = crit_proj
 	        on_step       = crit_step
 	        on_wall       = nothing
@@ -3453,7 +3477,7 @@ if speed < friction instance_destroy()
 	if image_index >= 7 instance_destroy();
 
 #define crit_proj
-	with other{
+	with other if typ != 0 {
 	    instance_destroy()
 	}
 
@@ -3461,9 +3485,9 @@ if speed < friction instance_destroy()
 	if lifetime > 0 lifetime -= current_time_scale else instance_destroy()
 
 #define crit_hit
-if projectile_canhit_melee(other){
-    projectile_hit(other, 5, 10, point_direction(x, y, other.x, other.y,))
-}
+	if projectile_canhit_melee(other){
+	    projectile_hit(other, damage, force, point_direction(x, y, other.x, other.y,))
+	}
 
 #define create_miniexplosion(_x, _y)
 with instance_create(_x, _y, CustomProjectile){

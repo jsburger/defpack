@@ -265,13 +265,15 @@ if is_object(w) and lq_defget(w, "image_speed", 0) > 0{
 }
 
 
-#define scr_gui(x, y, ammo, index)
+#define scr_gui(xoff, yoff, ammo, index)
 var m = 15, w = 2, h = 2, hup = .15
 var bheight = floor(45/m) * h + hup*m
 var bwidth = w * m
+var x = view_xview_nonsync + xoff,
+    y = view_yview_nonsync + yoff;
 draw_set_visible_all(0)
 draw_set_visible(index, 1)
-draw_set_projection(0)
+// draw_set_projection(0)
 draw_line_width_color(x, y+bheight/2 - hup*m, x + bwidth, y + bheight/2,bheight,c_dkgray,c_dkgray)
 
 draw_line_width_color(x, y+bheight - hup*m, x + bwidth, y + bheight, 1, c_black, c_black)
@@ -282,5 +284,5 @@ for var i = 0; i < ammo; i++{
 }
 
 instance_destroy()
-draw_reset_projection()
+// draw_reset_projection()
 draw_set_visible_all(1)

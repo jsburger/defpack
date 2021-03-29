@@ -1,7 +1,7 @@
 #define init
 global.sprSniperFireRifle = sprite_add_weapon("../../sprites/weapons/iris/fire/sprSniperFireRifle.png", 5, 3);
 global.sprFireMuzzle	  = sprite_add("../../sprites/projectiles/iris/fire/sprFireMuzzle.png", 1, 7, 7);
-global.sprFireBulletHit   = mod_variable_get("mod", "defpack tools", "spr").FireBulletHit
+global.spr = mod_variable_get("mod", "defpack tools", "spr");
 
 global.color = 14074
 
@@ -89,7 +89,7 @@ with creator{
 	    creator = other
 	    damage = 20 + round(20 * _cc)
 	    worth = 12
-	    with instance_create(x, y, BulletHit) sprite_index = global.sprFireBulletHit
+	    with instance_create(x, y, BulletHit) sprite_index = global.spr.FireBulletHit
 	    var n = hyperspeed/(_cc + .2)
 	    for var i = 0; i < image_xscale; i += random(n){
 	        with instance_create(xstart + lengthdir_x(2*i, direction), ystart + lengthdir_y(2*i, direction), Flame){

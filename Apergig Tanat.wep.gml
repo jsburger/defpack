@@ -35,8 +35,8 @@ repeat(12){
         image_yscale = .6
     }
 }
-repeat(interfacepop){
-    with instance_create(x,y,CustomProjectile){
+repeat(interfacepop) {
+    with instance_create(x,y,CustomProjectile) {
         team = other.team
         creator = other
         motion_set(other.gunangle + 160*other.right,20)
@@ -74,7 +74,7 @@ sound_play_pitch(sndFlakCannon,.8*r)
 motion_set(gunangle-180,4)
 weapon_post(9,-30,24)
 with instance_create(x,y,CustomProjectile){
-    name = "sudden death bullet"
+    name = "suddenDeathBullet"
     defbloom = {
         xscale : 2,
         yscale : 2,
@@ -126,18 +126,15 @@ if speed < friction
 }
 
 #define shell_hit
-if projectile_canhit(other) = true
-{
-  mod_script_call_self("mod","defpack tools","crit")
-  sleep(200)
-  projectile_hit(other,damage,force,direction)
-}
-with instance_create(x,y,BulletHit)
-{
-  sprite_index = sprEBullet3Disappear
-  image_angle = random(360)
-  image_xscale = other.image_xscale
-  image_yscale = other.image_yscale
+mod_script_call_self("mod", "defpack tools", "crit")
+sleep(200)
+projectile_hit(other, damage, force, direction)
+
+with instance_create(x,y,BulletHit) {
+	sprite_index = sprEBullet3Disappear
+	image_angle = random(360)
+	image_xscale = other.image_xscale
+	image_yscale = other.image_yscale
 }
 instance_destroy()
 
