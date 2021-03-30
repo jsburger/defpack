@@ -57,7 +57,7 @@ weapon_post(-2,-4,5)
 return -1;
 
 #define weapon_area
-return 9;
+return -1;
 
 #define weapon_text
 return choose("GREEN TRAILS EVERYWHERE");

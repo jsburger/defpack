@@ -4,6 +4,8 @@
 	global.spr_walk = sprite_add("../sprites/crown/sprCrownWalk.png",6,8,8);
 	global.spr_icon = sprite_add("../sprites/crown/sprCrownSelect.png",1,12,16);
 
+	global.exchange_ban_list = [wep_super_disc_gun, wep_golden_nuke_launcher, wep_golden_disc_gun, "wondersword", "mega hammer", "rapier", "infinipistol", "push piston", "flak canon"];
+
   for(var _i = 0; _i < maxp; _i++){
 		global.nextwep[_i, 0] = 0; // weapon index
 		global.nextwep[_i, 1] = 0; // fanc var for animating the hud
@@ -189,7 +191,19 @@ var _i = 0
 var _l = ds_list_create();
 var dif = GameCont.areanum + 2*array_length(instances_matching(Player,"race","robot"))
 weapon_get_list(_l, clamp(dif - 2, 0, 8), dif + 1);
-if mod_variable_get("skill", "prismatic iris", "color") == 5{
+
+// weapon ban list
+for(var _m = 0; _m < ds_list_size(_l); _m++){
+	for(var _n = 0; _n < array_length(global.exchange_ban_list); _n++){
+		if ds_list_find_value(_l, _m) = global.exchange_ban_list[_n]{
+			ds_list_delete(_l, _m);
+		}
+	}
+}
+ds_list_shuffle(_l);
+_i = ds_list_find_value(_l, 1);
+
+if mod_variable_get("skill", "prismaticiris", "color") == "filteredlens"{
     var n = 0
     ds_list_shuffle(_l);
     _i = ds_list_find_value(_l,1);
@@ -198,10 +212,7 @@ if mod_variable_get("skill", "prismatic iris", "color") == 5{
         _i = ds_list_find_value(_l,1);
     }
 }
-else{
-    ds_list_shuffle(_l);
-    _i = ds_list_find_value(_l,1);
-}
+
 ds_list_destroy(_l);
 return _i
 
@@ -252,7 +263,7 @@ with Player
 	repeat(5)
 	{
 		i++
-		typ_ammo[i] *= 2
+		typ_ammo[i] *= 4
 	}
 }
 
