@@ -1,18 +1,32 @@
 // Define Sprites
 #define init
-global.spr_idle = sprite_add("../sprites/crown/sprCrownIdle.png",1,8,8);
-global.spr_walk = sprite_add("../sprites/crown/sprCrownWalk.png",6,8,8);
-global.spr_icon = sprite_add("../sprites/crown/sprCrownSelect.png",1,12,16);
-//Set Sprites
+	global.spr_idle = sprite_add("../sprites/crown/sprCrownIdle.png",1,8,8);
+	global.spr_walk = sprite_add("../sprites/crown/sprCrownWalk.png",6,8,8);
+	global.spr_icon = sprite_add("../sprites/crown/sprCrownSelect.png",1,12,16);
+
+  for(var _i = 0; _i < maxp; _i++){
+		global.nextwep[_i, 0] = 0; // weapon index
+		global.nextwep[_i, 1] = 0; // fanc var for animating the hud
+		global.nextwep[_i, 2] = 0; // how many weapons have been swapped
+	}
+
+#define store_wep()
+	for(var _i = 0; _i < maxp; _i++){
+		global.nextwep[_i, 0] = get_wep();
+		global.nextwep[_i, 2] = 0;
+	}
+
+#define game_start
+	store_wep()
+
 #define crown_object
-spr_idle = global.spr_idle;
-spr_walk = global.spr_walk;
+	spr_idle = global.spr_idle;
+	spr_walk = global.spr_walk;
 
 #define crown_button
-sprite_index = global.spr_icon;
+	sprite_index = global.spr_icon;
 
 #define step
-
 with instances_matching_ne(Player, "driving", 1)
 {
 	//detect run start
@@ -22,8 +36,10 @@ with instances_matching_ne(Player, "driving", 1)
 		repeat(5)
 		{
 			i++
-			typ_ammo[i] = ceil(typ_ammo[i]/2)
+			typ_ammo[i] = ceil(typ_ammo[i]/4)
 		}
+		global.nextwep[index, 0] = get_wep()
+
 		HasEx = "
 		_____\    _______
        /      \  |      /\
@@ -48,7 +64,7 @@ with instances_matching_ne(Player, "driving", 1)
 	var _c = weapon_get_cost(wep);
 	if ammo[_w] < _c || (_w = 0 && meleeammo <= 0) || (_c == 0 and ammo[_w] == 0) or GameCont.rad < weapon_get_rads(wep)
 	{
-		wep = determine_wep()
+		wep = determine_wep(index)
 		if skill_get("prismatic iris") > 0 mod_script_call_self("skill", "prismatic iris", "color", wep, mod_variable_get("skill", "prismatic iris", "color"))
 		reload = 1
 		if weapon_get_type(wep) != 0
@@ -61,7 +77,7 @@ with instances_matching_ne(Player, "driving", 1)
 			if meleeammo <= 0
 			{
 				meleeammo = 12
-				wep = determine_wep()
+				wep = determine_wep(index)
 			}
 		}
 	}
@@ -78,7 +94,7 @@ with instances_matching_ne(Player, "driving", 1)
     	var _c = weapon_get_cost(bwep);
     	if ammo[_w] < _c || (_w = 0 && bmeleeammo <= 0) || (_c == 0 and ammo[_w] == 0) or GameCont.rad < weapon_get_rads(bwep)
     	{
-    		bwep = determine_wep()
+    		bwep = determine_wep(index)
     		breload = 1
 			if skill_get("prismatic iris") > 0{
 			    var w = wep
@@ -99,7 +115,7 @@ with instances_matching_ne(Player, "driving", 1)
     			if bmeleeammo <= 0
     			{
     				bmeleeammo = 12
-    				bwep = determine_wep()
+    				bwep = determine_wep(index)
     			}
     		}
     	}
@@ -156,13 +172,11 @@ if w.meleeammo <= 0 or ammo[weapon_get_type(w)] < weapon_get_cost(w.wrapped) or 
 }
 return w
 
-#define game_start
-
 #define crown_name // Crown Name
 return "CROWN OF EXCHANGE";
 
 #define crown_text // Description
-return "CHANGE YOUR @wWEAPON@s#WHEN RUNNING OUT OF @yAMMO@s#halved @yammo @sincome";
+return "CHANGE YOUR @wWEAPON@s#WHEN RUNNING OUT OF @yAMMO@s#lowered @yammo @sincome";
 
 #define crown_tip // Loading Tip
 return "A FAIR DEAL";
@@ -191,8 +205,8 @@ else{
 ds_list_destroy(_l);
 return _i
 
-#define determine_wep()
-var _i = get_wep()
+#define determine_wep(INDEX)
+var _i = global.nextwep[INDEX, 0]
 sound_play( weapon_get_swap(_i));
 instance_create(x,y,WepSwap)
 with instance_create(x,y,PopupText)
@@ -208,6 +222,10 @@ with instance_create(x,y,PopupText)
 			on_step = text_step
 		}
 	}
+}
+global.nextwep[INDEX, 0] = get_wep()
+for(var _j = 0; _j < maxp; _j++){
+	global.nextwep[_j, 2] += .5;
 }
 return _i
 
@@ -225,6 +243,7 @@ instance_destroy()
 
 #define crown_take
 sound_play_crown()
+store_wep()
 
 #define crown_lose
 with Player

@@ -90,6 +90,12 @@ global.sprThunderCloudChestOpen =  sprite_add("../sprites/chests/sprThunderCloud
 global.sprChargeChest     =  sprite_add_weapon("../sprites/chests/sprChargeChest.png", 8, 6);
 global.sprChargeChestOpen =  sprite_add("../sprites/chests/sprChargeChestOpen.png", 1, 8, 6);
 
+global.sprStarlightChest     =  sprite_add_weapon("../sprites/chests/sprStarlightChest.png", 8, 6);
+global.sprStarlightChestOpen =  sprite_add("../sprites/chests/sprStarlightChestOpen.png", 1, 8, 6);
+
+global.sprGhostChest     =  sprite_add_weapon("../sprites/chests/sprGhostChest.png", 9, 6);
+global.sprGhostChestOpen =  sprite_add("../sprites/chests/sprGhostChestOpen.png", 1, 9, 6);
+
 
 global.sprMeleeChest     = sprite_add_weapon("../sprites/chests/sprWepMutChestMelee.png"    , 11, 8);
 global.sprBulletChest    = sprite_add_weapon("../sprites/chests/sprWepMutChestBullet.png"   , 11, 8);
@@ -184,7 +190,7 @@ chest_add("Energy",    -1, 5)
   }
   if mod_exists("mod", "ntte"){//sawblade, quasar, bubble, eplasma
     chest_add("Bubble"  ,  5, ["bubble rifle", "bubble shotgun", "bubble minigun", "bubble cannon", "bubble bat", "hyper bubbler"])
-    chest_add("Eplasma" ,  8, ["eleptroplasma rifle", "electroplasma shotgun", "electroplasma cannon"])
+    chest_add("Eplasma" ,  8, ["electroplasma rifle", "electroplasma shotgun", "electroplasma cannon"])
     chest_add("Sawblade",  7, ["bat disc launcher", "bat disc cannon", "pizza cutter"])
     chest_add("Quasar"  , 12, ["quasar blaster", "quasar rifle", "quasar cannon"])
   }
@@ -201,6 +207,11 @@ chest_add("Energy",    -1, 5)
     chest_add("Cloud"       , 4, ["cloud pistol", "cloud rifle", "cloud shotgun", "cloud cannon", "cloud minigun"])
     chest_add("ThunderCloud", 8, ["thunder cloud pistol", "thunder cloud rifle", "thunder cloud shotgun", "thunder cloud cannon", "thunder cloud minigun"])
   }
+  if mod_exists("weapon", "StarlightSpiritWave"){ //Gunbucket: Starlight, Ghost
+      chest_add("Starlight", 11, ["StarlightSpiritGun", "StarlightSpiritRifle", "StarlightSpiritWave", "StarlightSpiritCannon"]);
+      chest_add("Ghost"    ,  5, ["GhostMachinegun", "GhostSlugger", "GhostSluggerAssault", "GhostSluggerGatling"]);
+  }
+
 #define step
      // replacing chests
     if !instance_exists(GenCont){

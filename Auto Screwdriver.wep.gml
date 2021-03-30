@@ -58,7 +58,6 @@ return{
   var l = 10 * skill_get(mut_long_arms)
   with instance_create(x + lengthdir_x(l, gunangle), y + lengthdir_y(l, gunangle), Shank)
   {
-  	damage = 4
   	creator = other
   	can_fix = true
   	motion_add(other.gunangle + random_range(-4, 4) * other.accuracy, 2 + (skill_get(13) * 3))

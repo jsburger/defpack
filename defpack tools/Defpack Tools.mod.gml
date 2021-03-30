@@ -1523,9 +1523,9 @@ with instance_create(x,y,Lightning){
   	ammo = a
 	alarm0 = 1
 	visible = 0
-  	with instance_create(x,y,LightningSpawn){
+  	/*with instance_create(x,y,LightningSpawn){
   	   image_angle = other.image_angle
-    }
+    }*/
 }
 
 #define heavy_thunder_step

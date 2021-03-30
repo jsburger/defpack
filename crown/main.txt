@@ -1,2 +1,3 @@
 /loadcrown exchange
+/loadmod exchangedraw
 ///loadwep wrapper

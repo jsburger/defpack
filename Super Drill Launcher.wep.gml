@@ -1,7 +1,7 @@
 #define init
   //global.gun
   global.sprSuperDrillLauncher = sprite_add_weapon("sprites/weapons/sprSuperDrillLauncher.png",10,7)
-  global.sprDrill = sprite_add("sprites/projectiles/sprDrill.png"          ,4 ,7 , 4)
+  global.sprDrill = sprite_add("sprites/projectiles/sprDrill.png"          , 4, 7, 4)
   global.sprDrillBlink = sprite_add("sprites/projectiles/sprDrillBlink.png", 2, 7, 4)
   global.explosive = 0 //boolean, try turning it off
 #define weapon_name
@@ -148,7 +148,7 @@ return "WALL DIVERS"
     }
 
   #define drill_hit
-    view_shake_at(x,y,3*min(other.size,4))
+    view_shake_max_at(x,y,3*min(other.size,4))
     sound_play_drill(.4)
     //karm youre fucking insane if you think ill allow you to sleep for 35ms for TEN FRAMES IN A ROW
     //seriously though, use them for big chunky freezes, not several small ones, that just makes it look like the game is running poorly
