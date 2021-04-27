@@ -33,6 +33,7 @@ if "rapiers" not in self {rapiers = 1}
 rapiers = ++rapiers mod 3
 sound_play_pitch(sndBlackSword,random_range(1.4,1.7))
 motion_add(gunangle,5+speed)
+
 if rapiers != 1{
 	sound_play_pitch(sndEnemySlash,random_range(.8,1.2))
 	wepangle = 20*wepflip
@@ -51,11 +52,12 @@ if rapiers != 1{
 }
 else{
 	sound_play_pitch(sndBlackSwordMega,random_range(1.4,1.7))
-	extraspeed = 12+4*skill_get(13)
+  var _e = 12 + 4*skill_get(mut_long_arms);
+	extraspeed_add(self, _e, gunangle);
 	wepangle = .1*wepflip
 	weapon_post(-10 - 10*skill_get(13),15,2)
 	move_contact_solid(gunangle,6)
-	with instance_create(x+lengthdir_x(extraspeed+20*skill_get(13),gunangle),y+lengthdir_y(extraspeed+20*skill_get(13),gunangle),Shank){
+	with instance_create(x+lengthdir_x(_e+20*skill_get(13),gunangle),y+lengthdir_y(_e+20*skill_get(13),gunangle),Shank){
 		canfix = false
 		damage = 20
 		team = other.team
@@ -68,38 +70,20 @@ if rapiers != 2{
 	reload+=6
 }
 wepangle*=-1
+
 #define weapon_sprt
-return global.sword
+  return global.sword
 
 #define nts_weapon_examine
-return{
-    "d": "Lunging at your enemies may strike fear in their hearts. ",
-}
+  return{
+      "d": "Lunging at your enemies may strike fear in their hearts. ",
+  }
 
 #define weapon_text
-return "FANCY FOOTWORK"
+  return "FANCY FOOTWORK"
 
 #define step
-if "extraspeed" in self && current_frame_active{
-	if extraspeed > 0{
-	    nexthurt = current_frame+1
-		if irandom(2) != 0{instance_create(x,y,Dust)}
-		canaim = false
-		with instance_create(x+lengthdir_x(extraspeed+20*skill_get(13),gunangle),y+lengthdir_y(extraspeed+20*skill_get(13),gunangle),Shank){
-			canfix = false
-			sprite_index = mskNone
-			damage = 30
-			mask_index = global.sword
-			image_xscale = 2
-			image_yscale = 2
-			creator = other
-			team = other.team
-			image_angle = other.gunangle
-		}
-		motion_add(gunangle,extraspeed)
-		extraspeed--
-	}
-	else{extraspeed = 0;canaim = true}
-}
-if mask_index = 268 {rapiers = 1}
-if "rapiers" in self{if button_pressed(index,"swap") && canswap{rapiers = 1}}
+  if mask_index = 268 {rapiers = 1}
+  if "rapiers" in self{if button_pressed(index,"swap") && canswap{rapiers = 1}}
+
+#define extraspeed_add(_player, __speed, _direction) return mod_script_call("mod", "defpack tools", "extraspeed_add", _player, __speed, _direction);

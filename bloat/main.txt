@@ -47,3 +47,4 @@
 /loadwep satchel charge
 /loadwep recycler
 /loadwep corpse gun
+/loadwep vanguard

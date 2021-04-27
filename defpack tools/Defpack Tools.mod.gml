@@ -391,8 +391,8 @@ if global.chargeType with Player if player_is_local_nonsync(index){
         	_x = _p.x - view_xview_nonsync
         	_y = _p.y - view_yview_nonsync
         }
-        
-        
+
+
         var c = player_get_color(index), _col = c;
         //counters
         var _arcCount = 0, _barCount = 0, _lockCount = 0,
@@ -451,7 +451,7 @@ if global.chargeType with Player if player_is_local_nonsync(index){
                     			_barCenter = _x - (_boxSize/2);
                 			_barCount += max(_boxSize - 1, _barHeight)/_barHeight;
                 			var _yCenter = _y + _barInc * _barCount + 4;
-                			
+
                 			draw_bar(_barCenter, _yCenter, _barWidth, _barHeight, c_white)
                 			draw_line_width_color(_leftEdge, _yCenter + .5, _leftEdge + _barWidth * cm, _yCenter + .5, _barHeight, _col, _col)
                 			draw_bar(_boxCenter, _yCenter, _boxSize, _boxSize, c_white)
@@ -533,6 +533,55 @@ with Player if visible{
 #define step
 	// Gets rid of dummy weapons, I don't know why vanilla doesn't do this
 	with instances_matching(WepPickup, "wep", 0) instance_destroy()
+
+	with instances_matching_ne(Player, "defspeed", undefined) if array_length(defspeed) > 0 && defspeed[1] != 0{
+		with instance_create(x + lengthdir_x(defspeed[0] + 20 * skill_get(13), gunangle), y + lengthdir_y(defspeed[0] + 20 * skill_get(13), gunangle), Shank){
+			sprite_index = mskNone;
+			//mask_index = mskShank;
+			canfix = false;
+			damage = 30;
+			image_xscale = 2;
+			image_yscale = 2;
+			creator = other;
+			team = other.team;
+			image_angle = other.gunangle;
+		}
+		if place_free(x + lengthdir_x(defspeed[0], defspeed[1]), y + lengthdir_y(defspeed[0], defspeed[1])){
+			x += lengthdir_x(defspeed[0], defspeed[1]);
+			y += lengthdir_y(defspeed[0], defspeed[1]);
+		}else{
+			defspeed[0] = 1;
+			defspeed[1] += 180;
+			view_shake_at(x, y, 48);
+			sleep(8);
+			repeat(3){
+				instance_create(x, y, Dust);
+				instance_create(x, y, Debris);
+			}
+			with instance_create(x, y, Shank){
+				canfix = false;
+				team = other.team;
+				creator = other;
+				image_xscale = 1.5;
+				image_yscale = 1.5;
+				force = 6;
+				damage = 6;
+				image_alpha = 0;
+				mask_index = msk.SmallSonicExplosion;
+			}
+			with instance_create(x, y, ImpactWrists){image_speed = .7; depth = other.depth - 1}
+
+		}
+
+		motion_set(defspeed[1], defspeed[0]);
+		defspeed[0]--;
+
+		if defspeed[0] <= 0 && defspeed[1] != 0{
+			defspeed[0] = 0;
+			defspeed[1] = 0;
+			canaim++;
+		}
+	}
 
 	// Hold Icons for dropped weapons
 	with instances_matching_ne(WepPickup, "chargecheck", 1) {
@@ -2020,6 +2069,19 @@ if other != lasthit{
 			superforce *= .85 + .15 * min(skill_get(mut_impact_wrists), 1);
 		}
 	}
+
+#define extraspeed_add(_player, _speed, _direction)
+	if instance_exists(_player) with _player{
+		canaim = false;
+		if "defspeed" not in self{
+			defspeed[0] = _speed;
+			defspeed[1] = _direction;
+		}else{
+			defspeed[0] = max(_speed, defspeed[0]);
+			defspeed[1] = _direction;
+		}
+	}
+
 //ok i guess im stealing stuff from gunlocker too but its a good idea alright
 #define shell_yeah(_angle, _spread, _speed, _color)
 	with instance_create(x, y, Shell){
@@ -2273,7 +2335,7 @@ if instance_exists(creator){
         var _a = (hover > 0 ? 0 : 1 - acc/accmin);
         view_pan_factor[index] = 4 - (_a * 1.3 * view_factor)
         defcharge.charge = _a
-        
+
 		if _a > 0.99 && _a < 1 && lq_get(defcharge, "blinked") = 0 {
 			weapon_charged(creator, sprite_get_width(weapon_get_sprt(hand ? creator.wep : creator.bwep)) / 2)
 			creator.gunshine = 1
@@ -2363,7 +2425,7 @@ if instance_exists(creator){
     var r = acc+accmin, sides = 16, a = 1 - acc/accbase,
     	_c = (global.AbrisCustomColor = true && instance_is(creator, Player)) ? player_get_color(creator.index) : lasercolour,
 		_c2 = defcharge.charge > 0.99 && defcharge.charge < 1 && lq_get(defcharge, "blinked") = 0 ? c_white : _c;
-    
+
     //Glow on gun
     draw_sprite_ext(sprHeavyGrenadeBlink, 0, c.x + lengthdir_x(14 - kick, ang), c.y + lengthdir_y(14 - kick, ang) + 1 + yoff, 1, 1, ang, _c, 1)
     //Actual boundary
@@ -2376,7 +2438,7 @@ if instance_exists(creator){
     mod_script_call_nc("mod", "defpack tools", "draw_polygon_striped", sides, r, scrollang, x, y, _c2, .1 + .3*a, scroll)
     //Dot in the center
     draw_sprite_ext(sprGrenadeBlink, 0, x, y, 1, 1, image_angle * -.7, _c2, 1)
-    
+
 		with instances_matching_ne(hitme, "team", creator.team) {
 			if !instance_is(self, prop) && point_distance(x, y, other.x, other.y) <= r {
 				draw_set_fog(true, _c2, 0, 0)
@@ -3919,29 +3981,29 @@ if image_index + image_speed*current_time_scale > image_number instance_destroy(
 		parent = name
 		defpackChargeObject = true
 		creator = -4
-		
+
 		charge = 0
 		charged = 0
 		chargeSpeed = 1
 		maxCharge = 100
-		
+
 		index = -1
 		hand = -1
 		btn = "fire"
-		
+
 		reload = -1
 		type = 0
 		cost = 0
-		
+
 	    defcharge = {
 	        style: defcharge_bar,
 	        charge: 0,
 	        maxcharge: maxcharge,
 	        width : 16
 	    }
-	    
+
 	}
-	
+
 #define get_firing_context(instance)
 	// Assumptions in place;
 	// - Anything that calls a fire script has gunangle and accuracy (no backup checks on these values)
@@ -3955,11 +4017,11 @@ if image_index + image_speed*current_time_scale > image_number instance_destroy(
 		_creatorCanAim = "gunangle" in _creator,
 		_accuracy = "accuracy" in _creator ? _creator.accuracy : instance.accuracy,
 		_aimOffset = (_creatorCanAim && _isFireCont) ? angle_difference(instance.gunangle, _creator.gunangle) : 0;
-		
+
 	return {
 		is_firecont : instance_is(self, FireCont)
 	}
-	
+
 
 
 #define create_sniper_charge(x, y)

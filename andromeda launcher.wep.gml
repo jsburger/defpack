@@ -1,5 +1,6 @@
 #define init
-global.sprAndromedaLauncher1 = sprite_add_weapon("sprites/weapons/sprAndromedaLauncher1.png", 8, 5);
+global.sprAndromedaLauncher11 = sprite_add_weapon("sprites/weapons/sprAndromedaLauncher1On.png", 12, 5);
+global.sprAndromedaLauncher12 = sprite_add_weapon("sprites/weapons/sprAndromedaLauncher1Off.png", 12, 5);
 global.sprAndromedaLauncher2 = sprite_add_weapon("sprites/weapons/sprAndromedaLauncher2.png", 8, 5);
 global.sprAndromedaLauncher3 = sprite_add_weapon("sprites/weapons/sprAndromedaLauncher3.png", 2, 5);
 global.sprAndromedaLauncher4 = sprite_add_weapon("sprites/weapons/sprAndromedaLauncher4.png", 1, 3);
@@ -21,7 +22,7 @@ global.disappear1 = [chestprop, Feather, Shell, Debris, WepPickup, Pickup, Grena
 }*/
 
 global.wepsprite = 0
-mod_script_call_nc("mod", "defpermissions", "permission_register_options", "weapon", mod_current, "wepsprite", "Andromeda Launcher Sprite", ["Newest", "Version 3", "Version 2", "Original"])
+mod_script_call_nc("mod", "defpermissions", "permission_register_options", "weapon", mod_current, "wepsprite", "Andromeda Launcher Sprite", ["Ultra", "Sleek", "Evolving", "Original"])
 
 #define weapon_name
 return "ANDROMEDA LAUNCHER"
@@ -29,7 +30,15 @@ return "ANDROMEDA LAUNCHER"
 #define weapon_sprt
 var _s = 0;
 switch global.wepsprite{
-	case 0: _s = global.sprAndromedaLauncher1; break;
+	case 0:
+		with(GameCont){
+			if rad >= weapon_rads(){
+				_s = global.sprAndromedaLauncher11;
+		  }else{
+				_s = global.sprAndromedaLauncher12;
+			}
+		}
+		break;
 	case 1: _s = global.sprAndromedaLauncher2; break;
 	case 2: _s = global.sprAndromedaLauncher3; break;
 	case 3: _s = global.sprAndromedaLauncher4; break;
@@ -137,14 +146,13 @@ with instances_in(x-succ,y-succ/2,x+succ,y+succ/2,Wall){
 with instances_in(x-succ,y-succ/2,x+succ,y+succ/2,global.disappear0){
     var _x = clamp(other.x, bbox_left, bbox_right), _y = clamp(other.y, bbox_top, bbox_bottom);
     if (sqr(_x - other.x))/sqr(other.succ) + (sqr(_y - other.y))/sqr(other.succ/2) <= 1{
-				instance_destroy()
+				instance_delete(self)
     }
 }
 
 with instances_in(x-succ,y-succ/2,x+succ,y+succ/2,global.disappear1){
     var _x = clamp(other.x, bbox_left, bbox_right), _y = clamp(other.y, bbox_top, bbox_bottom);
     if (sqr(_x - other.x))/sqr(other.succ) + (sqr(_y - other.y))/sqr(other.succ/2) <= 1{
-				instance_disappear(x, y, 1)
 				instance_delete(self)
     }
 }

@@ -34,7 +34,7 @@ return 25;
 return sndSwapExplosive;
 
 #define weapon_area
-return 11;
+return -1;
 
 #define weapon_text
 return curse("PUT ME BACK");

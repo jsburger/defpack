@@ -19,7 +19,6 @@
 
 ///FISTS///
 
-/loadwep vanguard
 /loadwep scrapper
 
 ///GOLD///

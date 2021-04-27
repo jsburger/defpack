@@ -65,7 +65,7 @@ return{
     }
     exit
   }
-  if "extraspeed2" not in self{extraspeed2 = 12 + gunangle / 10000}else{extraspeed2 += 12   + gunangle / 10000} //knockback, adding variables to the player is a sin
+  extraspeed_add(self, 12, gunangle + 180);
 
   with instance_create(x,y,CustomProjectile) //the projectile
   {
@@ -221,32 +221,6 @@ return{
   with instances_matching(Player, "wep", mod_current){speed *= min(1, .8 + .2 * (skill_get(mut_extra_feet)))}
   with instances_matching(instances_matching(Player, "race", "steroids"), "bwep", mod_current){speed *= min(1, .8 + .2 * (skill_get(mut_extra_feet)))}
 
-  if "extraspeed2" in self
-  {
-    if extraspeed2 > 30{extraspeed2 = 30} //cap speed for safety reasons
-  	if extraspeed2 > 0
-  	{
-      sleep(1)
-      sound_play_gun(sndFootOrgSand4,999999999999999999999999999999999999999999999999,.00001)//mute action
-  		instance_create(x + random_range(-4, 4),y + random_range(-4, 4), Dust);
-  		canaim = false;
-  		with instance_create(x+lengthdir_x(extraspeed2+20*skill_get(13),frac(extraspeed2)*10000),y+lengthdir_y(extraspeed2+20*skill_get(13),frac(extraspeed2)*10000),Shank)
-      {
-  			team = other.team;
-        creator = other;
-        damage = 20;
-        sprite_index = mskNone;
-        mask_index = sprFlakBullet;
-        image_xscale = 2;
-        image_yscale = 2;
-  			image_angle = other.gunangle;
-  		}
-  		motion_add(frac(extraspeed2)*10000-180,extraspeed2-frac(extraspeed2));
-  		extraspeed2 -= current_time_scale;
-  	}
-  	else{extraspeed2 = 0;canaim = true}
-  }
-
 #define weapon_reloaded
   sound_play_pitchvol(sndShotReload,.8,.7);
   sound_play_pitchvol(sndBouncerBounce,.082,.5);
@@ -260,3 +234,5 @@ return{
     motion_add(other.gunangle - 180 + random_range(-30,30),random_range(4,5));
     image_angle = direction + 90 + random_range(-8,8)
   }
+
+	#define extraspeed_add(_player, __speed, _direction) return mod_script_call("mod", "defpack tools", "extraspeed_add", _player, __speed, _direction);

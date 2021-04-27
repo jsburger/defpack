@@ -46,7 +46,7 @@ for (var i = 0, _l = array_length(_sounds); i < _l; i++){
 }
 
 #define weapon_fire
-weapon_post(7, 30, 52)
+weapon_post(7, 22, 28)
 sleep(30)
 var _p = random_range(.7, 1.3)
 var _sounds = [
@@ -231,7 +231,7 @@ var _num    = 25,												  //subdivisions of the distance in line segments
 	_xscale = _dist/_num,										  //xscale of all bolt trails
 	_speed  = (_dist * (_pivot/_num)/_width * .2),				  //speed of all of the bolt trails, _width * .2 represents the most time itll take for the trails to disperse
 	_yscale;
-	
+
 	for (var i = 1; i <= _num; i++) {
 		_yscale = 1 - (min(abs(_pivot - i), _length)/_length)	  //i mean, its the width of the bolt trail, idk what the min is for
 		if _yscale > 0 {
@@ -245,7 +245,7 @@ var _num    = 25,												  //subdivisions of the distance in line segments
 			}
 		}
 	}
-	
+
 	xstart = x
 	ystart = y
 

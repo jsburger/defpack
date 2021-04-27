@@ -58,12 +58,12 @@ return "FAST TRAVEL";
 #define weapon_fire
 
 with instance_create(x,y,CustomObject){
-    sound   = sndCrossReload
+  sound   = sndCrossReload
 	name    = "piston charge"
 	creator = other
 	charge    = 0
-    maxcharge = 25
-    defcharge = {
+  maxcharge = 25
+  defcharge = {
         style : 2,
         width : 14,
         charge : 0,
@@ -196,29 +196,6 @@ if !charged sound_stop(sound)
 			}
 		}
 	}
-	if "extraspeed1" not in creator{creator.extraspeed1 = _c + creator.gunangle / 10000}else{creator.extraspeed1 += _c + creator.gunangle / 10000}
+	extraspeed_add(creator, _c, creator.gunangle + 180);
 
-#define step
-	if "extraspeed1" in self && current_frame_active if extraspeed1 > 0{
-	    nexthurt = current_frame+1
-		if irandom(2) != 0{instance_create(x,y,Dust)}
-		if extraspeed1 > 11{
-			if irandom(19) instance_create(x + random_range(-4, 4), y + random_range(-4, 4), GroundFlame)
-			if irandom(29) != 0{repeat(irandom_range(1, 3))instance_create(x,y,Smoke)}
-		}
-		canaim = false
-		with instance_create(x-lengthdir_x(extraspeed1+20,gunangle),y-lengthdir_y(extraspeed1+20,gunangle),Shank){
-			canfix = false
-			damage = 16
-			mask_index = mskBullet1
-			sprite_index = mskNone
-			image_xscale = 2
-			image_yscale = 3
-			creator = other
-			team = other.team
-			image_angle = other.gunangle
-		}
-		motion_add(gunangle - 180,extraspeed1)
-		extraspeed1--
-	}
-	else{extraspeed1 = 0;canaim = true}
+	#define extraspeed_add(_player, __speed, _direction) return mod_script_call("mod", "defpack tools", "extraspeed_add", _player, __speed, _direction);

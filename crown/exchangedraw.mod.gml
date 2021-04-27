@@ -8,7 +8,7 @@
   global.sprHUDbVL = sprite_add("../sprites/crown/sprCrownHUDVborderL.png", 3,  3, 0);
   global.sprHUDbVR = sprite_add("../sprites/crown/sprCrownHUDVborderR.png", 3, -1, 0);
   global.sprHUDp   = sprite_add("../sprites/crown/sprCrownHUDPointer.png",  1,  3, 0);
-  global.sprSwap   = sprite_add("../sprites/crown/sprExchangeSwap.png",  5, 10, 32); 
+  global.sprSwap   = sprite_add("../sprites/crown/sprExchangeSwap.png",  7, 10, 32);
 
   for(var _i = 0; _i < maxp; _i++){
     // global.anim[player index, variable]
@@ -115,7 +115,7 @@
         with instance_create(x, y, BloodLust){
           sprite_index = global.sprSwap;
           creator = other;
-          image_speed = .3;
+          image_speed = .4;
         }
         sound_play_pitch(sndRogueCanister, 2);
       }
