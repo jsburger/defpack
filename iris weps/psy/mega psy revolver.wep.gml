@@ -58,7 +58,7 @@ with instance_create(x,y,CustomProjectile){
     sprite_index = global.sprMegaPsyBullet
     mask_index = mskHeavyBullet
     recycle_amount = 5
-    damage = 2
+    damage = 3
     team = other.team
     force = 4
     timer = 6
@@ -99,7 +99,7 @@ if current_frame_active{
     repeat(3) instance_create(x+random_range(-8,8),y+random_range(-8,8),Smoke)
     projectile_hit(other,damage,force,direction)
     sleep(5)
-    view_shake_at(x,y,12)
+    view_shake_max_at(x,y,12)
     if frames <= 0 instance_destroy()
 }
 

@@ -128,8 +128,8 @@
 		//Sonic Explosions
 		SonicExplosion          = sprite_add(  i + "sprSonicExplosion.png", 8, 61, 59);
 		SmallSonicExplosion     = sprite_add(  i + "sprSonicExplosionSmall.png", 8, 20, 20);
-		msk.SonicExplosion      = sprite_add_p(i + "mskSonicExplosion.png", 9, 61, 59);
-		msk.SmallSonicExplosion = sprite_add_p(i + "mskSonicExplosionSmall.png", 9, 20, 20);
+		msk.SonicExplosion      = sprite_add_p(i + "mskSonicExplosion.png", 8, 61, 59);
+		msk.SmallSonicExplosion = sprite_add_p(i + "mskSonicExplosionSmall.png", 8, 20, 20);
 		SonicStreak             = sprite_add(i + "sprSonicStreak.png",6,8,32);
 
 		//Abris Stripes
@@ -535,40 +535,51 @@ with Player if visible{
 	with instances_matching(WepPickup, "wep", 0) instance_destroy()
 
 	with instances_matching_ne(Player, "defspeed", undefined) if array_length(defspeed) > 0 && defspeed[1] != 0{
-		with instance_create(x + lengthdir_x(defspeed[0] + 20 * skill_get(13), gunangle), y + lengthdir_y(defspeed[0] + 20 * skill_get(13), gunangle), Shank){
-			sprite_index = mskNone;
-			//mask_index = mskShank;
+		with instance_create(x + lengthdir_x(defspeed[0] * 1.5 + 12 * skill_get(13), defspeed[1]), y + lengthdir_y(defspeed[0] * 1.5 + 12 * skill_get(13), defspeed[1]), CustomSlash){
+			mask_index = sprShank;
+			sprite_index = mask_index;
+			image_alpha = 0;
 			canfix = false;
-			damage = 30;
-			image_xscale = 2;
-			image_yscale = 2;
+			damage = 36;
+			image_xscale = .25;
+			image_yscale = 1;
+			image_speed = .5;
 			creator = other;
 			team = other.team;
-			image_angle = other.gunangle;
+			motion_add(other.defspeed[1], other.defspeed[0]);
+			image_angle = other.defspeed[1];
+
+			on_hit = defspeed_hit;
 		}
 		if place_free(x + lengthdir_x(defspeed[0], defspeed[1]), y + lengthdir_y(defspeed[0], defspeed[1])){
 			x += lengthdir_x(defspeed[0], defspeed[1]);
 			y += lengthdir_y(defspeed[0], defspeed[1]);
+			nexthurt = current_frame + 1;
+			with instance_create(x + random_range(-3, 3), y + random_range(-3, 3), Dust){
+				motion_add(other.defspeed[1], choose(2, 2, 3));
+			}
+			if defspeed[0] >= 16{
+				repeat(2) instance_create(x + random_range(-5, 5), y + random_range(-5, 5), GroundFlame)
+			}
+
 		}else{
-			defspeed[0] = 1;
-			defspeed[1] += 180;
 			view_shake_at(x, y, 48);
 			sleep(8);
+			sound_play_pitchvol(sndWallBreak, .9, 1);
+			sound_play_pitchvol(sndMeleeWall, .7, 1.3);
 			repeat(3){
 				instance_create(x, y, Dust);
 				instance_create(x, y, Debris);
 			}
-			with instance_create(x, y, Shank){
-				canfix = false;
-				team = other.team;
-				creator = other;
-				image_xscale = 1.5;
-				image_yscale = 1.5;
-				force = 6;
-				damage = 6;
-				image_alpha = 0;
-				mask_index = msk.SmallSonicExplosion;
+
+			with instances_matching_ne(hitme, "team", team){
+				if distance_to_object(other) <= 16{
+					projectile_hit(self, 10, 6, point_direction(other.x, other.y, x, y));
+				}
 			}
+
+			defspeed[0] = 1;
+			defspeed[1] += 180;
 			with instance_create(x, y, ImpactWrists){image_speed = .7; depth = other.depth - 1}
 
 		}
@@ -1912,6 +1923,17 @@ if other != lasthit{
 		image_xscale *= 1.25
 		image_yscale *= 1.25
 		image_speed  *= .8
+	}
+
+	with Pickup{
+		if place_meeting(x, y, other){
+			motion_set(point_direction(other.x, other.y, x, y), clamp(other.force / 3, 12, 2));
+		}
+	}
+	with chestprop{
+		if place_meeting(x, y, other){
+			motion_set(point_direction(other.x, other.y, x, y), clamp(other.force / 2, 10, 1));
+		}
 	}
 
 	if shake {
@@ -4275,7 +4297,7 @@ for var i = 0; i < array_length(stuff); i++{
 }
 
 #define sniper_end_step
-with sniper_trail(2, c1, c2){
+with sniper_trail(1.7 + .8 * charged, c1, c2){
 	fade_speed -= .0225 * other.charged
 	image_alpha += .2 * other.charged
 }
@@ -4310,7 +4332,6 @@ with instance_create(x, y, CustomObject){
 	y1 = other.y1;
 	x2 = x;
 	y2 = y;
-	image_yscale = 1.7;
 	image_alpha = 1.2;
 	image_blend = col_start;
 	fade_speed = .1;
@@ -4693,3 +4714,12 @@ instance_create(x, y, SmallExplosion);
 sleep(5);
 view_shake_at(x, y, 2);
 instance_destroy();
+
+#define defspeed_hit
+if projectile_canhit_melee(other){
+	var _e = 0;
+	projectile_hit(other, damage, creator.defspeed[0], creator.defspeed[1]);
+	_e += (other.my_health <= 0);
+	view_shake_at(x, y, 16 + 16 * _e);
+	sleep(45 + 25 * _e);
+}

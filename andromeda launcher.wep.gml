@@ -11,7 +11,7 @@ global.space4 = sprite_add("sprites/other/sprSpaceForeground.png",1,0,0);
 global.space3 = sprite_add("sprites/other/sprSpaceBackground.png",1,0,0);
 
 global.disappear0 = [GroundFlame, CharredGround, Scorch, ScorchTop, Scorchmark, BlueFlame, Drip, Smoke, Dust]
-global.disappear1 = [chestprop, Feather, Shell, Debris, WepPickup, Pickup, Grenade, Confetti]
+global.disappear1 = [chestprop, Feather, Shell, Debris, WepPickup, Pickup, Grenade, Confetti, ChestOpen]
 
 //with CustomObject instance_destroy()
 /*with script_bind_draw(spacedraw,7.9) {
@@ -143,14 +143,14 @@ with instances_in(x-succ,y-succ/2,x+succ,y+succ/2,Wall){
 }
 
 
-with instances_in(x-succ,y-succ/2,x+succ,y+succ/2,global.disappear0){
+with instances_in(x-succ,y-succ/2,x+succ,y+succ/2,global.disappear0) if instance_exists(self){
     var _x = clamp(other.x, bbox_left, bbox_right), _y = clamp(other.y, bbox_top, bbox_bottom);
     if (sqr(_x - other.x))/sqr(other.succ) + (sqr(_y - other.y))/sqr(other.succ/2) <= 1{
 				instance_delete(self)
     }
 }
 
-with instances_in(x-succ,y-succ/2,x+succ,y+succ/2,global.disappear1){
+with instances_in(x-succ,y-succ/2,x+succ,y+succ/2,global.disappear1) if instance_exists(self){
     var _x = clamp(other.x, bbox_left, bbox_right), _y = clamp(other.y, bbox_top, bbox_bottom);
     if (sqr(_x - other.x))/sqr(other.succ) + (sqr(_y - other.y))/sqr(other.succ/2) <= 1{
 				instance_delete(self)
