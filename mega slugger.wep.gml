@@ -13,13 +13,13 @@
   return 2;
 
 #define weapon_cost
-  return 6;
+  return 8;
 
 #define weapon_area
-  return 100;
+  return 14;
 
 #define weapon_load
-  return 50;
+  return 70;
 
 #define weapon_swap
 if instance_is(self, Player){
@@ -71,8 +71,8 @@ return{
   {
     creator = other;
     team    = other.team;
-    damage[0]  = 10;
-    damage[1]  = 15;
+    damage[0]  = 8;
+    damage[1]  = 12;
     maxframes = 2 + skill_get(15) * 2
     frames    = maxframes
     force = 30;
@@ -148,8 +148,8 @@ return{
           x -= lengthdir_x(other.size * 2, direction)
           y -= lengthdir_y(other.size * 2, direction)
           with other{
-            x += lengthdir_x(speed * .7, direction)
-            y += lengthdir_y(speed * .7, direction)
+            x += lengthdir_x(speed * .2, direction)
+            y += lengthdir_y(speed * .2, direction)
           }
           sleep(12*_s)
           view_shake_at(x,y,8*_s)

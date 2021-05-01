@@ -1,14 +1,14 @@
 #define init
-global.sprMobyShotgun = sprite_add_weapon("sprites/weapons/sprMobyShotgun.png", 4, 2);
+global.sprJack = sprite_add_weapon("sprites/weapons/sprJack.png", 5, 3);
 global.yellow = merge_color(c_yellow, c_white, .4)
 
 #macro maxchrg 16
 
 #define weapon_name
-return "MOBY SHOTGUN";
+return "JACK";
 
 #define weapon_sprt
-return global.sprMobyShotgun;
+return global.sprJack;
 
 #define weapon_type
 return 2;
@@ -21,7 +21,7 @@ if is_object(w) return 8 - round(w.charge/3.5)
 return 8;
 
 #define weapon_cost(w)
-if is_object(w) && w.charge >= maxchrg && (!instance_is(self,Player) || ammo[2] > 1) return irandom(1)
+if is_object(w) && w.charge >= maxchrg && (!instance_is(self,Player) || ammo[2] > 1) return choose(0, 0, 1)
 return 1;
 
 #define weapon_swap
@@ -77,8 +77,9 @@ if lq_defget(w, "canbloom", 1){
     w.canbloom = 0
     w.charge += current_time_scale
     weapon_post(3 + w.charge /10,-1 - w.charge / 3,2)
-    sound_play_pitch(sndQuadMachinegun,(.7 + w.charge * .02)*random_range(.95,1.05))
+    sound_play_pitch(sndQuadMachinegun,(.6 + w.charge * .02)*random_range(.95,1.05))
     sound_play_pitch(sndDoubleShotgun, .5 + w.charge / 35)
+    sound_play_pitchvol(sndSuperFlakExplode, .6 + w.charge / 60, .8)
     sound_play_pitchvol(sndIncinerator, .8, w.charge >= maxchrg)
     sound_play_gun(sndClickBack, 0, 1 - (w.charge/(maxchrg*1.5)))
     sound_stop(sndClickBack)

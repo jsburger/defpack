@@ -71,6 +71,7 @@ with mod_script_call_self("mod", "defpack tools", "create_sniper_charge", x, y){
     index = other.index
     cost = weapon_cost()
     amount = 15;
+    is_super  = true;
     deviation = global.mindev + (global.deviation - global.mindev) * other.accuracy
     on_fire = script_ref_create(gamma_shotgun_fire)
     spr_flash = global.sprGammaMuzzle

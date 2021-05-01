@@ -28,5 +28,6 @@
 /loadwep wide slugger
 /loadwep apergig tanat
 /loadwep mega slugger
+/loadwep jack
 
 /load mainbolts

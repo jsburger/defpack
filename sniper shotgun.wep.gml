@@ -69,5 +69,6 @@ with mod_script_call_self("mod", "defpack tools", "create_sniper_charge", x, y){
     index = other.index
     cost = weapon_cost()
     amount = 5;
+    is_super = true;
     deviation = global.deviation * other.accuracy
 }

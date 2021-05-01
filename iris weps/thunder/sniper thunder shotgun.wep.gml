@@ -70,6 +70,7 @@ with mod_script_call_self("mod", "defpack tools", "create_sniper_charge", x, y){
     cost = weapon_cost()
     amount = 12;
     chargespeed = 2
+    is_super  = true;
     deviation = global.deviation * other.accuracy
     name = "ThunderSniperCharge"
     on_fire = script_ref_create(thunder_shotgun_fire)

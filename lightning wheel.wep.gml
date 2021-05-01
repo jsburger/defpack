@@ -46,7 +46,7 @@
   sound_play_pitch(skill_get(mut_laser_brain) > 0 ? sndEnergyScrewdriverUpg : sndEnergyScrewdriver, 1.6 * _pitch)
   sound_play_pitch(sndLightningReload, .7 * _pitch)
 
-  with instance_create(x - lengthdir_x(4, gunangle), y - lengthdir_y(4, gunangle), CustomObject)
+  with instance_create(x - lengthdir_x(8, gunangle), y - lengthdir_y(8, gunangle), CustomObject)
   {
     defbloom = {
           xscale : 1.33,
@@ -67,8 +67,9 @@
     maxspeed = 20
     phase = 0
     ang = 0
-    damage = 6
+    damage = 5
     whooshtime = 0
+    returngain = 12
     maxwhoosh = 3
     length = 6
     friction = 1.4 - skill_get(mut_long_arms)*.25
@@ -121,7 +122,7 @@
   mask_index = mskSnowTank;
   with instances_matching_ne(hitme,"team",team)
   {
-    if distance_to_object(other) <= 3
+    if distance_to_object(other) <= 8
     {
       if projectile_canhit(other) = true
       {
@@ -131,25 +132,27 @@
             sound_play_pitchvol(skill_get(mut_laser_brain) > 0 ? sndLightningPistolUpg : sndLightningPistol, random_range(1.3, 1.5), .7);
             sound_play_pitchvol(sndLightningHammer, random_range(1.8, 2), .7);
 
-            var meetx = (x + other.x)/2 + random_range(-3, 3) * other.size;
-            var meety = (y + other.y)/2 + random_range(-3, 3) * other.size;
+            var meetx = (x + other.x)/2,
+                meety = (y + other.y)/2,
+                   _s = clamp(other.size, 1, 3);
             with instance_create(x ,y, LightningHit) image_angle = other.image_angle
             with other{
-              var _xx = lengthdir_x(other.speed / (1 + size), other.direction),
-                  _yy = lengthdir_y(other.speed / (1 + size), other.direction);
+              var _xx = lengthdir_x(other.speed, other.direction) * (1 - _s / 10),
+                  _yy = lengthdir_y(other.speed, other.direction) * (1 - _s / 10);
               if !place_meeting(x + _xx, y + _yy, Wall){
-                x += _xx
-                y += _yy
+                x += _xx;
+                y += _yy;
               }
             }
+            other.speed = 0;
             projectile_hit(other, damage, speed, direction)
             if !instance_is(other, prop){
-              x -= lengthdir_x(speed / 3, direction)
-              y -= lengthdir_y(speed / 3, direction)
+              x -= lengthdir_x(speed, direction) * (1 - _s / 10)
+              y -= lengthdir_y(speed, direction) * (1 - _s / 10)
             }
 
             sleep(3 + 14 * clamp(1 + other.size / 3, 1, 4));
-            view_shake_max_at(x, y, 2 + 6 * clamp(other.size, 1, 4));
+            view_shake_max_at(x, y, 2 + 6 * clamp(other.size, 1, 3));
           }
         }
       }
@@ -259,7 +262,8 @@
       var _d = point_direction(x,y,creator.x,creator.y)
       if phase = 1 {
         if irandom(3) <= current_time_scale{repeat(1 + irandom(2)) with instance_create(x + random_range(-4, 4), y + random_range(-4, 4), LightningHit){image_angle = random(360)}}
-        motion_add(_d,8*current_time_scale)
+        motion_add(_d,returngain * current_time_scale)
+        returngain += .5 * current_time_scale
       }
       var _r = weapon_get_load(mod_current)
       if distance_to_object(creator) <= 9+skill_get(17)*3

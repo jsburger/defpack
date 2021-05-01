@@ -535,13 +535,14 @@ with Player if visible{
 	with instances_matching(WepPickup, "wep", 0) instance_destroy()
 
 	with instances_matching_ne(Player, "defspeed", undefined) if array_length(defspeed) > 0 && defspeed[1] != 0{
-		with instance_create(x + lengthdir_x(defspeed[0] * 1.5 + 12 * skill_get(13), defspeed[1]), y + lengthdir_y(defspeed[0] * 1.5 + 12 * skill_get(13), defspeed[1]), CustomSlash){
+		with instance_create(x - lengthdir_x(defspeed[0] * .33 - 12 * skill_get(13), defspeed[1]), y - lengthdir_y(defspeed[0] * .33 - 12 * skill_get(13), defspeed[1]), CustomSlash){
 			mask_index = sprShank;
 			sprite_index = mask_index;
 			image_alpha = 0;
+			depth = other.depth - 1;
 			canfix = false;
 			damage = 36;
-			image_xscale = .25;
+			image_xscale = .66;
 			image_yscale = 1;
 			image_speed = .5;
 			creator = other;
@@ -4059,6 +4060,7 @@ with instance_create(x, y, CustomObject){
 	holdtime = 150
 	amount   = 1;
 	deviation = 0;
+	is_super = false;
 	depth  = TopCont.depth
 	index  = -1
 	reload = -1
@@ -4174,13 +4176,17 @@ var _ptch = random_range(-.5,.5)
 }
 var _c = charge, _cc = charge/maxcharge, _ccc = _cc = 1 ? 1 : 0;
 with creator{
-	if other.amount <= 1{
+	if !other.is_super{
 		weapon_post(12,2,158)
 		motion_add(gunangle -180,_c / 20)
 		sleep(120)
 	}else{
 		weapon_post(15,40,210)
-		motion_add(gunangle -180,_c / 5)
+		if _ccc{
+			extraspeed_add(self, 10, gunangle - 180);
+		}else{
+			motion_add(gunangle -180,_c / 3)
+		}
 		sleep(200)
 	}
 	repeat(other.amount){
@@ -4720,6 +4726,6 @@ if projectile_canhit_melee(other){
 	var _e = 0;
 	projectile_hit(other, damage, creator.defspeed[0], creator.defspeed[1]);
 	_e += (other.my_health <= 0);
-	view_shake_at(x, y, 16 + 16 * _e);
-	sleep(45 + 25 * _e);
+	view_shake_at(x, y, 12 + 4 * _e);
+	sleep(40 + 20 * _e);
 }

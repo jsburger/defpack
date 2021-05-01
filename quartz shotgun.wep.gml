@@ -82,6 +82,7 @@ return{
   sound_play_pitch(sndSawedOffShotgun,1.3 * _p)
   sound_play_pitch(sndSlugger,.75 * _p)
   sound_play_pitch(sndLaserCrystalHit,1.55 * _p)
+
   repeat(5) with instance_create(x,y,CustomProjectile){
       name = "Quartz Shell"
       sprite_index = global.sprQuartzBullet2
@@ -96,8 +97,20 @@ return{
       friction = random_range(.6,2)
       image_speed = 1
       wallbounce = 3 + skill_get(15) * 5;
-      motion_add(other.gunangle+random_range(-9,9) * (other.accuracy + (2 - 2 * w.health/w.maxhealth)),24 * random_range(1 * (1 - _c * .45), 1))
-      if place_meeting(x, y, Wall){mask_index = sprGrenade;speed = 10; move_contact_solid(direction - 180, 12)}
+      motion_add(other.gunangle+random_range(-9,9) * (other.accuracy + (2 - 2 * w.health/w.maxhealth)),24)
+
+      if place_meeting(x + hspeed, y + vspeed, Wall){
+        var _i = 0;
+        speed = 16;
+        do{
+          mask_index = sprMapDot;
+          _i++;
+          x -= lengthdir_x(1, direction);
+          y -= lengthdir_y(1, direction);
+        }until(_i >= 100 || !place_meeting(x, y, Wall));
+        mask_index = mskBullet2
+      }
+
       image_angle = direction
       defbloom = {
           xscale : 2,
@@ -148,8 +161,8 @@ return{
 #define quartzbullet_hit
   if projectile_canhit_melee(other) || lasthit != other{
       var dmg = fallofftime >= current_frame ? damage : damage - falloff
-      sleep(dmg)
-      view_shake_at(x,y,dmg)
+      sleep(12 + 5 * clamp(other.size, 1, 3))
+      view_shake_max_at(x, y, 6 + 2 * clamp(other.size, 1, 3))
       projectile_hit(other,dmg,force,direction)
       pierce--
       lasthit = other

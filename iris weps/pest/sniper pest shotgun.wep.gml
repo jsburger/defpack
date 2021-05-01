@@ -71,6 +71,7 @@ with mod_script_call_self("mod", "defpack tools", "create_sniper_charge", x, y){
     cost = weapon_cost()
     on_fire = script_ref_create(pest_shotgun_fire)
     spr_flash = global.sprPestMuzzle
+    is_super  = true;
     deviation = global.deviation * other.accuracy
     amount = 5;
 }
