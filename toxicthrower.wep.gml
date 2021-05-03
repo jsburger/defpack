@@ -20,7 +20,9 @@ return 12;
 return 1;
 
 #define weapon_swap
-return sndSwapFlame;
+sound_play_pitch(sndToxicBoltGas, 1.4);
+sound_play_pitchvol(sndSwapFlame, 1, .6);
+return -4;
 
 #define weapon_area
 if array_length(instances_matching(Player, "notoxic", 1)) return 9

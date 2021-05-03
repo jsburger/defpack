@@ -115,14 +115,14 @@ if button_pressed(index, "fire") = true{
 
 #define beam_step
 if instance_exists(creator){
-	var _o = 0;	
+	var _o = 0;
     with creator{
-        if other.time > current_time_scale weapon_post(5,-7,0)
+        if other.time > current_time_scale weapon_post(5, -7, 0)
         if current_frame mod 8 <= current_time_scale{
         	var _p = random_range(.9, 1.1);
-			sound_play_pitchvol(sndHyperCrystalHurt, 3 * _p, .2);
-			weapon_post(4, 1, 0)
-			_o = 1;
+					sound_play_pitchvol(sndHyperCrystalHurt, 3 * _p, .2);
+					weapon_post(4,  1, 0)
+					_o = 1;
         }
     }
     time -= current_time_scale
@@ -149,7 +149,7 @@ if instance_exists(creator){
 		}
     }
     until dir >= 1800 || place_meeting(x,y,Wall)
-    
+
     if time <= current_time_scale && !button_check(creator.index, "fire"){
     	with instance_create(x - lengthdir_x(8, image_angle), y - lengthdir_y(8, image_angle), WepSwap){
 			image_xscale = 1.35;
@@ -157,7 +157,7 @@ if instance_exists(creator){
 			image_speed = .6;
 		}
 	}
-    
+
 	with instance_create(x, y, Dust){
 		sprite_index = sprExtraFeetDust;
 		motion_add(other.image_angle - 180 + random_range(-32, 32), random_range(0, 2))
@@ -176,7 +176,7 @@ if instance_exists(creator){
             	motion_set(other.direction,irandom_range(0, 1))
             	image_speed = random_range(.7,.9)
             	depth = other.depth - 1
-            	
+
             }
         }
     }
@@ -189,12 +189,17 @@ else instance_destroy()
 #define beam_hit
 	var _h = max(1, 4 - skill_get(mut_laser_brain));
 	if current_frame mod _h <= current_time_scale{
-		sleep(8 + min(other.size, 1) * 3)
-	    view_shake_max_at(creator.x,creator.y, 5 + 3 * min(1, other.size))
-	    projectile_hit(other,3,other.friction + .3,direction)
-	    repeat(3 + other.size) with instance_create(other.x, other.y, choose(Smoke, Dust, Dust)){
+	    view_shake_max_at(creator.x,creator.y, 3);
+	    projectile_hit(other,3,other.friction + .31,direction)
+	    repeat(choose(2, 2, 3)) with instance_create(other.x, other.y, choose(Smoke, Dust, Dust)){
 			sprite_index = sprExtraFeetDust;
 			motion_add(random(360), random_range(2, 5))
+		}
+
+		if other.my_health <= 0{
+			projectile_hit(other, 0, 10, direction);
+			view_shake_max_at(creator.x,creator.y, 6 + 6 * clamp(other.size, 1, 3));
+			sleep(24 + clamp(other.size, 1, 3) * 16)
 		}
 		instance_create(other.x + random_range(-15, 15), other.y + random_range(-15, 15), WepSwap)
 	}

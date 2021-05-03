@@ -48,7 +48,7 @@ with mod_script_call("mod","defpack tools","create_abris",self,_strtsize,_endsiz
 	auto = 1
 	damage = 6
 	maxdamage = 20
-	margin += 58
+	margin += 80
 	view_factor = .6
 	name = mod_current
 	payload = script_ref_create(pop)

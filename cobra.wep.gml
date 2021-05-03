@@ -20,7 +20,10 @@ return 12;
 return 1;
 
 #define weapon_swap
-return sndSwapDragon;
+sound_play_pitchvol(sndScorpionHit, 1.4, 1.3);
+sound_play_pitch(sndToxicBoltGas, 1.4);
+sound_play_pitchvol(sndSwapFlame, 1, .6);
+return -4;
 
 #define weapon_area
 if array_length(instances_matching(Player, "notoxic", 1)) return 13
@@ -41,13 +44,16 @@ var _load = weapon_get_load(argument0);
 
 	 // Sound:
 	if(button_pressed(index, "fire") ||(race = "steroids" || race = "venuz" || race = "skeleton") && button_pressed(index, "spec")) instance_create(x,y,DragonSound);
-	with(DragonSound) timeout = -_load;
+	with(DragonSound){
+		timeout = -_load;
+		is_cobra = true;
+	};
 
 	 // Kick, Shift, Shake:
 	if(fork()){
 		repeat(_load) if(instance_exists(self)){
-			weapon_post(6, -3, 5);
-			wait 1;
+			weapon_post(6, -12, 0);
+			wait(1);
 		}
 		exit;
 	}
@@ -60,3 +66,10 @@ var _load = weapon_get_load(argument0);
 		}
 		wait 1;
 	}
+
+#define step
+with instances_matching(DragonSound, "is_cobra", true){
+	if timeout >= 0{
+		sound_play_pitchvol(sndScorpionFireStart, 1.5, 1.4);
+	}
+}

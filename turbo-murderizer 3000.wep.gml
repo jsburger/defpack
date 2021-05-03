@@ -1,5 +1,7 @@
 #define init
 global.sprTurboMurderizer3000 = sprite_add_weapon("sprites/weapons/sprTurboMurderizer3000.png",12,5)
+#macro ang 24
+
 #define weapon_name
 return "TURBO-MURDERIZER 3000"
 #define weapon_type
@@ -27,11 +29,11 @@ return{
 #define weapon_text
 return "COMEDY GREEN"
 #define weapon_fire
-motion_add(gunangle - 180, 2)
+motion_add(gunangle - 180, 1)
 var i = wepflip, flip = wepflip
 repeat(3 + skill_get(mut_laser_brain))
 {
-  weapon_post(9, 5, 12)
+  weapon_post(9, 7, 3)
   var _p = random_range(.8, 1.2)
   if !skill_get(17)
 	{
@@ -47,13 +49,15 @@ repeat(3 + skill_get(mut_laser_brain))
 	with mod_script_call_nc("mod","defpack tools","create_plasmite",x,y)
 	{
 		fric = random_range(.02, .2) + .08
-		motion_set(other.gunangle + (i * 25) + random_range(-7, 7) * other.accuracy,18)
-		projectile_init(other.team,other)
-        move_contact_solid(other.gunangle,6)
-        image_angle = direction
-        maxspeed = 18
+		motion_set(other.gunangle - (i * ang) * other.accuracy + random_range(-7, 7)* other.accuracy, 22)
+		  projectile_init(other.team,other)
+      move_contact_solid(other.gunangle,6)
+      image_angle = direction
+      maxspeed = 22
 	}
 	i -= flip
+  if i = -1{flip *= -1}
+  if i = 1{flip *= -1}
   wait(1)
   if !instance_exists(self) exit
 }

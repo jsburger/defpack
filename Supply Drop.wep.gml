@@ -1,8 +1,6 @@
 #define init
 global.sprSupplyDrop = sprite_add_weapon("sprites/weapons/sprSupplyDrop.png", -1, 3);
 global.area = sprite_add("sprites/projectiles/sprSupplyDropArea.png", 1, 8, 8);
-global.ChestPool   = [WeaponChest, AmmoChest, HealthChest, "TankChest", "ThemedChest"];
-global.ChestWeight = [          1,         1,           2,       .0001,            10];
 
 #macro abris_mouse 0
 #macro abris_manual 1
@@ -74,23 +72,18 @@ sound_play_pitch(sndSniperTarget,2.5)
   	damage = 20
     force  = 12
 
-    var _chest = determine_chest();
-    switch _chest{
-      /*case "TankChest":
-        trace("tank chest")
-        chest = mod_script_call("mod", "tank", "crate_create", -1000, -1000);
-        break;*/
-      case "ThemedChest":
-        trace("themed chest")
-        var _q = mod_script_call("mod", "chest", "get_chests", 0, GameCont.hard);
-        if array_length(_q){
-            chest = mod_script_call("mod", "chest", "customchest_create", x, y, _q[irandom(array_length(_q) - 7)])
-        }
-        break;
-      default:
-        chest = instance_create(-1000, -1000, _chest);
-        break;
+    var _r = irandom(999);
+    if _r = 999{
+      chest = mod_script_call("mod", "tank", "crate_create", -1000, -1000);
+    }if _r < 999 && _r > 300{
+      chest = instance_create(-1000, -1000, WeaponChest);
+    }if _r <= 300{
+      var _q = mod_script_call("mod", "chest", "get_chests", 0, GameCont.hard);
+      if array_length(_q){
+          chest = mod_script_call("mod", "chest", "customchest_create", x, y, _q[irandom(array_length(_q) - 7)])
+      }
     }
+    
     zspeed = 64;
     z = 30 * 2 * zspeed;
     sprite_index = chest.sprite_index;
@@ -209,19 +202,5 @@ with instance_create(x-random(_x),y-random(_y),Dust){
     x+=hspeed
     y+=vspeed
 }
-
-#define determine_chest()
-  var _weight_total = 0;
-  for(var _i = 0; _i < array_length(global.ChestPool); _i++){
-    _weight_total += global.ChestWeight[_i];
-  }
-
-  var _round = random(_weight_total);
-  for(_i = 0; _i < array_length(global.ChestPool); _i++){
-    if(_round < global.ChestWeight[_i]){
-      return global.ChestPool[_i];
-    }
-    _round -= global.ChestWeight[_i];
-  }
 
 #define create_sonic_explosion(_x, _y) return mod_script_call("mod", "defpack tools", "create_sonic_explosion", _x, _y);

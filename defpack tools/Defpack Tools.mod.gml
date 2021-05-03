@@ -194,7 +194,9 @@
 		QuartzPickup = sprite_add_weapon("../sprites/other/sprQuartzPickup.png", 5, 5);
 
 		//Crits
-		Killslash = sprite_add(i + "sprKillslash.png", 8, 16, 16);
+		Killslash     = sprite_add(i + "sprKillslash.png", 8, 16, 16);
+		KillslashL    = sprite_add(i + "sprKillslashL.png", 8, 24, 24);
+		KillslashKill = sprite_add(i + "sprKillslashKill.png", 12, 5, 5);
 
 		//Charge Icon
 		Charge = sprite_add("../sprites/interface/sprHoldIcon.png", 1, 5, 7);
@@ -269,6 +271,8 @@
 // all bullets gain 1 damage on bounce
 #macro neurons skill_get("excitedneurons")
 
+// extra speed ceil clamp
+#macro defspeed_max 32
 
 
 #define sprite_add_d(sprite, subimages, xoffset, yoffset)
@@ -535,14 +539,14 @@ with Player if visible{
 	with instances_matching(WepPickup, "wep", 0) instance_destroy()
 
 	with instances_matching_ne(Player, "defspeed", undefined) if array_length(defspeed) > 0 && defspeed[1] != 0{
-		with instance_create(x - lengthdir_x(defspeed[0] * .33 - 12 * skill_get(13), defspeed[1]), y - lengthdir_y(defspeed[0] * .33 - 12 * skill_get(13), defspeed[1]), CustomSlash){
+		with instance_create(x - lengthdir_x(defspeed[0] * .5 - 12 * skill_get(13), defspeed[1]), y - lengthdir_y(defspeed[0] * .5 - 12 * skill_get(13), defspeed[1]), CustomSlash){
 			mask_index = sprShank;
 			sprite_index = mask_index;
 			image_alpha = 0;
 			depth = other.depth - 1;
 			canfix = false;
 			damage = 36;
-			image_xscale = .66;
+			image_xscale = max(.5, other.defspeed[0] / sprite_get_width(mask_index) * 1.2);
 			image_yscale = 1;
 			image_speed = .5;
 			creator = other;
@@ -552,15 +556,15 @@ with Player if visible{
 
 			on_hit = defspeed_hit;
 		}
-		if place_free(x + lengthdir_x(defspeed[0], defspeed[1]), y + lengthdir_y(defspeed[0], defspeed[1])){
-			x += lengthdir_x(defspeed[0], defspeed[1]);
-			y += lengthdir_y(defspeed[0], defspeed[1]);
+		if place_free(x + lengthdir_x(min(defspeed[0], defspeed_max), defspeed[1]), y + lengthdir_y(min(defspeed[0], defspeed_max), defspeed[1])) && place_free(x + lengthdir_x(min(defspeed[0], defspeed_max)/2, defspeed[1]), y + lengthdir_y(min(defspeed[0], defspeed_max)/2, defspeed[1])){
+			x += lengthdir_x(min(defspeed[0], defspeed_max), defspeed[1]);
+			y += lengthdir_y(min(defspeed[0], defspeed_max), defspeed[1]);
 			nexthurt = current_frame + 1;
 			with instance_create(x + random_range(-3, 3), y + random_range(-3, 3), Dust){
-				motion_add(other.defspeed[1], choose(2, 2, 3));
+				motion_add(min(other.defspeed[0], defspeed_max), choose(2, 2, 3));
 			}
-			if defspeed[0] >= 16{
-				repeat(2) instance_create(x + random_range(-5, 5), y + random_range(-5, 5), GroundFlame)
+			if defspeed[0] >= defspeed_max{
+				repeat(1 + 2 * defspeed[0] / defspeed_max) instance_create(x + random_range(-3, 3) + lengthdir_x(random(min(defspeed[0], defspeed_max)), defspeed[1]), y + random_range(-3, 3) + lengthdir_y(random(min(defspeed[0], defspeed_max)), defspeed[1]), GroundFlame)
 			}
 
 		}else{
@@ -579,16 +583,18 @@ with Player if visible{
 				}
 			}
 
-			defspeed[0] = 1;
+			nexthurt = current_frame + 7;
+
+			defspeed[0] = .5;
 			defspeed[1] += 180;
 			with instance_create(x, y, ImpactWrists){image_speed = .7; depth = other.depth - 1}
 
 		}
 
-		motion_set(defspeed[1], defspeed[0]);
-		defspeed[0]--;
+		motion_set(defspeed[1], min(defspeed[0], defspeed_max));
+		defspeed[0] /= 1.33;
 
-		if defspeed[0] <= 0 && defspeed[1] != 0{
+		if defspeed[0] <= .5 && defspeed[1] != 0{
 			defspeed[0] = 0;
 			defspeed[1] = 0;
 			canaim++;
@@ -2720,7 +2726,7 @@ with instance_create(_x, _y, CustomProjectile) {
 }
 
 #define plasmite_step
-if chance(8 + 6 * skill_get(mut_laser_brain)) instance_create(x, y, PlasmaTrail)
+if chance(8 + (6 * skill_get(mut_laser_brain) > 0)) instance_create(x, y, PlasmaTrail)
 
 var closeboy = instance_nearest_matching_ne(x, y, hitme, "team", team);
 if instance_exists(closeboy) && distance_to_object(closeboy) <= 16 {
@@ -3513,15 +3519,15 @@ if speed < friction instance_destroy()
 
 #define crit() //add this to on_hit effects in order to not be stupid
 	var _t = team;
-	view_shake_max_at(x, y, 150)
-	sleep(70)
+	view_shake_max_at(x, y, 90)
+	sleep(50)
 	sound_play_pitchvol(sndHammerHeadEnd,random_range(1.23,1.33),20)
 	sound_play_pitchvol(sndBasicUltra,random_range(0.9,1.1),20)
 	sound_play_pitch(sndCoopUltraA,random_range(3.8,4.05))
 	sound_play_pitch(sndBasicUltra,random_range(.6,.8))
 	sound_play_gun(sndClickBack,1,.5)
 	sound_stop(sndClickBack)
-	with instance_create(x+lengthdir_x(sprite_get_width(sprite_index),image_angle),y+lengthdir_y(sprite_get_width(sprite_index),image_angle),CustomObject){
+	with instance_create(other.x,other.y,CustomObject){
 	    with instance_create(x,y,CustomSlash){
 	        lifetime = 4
 	        team = _t
@@ -3540,19 +3546,15 @@ if speed < friction instance_destroy()
 	    }
 	    image_angle = random(360)
 	    depth = other.depth -1
-	    image_speed = .6
-	    sprite_index = spr.Killslash
-	    image_xscale = random_range(1.3,1.5)
-	    image_yscale = image_xscale
+	    image_speed = .7
+	    sprite_index = spr.KillslashL
 	    on_step = Killslash_step
 	    with instance_create(x,y,CustomObject){
 	        image_angle = other.image_angle - 90 + random_range(-8,8)
-	        depth = other.depth
-	        image_speed = .8
+	        depth = other.depth+1
+	        image_speed = .45
 	        sprite_index = spr.Killslash
 	        image_blend = c_black
-	        image_xscale = other.image_xscale-.5
-	        image_yscale = image_xscale
 	        on_step = Killslash_step
 	    }
 	}
@@ -3562,8 +3564,19 @@ if speed < friction instance_destroy()
 	if image_index >= 7 instance_destroy();
 
 #define crit_proj
-	with other if typ != 0 {
-	    instance_destroy()
+	with other if typ != 0{
+		var  _s = other,
+		    _xx = (_s.bbox_left+_s.bbox_right)/2,
+				_yy = (_s.bbox_top+_s.bbox_bottom)/2;
+		with instance_create(x, y, PlasmaTrail){
+			image_index  = floor(point_distance(_xx, _yy, other.x, other.y) / (sprite_get_width(sprite_index) / 2)) * 5;
+			sprite_index = spr.KillslashKill;
+			image_alpha  = .8;
+			image_xscale = min(1 + other.damage / 20, 1.5);
+			image_yscale = image_xscale;
+			image_speed  = random_range(.4, .6);
+		}
+	  instance_destroy()
 	}
 
 #define crit_step
@@ -3970,6 +3983,7 @@ if instance_exists(q) and q != other and q.mask_index != mskNone and distance_to
     projectile_hit(q, damage, force, point_direction(x, y, q.x, q.y))
     with instance_create(q.x, q.y, CustomObject){
 	    sound_play_hit_ext(sndChickenSword, 1.4*random_range(.9,1.2), .8)
+			sound_play_pitchvol(sndDiscDie, 1.5*random_range(.9,1.2), .8)
 	    instance_destroy()
     }
     with instance_create(q.x, q.y, CustomObject){

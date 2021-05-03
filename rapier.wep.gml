@@ -52,12 +52,12 @@ if rapiers != 1{
 }
 else{
 	sound_play_pitch(sndBlackSwordMega,random_range(1.4,1.7))
-  var _e = 12 + 4*skill_get(mut_long_arms);
+  var _e = 24 + 12 * skill_get(mut_long_arms);
 	extraspeed_add(self, _e, gunangle);
 	wepangle = .1*wepflip
 	weapon_post(-10 - 10*skill_get(13),15,2)
 	move_contact_solid(gunangle,6)
-	with instance_create(x+lengthdir_x(_e+20*skill_get(13),gunangle),y+lengthdir_y(_e+20*skill_get(13),gunangle), Shank){
+	with instance_create(x+lengthdir_x(_e / 40,gunangle),y+lengthdir_y(_e / 40,gunangle), Shank){
 		canfix = false
 		damage = 20
 		team = other.team

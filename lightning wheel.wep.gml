@@ -39,6 +39,7 @@
   return false;
 
 #define weapon_fire
+  weapon_post(0, 0, 18);
   var _pitch = random_range(.8, 1.2)
   sound_play(sndChickenThrow);
   sound_play_pitchvol(sndLightningShotgunUpg, 2 * _pitch, skill_get(mut_laser_brain) > 0)
@@ -151,8 +152,8 @@
               y -= lengthdir_y(speed, direction) * (1 - _s / 10)
             }
 
-            sleep(3 + 14 * clamp(1 + other.size / 3, 1, 4));
-            view_shake_max_at(x, y, 2 + 6 * clamp(other.size, 1, 3));
+            sleep(10 + 6 * clamp(other.size, 1, 3));
+            view_shake_max_at(x, y, 10);
           }
         }
       }

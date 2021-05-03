@@ -65,7 +65,7 @@ return{
     }
     exit
   }
-  extraspeed_add(self, 12, gunangle + 180);
+  extraspeed_add(self, 18, gunangle + 180);
 
   with instance_create(x,y,CustomProjectile) //the projectile
   {

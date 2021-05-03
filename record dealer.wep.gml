@@ -67,10 +67,11 @@ if mod_exists("mod", "Disc Tools"){
 }
 
 var _disc = _da[irandom(array_length_1d(_da) - 1)];
+sound_play_slowdown(sndSuperDiscGun, .8)
 repeat(4)
 {
-  sound_play_slowdown(sndSuperDiscGun,.8)
-  weapon_post(6,-50,5)
+  sound_play_pitchvol(sndDiscgun, 1.2, .7);
+  weapon_post(6, -18, 4)
   var angle = gunangle + random_range(-6,6)*accuracy
   with get_disc(_disc){
       direction = angle
@@ -223,8 +224,12 @@ switch disc{
 
 #define sound_play_slowdown(_snd,_vol)
 with instance_create(x,y,CustomObject){
-  pitch = 1.2
-  decel = random_range(.05,.07)
+  with instances_matching(CustomObject, "name", "record dealer sound"){
+    instance_delete(self);
+  }
+  name = "record dealer sound";
+  pitch = 1.7
+  decel = random_range(.06,.08)
   p = random_range(.8,1.2)
   lifetime = pitch/decel + 1
   vol = _vol
@@ -236,7 +241,7 @@ with instance_create(x,y,CustomObject){
 #define sound_step
 if frac(current_frame) < current_time_scale{
     pitch -= decel
-    sound_play_pitchvol(snd,pitch*p,vol)
+    sound_play_pitchvol(snd, pitch*p, vol)
     lifetime -= 1
     if lifetime <= 0 instance_destroy()
 }

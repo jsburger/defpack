@@ -162,8 +162,8 @@ return{
   if projectile_canhit_melee(other) || lasthit != other{
       var dmg = fallofftime >= current_frame ? damage : damage - falloff
       sleep(12 + 5 * clamp(other.size, 1, 3))
-      view_shake_max_at(x, y, 6 + 2 * clamp(other.size, 1, 3))
-      projectile_hit(other,dmg,force,direction)
+      view_shake_max_at(x, y, 3 + 2 * clamp(other.size, 1, 3))
+      projectile_hit(other, dmg, force, direction)
       pierce--
       lasthit = other
   }

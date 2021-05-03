@@ -6,7 +6,7 @@ global.sprQuartzBullet     = sprite_add("sprites/projectiles/sprQuartzBullet.png
 global.sprHud  = sprite_add("sprites/interface/sprQuartzMachinegunHud.png" , 1, 12, 3)
 global.sprHud1 = sprite_add("sprites/interface/sprQuartzMachinegunHud1.png", 1, 12, 3)
 global.sprHud2 = sprite_add("sprites/interface/sprQuartzMachinegunHud2.png", 1, 12, 3)
-    
+
 #define weapon_name
 return "QUARTZ MACHINEGUN"
 
@@ -76,7 +76,7 @@ return choose("GLASS CANNON","BE CAREFUL WITH IT")
       }
       wep = w
   }
-  weapon_post(7,12,0)
+  weapon_post(7, 7, 0)
   sound_play_pitch(sndHeavyRevoler,random_range(1,1.1))
   sound_play_pitch(sndLaserCrystalHit,random_range(1.7,2.1))
   with instance_create(x,y,CustomProjectile)
@@ -117,8 +117,8 @@ return choose("GLASS CANNON","BE CAREFUL WITH IT")
 
   #define quartzbullet_hit
   if projectile_canhit_melee(other) = true || lasthit != other{
-      sleep(5)
-      view_shake_at(x,y,6)
+      sleep(3 + clamp(other.size * 2, 1, 3));
+      view_shake_at(x, y, 4);
       projectile_hit(other,damage,force,direction)
       pierce--
       lasthit = other

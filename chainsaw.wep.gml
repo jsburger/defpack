@@ -92,19 +92,25 @@ return{
 
 #define chainsawshank_hit
 	if current_frame_active{
-		view_shake_at(x,y,8)
-		sleep(30)
+		view_shake_max_at(x, y, 5)
+		sleep(20)
 		other.speed = 0
-		var _splat = -4;
+		var _splat = -4,
+		        _o = self;
+
 		_splat = determine_gore(other)
 	    with instance_create((other.x*other.size+x)/(other.size+1),(other.y*other.size+y)/(other.size+1),_splat){image_angle = random(360)}
-		projectile_hit(other,damage,force,direction)
+
+		projectile_hit(other, damage, force, image_angle);
+
 		if other.my_health <= 0{
 	        sound_play_pitch(sndDiscHit,random_range(.7,.8))
 			sound_play_pitch(sndImpWristKill,random_range(1.6,1.8))
 			sound_play_pitch(sndDiscBounce,random_range(.5,.6))
-			sleep(other.size * 80)
-			view_shake_at(x,y,other.size * 80)
+			sleep(70 + other.size * 20)
+			view_shake_max_at(x, y, 28 + other.size * 12)
+			projectile_hit(other, 0, 9, _o.image_angle);
+
 			var _c = crown_current
 			crown_current = crwn_haste
 			if other.size > 1 && instance_is(other, enemy) repeat(min(5, other.size)){
