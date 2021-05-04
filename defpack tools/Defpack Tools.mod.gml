@@ -274,6 +274,8 @@
 // extra speed ceil clamp
 #macro defspeed_max 32
 
+// laser brain effect is active (for toggles rather than scaling like bloom)
+#macro brain_active skill_get(mut_laser_brain) > 0
 
 #define sprite_add_d(sprite, subimages, xoffset, yoffset)
 	var a = string_split(sprite, "/"),
@@ -504,9 +506,9 @@ with instances_matching_ne(CustomObject, "defbloom", undefined) {
     )
 }
 with instances_matching(CustomProjectile,"name","vector beam"){
-  draw_sprite_ext(sprite_index, image_index, xstart, ystart, image_xscale, 1.5*image_yscale, image_angle, image_blend, 0.15+skill_get(17)*.05);
-	if x != xstart draw_sprite_ext(spr_tail, 0, xstart, ystart, 1.5, image_yscale*1.5, image_angle, image_blend, .15+skill_get(17)*.05);
-	if x != xstart draw_sprite_ext(spr_head, 0, x, y, image_yscale*2.5, image_yscale*2.5, image_angle-45, image_blend, .15+skill_get(17)*.05);
+  draw_sprite_ext(sprite_index, image_index, xstart, ystart, image_xscale, 1.5*image_yscale, image_angle, image_blend, 0.15 + brain_active * .05);
+	if x != xstart draw_sprite_ext(spr_tail, 0, xstart, ystart, 1.5, image_yscale*1.5, image_angle, image_blend, .15 + brain_active * .05);
+	if x != xstart draw_sprite_ext(spr_head, 0, x, y, image_yscale*2.5, image_yscale*2.5, image_angle-45, image_blend, .15 + brain_active * .05);
 }
 with instances_matching(CustomProjectile,"name","mega lightning bullet"){
   draw_sprite_ext(sprite_index, image_index, x, y, 2*image_xscale+(1-image_index)*2, 2*image_yscale+(1-image_index)*2, image_angle, image_blend, 0.2+(1-image_index)*.4);
@@ -1544,7 +1546,7 @@ with create_bullet(x, y){
     name = "Lightning Bullet"
 
     var s = "LightningBullet";
-    if skill_get(mut_laser_brain) > 0 s += "Upg"
+    if brain_active s += "Upg"
     if neurons > 0 s += "Bounce"
     sprite_index = lq_get(spr, s)
 
@@ -1566,7 +1568,7 @@ with create_heavy_bullet(x, y){
     name = "Heavy Lightning Bullet"
 
     var s = "HeavyLightningBullet";
-    if skill_get(mut_laser_brain) > 0 s += "Upg"
+    if brain_active > 0 s += "Upg"
     if neurons > 0 s += "Bounce"
     sprite_index = lq_get(spr, s)
 
@@ -2567,12 +2569,12 @@ else{
         lightning_refresh()
         hitid = [sprLightningHit,"Lightning Bolt"]
         name = "Lightning Bolt"
-        time = skill_get(17)+4
+        time = skill_get(17) + 4
         timestart = time
         create_frame = current_frame
         colors = [c_black,c_white,c_white,merge_color(c_blue,c_white,.3),c_white]
         wantdust = 1
-        damage = 9 + skill_get(17)*3
+        damage = 9 + skill_get(17) * 3
         force = 40
         mask_index   = sprPlasmaBall
         image_xscale = 5
@@ -2618,7 +2620,7 @@ var yy = y;
 
 var ang = random_range(70,110)
 var width = 0.5, length = 10
-var bwidth = .5 + skill_get(mut_laser_brain)
+var bwidth = .5 + brain_active
 var n = 0
 vertex_begin(vbuf, global.lightningformat)
 vertex_position(vbuf, xx, yy)
@@ -2711,8 +2713,8 @@ with instance_create(_x, _y, CustomProjectile) {
         alpha : .1
     }
 	image_speed = 0
-	damage = 4 //+ 3*skill_get(mut_laser_brain)
-	sprite_index = skill_get(mut_laser_brain) ? spr.PlasmiteUpg : spr.Plasmite
+	damage = 4
+	sprite_index = brain_active ? spr.PlasmiteUpg : spr.Plasmite
  	fric = random_range(.2, .3)
     force = 2
 	maxspeed = 13
@@ -2726,7 +2728,7 @@ with instance_create(_x, _y, CustomProjectile) {
 }
 
 #define plasmite_step
-if chance(8 + (6 * skill_get(mut_laser_brain) > 0)) instance_create(x, y, PlasmaTrail)
+if chance(8 + (6 * brain_active)) instance_create(x, y, PlasmaTrail)
 
 var closeboy = instance_nearest_matching_ne(x, y, hitme, "team", team);
 if instance_exists(closeboy) && distance_to_object(closeboy) <= 16 {
@@ -2930,7 +2932,7 @@ if other.team = pseudoteam || ("pseudoteam" in other and other.pseudoteam == pse
 				}
 				sound_play_hit_ext(sndPlasmaBigExplode, 1.4, 1)
 				sound_play_hit_ext(sndPlasmaHit, 2.2, 1)
-				if skill_get(17) {
+				if brain_active {
 					sound_play_hit_ext(sndPlasmaBigExplodeUpg, 2.2, 1)
 				}
 				iframes += 10
@@ -3037,7 +3039,7 @@ if speed > 2{
 	if current_frame_active with instance_create(x + lengthdir_x(random(sprite_width/2), random(360)), y + lengthdir_y(random(sprite_height/2), random(360)), PlasmaTrail){
 	    sprite_index = sprPlasmaImpact
 		image_index = 2
-		image_speed = 0.3 - skill_get(17) * 0.05
+		image_speed = 0.3 - brain_active * 0.05
 		image_xscale = .25
 		image_yscale = .25
 	}
@@ -3046,7 +3048,7 @@ iframes = max(iframes - current_time_scale, 0)
 speed = clamp(speed, minspeed, maxspeed)
 image_angle += speed * anglefac * fac * current_time_scale
 if current_frame_active with instance_create(x + random_range(-8, 8) + lengthdir_x(sprite_width/2, direction - 180), y + random_range(-8, 8) + lengthdir_y(sprite_width/2, direction - 180), PlasmaTrail){
-	image_speed = 0.35 - skill_get(17) * 0.05
+	image_speed = 0.35 - brain_active * 0.05
 }
 if bounce <= 0 instance_destroy()
 
@@ -3259,9 +3261,9 @@ with instance_create(_x,_y,CustomProjectile) {
 	on_destroy  = laserflak_destroy
 	on_square   = script_ref_create(lflak_square)
 	defbloom = {
-        xscale : 1.5+skill_get(mut_laser_brain),
-        yscale : 1.5+skill_get(mut_laser_brain),
-        alpha : .1 + skill_get(mut_laser_brain) * .025
+        xscale : 1.5 + brain_active,
+        yscale : 1.5 + brain_active,
+        alpha : .1 + brain_active * .025
     }
 
     return id
@@ -3291,9 +3293,9 @@ repeat(ammo){
 		sprite_index = sprPlasmaTrail
 		image_speed  = random_range(.3, .4);
 		defbloom = {
-	        xscale : 1.5+skill_get(mut_laser_brain),
-	        yscale : 1.5+skill_get(mut_laser_brain),
-	        alpha : .1 + skill_get(mut_laser_brain) * .025
+	        xscale : 1.5 + brain_active,
+	        yscale : 1.5 + brain_active,
+	        alpha : .1 + brain_active * .025
 	    }
 
 		on_step = laserflak_particle_step
@@ -3327,7 +3329,7 @@ repeat(ammo){
 image_speed = speed * 1.2 / 14
 if chance(66){
 	with instance_create(x+random_range(-8,8),y+random_range(-8,8),PlasmaTrail){
-		image_xscale += skill_get(17)/3
+		image_xscale += brain_active / 3
 		image_yscale = image_xscale
 	}
 	if size > 1{
@@ -3572,9 +3574,9 @@ if speed < friction instance_destroy()
 			image_index  = floor(point_distance(_xx, _yy, other.x, other.y) / (sprite_get_width(sprite_index) / 2)) * 5;
 			sprite_index = spr.KillslashKill;
 			image_alpha  = .8;
-			image_xscale = min(1 + other.damage / 20, 1.5);
+			image_xscale = min(.8 + other.damage / 20, 1.5);
 			image_yscale = image_xscale;
-			image_speed  = random_range(.4, .6);
+			image_speed  = random_range(.5, .7);
 		}
 	  instance_destroy()
 	}
@@ -3926,12 +3928,12 @@ repeat(2){
 var _p = random_range(.9, 1.2);
 if bounce > 0 {
 	bounce--
-	sleep(5)
+	sleep(1)
 	repeat(4){
 		instance_create(x, y, Dust)
 	}
-	sound_play_hit_ext(sndDiscBounce, 2 * _p, .8)
-	sound_play_hit_ext(sndChickenSword, 1.5 * _p, .5)
+	sound_play_hit_ext(sndDiscBounce, 2 * _p, .4)
+	sound_play_hit_ext(sndChickenSword, 1.5 * _p, .3)
 	move_bounce_solid(false)
 	speed *= .8 + (skill_get("compoundelbow") > 0 ? .08 : 0);
 	length *= 1.2 - (skill_get("compoundelbow") > 0 ? .05 : 0);
@@ -3941,10 +3943,10 @@ if bounce > 0 {
 	}
 }
 else {
-	sound_play_hit_ext(sndChickenSword, 1.5 * _p, .8)
-	sound_play_hit_ext(sndBoltHitWall, .8 * _p, .8)
+	sound_play_hit_ext(sndChickenSword, 1.3 * _p, .3)
+	sound_play_hit_ext(sndBoltHitWall, .8 * _p, .4)
 	sleep(4)
-	view_shake_at(x, y, force * 2)
+	view_shake_at(x, y, 1 + force)
 	with instance_create(x, y, CustomObject){
 	    sprite_index = other.spr_dead
 	    image_angle = other.direction
@@ -4500,7 +4502,7 @@ with instance_create(_x, _y, CustomProjectile) {
 	typ = 0
 	damage = 5 + 2 * skill_get(mut_laser_brain)
 	force = 8
-	shrinkspeed = .1 - (skill_get(mut_laser_brain) * .04)
+	shrinkspeed = .1 - (brain_active * .04)
 	basedir = undefined
 	lasthit = -4
 
@@ -4530,11 +4532,11 @@ with instance_create(_x, _y, CustomProjectile) {
 
 #define vector_head_step
 var _r = 90 * choose(-1, 1)
-if !irandom((2 - skill_get(mut_laser_brain)) > 0) with instance_create(x-lengthdir_x(10,direction + _r)+random_range(-2,2),y-lengthdir_y(10,direction + _r)+random_range(-2,2),BulletHit)
+if !irandom((2 - brain_active) > 0) with instance_create(x-lengthdir_x(10,direction + _r)+random_range(-2,2),y-lengthdir_y(10,direction + _r)+random_range(-2,2),BulletHit)
         {
         	sprite_index = spr.VectorEffect
         	image_angle = other.direction
-					image_speed = .4 - (skill_get(mut_laser_brain) > 0 ? .2 : 0);
+					image_speed = .4 - (brain_active ? .2 : 0);
         	motion_set(other.direction,choose(1,2))
         }
 var _targ = instance_nearest_matching_ne(x, y, hitme, "team", team), _diff = angle_difference(direction, basedir);

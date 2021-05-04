@@ -7,6 +7,7 @@ global.sprBeamCharge   = sprite_add("sprites/projectiles/sprBeamCharge.png",1,16
 global.sprBeamEnd      = sprite_add("sprites/projectiles/sprBeamEnd.png",1,10,12);
 
 #macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)
+#macro brain_active skill_get(mut_laser_brain) > 0
 
 #define weapon_name
 return "MEGA LASER CANNON"
@@ -48,8 +49,8 @@ return global.sprBeamer;
 return "MASSIVE POWER";
 
 #define weapon_fire
-var p = random_range(.8,1.2)
-if !skill_get(17){
+var p = random_range(.8,1.2);
+if skill_get(mut_laser_brain) > 0{
 	sound_play_pitch(sndLaserUpg,.4*p)
 	repeat(1)sound_play_charge(sndLaser,.6, 0)
 }
@@ -178,7 +179,7 @@ if instance_exists(creator){
         weapon_post(5,20*current_time_scale,0)
         motion_add(gunangle, -2*current_time_scale)
     }
-	sound_play_gun(sndClickBack,1,.2-skill_get(mut_laser_brain)*.2)
+	sound_play_gun(sndClickBack,1,.2 - brain_active *.2)
 	sound_stop(sndClickBack)
     time -= current_time_scale
     if time <= 0 {instance_destroy(); exit}
@@ -256,9 +257,9 @@ with other{
 if current_frame_active{
 	sleep(5)
 	view_shake_at(x,y,2)
-    with other motion_set(other.direction,2+skill_get(mut_laser_brain))
+    with other motion_set(other.direction,2 + skill_get(mut_laser_brain))
     view_shake_max_at(other.x,other.y,min(other.size,4))
-    projectile_hit(other,6 + skill_get(mut_laser_brain)*3,1,direction)
+    projectile_hit(other,6 + skill_get(mut_laser_brain)*3, 1, direction)
     if other.my_health <= 0{
         sleep(min(other.size, 4) * 20)
         view_shake_max_at(creator.x,creator.y,5*min(4, other.size))
@@ -269,9 +270,9 @@ draw_sprite_ext(sprite_index, image_index, xstart + lengthdir_x(12, image_angle)
 	if x != xstart draw_sprite_ext(spr_tail, 0, xstart, ystart, 1, image_yscale, image_angle, image_blend, 1.0);
 	if x != xstart draw_sprite_ext(spr_head, 0, x, y, 1, image_yscale*1, image_angle, image_blend, 1.0);
 draw_set_blend_mode(bm_add);
-draw_sprite_ext(sprite_index, image_index, xstart + lengthdir_x(12, image_angle), ystart + lengthdir_y(12, image_angle), image_xscale - 27, 1.5*image_yscale, image_angle, image_blend, 0.15+skill_get(17)*.05);
-	if x != xstart draw_sprite_ext(spr_tail, 0, xstart, ystart, 1, image_yscale*1.5, image_angle, image_blend, .15+skill_get(17)*.05);
-	if x != xstart draw_sprite_ext(spr_head, 0, x, y, 1.5, image_yscale*1.5, image_angle, image_blend, .15+skill_get(17)*.05);
+draw_sprite_ext(sprite_index, image_index, xstart + lengthdir_x(12, image_angle), ystart + lengthdir_y(12, image_angle), image_xscale - 27, 1.5*image_yscale, image_angle, image_blend, 0.15+brain_active*.05);
+	if x != xstart draw_sprite_ext(spr_tail, 0, xstart, ystart, 1, image_yscale*1.5, image_angle, image_blend, .15+brain_active*.05);
+	if x != xstart draw_sprite_ext(spr_head, 0, x, y, 1.5, image_yscale*1.5, image_angle, image_blend, .15+brain_active*.05);
 draw_set_blend_mode(bm_normal);
 
 
@@ -280,15 +281,15 @@ draw_set_blend_mode(bm_normal);
 var _v = random_range(.95,1.05)
 draw_self();
 draw_set_blend_mode(bm_add);
-draw_sprite_ext(sprite_index, 0, x, y, image_xscale*1.5*_v, image_yscale*1.5*_v, image_angle, image_blend, .15+skill_get(17)*.05);
+draw_sprite_ext(sprite_index, 0, x, y, image_xscale*1.5*_v, image_yscale*1.5*_v, image_angle, image_blend, .15+brain_active*.05);
 draw_set_blend_mode(bm_normal);
 
 
 #define sound_play_charge(_snd, _vol, _time)
 with instance_create(x,y,CustomObject){
 	creator = other
-    pitch = .4 * choose(.8,1.2) * skill_get(mut_laser_brain)
-    decel = random_range(.05,.06) * (.6 + skill_get(mut_laser_brain) * .2)
+    pitch = .4 * choose(.8,1.2) * brain_active
+    decel = random_range(.05,.06) * (.6 + brain_active * .2)
     p = random_range(.9,1.1)
     lifetime = 27
     vol = _vol

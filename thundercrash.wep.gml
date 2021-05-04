@@ -5,6 +5,7 @@ global.sprUmbrella        = sprite_add("sprites/projectiles/sprThundercrashBulle
 global.mskUmbrella        = sprite_add("sprites/projectiles/mskThundercrashBullet.png",0,14,14);
 global.sprUmbrellaOrb     = sprite_add("sprites/projectiles/sprThundercrashGrenade.png",2,9,9);
 
+#macro brain_active skill_get(mut_laser_brain) > 0
 
 #define weapon_name
 return "THUNDERCRASH"
@@ -43,7 +44,7 @@ return choose("END OF THE WORLD");
 
 #define weapon_fire
 sound_play_pitch(sndDevastatorUpg,1.4)
-if skill_get(17){
+if brain_active{
         sound_play_pitch(sndLightningPistolUpg,.8)
 
 }else{
@@ -140,9 +141,9 @@ for var i = 0; i< 3; i++
     damage = 8
     friction = .075
 	defbloom = {
-        xscale : 1.5+skill_get(mut_laser_brain),
-        yscale : 1.5+skill_get(mut_laser_brain),
-        alpha : .1 + skill_get(mut_laser_brain) * .025
+        xscale : 1.5 + brain_active,
+        yscale : 1.5 + brain_active,
+        alpha : .1 + brain_active * .025
     }
     sprite_index = global.sprUmbrellaOrb
     image_speed = .5
@@ -163,7 +164,7 @@ sound_play_pitch(sndExplosionS,.7*_pitch)
 sound_play_pitchvol(sndExplosionL,.5*_pitch,.6)
 sound_set_track_position(sndExplosionL,.3*_pitch)
 sound_play_pitch(sndSuperBazooka,.5*_pitch)
-if skill_get(17){
+if brain_active{
 	sound_play_pitchvol(sndLightningCannonEnd,.8*_pitch,.7)
 	sound_play_pitchvol(sndLightningRifleUpg,.7*_pitch,.6)
 }

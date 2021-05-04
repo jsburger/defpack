@@ -69,6 +69,7 @@
     phase = 0
     ang = 0
     damage = 5
+    depth = -1;
     whooshtime = 0
     returngain = 12
     maxwhoosh = 3
@@ -106,17 +107,16 @@
       whooshtime = (whooshtime + current_time_scale) mod (maxwhoosh + phase)
       if whooshtime < current_time_scale audio_play_ext(sndMeleeFlip, x, y, 2.4 - length/6 + random_range(-.1, .1) - phase * .4, length/6, 0);
   }
-  with Pickup
-  {
+  with Pickup if !instance_is(self, WepPickup){
     if distance_to_object(other) <= 4 && ("rang" not in self || ("rang" in self && rang != other.id)){rang = other.id}
-    if "rang" in self{if instance_exists(rang){x = rang.x;y = rang.y}}
+    if "rang" in self{if instance_exists(rang){x = rang.x;y = rang.y;depth = other.depth-1}}
   }
   with instances_matching([AmmoChest, RadChest, WeaponChest, RogueChest, GoldChest, chestprop], "", null)
   {
-    if distance_to_object(other) <= 4 && ("rang" not in self || ("rang" in self && rang != other.id)){rang = other.id}
-    if "rang" in self and instance_exists(rang){
-        x = rang.x
-        y = rang.y
+    if distance_to_object(other) <= 4{
+      with instance_create(other.x, other.y, PortalShock){
+        mask_index = sprMapDot;
+      }
     }
   }
 
@@ -262,7 +262,6 @@
     {
       var _d = point_direction(x,y,creator.x,creator.y)
       if phase = 1 {
-        if irandom(3) <= current_time_scale{repeat(1 + irandom(2)) with instance_create(x + random_range(-4, 4), y + random_range(-4, 4), LightningHit){image_angle = random(360)}}
         motion_add(_d,returngain * current_time_scale)
         returngain += .5 * current_time_scale
       }

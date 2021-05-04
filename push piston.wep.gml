@@ -150,7 +150,7 @@ if !charged sound_stop(sound)
 	var timescale = (mod_variable_get("weapon", "stopwatch", "slowed") == 1) ? 30/room_speed : current_time_scale;
     reload += mod_script_call_nc("mod", "defpack tools", "get_reloadspeed", creator) * timescale * 1.2
 	var _ch = other.charged,
-	    _c  = 24 + 24 * _ch;
+	     _c = 21 + 36 * _ch;
 
 	if !charged sound_stop(sound)
 

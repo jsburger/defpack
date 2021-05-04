@@ -34,15 +34,12 @@ return{
 motion_add(gunangle-180,3)
 repeat(3)instance_create(x,y,Smoke)
 weapon_post(7,0,23)
-if skill_get(17) = true
-{
+if skill_get(17) > 0{
 	var _pitch = random_range(.85,1.15)
 	sound_play_pitchvol(sndDevastatorUpg,3*_pitch,.7)
 	sound_play_pitch(sndEnergyHammerUpg,1.2*_pitch)
 	sound_play_pitch(sndLaser,.5*_pitch)
-}
-else
-{
+}else{
 	var _pitch = random_range(.85,1.15)
 	sound_play_pitchvol(sndDevastator,3*_pitch,.6)
 	sound_play_pitch(sndEnergyHammerUpg,1.2*_pitch)

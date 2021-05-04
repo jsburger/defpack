@@ -3,7 +3,7 @@ global.sprEnergyDevice = sprite_add_weapon("sprites/weapons/sprPSD.png", 1, 2);
 global.sprSonicExplosion = sprite_add("sprites/projectiles/sprESonicExplosion.png", 8, 59, 56);
 
 #macro c_energy $23D900
-#macro e_radius 26 + (skill_get(mut_long_arms) > 0 ? 5 : 0);
+#macro e_radius max(16, 26 + 5 * skill_get(mut_long_arms));
 
 #define weapon_name
 return "P.S.D";
@@ -45,7 +45,7 @@ return choose("PERSONAL SECURITY DEVICE", "ABSORB THEIR @wBULLETS");
 
 #define weapon_fire
   wepangle = -wepangle
-  weapon_post(-4, 6, 7);
+  weapon_post(-4, 4, 1);
   sleep(5);
 
   var _brain = skill_get(mut_laser_brain) > 0;
@@ -73,7 +73,7 @@ return choose("PERSONAL SECURITY DEVICE", "ABSORB THEIR @wBULLETS");
   with instance_create(x, y, CustomSlash){
     sprite_index = global.sprSonicExplosion;
     mask_index   = mskNone;
-    image_speed  = .8 - (skill_get(mut_laser_brain) > 0 ? .4 : 0);
+    image_speed  = .8 / (1 + skill_get(mut_laser_brain));
     image_index  = 0;
     depth = -2;
 

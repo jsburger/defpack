@@ -62,10 +62,11 @@ with instance_create(x,y,CustomSlash)
 	motion_set(other.gunangle+random_range(-2,2)*other.accuracy, startspeed);
   image_angle = direction;
 
+  var _l = (skill_get(mut_laser_brain) > 0) ? 1 : .5;
 	defbloom = {
-        xscale : 1.5+skill_get(mut_laser_brain),
-        yscale : 1.5+skill_get(mut_laser_brain),
-        alpha : .1 + skill_get(mut_laser_brain) * .025
+        xscale : 1.5 + _l,
+        yscale : 1.5 + _l,
+        alpha : .1 + _l * .025
     }
 	accuracy = other.accuracy
 
@@ -209,10 +210,11 @@ with instance_create(x,y,CustomSlash)
 	with _a
 	{
 		name ="electron";
+    var _l = (skill_get(mut_laser_brain) > 0) ? 1 : .5;
 		defbloom = {
-	        xscale : 2+skill_get(mut_laser_brain),
-	        yscale : 2+skill_get(mut_laser_brain),
-	        alpha : .1 + skill_get(mut_laser_brain) * .025
+	        xscale : 2 + _l,
+	        yscale : 2 + _l,
+	        alpha : .1 + _l * .025
 	    }
 		image_speed = 0;
 		image_index = 0;

@@ -52,6 +52,7 @@
     whooshtime = 0
     maxwhoosh = 3
     length = 6
+    depth = -1;
     friction = 1.4
     lasthit = -4
     motion_add(other.gunangle, maxspeed)
@@ -78,17 +79,16 @@
       whooshtime = (whooshtime + current_time_scale) mod (maxwhoosh + phase)
       if whooshtime < current_time_scale audio_play_ext(sndMeleeFlip, x, y, 2.4 - length/6 + random_range(-.1, .1) - phase * .4, length/6, 0);
   }
-  with Pickup
-  {
+  with Pickup if !instance_is(self, WepPickup){
     if distance_to_object(other) <= 4 && ("rang" not in self || ("rang" in self && rang != other.id)){rang = other.id}
-    if "rang" in self{if instance_exists(rang){x = rang.x;y = rang.y}}
+    if "rang" in self{if instance_exists(rang){x = rang.x;y = rang.y;depth = other.depth-1}}
   }
   with instances_matching([AmmoChest, RadChest, WeaponChest, RogueChest, GoldChest, chestprop], "", null)
   {
-    if distance_to_object(other) <= 4 && ("rang" not in self || ("rang" in self && rang != other.id)){rang = other.id}
-    if "rang" in self and instance_exists(rang){
-        x = rang.x
-        y = rang.y
+    if distance_to_object(other) <= 4{
+      with instance_create(other.x, other.y, PortalShock){
+        mask_index = sprMapDot;
+      }
     }
   }
   with instances_matching_ne(hitme,"team",team)
