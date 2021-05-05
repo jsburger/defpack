@@ -67,17 +67,24 @@ else{
 
 with instance_create(x,y,Shell){motion_add(other.gunangle+other.right*100+random(80)-40,3+random(3))}
 
-with create_bullet(x+lengthdir_x(20,gunangle),y+ lengthdir_y(20,gunangle)){
-	on_destroy = shell_destroy
-	direction = other.gunangle + random_range(-20,20)*other.accuracy*sqrt(w.charge)/6;
-	olddirection = direction
-	image_angle = direction;
-	creator = other
-	team = other.team
+// with create_bullet(x+lengthdir_x(20,gunangle),y+ lengthdir_y(20,gunangle)){
+// 	on_destroy = shell_destroy
+// 	direction = other.gunangle + random_range(-20,20)*other.accuracy*sqrt(w.charge)/6;
+// 	olddirection = direction
+// 	image_angle = direction;
+// 	creator = other
+// 	team = other.team
+// }
+
+with create_hitscan_bullet(x + lengthdir_x(8, gunangle), y + lengthdir_y(8, gunangle)) {
+	motion_set(other.gunangle + random_range(-20,20)*other.accuracy*sqrt(w.charge)/6, 5)
+	image_angle = direction
+	projectile_init(other.team, other)
 }
 
+
 if lq_defget(w, "canbloom", 1){
-    with instance_create(x+lengthdir_x(20,gunangle),y+ lengthdir_y(20,gunangle),CustomObject){
+    with instance_create(x+lengthdir_x(20 - wkick,gunangle),y+ lengthdir_y(20 - wkick,gunangle),CustomObject){
     	depth = -1
     	sprite_index = sprBullet1
     	image_speed = .8
@@ -131,6 +138,10 @@ if lq_get(w, "defcharge") == undefined{
 w.defcharge.charge = w.charge - 1
 
 
+#define create_hitscan_bullet(x, y)
+return mod_script_call("mod", "defhitscan", "create_gamma_hitscan_bullet", x, y)
+
+
 #define create_bullet(_x,_y)
 with instance_create(_x,_y,CustomProjectile){
 	typ = 1
@@ -138,7 +149,7 @@ with instance_create(_x,_y,CustomProjectile){
 	team  = other.team
 	image_yscale = .5
 	hyperspeed = 8
-	sprite_index = mskNothing
+	sprite_index = mskNone
 	olddirection = 0
 	mask_index = mskBullet2
 	force = 4

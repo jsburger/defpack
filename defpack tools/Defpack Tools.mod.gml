@@ -207,6 +207,9 @@
 
 	}
 
+	if mod_exists("mod", "defhitscan") {
+		mod_variable_set("mod", "defhitscan", "spr", spr)
+	}
 
 	global.SAKmode = 0
 	//mod_script_call("mod","defpermissions","permission_register","mod",mod_current,"SAKmode","SAK Mode")
@@ -869,9 +872,7 @@ return mod_script_call_self(scr[0], scr[1], scr[2])
 
  //shitty and bad sound stuff
 #define get_coords_nonsync()
-var _x, _y, i = player_find_local_nonsync(), p = player_find(i);
-if !instance_exists(p)
-    p = view_object[i]
+var _x, _y, p = player_find_local_nonsync();
 if instance_exists(p){
     _x = p.x
     _y = p.y
@@ -1023,8 +1024,7 @@ draw_line_width_color(x2 - 1, y3, x2 + w + 1, y3, 1, 0, 0)
 #define bouncer_spin
 	image_angle += bouncer_turn_dir * bouncer_turn_speed * current_time_scale
 
-#define create_bullet(x, y)
-with instance_create(x, y, CustomProjectile){
+#define bullet_init()
     name = "Bullet"
 
     sprite_index = sprBullet1
@@ -1059,6 +1059,11 @@ with instance_create(x, y, CustomProjectile){
     on_hit = bullet_hit
     on_destroy = bullet_destroy
 
+
+#define create_bullet(x, y)
+with instance_create(x, y, CustomProjectile) {
+	bullet_init()
+    
     return id
 }
 
@@ -1080,6 +1085,36 @@ with create_bullet(x, y){
 
     return id
 }
+
+#define create_slash_bullet(x, y)
+with instance_create(x, y, CustomSlash) {
+	bullet_init()
+	
+	name = "Slash Bullet"
+	typ = 0
+	
+	return id
+}
+
+#define create_heavy_slash_bullet(x, y)
+with create_slash_bullet(x, y){
+    name = "Heavy Slash Bullet"
+
+    sprite_index = sprHeavyBullet
+    spr_dead = sprHeavyBulletHit
+    mask_index = mskHeavyBullet
+
+    snd_bounce.pitch = .7
+    snd_bounce.vol = .7
+    bouncer_turn_speed = 6
+
+    recycle_amount = 2
+    force = 12
+    damage = 7
+
+    return id
+}
+
 
 #define bullet_hit
 	projectile_hit(other, damage, force, direction);
@@ -1119,17 +1154,18 @@ with create_bullet(x, y){
 var _chance = argument_count > 0 ? argument[0] : 60;
 
 	var _gland = skill_get(mut_recycle_gland) + (10 * skill_get("recycleglandx10"));
-	if chance_raw(_chance * _gland) {
-		if recycle_amount != 0 {
+	if recycle_amount != 0 {
+		if chance_raw(_chance * _gland) {
 			instance_create(x, y, RecycleGland)
 			sound_play(sndRecGlandProc)
 			var num = recycle_amount * _gland
 			with creator if instance_is(self, Player) {
 				ammo[1] = min(ammo[1] + num, typ_amax[1])
 			}
+			return true
 		}
 	}
-
+	return false
 
 #define create_heavy_bouncer_bullet(x, y)
 with create_heavy_bullet(x, y){
@@ -1467,75 +1503,63 @@ with instance_create(x,y,BulletHit){
 
 //}
 
+
+
+
 #define create_heavy_gamma_bullet(x, y)
-with create_bullet(x, y){
-    name = "heavy gamma Bullet"
+with create_gamma_bullet(x, y) {
+    name = "Heavy Gamma Bullet"
 
-	var s = "HeavyGammaBullet";
-    if neurons > 0 s += "Bounce"
-    sprite_index = lq_get(spr, s)
-
-    spr_dead = spr.GammaBulletHit
-    bounce_color = c_lime
+	sprite_index = (neurons > 0) ? spr.HeavyGammaBulletBounce : spr.HeavyGammaBullet
+	spr_dead = spr.HeavyGammaBulletHit
 
     force = 7
     damage = 3
-    typ = 1
     pierce = 2
-    lasthit = -4
-
-	on_step = gamma_step
-	on_hit  = gamma_hit
+    recycle_amount = 2
 
     return id
 }
 
 #define create_gamma_bullet(x, y)
-with create_bullet(x, y){
-    name = "gamma Bullet"
-
-	var s = "GammaBullet";
-    if neurons > 0 s += "Bounce"
-    sprite_index = lq_get(spr, s)
-
+with create_slash_bullet(x, y) {
+	name = "Gamma Bullet"
+	
+    sprite_index = (neurons > 0) ? spr.GammaBulletBounce : spr.GammaBullet
     spr_dead = spr.GammaBulletHit
     bounce_color = c_lime
-
+    
     force = 4
     damage = 2
-    typ = 1
-    pierce = 1
-    lasthit = -4
+	typ = 1
+	pierce = 1
+	lasthit = -4
 
-	on_step = gamma_step
-	on_hit  = gamma_hit
-
-    return id
+	on_hit = gamma_hit
+	on_projectile = gamma_projectile
+	on_grenade    = nothing
+	
+	return id
 }
 
-#define gamma_step
-with instances_matching_ne(projectile, "team", other.team){
-	if distance_to_object(other) <= 0{
-		instance_destroy()
-		with other {
-			sleep(4)
-			pierce--
-			if pierce < 0 instance_destroy()
-		}
-	}
+
+#define gamma_projectile
+if (instance_exists(other) && other.typ > 0) {
+	with other instance_destroy()
+	// sleep(4)
+	if (instance_exists(self) && --pierce < 0) instance_destroy()
 }
 
 #define gamma_hit
-if projectile_canhit(other) = true{
-	if lasthit != other{
-		lasthit = other
-		sleep(damage * 2 + 3)
-		view_shake_max_at(x, y, damage * 2)
-		projectile_hit(other, damage, force, direction)
-		recycle_gland_roll(pierce > 0 ? 40 : 0)
-		pierce--
-		if pierce < 0 instance_destroy()
+if (lasthit != other) {
+	lasthit = other
+	sleep(damage * 2 + 3)
+	view_shake_max_at(x, y, damage * 2)
+	projectile_hit(other, damage, force, direction)
+	if (recycle_gland_roll(40)) {
+		recycle_amount = 0
 	}
+	if (--pierce < 0) instance_destroy()
 }
 
 #define create_thunder_bullet(x, y)
@@ -1737,93 +1761,82 @@ sound_play_pitchvol(sndExplosionS,2,.3)
 bullet_destroy()
 
 #define create_dark_bullet(x,y)
-with instance_create(x, y, CustomSlash){
+with create_slash_bullet(x, y) {
 	name = "Dark Bullet"
 	sprite_index = neurons ? spr.DarkBulletBounce : spr.DarkBullet
 	mask_index = msk.DarkBullet
 	spr_dead = spr.DarkBulletHit
 
-	typ = 0
+	typ = 2
 	damage = 8
 	force = 7
-	offset = random(360)
-	ringang = random(360)
-	recycle_amount = 1
-	image_speed = 1
 
-    bounce = 0 + 4 * neurons
     bounce_color = c_black
-    snd_bounce = {
-    	snd: sndBouncerBounce,
-    	pitch: 1,
-    	vol: 1
-    }
-    bouncer_turn_dir = choose(-1, 1)
     bouncer_turn_speed = 3
-    bouncer_step_wrap = null
 
 	on_projectile = dark_proj
 	on_destroy = dark_destroy
-    on_wall = bullet_wall
-    on_hit = bullet_hit
-	on_anim = iris_bullet_anim
 
 	return id
 }
 
+
+#define dark_explo_hit
+if projectile_canhit_melee(other) {
+	projectile_hit_push(other, damage, force)
+}
+
+
 #define dark_proj
 var t = team;
-with other{
-	if typ >= 1 {
-		var ringang = random(360);
-		with create_sonic_explosion(x,y){
-			var scalefac = random_range(0.26,0.3);
-			image_xscale = scalefac
-			image_yscale = scalefac
-			damage = 2
-			shake = 2
-			image_speed = 0.85
-			image_blend = c_black
-			team = t
-			candeflect = 0
-			force = 0;
-			can_crown = false;
+if (other.typ > 0) {
+	with create_dark_bullet_explosion(x, y, random_range(.26, .3)) {
+		team = other.team
+		creator = other.creator
+	}
+	for (var i = 0, r = random(360); i <= 2; i++) {
+		with create_dark_bullet_explosion(x + lengthdir_x(6, r + i * 120), y + lengthdir_y(6, r + i * 120), random_range(.15, .2)) {
+			team = other.team
+			creator = other.creator
+			image_speed = 1
 		}
-		repeat(3){
-			with create_sonic_explosion(other.x+lengthdir_x(other.speed*1.3,other.offset+ringang),other.y+lengthdir_y(other.speed*1.3,other.offset+ringang)){
-				var scalefac = random_range(0.15,0.2);
-				image_xscale = scalefac
-				image_yscale = scalefac
-				damage = 2
-				shake = 2
-				image_speed = 1
-				image_blend = c_black
-				team = t
-				candeflect = 0
-				force = 0;
-				can_crown = false;
-			}
-			ringang += 120
-		}
-		instance_destroy()
 	}
 }
 
 #define dark_destroy
-with create_sonic_explosion(x,y){
+with create_dark_bullet_explosion(x, y, random_range(.37, .4)) {
 	team = other.team
-	var scalefac = random_range(0.37,0.4);
-	image_xscale = scalefac
-	image_yscale = scalefac
-	candeflect = 0
-	shake = 5
+	creator = other.creator
 	damage = 8
-	image_speed = 0.8
-	image_blend = c_black
-	force = 0;
-	can_crown = false;
+	view_shake_at(x, y, 5)
 }
 bullet_destroy()
+
+#define create_dark_bullet_explosion(x, y, _scale)
+with instance_create(x, y, CustomSlash) {
+	name = "Dark Bullet Explo"
+	sprite_index = spr.SonicExplosion
+	mask_index = msk.SonicExplosion
+	
+	typ = 0
+	damage = 2
+	force = 0
+	
+	image_xscale = _scale
+	image_yscale = _scale
+	image_speed = .8
+
+	image_blend = c_black
+	
+	on_anim       = sonic_anim
+	on_projectile = sonic_projectile
+	on_grenade    = sonic_grenade
+	on_wall       = nothing
+	on_hit        = dark_explo_hit
+	
+	return id
+}
+
 
 #define create_light_bullet(x, y)
 with create_bullet(x, y){
@@ -1864,24 +1877,44 @@ if other != lasthit{
 }
 
 #define create_small_sonic_explosion(_x,_y)
-	with instance_create(_x,_y,CustomSlash){
+	with create_sonic_explosion(_x, _y) {
 		name = "Small Sonic Explosion"
 
 		sprite_index = spr.SmallSonicExplosion
 		mask_index = msk.SmallSonicExplosion
+		hitid = [sprite_index,"Small Sonic Explosion"]
+
+		image_speed = .85
+		candeflect = 0
+		force = 3
+		shake = 2
+		canwallhit = false
+		can_crown = false;
+
+		return id
+	}
+
+#define create_sonic_explosion(_x,_y)
+	with instance_create(_x,_y,CustomSlash){
+		name = "Sonic Explosion"
+
+		sprite_index = spr.SonicExplosion
+		mask_index = msk.SonicExplosion
+		hitid = [sprite_index,"Sonic Explosion"]
 
 		typ = 0
 		damage = 0
-		candeflect = 0
-		image_speed = .85
-		force = 3
-		superfriction = 1;
-		shake = 2
+		candeflect = 1
+		image_speed = .7
+		force = 18
+		shake = 10
+		
+		superfriction = 1
 		dontwait = false
-		canwallhit = false
-		can_crown = false;
-		if GameCont.area = 101{synstep = 0}else{synstep = 1} //oasis synergy
-		hitid = [sprite_index,"Small Sonic Explosion"]
+		can_crown = true
+		canwallhit = true
+		synstep = (GameCont.area = 101) //oasis synergy
+
 		on_step       = sonic_step
 		on_projectile = sonic_projectile
 		on_grenade    = sonic_grenade
@@ -1892,43 +1925,14 @@ if other != lasthit{
 		return id
 	}
 
-#define create_sonic_explosion(_x,_y)
-		with instance_create(_x,_y,CustomSlash){
-			name = "Sonic Explosion"
-
-			sprite_index = spr.SonicExplosion
-			mask_index = msk.SonicExplosion
-
-			typ = 0
-			damage = 0
-			candeflect = 1
-			image_speed = .7
-			force = 18
-			shake = 10
-			dontwait = false
-			can_crown = true
-			canwallhit = true
-			if GameCont.area = 101{synstep = 0}else{synstep = 1} //oasis synergy
-			hitid = [sprite_index,"Sonic Explosion"]
-			on_step       = sonic_step
-			on_projectile = sonic_projectile
-			on_grenade    = sonic_grenade
-			on_hit        = sonic_hit
-			on_wall       = nothing
-			on_anim       = sonic_anim
-
-			return id
-		}
-
 #define nothing
 
 #define sonic_anim
 	instance_destroy();
 
 #define sonic_step
-	if synstep = 0
-	{
-		synstep = 1
+	if synstep {
+		synstep = false
 		image_xscale *= 1.25
 		image_yscale *= 1.25
 		image_speed  *= .8
@@ -1965,12 +1969,12 @@ if other != lasthit{
 	}
 
 #define sonic_projectile
-	with other{
+	with other if typ > 0 {
 		instance_destroy();
 	}
 
 #define sonic_grenade
-	with other{
+	with other if (speed > 0) {
 		direction = point_direction(other.x,other.y,x,y);
 		image_angle = direction;
 	}
@@ -2018,6 +2022,8 @@ if other != lasthit{
 			on_step = superforce_step;
 		}
 	}
+
+
 
 #define superforce_step
 	//apply "super force" to enemies
@@ -4670,13 +4676,11 @@ with _p{
 return _p;
 
 #define flechette_end_step
-var hitem = 0
-if skill_get(mut_bolt_marrow){
+if skill_get(mut_bolt_marrow) > 0 {
     var q = instance_nearest_matching_ne(x, y, hitme, "team", team)
-    if instance_exists(q) and point_distance(q.x, q.y, x, y) < 24 {
+    if instance_exists(q) and point_distance(q.x, q.y, x, y) < 24 * skill_get(mut_bolt_marrow) {
         x = q.x - hspeed_raw
         y = q.y - vspeed_raw
-        hitem = 1
     }
 }
 with instance_create(x, y, BoltTrail) {

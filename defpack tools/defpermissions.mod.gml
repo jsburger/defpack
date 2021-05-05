@@ -793,7 +793,7 @@ for (var i = 0; i < maxp; i++) if player_is_active(i){
 
                 draw_set_halign(1)
                 var tex = ar[v]
-                draw_text_s(bx + bw/2, by - 5.5, tex, p.bartext, 1, 1, mouse, bw - 2*pd)
+                draw_text_s(bx + bw/2, by - 5.6, tex, p.bartext, 1, 1, mouse, bw - 2*pd)
                 draw_set_halign(0)
 
                 if mouse and released{
