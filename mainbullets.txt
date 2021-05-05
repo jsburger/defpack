@@ -15,6 +15,11 @@
 /loadwep sniper rifle
 /loadwep sniper shotgun
 
+//HITSCAN
+/loadwep subata
+/loadwep big iron
+/loadwep moby
+
 //SPAM
 
 /loadwep spam gun
@@ -25,9 +30,6 @@
 /loadwep perpetrator
 
 //OTHER BULLET
-
-/loadwep moby
-/loadwep big iron
 /loadwep heavy smart gun
 /loadwep smarter gun
 /loadwep kemosabe

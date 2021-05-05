@@ -25,3 +25,4 @@
 /loadwep gamma rogue rifle
 /loadwep smarter gamma gun
 /loadwep gamma shotgun
+/loadwep big gamma iron

@@ -1,14 +1,12 @@
 #define init
-global.sprBigIron = sprite_add_weapon("sprites/weapons/sprBigIron.png", 2, 4);
+global.sprBigPestIron = sprite_add_weapon("../../sprites/weapons/iris/pest/sprPestBigIron.png", 6, 3);
+global.PestBullet = sprite_add("../../sprites/projectiles/iris/pest/sprPestBullet.png", 2, 8, 8);
 
 #define weapon_name
-return "BIG IRON"
+return "BIG PEST IRON"
 
 #define weapon_sprt
-return global.sprBigIron;
-
-#define weapon_iris
-return "big x iron"
+return global.sprBigPestIron;
 
 #define weapon_type
 return 1;
@@ -17,7 +15,7 @@ return 1;
 return false;
 
 #define weapon_load
-return 17;
+return 15;
 
 #define weapon_cost
 return 10;
@@ -26,15 +24,15 @@ return 10;
 return sndSwapPistol;
 
 #define weapon_area
-return 11;
+return -1;
 
 #define nts_weapon_examine
 return{
-    "d": "These were once used to keep outlaws in check. #It didn't work out too well. ",
+    "d": "Highly compresses gas for its projectiles. ",
 }
 
 #define weapon_text
-return "ONE AND NINETEEN MORE";
+return "LONG RANGED SHOTGUNs";
 
 
 #define sound_play_hit_ext(_sound, _pitch, _vol)
@@ -49,33 +47,25 @@ for (var i = 0, _l = array_length(_sounds); i < _l; i++){
 }
 
 #define weapon_fire
-weapon_post(7, 22, 28)
+weapon_post(7, 24, 16)
 sleep(30)
 var _p = random_range(.7, 1.3)
 var _sounds = [
 	{sound : sndSlugger, pitch : 1.2},
 	{sound : sndDoubleShotgun, pitch : .8},
 	{sound : sndShotgun, pitch : .8},
-	{sound : sndHeavyNader, pitch : 1.3},
-	{sound : sndMachinegun, pitch : .6},
-	{sound : sndSawedOffShotgun, pitch : .8},
-	{sound : sndSuperSlugger, pitch : .7}
+	{sound : sndToxicBarrelGas, pitch : 1.3},
+  {sound : sndToxicBoltGas, pitch : .8},
+	{sound : sndMinigun, pitch : .6},
+	{sound : sndSawedOffShotgun, pitch : .7},
+	{sound : sndSuperSlugger, pitch : .9}
 ];
 
 sound_play_bulk(_sounds, _p, .6)
 
-/*
-sound_play_pitchvol(sndSlugger,1.2*_p,.6)
-sound_play_pitchvol(sndDoubleShotgun,.8*_p,.6)
-sound_play_pitchvol(sndShotgun,.8*_p,.6)
-sound_play_pitchvol(sndHeavyNader,1.3*_p,.6)
-sound_play_pitchvol(sndMachinegun,.6*_p,.6)
-sound_play_pitchvol(sndSawedOffShotgun,.8*_p,.6)
-sound_play_pitchvol(sndSuperSlugger,.7*_p,.6)
-*/
 with instance_create(x + lengthdir_x(24, gunangle), y + lengthdir_y(24, gunangle), CustomObject) {
 	depth = -1
-	sprite_index = sprBullet1
+	sprite_index = global.PestBullet
 	image_speed = .9
 	on_step = muzzle_step
 	on_draw = muzzle_draw
@@ -85,11 +75,9 @@ with instance_create(x + lengthdir_x(24, gunangle), y + lengthdir_y(24, gunangle
 
 repeat(3){
     repeat(2){
-        with instance_create(x, y, Shell) {
-        	motion_add(other.gunangle + 90 + random_range(-40, 40), 2 + random(2))
-        }
-        with mod_script_call("mod", "defhitscan", "create_hitscan_bullet", x + lengthdir_x(12, gunangle), y + lengthdir_y(12, gunangle)){
-            direction = other.gunangle + random_range(-10, 10) * other.accuracy;
+        mod_script_call("mod", "defpack tools", "shell_yeah", right * 90, 40, 2 + random(2), c_green);
+        with mod_script_call("mod", "defhitscan", "create_pest_hitscan_bullet", x + lengthdir_x(12, gunangle), y + lengthdir_y(12, gunangle)){
+            direction = other.gunangle + random_range(-6, 6) * other.accuracy;
             image_angle = direction;
             creator = other
             team = other.team
@@ -97,26 +85,6 @@ repeat(3){
     }
     wait(1)
     if !instance_exists(self) exit
-}
-
-#define create_bullet(_x,_y)
-with instance_create(_x,_y,CustomProjectile){
-	typ = 1
-	creator = other
-	team  = other.team
-	image_yscale = .5
-	trailscale = 1
-	hyperspeed = 8
-	sprite_index = mskNothing
-	mask_index = mskBullet2
-	force = 2
-	damage = 4
-	lasthit = -4
-	recycle = skill_get(mut_recycle_gland)
-	dir = 0
-	on_end_step  = sniper_step
-	on_hit 		 = void
-	return id
 }
 
 #define muzzle_step

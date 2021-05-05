@@ -55,7 +55,8 @@ sound_play_pitchvol(sndHeavyRevoler,.8*_p,.5+.2*_a)
 sound_play_pitchvol(sndTripleMachinegun,.8*_p,.5+.2*_a)
 sound_play_gun(sndClickBack,1,.4*(1-_a))
 sound_stop(sndClickBack)
-weapon_post(4+_a,3,5+_a*6)
+
+weapon_post(4+_a * 3, 4, 3+_a*4)
 with instance_create(x,y,CustomProjectile){
     //if irandom(19) = 0 charged = 1 else charged = 0
     mask_index   = mskBullet1

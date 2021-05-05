@@ -26,3 +26,4 @@
 /loadwep golden pest machinegun
 /loadwep golden assault pest rifle
 /loadwep pest rogue rifle
+/loadwep big pest iron

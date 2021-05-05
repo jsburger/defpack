@@ -27,11 +27,11 @@ global.scrThunderDestroy = ["mod", "defpack tools", "thunder_destroy"]
     with lasthit x += 10000
     with shields x += 10000
     with noteam x += 10000
-    
+
     var _wall   = collision_line_first(x1, y1, x1 + lengthdir_x(hitscan_dis, angle), y1 + lengthdir_y(hitscan_dis, angle), Wall, 1, 0),
         _shield = collision_line_first(x1, y1, _wall[0], _wall[1], PopoShield, 1, 1),
         _hitme  = collision_line_first(x1, y1, _shield[0], _shield[1], hitme, 1, 1);
-        
+
     with lasthit x -= 10000
     with shields x -= 10000
     with noteam x -= 10000
@@ -95,17 +95,17 @@ global.scrThunderDestroy = ["mod", "defpack tools", "thunder_destroy"]
 		mask_index = mskNone
 		sprite_index = mskNone
 		depth = 0
-		
+
 		xGoal = x2
 		yGoal = y2
-		
+
 		on_step = custom_trail_step
 		on_draw = custom_trail_draw
-		
+
 		return self;
 	}
-	
-	
+
+
 #define custom_trail_step
 	lifeTime += current_time_scale
 	if (lifeTime >= lifeMax) instance_destroy()
@@ -114,7 +114,7 @@ global.scrThunderDestroy = ["mod", "defpack tools", "thunder_destroy"]
 	var n = clamp(lifeTime, 0, array_length(colors) - 1),
 	    col = merge_color(colors[floor(n)], colors[ceil(n)], frac(n)),
 	    alp = lerp(alpha[floor(n)], alpha[ceil(n)], frac(n));
-	    
+
 	draw_set_alpha(alp)
 	draw_line_width_color(x, y, xGoal, yGoal, .8, col, col)
 	draw_set_alpha(1)
@@ -143,12 +143,12 @@ global.scrThunderDestroy = ["mod", "defpack tools", "thunder_destroy"]
 		bounce -= 1
 		mod_script_call("mod", "defpack tools", "audio_play_hit_pitch", sndBouncerBounce, .5 + random(1.5))
 		if !irandom(1) instance_create(x, y, Dust)
-		
+
 		move_bounce_solid(true)
 		direction += random_range(-5, 5)
 		image_angle = direction
 		shouldDestroy = false
-		
+
 		if neurons {
 			instance_create(x + hspeed, y + vspeed, CaveSparkle)
 			damage += 1
@@ -168,7 +168,7 @@ global.scrThunderDestroy = ["mod", "defpack tools", "thunder_destroy"]
 		}
 
 	}
-		
+
 #define hitscan_destroy
 	instance_create(x, y, BulletHit).sprite_index = spr_dead
 	sound_play_hit(sndHitWall, .2)
@@ -181,29 +181,29 @@ global.scrThunderDestroy = ["mod", "defpack tools", "thunder_destroy"]
 		typ = 1
 		damage = 3
 		force = 4
-		
+
 		sprite_index = mskNone
 		mask_index = mskBullet1
-		
+
 		shouldDestroy = false
 		pierce = 0
 		bounce = 4 * neurons
 		lasthit = -4
-		
+
 		targetScript = scrTravel
 		lastx = x
 		lasty = y
 		lastteam = 0
-		
+
 		trailcolor = [merge_color(c_yellow, c_red, random(.4)), c_white, c_ltgray, c_orange]
 		spr_dead = sprBulletHit
-		
+
 		on_step = hitscan_travel
 		on_end_step = hitscan_endstep
 		on_wall = hitscan_wall
 		on_hit  = hitscan_hit
 		on_destroy = hitscan_destroy
-		
+
 		return id
 	}
 
@@ -211,10 +211,10 @@ global.scrThunderDestroy = ["mod", "defpack tools", "thunder_destroy"]
 #define create_bouncer_hitscan_bullet
 	with create_hitscan_bullet(x, y) {
 		name = "Bouncer Hitscan Bullet"
-		
+
 		bounce += 2
 		damage += 1
-		
+
 		return id
 	}
 
@@ -223,22 +223,22 @@ global.scrThunderDestroy = ["mod", "defpack tools", "thunder_destroy"]
 #define create_fire_hitscan_bullet(x, y)
 	with create_hitscan_bullet(x, y) {
 		name = "Fire Hitscan Bullet"
-		
+
 		trailcolor = [merge_color(c_red, c_yellow, random(.4)), c_white, c_ltgray, c_red]
 		spr_dead = spr.FireBulletHit
-		
+
 		on_hit = fire_hit
-		
+
 		return id
 	}
-	
+
 #define fire_hit
 	with mod_script_call("mod", "defpack tools", "create_miniexplosion", x, y) {
 		team = other.team
 		creator = other.creator
 	}
 	hitscan_hit()
-	
+
 #define fire_step
 	hitscan_travel()
 	repeat(irandom_range(2, 5)) {
@@ -258,33 +258,33 @@ global.scrThunderDestroy = ["mod", "defpack tools", "thunder_destroy"]
 		typ = 1
 		damage = 2
 		force = 4
-		
+
 		sprite_index = mskNone
 		mask_index = mskBullet1
-		
+
 		shouldDestroy = false
 		pierce = 1
 		bounce = 4 * neurons
 		lasthit = -4
-		
+
 		targetScript = scrGammaTravel
 		lastx = x
 		lasty = y
 		lastteam = 0
-		
+
 		trailcolor = [c_yellow, c_lime, c_ltgray, c_orange]
 		spr_dead = spr.GammaBulletHit
-		
+
 		on_step = hitscan_travel
 		on_end_step = hitscan_endstep
 		on_wall = hitscan_wall
 		on_hit  = hitscan_hit
 		on_destroy = hitscan_destroy
-		
+
 		on_projectile = gamma_projectile
 		on_grenade    = nothing
 		on_anim       = nothing
-		
+
 		return id
 	}
 
@@ -299,18 +299,18 @@ if (instance_exists(other) && other.typ > 0) {
     var noteam = get_ally_list(team);
     var projectiles = get_proj_list(team);
     var shields = instances_matching(PopoShield, "team", team);
-    
+
     with lasthit x += 10000
     with shields x += 10000
     with noteam x += 10000
     with projectiles x += 10000
     with Grenade x += 10000
-    
+
     var _wall   = collision_line_first(x1, y1, x1 + lengthdir_x(hitscan_dis, angle), y1 + lengthdir_y(hitscan_dis, angle), Wall, 1, 0),
         _shield = collision_line_first(x1, y1, _wall[0], _wall[1], PopoShield, 1, 1),
         _hitme  = collision_line_first(x1, y1, _shield[0], _shield[1], hitme, 1, 1),
         _proj   = collision_line_first(x1, y1, _hitme[0], _hitme[1], projectile, 1, 1);
-        
+
     with Grenade x -= 10000
     with lasthit x -= 10000
     with shields x -= 10000
@@ -333,15 +333,15 @@ if (instance_exists(other) && other.typ > 0) {
 	with create_hitscan_bullet(x, y) {
 		name = "Pest Hitscan Bullet"
 		trailcolor = [merge_color(c_lime, c_white, random(.3)), c_white, c_ltgray, c_orange]
-		spr_dead = spr.PestBulletHit
+		spr_dead = spr.ToxicBulletHit
 		on_destroy = pest_destroy
-		
+
 		damage = 2
 		force = 8
-		
+
 		return id
 	}
-	
+
 #define pest_destroy
 	repeat(2) {
 		with instance_create(x,y,ToxicGas) {
@@ -357,17 +357,17 @@ if (instance_exists(other) && other.typ > 0) {
 #define create_thunder_hitscan_bullet(x, y)
 	with create_hitscan_bullet(x, y) {
 		name = "Thunder Hitscan Bullet"
-		
+
 	    spr_dead = spr.LightningBulletHit
 	    trailcolor = [merge_color(c_blue, c_aqua, .2 + random(.4)), c_white, c_aqua, c_orange]
-	
+
 	    force = 7
 	    damage = 2
 	    typ = 2
-		
+
 		on_step    = thunder_step
 		on_destroy = global.scrThunderDestroy
-		
+
 		return id
 	}
 

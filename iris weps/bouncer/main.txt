@@ -10,6 +10,7 @@
 /loadwep smart bouncer gun
 /loadwep bouncer gunhammer
 /loadwep bouncer bullet cannon
+/loadwep big bouncer iron
 /loadwep sniper bouncer rifle
 /loadwep sniper bouncer shotgun
 /loadwep heavy bouncer revolver

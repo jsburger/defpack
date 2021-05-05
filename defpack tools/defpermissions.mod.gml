@@ -342,11 +342,11 @@ with VisualsMenuButton _e = false
 with GameMenuButton    _e = false
 with ControlMenuButton _e = false
 if _e = true{
-    //draw_set_projection(0)
+    draw_set_projection(0)
     global.pause = 1
     draw_menu()
     global.pause = 0
-    //draw_reset_projection()
+    draw_reset_projection()
 }
 
 #define draw_gui

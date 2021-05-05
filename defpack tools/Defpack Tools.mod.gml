@@ -1063,7 +1063,7 @@ draw_line_width_color(x2 - 1, y3, x2 + w + 1, y3, 1, 0, 0)
 #define create_bullet(x, y)
 with instance_create(x, y, CustomProjectile) {
 	bullet_init()
-    
+
     return id
 }
 
@@ -1089,10 +1089,10 @@ with create_bullet(x, y){
 #define create_slash_bullet(x, y)
 with instance_create(x, y, CustomSlash) {
 	bullet_init()
-	
+
 	name = "Slash Bullet"
 	typ = 0
-	
+
 	return id
 }
 
@@ -1524,11 +1524,11 @@ with create_gamma_bullet(x, y) {
 #define create_gamma_bullet(x, y)
 with create_slash_bullet(x, y) {
 	name = "Gamma Bullet"
-	
+
     sprite_index = (neurons > 0) ? spr.GammaBulletBounce : spr.GammaBullet
     spr_dead = spr.GammaBulletHit
     bounce_color = c_lime
-    
+
     force = 4
     damage = 2
 	typ = 1
@@ -1538,7 +1538,7 @@ with create_slash_bullet(x, y) {
 	on_hit = gamma_hit
 	on_projectile = gamma_projectile
 	on_grenade    = nothing
-	
+
 	return id
 }
 
@@ -1817,23 +1817,23 @@ with instance_create(x, y, CustomSlash) {
 	name = "Dark Bullet Explo"
 	sprite_index = spr.SonicExplosion
 	mask_index = msk.SonicExplosion
-	
+
 	typ = 0
 	damage = 2
 	force = 0
-	
+
 	image_xscale = _scale
 	image_yscale = _scale
 	image_speed = .8
 
 	image_blend = c_black
-	
+
 	on_anim       = sonic_anim
 	on_projectile = sonic_projectile
 	on_grenade    = sonic_grenade
 	on_wall       = nothing
 	on_hit        = dark_explo_hit
-	
+
 	return id
 }
 
@@ -1908,7 +1908,7 @@ if other != lasthit{
 		image_speed = .7
 		force = 18
 		shake = 10
-		
+
 		superfriction = 1
 		dontwait = false
 		can_crown = true
@@ -1985,6 +1985,8 @@ if other != lasthit{
 		var _dwt = dontwait
 		if object_get_name(other.object_index) = "MeleeFake"{projectile_hit(other, 1, force, direction)}
 		if object_get_name(other.object_index) = "JungleAssassinHide"{projectile_hit(other, 1, force, direction)}
+		if object_get_name(other.object_index) = "Mimic"{projectile_hit(other, 100, force, direction)}
+		if object_get_name(other.object_index) = "SuperMimic"{projectile_hit(other, 100, force, direction)}
 		// incredibly lazy approach of me not wanting to copy paste the event into the sonic hammer file
 		if "fx_sleep" in self sleep(fx_sleep);
 		if "fx_shake" in self view_shake_max_at(x, y, fx_shake);
@@ -2014,6 +2016,7 @@ if other != lasthit{
 			with _explo
 			{
 				if "force"          in self other.superforce 	 = force else {other.superforce = 18};
+				other.superforce *= (1 + skill_get(mut_impact_wrists) * .25)
 				if "superfriction"  in self other.superfriction  = superfriction else other.superfriction = 1;
 				if "superdirection" in self other.superdirection = superdirection;
 			}

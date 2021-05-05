@@ -26,3 +26,4 @@
 /loadwep golden thunder machinegun
 /loadwep golden assault thunder rifle
 /loadwep thunder rogue rifle
+/loadwep big thunder iron

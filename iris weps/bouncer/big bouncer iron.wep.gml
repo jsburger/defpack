@@ -1,14 +1,11 @@
 #define init
-global.sprBigIron = sprite_add_weapon("sprites/weapons/sprBigIron.png", 2, 4);
+global.sprBigBouncerIron = sprite_add_weapon("../../sprites/weapons/iris/bouncer/sprBouncerBigIron.png", 2, 4);
 
 #define weapon_name
-return "BIG IRON"
+return "BIG BOUNCER IRON"
 
 #define weapon_sprt
-return global.sprBigIron;
-
-#define weapon_iris
-return "big x iron"
+return global.sprBigBouncerIron;
 
 #define weapon_type
 return 1;
@@ -17,7 +14,7 @@ return 1;
 return false;
 
 #define weapon_load
-return 17;
+return 22;
 
 #define weapon_cost
 return 10;
@@ -26,15 +23,15 @@ return 10;
 return sndSwapPistol;
 
 #define weapon_area
-return 11;
+return -1;
 
 #define nts_weapon_examine
 return{
-    "d": "These were once used to keep outlaws in check. #It didn't work out too well. ",
+    "d": "Using rubber rounds, these babies cause chaos all around the wasteland. ",
 }
 
 #define weapon_text
-return "ONE AND NINETEEN MORE";
+return "NO NEED TO AIM";
 
 
 #define sound_play_hit_ext(_sound, _pitch, _vol)
@@ -49,17 +46,17 @@ for (var i = 0, _l = array_length(_sounds); i < _l; i++){
 }
 
 #define weapon_fire
-weapon_post(7, 22, 28)
+weapon_post(7, 32, 28)
 sleep(30)
 var _p = random_range(.7, 1.3)
 var _sounds = [
 	{sound : sndSlugger, pitch : 1.2},
 	{sound : sndDoubleShotgun, pitch : .8},
-	{sound : sndShotgun, pitch : .8},
+	{sound : sndBouncerShotgun, pitch : .8},
 	{sound : sndHeavyNader, pitch : 1.3},
-	{sound : sndMachinegun, pitch : .6},
-	{sound : sndSawedOffShotgun, pitch : .8},
-	{sound : sndSuperSlugger, pitch : .7}
+	{sound : sndBouncerSmg, pitch : .7},
+	{sound : sndSawedOffShotgun, pitch : .7},
+	{sound : sndSuperSlugger, pitch : .6}
 ];
 
 sound_play_bulk(_sounds, _p, .6)
@@ -88,35 +85,16 @@ repeat(3){
         with instance_create(x, y, Shell) {
         	motion_add(other.gunangle + 90 + random_range(-40, 40), 2 + random(2))
         }
-        with mod_script_call("mod", "defhitscan", "create_hitscan_bullet", x + lengthdir_x(12, gunangle), y + lengthdir_y(12, gunangle)){
-            direction = other.gunangle + random_range(-10, 10) * other.accuracy;
+        with mod_script_call("mod", "defhitscan", "create_bouncer_hitscan_bullet"){
+            direction = other.gunangle + random_range(-18, 18) * other.accuracy;
             image_angle = direction;
             creator = other
             team = other.team
+            move_contact_solid(other.gunangle, 12);
         }
     }
     wait(1)
     if !instance_exists(self) exit
-}
-
-#define create_bullet(_x,_y)
-with instance_create(_x,_y,CustomProjectile){
-	typ = 1
-	creator = other
-	team  = other.team
-	image_yscale = .5
-	trailscale = 1
-	hyperspeed = 8
-	sprite_index = mskNothing
-	mask_index = mskBullet2
-	force = 2
-	damage = 4
-	lasthit = -4
-	recycle = skill_get(mut_recycle_gland)
-	dir = 0
-	on_end_step  = sniper_step
-	on_hit 		 = void
-	return id
 }
 
 #define muzzle_step

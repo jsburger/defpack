@@ -120,7 +120,7 @@ with instance_create(x,y,BulletHit){
 if place_meeting(x + hspeed,y +vspeed,Wall){sound_play_hit(sndHitWall,.2)}
 
 #define def_hit
-view_shake_max_at(x,y,8)
+view_shake_max_at(x, y, 8)
 sleep(10)
 if projectile_canhit_melee(other) = true projectile_hit(other, damage, force, direction)
 //instance_destroy()

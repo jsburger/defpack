@@ -35,6 +35,7 @@ sound_play_pitch(sndPistol,.5)
 sound_play_pitch(sndSwapShotgun,5+_ptch/7)
 sound_play_pitch(sndCursedReminder,.2)
 sound_play_pitch(sndMinigun,.4+_ptch/12)
+sound_play_pitch(sndHitMetal,.1*random_range(.8, 1.2))
 //sound_play_pitchvol(sndStatueDead,.7+_ptch/7,.2) to good for this
 repeat(8)
 	mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, 2+random(2), c_purple)
