@@ -26,3 +26,4 @@
 /loadwep smarter gamma gun
 /loadwep gamma shotgun
 /loadwep big gamma iron
+/loadwep gamma moby

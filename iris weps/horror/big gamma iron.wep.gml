@@ -3,7 +3,7 @@ global.sprBigGammaIron = sprite_add_weapon("../../sprites/weapons/iris/horror/on
 global.sprGammaBullet = sprite_add("../../sprites/projectiles/iris/horror/sprGammaBullet.png", 2, 8, 8);
 
 #define weapon_name
-return "BIG PEST IRON"
+return "BIG GAMMA IRON"
 
 #define weapon_sprt
 return global.sprBigGammaIron;

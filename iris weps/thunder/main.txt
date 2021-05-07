@@ -27,3 +27,4 @@
 /loadwep golden assault thunder rifle
 /loadwep thunder rogue rifle
 /loadwep big thunder iron
+/loadwep thunder moby

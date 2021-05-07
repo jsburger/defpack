@@ -21,9 +21,13 @@ return 0
 return 0
 #define weapon_fire
 var _p = random_range(.8, 1.4);
-//sound_play_pitch(sndHitMetal, .1 * _p)
-sound_play_pitchvol(sndMachinegun, 2 * _p, .7)
-sound_play_pitchvol(sndDoubleMinigun, .6 * _p, 1)
+sound_play_pitchvol(sndQuadMachinegun, 1.6 * _p, .6)
+sound_play_pitchvol(sndDoubleMinigun, .4 * _p, .6)
+sound_play_pitch(sndShotgun, 2 * _p)
+sound_play(sndMinigun)
+sound_play_gun(sndClickBack, 0, 1)
+sound_stop(sndClickBack)
+
 weapon_post(5, 10, 0)
 
 with instance_create(x + lengthdir_x(16, gunangle), y + lengthdir_y(16, gunangle), CustomObject) {

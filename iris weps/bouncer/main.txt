@@ -10,7 +10,6 @@
 /loadwep smart bouncer gun
 /loadwep bouncer gunhammer
 /loadwep bouncer bullet cannon
-/loadwep big bouncer iron
 /loadwep sniper bouncer rifle
 /loadwep sniper bouncer shotgun
 /loadwep heavy bouncer revolver
@@ -26,3 +25,5 @@
 /loadwep golden bouncer machinegun
 /loadwep golden assault bouncer rifle
 /loadwep bouncer rogue rifle
+/loadwep big bouncer iron
+/loadwep bouncer moby

@@ -27,3 +27,4 @@
 /loadwep golden assault fire rifle
 /loadwep fire rogue rifle
 /loadwep big fire iron
+/loadwep fire moby

@@ -27,3 +27,4 @@
 /loadwep golden assault pest rifle
 /loadwep pest rogue rifle
 /loadwep big pest iron
+/loadwep pest moby
