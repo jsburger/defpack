@@ -36,64 +36,87 @@ while(true)
 	{
 		global.newLevel = 0;
 
-		var _f = -4,
-				_i = 0,
-				_s = ds_list_size(global.KillList);
+		if GameCont.level = 1{
+			ds_list_clear(global.SpawnFloors);
+			ds_list_clear(global.KillList);
+		}else if !(GameCont.area = 7 && GameCont.subarea = 3) && !(GameCont.area = 100) && !(GameCont.area = 107) && !(GameCont.area = 0){
+			var _i = 0,
+					_s = ds_list_size(global.KillList);
 
-		// Determine floors to be spawned on
-		with Floor{
-			if distance_to_object(Player) >= 256{
-				ds_list_add(global.SpawnFloors, self);
+			// Determine floors to be spawned on
+			with Floor{
+				if distance_to_object(Player) >= 256{
+					ds_list_add(global.SpawnFloors, self);
+				}
+			}
+			if ds_list_size(global.SpawnFloors) = 0{
+				with Floor{
+					if distance_to_object(Player) >= 128{
+						ds_list_add(global.SpawnFloors, self);
+					}
+				}
+			}
+			if ds_list_size(global.SpawnFloors) = 0{
+				ds_list_add(global.SpawnFloors, instance_furthest(Player.x, Player.y, Floor));
+			}
+
+			if ds_list_size(global.SpawnFloors) > 0{
+				// Remove floor tiles that cant be found
+				var _i = 0,
+				    _j = ds_list_size(global.SpawnFloors);
+				do{
+					_i++;
+					if !instance_exists(global.SpawnFloors[| 0]){
+						ds_list_delete(global.SpawnFloors, 0);
+					}
+				}until(_i >= _j)
+			}
+
+			if ds_list_size(global.KillList) > 0{
+				ds_list_shuffle(global.KillList);
+
+				// Removing a specific % of enemies from that list
+				do{
+					ds_list_delete(global.KillList, 0);
+				}until (ds_list_size(global.KillList) < (_s * .6))
+
+				// Spawn mans
+				do{
+					_i++;
+					ds_list_shuffle(global.SpawnFloors);
+					var _fx = global.SpawnFloors[| 0].x + random_range(-3, 3),
+						  _fy = global.SpawnFloors[| 0].y + random_range(-3, 3);
+
+					with create_waitme(_fx + 16, _fy + 16){
+						waitme = global.KillList[| 0];
+
+						with instance_create(0, 0, waitme){
+							other.starttimer = 30 * max(1, size);
+							other.timer = other.starttimer;
+							other.size = size
+							other.sprite = sprite_index;
+							other.mask_index = mask_index;
+							image_speed = 0;
+							instance_delete(self)
+						}
+
+						var _a = 0;
+						do{
+							_a++
+								if place_meeting(x, y, Wall) with instance_nearest(x, y, Wall){
+									instance_create(x, y, FloorExplo)
+									instance_destroy();
+								}
+						}until(_a >= 24 || !place_meeting(x, y, Wall))
+					}
+					ds_list_delete(global.KillList, 0);
+
+				}until (_a >= 500 || ds_list_size(global.KillList) = 0)
+				ds_list_clear(global.SpawnFloors)
 			}
 		}
-		if ds_list_size(global.SpawnFloors) = 0{
-			ds_list_add(global.SpawnFloors, instance_furthest(Player.x, Player.y, Floor));
-		}
-
-
-		if GameCont.level = 0{
-			ds_list_clear(global.KillList)
-		}
-
-		if ds_list_size(global.KillList) > 0{
-			ds_list_shuffle(global.KillList);
-
-			// Removing a specific % of enemies from that list
-			do{
-				ds_list_delete(global.KillList, 0);
-			}until (ds_list_size(global.KillList) < (_s * .6))
-
-			// Spawn mans
-			do{
-				_i++;
-				ds_list_shuffle(global.SpawnFloors);
-				_f = global.SpawnFloors[| 0]
-				with create_waitme(_f.x + 16, _f.y + 16){
-					waitme = global.KillList[| 0];
-
-					with instance_create(0, 0, waitme){
-						other.starttimer = 30 * max(1, size);
-						other.timer = other.starttimer;
-						other.sprite_index = sprite_index;
-						other.mask_index = mask_index;
-						instance_delete(self)
-					}
-
-					var _a = 0;
-					do{
-						_a++
-							if place_meeting(x, y, Wall) with instance_nearest(x, y, Wall){
-								instance_create(x, y, FloorExplo)
-								instance_destroy();
-							}
-					}until(_a >= 24 || !place_meeting(x, y, Wall))
-				}
-				ds_list_delete(global.KillList, 0);
-
-			}until (_a >= 500 || ds_list_size(global.KillList) = 0)
-			ds_list_clear(global.SpawnFloors)
-		}
 	}
+
 	var hadGenCont = global.hasGenCont;
 	global.hasGenCont = instance_exists(GenCont);
 	wait(1);
@@ -124,7 +147,10 @@ return _s;
 return 0;
 
 #define weapon_rads
-return 40;
+if instance_exists(GameCont){
+	return round(60 * (GameCont.level) * .2);
+}
+return 60;
 
 #define weapon_auto
 return true;
@@ -465,6 +491,7 @@ texture_set_repeat(false);
 		image_speed = 0;
 		size = 1;
 		right = choose(-1, 1);
+		depth = -2;
 
 		on_step = waitme_step
 		on_draw = waitme_draw
@@ -474,7 +501,7 @@ texture_set_repeat(false);
 	}
 
 #define waitme_step
-	if point_seen(x, y, 0) || point_seen(x, y, 1) || point_seen(x, y, 2) || point_seen(x, y, 3){seen = true}
+	if (point_seen(x, y, 0) || point_seen(x, y, 1) || point_seen(x, y, 2) || point_seen(x, y, 3)) && (instance_exists(Player) && point_distance(x, y, instance_nearest(x, y, Player).x, instance_nearest(x, y, Player).y) <= 128){seen = true}
 	if seen = true{
 		if irandom(10) <= current_time_scale with instance_create(x + random_range(-sprite_get_width(sprite)/2, sprite_get_width(sprite)/2), y + sprite_get_height(sprite)/2 - random(6), FireFly){
 				sprite_index = sprLightning
@@ -500,7 +527,9 @@ texture_set_repeat(false);
 	draw_set_alpha(.2 + (starttimer - timer) / starttimer)
 	var _s = sprite_get_width(sprite),
 		  _h = sprite_get_height(sprite);
+	if timer <= 2 {draw_set_fog(true, c_white, 0, 0)}
 	draw_sprite_part_ext(sprite, 0, 0,          _h - _h / starttimer * (starttimer - timer), _s, _h, x - _s / 2 * right,       y + sprite_get_yoffset(sprite) - _h / starttimer * (starttimer - timer), image_xscale * right, image_yscale, image_blend, image_alpha)
+	draw_set_fog(false, c_white, 0, 0);
 	draw_set_alpha(1)
 	draw_set_fog(true, c_white, 0, 0);
 	draw_sprite_part_ext(sprite, 0, -1 * right, _h - _h / starttimer * (starttimer - timer), _s,  2, x - (_s / 2) * right - 1, y + sprite_get_yoffset(sprite) - _h / starttimer * (starttimer - timer), image_xscale * right, image_yscale, image_blend, image_alpha)
@@ -529,33 +558,6 @@ texture_set_repeat(false);
 		sprite_index = spr_hurt
 		if "right" in self{right = other.right}
 	}
-
-#define step
-
-if button_pressed(0, "spec"){
-	with create_waitme(mouse_x, mouse_y){
-		waitme = GoldScorpion;
-
-		with instance_create(0, 0, waitme){
-			other.starttimer = 30 * max(1, size);
-			other.timer = other.starttimer;
-			other.size = size
-			other.sprite = sprite_index;
-			other.mask_index = mask_index;
-			image_speed = 0;
-			instance_delete(self)
-		}
-
-		var _a = 0;
-		do{
-			_a++
-				if place_meeting(x, y, Wall) with instance_nearest(x, y, Wall){
-					instance_create(x, y, FloorExplo)
-					instance_destroy();
-				}
-		}until(_a >= 24 || !place_meeting(x, y, Wall))
-	}
-}
 
 	/*#define weapon_fire
 with instance_create(x+lengthdir_x(14,gunangle),y+lengthdir_y(14,gunangle),CustomObject){
