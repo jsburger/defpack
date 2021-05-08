@@ -6,7 +6,7 @@ while 1{
     wait(0)
 }
 #define weapon_name
-return "MEGA HAMMER"
+return "SPIN HAMMER"
 #define weapon_type
 return 0
 #define weapon_cost

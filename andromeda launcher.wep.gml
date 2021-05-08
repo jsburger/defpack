@@ -20,9 +20,84 @@ global.disappear1 = [chestprop, Feather, Shell, Debris, WepPickup, Pickup, Grena
 		if id !=other.id instance_destroy()
 	}
 }*/
+global.KillList = ds_list_create();
+global.SpawnFloors = ds_list_create();
+
 
 global.wepsprite = 0
 mod_script_call_nc("mod", "defpermissions", "permission_register_options", "weapon", mod_current, "wepsprite", "Andromeda Launcher Sprite", ["Ultra", "Sleek", "Evolving", "Original"])
+
+global.newLevel = instance_exists(GenCont);
+global.hasGenCont = false;
+while(true)
+{
+	if(instance_exists(GenCont)) global.newLevel = 1;
+	else if(global.newLevel)
+	{
+		global.newLevel = 0;
+
+		var _f = -4,
+				_i = 0,
+				_s = ds_list_size(global.KillList);
+
+		// Determine floors to be spawned on
+		with Floor{
+			if distance_to_object(Player) >= 256{
+				ds_list_add(global.SpawnFloors, self);
+			}
+		}
+		if ds_list_size(global.SpawnFloors) = 0{
+			ds_list_add(global.SpawnFloors, instance_furthest(Player.x, Player.y, Floor));
+		}
+
+
+		if GameCont.level = 0{
+			ds_list_clear(global.KillList)
+		}
+
+		if ds_list_size(global.KillList) > 0{
+			ds_list_shuffle(global.KillList);
+
+			// Removing a specific % of enemies from that list
+			do{
+				ds_list_delete(global.KillList, 0);
+			}until (ds_list_size(global.KillList) < (_s * .6))
+
+			// Spawn mans
+			do{
+				_i++;
+				ds_list_shuffle(global.SpawnFloors);
+				_f = global.SpawnFloors[| 0]
+				with create_waitme(_f.x + 16, _f.y + 16){
+					waitme = global.KillList[| 0];
+
+					with instance_create(0, 0, waitme){
+						other.starttimer = 30 * max(1, size);
+						other.timer = other.starttimer;
+						other.sprite_index = sprite_index;
+						other.mask_index = mask_index;
+						instance_delete(self)
+					}
+
+					var _a = 0;
+					do{
+						_a++
+							if place_meeting(x, y, Wall) with instance_nearest(x, y, Wall){
+								instance_create(x, y, FloorExplo)
+								instance_destroy();
+							}
+					}until(_a >= 24 || !place_meeting(x, y, Wall))
+				}
+				ds_list_delete(global.KillList, 0);
+
+			}until (_a >= 500 || ds_list_size(global.KillList) = 0)
+			ds_list_clear(global.SpawnFloors)
+		}
+	}
+	var hadGenCont = global.hasGenCont;
+	global.hasGenCont = instance_exists(GenCont);
+	wait(1);
+}
 
 #define weapon_name
 return "ANDROMEDA LAUNCHER"
@@ -46,10 +121,10 @@ switch global.wepsprite{
 return _s;
 
 #define weapon_type
-return 4;
+return 0;
 
 #define weapon_rads
-return 50;
+return 40;
 
 #define weapon_auto
 return true;
@@ -58,13 +133,16 @@ return true;
 return 70;
 
 #define weapon_cost
-return 6;
+return 0;
 
 #define weapon_swap
 return sndSwapExplosive;
 
 #define weapon_area
 return 15;
+
+#define weapon_melee
+return false;
 
 #define weapon_text
 return "MAN'S LAST DESIRE";
@@ -205,6 +283,11 @@ with instances_in(x-succ,y-succ/2,x+succ,y+succ/2,instances_matching_ne([hitme,C
 
             drawsize = max(other.sprite_width,other.sprite_height)
         }
+
+				if !instance_is(self, prop) && !instance_is(self, CustomEnemy) && !instance_is(self, Corpse) && !instance_is(self, Nothing2){
+					ds_list_add(global.KillList, object_index)
+				}
+
         if !instance_is(self,Corpse) and other.wantobject != Portal {
             if instance_is(self, YungCuz){
                 sound_stop(sndCuzCry)
@@ -373,8 +456,108 @@ draw_set_color(c_white);
 draw_set_alpha(1);
 texture_set_repeat(false);
 
+#define create_waitme(X, Y)
+	with instance_create(X, Y, CustomObject){
+		waitme = Maggot;
+		starttimer = 30;
+		timer = starttimer;
+		seen = false;
+		image_speed = 0;
+		size = 1;
+		right = choose(-1, 1);
 
-/*#define weapon_fire
+		on_step = waitme_step
+		on_draw = waitme_draw
+		on_destroy = waitme_destroy
+
+		return self;
+	}
+
+#define waitme_step
+	if point_seen(x, y, 0) || point_seen(x, y, 1) || point_seen(x, y, 2) || point_seen(x, y, 3){seen = true}
+	if seen = true{
+		if irandom(10) <= current_time_scale with instance_create(x + random_range(-sprite_get_width(sprite)/2, sprite_get_width(sprite)/2), y + sprite_get_height(sprite)/2 - random(6), FireFly){
+				sprite_index = sprLightning
+				gravity = -random_range(.05,.15)
+				motion_add(270,gravity)
+				image_index = 1
+				image_speed = 0
+				image_blend = merge_color(merge_color(c_fuchsia, c_navy, random(1)), c_white, random(.7))
+				if fork(){
+						wait(12+irandom(12))
+						if instance_exists(self) instance_destroy()
+						exit
+				}
+		}
+		timer -= current_time_scale;
+		if timer <= 0{
+			instance_destroy();
+		}
+	}
+
+#define waitme_draw
+	draw_sprite_ext(sprite, 0, x, y, image_xscale * right, image_yscale, image_angle, c_black, image_alpha);
+	draw_set_alpha(.2 + (starttimer - timer) / starttimer)
+	var _s = sprite_get_width(sprite),
+		  _h = sprite_get_height(sprite);
+	draw_sprite_part_ext(sprite, 0, 0,          _h - _h / starttimer * (starttimer - timer), _s, _h, x - _s / 2 * right,       y + sprite_get_yoffset(sprite) - _h / starttimer * (starttimer - timer), image_xscale * right, image_yscale, image_blend, image_alpha)
+	draw_set_alpha(1)
+	draw_set_fog(true, c_white, 0, 0);
+	draw_sprite_part_ext(sprite, 0, -1 * right, _h - _h / starttimer * (starttimer - timer), _s,  2, x - (_s / 2) * right - 1, y + sprite_get_yoffset(sprite) - _h / starttimer * (starttimer - timer), image_xscale * right, image_yscale, image_blend, image_alpha)
+	draw_set_fog(false, c_white, 0, 0);
+
+#define waitme_destroy
+	sound_play_pitchvol(sndPortalAppear, 6 / size * random_range(.9, 1.1), .6)
+	repeat(12)with instance_create(x + random_range(-sprite_get_width(sprite)/2, sprite_get_width(sprite)/2), y + sprite_get_height(sprite)/2 - random(6), FireFly){
+			sprite_index = sprLightning
+			gravity = -random_range(.05,.15)
+			motion_add(270,gravity)
+			image_index = 1
+			image_speed = 0
+			image_blend = merge_color(merge_color(c_fuchsia, c_navy, random(1)), c_white, random(.7))
+			if fork(){
+					wait(12+irandom(12))
+					if instance_exists(self) instance_destroy()
+					exit
+			}
+	}
+	repeat(2 + size){
+		var _d = random_range(10, 170)
+		instance_create(x + lengthdir_x(sprite_get_width(sprite) / 2, _d), y + lengthdir_y(sprite_get_height(sprite) / 2, _d), PortalL)
+	}
+	with instance_create(x, y, waitme){
+		sprite_index = spr_hurt
+		if "right" in self{right = other.right}
+	}
+
+#define step
+
+if button_pressed(0, "spec"){
+	with create_waitme(mouse_x, mouse_y){
+		waitme = GoldScorpion;
+
+		with instance_create(0, 0, waitme){
+			other.starttimer = 30 * max(1, size);
+			other.timer = other.starttimer;
+			other.size = size
+			other.sprite = sprite_index;
+			other.mask_index = mask_index;
+			image_speed = 0;
+			instance_delete(self)
+		}
+
+		var _a = 0;
+		do{
+			_a++
+				if place_meeting(x, y, Wall) with instance_nearest(x, y, Wall){
+					instance_create(x, y, FloorExplo)
+					instance_destroy();
+				}
+		}until(_a >= 24 || !place_meeting(x, y, Wall))
+	}
+}
+
+	/*#define weapon_fire
 with instance_create(x+lengthdir_x(14,gunangle),y+lengthdir_y(14,gunangle),CustomObject){
 	creator = other
 	team = other.team

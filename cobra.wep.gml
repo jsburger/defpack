@@ -62,6 +62,8 @@ var _load = weapon_get_load(argument0);
 	repeat(_load) if(instance_exists(self)){
 		repeat(4) with instance_create(x,y,ToxicGas){
 			move_contact_solid(other.gunangle,18);
+			gas_special = true
+			team = other.team
 			motion_add(other.gunangle + (random_range(-15, 15) * other.accuracy), random_range(2,4));
 		}
 		wait 1;
@@ -71,5 +73,12 @@ var _load = weapon_get_load(argument0);
 with instances_matching(DragonSound, "is_cobra", true){
 	if timeout >= 0{
 		sound_play_pitchvol(sndScorpionFireStart, 1.5, 1.4);
+	}
+}
+
+with instances_matching(ToxicGas, "gas_special", true){
+	if !place_meeting(x, y, Player){
+		team = -4;
+		gas_special = false;
 	}
 }

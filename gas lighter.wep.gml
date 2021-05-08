@@ -1,5 +1,5 @@
 #define init
-global.sprGasLigher = sprite_add_weapon("sprites/weapons/sprPushPiston1.png",  2, 2);
+global.sprGasLigher = sprite_add_weapon("sprites/weapons/sprGasLighter.png",  7, 2);
 
 #macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)
 
@@ -9,34 +9,29 @@ return "GAS LIGHTER"
 #define weapon_sprt
 return global.sprGasLigher;
 
-#define nts_weapon_examine
-return{
-    "d": "Unleash a large quantity of kinetic energy on both ends. ",
-}
-
 #define weapon_type
-return 0;
+return 4;
 
 #define weapon_auto
 return true;
 
 #define weapon_load
-return 15;
+return 13;
 
 #define weapon_cost
-return 0;
+return 1;
 
 #define weapon_swap
 return sndSwapExplosive;
 
 #define weapon_area
-return 4;
+return 5;
 
 #define weapon_chrg
 return 1
 
 #define weapon_text
-return "FAST TRAVEL";
+return "FALSE MEMORIES";
 
 #define weapon_melee
 return false;
@@ -44,7 +39,7 @@ return false;
 #define weapon_fire
 
 with instance_create(x,y,CustomObject){
-  sound   = sndCrossReload
+  sound   = sndOasisExplosionSmall
 	name    = "lighter charge"
 	creator = other
 	charge    = 0
@@ -59,15 +54,15 @@ with instance_create(x,y,CustomObject){
 	depth = TopCont.depth
 	index = creator.index
   accuracy = other.accuracy
-	on_step    = piston_step
-	on_destroy = piston_destroy
-	on_cleanup = piston_cleanup
+	on_step    = lighter_step
+	on_destroy = lighter_destroy
+	on_cleanup = lighter_cleanup
 	reload = -1
 	btn = other.specfiring ? "spec" : "fire"
 	hand = other.specfiring and other.race == "steroids"
 }
 
-#define piston_step
+#define lighter_step
 if !instance_exists(creator){instance_delete(self);exit}
 x = creator.x + creator.hspeed
 y = creator.y + creator.vspeed
@@ -97,7 +92,7 @@ if button_check(index, btn){
     if charge < maxcharge{
         charge += mod_script_call_nc("mod", "defpack tools", "get_reloadspeed", creator) * timescale * 3;
         charged = 0
-        sound_play_pitchvol(sound,(charge/maxcharge) * .55,.7)
+        sound_play_pitchvol(sound,.4 + (charge/maxcharge) * 2.1,.7)
     }
     else{
         if current_frame mod 6 < current_time_scale {
@@ -116,55 +111,81 @@ if button_check(index, btn){
 }
 else{instance_destroy()}
 
-#define piston_cleanup
+#define lighter_cleanup
 view_pan_factor[index] = undefined
 if !charged sound_stop(sound)
 
-#define piston_destroy
+#define lighter_destroy
 	var timescale = (mod_variable_get("weapon", "stopwatch", "slowed") == 1) ? 30/room_speed : current_time_scale;
     reload += mod_script_call_nc("mod", "defpack tools", "get_reloadspeed", creator) * timescale
-	var _ch = other.charged;
+	var _ch = other.charge < other.maxcharge;
 
 
 	with creator{
-		weapon_post(6, 7, 0);
-		motion_set(gunangle - 180, 3)
+		weapon_post(7, 8, 0);
+		motion_add(gunangle - 180, 1)
+		var _p = random_range(.8, 1.2);
 	}
 	with creator if _ch{
-		repeat(36)with instance_create(x + hspeed, y + vspeed, Flame){
+		sound_play_pitch(sndFlamerStart, .7 * _p)
+		sound_play_pitch(sndDoubleFireShotgun, .8 * _p)
+		sound_play_pitch(sndSuperSlugger, .9 * _p)
+
+		repeat(42)with instance_create(x + hspeed, y + vspeed, Flame){
 			move_contact_solid(other.gunangle, 16);
-			motion_add(other.gunangle + random_range(-3, 3) * other.accuracy, 4 + irandom(6))
+			motion_add(other.gunangle + random_range(-3, 3) * other.accuracy, 4 + irandom(8))
+      friction += .25
 			team = other.team;
-			damage += 2;
 		}
 		var _t = self;
 		if instance_exists(ToxicGas){
-			view_shake_max_at(_t.x, _t.y, 16);
+			view_shake_at(_t.x, _t.y, 16);
 		}
+    var _c = false
 		with ToxicGas{
+      if !_c{
+        _c = true
+        sleep(50)
+        sound_play_pitchvol(sndFlareExplode, 1.5, 1.5)
+        sound_play_pitchvol(sndFlameCannonEnd, 3, .7)
+      }
 			repeat(4)with instance_create(x, y, Flame){
 				motion_add(random(360), 5)
 				team = _t.team;
-				damage += 2;
+				damage += 3;
 			}
 			instance_destroy()
 		}
 		with FrogQueenBall{
+			sleep(80)
 			repeat(24)with instance_create(x, y, Flame){
 				motion_add(random(360), 8 + irandom(1))
 				team = _t.team;
-				damage += 2;
+				damage += 3;
 			}
+			sound_play(sndExplosionS)
+			instance_create(x, y, SmallExplosion)
 			instance_destroy()
 		}
 	}else{
-		repeat(36)with instance_create(x + hspeed, y + vspeed, ToxicGas){
-			move_contact_solid(other.gunangle, 16)
-			motion_add(other.gunangle, 7 + irandom(3))
+		sound_play_pitch(sndOasisExplosion, 2.5 * _p)
+		sound_play_pitch(sndToxicBarrelGas, .8 * _p)
+
+		repeat(42)with instance_create(x + hspeed, y + vspeed, ToxicGas){
+      team = other.team
+      move_contact_solid(other.gunangle, 16)
+			motion_add(other.gunangle + random_range(-2, 2) * other.accuracy, 6 + irandom(5))
 			friction = .35;
+      gas_special = true
 		}
 	}
 
+#define step
+  with instances_matching(ToxicGas, "gas_special", true){
+    if !place_meeting(x, y, Player){
+      team = -4;
+      gas_special = false;
+    }
+  }
 
-
-	#define extraspeed_add(_player, __speed, _direction) return mod_script_call("mod", "defpack tools", "extraspeed_add", _player, __speed, _direction);
+#define extraspeed_add(_player, __speed, _direction) return mod_script_call("mod", "defpack tools", "extraspeed_add", _player, __speed, _direction);

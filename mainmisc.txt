@@ -10,7 +10,7 @@
 /loadwep auto screwdriver
 /loadwep rapier
 /loadwep rebounce axe
-/loadwep mega hammer
+/loadwep spin hammer
 /loadwep wondersword
 /loadwep crystal torch
 /loadwep impact fist
@@ -44,6 +44,7 @@
 /loadwep punisher
 /loadwep donut box
 /loadwep infinipistol
+/loadwep andromeda launcher
 /load soda
 
 /loadwep flak canon

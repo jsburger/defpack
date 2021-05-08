@@ -39,6 +39,7 @@
 
 /loadwep toxicthrower
 /loadwep cobra
+/loadwep gas lighter
 
 //SMART
 
@@ -52,7 +53,6 @@
 /loadwep kaboomerang
 /loadwep heavy nuke launcher
 /loadwep firestorm
-/loadwep andromeda launcher
 /loadwep toxic carronader
 /loadwep blaster
 /loadwep puncher

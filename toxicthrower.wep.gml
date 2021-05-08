@@ -59,7 +59,17 @@ var _load = weapon_get_load(mod_current);
 		repeat(2) with instance_create(x,y,ToxicGas){
 			move_contact_solid(other.gunangle,18);
 			image_angle = random(360)
+			gas_special = true
+			team = other.team
 			motion_add(other.gunangle + (random_range(-6, 6) * other.accuracy),random_range(2,3));
 		}
 		wait 1;
 	}
+
+#define step
+with instances_matching(ToxicGas, "gas_special", true){
+	if !place_meeting(x, y, Player){
+		team = -4;
+		gas_special = false;
+	}
+}
