@@ -8,7 +8,7 @@ return "GOLDEN BOUNCER MACHINEGUN"
 return global.sprGoldenBouncerMachinegun;
 
 #define weapon_gold
-return true;
+return -1;
 
 #define weapon_type
 return 1;

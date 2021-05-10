@@ -8,7 +8,7 @@ return "GOLDEN PSY REVOLVER";
 return global.sprGoldenPsyRevolver;
 
 #define weapon_gold
-return true;
+return -1;
 
 #define weapon_type
 return 1;

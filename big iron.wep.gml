@@ -99,26 +99,6 @@ repeat(3){
     if !instance_exists(self) exit
 }
 
-#define create_bullet(_x,_y)
-with instance_create(_x,_y,CustomProjectile){
-	typ = 1
-	creator = other
-	team  = other.team
-	image_yscale = .5
-	trailscale = 1
-	hyperspeed = 8
-	sprite_index = mskNothing
-	mask_index = mskBullet2
-	force = 2
-	damage = 4
-	lasthit = -4
-	recycle = skill_get(mut_recycle_gland)
-	dir = 0
-	on_end_step  = sniper_step
-	on_hit 		 = void
-	return id
-}
-
 #define muzzle_step
 if image_index > 1{instance_destroy()}
 

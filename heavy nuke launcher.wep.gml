@@ -49,7 +49,7 @@ sleep(40)
 motion_add(gunangle,-5)
 with instance_create(x+lengthdir_x(4,gunangle),y+lengthdir_y(4,gunangle)-1,CustomProjectile){
 	friction = .18
-	motion_set(other.gunangle, 7)
+	motion_set(other.gunangle, 5)
 	image_angle = direction
 	team = other.team
 	creator = other
@@ -81,7 +81,7 @@ else{
     fimage_index = (fimage_index + .5 * current_time_scale) mod 2
     var _x = mouse_x[index], _y = mouse_y[index];
     if speed >= 3{
-        motion_add(point_direction(x, y, _x, _y), .6)
+        motion_add(point_direction(x, y, _x, _y), .8)
     }
     image_angle = direction
     if speed < 6 friction -= .35 * current_time_scale

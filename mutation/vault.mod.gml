@@ -2,12 +2,12 @@
 global.new_level = (instance_exists(GenCont) || instance_exists(Menu));
 global.generated = false;
 
-global.sprShrineFire    = sprite_add("../sprites/shrine/sprShrinePest.png", 5, 21, 23);
-global.sprShrineBouncer = sprite_add("../sprites/shrine/sprShrinePest.png", 5, 21, 23);
+global.sprShrineFire    = sprite_add("../sprites/shrine/sprShrineFire.png", 5, 21, 23);
+global.sprShrineBouncer = sprite_add("../sprites/shrine/sprShrineVouncer.png", 5, 21, 23);
 global.sprShrinePest    = sprite_add("../sprites/shrine/sprShrinePest.png", 5, 21, 23);
-global.sprShrineThunder = sprite_add("../sprites/shrine/sprShrinePest.png", 5, 21, 23);
-global.sprShrinePsy     = sprite_add("../sprites/shrine/sprShrinePest.png", 5, 21, 23);
-global.sprShrineGamma   = sprite_add("../sprites/shrine/sprShrinePest.png", 5, 21, 23);
+global.sprShrineThunder = sprite_add("../sprites/shrine/sprShrineThunder.png", 5, 21, 23);
+global.sprShrinePsy     = sprite_add("../sprites/shrine/sprShrinePsy.png", 5, 21, 23);
+global.sprShrineGamma   = sprite_add("../sprites/shrine/sprShrineGamma.png", 5, 21, 23);
 
 global.binds = [
 	[noone, CustomStep, 0, script_ref_create(prompt_step)]

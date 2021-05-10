@@ -8,7 +8,7 @@ return "GOLDEN PEST ASSAULT RIFLE";
 return global.sprGoldenAssaultPestRifle;
 
 #define weapon_gold
-return true;
+return -1;
 
 #define weapon_type
 return 1;

@@ -22,7 +22,6 @@
 //BOWS
 
 /loadwep bow
-/loadwep hyper bow
 /loadwep explosive bow
 /loadwep arc classique
 

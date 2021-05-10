@@ -26,7 +26,7 @@ return sndSwapMachinegun;
 return -1;
 
 #define weapon_gold
-return true;
+return -1;
 
 #define weapon_text
 return "WITHSTAND";

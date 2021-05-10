@@ -5,7 +5,7 @@ global.sprGoldenAssaultFireRifle = sprite_add_weapon("../../sprites/weapons/iris
 return "GOLDEN FIRE ASSAULT RIFLE";
 
 #define weapon_gold
-return true;
+return -1;
 
 #define weapon_sprt
 return global.sprGoldenAssaultFireRifle;

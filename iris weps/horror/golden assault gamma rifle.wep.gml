@@ -8,7 +8,7 @@ return "GOLDEN GAMMA ASSAULT RIFLE"
 return global.sprAssaultBouncerRifle;
 
 #define weapon_type
-return 1;
+return -1;
 
 #define weapon_auto
 return false;
