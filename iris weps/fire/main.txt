@@ -28,3 +28,4 @@
 /loadwep fire rogue rifle
 /loadwep big fire iron
 /loadwep fire moby
+/loadwep fire subata

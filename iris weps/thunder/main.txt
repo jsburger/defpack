@@ -28,3 +28,4 @@
 /loadwep thunder rogue rifle
 /loadwep big thunder iron
 /loadwep thunder moby
+/loadwep thunder subata

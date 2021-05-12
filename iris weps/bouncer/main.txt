@@ -27,3 +27,4 @@
 /loadwep bouncer rogue rifle
 /loadwep big bouncer iron
 /loadwep bouncer moby
+/loadwep bouncer subata

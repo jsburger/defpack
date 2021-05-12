@@ -1,18 +1,17 @@
 #define init
-global.sprSubata = sprite_add_weapon("sprites/weapons/sprSubata.png",4,3)
+global.sprFireSubata = sprite_add_weapon("../../sprites/weapons/iris/fire/sprFireSubata.png",4,2)
+global.sprBullet = sprite_add("../../sprites/projectiles/iris/fire/sprFireBullet.png", 2, 8, 8);
 
 #define weapon_name
-return "SUBATA"
-#define weapon_iris
-return "x subata"
+return "FIRE SUBATA"
 #define weapon_type
 return 1
 #define weapon_cost
 return 1
 #define weapon_area
-return 6;
+return -1;
 #define weapon_load
-return 3
+return 2
 #define weapon_swap
 return sndSwapPistol
 #define weapon_auto
@@ -25,8 +24,8 @@ return 0
 var _p = random_range(.8, 1.4);
 sound_play_pitchvol(sndQuadMachinegun, 1.6 * _p, .6)
 sound_play_pitchvol(sndDoubleMinigun, .4 * _p, .6)
-sound_play_pitch(sndShotgun, 2 * _p)
-sound_play(sndMinigun)
+sound_play_pitch(sndFireShotgun, 2 * _p)
+sound_play(sndIncinerator)
 sound_play_gun(sndClickBack, 0, 1)
 sound_stop(sndClickBack)
 
@@ -34,7 +33,7 @@ weapon_post(5, 10, 0)
 
 with instance_create(x + lengthdir_x(16, gunangle), y + lengthdir_y(16, gunangle), CustomObject) {
 	depth = -1
-	sprite_index = sprBullet1
+	sprite_index = global.sprBullet
 	image_speed = .9
 	on_step = muzzle_step
 	on_draw = muzzle_draw
@@ -43,10 +42,10 @@ with instance_create(x + lengthdir_x(16, gunangle), y + lengthdir_y(16, gunangle
 	image_angle = other.gunangle
 }
 
-mod_script_call("mod", "defpack tools", "shell_yeah", right * 90, 40, 2 + random(2), c_yellow);
+mod_script_call("mod", "defpack tools", "shell_yeah", right * 90, 40, 2 + random(2), c_red);
 
-with mod_script_call("mod", "defhitscan", "create_hitscan_bullet", x + lengthdir_x(12, gunangle), y + lengthdir_y(12, gunangle)){
-		direction = other.gunangle + random_range(-4, 4) * other.accuracy;
+with mod_script_call("mod", "defhitscan", "create_fire_hitscan_bullet", x + lengthdir_x(12, gunangle), y + lengthdir_y(12, gunangle)){
+		direction = other.gunangle + random_range(-7, 7) * other.accuracy;
 		image_angle = direction;
 		creator = other
 		team = other.team
@@ -54,13 +53,9 @@ with mod_script_call("mod", "defhitscan", "create_hitscan_bullet", x + lengthdir
 }
 
 #define weapon_sprt
-return global.sprSubata
+return global.sprFireSubata
 #define weapon_text
-return "PEST CONTROL"
-#define nts_weapon_examine
-return{
-    "d": "A weapon favoured by those who hunt bugs and mine minerals for a living. ",
-}
+return "BURNING HELL"
 
 #define muzzle_step
 if image_index > 1{instance_destroy()}

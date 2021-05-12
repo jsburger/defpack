@@ -59,7 +59,7 @@ with instance_create(x+lengthdir_x(4,gunangle),y+lengthdir_y(4,gunangle)-1,Custo
 	index = other.index
 	accuracy = other.accuracy
 	typ = 2
-	timer = 30
+	timer = 20
 	damage = 100
 	fimage_index = 0
 	soundcheck = 0
@@ -81,7 +81,7 @@ else{
     fimage_index = (fimage_index + .5 * current_time_scale) mod 2
     var _x = mouse_x[index], _y = mouse_y[index];
     if speed >= 3{
-        motion_add(point_direction(x, y, _x, _y), .8)
+        motion_add(point_direction(x, y, _x, _y), .82)
     }
     image_angle = direction
     if speed < 6 friction -= .35 * current_time_scale

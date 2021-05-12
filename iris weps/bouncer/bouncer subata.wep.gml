@@ -1,18 +1,16 @@
 #define init
-global.sprSubata = sprite_add_weapon("sprites/weapons/sprSubata.png",4,3)
+global.sprBouncerSubata = sprite_add_weapon("../../sprites/weapons/iris/bouncer/sprBouncerSubata.png",4,2)
 
 #define weapon_name
-return "SUBATA"
-#define weapon_iris
-return "x subata"
+return "BOUNCER SUBATA"
 #define weapon_type
 return 1
 #define weapon_cost
 return 1
 #define weapon_area
-return 6;
+return -1;
 #define weapon_load
-return 3
+return 5
 #define weapon_swap
 return sndSwapPistol
 #define weapon_auto
@@ -23,10 +21,10 @@ return 0
 return 0
 #define weapon_fire
 var _p = random_range(.8, 1.4);
-sound_play_pitchvol(sndQuadMachinegun, 1.6 * _p, .6)
+sound_play_pitchvol(sndBouncerShotgun, 2 * _p, .6)
 sound_play_pitchvol(sndDoubleMinigun, .4 * _p, .6)
 sound_play_pitch(sndShotgun, 2 * _p)
-sound_play(sndMinigun)
+sound_play_pitchvol(sndBouncerSmg, 2.6 * _p, .6)
 sound_play_gun(sndClickBack, 0, 1)
 sound_stop(sndClickBack)
 
@@ -45,8 +43,8 @@ with instance_create(x + lengthdir_x(16, gunangle), y + lengthdir_y(16, gunangle
 
 mod_script_call("mod", "defpack tools", "shell_yeah", right * 90, 40, 2 + random(2), c_yellow);
 
-with mod_script_call("mod", "defhitscan", "create_hitscan_bullet", x + lengthdir_x(12, gunangle), y + lengthdir_y(12, gunangle)){
-		direction = other.gunangle + random_range(-4, 4) * other.accuracy;
+with mod_script_call("mod", "defhitscan", "create_bouncer_hitscan_bullet", x + lengthdir_x(12, gunangle), y + lengthdir_y(12, gunangle)){
+		direction = other.gunangle + random_range(-5, 5) * other.accuracy;
 		image_angle = direction;
 		creator = other
 		team = other.team
@@ -54,13 +52,9 @@ with mod_script_call("mod", "defhitscan", "create_hitscan_bullet", x + lengthdir
 }
 
 #define weapon_sprt
-return global.sprSubata
+return global.sprBouncerSubata
 #define weapon_text
-return "PEST CONTROL"
-#define nts_weapon_examine
-return{
-    "d": "A weapon favoured by those who hunt bugs and mine minerals for a living. ",
-}
+return "MAGIC @wBULLETS"
 
 #define muzzle_step
 if image_index > 1{instance_destroy()}

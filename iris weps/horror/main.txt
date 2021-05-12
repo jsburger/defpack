@@ -27,3 +27,4 @@
 /loadwep gamma shotgun
 /loadwep big gamma iron
 /loadwep gamma moby
+/loadwep gamma subata

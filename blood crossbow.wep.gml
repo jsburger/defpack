@@ -17,10 +17,10 @@ return 3;
 return true;
 
 #define weapon_load
-return 21;
+return 24;
 
 #define weapon_cost
-return 1;
+return 2;
 
 #define weapon_swap
 return sndSwapBow;
@@ -46,27 +46,34 @@ if ammo[weapon_type()] < weapon_cost(){
     }
 }
 
+#macro max_ang 10
 
 #define weapon_fire
 var _p = random_range(.8,1.2)
 sound_play_pitchvol(sndHeavyCrossbow,.8*_p,.6)
 sound_play_pitchvol(sndBloodHammer,1.2*_p,.6)
 weapon_post(5,-40,0)
-with instance_create(x,y,CustomProjectile){
-	team = other.team
-	check = 0
-	creator = other
-	motion_add(other.gunangle,20)
-	image_angle = direction
-	sprite_index = global.sprBloodBolt
-	mask_index   = mskBolt
-	damage = 17
-    bounce = round(skill_get("compoundelbow") * 5)
-	with instance_create(x+hspeed*1.5,y+vspeed*1.5,BloodStreak){image_angle = other.direction}
-	on_end_step = b_step
-	on_wall     = b_wall
-	on_hit      = b_hit
-	on_destroy  = b_destroy
+
+var _i = -max_ang;
+repeat(3){
+	with instance_create(x,y,CustomProjectile){
+		team = other.team
+		check = 0
+		creator = other
+		motion_add(other.gunangle + _i * other.accuracy,18)
+		if _i = 0 speed += 6;
+		image_angle = direction
+		sprite_index = global.sprBloodBolt
+		mask_index   = mskBolt
+		damage = 10
+	    bounce = round(skill_get("compoundelbow") * 5)
+		with instance_create(x+hspeed*1.5,y+vspeed*1.5,BloodStreak){image_angle = other.direction}
+		on_end_step = b_step
+		on_wall     = b_wall
+		on_hit      = b_hit
+		on_destroy  = b_destroy
+	}
+	_i += max_ang;
 }
 
 #define b_hit

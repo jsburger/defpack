@@ -1,5 +1,7 @@
 #define init
-global.gun   = sprite_add_weapon("sprites/weapons/sprPunisher.png", 6, 4)
+global.gun    = sprite_add_weapon("sprites/weapons/sprPunisher.png", 6, 4)
+global.gunhud = sprite_add("sprites/interface/sprPunisherHUD.png", 1, 6, 4)
+
 global.proj  = sprite_add("sprites/projectiles/sprPunisherBolt.png", 4, 2, 1)
 global.shock = sprite_add("sprites/projectiles/sprPunisherShock.png", 4, 12, 12)
 #define weapon_name
@@ -78,6 +80,8 @@ repeat(2){
 
 #define weapon_sprt
 return global.gun
+#define weapon_sprt_hud
+return global.gunhud
 #define weapon_text
 return "@rLIFE@s AND @dDEATH@s"
 #define nts_weapon_examine

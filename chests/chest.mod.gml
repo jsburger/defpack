@@ -44,6 +44,9 @@ global.sprToolChestOpen = sprite_add("../sprites/chests/sprToolChestOpen.png", 1
 global.sprAoEChest     = sprite_add_weapon("../sprites/chests/sprAoEChest.png", 9, 6);
 global.sprAoEChestOpen = sprite_add("../sprites/chests/sprAoEChestOpen.png", 1, 9, 6);
 
+global.sprHitscanChest     = sprite_add_weapon("../sprites/chests/sprHitscanChest.png", 10, 6);
+global.sprHitscanChestOpen = sprite_add("../sprites/chests/sprHitscanChestOpen.png", 1, 10, 6);
+
 
 global.sprMinecraftChest     =  sprite_add_weapon("../sprites/chests/sprMinecraftChest.png", 7, 7);
 global.sprMinecraftChestOpen =  sprite_add("../sprites/chests/sprMinecraftChestOpen.png", 1, 7, 7);
@@ -127,21 +130,22 @@ global.sprExplosiveChestOpenC = global.sprMeleeChestOpenC;
 global.sprEnergyChestOpenC    = global.sprMeleeChestOpenC;
 
 global.chests = ds_map_create()
-chest_add("Ultra",   14, [wep_ultra_shovel,wep_ultra_shotgun,wep_ultra_laser_pistol,wep_ultra_revolver,wep_ultra_crossbow,wep_ultra_grenade_launcher,"ultra spam gun","ultra hand","defender","ultra gunhammer"])
-chest_add("AoE",     6,  ["buster","blaster","puncher"])
+chest_add("Ultra",   14, [wep_ultra_revolver,wep_ultra_shovel,wep_ultra_shotgun,wep_ultra_laser_pistol,wep_ultra_crossbow,wep_ultra_grenade_launcher,"ultra hand","defender","ultra gunhammer"])
+chest_add("AoE",     6,  ["blaster","buster","puncher"])
+chest_add("Hitscan", 7,  ["subata","moby","big iron"])
 chest_add("Rocklet", 9,  ["rocklet pistol","rocklet rifle","rocklet cannon","super rocklet cannon","rocklet minigun"])
-chest_add("Toxic",   3,  ["toxicthrower","cobra","toxic carronader",wep_toxic_bow,"heavy toxic crossbow",wep_toxic_launcher,"toxic cannon"])
+chest_add("Toxic",   3,  ["toxicthrower","cobra","toxic carronader",wep_toxic_bow,wep_toxic_launcher,"gas lighter"])
 chest_add("Tool",    3,  [wep_wrench,wep_screwdriver,wep_jackhammer,"chainsaw","nail gun","rivet gun"])
-chest_add("Combo",   6,  ["rapier","rebounce axe","mega hammer"])
-chest_add("Vector",  6,  ["vector shotgun","vector rifle","vector cannon"])
-chest_add("Regal",   5,  ["chris knife","apergig tanat","kemosabe"])
-chest_add("Smart",   7,  [wep_smart_gun,"heavy smart gun", "smarter gun", "smart nuke launcher"])
-chest_add("Auto",    6,  [wep_auto_shotgun,wep_auto_crossbow,wep_auto_grenade_shotgun,wep_heavy_auto_crossbow,"auto abris launcher","auto screwdriver","auto grenade launcher","auto knife thrower"])
-chest_add("Quartz",  10, ["quartz machinegun","quartz shotgun","quartz crossbow","quartz laser","quartz launcher"])
+chest_add("Combo",   6,  ["rapier","rebounce axe","spin hammer"])
+chest_add("Vector",  6,  ["vector rifle","vector shotgun","vector cannon"])
+chest_add("Regal",   5,  ["arc classique","apergig tanat","kemosabe"])
+chest_add("Smart",   7,  [wep_smart_gun,"heavy smart gun", "smarter gun", "smart nuke launcher", "smart abris rifle"])
+chest_add("Auto",    6,  [wep_auto_shotgun,wep_auto_crossbow,wep_auto_grenade_shotgun,wep_heavy_auto_crossbow,"auto abris launcher","auto screwdriver","auto knife thrower"])
+chest_add("Quartz",  10, ["quartz machinegun","quartz shotgun","quartz crossbow","quartz laser","quartz launcher","quartz sword"])
 chest_add("Flame",   8,  [wep_flare_gun,wep_dragon,wep_flamethrower,wep_flame_cannon,"firestorm"])
-chest_add("Blood",   9,  [wep_blood_hammer,"bone","big bone",wep_blood_launcher,wep_blood_cannon,"blood abris launcher","blood crossbow"])
-chest_add("Hyper",   9,  [wep_hyper_rifle,wep_hyper_slugger,wep_hyper_launcher,"hyper crossbow"])
-chest_add("Zenith",  13, ["herald","andromeda launcher","stopwatch","sak", "defender", "flex", "punisher", "rapier", "record dealer"])
+chest_add("Blood",   9,  [wep_blood_hammer,"bone","big bone",wep_blood_launcher,wep_blood_cannon,"blood abris launcher","blood crossbow","punisher"])
+chest_add("Hyper",   9,  [wep_hyper_rifle,wep_hyper_slugger,wep_hyper_launcher,"hyper crossbow","hyper bow"])
+chest_add("Zenith",  13, ["herald","andromeda launcher","stopwatch","sak","defender","flex","punisher","rapier","record dealer"])
 var _l = ds_list_create();
 weapon_get_list(_l, clamp(GameCont.hard, 0, 4), GameCont.hard + 2 * array_length(instances_matching(Player,"race","robot")) + 3);
 var _a = ds_list_to_array(_l),
@@ -217,7 +221,8 @@ chest_add("Energy",    -1, 5)
     if !instance_exists(GenCont){
         with instances_matching(instances_matching(WeaponChest, "object_index", 458), "defcustomchestcheck", null){
             defcustomchestcheck = 1
-            var _chance = min(GameCont.wepmuts * 12, 45);
+            var _chance = min(GameCont.wepmuts * 12 + (crown_current = crwn_guns) * 20 + (crown_current = "exchange") * 20, 45);
+
             if skill_get(mut_heavy_heart) > 0 && _chance > 0 _chance = 100 * skill_get(mut_heavy_heart)
             var _mwr = (irandom(99) + 1) <= (_chance)
             if _mwr = true{
@@ -269,6 +274,14 @@ chest_add("Energy",    -1, 5)
                   if skill_get("Recurrent Neural Network")       > 0 array_push(_a, 1);
                   if skill_get("Support Vector Machines")        > 0 array_push(_a, 1);
                   if skill_get("conductivity")        > 0 array_push(_a, 1);
+                  if crown_current = crwn_guns || crown_current = "exchange"{
+                    array_push(_a, 0);
+                    array_push(_a, 1);
+                    array_push(_a, 2);
+                    array_push(_a, 3);
+                    array_push(_a, 4);
+                    array_push(_a, 5);
+                  }
               var q = get_chests(-1, -1)
               if array_length(q){
                   with customchest_create(x, y, q[_a[irandom(array_length(_a) - 1)]]){
@@ -390,21 +403,22 @@ chest_add("Energy",    -1, 5)
       return o;
 
 #define customchest_open
+  var _k = 0;
   repeat(2){
-    var _w = wep_screwdriver
+    var _w = wep_screwdriver;
+
     sound_play(sndAmmoChest);
-    var _i = 0,
-        _j = 0;
-        _d = [0, 0]
+    var _i = 0;
     do{
         _w = weps[irandom(array_length(weps)-1)]
-        if weapon_get_area(_w) <= max(0, GameCont.hard + 3) && _d[_j] != _w{
+        if _i = 99{_w = weps[0]}
+        if ((weapon_get_area(_w) <= max(0, GameCont.hard + 2) && _w != 0) || _i = 99) && _k != _w{
           with instance_create(x,y,WepPickup){
             curse = other.curse
             wep = _w
-            _d[_j] = wep;
-            _j++;
+            _k = wep;
             if weapon_get_type(wep) != 0 ammo = 1
+            if _i = 99 exit;
             _i = 100;
           }
         }

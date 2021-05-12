@@ -28,3 +28,4 @@
 /loadwep pest rogue rifle
 /loadwep big pest iron
 /loadwep pest moby
+/loadwep pest subata
