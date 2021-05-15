@@ -1,17 +1,17 @@
 #define init
-global.toot 					 = sprite_add_weapon("sprites/weapons/sprHerald.png",-1,3)
-global.bigrune 				 = sprite_add("sprites/projectiles/sprHeraldRuneBig.png",1,12,24)
-global.smallrunes 		 = sprite_add("sprites/projectiles/sprHeraldRunesSmall.png",9,3,3)
+global.toot 		   = sprite_add_weapon("sprites/weapons/sprHerald.png",-1,3)
+global.bigrune 		   = sprite_add("sprites/projectiles/sprHeraldRuneBig.png",1,12,24)
+global.smallrunes 	   = sprite_add("sprites/projectiles/sprHeraldRunesSmall.png",9,3,3)
 global.smallrunesbloom = sprite_add("sprites/projectiles/sprHeraldRunesSmall.png",9,3,3)
-global.runes 					 = sprite_add("sprites/projectiles/sprHeraldRunes.png",9,4,4)
-global.runesbloom 		 = sprite_add("sprites/projectiles/sprHeraldRunesOutlined.png",9,5,5)
+global.runes 		   = sprite_add("sprites/projectiles/sprHeraldRunes.png",9,4,4)
+global.runesbloom 	   = sprite_add("sprites/projectiles/sprHeraldRunesOutlined.png",9,5,5)
 with instances_matching(CustomDraw,"name",mod_current) instance_destroy()
-with script_bind_draw(vignette,-10){
+with script_bind_draw(vignette, -10) {
 	global.drawer = id
 	persistent = 1
 	name = mod_current
 }
-with script_bind_draw(meteordraw,-12){
+with script_bind_draw(meteordraw, -12) {
 	global.drawer2 = id
 	persistent = 1
 	name = mod_current
@@ -36,23 +36,23 @@ if global.canshader = 1{
     global.sh = make_shader()
 }
 
-if fork(){
-    while(1){
-        if !instance_exists(global.drawer){
+if fork() {
+    while(1) {
+        if !instance_exists(global.drawer) {
             with script_bind_draw(vignette,-10){
             	global.drawer = id
             	persistent = 1
             	name = mod_current
             }
         }
-        if !instance_exists(global.drawer2){
+        if !instance_exists(global.drawer2) {
             with script_bind_draw(meteordraw,-12){
             	global.drawer2 = id
             	persistent = 1
             	name = mod_current
             }
         }
-        if global.canshader = 1 and !mod_variable_exists("weapon", mod_current, "sh"){
+        if global.canshader = 1 and !mod_variable_exists("weapon", mod_current, "sh") {
             global.sh = make_shader()
         }
         wait(0)
@@ -164,7 +164,7 @@ return 13
 #define weapon_swap
 return sndSwapCursed
 #define weapon_auto
-return 1
+return mod_script_call_nc("mod", "defpack tools", "abris_weapon_auto", "Herald Circle", self)
 #define weapon_melee
 return 0
 #define weapon_laser_sight
@@ -364,8 +364,25 @@ if instance_exists(creator){
     if phase >= 1 and phase < 2{
         phase += .02*current_time_scale*phasespeed
         vigncol2 = merge_color(vigncol2,c_silver,.02*n)
-        vigncol1 = merge_color(vigncol1,c_black,.06*n)
+        vigncol1 = merge_color(vigncol1,c_black,.02*n)
     }
+    
+    var _x = mouse_x[index], _y = mouse_y[index];
+    if frac(current_frame) < current_time_scale {
+    	repeat(random(5) + 1) {
+	    	var ang = random(360), l = random_range(120, 150);
+	    	with create_cool_dust(_x + lengthdir_x(l, ang), _y + lengthdir_y(l, ang)) {
+	    		motion_set(ang - 90, 10)
+	    		image_xscale *= 2
+	    		image_yscale *= 2
+	    		image_speed /= 2
+	    		blendcolor = c_red
+	    		image_alpha *= .6
+	    		image_blend = merge_color(c_red, c_black, .8)
+	    	}
+    	}
+    }
+    
     meteortime += current_time_scale
     if phase >= 2 && meteortime >= 3 meteor()
     if phase < 1 rotspeed+=phase*.025*n
@@ -429,10 +446,10 @@ var bloom = 1;
 for (var i = 0; i< sides; i++){
     var ang = image_angle + i * 360/sides, ang2 = image_angle + (i + 1) * 360/sides;
 	var x1 = _x + lengthdir_x(accbase,ang), y1 = _y + lengthdir_y(accbase, ang), x2 = _x + lengthdir_x(accbase, ang2), y2 = _y + lengthdir_y(accbase,ang2);
-	runeline(x1,y1,x2,y2,runes[i],1,bloom)
+	runeline(x1,y1,x2,y2,runes[i],1,bloom, runecolor, runebloom)
 	var ydiff = phase > 2 ? 3: 5
     //if !(i mod 2) array_push(points,[x1,y1])
-	if phase > 1 rune_beam(_x,_y,x1,y1+ydiff,x2,y2+ydiff,c_white,min((phase-1)*alpha,1),15)
+	if phase > 1 rune_beam(_x,_y,x1,y1+ydiff,x2,y2+ydiff,c_white,min((phase-1)*alpha,1)/2,15)
 }
 
 //triangle
@@ -452,7 +469,7 @@ for (var i = 0; i< subsides; i++){
     var ang = subangle + i * 360/subsides, ang2 = subangle + (i + 1) * 360/subsides;
 	var n = 1.3;
 	var x1 = _x + lengthdir_x(accbase/n,ang), y1 = _y + lengthdir_y(accbase/n,ang), x2 = _x + lengthdir_x(accbase/n,ang2), y2 = _y + lengthdir_y(accbase/n,ang2);
-	runeline(x1,y1,x2,y2,subrunes[i],0,bloom)
+	runeline(x1,y1,x2,y2,subrunes[i],0,bloom, runecolor, runebloom)
 	var ydiff = phase > 2 ? 2: 3
 	//if phase > 1 rune_beam(_x,_y,x1,y1+ydiff,x2,y2+ydiff,c_white,(phase-1)*alpha,1)
 
@@ -463,38 +480,43 @@ for (var i = 0; i< sides; i++){
     var ang = image_angle + i * 360/sides, ang2 = image_angle + (i + 1) * 360/sides;
 	var x1 = _x + lengthdir_x(accbase - 3,ang), y1 = _y + lengthdir_y(accbase- 3, ang);
     beam_draw(x1,y1,beamcolor,alpha/2)
-    if random(100) < 75*current_time_scale*alpha with instance_create(x1,y1,Dust){
-        image_blend = c_red
-        image_alpha = other.alpha
-        depth = -12
-        if other.phase > 1 depth+=2
-        motion_set(90,4+random(3))
-        if fork(){
-            while instance_exists(self){
-                image_blend = merge_color(image_blend,c_black,.1*current_time_scale)
-                wait(0)
-            }
-            exit
-        }
-    }
+    if random(100) < 75*current_time_scale*alpha create_cool_dust(x1, y1)
     if random(100) < 1.5*current_time_scale*phase lightning(x1, y1,3,10,1,alpha, ang+180, 8)
 }
 
 //central rune
-draw_sprite_ext(global.bigrune,0,_x,_y,1,1,0,bigrunecolor,runealpha)
+draw_sprite_ext(global.bigrune,0,_x,_y,1,1,0, bigrunecolor, runealpha * random_range(.5, 1))
 draw_set_blend_mode(bm_add)
-draw_circle_color(_x,_y,accbase,merge_color(c_black,bigrunecolor,.2*alpha),c_black,0)
 repeat(4){
-    draw_sprite_ext(global.bigrune,0,_x,_y,1+random_range(-.2,.2),1+random_range(-.2,.2),0,bigrunecolor,runealpha)
+    draw_sprite_ext(global.bigrune,0,_x,_y,1+random_range(-.2,.2),1+random_range(-.2,.2),0, bigrunecolor, min(runealpha/2, .5))
 }
+draw_circle_color(_x,_y,accbase,merge_color(c_black,bigrunecolor,.2*alpha),c_black,0)
 
 if phase > 1 and phase < 2{
-    draw_circle_color(_x,_y,accbase*1.2,merge_color(c_white,c_black,1/min(power(phase,10),accbase*1.5)),c_black,0)
+    draw_circle_color(_x,_y,accbase*1.2,merge_color(c_gray,c_black,1/min(power(phase,10),accbase*1.5)),c_black,0)
 }
 if phase > 2{
-    draw_circle_color(_x,_y,accbase*1.2,merge_color(c_white,c_black,1/min(power(phase,10),accbase*1.5)),c_black,0)
+    draw_circle_color(_x,_y,accbase*1.2,merge_color(c_gray,c_black,1/min(power(phase,10),accbase*1.5)),c_black,0)
 }
 draw_set_blend_mode(bm_normal)
+
+#define create_cool_dust(x, y)
+with instance_create(x, y, Dust) {
+    image_blend = c_red
+    image_alpha = other.alpha
+    depth = -12
+    if other.phase > 1 depth+=2
+    blendcolor = c_black
+    motion_set(90,4+random(3))
+    if fork(){
+        while instance_exists(self){
+            image_blend = merge_color(image_blend,blendcolor,.1*current_time_scale)
+            wait(0)
+        }
+        exit
+    }
+    return self
+}
 
 
 #define lightning_line(x1,y1,x2,y2)
@@ -513,7 +535,7 @@ while point_distance(x1,y1,x2,y2) > 3 && ++int <= bdis{
     x1 = _x;
 }
 
-#define runeline(x1,y1,x2,y2,runes,big,bloom)
+#define runeline(x1,y1,x2,y2,runes,big,bloom, col, bloomcol)
 var dir = point_direction(x1,y1,x2,y2), dist = point_distance(x1,y1,x2,y2);
 var len = array_length_1d(runes);
 var spr = big ? global.runes : global.smallrunes;
@@ -523,15 +545,17 @@ for (var i = 1; i < len; i++){
 		var n = random(dist);
 		draw_sprite_ext(sprLightningHit,1+random(2),x1 + lengthdir_x(n, dir), y1 + lengthdir_y(n, dir),1,1,dir,c_black,other.alpha)
 	}
-	draw_sprite_ext(spr,runes[i],x1 + lengthdir_x((dist/len) * i, dir), y1 + lengthdir_y((dist/len) * i, dir),1,1, dir, runecolor, alpha)
-	if bloom = 1{
-    	texture_set_interpolation(1)
-    	draw_set_blend_mode(bm_add)
+	draw_sprite_ext(spr,runes[i],x1 + lengthdir_x((dist/len) * i, dir), y1 + lengthdir_y((dist/len) * i, dir),1,1, dir, col, alpha)
+}
+if bloom = 1{
+	texture_set_interpolation(1)
+	draw_set_blend_mode(bm_add)
+	for (var i = 1; i < len; i++){
     	var r = random(.1);
-    	draw_sprite_ext(bloomspr,runes[i],x1 + lengthdir_x((dist/len) * i, dir), y1 + lengthdir_y((dist/len) * i, dir),1.4+r,1.4+r, dir, runebloom, alpha/2)
-    	draw_set_blend_mode(bm_normal)
-    	texture_set_interpolation(0)
+    	draw_sprite_ext(bloomspr,runes[i],x1 + lengthdir_x((dist/len) * i, dir), y1 + lengthdir_y((dist/len) * i, dir),1.4+r,1.4+r, dir, bloomcol, alpha/2)
 	}
+	draw_set_blend_mode(bm_normal)
+	texture_set_interpolation(0)
 }
 
 #define rune_beam(xc,yc,x1,y1,x2,y2,color,alpha,height)

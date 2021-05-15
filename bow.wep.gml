@@ -29,7 +29,7 @@ return 5
 return sndSwapHammer
 
 #define weapon_auto
-return 1
+return mod_script_call_nc("mod", "defpack tools", "abris_weapon_auto", "bow charge", self)
 
 #define weapon_melee
 return false

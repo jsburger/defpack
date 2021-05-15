@@ -181,6 +181,7 @@ global.scrThunderDestroy = ["mod", "defpack tools", "thunder_destroy"]
 		typ = 1
 		damage = 3
 		force = 4
+		speed = 12
 
 		sprite_index = mskNone
 		mask_index = mskBullet1
@@ -258,6 +259,7 @@ global.scrThunderDestroy = ["mod", "defpack tools", "thunder_destroy"]
 		typ = 1
 		damage = 2
 		force = 4
+		speed = 12
 
 		sprite_index = mskNone
 		mask_index = mskBullet1
@@ -365,7 +367,7 @@ if (instance_exists(other) && other.typ > 0) {
 	    damage = 2
 	    typ = 2
 
-		on_step    = thunder_step
+		// on_step    = thunder_step
 		on_destroy = global.scrThunderDestroy
 
 		return id

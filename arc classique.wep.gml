@@ -25,7 +25,7 @@ return 8
 return sndSwapHammer
 
 #define weapon_auto
-return 1
+return mod_script_call_nc("mod", "defpack tools", "abris_weapon_auto", "CritBowCharge", self)
 
 #define weapon_melee
 return false
