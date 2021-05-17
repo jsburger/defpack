@@ -16,7 +16,7 @@ return 12
 #define weapon_swap
 return sndSwapExplosive
 #define weapon_auto
-return true
+return mod_script_call_nc("mod", "defpack tools", "abris_weapon_auto", "grenade minigun charge", self)
 #define weapon_melee
 return false
 #define weapon_laser_sight

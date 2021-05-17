@@ -16,7 +16,7 @@ return _s;
 return 4;
 
 #define weapon_auto
-return 1;
+return mod_script_call_nc("mod", "defpack tools", "abris_weapon_auto", mod_current, self)
 
 #define weapon_load
 return 72;

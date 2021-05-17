@@ -33,7 +33,7 @@ return{
 return 4;
 
 #define weapon_auto
-return true;
+return mod_script_call_nc("mod", "defpack tools", "abris_weapon_auto", "piston charge", self)
 
 #define weapon_load
 return 22;

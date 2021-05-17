@@ -88,7 +88,9 @@ repeat(3){
         with instance_create(x, y, Shell) {
         	motion_add(other.gunangle + 90 + random_range(-40, 40), 2 + random(2))
         }
-        with mod_script_call("mod", "defhitscan", "create_hitscan_bullet", x + lengthdir_x(12, gunangle), y + lengthdir_y(12, gunangle)){
+        with mod_script_call("mod", "defhitscan", "create_hitscan_bullet", x + lengthdir_x(12, gunangle), y + lengthdir_y(12, gunangle)) {
+        	damage += 1
+        	pierce += 1
             direction = other.gunangle + random_range(-10, 10) * other.accuracy;
             image_angle = direction;
             creator = other

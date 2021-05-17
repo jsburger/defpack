@@ -992,6 +992,18 @@ with instance_create(c.x + lengthdir_x(l, c.gunangle), c.y + lengthdir_y(l, c.gu
 };
 
 
+#define abris_weapon_auto(name, creator)
+return charge_weapon_auto("name", name, creator)
+
+#define sniper_weapon_auto(creator)
+return charge_weapon_auto("parent", "SniperCharge", creator)
+
+#define charge_weapon_auto(varname, value, creator)
+var q = instances_matching(instances_matching(CustomObject, varname, value), "creator", creator);
+if array_length(q) return -1;
+return true;
+
+
 #define draw_bar(x, y, w, h, col)
 var x2 = x - w * .5, y2 = ceil(y + (h + 3)/2);
 draw_line_width_color(x2 - 1, y, x2 + w + 1, y, h + 3, col, col)

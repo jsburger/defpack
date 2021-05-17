@@ -17,7 +17,7 @@ return global.sprWonderSword;
 return 0;
 
 #define weapon_auto
-return 1;
+return mod_script_call_nc("mod", "defpack tools", "abris_weapon_auto", "WonderCharge", self)
 
 #define weapon_load
 return 12;

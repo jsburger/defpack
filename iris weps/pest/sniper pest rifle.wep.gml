@@ -18,7 +18,7 @@ return global.sprSniperPestRifle ;
 return 1;
 
 #define weapon_auto
-return true;
+return mod_script_call_nc("mod", "defpack tools", "sniper_weapon_auto", self)
 
 #define weapon_load
 return 30;
