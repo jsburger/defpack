@@ -95,7 +95,7 @@ with instances_matching_ne(Player, "driving", 1)
 	var _c = weapon_get_cost(wep);
 	if global.killammo <= 0//ammo[_w] < _c || (_w = 0 && global.killammo <= 0) || (_c == 0 and ammo[_w] == 0) or GameCont.rad < weapon_get_rads(wep)
 	{
-		global.killammo = clamp(irandom_range(3, 5 + round(GameCont.hard /3), 3, 24))
+		global.killammo = clamp(irandom_range(3, 5 + round(GameCont.hard /3)), 3, 24)
 		for (var _i = 0; _i < maxp; _i++){
 				global.nextwep[_i, 2] = global.killammo;
 		}
