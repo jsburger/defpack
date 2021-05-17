@@ -2,12 +2,12 @@
 global.new_level = (instance_exists(GenCont) || instance_exists(Menu));
 global.generated = false;
 
-global.sprShrineFire    = sprite_add("../sprites/shrine/sprShrineFire.png", 5, 21, 23);
-global.sprShrineBouncer = sprite_add("../sprites/shrine/sprShrineVouncer.png", 5, 21, 23);
-global.sprShrinePest    = sprite_add("../sprites/shrine/sprShrinePest.png", 5, 21, 23);
-global.sprShrineThunder = sprite_add("../sprites/shrine/sprShrineThunder.png", 5, 21, 23);
-global.sprShrinePsy     = sprite_add("../sprites/shrine/sprShrinePsy.png", 5, 21, 23);
-global.sprShrineGamma   = sprite_add("../sprites/shrine/sprShrineGamma.png", 5, 21, 23);
+global.sprShrine = sprite_add("../sprites/shrine/sprShrine.png", 5, 21, 23);
+global.sprShrineCore 		   = sprite_add("../sprites/shrine/sprShrineCore.png", 5, 20, 23);
+global.sprShrineCoreFlare  = sprite_add("../sprites/shrine/sprShrineCoreFlare.png", 5, 20, 23);
+global.sprShrineCoreFlare2 = sprite_add("../sprites/shrine/sprShrineCoreFlare2.png", 5, 20, 23);
+global.sprShrineCoreTrans  = sprite_add("../sprites/shrine/sprShrineTransition.png", 6, 20, 23);
+global.sprShrineCoreTrans2 = sprite_add("../sprites/shrine/sprShrineTransition2.png", 6, 20, 23);
 
 global.binds = [
 	[noone, CustomStep, 0, script_ref_create(prompt_step)]
@@ -23,6 +23,8 @@ with(instance_create(0, 0, CustomObject)){
 	variable_instance_set(self, mod_current + " controller", true);
 	binds = global.binds;
 }
+
+#macro c_rainbow make_colour_hsv(current_frame mod 255, 220, 255);
 
 #macro infinity 1 / 0
 #macro negative_infinity -1 / 0
@@ -347,6 +349,10 @@ with(instance_rectangle_bbox(_x1, _y1, _x2, _y2, [Bones, TopPot])){
 return [hall_x + 16, hall_y + 16];
 
 #define step
+if button_pressed(0, "horn"){
+	Dummy_create(0.x, 0.y)
+}
+
 if (instance_exists(GenCont) || instance_exists(Menu)){
 	global.new_level = true;
 }
@@ -380,19 +386,20 @@ with(instance_create(_x, _y, CustomProp)){
 
 	name = "Iris Shrine";
 
-	sprite_index = sprBullet1
+	sprite_index = global.sprShrine;
 	mask_index = mskNone;
 	spr_shadow = shd32;
 	spr_shadow_y = 4;
 
 	spr_idle = sprite_index;
-	spr_walk = spr_idle;
-	spr_hurt = sprTargetHurt;
-	spr_dead = sprTargetDead;
+	spr_walk = sprite_index;
+	spr_hurt = sprite_index;
+	spr_dead = sprite_index;
 
 	maxhealth = 500;
 	my_health = maxhealth;
 
+	depth = 0;
 	candie = false;
 
 	startx = x;
@@ -416,26 +423,64 @@ with(instance_create(_x, _y, CustomProp)){
 		if mod_variable_get("skill", "prismaticiris", "color") = color{
 			color = pool[irandom(array_length_1d(pool) - 1)];
 		}
-	}until (mod_variable_get("skill", "prismaticiris", "color") != color || _i = 29)
-		switch color{
-		case "quiveringsight":		skill = "bouncer"; textcol = "@y"; spr_idle = global.sprShrineFire;    break;
-		case "blazingvisage":		  skill = "fire";    textcol = "@r"; spr_idle = global.sprShrineBouncer; break;
-		case "pestilentgaze":   	skill = "pest";    textcol = "@g"; spr_idle = global.sprShrinePest;    break;
-		case "cloudedstare":      skill = "thunder"; textcol = "@b"; spr_idle = global.sprShrineThunder; break;
-		case "allseeingeye":      skill = "psy";     textcol = "@p"; spr_idle = global.sprShrinePsy;     break;
-		case "warpedperspective": skill = "gamma";   textcol = "@g"; spr_idle = global.sprShrineGamma;   break;
+	}until(mod_variable_get("skill", "prismaticiris", "color") != color || _i = 29)
+	switch color{
+		case "quiveringsight": 		skill = "bouncer"; break;
+		case "blazingvisage": 		skill = "fire";    break;
+		case "pestilentgaze": 		skill = "pest"; 	 break;
+		case "cloudedstare": 			skill = "thunder"; break;
+		case "allseeingeye": 			skill = "psy"; 		 break;
+		case "warpedperspective": skill = "gamma"; 	 break;
 	}
+
+	textcol = `@(color:${c_rainbow})`
 	sprite_index = spr_idle;
 
 	my_prompt = prompt_create("Change" + textcol + " Iris");
 
 	on_step = script_ref_create(Dummy_step);
 
+	with instance_create(x, y, CustomObject){
+		owner = other;
+		image_speed = .35;
+		depth = other.depth - 1;
+		sprite0 = global.sprShrineCoreFlare;
+		sprite1 = global.sprShrineCoreFlare2;
+		on_draw = ShrineCore_draw;
+		loop = false
+		wave = random(255)
+	}
+
 	return self;
 }
 
+#define ShrineCore_draw
+if !instance_exists(owner){
+	if loop = false{
+		sprite0 = global.sprShrineCoreTrans
+		sprite1 = global.sprShrineCoreTrans2
+		trace("trans set")
+		loop = true
+	}
+}else{
+	x = floor(owner.x + owner.hspeed);
+	y = floor(owner.y + owner.vspeed);
+}
+
+	var c_flare1 = make_colour_hsv((current_frame * 1.4 + wave) mod 255, 220, 255),
+	    c_flare2 = make_colour_hsv((current_frame * 1.4 + wave) mod 255,  60, 255);
+
+	draw_sprite_ext(sprite0, image_index, x, y, image_xscale, image_yscale, image_angle, c_flare1, image_alpha);
+	draw_sprite_ext(sprite1, image_index, x, y, image_xscale, image_yscale, image_angle, c_flare2, image_alpha);
+	draw_set_blend_mode(bm_add)
+	draw_sprite_ext(sprite0, image_index, x, y, image_xscale * 1.25, image_yscale * 1.25, image_angle, c_flare1, .15);
+	draw_set_blend_mode(bm_normal)
+
+	if instance_exists(owner) draw_sprite(global.sprShrineCore, image_index, x, y);
+
 #define Dummy_step
 if (!instance_exists(my_prompt)){
+	textcol = `@(color:${make_colour_hsv(current_frame mod 255, 220, 255)})`
 	my_prompt = prompt_create("Change" + textcol + " Iris");
 }
 
@@ -667,6 +712,7 @@ if (array_length(_prompts) > 0){
 	}
 
 #define CustomPrompt_end_step
+	text = "Change" + `@(color:${c_rainbow})` + " Iris"
 	var _nearwep = nearwep;
 	var _x = x;
 	var _y = y;

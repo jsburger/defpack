@@ -1,5 +1,6 @@
 #define init
 global.sprMegaDiscGun    = sprite_add_weapon("sprites/weapons/sprMegaDiscGun.png",5,9);
+global.sprMegaDiscGunHUD = sprite_add("sprites/interface/sprMegaDiscGunHUD.png",1,5,5);
 
 #define weapon_name
 return "MEGA DISC GUN"
@@ -58,6 +59,9 @@ with instances_matching(Player, "wep", mod_current){speed *= min(1, .8 + .2 * (s
 with instances_matching(instances_matching(Player, "race", "steroids"), "bwep", mod_current){speed *= min(1, .8 + .2 * (skill_get(mut_extra_feet)))}
 #define weapon_sprt
 return global.sprMegaDiscGun;
+
+#define weapon_sprt_hud
+return global.sprMegaDiscGunHUD;
 
 #define weapon_text
 return "watch out"

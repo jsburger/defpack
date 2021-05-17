@@ -28,7 +28,7 @@
 
 #define weapon_text
   return "POP (POP) POP";
-  
+
 #define nts_weapon_examine
 return{
     "d": "A hugely unpopular high caliber pop gun. #The bursts of air used for firing are slowly tearing the gun apart. ",
@@ -47,7 +47,7 @@ with instance_create(x + lengthdir_x(4, gunangle),y + lengthdir_y(4, gunangle),B
 	team = other.team
   sprite_index = global.sprPopperBullet;
 	accuracy = other.accuracy
-	motion_add(other.gunangle + random_range(-10,10)*other.accuracy,14)
+	motion_add(other.gunangle + random_range(-4,4)*other.accuracy,16)
 	damage += 3
 	image_angle = direction
 	if fork(){
@@ -58,7 +58,7 @@ with instance_create(x + lengthdir_x(4, gunangle),y + lengthdir_y(4, gunangle),B
 		var i = random(360);
     sleep(1)
     view_shake_at(_x, _y, 5)
-		repeat(3){
+		repeat(4){
 			with instance_create(_x,_y,Bullet2){
 				sound_play_pitchvol(sndFlakExplode,random_range(1.3,1.5),.2)
 				instance_create(x,y,Dust)
@@ -67,7 +67,7 @@ with instance_create(x + lengthdir_x(4, gunangle),y + lengthdir_y(4, gunangle),B
 				motion_add(i+random_range(-30,30)*_acc,10 + skill_get(mut_shotgun_shoulders) * 4)
 				image_angle = direction
 			}
-			i += 360/3
+			i += 360/4
 		}
 		if instance_exists(self) instance_destroy()
     }

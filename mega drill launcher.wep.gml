@@ -1,7 +1,7 @@
 #define init
 //global.gun
 global.sprMegaDrillLauncher    = sprite_add_weapon("sprites/weapons/sprBigDrillLauncher.png",21,10)
-global.sprMegaDrillLauncherHUD = sprite_add_weapon("sprites/weapons/sprBigDrillLauncher.png",37,5)
+global.sprMegaDrillLauncherHUD = sprite_add("sprites/interface/sprBigDrillLauncherHUD.png",1,37,5)
 global.sprMegaDrill            = sprite_add("sprites/projectiles/sprBigDrill.png",4,15,10)
 global.sprMegaDrillBlink       = sprite_add("sprites/projectiles/sprBigDrillBlink.png", 2, 15, 10)
 global.explosive = 0 //boolean, try turning it off

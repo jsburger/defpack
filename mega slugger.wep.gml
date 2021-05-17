@@ -1,5 +1,6 @@
 #define init
   global.sprMassiveSlugger       = sprite_add_weapon("sprites/weapons/sprMassiveSlugger.png",18,6);
+  global.sprMassiveSluggerHUD    = sprite_add("sprites/interface/sprMassiveSluggerHUD.png",1,5,5);
   global.sprFatShell             = sprite_add("sprites/other/sprFatShell.png",0,4,5);
   global.sprFatShellUpg          = sprite_add("sprites/other/sprFatShellUpg.png",0,4,7);
   global.sprMassiveSlug          = sprite_add("sprites/projectiles/sprMassiveSlug.png",2,27,27);
@@ -41,6 +42,9 @@ return -4;
 
 #define weapon_sprt
   return global.sprMassiveSlugger;
+
+#define weapon_sprt_hud
+  return global.sprMassiveSluggerHUD;
 
 #define nts_weapon_examine
 return{

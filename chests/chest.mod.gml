@@ -138,7 +138,7 @@ chest_add("Toxic",   3,  ["toxicthrower","cobra","toxic carronader",wep_toxic_bo
 chest_add("Tool",    3,  [wep_wrench,wep_screwdriver,wep_jackhammer,"chainsaw","nail gun","rivet gun"])
 chest_add("Combo",   6,  ["rapier","rebounce axe","spin hammer"])
 chest_add("Vector",  6,  ["vector rifle","vector shotgun","vector cannon"])
-chest_add("Regal",   5,  ["arc classique","apergig tanat","kemosabe"])
+chest_add("Regal",   5,  ["arc classique","duelist","kemosabe"])
 chest_add("Smart",   7,  [wep_smart_gun,"heavy smart gun", "smarter gun", "smart nuke launcher", "smart abris rifle"])
 chest_add("Auto",    6,  [wep_auto_shotgun,wep_auto_crossbow,wep_auto_grenade_shotgun,wep_heavy_auto_crossbow,"auto abris launcher","auto screwdriver","auto knife thrower"])
 chest_add("Quartz",  10, ["quartz machinegun","quartz shotgun","quartz crossbow","quartz laser","quartz launcher","quartz sword"])

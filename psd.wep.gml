@@ -1,5 +1,5 @@
 #define init
-global.sprEnergyDevice = sprite_add_weapon("sprites/weapons/sprPSD.png", 1, 2);
+global.sprEnergyDevice = sprite_add("sprites/weapons/sprPSD.png", 7, 1, 2);
 global.sprSonicExplosion = sprite_add("sprites/projectiles/sprESonicExplosion.png", 8, 59, 56);
 
 #macro c_energy $23D900
@@ -107,10 +107,10 @@ return choose("PERSONAL SECURITY DEVICE", "ABSORB THEIR @wBULLETS");
           var _f = !instance_is(other, prop);
           projectile_hit(other, damage, force * _f, point_direction(x, y, other.x, other.y));
           if other.my_health > 0{
-            sleep(6 + 12 * clamp(other.size, 1, 2));
+            sleep(4 + 6 * clamp(other.size, 1, 2));
             view_shake_max_at(other.x, other.y, 2 + 3 * clamp(other.size, 1, 2));
           }else{
-            sleep(20 + 30 * clamp(other.size, 1, 2));
+            sleep(12 + 12 * clamp(other.size, 1, 2));
             view_shake_max_at(other.x, other.y, 15 + 5 * clamp(other.size, 1, 2));
           }
       }

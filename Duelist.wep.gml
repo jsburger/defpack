@@ -2,7 +2,7 @@
 global.sprApergigTanat = sprite_add_weapon("sprites/weapons/sprApergigTanat.png", 0, 3);
 
 #define weapon_name
-return "APERGIG TANAT";
+return "DUELIST";
 
 #define weapon_sprt
 return global.sprApergigTanat;
@@ -17,7 +17,7 @@ return false;
 return 30;
 
 #define weapon_cost
-return 20;
+return 3;
 
 #define weapon_swap
 return sndSwapPistol
@@ -36,7 +36,7 @@ repeat(12){
     }
 }
 repeat(interfacepop) {
-    with instance_create(x,y,CustomProjectile) {
+    with instance_create(x,y,CustomProjectile){
         team = other.team
         creator = other
         motion_set(other.gunangle + 160*other.right,20)
@@ -61,7 +61,7 @@ return{
 }
 
 #define weapon_text
-return choose("CHOOSE YOUR TARGET WISELY","THIS IS THE @yWAY");
+return choose("CHOOSE YOUR TARGET WISELY","LIKE OLD TIMES");
 
 #define weapon_fire
 
@@ -85,7 +85,7 @@ with instance_create(x,y,CustomProjectile){
     image_speed = 1
     friction = .6
 	force = 50
-	damage = 1000
+	damage = 70
 	motion_add(other.gunangle,22)
 	image_xscale /= 2
 	image_yscale /= 2

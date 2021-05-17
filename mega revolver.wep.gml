@@ -1,12 +1,16 @@
 #define init
-global.sprMegaRevolver = sprite_add_weapon("sprites/weapons/sprMegaRevolver.png", -1, 3);
-global.sprMegaBullet   = sprite_add("sprites/projectiles/sprMegaBullet.png",2,18,18)
+global.sprMegaRevolver    = sprite_add_weapon("sprites/weapons/sprMegaRevolver.png", -1, 3);
+global.sprMegaRevolverHUD = sprite_add("sprites/interface/sprMegaRevolverHUD.png", 1, -1, 3);
+global.sprMegaBullet      = sprite_add("sprites/projectiles/sprMegaBullet.png",2,18,18)
 #macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)
 #define weapon_name
 return "MEGA REVOLVER";
 
 #define weapon_sprt
 return global.sprMegaRevolver;
+
+#define weapon_sprt_hud
+return global.sprMegaRevolverHUD;
 
 #define weapon_type
 return 1;

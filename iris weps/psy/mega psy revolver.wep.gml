@@ -1,5 +1,6 @@
 #define init
-global.sprMegaPsyRevolver   = sprite_add_weapon("../../sprites/weapons/iris/psy/sprMegaPsyRevolver.png", -1, 3);
+global.sprMegaPsyRevolver    = sprite_add_weapon("../../sprites/weapons/iris/psy/sprMegaPsyRevolver.png", -1, 3);
+global.sprMegaPsyRevolverHUD = sprite_add("../../sprites/interface/sprMegaPsyRevolverHUD.png", 1, -1, 3);
 global.sprMegaPsyBullet     = sprite_add("../../sprites/projectiles/iris/psy/sprMegaPsyBullet.png",2,18,18)
 global.sprMegaPsyBulletHit  = sprite_add("../../sprites/projectiles/iris/psy/sprMegaPsyBulletHit.png",3,18,18)
 #macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)
@@ -8,6 +9,9 @@ return "MEGA PSY REVOLVER";
 
 #define weapon_sprt
 return global.sprMegaPsyRevolver;
+
+#define weapon_sprt_hud
+return global.sprMegaPsyRevolverHUD;
 
 #define weapon_type
 return 1;

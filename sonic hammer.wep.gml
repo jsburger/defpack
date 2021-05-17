@@ -37,7 +37,7 @@ return{
 }
 
 #define weapon_text
-return "BASS IN YOUR EAR";
+return "TURN UP THE BASE";
 
 #define weapon_fire
 wepangle = -wepangle

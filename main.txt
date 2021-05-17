@@ -2,4 +2,5 @@
 /loadmod defpack tools/defpermissions
 /loadmod defpack tools/defpack tools
 /loadmod defpack tools/defpack tools 2
+/loadmod defpack tools/defhitscan
 /load tank

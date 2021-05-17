@@ -4,12 +4,13 @@
 	global.spr_walk = sprite_add("../sprites/crown/sprCrownWalk.png",6,8,8);
 	global.spr_icon = sprite_add("../sprites/crown/sprCrownSelect.png",1,12,16);
 
-	global.exchange_ban_list = [wep_super_disc_gun, wep_golden_nuke_launcher, wep_golden_disc_gun, "wondersword", "mega hammer", "rapier", "infinipistol", "push piston", "flak canon"];
+	global.exchange_ban_list = [wep_super_disc_gun, wep_golden_nuke_launcher, wep_golden_disc_gun, "wondersword", "mega hammer", "rapier", "infinipistol", "push piston", "flak canon", "spam disc gun"];
 
   for(var _i = 0; _i < maxp; _i++){
 		global.nextwep[_i, 0] = 0; // weapon index
-		global.nextwep[_i, 1] = 0; // fanc var for animating the hud
-		global.nextwep[_i, 2] = 0; // how many weapons have been swapped
+		global.nextwep[_i, 1] = 0; // fancy var for animating the hud
+		global.killammo = irandom_range(3, 5 + round(GameCont.hard /3))
+		global.nextwep[_i, 2] = global.killammo; // how many weapons have been swapped
 	}
 
 #define store_wep()
@@ -20,6 +21,10 @@
 
 #define game_start
 	store_wep()
+	global.killammo = irandom_range(3, 5 + round(GameCont.hard /3))
+	for(var _i = 0; _i < maxp; _i++){
+		global.nextwep[_i, 2] = global.killammo; // how many weapons have been swapped
+	}
 
 #define crown_object
 	spr_idle = global.spr_idle;
@@ -29,16 +34,40 @@
 	sprite_index = global.spr_icon;
 
 #define step
+with AmmoChest{
+	instance_create(x, y, WeaponChest);
+	instance_delete(self);
+}
+with AmmoChestMystery{
+	instance_create(x, y, WeaponChest);
+	instance_delete(self);
+}
+with AmmoPickup{
+	instance_delete(self);
+}
+
+for(var _i = 0; _i < maxp; _i++){
+	with _i{
+		var _j = 0;
+		repeat(5)
+		{
+			_j++
+			ammo[_j] = 1/0 // set to infinity
+		}
+	}
+}
+
 with instances_matching_ne(Player, "driving", 1)
 {
 	//detect run start
-	if  "HasEx" not in self
+	if "HasEx" not in self
 	{
 		var i = 0;
 		repeat(5)
 		{
 			i++
-			typ_ammo[i] = ceil(typ_ammo[i]/4)
+			//typ_ammo[i] = ceil(typ_ammo[i]/4)
+			ammo[i] = 1/0 // set to infinity
 		}
 		global.nextwep[index, 0] = get_wep()
 
@@ -64,15 +93,19 @@ with instances_matching_ne(Player, "driving", 1)
 	if "meleeammo" not in self meleeammo = 4
 	var _w = weapon_get_type(wep);
 	var _c = weapon_get_cost(wep);
-	if ammo[_w] < _c || (_w = 0 && meleeammo <= 0) || (_c == 0 and ammo[_w] == 0) or GameCont.rad < weapon_get_rads(wep)
+	if global.killammo <= 0//ammo[_w] < _c || (_w = 0 && global.killammo <= 0) || (_c == 0 and ammo[_w] == 0) or GameCont.rad < weapon_get_rads(wep)
 	{
+		global.killammo = clamp(irandom_range(3, 5 + round(GameCont.hard /3), 3, 24))
+		for (var _i = 0; _i < maxp; _i++){
+				global.nextwep[_i, 2] = global.killammo;
+		}
 		wep = determine_wep(index)
 		if skill_get("prismatic iris") > 0 mod_script_call_self("skill", "prismatic iris", "color", wep, mod_variable_get("skill", "prismatic iris", "color"))
 		reload = 1
 		if weapon_get_type(wep) != 0
 		{
 			meleeammo = 12
-			ammo[weapon_get_type(wep)] += max(2*typ_ammo[weapon_get_type(wep)], 2*weapon_get_cost(wep))
+			//ammo[weapon_get_type(wep)] += max(2*typ_ammo[weapon_get_type(wep)], 2*weapon_get_cost(wep))
 		}
 		else
 		{
@@ -94,8 +127,12 @@ with instances_matching_ne(Player, "driving", 1)
     	if "bmeleeammo" not in self bmeleeammo = 4
     	var _w = weapon_get_type(bwep);
     	var _c = weapon_get_cost(bwep);
-    	if ammo[_w] < _c || (_w = 0 && bmeleeammo <= 0) || (_c == 0 and ammo[_w] == 0) or GameCont.rad < weapon_get_rads(bwep)
+    	if global.killammo <= 0//ammo[_w] < _c || (_w = 0 && bmeleeammo <= 0) || (_c == 0 and ammo[_w] == 0) or GameCont.rad < weapon_get_rads(bwep)
     	{
+				global.killammo = irandom_range(3, 5 + round(GameCont.hard /3))
+				for (var _i = 0; _i < maxp; _i++){
+						global.nextwep[_i, 2] = global.killammo;
+				}
     		bwep = determine_wep(index)
     		breload = 1
 			if skill_get("prismatic iris") > 0{
@@ -110,7 +147,7 @@ with instances_matching_ne(Player, "driving", 1)
     		if weapon_get_type(bwep) != 0
     		{
     			bmeleeammo = 12
-    			ammo[weapon_get_type(bwep)] += max(typ_ammo[weapon_get_type(bwep)], 2*weapon_get_cost(bwep))
+    			//ammo[weapon_get_type(bwep)] += max(typ_ammo[weapon_get_type(bwep)], 2*weapon_get_cost(bwep))
     		}
     		else
     		{
@@ -135,6 +172,12 @@ with instances_matching_ne(Player, "driving", 1)
 		}
 		bwep = 0
 	}*/
+}
+with instances_matching_le(enemy, "my_health", 0){
+	global.killammo--;
+	for (var _i = 0; _i < maxp; _i++){
+			global.nextwep[_i, 2] = global.killammo;
+	}
 }
 
 #define wrap(w)
@@ -178,7 +221,7 @@ return w
 return "CROWN OF EXCHANGE";
 
 #define crown_text // Description
-return "CHANGE YOUR @wWEAPON@s#WHEN RUNNING OUT OF @yAMMO@s#lowered @yammo @sincome";
+return "CHANGE YOUR @wWEAPON@s#AFTER KILLING ENOUGH @wENEMIES@s#no @yammo @wdrops @sand @wchests";
 
 #define crown_tip // Loading Tip
 return "A FAIR DEAL";
@@ -255,6 +298,10 @@ instance_destroy()
 #define crown_take
 sound_play_crown()
 store_wep()
+global.killammo = irandom_range(3, 5 + round(GameCont.hard /3))
+for(var _i = 0; _i < maxp; _i++){
+	global.nextwep[_i, 2] = global.killammo; // how many weapons have been swapped
+}
 
 #define crown_lose
 with Player
@@ -263,7 +310,8 @@ with Player
 	repeat(5)
 	{
 		i++
-		typ_ammo[i] *= 4
+		ammo[i] = typ_amax[i]
+		//typ_ammo[i] *= 4
 	}
 }
 

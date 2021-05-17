@@ -9,6 +9,8 @@
   global.sprHUDbVR = sprite_add("../sprites/crown/sprCrownHUDVborderR.png", 3, -1, 0);
   global.sprHUDp   = sprite_add("../sprites/crown/sprCrownHUDPointer.png",  1,  3, 0);
   global.sprSwap   = sprite_add("../sprites/crown/sprExchangeSwap.png",  7, 10, 32);
+  global.sprKill   = sprite_add("../sprites/crown/sprKillAmmo.png",  1, 2, 1);
+
 
   for(var _i = 0; _i < maxp; _i++){
     // global.anim[player index, variable]
@@ -73,7 +75,7 @@
         _sprite = weapon_get_sprite(_array[INDEX, 0]),
         _w =  3 + s_w(_sprite), // total width
 		    _h = 10 + s_h(_sprite), // total height
-        _a = frac(_array[INDEX, 2]) = 0 ? 1 + (_array[INDEX, 2] mod 2) : 0,
+        _a = mod_variable_get("crown", "exchange", "killammo") = 0 ? 0 : 1,//frac(_array[INDEX, 2]) = 0 ? 1 + (_array[INDEX, 2] mod 2) : 0,
         _s = global.sprHUDbHT;
         global.anim[INDEX, 0] = _w;
         global.anim[INDEX, 1] = _h;
@@ -106,7 +108,7 @@
 
     if frac(_array[INDEX, 2]) = 0{
       draw_set_font(fntChat);
-      draw_text_nt(X + 2, Y + _h - 1, string(_array[INDEX, 2]));
+      draw_text_nt(X + 4, Y + _h - 1, string(_array[INDEX, 2]) + ` @0(${global.sprKill}:0) `);
       draw_set_font(fntM);
     }else{
       sleep(7);

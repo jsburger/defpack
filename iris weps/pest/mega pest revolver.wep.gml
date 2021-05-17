@@ -1,5 +1,6 @@
 #define init
-global.sprMegaPestRevolver   = sprite_add_weapon("../../sprites/weapons/iris/pest/sprMegaPestRevolver.png", -1, 3);
+global.sprMegaPestRevolver    = sprite_add_weapon("../../sprites/weapons/iris/pest/sprMegaPestRevolver.png", -1, 3);
+global.sprMegaPestRevolverHUD = sprite_add("../../sprites/interface/sprMegaPestRevolverHUD.png", 1, -1, 3);
 global.sprMegaPestBullet     = sprite_add("../../sprites/projectiles/iris/pest/sprMegaPestBullet.png",2,18,18)
 global.sprMegaPestBulletHit  = sprite_add("../../sprites/projectiles/iris/pest/sprMegaPestBulletHit.png",3,16,16)
 #macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)
@@ -8,6 +9,9 @@ return "MEGA PEST REVOLVER";
 
 #define weapon_sprt
 return global.sprMegaPestRevolver;
+
+#define weapon_sprt_hud
+return global.sprMegaPestRevolverHUD;
 
 #define weapon_type
 return 1;

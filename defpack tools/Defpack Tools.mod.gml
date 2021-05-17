@@ -39,6 +39,7 @@
 	//Sprites, sorted by ammo type, misc at the bottom
 	with spr {
 		msk = {};
+		snd = {};
 
 		//Horror Bullets
 		GammaBullet         = sprite_add(i + "iris/horror/sprGammaBullet.png",    2, 8, 8);
@@ -131,6 +132,7 @@
 		msk.SonicExplosion      = sprite_add_p(i + "mskSonicExplosion.png", 8, 61, 59);
 		msk.SmallSonicExplosion = sprite_add_p(i + "mskSonicExplosionSmall.png", 8, 20, 20);
 		SonicStreak             = sprite_add(i + "sprSonicStreak.png",6,8,32);
+		snd.SonicExplosion 		  = sound_add("../sounds/sndSonicExplosion.ogg");
 
 		//Abris Stripes
 		Stripes = sprite_add("../sprites/other/sprBigStripes.png", 1, 1, 1);
@@ -242,6 +244,7 @@
 
 #macro spr global.spr
 #macro msk global.spr.msk
+#macro snd global.spr.snd
 
 //thanks yokin
 #macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)
@@ -1890,6 +1893,7 @@ if other != lasthit{
 		shake = 2
 		canwallhit = false
 		can_crown = false;
+		play_sound = false;
 
 		return id
 	}
@@ -1911,6 +1915,7 @@ if other != lasthit{
 
 		superfriction = 1
 		dontwait = false
+		play_sound = true
 		can_crown = true
 		canwallhit = true
 		synstep = (GameCont.area = 101) //oasis synergy
@@ -1936,6 +1941,11 @@ if other != lasthit{
 		image_xscale *= 1.25
 		image_yscale *= 1.25
 		image_speed  *= .8
+	}
+
+	if play_sound{
+		sound_play_pitchvol(snd.SonicExplosion, random_range(1, 1.3), .8);
+		play_sound = false;
 	}
 
 	with Pickup{
@@ -2057,7 +2067,8 @@ if other != lasthit{
 		motion_add(other.creator.direction, random_range(1, 3) + 1)
 		image_angle = direction
 	}
-	if place_meeting(x + hspeed, y + vspeed, Wall) && canwallhit = true
+
+	if (place_meeting(x + hspeed, y + vspeed, Wall) || place_meeting(x + hspeed / 2, y + vspeed / 2, Wall)) && canwallhit = true
 	{
 	  with instance_create(x, y, MeleeHitWall){image_angle = other.direction} move_bounce_solid(false);
 		sound_play_pitchvol(sndImpWristKill, 1.2, .8)
@@ -2078,6 +2089,8 @@ if other != lasthit{
 			}
 		}
 		superforce *= .7
+
+		// Visuals:
 		with instance_create(x+lengthdir_x(12,direction),y+lengthdir_y(12,direction),AcidStreak){
 			sprite_index = spr.SonicStreak
 			image_angle = other.direction + random_range(-32, 32) - 90
@@ -2094,6 +2107,8 @@ if other != lasthit{
 			image_angle = direction
 		}
 	}
+
+	// Enemy Enemy collision:
 	if place_meeting(x + hspeed, y + vspeed, hitme)
 	{
 		var _h = instance_nearest(x + hspeed, y + vspeed, hitme);
@@ -2103,9 +2118,13 @@ if other != lasthit{
 			var _s = (ceil(superforce) + _h.size) + _d;
 			sleep(_s / 3 * max(1, _h.size))
 			view_shake_at(x, y, _s / 3 * max(1, _h.size))
+
+			// Hit enemy takes damage based on Superforced enemies superforce & melee damage
 			projectile_hit(_h,_s, superforce, direction);
+
+			// Superforced enemy takes damage based on superforce
 			projectile_hit(creator, round(superforce / 2), 0, direction);
-			//trace("enemy hit")
+
 			superforce *= .85 + .15 * min(skill_get(mut_impact_wrists), 1);
 		}
 	}

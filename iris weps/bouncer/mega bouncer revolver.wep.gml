@@ -1,12 +1,16 @@
 #define init
-global.sprMegaBouncerRevolver   = sprite_add_weapon("../../sprites/weapons/iris/bouncer/sprMegaBouncerRevolver.png", -1, 3);
-global.sprMegaBouncerBullet     = sprite_add("../../sprites/projectiles/iris/bouncer/sprMegaBouncerBullet.png",2,18,18)
+global.sprMegaBouncerRevolver    = sprite_add_weapon("../../sprites/weapons/iris/bouncer/sprMegaBouncerRevolver.png", -1, 3);
+global.sprMegaBouncerRevolverHUD = sprite_add("../../sprites/interface/sprMegaBouncerRevolverHUD.png", 1, -1, 3);
+global.sprMegaBouncerBullet      = sprite_add("../../sprites/projectiles/iris/bouncer/sprMegaBouncerBullet.png",2,18,18)
 #macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)
 #define weapon_name
 return "MEGA BOUNCER REVOLVER";
 
 #define weapon_sprt
 return global.sprMegaBouncerRevolver;
+
+#define weapon_sprt_hud
+return global.sprMegaBouncerRevolverHUD;
 
 #define weapon_type
 return 1;

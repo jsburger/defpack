@@ -1,5 +1,6 @@
 #define init
-global.sprMegaHorrorRevolver = sprite_add_weapon("../../sprites/weapons/iris/horror/on/sprMegaHorrorRevolverOn.png", -1, 3);
+global.sprMegaHorrorRevolver    = sprite_add_weapon("../../sprites/weapons/iris/horror/on/sprMegaHorrorRevolverOn.png", -1, 3);
+global.sprMegaHorrorRevolverHUD = sprite_add("../../sprites/interface/sprMegaHorrorRevolverOnHUD.png", 1, -1, 3);
 global.sprMegaHorrorBullet   = sprite_add("../../sprites/projectiles/iris/horror/sprMegaHorrorBullet.png",2,18,18)
 #macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)
 #define weapon_name
@@ -7,6 +8,9 @@ return "MEGA GAMMA REVOLVER";
 
 #define weapon_sprt
 return global.sprMegaHorrorRevolver;
+
+#define weapon_sprt_hud
+return global.sprMegaHorrorRevolverHUD;
 
 #define weapon_type
 return 1;
@@ -87,7 +91,7 @@ repeat(2)with instance_create(x,y,CustomProjectile)
 #define mega_step
 with instances_matching_ne(projectile, "team", team){
 	if distance_to_object(other) <= 0{
-		instance_destroy()	
+		instance_destroy()
 	}
 }
 

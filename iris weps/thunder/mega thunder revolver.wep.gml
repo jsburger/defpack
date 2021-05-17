@@ -1,5 +1,6 @@
 #define init
-global.sprMegaThunderRevolver   = sprite_add_weapon("../../sprites/weapons/iris/thunder/sprMegaThunderRevolver.png", -1, 3);
+global.sprMegaThunderRevolver    = sprite_add_weapon("../../sprites/weapons/iris/thunder/sprMegaThunderRevolver.png", -1, 3);
+global.sprMegaThunderRevolverHUD = sprite_add("../../sprites/interface/sprMegaThunderRevolverHUD.png", 1, -1, 3);
 global.sprMegaThunderBullet     = sprite_add("../../sprites/projectiles/iris/thunder/sprMegaThunderBullet.png",2,18,18)
 global.sprMegaThunderBulletUpg  = sprite_add("../../sprites/projectiles/iris/thunder/sprMegaThunderBulletUpg.png",2,18,18)
 global.sprMegaThunderBulletHit  = sprite_add("../../sprites/projectiles/iris/thunder/sprMegaThunderBulletHit.png",2,18,18)
@@ -9,6 +10,9 @@ return "MEGA THUNDER REVOLVER";
 
 #define weapon_sprt
 return global.sprMegaThunderRevolver;
+
+#define weapon_sprt_hud
+return global.sprMegaThunderRevolverHUD;
 
 #define weapon_type
 return 1;
