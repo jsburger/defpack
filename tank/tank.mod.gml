@@ -243,7 +243,7 @@ with Player if "tankthings" in self && driving{
 if instance_exists(GameCont) and GameCont.hard > 5{
     with instances_matching(WepPickup,"roll",1) if "tankcheck" not in self && !instance_exists(Portal){
         tankcheck = 1
-        if !irandom(200){
+        if weapon_get_gold(wep) == 0 && !irandom(250){
             crate_create(x,y)
             instance_destroy()
         }
