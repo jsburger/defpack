@@ -8,7 +8,7 @@ return "GOLDEN GAMMA ASSAULT RIFLE"
 return global.sprAssaultBouncerRifle;
 
 #define weapon_type
-return -1;
+return 1;
 
 #define weapon_auto
 return false;
@@ -26,10 +26,10 @@ return sndSwapPistol;
 return -1;
 
 #define weapon_text
-return choose("@gGOLD");
+return "WE CALL THIS ONE#THE OL' @gSMACK-ASS";
 
 #define weapon_gold
-return true;
+return -1;
 
 #define weapon_fire
 
@@ -41,11 +41,11 @@ repeat(3)
 	sound_play_pitch(sndGoldPistol,random_range(1.2,1.4))
 	mod_script_call("mod","defpack tools", "shell_yeah", 180, 25, random_range(2,4), c_lime)
 	repeat(2) with mod_script_call("mod", "defpack tools", "create_gamma_bullet",x,y){
-    creator = other
-    team = other.team
-    motion_set(other.gunangle + random_range(-12,12) * other.accuracy,random_range(14,18))
-	image_angle = direction
-}
+	    creator = other
+	    team = other.team
+	    motion_set(other.gunangle + random_range(-12,12) * other.accuracy,random_range(14,18))
+		image_angle = direction
+	}
 	wait(2)
 	if !instance_exists(self){exit}
 }

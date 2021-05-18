@@ -91,6 +91,8 @@ repeat(3){
             creator = other
             team = other.team
             move_contact_solid(other.gunangle, 12);
+            damage++
+			pierce++
         }
     }
     wait(1)

@@ -81,6 +81,8 @@ repeat(3){
             image_angle = direction;
             creator = other
             team = other.team
+            damage++
+            pierce++
         }
     }
     wait(1)

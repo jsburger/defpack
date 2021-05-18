@@ -158,6 +158,11 @@ global.scrThunderDestroy = ["mod", "defpack tools", "thunder_destroy"]
 #define hitscan_hit
 	if (other != lasthit) {
 		projectile_hit(other, damage, force, direction)
+		if recycle_amount > 0 {
+			if mod_script_call_self("mod", "defpack tools", "recycle_gland_roll", recycle_chance) {
+				recycle_amount = 0
+			}
+		}
 		if (pierce >= 0) {
 			lasthit = other
 			pierce -= 1
@@ -190,6 +195,8 @@ global.scrThunderDestroy = ["mod", "defpack tools", "thunder_destroy"]
 		pierce = 0
 		bounce = 4 * neurons
 		lasthit = -4
+		recycle_amount = 1
+		recycle_chance = 60
 
 		targetScript = scrTravel
 		lastx = x
@@ -268,6 +275,9 @@ global.scrThunderDestroy = ["mod", "defpack tools", "thunder_destroy"]
 		pierce = 1
 		bounce = 4 * neurons
 		lasthit = -4
+		recycle_amount = 1
+		recycle_chance = 40
+
 
 		targetScript = scrGammaTravel
 		lastx = x
@@ -367,23 +377,9 @@ if (instance_exists(other) && other.typ > 0) {
 	    damage = 2
 	    typ = 2
 
-		// on_step    = thunder_step
 		on_destroy = global.scrThunderDestroy
 
 		return id
-	}
-
-#define thunder_step
-	hitscan_travel()
-	repeat(irandom_range(2, 5)) {
-		var r = random(1);
-		with instance_create(lerp(x, lastx, r), lerp(y, lasty, r), Lightning) {
-			image_angle = random(360)
-		  	ammo = choose(1, 2)
-			alarm0 = 1
-			team = other.team
-			creator = other.creator
-		}
 	}
 
 

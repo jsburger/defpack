@@ -1629,11 +1629,11 @@ with instance_create(x,y,Lightning){
   	team = other.team
 	creator = other.creator
   	ammo = a
-	alarm0 = 1
+  	event_perform(ev_alarm, 0)
 	visible = 0
-  	/*with instance_create(x,y,LightningSpawn){
-  	   image_angle = other.image_angle
-    }*/
+	with instances_matching_gt(LightningHit, "id", id) {
+		image_index += 1
+	}
 }
 
 #define heavy_thunder_step
@@ -2772,8 +2772,8 @@ if chance(8 + (6 * brain_active)) instance_create(x, y, PlasmaTrail)
 
 var closeboy = instance_nearest_matching_ne(x, y, hitme, "team", team);
 if instance_exists(closeboy) && distance_to_object(closeboy) <= 16 {
-	motion_add(direction + 180, current_time_scale)
-    motion_add(point_direction(x, y, closeboy.x, closeboy.y), (4) * current_time_scale)
+	motion_add_ct(direction + 180, 1)
+    motion_add_ct(point_direction(x, y, closeboy.x, closeboy.y), 4)
     maxspeed += .5 * current_time_scale
 }
 image_angle = direction
