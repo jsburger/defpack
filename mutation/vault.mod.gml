@@ -2,7 +2,8 @@
 global.new_level = (instance_exists(GenCont) || instance_exists(Menu));
 global.generated = false;
 
-global.sprShrine = sprite_add("../sprites/shrine/sprShrine.png", 5, 21, 23);
+global.sprShrine 	   = sprite_add("../sprites/shrine/sprShrine.png", 5, 21, 23);
+global.sprShrineHurt = sprite_add("../sprites/shrine/sprShrineHurt.png", 3, 21, 23);
 global.sprShrineCore 		   = sprite_add("../sprites/shrine/sprShrineCore.png", 5, 20, 23);
 global.sprShrineCoreFlare  = sprite_add("../sprites/shrine/sprShrineCoreFlare.png", 5, 20, 23);
 global.sprShrineCoreFlare2 = sprite_add("../sprites/shrine/sprShrineCoreFlare2.png", 5, 20, 23);
@@ -382,25 +383,25 @@ for (var i = 0; bind_count > i; i ++){
 
 #define Dummy_create(_x, _y)
 with(instance_create(_x, _y, CustomProp)){
-	team = 1;
-
 	name = "Iris Shrine";
 
 	sprite_index = global.sprShrine;
-	mask_index = mskNone;
+	mask_index = 156; // Proto Statue mask
 	spr_shadow = shd32;
 	spr_shadow_y = 4;
 
-	spr_idle = sprite_index;
-	spr_walk = sprite_index;
-	spr_hurt = sprite_index;
-	spr_dead = sprite_index;
+	spr_idle = global.sprShrine;
+	spr_walk = global.sprShrine;
+	spr_hurt = global.sprShrineHurt;
+	spr_dead = global.sprShrine;
+
+	snd_hurt = sndStatueHurt;
 
 	maxhealth = 500;
 	my_health = maxhealth;
 
 	depth = 0;
-	candie = false;
+	candie = true;
 
 	startx = x;
 	starty = y;
@@ -446,6 +447,7 @@ with(instance_create(_x, _y, CustomProp)){
 		depth = other.depth - 1;
 		sprite0 = global.sprShrineCoreFlare;
 		sprite1 = global.sprShrineCoreFlare2;
+		on_begin_step = Shrinecore_begin_step
 		on_draw = ShrineCore_draw;
 		loop = false
 		wave = random(255)
@@ -454,29 +456,43 @@ with(instance_create(_x, _y, CustomProp)){
 	return self;
 }
 
+#define Shrinecore_begin_step
+if instance_exists(owner) && owner.my_health <= 0{
+	trace("dead")
+	with instance_create(owner.x, owner.y, WepPickup){
+		wep = "Prismaticannon";
+		angle = random(360);
+	}
+}
+
 #define ShrineCore_draw
 if !instance_exists(owner){
 	if loop = false{
 		sprite0 = global.sprShrineCoreTrans
 		sprite1 = global.sprShrineCoreTrans2
-		trace("trans set")
 		loop = true
 	}
 }else{
-	x = floor(owner.x + owner.hspeed);
-	y = floor(owner.y + owner.vspeed);
+	x = floor(owner.x);
+	y = floor(owner.y);
+	if owner.sprite_index = owner.spr_hurt && owner.image_index > 0{
+		image_alpha = 0;
+	}else{
+		image_alpha = 1;
+	}
 }
 
 	var c_flare1 = make_colour_hsv((current_frame * 1.4 + wave) mod 255, 220, 255),
 	    c_flare2 = make_colour_hsv((current_frame * 1.4 + wave) mod 255,  60, 255);
 
-	draw_sprite_ext(sprite0, image_index, x, y, image_xscale, image_yscale, image_angle, c_flare1, image_alpha);
+	/*draw_sprite_ext(sprite0, image_index, x, y, image_xscale, image_yscale, image_angle, c_flare1, image_alpha);
 	draw_sprite_ext(sprite1, image_index, x, y, image_xscale, image_yscale, image_angle, c_flare2, image_alpha);
 	draw_set_blend_mode(bm_add)
 	draw_sprite_ext(sprite0, image_index, x, y, image_xscale * 1.25, image_yscale * 1.25, image_angle, c_flare1, .15);
-	draw_set_blend_mode(bm_normal)
+	draw_set_blend_mode(bm_normal)*/
 
 	if instance_exists(owner) draw_sprite(global.sprShrineCore, image_index, x, y);
+
 
 #define Dummy_step
 if (!instance_exists(my_prompt)){
@@ -506,8 +522,9 @@ if (player_is_active(my_prompt.pick)){
 	player_convert(skill);
 
 
-	candie = true;
-	projectile_hit_raw(self, my_health, 0);
+	//candie = true;
+	instance_destroy();
+	exit;
 }
 
 #define array_shuffle(_array)

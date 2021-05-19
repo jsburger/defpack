@@ -21,3 +21,7 @@
 //HORROR BULLET
 
 /load horror
+
+//PRISMATICANNON
+
+/load prismaticannon

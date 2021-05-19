@@ -48,4 +48,3 @@
 /loadwep recycler
 /loadwep corpse gun
 /loadwep vanguard
-/loadwep hyper bow

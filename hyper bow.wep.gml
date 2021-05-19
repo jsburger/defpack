@@ -139,10 +139,16 @@ sound_play_pitchvol(sndSuperCrossbow,.7*_p,.4)
 var _c = charge/maxcharge;
 
 if charged = 1{
-    sleep(50)
+    sleep(60)
+
+    sound_play_pitchvol(sndHeavyCrossbow, .4 * _p, .8)
+    sound_play_pitchvol(sndHyperRifle, 1.8 * _p, .8)
+    sound_play_pitchvol(sndHyperLauncher, 2 * _p, .8)
 
     var _elbow = skill_get("compoundelbow");
 
+    with creator weapon_post(3,-46,6)
+    with creator motion_add(gunangle - 180, 2)
     with BouncerBolt_create(creator.x + creator.hspeed, creator.y + creator.vspeed){
       direction = other.creator.gunangle;
       image_angle = direction;
@@ -211,7 +217,7 @@ with(instance_create(_x, _y, CustomProjectile)){
 	typ = 2;
 	damage = 20;
 	destroy_timer = 30;
-	
+
 	max_bounces = 4;
 	homing_dist = 24;
 	old_x = x;
@@ -219,19 +225,19 @@ with(instance_create(_x, _y, CustomProjectile)){
 	hitscan = false;
 	trail_yscale = 1;
 	walled = false;
-	
+
 	sprite_index = sprBolt;
 	mask_index = mskBolt;
 	image_speed = 0.4;
 	speed = 20;
-	
+
 	on_step = script_ref_create(BouncerBolt_step);
 	on_anim = script_ref_create(BouncerBolt_anim);
 	on_wall = script_ref_create(BouncerBolt_wall);
 	on_hit = script_ref_create(BouncerBolt_hit);
-	
+
 	on_bounce = [];
-	
+
 	return self;
 }
 
@@ -254,32 +260,32 @@ var _dist = homing_dist * skill_get(mut_bolt_marrow) * _home;
 
 if (distance_to_object(hitme) <= _dist){
 	var _hitmes = [];
-	
+
 	if (_home){
 		_hitmes = instances_matching_ne(hitme, "team", team, 0);
 	}
-	
+
 	else{
 		_hitmes = instances_matching_ne(hitme, "team", team);
 	}
-	
+
 	if (array_length(_hitmes)){
 		var _hits = 0;
-		
+
 		with(instance_rectangle_bbox(bbox_left - homing_dist, bbox_top - homing_dist, bbox_right + homing_dist, bbox_bottom + homing_dist, instances_matching_ne(_hitmes, "object_index", IceFlower, ThroneStatue, GeneratorInactive, ProtoStatue, GuardianStatue))){
 			if (distance_to_object(other) <= _dist){
 				_hits += 1;
-				
+
 				with(other){
 					BouncerBolt_hit();
-					
+
 					if (!instance_exists(self)){
 						return false;
 					}
 				}
 			}
 		}
-		
+
 		return (_hits > 0);
 	}
 }
@@ -316,15 +322,15 @@ else if (!distance_to_object(CustomSlash)){
 				var _type = on_projectile[0];
 				var _name = on_projectile[1];
 				var _script = on_projectile[2];
-				
+
 				if (mod_script_exists(_type, _name, _script)){
 					mod_script_call(_type, _name, _script, other);
-					
+
 					if (!instance_exists(other)){
 						return true;
 					}
 				}
-				
+
 				else if (candeflect){
 					with(other){
 						instance_destroy();
@@ -351,12 +357,12 @@ if (image_speed > 0 && (image_index + image_speed_raw >= image_number || image_i
 if (walled){
 	if (destroy_timer > 0){
 		destroy_timer -= current_time_scale;
-		
+
 		if (destroy_timer <= 0){
 			instance_destroy();
 		}
 	}
-	
+
 	exit;
 }
 
@@ -371,26 +377,26 @@ else{
 	var _ox = lengthdir_x(_length, _dir);
 	var _oy = lengthdir_y(_length, _dir);
 	var _tries = 256;
-	
+
 	var _dist = homing_dist;
-	
+
 	while (_tries -- > 0){
 		if (!distance_to_object(Wall)){
 			break;
 		}
-		
+
 		if (!distance_to_object(hitme) && BouncerBolt_attack(false)){
 			break;
 		}
-		
+
 		else if (!instance_exists(self)){
 			break;
 		}
-		
+
 		if (BouncerBolt_attack(true) || !instance_exists(self) || BouncerBolt_deflect()){
 			break;
 		}
-		
+
 		xprevious = x;
 		yprevious = y;
 		x += _ox;
@@ -407,19 +413,22 @@ if (walled){
 }
 
 BouncerBolt_trail();
+instance_create(x, y, Dust)
 
 if (max_bounces > 0){
 	move_bounce_solid(true);
-	
+
 	image_angle = direction;
-	
+
 	max_bounces -= 1;
-	
+
+  sound_play_pitchvol(sndBoltHitWall, random_range(1.4, 1.7), .7);
+
 	if (is_array(on_bounce) && array_length(on_bounce) >= 3){
 		var _type = on_bounce[0];
 		var _name = on_bounce[1];
 		var _script = on_bounce[2];
-		
+
 		if (mod_script_exists(_type, _name, _script)){
 			mod_script_call(_type, _name, _script);
 		}
@@ -430,6 +439,7 @@ else{
 	move_contact_solid(direction, speed_raw);
 	walled = true;
 	speed = 0;
+  sound_play(sndBoltHitWall)
 }
 
 #define BouncerBolt_hit
@@ -440,17 +450,17 @@ if (walled){
 if (projectile_canhit(other)){
 	var _damage = damage;
 	var _destroy = false;
-	
+
 	var _x = x;
 	var _y = y;
 	var _angle = direction;
-	
+
 	var _sprite = sprite_index;
-	
+
 	with(other){
 		if (my_health > _damage){
 			_destroy = true;
-			
+
 			with(instance_create(_x, _y, BoltStick)){
 				target = other;
 				image_angle = _angle;
@@ -459,12 +469,14 @@ if (projectile_canhit(other)){
 				image_speed = 0;
 			}
 		}
-		
+
 		projectile_hit(self, _damage);
+    view_shake_max_at(x, y, 8 + 4 * clamp(size, 1, 3));
+    sleep(10 + 5 * clamp(size, 1, 3));
 	}
-	
+
 	BouncerBolt_trail();
-	
+
 	if (_destroy){
 		instance_destroy();
 	}

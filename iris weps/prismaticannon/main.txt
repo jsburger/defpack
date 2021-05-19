@@ -1,0 +1,2 @@
+/loadmod PrismaticannonProjectiles
+/loadwep Prismaticannon

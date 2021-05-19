@@ -18,6 +18,7 @@
     global.anim[_i, 1] = 0; // hud height
     global.anim[_i, 2] = 20; // no of frames for name hover
   }
+
 #macro out_width  s_w(global.sprHUDcTL);
 #macro out_height s_h(global.sprHUDcTL);
 #macro hud_width  max(global.min_width,  0);  // not lower than 0
@@ -108,7 +109,8 @@
 
     if frac(_array[INDEX, 2]) = 0{
       draw_set_font(fntChat);
-      draw_text_nt(X + 4, Y + _h - 1, string(_array[INDEX, 2]) + ` @0(${global.sprKill}:0) `);
+      var _textcol = _array[INDEX, 2] = 1 && (current_frame mod 5 = 0 || current_frame mod 5 = 1) ? "@r" : "@w"
+      draw_text_nt(X + 4, Y + _h - 1, _textcol + string(_array[INDEX, 2]) + ` @0(${global.sprKill}:0) `);
       draw_set_font(fntM);
     }else{
       sleep(7);
@@ -118,6 +120,7 @@
           sprite_index = global.sprSwap;
           creator = other;
           image_speed = .4;
+          depth = TopCont.depth - 1
         }
         sound_play_pitch(sndRogueCanister, 2);
       }

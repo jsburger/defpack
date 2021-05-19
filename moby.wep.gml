@@ -7,6 +7,9 @@ global.yellow = merge_color(c_yellow, c_white, .4)
 #define weapon_name
 return "MOBY";
 
+#define weapon_iris
+return "x moby"
+
 #define weapon_sprt
 return global.sprMoby;
 

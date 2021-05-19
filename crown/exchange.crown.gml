@@ -4,14 +4,31 @@
 	global.spr_walk = sprite_add("../sprites/crown/sprCrownWalk.png",6,8,8);
 	global.spr_icon = sprite_add("../sprites/crown/sprCrownSelect.png",1,12,16);
 
-	global.exchange_ban_list = [wep_super_disc_gun, wep_golden_nuke_launcher, wep_golden_disc_gun, "wondersword", "mega hammer", "rapier", "infinipistol", "push piston", "flak canon", "spam disc gun"];
+	global.exchange_ban_list = [wep_super_disc_gun, wep_golden_nuke_launcher, wep_golden_disc_gun, "wondersword", "mega hammer", "rapier", "infinipistol", "push piston", "flak canon", "spam disc gun", "andromeda launcher", "bouncer smg", "bouncer shotgun", "spam gun"];
 
   for(var _i = 0; _i < maxp; _i++){
 		global.nextwep[_i, 0] = 0; // weapon index
 		global.nextwep[_i, 1] = 0; // fancy var for animating the hud
-		global.killammo = irandom_range(3, 5 + round(GameCont.hard /3))
+		global.killammo = 5
 		global.nextwep[_i, 2] = global.killammo; // how many weapons have been swapped
 	}
+
+	global.newLevel = instance_exists(GenCont);
+  global.hasGenCont = false;
+  while(true)
+  {
+    if(!instance_exists(GenCont)) global.newLevel = 1;
+    else if(global.newLevel)
+    {
+      global.newLevel = 0;
+      if GameCont.hard = 1{
+				global.killammo = get_killammo();
+			}
+    }
+    var hadGenCont = global.hasGenCont;
+    global.hasGenCont = instance_exists(GenCont);
+    wait 1;
+  }
 
 #define store_wep()
 	for(var _i = 0; _i < maxp; _i++){
@@ -21,10 +38,7 @@
 
 #define game_start
 	store_wep()
-	global.killammo = irandom_range(3, 5 + round(GameCont.hard /3))
-	for(var _i = 0; _i < maxp; _i++){
-		global.nextwep[_i, 2] = global.killammo; // how many weapons have been swapped
-	}
+	global.killammo = get_killammo()
 
 #define crown_object
 	spr_idle = global.spr_idle;
@@ -32,6 +46,13 @@
 
 #define crown_button
 	sprite_index = global.spr_icon;
+
+#define get_killammo()
+	var _v = clamp(irandom_range(3, 4 + round(GameCont.hard /3.5)), 3, 24);
+	for(var _i = 0; _i < maxp; _i++){
+		global.nextwep[_i, 2] = _v - 1;
+	}
+	return _v;
 
 #define step
 with AmmoChest{
@@ -95,10 +116,8 @@ with instances_matching_ne(Player, "driving", 1)
 	var _c = weapon_get_cost(wep);
 	if global.killammo <= 0//ammo[_w] < _c || (_w = 0 && global.killammo <= 0) || (_c == 0 and ammo[_w] == 0) or GameCont.rad < weapon_get_rads(wep)
 	{
-		global.killammo = clamp(irandom_range(3, 5 + round(GameCont.hard /3)), 3, 24)
-		for (var _i = 0; _i < maxp; _i++){
-				global.nextwep[_i, 2] = global.killammo;
-		}
+		global.killammo = 0
+		global.killammo = get_killammo()
 		wep = determine_wep(index)
 		if skill_get("prismatic iris") > 0 mod_script_call_self("skill", "prismatic iris", "color", wep, mod_variable_get("skill", "prismatic iris", "color"))
 		reload = 1
@@ -129,10 +148,7 @@ with instances_matching_ne(Player, "driving", 1)
     	var _c = weapon_get_cost(bwep);
     	if global.killammo <= 0//ammo[_w] < _c || (_w = 0 && bmeleeammo <= 0) || (_c == 0 and ammo[_w] == 0) or GameCont.rad < weapon_get_rads(bwep)
     	{
-				global.killammo = irandom_range(3, 5 + round(GameCont.hard /3))
-				for (var _i = 0; _i < maxp; _i++){
-						global.nextwep[_i, 2] = global.killammo;
-				}
+				global.killammo = get_killammo()
     		bwep = determine_wep(index)
     		breload = 1
 			if skill_get("prismatic iris") > 0{
@@ -174,9 +190,13 @@ with instances_matching_ne(Player, "driving", 1)
 	}*/
 }
 with instances_matching_le(enemy, "my_health", 0){
-	global.killammo--;
+	var _c = false
 	for (var _i = 0; _i < maxp; _i++){
+		if point_seen(x, y, i) && ("size" in self && size > 0) && !_c{
+			_c = true;
+			global.killammo--;
 			global.nextwep[_i, 2] = global.killammo;
+		}
 	}
 }
 
@@ -221,7 +241,7 @@ return w
 return "CROWN OF EXCHANGE";
 
 #define crown_text // Description
-return "CHANGE YOUR @wWEAPON@s#AFTER KILLING ENOUGH @wENEMIES@s#no @yammo @wdrops @sand @wchests";
+return "INFINITE @yAMMO#@sCHANGE YOUR @wWEAPON@s#AFTER KILLING ENOUGH @wENEMIES";
 
 #define crown_tip // Loading Tip
 return "A FAIR DEAL";
@@ -298,11 +318,10 @@ instance_destroy()
 #define crown_take
 sound_play_crown()
 store_wep()
-global.killammo = irandom_range(3, 5 + round(GameCont.hard /3))
-for(var _i = 0; _i < maxp; _i++){
-	global.nextwep[_i, 2] = global.killammo; // how many weapons have been swapped
+if fork(){
+	wait(1)
+	global.killammo = get_killammo()
 }
-
 #define crown_lose
 with Player
 {

@@ -39,7 +39,7 @@
   return false;
 
 #define weapon_fire
-  weapon_post(0, 0, 18);
+  weapon_post(0, 12, 4);
   var _pitch = random_range(.8, 1.2)
   sound_play(sndChickenThrow);
   sound_play_pitchvol(sndLightningShotgunUpg, 2 * _pitch, skill_get(mut_laser_brain) > 0)
@@ -49,12 +49,12 @@
 
 
     var _c = instance_is(self, FireCont) && "creator" in self ? creator : self;
-    
+
     with create_lightning_wheel(x, y) {
         motion_set(other.gunangle, maxspeed)
         team = other.team
         creator = other
-        
+
         wheel_throw(self, _c)
     }
 
@@ -112,27 +112,27 @@
     if "index" in creator {
         wheel.index = creator.index
     }
-    
+
 
 #define create_lightning_wheel(x, y)
     with instance_create(x, y, CustomObject) {
-        
+
         name = "Lightning Wheel"
         defbloom = {
             xscale : 1.33,
             yscale : 1.33,
             alpha : .1 + skill_get(mut_laser_brain) * .025
         }
-        
+
         sprite_index = global.sprLightningWheelProj
         mask_index   = sprHeavyGrenadeBlink
         //Mask used for colliding with projectiles and hitme
         proj_mask    = mskSnowTank
         image_speed  = .4
-        
+
         damage = 5
-        
-        friction = max(1.4 - skill_get(mut_long_arms)*.25, .2) //arbitrary minimum 
+
+        friction = max(1.4 - skill_get(mut_long_arms)*.25, .2) //arbitrary minimum
         depth  = -1
         maxspeed = 20
 
@@ -155,10 +155,10 @@
         pickupList = []
         trailPoints = null
         trailSize = 10
-        
+
         on_end_step = wheel_endstep
         on_step = wheel_step
-        
+
         return id
     }
 
@@ -168,7 +168,7 @@
     var left  = {x: x + lengthdir_x(trailSize * image_yscale, direction + 90), y: y + lengthdir_y(trailSize * image_yscale, direction + 90)},
         right = {x: x + lengthdir_x(trailSize * image_yscale, direction - 90), y: y + lengthdir_y(trailSize * image_yscale, direction - 90)},
         newPoints = [left, right];
-    
+
     if (trailPoints != null) {
         with [0, 1] {
             var current = newPoints[self],
@@ -179,25 +179,25 @@
             }
         }
     }
-    
+
     trailPoints = newPoints
 
 
-    
+
 #define wheel_step
-    
+
     //Simply drop if the creator dies
     if !instance_exists(creator) {
         wheel_drop(x, y, self)
         instance_destroy()
         exit
     }
-    
+
     //Pseudo animation
     if (image_index >= 3.5) {
         image_angle = random(360)
     }
-    
+
     //Sound Effects
     whooshtime = (whooshtime + current_time_scale) mod (maxwhoosh + returning)
     if whooshtime < current_time_scale audio_play_ext(sndMeleeFlip, x, y, 1.4 + random_range(-.1, .1) - returning * .4, 1, 0);
@@ -226,18 +226,18 @@
             x -= 10000
         }
     }
-    
+
     //Open Chests in flight
     with chestprop {
-        if distance_to_object(other <= 4) {
+        if distance_to_object(other) <= 4{
             //Pops them right open
             with instance_create(x, y, PortalShock) {
                 mask_index = sprMapDot
             }
         }
     }
-    
-    
+
+
     //Normal Flight
     if !returning {
         //Wall Collision
@@ -245,7 +245,7 @@
         if place_meeting(x + hspeed, y, Wall){bounced = true; hspeed *= -1}
         if place_meeting(x, y + vspeed, Wall){bounced = true; vspeed *= -1}
         if place_meeting(x + hspeed, y + vspeed, Wall){bounced = true; hspeed *= -1; vspeed = 1}
-        
+
         if bounced {
             create_wheel_bounce(x, y)
             //Grant a decreasing speed bonus
@@ -257,19 +257,19 @@
             sound_play_pitchvol(sndGammaGutsKill, 8 * random_range(0.8, 1.2), 0.3)
             trailPoints = null
         }
-        
+
         //Stopping
         if (speed <= friction) {
             //Whether or not the wheel is returned to the player
             var sendBack = true;
-            
+
             //Particles
             if current_frame mod 5 < current_time_scale {
                 var _dir = random(360),
                     _dis = 12 + irandom(4);
                 with instance_create(x + lengthdir_x(_dis, _dir), y + lengthdir_y(_dis, _dir), LightningSpawn) image_angle = _dir
             }
-            
+
             //Dont bother with button checking if theres no index to check
             if index != -1 {
                 //Hover Mode                v-Checks for going into portals-v
@@ -280,12 +280,12 @@
                     if (timer > 0) timer -= current_time_scale * mod_script_call_nc("mod", "defpack tools", "get_reloadspeed", creator)
                     else {
                         timer = timermax
-                        
+
                         //Try spawning Lightning
                         var hasammo = creator.ammo[5] > 0 || creator.infammo != 0;
                         if (hasammo && !collision_line(creator.x, creator.y, x, y, Wall, 0, 0)) {
                             if (creator.infammo = 0) creator.ammo[5]--
-                            
+
                             sound_play_pitchvol(sndGammaGutsKill, 5 * random_range(.6, 1.2), .6)
                             //Spawn Lightning
                             repeat(2 + irandom(1) + round(skill_get(mut_laser_brain))) {
@@ -298,7 +298,7 @@
                                     alarm0 = 1
                                 }
                             }
-                            
+
                             //Particles
                             var sparkAngle = point_direction(creator.x, creator.y, x, y);
                             if fork() {
@@ -340,7 +340,7 @@
                 create_wheel_bounce(x, y)
             }
         }
-        
+
     }
     //Return trip
     else {
@@ -360,40 +360,40 @@
                     drop = false
                 }
             }
-            
+
             if drop wheel_drop(x, y, self)
             instance_destroy()
             exit
 
         }
     }
-    
+
     //Clamping speed
     if (speed > maxspeed) speed = maxspeed
-    
+
     //Post direction changing so speed variables are accurate
     //Creating the hitbox for the wheel that interacts with hitme and projectiles
     with instance_create(x, y, CustomSlash) {
         name = "WheelSlash"
         mask_index = other.proj_mask
         typ = 0
-        
+
         damage = other.damage
         team = other.team
         creator = other.creator
         wheel = other
-        
+
         //Since this is in step, the slash and the wheel will move to the same position due to event order
         motion_set(other.direction, other.speed)
         force = speed
-        
+
         on_wall = nothing
         on_anim = nothing
         on_hit = wheelslash_hit
         on_projectile = wheelslash_proj
         on_grenade    = wheelslash_grenade
         on_end_step   = wheelslash_endstep
-        
+
     }
 
 
@@ -409,7 +409,7 @@
         sound_play_pitchvol(sndLightningHammer, random_range(1.8, 2), .7);
         //Particles
         instance_create(x, y, LightningHit).image_angle = direction
-        
+
         //Delay the wheel on hit
         var size = clamp(other.size, 1, 3);
         if !instance_is(other, prop) {
@@ -426,7 +426,7 @@
             sleep(10 + 6 * size);
         }
     }
-    
+
 #define wheelslash_proj
     //Destroy all valid projectiles
     with other {
@@ -481,14 +481,14 @@
     else {
         repeat(8) with instance_create(wheel.x, wheel.y, Dust) sprite_index = sprExtraFeetDust
     }
-    
+
 //Custom particle
 #define create_wheel_bounce(x, y)
     with instance_create(x, y, DiscBounce) {
         sprite_index = global.sprBounce;
         image_index = 1;
         image_speed = 1
-        
+
         return id
     }
 
@@ -510,7 +510,7 @@
       }
       _w *= -1;
   }
-  
+
   if instance_exists(creator)
   {
       whooshtime = (whooshtime + current_time_scale) mod (maxwhoosh + phase)
