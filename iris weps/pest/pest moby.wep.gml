@@ -1,5 +1,5 @@
 #define init
-global.sprPestMoby = sprite_add_weapon("../../sprites/weapons/iris/pest/sprPestMoby.png", 9, 4);
+global.sprPestMoby = sprite_add_weapon("../../sprites/weapons/iris/pest/sprPestMoby.png", 8, 3);
 global.Bullet = sprite_add("../../sprites/projectiles/iris/pest/sprPestBullet.png", 2, 8, 8);
 
 #macro maxchrg 22
@@ -17,8 +17,9 @@ return 1;
 return true;
 
 #define weapon_load(w)
-if is_object(w) return 4.625-w.charge/5
-return 4.625;
+//Shoots 5 at max charge
+if is_object(w) return 4 - ((w.charge/maxchrg) * 3.8)
+return 4;
 
 #define weapon_cost(w)
 if is_object(w) && w.charge > 18 && (!instance_is(self,Player) || ammo[1] > 1) return irandom(1)
@@ -59,16 +60,7 @@ else{
     w.persist = 18
 }
 
-mod_script_call("mod", "defpack tools", "shell_yeah", other.gunangle+other.right*100+random(80)-40, 40, 3 + random(3), c_green);
-
-// with create_bullet(x+lengthdir_x(20,gunangle),y+ lengthdir_y(20,gunangle)){
-// 	on_destroy = shell_destroy
-// 	direction = other.gunangle + random_range(-20,20)*other.accuracy*sqrt(w.charge)/6;
-// 	olddirection = direction
-// 	image_angle = direction;
-// 	creator = other
-// 	team = other.team
-// }
+mod_script_call("mod", "defpack tools", "shell_yeah", 100, 40, 3 + random(3), c_green);
 
 with mod_script_call("mod", "defhitscan", "create_pest_hitscan_bullet", x + lengthdir_x(8, gunangle), y + lengthdir_y(8, gunangle)){
 	motion_set(other.gunangle + random_range(-16,16)*other.accuracy*sqrt(w.charge)/6, 5)
@@ -88,50 +80,31 @@ if lq_defget(w, "canbloom", 1){
     	image_angle = other.gunangle
     }
     w.canbloom = 0
-    weapon_post(5+random_range(w.charge * .04,-w.charge * .04),-3,2)
+    weapon_post(5+random_range(w.charge * .04,-w.charge * .04), (w.charge >= maxchrg) ? -3 - irandom(3): -3, 2 + w.charge/maxchrg/2)
     sound_play_pitch(sndTripleMachinegun,(.7 + w.charge * .02)*random_range(.95,1.05))
     sound_play_pitch(sndBurn,(.5 + w.charge * .015)*random_range(.95,1.05))
     sound_play_pitch(sndDoubleMinigun,(.7 + w.charge * .02)*random_range(.95,1.05))
     sound_play(sndMinigun)
     sound_play_gun(sndClickBack, 0, 1 - (w.charge/(maxchrg*1.5)))
     sound_stop(sndClickBack)
+    
+    if w.charge > maxchrg - 2 {
+	    if !irandom(1 + (maxchrg - w.charge)) {
+	        var _l = random_range(8, 28), _a = gunangle + choose(random_range(-15, 15), random_range(-25, 25));
+	    	with instance_create(x + lengthdir_x(_l, _a), y + lengthdir_y(_l, _a), AcidStreak) {
+	    		image_angle = _a
+	    		image_xscale = random(.4) + .2
+	    		image_yscale = image_xscale
+	    		image_speed *= random_range(1, 2)
+	    		motion_set(_a, random(2))
+	    	}
+	    }
+    }
+
 }
 
 #define step(w)
-if w && is_object(wep) && wep.wep = mod_current goodstep(wep)
-else if !w && is_object(bwep) && bwep.wep = mod_current goodstep(bwep)
-
-if instance_number(Shell) > 100{
-    var q = instances_matching(Shell,"speed",0)
-    var l = array_length(q)
-    var r = random_range(11, l)
-    if l > 10 repeat(10){
-        instance_delete(q[(--r)])
-    }
-}
-if instance_number(BulletHit) > 100{
-    var q = instances_matching(BulletHit,"speed",0)
-    var l = array_length(q)
-    var r = random_range(11, l)
-    if l > 10 repeat(10){
-        instance_delete(q[(--r)])
-    }
-}
-
-
-#define goodstep(w)
-w.canbloom = 1
-if w.persist > 0{
-    w.persist-= current_time_scale
-}
-else if w.charge > 1{
-    if random(100) <= 50 * current_time_scale with instance_create(x+lengthdir_x(16,gunangle),y+lengthdir_y(16,gunangle),Smoke) {vspeed -= random(1); image_xscale/=2;image_yscale/=2; hspeed/=2}
-    w.charge = max (w.charge - current_time_scale*.25, 1)
-}
-if lq_get(w, "defcharge") == undefined{
-    w.defcharge = charge_base()
-}
-w.defcharge.charge = w.charge - 1
+	mod_script_call_self("weapon", "moby", "step", w)
 
 #define muzzle_step
 if image_index+.01 >= 1{instance_destroy()}

@@ -42,21 +42,23 @@ with instance_create(x + lengthdir_x(16, gunangle), y + lengthdir_y(16, gunangle
 	image_angle = other.gunangle
 }
 
-mod_script_call("mod", "defpack tools", "shell_yeah", right * 90, 40, 2 + random(2), c_lime);
+mod_script_call("mod", "defpack tools", "shell_yeah", 90, 40, 2 + random(2), c_lime);
 
 with mod_script_call("mod", "defhitscan", "create_gamma_hitscan_bullet", x + lengthdir_x(12, gunangle), y + lengthdir_y(12, gunangle)){
-		direction = other.gunangle + random_range(-2, 2) * other.accuracy;
-		image_angle = direction;
-		creator = other
-		team = other.team
-		force += 4;
+	direction = other.gunangle + random_range(-2, 2) * other.accuracy;
+	image_angle = direction;
+	creator = other
+	team = other.team
+	force += 4;
+	damage++
 }
+//Second bullet intentionally does not get the damage boost. It's spam
 with mod_script_call("mod", "defhitscan", "create_gamma_hitscan_bullet", x + lengthdir_x(12, gunangle), y + lengthdir_y(12, gunangle)){
-		direction = other.gunangle + random_range(-8, 8) * other.accuracy;
-		image_angle = direction;
-		creator = other
-		team = other.team
-		force += 4;
+	direction = other.gunangle + random_range(-8, 8) * other.accuracy;
+	image_angle = direction;
+	creator = other
+	team = other.team
+	force += 4;
 }
 
 #define weapon_sprt

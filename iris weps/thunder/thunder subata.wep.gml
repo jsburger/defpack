@@ -7,7 +7,7 @@ return "THUNDER SUBATA"
 #define weapon_type
 return 1
 #define weapon_cost
-return 2
+return 3
 #define weapon_area
 return -1;
 #define weapon_load
@@ -25,7 +25,7 @@ repeat(3){
 var _p = random_range(.8, 1.4);
 	sound_play_pitchvol(sndQuadMachinegun, 1.6 * _p, .6)
 	sound_play_pitchvol(sndDoubleMinigun, .4 * _p, .6)
-	sound_play_pitch(sndShotgun, 2 * _p)
+	sound_play_pitch(sndLightningShotgun, 2 * _p)
 	sound_play(sndMinigun)
 	sound_play_gun(sndClickBack, 0, 1)
 	sound_stop(sndClickBack)
@@ -43,14 +43,15 @@ var _p = random_range(.8, 1.4);
 		image_angle = other.gunangle
 	}
 
-	mod_script_call("mod", "defpack tools", "shell_yeah", right * 90, 40, 2 + random(2), c_navy);
+	mod_script_call("mod", "defpack tools", "shell_yeah", 90, 40, 2 + random(2), c_navy);
 
 	with mod_script_call("mod", "defhitscan", "create_thunder_hitscan_bullet", x + lengthdir_x(12, gunangle), y + lengthdir_y(12, gunangle)){
-			direction = other.gunangle + random_range(-5, 5) * other.accuracy;
-			image_angle = direction;
-			creator = other
-			team = other.team
-			force += 4;
+		direction = other.gunangle + random_range(-5, 5) * other.accuracy;
+		image_angle = direction;
+		creator = other
+		team = other.team
+		force += 4;
+		damage += 1
 	}
 	wait(2)
 }

@@ -2,7 +2,7 @@
 global.sprBouncerMoby = sprite_add_weapon("../../sprites/weapons/iris/bouncer/sprBouncerMoby.png", 9, 3);
 global.yellow = merge_color(c_yellow, c_white, .4)
 
-#macro maxchrg 29
+#macro maxchrg 28
 
 #define weapon_name
 return "BOUNCER MOBY";
@@ -17,7 +17,8 @@ return 1;
 return true;
 
 #define weapon_load(w)
-if is_object(w) return 6-w.charge/5
+//Four shots a frame at max
+if is_object(w) return 6-((w.charge/maxchrg) * 5.75)
 return 6;
 
 #define weapon_cost(w)
@@ -61,15 +62,6 @@ else{
 
 with instance_create(x,y,Shell){motion_add(other.gunangle+other.right*100+random(80)-40,3+random(3))}
 
-// with create_bullet(x+lengthdir_x(20,gunangle),y+ lengthdir_y(20,gunangle)){
-// 	on_destroy = shell_destroy
-// 	direction = other.gunangle + random_range(-20,20)*other.accuracy*sqrt(w.charge)/6;
-// 	olddirection = direction
-// 	image_angle = direction;
-// 	creator = other
-// 	team = other.team
-// }
-
 with mod_script_call("mod", "defhitscan", "create_bouncer_hitscan_bullet", x + lengthdir_x(8, gunangle), y + lengthdir_y(8, gunangle)){
 	motion_set(other.gunangle + random_range(-25,25)*other.accuracy*sqrt(w.charge)/6, 5)
 	image_angle = direction
@@ -97,40 +89,8 @@ if lq_defget(w, "canbloom", 1){
 }
 
 #define step(w)
-if w && is_object(wep) && wep.wep = mod_current goodstep(wep)
-else if !w && is_object(bwep) && bwep.wep = mod_current goodstep(bwep)
+	mod_script_call_self("weapon", "moby", "step", w)
 
-if instance_number(Shell) > 100{
-    var q = instances_matching(Shell,"speed",0)
-    var l = array_length(q)
-    var r = random_range(11, l)
-    if l > 10 repeat(10){
-        instance_delete(q[(--r)])
-    }
-}
-if instance_number(BulletHit) > 100{
-    var q = instances_matching(BulletHit,"speed",0)
-    var l = array_length(q)
-    var r = random_range(11, l)
-    if l > 10 repeat(10){
-        instance_delete(q[(--r)])
-    }
-}
-
-
-#define goodstep(w)
-w.canbloom = 1
-if w.persist > 0{
-    w.persist-= current_time_scale
-}
-else if w.charge > 1{
-    if random(100) <= 50 * current_time_scale with instance_create(x+lengthdir_x(16,gunangle),y+lengthdir_y(16,gunangle),Smoke) {vspeed -= random(1); image_xscale/=2;image_yscale/=2; hspeed/=2}
-    w.charge = max (w.charge - current_time_scale*.25, 1)
-}
-if lq_get(w, "defcharge") == undefined{
-    w.defcharge = charge_base()
-}
-w.defcharge.charge = w.charge - 1
 
 #define muzzle_step
 if image_index+.01 >= 1{instance_destroy()}
