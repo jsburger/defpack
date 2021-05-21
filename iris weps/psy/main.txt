@@ -25,3 +25,4 @@
 /loadwep golden psy machinegun
 /loadwep golden assault psy rifle
 /loadwep psy rogue rifle
+/loadwep psy subata

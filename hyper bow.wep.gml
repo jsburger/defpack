@@ -492,3 +492,9 @@ _x2 = max(_x, _x2);
 _y2 = max(_y, _y2);
 
 return instances_matching_le(instances_matching_le(instances_matching_ge(instances_matching_ge(_obj, "bbox_right", _x1), "bbox_bottom", _y1), "bbox_left", _x2), "bbox_top", _y2);
+
+if "i" in self{
+    with other{
+        
+    }
+}
