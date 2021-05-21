@@ -20,6 +20,7 @@ return 1;
 return true;
 
 #define weapon_load(w)
+//5 shots a frame at max
 if is_object(w) return 5-w.charge/5
 return 5;
 
@@ -70,17 +71,9 @@ else{
 
 with instance_create(x,y,Shell){motion_add(other.gunangle+other.right*100+random(80)-40,3+random(3))}
 
-// with create_bullet(x+lengthdir_x(20,gunangle),y+ lengthdir_y(20,gunangle)){
-// 	on_destroy = shell_destroy
-// 	direction = other.gunangle + random_range(-20,20)*other.accuracy*sqrt(w.charge)/6;
-// 	olddirection = direction
-// 	image_angle = direction;
-// 	creator = other
-// 	team = other.team
-// }
 
 with create_hitscan_bullet(x + lengthdir_x(8, gunangle), y + lengthdir_y(8, gunangle)) {
-	motion_set(other.gunangle + random_range(-20,20)*other.accuracy*sqrt(w.charge)/6, 5)
+	motion_set(other.gunangle + random_range(-20, 20) * other.accuracy * sqrt(w.charge)/6, 8)
 	image_angle = direction
 	projectile_init(other.team, other)
 }
@@ -97,7 +90,7 @@ if lq_defget(w, "canbloom", 1){
     	image_angle = other.gunangle
     }
     w.canbloom = 0
-    weapon_post(5+random_range(w.charge * .04,-w.charge * .04),-3,2)
+    weapon_post(5+random_range(w.charge * .04,-w.charge * .04), (w.charge >= maxchrg) ? -3 - irandom(3): -3, 2 + w.charge/maxchrg/2)
     sound_play_pitch(sndTripleMachinegun,(.7 + w.charge * .02)*random_range(.95,1.05))
     sound_play(sndMinigun)
     sound_play_gun(sndClickBack, 0, 1 - (w.charge/(maxchrg*1.5)))
@@ -105,8 +98,8 @@ if lq_defget(w, "canbloom", 1){
 }
 
 #define step(w)
-if w && is_object(wep) && wep.wep = mod_current goodstep(wep)
-else if !w && is_object(bwep) && bwep.wep = mod_current goodstep(bwep)
+if w && is_object(wep) goodstep(wep)
+else if !w && is_object(bwep) goodstep(bwep)
 
 if instance_number(Shell) > 100{
     var q = instances_matching(Shell,"speed",0)
@@ -142,110 +135,7 @@ w.defcharge.charge = w.charge - 1
 
 
 #define create_hitscan_bullet(x, y)
-return mod_script_call("mod", "defhitscan", "create_gamma_hitscan_bullet", x, y)
-
-
-#define create_bullet(_x,_y)
-with instance_create(_x,_y,CustomProjectile){
-	typ = 1
-	creator = other
-	team  = other.team
-	image_yscale = .5
-	hyperspeed = 8
-	sprite_index = mskNone
-	olddirection = 0
-	mask_index = mskBullet2
-	force = 4
-	damage = 3
-	lasthit = -4
-	dir = 0
-	recycle = (skill_get(mut_recycle_gland) && !irandom(2))
-	on_end_step  = sniper_step
-	on_hit 		 = void
-	return id
-}
-
-
-#define shell_destroy
-instance_create(x,y,BulletHit)
-line()
-
-#define sniper_step
-var dist = 0
-var l = 100
-var _x = lengthdir_x(l, direction), _y = lengthdir_y(l, direction)
-while !collision_line(x,y,x+_x,y+_y,Wall,1,1) && !collision_line(x,y,x+_x,y+_y,hitme,0,1) && dist <1000{
-    x += _x
-    y += _y
-    dir += l
-    dist += l
-}
-
-var _x = lengthdir_x(hyperspeed,direction), _y = lengthdir_y(hyperspeed,direction);
-var shields = instances_matching_ne([CrystalShield,PopoShield], "team", team),
-    slashes = instances_matching_ne([EnergySlash,Slash,EnemySlash,EnergyHammerSlash,BloodSlash,GuitarSlash], "team", team),
-    shanks = instances_matching_ne([Shank,EnergyShank], "team", team),
-    customslashes = instances_matching_ne(CustomSlash, "team", team)
-
-do
-{
-    dir += hyperspeed
-	dist += hyperspeed
-	x += _x
-	y += _y
-	with shields {if place_meeting(x,y,other){with other{line()};other.team = team;other.direction = point_direction(x,y,other.x,other.y);other.image_angle = other.direction;with instance_create(other.x,other.y,Deflect){image_angle = other.direction;sound_play_pitch(sndCrystalRicochet,random_range(.9,1.1))}}}
-	with slashes {if place_meeting(x,y,other){with other{line()};other.team = team;other.direction = direction ;other.image_angle = other.direction}}
-	with shanks {if place_meeting(x,y,other){with other{instance_destroy();exit}}}
-	with customslashes {if place_meeting(x,y,other){with other{line()};mod_script_call(on_projectile[0],on_projectile[1],on_projectile[2]);}}
-	if direction != olddirection{
-	    olddirection = direction
-	    _x = lengthdir_x(hyperspeed,direction);
-	    _y = lengthdir_y(hyperspeed,direction);
-	    var shields = instances_matching_ne([CrystalShield,PopoShield], "team", team),
-            slashes = instances_matching_ne([EnergySlash,Slash,EnemySlash,EnergyHammerSlash,BloodSlash,GuitarSlash], "team", team),
-            shanks = instances_matching_ne([Shank,EnergyShank], "team", team),
-            customslashes = instances_matching_ne(CustomSlash, "team", team)
-	}
-
-	var q = collision_point(x,y,hitme,0,0)
-	if instance_exists(q) and projectile_canhit_np(q) and q.mask_index != mskNone and q.my_health > 0{
-	    if recycle{
-	        instance_create(x,y,RecycleGland)
-		    sound_play(sndRecGlandProc)
-		    with creator{
-		        ammo[1] = min(ammo[1]+1,typ_amax[1])
-		    }
-	    }
-	    projectile_hit(q, damage, force, direction)
-	    instance_destroy()
-	    exit
-	}
-    if place_meeting(x+_x,y+_y,Wall){
-        instance_destroy()
-        exit
-    }
-}
-while instance_exists(self) and dist < 1000
-instance_destroy()
-
-#define void
-
-#define line()
-var w = floor((random_range(.34,1))*3)/3
-with instance_create(xstart,ystart,BoltTrail){
-    image_xscale = other.dir/random_range(1.75, 4)
-    image_angle = other.direction
-    image_yscale = w/2
-}
-xstart = x
-ystart = y
-with instance_create(x,y,BoltTrail){
-    image_xscale = -other.dir/random_range(3,5)
-    image_angle = other.direction
-    image_yscale = w
-
-}
-dir = 0
+return mod_script_call("mod", "defhitscan", "create_hitscan_bullet", x, y)
 
 #define muzzle_step
 if image_index+.01 >= 1{instance_destroy()}

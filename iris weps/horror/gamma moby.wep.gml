@@ -1,5 +1,5 @@
 #define init
-global.sprGammaMoby = sprite_add_weapon("../../sprites/weapons/iris/horror/on/sprHorrorMobyOn.png", 9, 4);
+global.sprGammaMoby = sprite_add_weapon("../../sprites/weapons/iris/horror/on/sprHorrorMobyOn.png", 8, 3);
 global.Bullet = sprite_add("../../sprites/projectiles/iris/horror/sprGammaBullet.png", 2, 8, 8);
 
 #macro maxchrg 24
@@ -17,7 +17,8 @@ return 1;
 return true;
 
 #define weapon_load(w)
-if is_object(w) return 5-w.charge/5
+//Shoots 4 times a frame at max (nobody will notice its slower because it shoots 2 bullets at once)
+if is_object(w) return 5-((w.charge/maxchrg) * 4.75)
 return 5;
 
 #define weapon_cost(w)
@@ -31,7 +32,7 @@ return sndSwapMachinegun;
 return -1;
 
 #define weapon_text
-return "A GAS LEAST NOBLE";
+return "AN HOMAGE TO THE @dTHRONE";
 
 #define charge_base
 return {
@@ -60,13 +61,20 @@ else{
 }
 
 repeat(2){
-  mod_script_call("mod", "defpack tools", "shell_yeah", other.gunangle+other.right*100+random(80)-40, 40, 3 + random(3), c_lime);
+    mod_script_call("mod", "defpack tools", "shell_yeah", 100, 40, 3 + random(3), c_lime);
+}
 
-  with mod_script_call("mod", "defhitscan", "create_gamma_hitscan_bullet", x + lengthdir_x(8, gunangle), y + lengthdir_y(8, gunangle)){
-  	motion_set(other.gunangle + random_range(-28,28)*other.accuracy*sqrt(w.charge)/6, 5)
-  	image_angle = direction
-  	projectile_init(other.team, other)
-  }
+//Focus fire
+with mod_script_call("mod", "defhitscan", "create_gamma_hitscan_bullet", x + lengthdir_x(8, gunangle), y + lengthdir_y(8, gunangle)){
+	motion_set(other.gunangle + random_range(-20, 20) * other.accuracy * sqrt(w.charge)/6, 8)
+    image_angle = direction
+    projectile_init(other.team, other)
+}
+//Secondary Spam
+with mod_script_call("mod", "defhitscan", "create_gamma_hitscan_bullet", x + lengthdir_x(8, gunangle), y + lengthdir_y(8, gunangle)){
+    motion_set(other.gunangle + random_range(-20, 20) * other.accuracy * sqr(sqrt(w.charge)/3), 8)
+    image_angle = direction
+    projectile_init(other.team, other)
 }
 
 if lq_defget(w, "canbloom", 1){
@@ -80,7 +88,7 @@ if lq_defget(w, "canbloom", 1){
     	image_angle = other.gunangle
     }
     w.canbloom = 0
-    weapon_post(5+random_range(w.charge * .04,-w.charge * .04),-3,2)
+    weapon_post(5+random_range(w.charge * .04,-w.charge * .04), (w.charge >= maxchrg) ? -3 - irandom(3): -3, 2 + w.charge/maxchrg/2)
     sound_play_pitch(sndTripleMachinegun,(.8 + w.charge * .02)*random_range(.95,1.05))
     sound_play_pitch(sndUltraPistol,(.7 + w.charge * .04)*random_range(.95,1.05))sound_play_pitch(sndUltraPistol,(.7 + w.charge * .04)*random_range(.95,1.05))
     sound_play_pitch(sndUltraShotgun,(1.2 + w.charge * .02)*random_range(.95,1.05))
@@ -88,43 +96,23 @@ if lq_defget(w, "canbloom", 1){
     sound_play(sndMinigun)
     sound_play_gun(sndClickBack, 0, 1 - (w.charge/(maxchrg*1.5)))
     sound_stop(sndClickBack)
+    
+    if w.charge > maxchrg - 2 {
+	    if !irandom(2 + (maxchrg - w.charge)) {
+	        var _l = random_range(8, 32), _a = gunangle + random_range(-30, 30);
+	    	with instance_create(x + lengthdir_x(_l, _a), y + lengthdir_y(_l, _a), LightningHit) {
+	    		image_xscale = random(.4) + .6
+	    		image_yscale = image_xscale
+	    		image_blend = c_yellow
+	    		image_index = 1
+	    	}
+	    }
+    }
+
 }
 
 #define step(w)
-if w && is_object(wep) && wep.wep = mod_current goodstep(wep)
-else if !w && is_object(bwep) && bwep.wep = mod_current goodstep(bwep)
-
-if instance_number(Shell) > 100{
-    var q = instances_matching(Shell,"speed",0)
-    var l = array_length(q)
-    var r = random_range(11, l)
-    if l > 10 repeat(10){
-        instance_delete(q[(--r)])
-    }
-}
-if instance_number(BulletHit) > 100{
-    var q = instances_matching(BulletHit,"speed",0)
-    var l = array_length(q)
-    var r = random_range(11, l)
-    if l > 10 repeat(10){
-        instance_delete(q[(--r)])
-    }
-}
-
-
-#define goodstep(w)
-w.canbloom = 1
-if w.persist > 0{
-    w.persist-= current_time_scale
-}
-else if w.charge > 1{
-    if random(100) <= 50 * current_time_scale with instance_create(x+lengthdir_x(16,gunangle),y+lengthdir_y(16,gunangle),Smoke) {vspeed -= random(1); image_xscale/=2;image_yscale/=2; hspeed/=2}
-    w.charge = max (w.charge - current_time_scale*.25, 1)
-}
-if lq_get(w, "defcharge") == undefined{
-    w.defcharge = charge_base()
-}
-w.defcharge.charge = w.charge - 1
+	mod_script_call_self("weapon", "moby", "step", w)
 
 #define muzzle_step
 if image_index+.01 >= 1{instance_destroy()}

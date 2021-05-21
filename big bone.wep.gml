@@ -85,14 +85,19 @@ instance_destroy()
 
 #define bone_hit
 hit = 1
-sound_play_pitchvol(sndHammerHeadEnd,random_range(1.33,1.43),20)
-sound_play_pitch(sndGruntHurtF,.8)
-sound_play_pitch(sndBigDogHit,2)
-sound_play_pitchvol(sndCursedPickup,2,20)
-projectile_hit(other,damage,40,direction)
+sound_play_pitchvol(sndHammerHeadEnd, random_range(1.33, 1.43), 20)
+sound_play_pitch(sndGruntHurtF, .8)
+sound_play_pitch(sndBigDogHit, 2)
+sound_play_pitchvol(sndCursedPickup, 2, 20)
+
+projectile_hit(other, damage, 40, direction)
 view_shake_at(x,y,200)
 sleep(300)
+
 sound_play_pitch(sndBloodCannon,1.2+random(.1))
+sound_play_gun(sndClickBack,1,0)
+sound_stop(sndClickBack)
+
 repeat(200){
     with instance_create(other.x,other.y,Dust){
         var dir = random_range(-15,15)
@@ -108,8 +113,6 @@ for (var o = -3; o <= 3; o++){
             team = other.team
             if !place_meeting(x,y,Floor) instance_destroy()
         }
-				sound_play_gun(sndClickBack,1,0)
-				sound_stop(sndClickBack)
     }
 }
 instance_destroy()

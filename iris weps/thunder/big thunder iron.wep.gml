@@ -3,7 +3,7 @@ global.sprBigThunderIron = sprite_add_weapon("../../sprites/weapons/iris/thunder
 global.ThunderBullet = sprite_add("../../sprites/projectiles/iris/thunder/sprThunderBullet.png", 2, 8, 8);
 
 #define weapon_name
-return "BIG THUNDER IRON"
+return "THUNDER BIG IRON"
 
 #define weapon_sprt
 return global.sprBigThunderIron;
@@ -17,9 +17,8 @@ return false;
 #define weapon_load
 return 21;
 
-//Doesn't inherit the big iron's extra cost because of its wild spread
 #define weapon_cost
-return 13;
+return 18;
 
 #define weapon_swap
 return sndSwapPistol;
