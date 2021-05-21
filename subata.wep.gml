@@ -43,14 +43,15 @@ with instance_create(x + lengthdir_x(16, gunangle), y + lengthdir_y(16, gunangle
 	image_angle = other.gunangle
 }
 
-mod_script_call("mod", "defpack tools", "shell_yeah", right * 90, 40, 2 + random(2), c_yellow);
+mod_script_call("mod", "defpack tools", "shell_yeah", 90, 40, 2 + random(2), c_yellow);
 
 with mod_script_call("mod", "defhitscan", "create_hitscan_bullet", x + lengthdir_x(12, gunangle), y + lengthdir_y(12, gunangle)){
-		direction = other.gunangle + random_range(-4, 4) * other.accuracy;
-		image_angle = direction;
-		creator = other
-		team = other.team
-		force += 4;
+	direction = other.gunangle + random_range(-4, 4) * other.accuracy;
+	image_angle = direction;
+	creator = other
+	team = other.team
+	force += 4;
+	damage++
 }
 
 #define weapon_sprt

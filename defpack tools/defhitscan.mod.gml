@@ -413,7 +413,7 @@ if (instance_exists(other) && other.typ > 0) {
 		name = "Thunder Hitscan Bullet"
 
 	    spr_dead = spr.LightningBulletHit
-	    trailcolor = [merge_color(c_blue, c_aqua, .2 + random(.4)), c_white, c_aqua, c_orange]
+	    trailcolor = [merge_color(c_blue, c_aqua, .3 + random(.4)), c_white, c_aqua, c_black]
 
 	    force = 7
 	    damage = 2
