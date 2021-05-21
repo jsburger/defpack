@@ -3660,6 +3660,7 @@ instance_destroy()
 #define disc_init
 typ = 1
 dist = 0
+depth = 0
 lastteam = -1
 mask_index = mskDisc
 spr_trail = sprDiscTrail

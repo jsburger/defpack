@@ -4,7 +4,7 @@
 	global.spr_walk = sprite_add("../sprites/crown/sprCrownWalk.png",6,8,8);
 	global.spr_icon = sprite_add("../sprites/crown/sprCrownSelect.png",1,12,16);
 
-	global.exchange_ban_list = [wep_super_disc_gun, wep_golden_nuke_launcher, wep_golden_disc_gun, "wondersword", "mega hammer", "rapier", "infinipistol", "push piston", "flak canon", "spam disc gun", "andromeda launcher", "bouncer smg", "bouncer shotgun", "spam gun"];
+	global.exchange_ban_list = [wep_super_disc_gun, wep_golden_nuke_launcher, wep_golden_disc_gun, "wondersword", "spin hammer", "rapier", "infinipistol", "push piston", "flak canon", "spam disc gun", "andromeda launcher", "bouncer smg", "bouncer shotgun", "spam gun"];
 
   for(var _i = 0; _i < maxp; _i++){
 		global.nextwep[_i, 0] = 0; // weapon index

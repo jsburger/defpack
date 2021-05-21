@@ -1,6 +1,7 @@
 #define init
-global.sprSniperPsyShotgun = sprite_add_weapon("sprites/weapons/sprSniperPsyShotgun.png", 5, 3);
+global.sprSniperPsyShotgun = sprite_add_weapon("../../sprites/weapons/iris/psy/sprSniperPsyShotgun.png", 5, 3);
 global.deviation = 25;
+global.PsyBullet = sprite_add("../../sprites/projectiles/iris/psy/sprPsyBullet.png", 2, 8, 8);
 
 #define weapon_chrg
 return true;
@@ -26,7 +27,7 @@ return 60;
 #define weapon_swap
 return sndSwapMachinegun;
 
-#define weapon_laser_sight
+/*#define weapon_laser_sight
 with instances_matching(instances_matching(CustomObject, "name", "SniperCharge"), "creator", self){
     with other {
         draw_set_alpha(.3 + .7  * (other.charge/other.maxcharge))
@@ -43,21 +44,7 @@ with instances_matching(instances_matching(CustomObject, "name", "SniperCharge")
     }
     return false
 }
-return false;
-
-#define weapon_reloaded
-repeat(5)mod_script_call("mod", "defpack tools", "shell_yeah_long", 100, 8, 3 + random(2), c_purple)
-sound_play_pitchvol(sndSwapPistol, 2, .4)
-sound_play_pitchvol(sndRecGlandProc, 1.4, 1)
-weapon_post(-2, -4, 5)
-
-return -1;
-
-#define weapon_area
-return -1;
-
-#define weapon_text
-return choose("INCOMPREHENSIBLE");
+return false;*/
 
 #define drawthing(x, y, l, ang)
 var xx = lengthdir_x(l, ang), yy = lengthdir_y(l, ang)
@@ -256,7 +243,7 @@ return -1;
         customslashes = instances_matching_ne(CustomSlash, "team", team),
         enemies = instances_matching_ne(hitme, "team", team),
         olddirection = direction;
-    
+
     do
     {
     	dir += hyperspeed
@@ -275,7 +262,7 @@ return -1;
                 customslashes = instances_matching_ne(CustomSlash, "team", team),
                 enemies = instances_matching_ne(hitme, "team", team);
     	}
-    
+
     	var q = instance_nearest_matching_ne(x,y,hitme,"team",team);
     	var reset = 1;
         var cap = 3*hyperspeed;
@@ -299,7 +286,7 @@ return -1;
     	    image_angle = other.direction
     	    array_push(trails,id)
     	}
-    
+
     	with enemies{
     		if mask_index != mskNone and distance_to_object(other) <= other.trailscale * 3 and other.lasthit != id{
     			with other{

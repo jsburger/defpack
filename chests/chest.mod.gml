@@ -129,6 +129,8 @@ global.sprBoltChestOpenC      = global.sprMeleeChestOpenC;
 global.sprExplosiveChestOpenC = global.sprMeleeChestOpenC;
 global.sprEnergyChestOpenC    = global.sprMeleeChestOpenC;
 
+global.chest_ban_list = ["SUPER DISC GUN", "GOLDEN DISC GUN", "GOLDEN NUKE LAUNCHER", "WONDERSWORD", "FLAK CANON", "SPAM DISC GUN"];
+
 global.chests = ds_map_create()
 chest_add("Ultra",   14, [wep_ultra_revolver,wep_ultra_shovel,wep_ultra_shotgun,wep_ultra_laser_pistol,wep_ultra_crossbow,wep_ultra_grenade_launcher,"ultra hand","defender","ultra gunhammer"])
 chest_add("AoE",     6,  ["blaster","buster","puncher"])
@@ -284,17 +286,28 @@ chest_add("Energy",    -1, 5)
                   }
               var q = get_chests(-1, -1)
               if array_length(q){
-                  with customchest_create(x, y, q[_a[irandom(array_length(_a) - 1)]]){
+                  if array_length(_a) > 0 with customchest_create(x, y, q[_a[irandom(array_length(_a) - 1)]]){
                     curse = other.curse
 
                     var _l = ds_list_create();
                     weapon_get_list(_l, clamp(GameCont.hard, 0, 6), GameCont.hard + 2 * array_length(instances_matching(Player,"race","robot")) + 3^+ curse);
                     var _weparray = ds_list_to_array(_l),
                         _weapons  = [];
-                    with _weparray {
-                      if weapon_get_type(self) = other.weps {
-                        array_push(_weapons, self);
-                      }
+
+                    with _weparray{
+                        var _break = false;
+
+                        if weapon_get_type(self) = other.weps{
+
+                            for(var _a = 0; _a < array_length(global.chest_ban_list); _a++){
+                                if weapon_get_name(self) = global.chest_ban_list[_a]{
+                                    _break = true;
+                                    trace("found", weapon_get_name(global.chest_ban_list[_a]))
+                                }
+                            }
+
+                            if _break = false array_push(_weapons, self);
+                        }
                     }
                     weps = _weapons;
 

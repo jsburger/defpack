@@ -12,6 +12,7 @@
 /loadwep psy gunhammer
 /loadwep psy bullet cannon
 /loadwep sniper psy rifle
+/loadwep sniper psy shotgun
 /loadwep heavy psy revolver
 /loadwep heavy psy machinegun
 /loadwep heavy assault psy rifle
@@ -25,4 +26,6 @@
 /loadwep golden psy machinegun
 /loadwep golden assault psy rifle
 /loadwep psy rogue rifle
+/loadwep big psy iron
+/loadwep psy moby
 /loadwep psy subata
