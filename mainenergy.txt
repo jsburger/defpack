@@ -23,6 +23,7 @@
 
 /loadwep lightning wheel
 /loadwep psd
+/loadwep energy chainsaw
 /loadwep laser flak cannon
 /loadwep mega laser cannon
 /loadwep ionizer

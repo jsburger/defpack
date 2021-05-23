@@ -1,5 +1,6 @@
 #define init
 global.sprApergigTanat = sprite_add_weapon("sprites/weapons/sprApergigTanat.png", 0, 3);
+global.sprBullet = sprite_add("sprites/projectiles/sprDuelistBullet.png", 2, 5, 4);
 
 #define weapon_name
 return "DUELIST";
@@ -80,15 +81,13 @@ with instance_create(x,y,CustomProjectile){
         yscale : 2,
         alpha : .1
     }
-    sprite_index = sprEBullet3
+    sprite_index = global.sprBullet
     mask_index   = mskBullet2
     image_speed = 1
     friction = .6
 	force = 50
 	damage = 70
 	motion_add(other.gunangle,22)
-	image_xscale /= 2
-	image_yscale /= 2
 	team = other.team
 	creator = other
 	repeat(6){instance_create(x+lengthdir_x(random_range(1,6),direction),y+lengthdir_y(random_range(1,6),direction),Smoke)}

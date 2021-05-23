@@ -1,7 +1,7 @@
 #define init
 global.sprLuckyMachinegun 	 = sprite_add_weapon("sprites/weapons/sprLuckyMachinegun.png", 3, 1);
 global.sprLuckyMachinegunHUD = sprite_add_weapon("sprites/weapons/sprLuckyMachinegun.png", 8, 3);
-global.sprLuckyBullet 	     = sprHeavyBullet
+global.sprLuckyBullet 	     = sprite_add("sprites/projectiles/sprLuckyBullet.png", 2, 8, 8);
 
 #define weapon_name
 return "LUCKY MACHINEGUN";

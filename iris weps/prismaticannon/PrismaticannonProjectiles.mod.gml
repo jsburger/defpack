@@ -863,7 +863,11 @@ draw_set_blend_mode(bm_normal);
 //General Bullet Scripts
 #define Bullet_Hit
 projectile_hit(other, damage)
-instance_destroy();
+sleep(8 + 4 * clamp(other.size, 1, 3));
+view_shake_max_at(x, y, 5 + 3 * clamp(other.size, 1, 3));
+if other.my_health > 0{
+    instance_destroy();
+}
 
 #define Bullet_Wall
 instance_destroy();

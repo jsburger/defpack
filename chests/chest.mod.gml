@@ -302,7 +302,7 @@ chest_add("Energy",    -1, 5)
                             for(var _a = 0; _a < array_length(global.chest_ban_list); _a++){
                                 if weapon_get_name(self) = global.chest_ban_list[_a]{
                                     _break = true;
-                                    trace("found", weapon_get_name(global.chest_ban_list[_a]))
+                                    //trace("found", weapon_get_name(global.chest_ban_list[_a]))
                                 }
                             }
 

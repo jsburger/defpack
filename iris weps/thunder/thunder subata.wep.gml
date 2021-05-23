@@ -25,7 +25,7 @@ repeat(3){
 var _p = random_range(.8, 1.4);
 	sound_play_pitchvol(sndQuadMachinegun, 1.6 * _p, .6)
 	sound_play_pitchvol(sndDoubleMinigun, .4 * _p, .6)
-	sound_play_pitch(sndLightningShotgun, 2 * _p)
+	sound_play_pitch(skill_get(mut_laser_brain) > 0 ? sndLightningShotgunUpg : sndLightningShotgun, 1.4 * _p)
 	sound_play(sndMinigun)
 	sound_play_gun(sndClickBack, 0, 1)
 	sound_stop(sndClickBack)

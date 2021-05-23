@@ -568,8 +568,8 @@ with Player if visible{
 			x += lengthdir_x(min(defspeed[0], defspeed_max), defspeed[1]);
 			y += lengthdir_y(min(defspeed[0], defspeed_max), defspeed[1]);
 			nexthurt = current_frame + 1;
-			with instance_create(x + random_range(-3, 3), y + random_range(-3, 3), Dust){
-				motion_add(min(other.defspeed[0], defspeed_max), choose(2, 2, 3));
+			if defspeed[0] > 2 repeat(max(1, round(defspeed[0] / 8))) with instance_create(x + random_range(-1, 1) + lengthdir_x(random(defspeed[0]), defspeed[1]), y + random_range(-1, 1) + lengthdir_y(random(defspeed[0]), defspeed[1]), Dust){
+				motion_add(other.defspeed[1], choose(2, 2, 3));
 			}
 			if defspeed[0] >= defspeed_max{
 				repeat(1 + 2 * defspeed[0] / defspeed_max) instance_create(x + random_range(-3, 3) + lengthdir_x(random(min(defspeed[0], defspeed_max)), defspeed[1]), y + random_range(-3, 3) + lengthdir_y(random(min(defspeed[0], defspeed_max)), defspeed[1]), GroundFlame)
@@ -2745,7 +2745,7 @@ if time <= 0 instance_destroy()
 
 
 #define create_plasmite(_x,_y)
-with instance_create(_x, _y, CustomProjectile) {
+with instance_create(_x, _y, CustomProjectile){
     name = "Plasmite"
     defbloom = {
         xscale : 2,
