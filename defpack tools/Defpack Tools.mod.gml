@@ -1593,14 +1593,49 @@ with create_bullet(x, y){
     bounce_color = c_aqua
 
     force = 7
-    damage = 2
+    //Was 2 before new mechanic test
+    damage = 3
     typ = 2
 
-    on_step = thunder_step
-    on_destroy = thunder_destroy
+    // on_step = thunder_step
+    // on_destroy = thunder_destroy
+    
+    //Testing new thunder mechanic
+    on_hit = new_thunder_hit
+	on_destroy = new_thunder_destroy
 
     return id
 }
+
+//Testing new thunder mechanic
+#define new_thunder_hit
+	if "thunder_charge" not in other {
+		other.thunder_charge = 0
+	}
+	other.thunder_charge += 2
+	var _team = team, _c = creator;
+	bullet_hit()
+	if other.my_health <= 0 {
+		var _charge = other.thunder_charge;
+		while(_charge) > 0 {
+			var r = min(irandom(_charge) + 1, 8);
+			with instance_create(other.x, other.y, Lightning) {
+				image_angle = random(360)
+				direction = image_angle
+				ammo = r + 1
+				creator = _c
+				team = _team
+				alarm0 = irandom(1) + 1
+			}
+			_charge -= r
+		}
+		view_shake_at(other.x, other.y, other.thunder_charge/5)
+		sound_play_pitchvol(sndLightningCannonEnd, 1 + max(1 - other.thunder_charge/30, -.8), .7)
+	}
+
+#define new_thunder_destroy
+	instance_create(x + random_range(-5, 5), y + random_range(-5, 5), LightningHit)
+	bullet_destroy()
 
 #define create_heavy_lightning_bullet(x, y)
 with create_heavy_bullet(x, y){
@@ -1615,7 +1650,7 @@ with create_heavy_bullet(x, y){
     bounce_color = c_aqua
 
     typ = 2
-    damage = 4
+    damage = 6
 
     on_step = heavy_thunder_step
     on_destroy = heavy_thunder_destroy
