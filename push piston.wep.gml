@@ -173,7 +173,7 @@ if !charged sound_stop(sound)
 		image_yscale = 1.5
 		damage = 0;
 		image_speed = 0.6
-		superfriction = 1.7 / (1 + _ch *.7);
+		superfriction = 1.4 / (1 + _ch *.7);
 		sprite_index = mskNone;
 		image_index = 2;
 		image_speed = 2;
@@ -181,7 +181,7 @@ if !charged sound_stop(sound)
 		//superdirection = other.gunangle
 		team = other.creator.team
 		creator = other.creator
-		force = 26;
+		force = 20 + _ch * 8;
 		fx_check = false;
 		superdirection = creator.gunangle;
 		dontwait = true;

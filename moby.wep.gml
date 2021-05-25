@@ -80,7 +80,7 @@ with create_hitscan_bullet(x + lengthdir_x(8, gunangle), y + lengthdir_y(8, guna
 
 
 if lq_defget(w, "canbloom", 1){
-    with instance_create(x+lengthdir_x(20 - wkick,gunangle),y+ lengthdir_y(20 - wkick,gunangle),CustomObject){
+    with instance_create(x + hspeed +lengthdir_x(20 - wkick,gunangle),y + vspeed + lengthdir_y(20 - wkick,gunangle),CustomObject){
     	depth = -1
     	sprite_index = sprBullet1
     	image_speed = .8

@@ -96,8 +96,8 @@ with mod_script_call_nc("mod", "defpack tools", "create_sonic_explosion", x + le
     team = other.team
     creator = other.creator
     image_speed = spd
-		superforce = 20
-		superfriction = .035
+		superforce = 24
+		superfriction = .02
 
     if dustspeed repeat(10 * scale) with instance_create(x, y, Smoke) {motion_set(random(360), dustspeed * random_range(.8, 1.1)); sprite_index = sprExtraFeetDust}
 

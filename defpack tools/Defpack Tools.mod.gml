@@ -1592,14 +1592,14 @@ with create_bullet(x, y){
     spr_dead = spr.LightningBulletHit
     bounce_color = c_aqua
 
-    force = 7
+    force = 5
     //Was 2 before new mechanic test
     damage = 3
     typ = 2
 
     // on_step = thunder_step
     // on_destroy = thunder_destroy
-    
+
     //Testing new thunder mechanic
     on_hit = new_thunder_hit
 	on_destroy = new_thunder_destroy
@@ -1715,8 +1715,8 @@ with create_heavy_bullet(x, y){
     spr_dead = spr.HeavyToxicBulletHit
     bounce_color = c_lime
 
-    damage = 5
     force = 11
+    damage = 5
 
     on_hit = toxic_hit
     on_destroy = heavy_toxic_destroy
@@ -1745,13 +1745,21 @@ with target{
 
 #define toxic_destroy
 repeat(2){
-	with instance_create(x,y,ToxicGas){friction *= 10; growspeed /= 8}
+	with instance_create(x, y, ToxicGas){
+        friction *= 10;
+        growspeed /= 8;
+        move_contact_solid(other.direction, other.speed);
+    }
 }
 bullet_destroy()
 
 #define heavy_toxic_destroy
 repeat(3){
-	with instance_create(x,y,ToxicGas){friction *= 3; growspeed /= 4}
+	with instance_create(x + hspeed, y + vspeed, ToxicGas){
+        friction *= 3;
+        growspeed /= 4;
+        move_contact_solid(other.direction, other.speed);
+    }
 }
 bullet_destroy()
 
@@ -3708,6 +3716,7 @@ dist += dis * current_time_scale
 if speed > 0 and current_frame_active
     with instance_create(x, y, DiscTrail){
         sprite_index = other.spr_trail
+        depth = 0;
     }
 if instance_exists(creator) && team != -1 && !place_meeting(x,y,creator){
     lastteam = team

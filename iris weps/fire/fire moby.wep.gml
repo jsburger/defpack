@@ -62,7 +62,7 @@ else{
 
 mod_script_call("mod", "defpack tools", "shell_yeah", 100, 40, 3 + random(3), c_red);
 
-with mod_script_call("mod", "defhitscan", "create_fire_hitscan_bullet", x + lengthdir_x(8, gunangle), y + lengthdir_y(8, gunangle)){
+with mod_script_call("mod", "defhitscan", "create_fire_hitscan_bullet", x + hspeed + lengthdir_x(8, gunangle), y + vspeed + lengthdir_y(8, gunangle)){
 	motion_set(other.gunangle + random_range(-10, 10)*other.accuracy*sqr(sqrt(w.charge)/2), 5)
 	image_angle = direction
 	projectile_init(other.team, other)
@@ -100,7 +100,7 @@ if lq_defget(w, "canbloom", 1){
 	    	}
 	    }
     }
-    
+
 }
 
 #define step(w)

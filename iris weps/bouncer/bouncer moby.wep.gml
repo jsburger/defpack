@@ -62,7 +62,7 @@ else{
 
 with instance_create(x,y,Shell){motion_add(other.gunangle+other.right*100+random(80)-40,3+random(3))}
 
-with mod_script_call("mod", "defhitscan", "create_bouncer_hitscan_bullet", x + lengthdir_x(8, gunangle), y + lengthdir_y(8, gunangle)){
+with mod_script_call("mod", "defhitscan", "create_bouncer_hitscan_bullet", x + hspeed  + lengthdir_x(8, gunangle), y + vspeed  + lengthdir_y(8, gunangle)){
 	motion_set(other.gunangle + random_range(-25,25)*other.accuracy*sqrt(w.charge)/6, 5)
 	image_angle = direction
 	projectile_init(other.team, other)
@@ -70,7 +70,7 @@ with mod_script_call("mod", "defhitscan", "create_bouncer_hitscan_bullet", x + l
 
 
 if lq_defget(w, "canbloom", 1){
-    with instance_create(x+lengthdir_x(20 - wkick,gunangle),y+ lengthdir_y(20 - wkick,gunangle),CustomObject){
+    with instance_create(x + hspeed +lengthdir_x(20 - wkick,gunangle),y + vspeed + lengthdir_y(20 - wkick,gunangle),CustomObject){
     	depth = -1
     	sprite_index = sprBullet1
     	image_speed = .8
