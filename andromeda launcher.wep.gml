@@ -485,6 +485,7 @@ texture_set_repeat(false);
 #define create_waitme(X, Y)
 	with instance_create(X, Y, CustomObject){
 		waitme = Maggot;
+		sprite = sprMaggotIdle;
 		starttimer = 30;
 		timer = starttimer;
 		seen = false;
