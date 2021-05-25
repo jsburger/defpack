@@ -1773,10 +1773,14 @@ with create_bullet(x,y){
     spr_dead = spr.FireBulletHit
     bounce_color = c_red
 
-    damage = 3
+    damage = 6
+	falloff = 2
+	fallofftime = current_frame + 3
+	defbloom.alpha = .2
 
     on_step = fire_step
     on_destroy = fire_destroy
+    on_hit = fire_bullet_hit
 
     return id
 }
@@ -1788,21 +1792,34 @@ with create_heavy_bullet(x, y){
     spr_dead = spr.HeavyFireBulletHit
     bounce_color = c_red
 
-    damage = 4
+    damage = 12
+	falloff = 4
+	fallofftime = current_frame + 3
+	defbloom.alpha = .2
 
     on_step = fire_step
     on_destroy = heavy_fire_destroy
+    on_hit = fire_bullet_hit
 
     return id
 }
 
+#define fire_bullet_hit
+	shell_hit()
+	recycle_gland_roll()
+	instance_destroy()
+
+
 #define fire_step
-if chance(8){
-	with instance_create(x,y,Flame){
-		team = other.team
-		creator = other.creator
+	if (fallofftime < current_frame && defbloom.alpha != .1) {
+		defbloom.alpha = .1
 	}
-}
+	if chance(8){
+		with instance_create(x,y,Flame){
+			team = other.team
+			creator = other.creator
+		}
+	}
 
 #define fire_destroy
 with create_miniexplosion(x, y){
