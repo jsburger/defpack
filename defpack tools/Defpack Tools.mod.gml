@@ -1630,7 +1630,7 @@ with create_bullet(x, y){
 			_charge -= r
 		}
 		view_shake_at(other.x, other.y, other.thunder_charge/5)
-		sound_play_pitchvol(sndLightningCannonEnd, 1 + max(1 - other.thunder_charge/30, -.8), .7)
+		sound_play_pitchvol(sndLightningCannonEnd, 1 + max(1 - other.thunder_charge/30, -.8), .4)
 	}
 
 #define new_thunder_destroy
@@ -1755,7 +1755,7 @@ bullet_destroy()
 
 #define heavy_toxic_destroy
 repeat(3){
-	with instance_create(x + hspeed, y + vspeed, ToxicGas){
+	with instance_create(x, y, ToxicGas){
         friction *= 3;
         growspeed /= 4;
         move_contact_solid(other.direction, other.speed);
@@ -1805,16 +1805,23 @@ if chance(8){
 }
 
 #define fire_destroy
-with create_miniexplosion(x, y){
+/*with create_miniexplosion(x, y){
     team = other.team
-}
+}*/
 with instance_create(x,y,BulletHit){
 	sprite_index = other.spr_dead
     image_index = 1
 }
 
 #define heavy_fire_destroy
-instance_create(x,y,SmallExplosion)
+//instance_create(x,y,SmallExplosion)
+repeat(6){
+	with instance_create(x, y, Flame){
+		team = other.team;
+		creator = other.creator;
+		motion_add(random(360), random_range(6,8))
+	}
+}
 sound_play_pitchvol(sndExplosionS,2,.3)
 bullet_destroy()
 
