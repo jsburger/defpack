@@ -48,7 +48,7 @@ return{
 }
 
 #define weapon_fire
-skill_set("excitedneurons", skill_get("excitedneurons") + 1)
+//skill_set("excitedneurons", skill_get("excitedneurons") + 1)
 sound_play_pitchvol(sndLaserCannonUpg,random_range(2.2,3),.7)
 sound_play_pitch(sndBasicUltra,random_range(2.6,2.7))
 weapon_post(7,0,16)
@@ -70,7 +70,7 @@ with mod_script_call("mod","defpack tools","create_toxic_bullet",x,y){
 	team = other.team
 	creator = other
 }
-with mod_script_call("mod","defpack tools","create_lightning_bullet",x,y){
+with mod_script_call("mod","defpack tools","create_thunder_bullet",x,y){
 	motion_add(other.gunangle+7+random_range(-3,3)*other.accuracy,7)
 	image_angle = direction
 	team = other.team
@@ -83,4 +83,4 @@ with mod_script_call("mod","defpack tools","create_psy_bullet",x,y){
 	maxspeed = 7
 	creator = other
 }
-skill_set("excitedneurons", skill_get("excitedneurons") - 1)
+//skill_set("excitedneurons", skill_get("excitedneurons") - 1)

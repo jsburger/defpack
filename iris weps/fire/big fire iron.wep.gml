@@ -1,6 +1,6 @@
 #define init
 global.sprBigFireIron = sprite_add_weapon("../../sprites/weapons/iris/fire/sprFireBigIron.png", 2, 4);
-global.FireBullet = sprite_add("../../sprites/projectiles/iris/fire/sprFireBullet.png", 2, 8, 8);
+global.FireBullet = sprite_add("../../sprites/projectiles/iris/fire/sprFireBullet.png", 3, 8, 8);
 
 #define weapon_name
 return "BIG FIRE IRON"

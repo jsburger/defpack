@@ -1,6 +1,6 @@
 #define init
 global.sprFireMoby = sprite_add_weapon("../../sprites/weapons/iris/fire/sprFireMoby.png", 8, 3);
-global.FireBullet = sprite_add("../../sprites/projectiles/iris/fire/sprFireBullet.png", 2, 8, 8);
+global.FireBullet = sprite_add("../../sprites/projectiles/iris/fire/sprFireBullet.png", 3, 8, 8);
 
 #macro maxchrg 18
 

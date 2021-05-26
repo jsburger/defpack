@@ -50,12 +50,12 @@
 		HeavyGammaBulletBounce = sprite_add(i + "iris/horror/sprHeavyGammaBulletBounce.png", 2, 9, 13);
 
 		//Fire Bullets
-		FireBullet         = sprite_add(i + "iris/fire/sprFireBullet.png",    2, 8, 8);
+		FireBullet         = sprite_add(i + "iris/fire/sprFireBullet.png",    3, 8, 8);
 		FireBulletHit      = sprite_add(i + "iris/fire/sprFireBulletHit.png", 4, 8, 8);
-		HeavyFireBullet    = sprite_add(i + "iris/fire/sprHeavyFireBullet.png",    2, 12, 12);
+		HeavyFireBullet    = sprite_add(i + "iris/fire/sprHeavyFireBullet.png",    3, 12, 12);
 		HeavyFireBulletHit = sprite_add(i + "iris/fire/sprHeavyFireBulletHit.png", 4, 12, 12);
-		FireBulletBounce   = sprite_add(i + "iris/fire/sprFireBulletBounce.png", 2, 6, 8);
-		HeavyFireBulletBounce = sprite_add(i + "iris/fire/sprHeavyFireBulletBounce.png", 2, 9, 13);
+		FireBulletBounce   = sprite_add(i + "iris/fire/sprFireBulletBounce.png", 3, 6, 8);
+		HeavyFireBulletBounce = sprite_add(i + "iris/fire/sprHeavyFireBulletBounce.png", 3, 9, 13);
 
 		//Bouncers
 		HeavyBouncerBullet = sprite_add(i + "iris/bouncer/sprHeavyBouncerBullet.png", 2, 12, 12);
@@ -1772,10 +1772,11 @@ with create_bullet(x,y){
     sprite_index = (neurons > 0) ? spr.FireBulletBounce : spr.FireBullet
     spr_dead = spr.FireBulletHit
     bounce_color = c_red
+	image_speed = 0;
 
     damage = 6
 	falloff = 2
-	fallofftime = current_frame + 3
+	fallofftime = current_frame + 4
 	defbloom.alpha = .2
 
     on_step = fire_step
@@ -1791,10 +1792,11 @@ with create_heavy_bullet(x, y){
     sprite_index = (neurons > 0) ? spr.HeavyFireBulletBounce : spr.HeavyFireBullet
     spr_dead = spr.HeavyFireBulletHit
     bounce_color = c_red
+	image_speed = 0;
 
     damage = 12
 	falloff = 4
-	fallofftime = current_frame + 3
+	fallofftime = current_frame + 4
 	defbloom.alpha = .2
 
     on_step = fire_step
@@ -1811,10 +1813,12 @@ with create_heavy_bullet(x, y){
 
 
 #define fire_step
-	if (fallofftime < current_frame && defbloom.alpha != .1) {
-		defbloom.alpha = .1
+	if (fallofftime >= current_frame){
+		image_index = 1;
 	}
-	if chance(8){
+	if (fallofftime < current_frame && defbloom.alpha != .1) {
+		defbloom.alpha = .1;
+		image_index = 2;
 		with instance_create(x,y,Flame){
 			team = other.team
 			creator = other.creator
@@ -1829,14 +1833,21 @@ with instance_create(x,y,BulletHit){
 	sprite_index = other.spr_dead
     image_index = 1
 }
+with instance_create(x, y, Flame){
+	team = other.team;
+	creator = other.creator;
+	motion_add(other.direction, random_range(4,6))
+	friction = 2;
+}
 
 #define heavy_fire_destroy
 //instance_create(x,y,SmallExplosion)
-repeat(6){
+repeat(8){
 	with instance_create(x, y, Flame){
 		team = other.team;
 		creator = other.creator;
 		motion_add(random(360), random_range(6,8))
+		friction = .7;
 	}
 }
 sound_play_pitchvol(sndExplosionS,2,.3)

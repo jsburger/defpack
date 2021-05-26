@@ -1,7 +1,7 @@
 #define init
 global.sprMegaFireRevolver    = sprite_add_weapon("../../sprites/weapons/iris/fire/sprMegaFireRevolver.png", -1, 3);
 global.sprMegaFireRevolverHUD = sprite_add("../../sprites/interface/sprMegaFireRevolverHUD.png", 1, -1, 3);
-global.sprMegaFireBullet   = sprite_add("../../sprites/projectiles/iris/fire/sprMegaFireBullet.png",2,18,18)
+global.sprMegaFireBullet   = sprite_add("../../sprites/projectiles/iris/fire/sprMegaFireBullet.png",3,18,18)
 #macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)
 #define weapon_name
 return "MEGA FIRE REVOLVER";
@@ -60,18 +60,21 @@ with instance_create(x,y,CustomProjectile)
     typ = 1
     sprite_index = global.sprMegaFireBullet
     mask_index = mskHeavyBullet
+    image_speed = 0;
     recycle_amount = 5
-    damage = 5
+	damage = 5
+	falloff = 5
+	fallofftime = current_frame + 5
     team = other.team
     defbloom = {
         xscale : 2,
         yscale : 2,
         alpha : .1
     }
+	defbloom.alpha = .2
     force = 12
     frames = 6
     timer  = 3
-    image_speed = 1
     creator = other
     move_contact_solid(other.gunangle,12)
     motion_add(other.gunangle+random_range(-10,10)*other.accuracy,20)
@@ -81,10 +84,6 @@ with instance_create(x,y,CustomProjectile)
     on_anim    = mega_anim
     on_step    = mega_step
     on_hit     = mega_hit
-    repeat(6)with instance_create(x+lengthdir_x(5,direction),y+lengthdir_y(5,direction),Flame){
-        team = other.team
-        motion_add(other.direction+random_range(-45,45),choose(2.5,3,2))
-    }
 }
 #define mega_hit
 if current_frame_active{
@@ -109,12 +108,29 @@ with other{instance_create(x,y,FloorExplo);instance_destroy()}
 instance_destroy()
 
 #define mega_destroy
-instance_create(x,y,Explosion)
+instance_create(x,y,SmallExplosion)
 sound_play(sndExplosionS)
 repeat(3) instance_create(x+random_range(-8,8),y+random_range(-8,8),Smoke)
 with instance_create(x,y,BulletHit){sprite_index = sprSlugHit;image_index = 1}
 
 #define mega_step
+
+if (fallofftime >= current_frame){
+	image_index = 1;
+}
+if (fallofftime < current_frame && defbloom.alpha != .1) {
+	defbloom.alpha = .1;
+	image_index = 2;
+	repeat(16){
+		with instance_create(x, y, Flame){
+			team = other.team;
+			creator = other.creator;
+			motion_add(random(360), random_range(8,10))
+			friction = .7;
+		}
+	}
+}
+
 if timer > 0 timer -= current_time_scale
 else if current_frame_active
 {
