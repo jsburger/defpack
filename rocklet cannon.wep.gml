@@ -56,6 +56,7 @@ with instance_create(x,y,CustomProjectile)
     depth = -1
     maxspeed = 16
     image_angle = direction
+    ImmuneToDistortion = true;
     ammo = 20 + (4* (GameCont.crown == crwn_death))
     on_draw    = cannon_draw
     on_step    = cannon_step

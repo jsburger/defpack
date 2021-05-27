@@ -57,6 +57,7 @@ with instance_create(x,y,CustomProjectile){
 	dinged = 0
 	_closeboy = 0
 	aimoffset = 40
+    ImmuneToDistortion = true;
 	typ = 2
 	on_step = script_ref_create(nuke_step)
 	on_destroy = script_ref_create(nuke_pop)

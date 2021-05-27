@@ -57,14 +57,16 @@ else{
 	wepangle = .1*wepflip
 	weapon_post(-10 - 10*skill_get(13),15,2)
 	move_contact_solid(gunangle,6)
-	with instance_create(x+lengthdir_x(_e / 40,gunangle),y+lengthdir_y(_e / 40,gunangle), Shank){
+	with instance_create(x+lengthdir_x(_e / 40,gunangle),y+lengthdir_y(_e / 40,gunangle), Wind){
+        sprite_index = sprShank
 		canfix = false
 		damage = 20
 		team = other.team
 		creator = other
 		motion_add(other.gunangle, _e)
+        friction = 1.33;
 		image_angle = direction
-    mask_index = mskNone
+        mask_index = mskNone
 	}
 }
 if rapiers != 2{

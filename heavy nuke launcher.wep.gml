@@ -54,6 +54,7 @@ with instance_create(x+lengthdir_x(4,gunangle),y+lengthdir_y(4,gunangle)-1,Custo
 	team = other.team
 	creator = other
 	name = "Heavy Nuke"
+    ImmuneToDistortion = true;
 	sprite_index = global.sprHeavyNuke
 	mask_index = global.mskHeavyNuke
 	index = other.index

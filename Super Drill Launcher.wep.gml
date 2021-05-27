@@ -56,6 +56,7 @@ return "WALL DIVERS"
         sprite_index = global.sprDrill
         lasthit = -4
         hits = 0
+        ImmuneToDistortion = true;
         walls = 6 + (skill_get(mut_bolt_marrow) * 4 * !global.explosive)
         image_angle = direction
         projectile_init(other.team,other)

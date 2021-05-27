@@ -1296,7 +1296,7 @@ with create_heavy_bullet(x, y){
     spr_dead = spr.HeavyPsyBulletHit
     bounce_color = c_purple
 
-    damage = 8
+    damage = 9
     typ = 2
     force = -20
     timer = irandom(4) + 3
@@ -1591,6 +1591,7 @@ with create_bullet(x, y){
 
     spr_dead = spr.LightningBulletHit
     bounce_color = c_aqua
+    charge = choose(2, 2, 3)
 
     force = 5
     //Was 2 before new mechanic test
@@ -1612,7 +1613,7 @@ with create_bullet(x, y){
 	if "thunder_charge" not in other {
 		other.thunder_charge = 0
 	}
-	other.thunder_charge += 2
+	other.thunder_charge += charge
 	var _team = team, _c = creator;
 	bullet_hit()
 	if other.my_health <= 0 {
@@ -1650,8 +1651,10 @@ with create_heavy_bullet(x, y){
     bounce_color = c_aqua
 
     typ = 2
-    damage = 6
+    damage = 8
+    charge = choose(5, 5, 6)
 
+    on_hit = new_thunder_hit
     on_step = heavy_thunder_step
     on_destroy = heavy_thunder_destroy
 
@@ -1700,7 +1703,7 @@ with create_bullet(x, y){
     bounce_color = c_lime
 
     force = 8
-    damage = 2
+    damage = 4
 
     on_hit = toxic_hit
     on_destroy = toxic_destroy
@@ -1716,7 +1719,7 @@ with create_heavy_bullet(x, y){
     bounce_color = c_lime
 
     force = 11
-    damage = 5
+    damage = 7
 
     on_hit = toxic_hit
     on_destroy = heavy_toxic_destroy
@@ -1744,21 +1747,20 @@ with target{
 }
 
 #define toxic_destroy
-repeat(2){
-	with instance_create(x, y, ToxicGas){
+    repeat(choose(1, 1, 2))with instance_create(x, y, ToxicGas){
         friction *= 10;
         growspeed /= 8;
         move_contact_solid(other.direction, other.speed);
-    }
 }
 bullet_destroy()
 
 #define heavy_toxic_destroy
 repeat(3){
 	with instance_create(x, y, ToxicGas){
-        friction *= 3;
+        friction *= 24;
         growspeed /= 4;
         move_contact_solid(other.direction, other.speed);
+        motion_add(random(360), random_range(2, 4))
     }
 }
 bullet_destroy()
@@ -1774,7 +1776,7 @@ with create_bullet(x,y){
     bounce_color = c_red
 	image_speed = 0;
 
-    damage = 6
+    damage = 5
 	falloff = 2
 	fallofftime = current_frame + 4
 	defbloom.alpha = .2
@@ -1794,8 +1796,8 @@ with create_heavy_bullet(x, y){
     bounce_color = c_red
 	image_speed = 0;
 
-    damage = 12
-	falloff = 4
+    damage = 11
+	falloff = 6
 	fallofftime = current_frame + 4
 	defbloom.alpha = .2
 
@@ -1822,6 +1824,7 @@ with create_heavy_bullet(x, y){
 		with instance_create(x,y,Flame){
 			team = other.team
 			creator = other.creator
+            damage = 1;
 		}
 	}
 
@@ -1838,6 +1841,7 @@ with instance_create(x, y, Flame){
 	creator = other.creator;
 	motion_add(other.direction, random_range(4,6))
 	friction = 2;
+    damage = 1;
 }
 
 #define heavy_fire_destroy
@@ -1848,6 +1852,7 @@ repeat(8){
 		creator = other.creator;
 		motion_add(random(360), random_range(6,8))
 		friction = .7;
+        damage = 1;
 	}
 }
 sound_play_pitchvol(sndExplosionS,2,.3)
@@ -3177,7 +3182,7 @@ with instance_create(_x, _y, CustomProjectile){
     damage = 3
     name = "Rocklet"
     maxspeed = 14
-    immuneToDistortion = 1
+    immuneToDistortion = 1;
     typ = 1
     depth = -1
     direction_goal = 0

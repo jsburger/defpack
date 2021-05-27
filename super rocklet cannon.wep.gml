@@ -59,6 +59,7 @@ with instance_create(x,y,CustomProjectile)
     flip = 1
     anginc = 0
     image_angle = direction
+    ImmuneToDistortion = true;
     ammo = 6
     on_draw    = cannon_draw
     on_step    = scannon_step

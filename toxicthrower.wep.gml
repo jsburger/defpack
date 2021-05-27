@@ -61,7 +61,8 @@ var _load = weapon_get_load(mod_current);
 			image_angle = random(360)
 			gas_special = true
 			team = other.team
-			motion_add(other.gunangle + (random_range(-6, 6) * other.accuracy),random_range(2,3));
+			motion_add(other.gunangle + (random_range(-12, 12) * other.accuracy),random_range(5,7));
+            friction = .2;
 		}
 		wait 1;
 	}

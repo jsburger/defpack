@@ -35,15 +35,19 @@ sound_play_pitchvol(sndRadPickup,1.2, 1.7)
 sound_play_pitchvol(sndUltraPistol,3, .7)
 sound_play_pitch(sndDoubleMinigun,random_range(.9,1.1))
 mod_script_call("mod","defpack tools", "shell_yeah", 100, 40, random_range(3,5), c_lime)
+var _i = 6;
 repeat(2) with mod_script_call("mod", "defpack tools", "create_gamma_bullet",x,y){
     creator = other
     team = other.team
-    motion_set(other.gunangle + 20 + random_range(-16,16) * other.accuracy,random_range(14,18))
+    motion_set(other.gunangle + 20 + random_range(-_i,_i) * other.accuracy,random_range(14,18))
 	image_angle = direction
+    _i = 19;
 }
+_i = 6;
 repeat(2) with mod_script_call("mod", "defpack tools", "create_gamma_bullet",x,y){
     creator = other
     team = other.team
-    motion_set(other.gunangle - 20 + random_range(-16,16) * other.accuracy,random_range(14,18))
+    motion_set(other.gunangle - 20 + random_range(-_i,_i) * other.accuracy,random_range(14,18))
 	image_angle = direction
+    _i = 19;
 }

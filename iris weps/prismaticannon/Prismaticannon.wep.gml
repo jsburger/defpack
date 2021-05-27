@@ -32,7 +32,7 @@ switch mod_variable_get("skill", "prismaticiris", "color"){
   case "cloudedstare"        : return global.spriteThunder;
   case "allseeingeye"        : return global.spritePsy;
   case "warpedperspective"   : return global.spriteGamma;
-  case "prismaticiris"       : return global.sprite;
+  default: return global.sprite;
 }
 
 #define weapon_type
@@ -83,7 +83,7 @@ switch mod_variable_get("skill", "prismaticiris", "color"){
     case "cloudedstare"        : _icol = 3; break;
     case "allseeingeye"        : _icol = 4; break;
     case "warpedperspective"   : _icol = 5; break;
-    case "prismaticiris"       : _icol = 6; break;
+    default : _icol = 6; break;
   }
 
   if !skill_get("prismaticiris"){_icol = 6}

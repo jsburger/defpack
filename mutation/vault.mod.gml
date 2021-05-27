@@ -2,14 +2,23 @@
 global.new_level = (instance_exists(GenCont) || instance_exists(Menu));
 global.generated = false;
 
-global.sprShrine 	   = sprite_add("../sprites/shrine/sprShrine.png", 5, 21, 23);
-global.sprShrineHurt = sprite_add("../sprites/shrine/sprShrineHurt.png", 3, 21, 23);
-global.sprShrineCore 		   = sprite_add("../sprites/shrine/sprShrineCore.png", 5, 20, 23);
-global.sprShrineCoreFlare  = sprite_add("../sprites/shrine/sprShrineCoreFlare.png", 5, 20, 23);
-global.sprShrineCoreFlare2 = sprite_add("../sprites/shrine/sprShrineCoreFlare2.png", 5, 20, 23);
-global.sprShrineCoreTrans  = sprite_add("../sprites/shrine/sprShrineTransition.png", 6, 20, 23);
-global.sprShrineCoreTrans2 = sprite_add("../sprites/shrine/sprShrineTransition2.png", 6, 20, 23);
-
+global.sprShrine 	       = sprite_add("../sprites/shrine/sprShrine.png", 5, 21, 23);
+global.sprShrineHurt       = sprite_add("../sprites/shrine/sprShrineHurt.png", 3, 21, 23);
+global.sprShrineCore 	   = sprite_add("../sprites/shrine/sprShrineCore.png", 5, 21, 23);
+global.sprShrineCoreFlare  = sprite_add("../sprites/shrine/sprShrineCoreFlare.png", 5, 21, 23);
+global.sprShrineCoreFlare2 = sprite_add("../sprites/shrine/sprShrineCoreFlare2.png", 5, 21, 23);
+global.sprShrineCoreTrans[0] = sprite_add("../sprites/shrine/sprShrineCoreTransFire.png", 5, 21, 23);
+global.sprShrineCoreTrans[1] = sprite_add("../sprites/shrine/sprShrineCoreTransBouncer.png", 5, 21, 23);
+global.sprShrineCoreTrans[2] = sprite_add("../sprites/shrine/sprShrineCoreTransPest.png", 5, 21, 23);
+global.sprShrineCoreTrans[3] = sprite_add("../sprites/shrine/sprShrineCoreTransThunder.png", 5, 21, 23);
+global.sprShrineCoreTrans[4] = sprite_add("../sprites/shrine/sprShrineCoreTransPsy.png", 5, 21, 23);
+global.sprShrineCoreTrans[5] = sprite_add("../sprites/shrine/sprShrineCoreTransHorror.png", 5, 21, 23);
+global.sprShrineCoreLoop[0] = sprite_add("../sprites/shrine/sprShrineCoreTransFireLoop.png", 5, 21, 23);
+global.sprShrineCoreLoop[1] = sprite_add("../sprites/shrine/sprShrineCoreTransBouncerLoop.png", 5, 21, 23);
+global.sprShrineCoreLoop[2] = sprite_add("../sprites/shrine/sprShrineCoreTransPestLoop.png", 5, 21, 23);
+global.sprShrineCoreLoop[3] = sprite_add("../sprites/shrine/sprShrineCoreTransThunderLoop.png", 5, 21, 23);
+global.sprShrineCoreLoop[4] = sprite_add("../sprites/shrine/sprShrineCoreTransPsyLoop.png", 5, 21, 23);
+global.sprShrineCoreLoop[5] = sprite_add("../sprites/shrine/sprShrineCoreTransHorrorLoop.png", 5, 21, 23);
 global.binds = [
 	[noone, CustomStep, 0, script_ref_create(prompt_step)]
 ];
@@ -399,9 +408,11 @@ with(instance_create(_x, _y, CustomProp)){
 
 	maxhealth = 500;
 	my_health = maxhealth;
+	size = 3;
 
 	depth = 0;
 	candie = true;
+	image_xscale = 1;
 
 	startx = x;
 	starty = y;
@@ -426,11 +437,11 @@ with(instance_create(_x, _y, CustomProp)){
 		}
 	}until(mod_variable_get("skill", "prismaticiris", "color") != color || _i = 29)
 	switch color{
-		case "quiveringsight": 		skill = "bouncer"; break;
-		case "blazingvisage": 		skill = "fire";    break;
-		case "pestilentgaze": 		skill = "pest"; 	 break;
-		case "cloudedstare": 			skill = "thunder"; break;
-		case "allseeingeye": 			skill = "psy"; 		 break;
+		case "quiveringsight": 	  skill = "bouncer"; break;
+		case "blazingvisage": 	  skill = "fire";    break;
+		case "pestilentgaze": 	  skill = "pest"; 	 break;
+		case "cloudedstare": 	  skill = "thunder"; break;
+		case "allseeingeye": 	  skill = "psy"; 	 break;
 		case "warpedperspective": skill = "gamma"; 	 break;
 	}
 
@@ -445,8 +456,35 @@ with(instance_create(_x, _y, CustomProp)){
 		owner = other;
 		image_speed = .35;
 		depth = other.depth - 1;
+		candraw = true;
 		sprite0 = global.sprShrineCoreFlare;
 		sprite1 = global.sprShrineCoreFlare2;
+        switch other.skill{
+            case "fire":
+                sprite2 = global.sprShrineCoreTrans[0];
+                sprite3 = global.sprShrineCoreLoop[0];
+                break;
+            case "bouncer":
+                sprite2 = global.sprShrineCoreTrans[1];
+                sprite3 = global.sprShrineCoreLoop[1];
+                break;
+            case "pest":
+                sprite2 = global.sprShrineCoreTrans[2];
+                sprite3 = global.sprShrineCoreLoop[2];
+                break;
+            case "thunder":
+                sprite2 = global.sprShrineCoreTrans[3];
+                sprite3 = global.sprShrineCoreLoop[3];
+                break;
+            case "psy":
+                sprite2 = global.sprShrineCoreTrans[4];
+                sprite3 = global.sprShrineCoreLoop[4];
+                break;
+            case "gamma":
+                sprite2 = global.sprShrineCoreTrans[5];
+                sprite3 = global.sprShrineCoreLoop[5];
+                break;
+        }
 		on_begin_step = Shrinecore_begin_step
 		on_draw = ShrineCore_draw;
 		loop = false
@@ -458,41 +496,104 @@ with(instance_create(_x, _y, CustomProp)){
 
 #define Shrinecore_begin_step
 if instance_exists(owner) && owner.my_health <= 0{
-	trace("dead")
 	with instance_create(owner.x, owner.y, WepPickup){
 		wep = "Prismaticannon";
 		angle = random(360);
 	}
+	candraw = false;
 }
 
 #define ShrineCore_draw
-if !instance_exists(owner){
-	if loop = false{
-		sprite0 = global.sprShrineCoreTrans
-		sprite1 = global.sprShrineCoreTrans2
-		loop = true
+	if candraw = false{
+		instance_delete(self);
+		exit;
 	}
-}else{
-	x = floor(owner.x);
-	y = floor(owner.y);
-	if owner.sprite_index = owner.spr_hurt && owner.image_index > 0{
-		image_alpha = 0;
-	}else{
-		image_alpha = 1;
-	}
-}
+    if !instance_exists(owner){
+        with instance_create(x, y, PlasmaTrail){
+			switch mod_variable_get("skill", "prismaticiris", "color"){
+				case "blazingvisage":
+					sound_play_pitchvol(sndBasicUltra, 2, 0.5);
+					sound_play_pitchvol(sndIncinerator, 0.7, 1);
+					sound_play_pitchvol(sndBurn, 2, 0.4);
+					sound_play_pitchvol(sndRocketFly, 2, 0.4);
+					sound_play_pitchvol(sndSwapFlame, 0.5, 0.4);
+					break;
+				case "quiveringsight":
+					sound_play_pitchvol(sndBasicUltra, 2, 0.5);
+					sound_play_pitchvol(sndShielderDeflect, 0.6, 0.5);
+					sound_play_pitchvol(sndBouncerBounce, 0.7, 1);
+					sound_play_pitchvol(sndHitWall, 0.6, 1);
+					break;
+				case "pestilentgaze":
+					sound_play_pitchvol(sndBasicUltra, 2, 0.5);
+					sound_play_pitchvol(sndToxicBoltGas, 0.6, 0.4);
+					sound_play_pitchvol(sndOasisChest, 0.5, 0.4);
+					sound_play_pitchvol(sndOasisExplosion, 2, 0.4);
+					sound_play_pitchvol(sndOasisExplosionSmall, 3, 0.4);
+					break;
+				case "cloudedstare":
+					sound_play_pitchvol(sndBasicUltra, 2, 0.5);
+					sound_play_pitchvol(sndGammaGutsKill, 1.4, 0.5);
+					sound_play_pitchvol(sndLightningReload, 0.6, 1);
+					sound_play_pitchvol(sndLightningRifleUpg, 1.5, 0.5);
+					break;
+				case "allseeingeye":
+					sound_play_pitchvol(sndBasicUltra, 2, 0.5);
+					sound_play_pitch(sndCursedReminder, 0.4);
+					sound_play_pitch(sndSwapCursed, 0.8);
+					sound_play_pitchvol(sndCursedPickup, 0.6, 0.5);
+					sound_play_pitchvol(sndBigCursedChest, 0.7, 0.2);
+					break;
+				case "warpedperspective":
+					sound_play_pitchvol(sndBasicUltra, 2, 0.5);
+					sound_play_pitchvol(sndUltraEmpty, .8, 1.5);
+					sound_play_pitchvol(sndHorrorBeam, .8, 1);
+					sound_play_pitchvol(sndHorrorPortal, 1, 1.7);
+					sound_play_pitchvol(sndGuardianAppear, .5, 1.4);
+					break;
+			}
+			sprite_index = other.sprite2
+            sprite3 = other.sprite3
+            image_speed = .5;
+            with instance_create(x, y, CustomObject){
+				name = "shrine drawer"
+                sprite_index = other.sprite3
+                image_speed = .5
+                timer = 10;
+                on_draw = loop_draw
+            }
+        }
+        instance_destroy();
+        exit;
+    }else{
+    	x = owner.x;
+    	y = owner.y;
+    	if owner.sprite_index = owner.spr_hurt && owner.image_index > 0{
+    		image_alpha = 0;
+    	}else{
+    		image_alpha = 1;
+    	}
+    }
 
 	var c_flare1 = make_colour_hsv((current_frame * 1.4 + wave) mod 255, 220, 255),
 	    c_flare2 = make_colour_hsv((current_frame * 1.4 + wave) mod 255,  60, 255);
 
-	/*draw_sprite_ext(sprite0, image_index, x, y, image_xscale, image_yscale, image_angle, c_flare1, image_alpha);
+	draw_sprite_ext(sprite0, image_index, x, y, image_xscale, image_yscale, image_angle, c_flare1, image_alpha);
 	draw_sprite_ext(sprite1, image_index, x, y, image_xscale, image_yscale, image_angle, c_flare2, image_alpha);
 	draw_set_blend_mode(bm_add)
 	draw_sprite_ext(sprite0, image_index, x, y, image_xscale * 1.25, image_yscale * 1.25, image_angle, c_flare1, .15);
-	draw_set_blend_mode(bm_normal)*/
+	draw_set_blend_mode(bm_normal)
 
 	if instance_exists(owner) draw_sprite(global.sprShrineCore, image_index, x, y);
 
+#define loop_draw
+    timer -= current_time_scale;
+    if timer <= 0{
+        draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, image_yscale, image_angle, image_blend, image_alpha);
+        draw_set_blend_mode(bm_add)
+        draw_sprite_ext(sprite_index, image_index, x, y + 1, image_xscale * 1.25, image_yscale * 1.25, image_angle, image_blend, .15);
+        draw_set_blend_mode(bm_normal)
+    }
 
 #define Dummy_step
 if (!instance_exists(my_prompt)){
@@ -763,6 +864,10 @@ if (array_length(_prompts) > 0){
 	with instances_matching(CustomProp,"name","Iris Shrine"){
 			draw_circle_color(x, y, 52 + random(3), c_gray, c_gray,0)
 			draw_circle_color(x, y, 26 + random(3), c_black, c_black,0)
+		}
+	with instances_matching(CustomObject, "name", "shrine drawer"){
+			draw_circle_color(x, y, 152 + random(3), c_gray, c_gray,0)
+			draw_circle_color(x, y, 72 + random(3), c_black, c_black,0)
 		}
 
 #define player_convert(c)

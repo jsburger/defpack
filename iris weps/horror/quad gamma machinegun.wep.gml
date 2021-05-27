@@ -2,7 +2,7 @@
 global.sprQuadHorrorMachinegun = sprite_add_weapon("../../sprites/weapons/iris/horror/on/sprQuadHorrorMachinegunOn.png", 3, 5);
 
 #define weapon_name
-return "QUADRUPLE GAMMA MACHINEGUN";
+return "QUAD GAMMA MACHINEGUN";
 
 #define weapon_sprt
 return global.sprQuadHorrorMachinegun;

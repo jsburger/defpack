@@ -1,7 +1,7 @@
 /loadwep gamma revolver
 /loadwep gamma machinegun
 /loadwep triple gamma machinegun
-/loadwep quadruple gamma machinegun
+/loadwep quad gamma machinegun
 /loadwep gamma smg
 /loadwep assault gamma rifle
 /loadwep hyper gamma rifle

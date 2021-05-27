@@ -74,6 +74,7 @@ return "PIERCE THE HEAVENS"
       sprite_index = global.sprMegaDrill
       lasthit = -4
       hits = 0
+      ImmuneToDistortion = true;
       walls = 14 + (skill_get(mut_bolt_marrow) * 6 * !global.explosive)
       image_angle = direction
       projectile_init(other.team,other)

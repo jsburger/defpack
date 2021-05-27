@@ -35,6 +35,7 @@ return -1;
 
 repeat(3)
 {
+    var _i = 6;
 	weapon_post(2,-8,2)
 	sound_play_pitchvol(sndRadPickup,1.2, 1.7)
 	sound_play_pitchvol(sndUltraPistol,3, .7)
@@ -43,8 +44,9 @@ repeat(3)
 	repeat(2) with mod_script_call("mod", "defpack tools", "create_gamma_bullet",x,y){
 	    creator = other
 	    team = other.team
-	    motion_set(other.gunangle + random_range(-12,12) * other.accuracy,random_range(14,18))
+	    motion_set(other.gunangle + random_range(-_i,_i) * other.accuracy,random_range(14,18))
 		image_angle = direction
+        _i = 14;
 	}
 	wait(2)
 	if !instance_exists(self){exit}

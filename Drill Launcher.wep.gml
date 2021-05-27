@@ -51,6 +51,7 @@ return{
       hits = 0
       walls = 6 + (skill_get(mut_bolt_marrow) * 4 * !global.explosive) + 1
       image_angle = direction
+      ImmuneToDistortion = true;
       projectile_init(other.team,other)
       repeat(4) instance_create(x,y,Smoke)
       on_hit = global.explosive ? drill_explo : drill_hit
