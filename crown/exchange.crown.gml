@@ -266,14 +266,34 @@ for(var _m = 0; _m < ds_list_size(_l); _m++){
 ds_list_shuffle(_l);
 _i = ds_list_find_value(_l, 1);
 
-if mod_variable_get("skill", "prismaticiris", "color") == "filteredlens"{
-    var n = 0
-    ds_list_shuffle(_l);
-    _i = ds_list_find_value(_l,1);
-    while ds_list_size(_l) > 1 and weapon_get_type(_i) == 1{
-        ds_list_delete(_l, 1);
+if weapon_get_type(_i) = 1 && skill_get("prismaticiris") > 0{
+    if mod_variable_get("skill", "prismaticiris", "color") == "filteredlens"{
+        var n = 0
+        ds_list_shuffle(_l);
         _i = ds_list_find_value(_l,1);
+        while ds_list_size(_l) > 1 and weapon_get_type(_i) == 1{
+            ds_list_delete(_l, 1);
+            _i = ds_list_find_value(_l,1);
+        }
     }
+    else{
+		trace("----------")
+		var _c = -4;
+		switch mod_variable_get("skill", "prismaticiris", "color"){
+			case "balzingvisage": _c = "fire"; break;
+			case "quiveringsight": _c = "bouncer"; break;
+			case "pestilentgaze+": _c = "pest"; break;
+			case "cloudedstare": _c = "thunder"; break;
+			case "allseeingeye": _c = "psy"; break;
+			case "warpedperspective": _c = "gamma"; break;
+			default: _c = "no color"; break;
+		}
+		var _cwep = mod_script_call_self("skill", "prismaticiris", "convert", _i, _c);
+		//trace(weapon_get_name(_i), mod_variable_get("skill", "prismaticiris", "color"), _c, mod_script_call_self("skill", "prismaticiris", "convert", _i, _c))
+		if is_string(_cwep) {
+			_i = mod_script_call_self("skill", "prismaticiris", "convert", _i, _c);
+		}
+	}
 }
 
 ds_list_destroy(_l);

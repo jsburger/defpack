@@ -4,6 +4,7 @@ global.generated = false;
 
 global.sprShrine 	       = sprite_add("../sprites/shrine/sprShrine.png", 5, 21, 23);
 global.sprShrineHurt       = sprite_add("../sprites/shrine/sprShrineHurt.png", 3, 21, 23);
+global.sprShrineDie        = sprite_add("../sprites/shrine/sprShrineDie.png",  3, 21, 23);
 global.sprShrineCore 	   = sprite_add("../sprites/shrine/sprShrineCore.png", 5, 21, 23);
 global.sprShrineCoreFlare  = sprite_add("../sprites/shrine/sprShrineCoreFlare.png", 5, 21, 23);
 global.sprShrineCoreFlare2 = sprite_add("../sprites/shrine/sprShrineCoreFlare2.png", 5, 21, 23);
@@ -359,9 +360,9 @@ with(instance_rectangle_bbox(_x1, _y1, _x2, _y2, [Bones, TopPot])){
 return [hall_x + 16, hall_y + 16];
 
 #define step
-if button_pressed(0, "horn"){
+/*if button_pressed(0, "horn"){
 	Dummy_create(0.x, 0.y)
-}
+}*/
 
 if (instance_exists(GenCont) || instance_exists(Menu)){
 	global.new_level = true;
@@ -402,9 +403,10 @@ with(instance_create(_x, _y, CustomProp)){
 	spr_idle = global.sprShrine;
 	spr_walk = global.sprShrine;
 	spr_hurt = global.sprShrineHurt;
-	spr_dead = global.sprShrine;
+	spr_dead = global.sprShrineDie;
 
 	snd_hurt = sndStatueHurt;
+	snd_dead = sndStatueDead;
 
 	maxhealth = 500;
 	my_health = maxhealth;

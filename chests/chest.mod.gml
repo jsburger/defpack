@@ -223,7 +223,7 @@ chest_add("Energy",    -1, 5)
     if !instance_exists(GenCont){
         with instances_matching(instances_matching(WeaponChest, "object_index", 458), "defcustomchestcheck", null){
             defcustomchestcheck = 1
-            var _chance = min(GameCont.wepmuts * 12 + (crown_current = crwn_guns) * 20 + (crown_current = "exchange") * 20, 45);
+            var _chance = min((GameCont.wepmuts > 0 ? 10 : 0) + GameCont.wepmuts * 10 + (crown_current = crwn_guns) * 33 + (crown_current = "exchange") * 33, 80);
 
             if skill_get(mut_heavy_heart) > 0 && _chance > 0 _chance = 100 * skill_get(mut_heavy_heart)
             var _mwr = (irandom(99) + 1) <= (_chance)
