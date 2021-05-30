@@ -12,6 +12,9 @@
 #define skill_wepspec
 return 1;
 
+#define skill_type
+return 1;
+
 #define game_start
 	global.color = mod_current;
 
@@ -164,7 +167,7 @@ return 1;
 	with(mod_get_names("skill")){
 		if (mod_script_exists("skill", self, "skill_iris")){
 			var _color = mod_script_call("skill", self, "skill_iris");
-			
+
 			if (_color != false){
 				array_push(_colors, _color);
 			}
@@ -191,7 +194,7 @@ return 1;
 				with(get_colors()){
 					var color_lower = string_lower(self);
 					var _pos = string_pos(color_lower + " ", wep_lower);
-					
+
 					if (_pos >= 1) {
 						var _search = string_lower(string_delete(w, _pos, string_length(self + " ")));
 

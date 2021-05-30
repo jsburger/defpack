@@ -564,7 +564,7 @@ with Player if visible{
 
 			on_hit = defspeed_hit;
 		}
-		if place_free(x + lengthdir_x(min(defspeed[0], defspeed_max), defspeed[1]), y + lengthdir_y(min(defspeed[0], defspeed_max), defspeed[1])) && place_free(x + lengthdir_x(min(defspeed[0], defspeed_max)/2, defspeed[1]), y + lengthdir_y(min(defspeed[0], defspeed_max)/2, defspeed[1])){
+		if place_free(x + lengthdir_x(min(defspeed[0], defspeed_max), defspeed[1]), y + lengthdir_y(min(defspeed[0], defspeed_max), defspeed[1])) && place_free(x + lengthdir_x(min(defspeed[0], defspeed_max)/2, defspeed[1]), y + lengthdir_y(min(defspeed[0], defspeed_max)/2, defspeed[1])) && place_free(x + lengthdir_x(min(defspeed[0], defspeed_max)/6, defspeed[1]), y + lengthdir_y(min(defspeed[0], defspeed_max)/6, defspeed[1])){
 			x += lengthdir_x(min(defspeed[0], defspeed_max), defspeed[1]);
 			y += lengthdir_y(min(defspeed[0], defspeed_max), defspeed[1]);
 			nexthurt = current_frame + 1;

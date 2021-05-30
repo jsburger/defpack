@@ -62,18 +62,6 @@ for (var i = 0; i < lq_size(global.performanceCache); i += 1) {
 trace_color("total: " + string(acc), c_gray)
 
 #define weapon_laser_sight
-with instances_matching(instances_matching(CustomObject, "name", "SniperCharge"), "creator", self) {
-    with other {
-        with mod_script_call_self("mod", "defpack tools", "sniper_fire", x, y, gunangle, team, 1 + other.charge/other.maxcharge, 1){
-            draw_line_width_color(xstart, ystart, x, y, 1, 14074, 14074)
-            instance_destroy()
-        }
-    }
-    return false
-}
-return false;
-
-/*
 trace_time()
 with instances_matching(instances_matching(CustomObject, "name", "PsySniperCharge"), "creator", self) {
     with other
@@ -172,8 +160,6 @@ with instances_matching(instances_matching(CustomObject, "name", "PsySniperCharg
     return true;
 }
 return false
-*/
-
 #define weapon_reloaded
 with mod_script_call("mod","defpack tools", "shell_yeah_long", 100, 8, 3+random(2),c_purple)
 var _r = random_range(.8,1.2)
@@ -190,14 +176,6 @@ return choose("insanity");
 
 #define weapon_fire
 with mod_script_call_self("mod", "defpack tools", "create_sniper_charge", x, y){
-    creator = other
-    team = other.team
-    index = other.index
-    cost = weapon_cost()
-}
-
-/*
-with mod_script_call_self("mod", "defpack tools", "create_sniper_charge", x, y){
     name = "PsySniperCharge"
     creator = other
     team = other.team
@@ -206,7 +184,6 @@ with mod_script_call_self("mod", "defpack tools", "create_sniper_charge", x, y){
     on_fire = script_ref_create(psy_rifle_fire)
     spr_flash = global.sprPsyBullet
 }
-*/
 
 #define psy_rifle_fire
 var _ptch = random_range(-.5,.5)

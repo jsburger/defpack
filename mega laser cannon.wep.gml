@@ -17,7 +17,7 @@ return "MEGA LASER CANNON"
 return 5;
 
 #define weapon_cost
-return 15;
+return 8;
 
 #define weapon_area
 return 15;

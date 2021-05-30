@@ -11,6 +11,9 @@ return "@yBULLET@s WEAPONS BECOME " + `@(color:${make_colour_hsv(current_frame m
 #define skill_tip
 	return mod_current;
 
+#define skill_type
+	return 1;
+
 #define skill_iris
 	if(crown_current = 8 or mod_variable_get("skill", "prismaticiris", "color") = mod_current) {
 		var s = mod_get_names("skill");

@@ -17,6 +17,9 @@
 #define skill_button
 	sprite_index = global.button;
 
+#define skill_type
+	return 1;
+
 #define skill_icon
 	return global.icon;
 
@@ -36,10 +39,10 @@
 		if(skill_get("prismaticiris") = 0) skill_set("prismaticiris", _num); // apply iris if it exists but isnt applied, just for weird cases with skill_set
 		mod_variable_set("skill", "prismaticiris", "color", mod_current);
 	}
-	
+
 	skill_set_active(mut_recycle_gland, 0);
 	skill_set(mod_current, 0); // Remove the skill
-	
+
 	player_convert(skill_iris());
-	
+
 #define player_convert(c) return mod_script_call_nc("skill", "prismaticiris", "player_convert", c);

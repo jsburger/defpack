@@ -1,0 +1,419 @@
+// IMPORTANT NOTICE //
+A few features couldnt't be finished before release and will be released in a hotfix later on.
+These features are:
+   * The Shotgun Assembly Kit being currently unavailable
+   * Psy versions of the Subata, Moby, Big Iron, Sniper Rifle and Sniper Shotgun behaving similar to theri
+     original counterpart
+
+// WEAPON ADDITIONS/REMOVAL //
+
+    The following weapons were added:
+       + Arc Classique
+       + Auto Knife Thrower
+       + Blood Needle
+       + Energy Chainsaw
+       + Gas Lighter
+       + Hyper Bow
+       + Jack
+       + Mega Slugger
+       + Laser Flak Cannon (from extra weapons back to the main weapons)
+       + P.S.D
+       + Push Piston
+       + Quartz Sword
+       + Rivet Gun
+       + Scrapper
+       + Smart Abris Rifle
+       + Sniper Shotgun
+       + Sonic Hammer
+       + Subata
+       + Super Drill Launcher
+
+    The following weapons were moved or added or moved to extra weapons and aren't part of the drop pool:
+       * Satchel Charge
+       * Sonic Shotgun
+       * Sonic Rifle
+       * Screecher
+       * Lightning Flare Gun
+       * Auto Sniper Rifle
+       * Assault Sonic Launcher (and renamed to "Sonic Charger")
+       * Tempest Blade
+       * Heavy Toxic Crossbow
+       * Toxic Cannon
+       * Splinter Bow
+
+
+// GENERAL CHANGES //
+
+    Quartz Weapons:
+       * Quartz weapons now have their own health (Max 3 HP), and every time the Player takes damage their HP is lowered by 1.
+         At 0 HP the weapon is destroyed, leaving a Shard (a Melee weapon) behind.
+       * Health can be regained by picking up quartz HP pickups.
+
+    Mega Weapons:
+       * All mega weapons slow down the Player by 20% if it is the active weapon (slowdown stacks with Steroids), and doesn't apply
+         with Extra Feet
+
+    Sonic Explosions:
+       * Now apply "superforce", wich launches enemies at rapid speed, making them deal and take damage when colliding with walls and
+         enemies
+       * Added crown of Death synergy for sonic explosions
+
+    Abris Weapons:
+       * Removed size gain when colliding with a wall
+       * All Abris Launchers (except Auto Abris Launchers) now lock onto targets close enough to the Players cursor. Lockon distance
+         scales with accuracy
+
+    Defpack Chests:
+       * Will try to drop 2 different weapons if possible
+
+   Themed Chests:
+      * Defaults to dropping 1 weapon instead of no weapon if a suitable weapon can't be found
+      * Added Themed weapon chests that drop for the following mods (mod must be loaded):
+         + NTTE
+         + Tinyweps
+         + Loopweps
+    	 + Nintendo Weapons
+    	 + Downwell Weapons
+    	 + Minecraft Weapons
+    	 + Clasweps
+    	 + Goodmod
+    	 + I.D.P.D. Weapons
+    	 + Delta Weapons
+    	 + Xefsweps
+    	 + Gunbucket
+      * Added Hitscan chest
+
+   Weapon Mutation Chests:
+      * weapon chests that drop 2 weapons of a specific ammo type, indicated by the symbol on its lid
+      * Taking weapon mutations increases overall chance of spawning a weapon mutation chest, and specifies
+        what ammo type the Chest will be (e.g. having only Laser Brain will only spawn energy weapon chests,
+        having Boiling Veins and Long Arms grants an equal chance of spawning an explosive or melee weapon chest, etc...)
+      * Taking Heavy Heart guarantees all 2eapon chests to be themed weapon chests instead
+      * Crown of Guns and Crown of Exchange also increase spawn chance, without specifying what ammo type weapon they will drop
+
+    Other Changes:
+       * Added NTS examination quotes for most weapons
+       * Vectors now strongly drag enemies with them
+       * Crits deal area damage around the point of impact and remove projectiles in that same area
+       * Weapons with charges are canceled and ammo is refunded when swapping weapons
+       * Added more extensive mod support for Blaacskills, especially Compound Elbow and Excited Neurons (Focus is still kinda busted)
+       * Added Sodas for a few other mods (Metamorphosis, NTTE, Goodmod)
+       * Many, many sprite updates, both small and large
+
+
+// PRISMATIC IRIS CHANGES //
+
+    Added "Warped Perspective"
+       * only attainable if playing as Horror, or after having defeated Horror
+    Added "Fantastic Refractions"
+       * the default iris if you get Prismatic Iris through Crown of Destiny
+
+    The following weapons now work with Prismatic Iris:
+       + Golden Revolver
+       + Golden Machinegun
+       + Golden Assault Rifle
+       + Rusty Revolver
+       + Rogue Rifle
+       + Moby
+       + Big Iron
+
+    Fire Bullets:
+       * changed approximate DpS (from ~30% -> ~20%), they also deal additional damage at close range
+         similar to shells for an increase of up to ~50%
+       - Removed Mini Explosions on impact
+    
+    Pest Bullets:
+       + Offset Toxic Gas creation slightly to be more consistent
+       + Gas created by pest bullets and heavy pest bullets disperse less far and disappear more quickly
+       * reduced amount of gas created by pest bullets and heavy pest bullets
+
+    Thunder Bullets:
+       + Increased damage of lightning bullets (from 2 -> 3)
+       + Hitting enemies with lightning bullets builds charge on that enemy. Enemies that die with charge will create lightning,
+         length and amount of lightning created depends on charge
+       - Removed lightning created during travel
+
+    Psy Bullets:
+       * Some Psy bullet weapons will try to disperse their bullets between enemies instead of targeting a single one
+
+
+// BULLET WEAPONS //
+
+    Big Iron:
+       * Updated hitscan projectile
+
+    Heavy Smart Gun:
+       - Increased random spread (from 0° -> 4°)
+
+    Mega Revolver:
+       + Can hit enemies more often before being destroyed (from 6 -> 16 times)
+       * Moves more slowly through enemies
+
+    Moby:
+       + Stores its charge for longer
+       * Updated hitscan projectile
+
+    Nail Gun:
+       - Not automatic anymore
+
+    Popper:
+       + Increased projectile speed
+       + Splits into 1 more shell
+
+    Quartz Machinegun:
+       - Increased ammo cost (from 0 -> 2)
+
+    Rainbow Machinegun:
+       + Decreased spread angle (from 20° -> 10°)
+       + Increased projectile speed
+       + Next bullet is indicated in the weapon HUD
+
+    Signal Beamer:
+       * Updated behavior: fires pest bullets at 100% HP, regular bullets at < 100% HP and >= 50% HP, and fire bullets at < 50%
+       * Next bullet is indicated in the weapon HUD
+
+    Sniper Rifle:
+       + Decreased reload time (from 1.43s -> 1.17s)
+
+    Ultra Gunhammer:
+       - Reduced projectile speed
+
+
+// SHELL WEAPONS //
+
+    Apergig Tanat:
+       + Decreased ammo cost (from 20 -> 3)
+       * Renamed to "Duelist"
+       - Decreased damage (from 1000 -> 70)
+
+    Quartz Shotgun:
+       - Increased reload time (from 0.40s -> 0.50s)
+       - Increased ammo cost (from 0 -> 2)
+
+    Wide Slugger:
+       + Shells and slugs created by the main projectile are launched further with Shotgun Shoulders
+       - Decreased the amount of frames the projectile can hit enemies before breaking
+
+// EXPLOSIVE WEAPONS //
+
+    Abris Pistol:
+       + Decreased reload time (from 0.70s -> 0.53s)
+       + Decreased ammo cost (from 2 -> 1)
+       + Increased damage (from 1/3 -> 6/16)
+       + Increased charge speed (form 133% -> 175%)
+
+    Abris Rifle:
+       + Decreased reload time (from 0.17s -> 0.13s)
+       + Decreased ammo cost (from 2 -> 1)
+       + Increased damage (from 2/2 -> 6/16)
+       + Increased charge speed (from 115% -> 190%)
+       * Increased lockon range (by 16px)
+       * Drops earlier now (5-1 -> 3-2)
+
+    Abris Launcher:
+       + Increased damage (from 3/15 -> 10/26)
+       + Increased charge speed (from 115% -> 175%)
+       * Updated explosion pattern
+       - Reduced area radius (from 80/30px -> 46/18px)
+
+    Auto Abris Launcher:
+       + Increased damage (from 4/12 -> 6/14)
+       + Increased area radius (from 44/14px -> 58/44px)
+       * Doesn't lock onto enemies
+       * Updated explosion pattern
+
+    Blood Abris Launcher:
+       + Increased damage (from 2/6 -> 8/16)
+       + Increased charge speed (from 133% -> 175%)
+       + Creates 3 more blood explosions in the first burst of explosions
+       * Changed area radius (from 75/30px -> 60/40px)
+       - Decreased reload time (from 0.63s -> 0.83s)
+
+    Buster:
+       * Doesn't fire automatically anymore if playing as Steroids
+
+    Chainsaw:
+       * Creates regular pickups now but they despawn quickl
+       - Reduced reload time (from 0.47s -> 0.30s) (this is a nerf because burst length is equal of reload time)
+       - Ammo only drops when killing larger enemies (size 2 or higher)
+
+    Cobra:
+       + Will not hurt the Player when hugging walls while firing anymore
+
+    Drill Launcher:
+       + Can destroy more walls before stopping (from 4 -> 6 walls)
+       + Explodes after stopping
+
+    Firestorm:
+       - Fires less flares (from 12 -> 4)
+
+    Kaboomerang:
+       * Opens chests instead of retrieving them
+       * Doesn't retrieve weapons anymore
+
+    Mega Drill Launcher:
+       + Can destroy more walls before stopping (from 8 -> 14 walls)
+       + Explodes after stopping
+
+    Rocklet Pistol:
+       - Drops later (from 1-3 -> 3-2)
+
+    Rocklet Rifle:
+       - Drops later (from 3-3 -> 4-1)
+
+    Smart Nuke Launcher:
+       - Reduced impact damage (from 60 -> 40)
+
+    Super Abris Launcher:
+       + Increased damage (from 10/30 -> 15/35)
+       + Increased charge speed (from 104% -> 110%)
+       * Updated explosion pattern
+       - Increased reload time (from 1.47s -> 2.50s)
+       - Increased ammo cost (from 4 -> 6)
+       - Decreased area radius (from 172/72px -> 98/64px)
+
+    Supersonic Launcher:
+       + Decreased ammo cost (from 4 -> 3)
+       + applies comically large amount of superfriction
+       - Increased reload time (from 1.43s -> 1.60s)
+       - Doesn't deal contact damage anymore
+
+    Toxicthrower
+       + Will not hurt the Player when hugging walls while firing anymore
+
+
+// BOLT WEAPONS //
+
+    Blood Crossbow:
+       + Fires 3 Bolts now
+       - Increased reload time (from 0.70s -> 0.80s)
+       - Increased ammo cost (from 1 -> 2)
+       - Decreased damage (from 17 -> 10)
+
+    Bow:
+       + Increased charge speed (from 100% -> 120%)
+       + Increased uncharged arrow damage (from 10 -> 14)
+       + Removed uncharged arrow accuracy and speed penalty
+       * Charged arrows are now affected by Player accuracy
+       - Decreased charged arrow damage (from 10 -> 9)
+
+    Explosive Bow:
+       + Removed uncharged arrow speed and accuracy penalty
+       - Increased reload time (from 0.27s -> 0.47s)
+       - Reduced uncharged arrow damage (from 12 -> 10)
+       - Reduced charged arrow damage (from 20 -> 12)
+
+    Knife Thrower:
+       + Decreased random spread (from 8° -> 6°)
+
+    Marker:
+       + Increased volley arrow damage (from 6 -> 8)
+       + Increased mask of volley arrows, should make it easier to hit things with
+       + Volley arrows work with Bolt Marrow now
+       * Decreased volley arrow spawn radius by 25%
+       - Decreased reload time (from 0.60s -> 0.87s)
+       - Increased ammo cost (form 2 -> 3)
+       - reduced volley arrow amount (from 25 -> 15 arrows)
+
+    Mega Disc Gun:
+       - Increased reload speed (from 1,67s -> 1.83s)
+       - Increased ammo cost (from 3 -> 4)
+
+    Quartz Crossbow:
+       - Increased ammo cost (from 0 -> 2)
+
+    Record Dealer:
+       * Increases its own pool of discs to fire if Disc-o-Fever is loaded
+
+    Splinter Cannon:
+       + Decreased spread angle (from 4° -> 2°)
+       - Decreased damage (from 35 -> 30)
+       - Decreased amount of Splinters created when hitting a Wall or an enemy (from 12 -> 8)
+       - Doesn't create splinters when piercing enemies anymore
+
+    Sword Thrower:
+       + Decreased random spread (from 6° -> 4°)
+
+
+// ENERGY WEAPONS //
+
+    Beamer:
+       + The beam destroys walls now
+       * Renamed to "Mega Laser Cannon"
+
+    Ionizer:
+       + Decreased reload time (from 1.00s -> 0.80s)
+       + Increased damage (from 7 -> 20)
+       + Decreased ammo cost (from 6 -> 3)
+       * Decreased projectile deviation
+
+    Lightning Wheel:
+       + Overhauled it completely, check it out!
+       * Opens chests instead of retrieving them
+       * Doesn't retrieve weapons anymore
+
+    Plasmite Cannon:
+       * Overhauled with many changes
+
+    Plasmite Pistol:
+       * Fires +1 plasmite with Laser Brain instead of increasing plasmite damage
+
+    Plasmite Rifle:
+       * Fires +1 plasmite with Laser Brain instead of increasing plasmite damage
+
+    Plasmite Shotgun:
+       * Fires +2 plasmites with Laser Brain instead of increasing plasmite damage
+
+    Quartz Laser:
+       + Increased reload time (0.40s -> 0.60s) (this is a buff because beam lifetime is equal to burst length)
+       * Updated the beam projectile
+       - Increased ammo cost (from 0 -> 1)
+
+    Thundercrash:
+       + Creates lightning orbs now when hitting and not piercing an enemy
+
+    Plasmite Shotgun:
+       + Slightly increased projectile speed
+       * Fires +1 plasmite with Laser Brain instead of increasing plasmite damage
+
+
+// MELEE WEAPONS //
+
+    Auto Screwdriver:
+       + Increased damage (from 4 -> 6)
+
+
+// OTHER WEAPONS //
+
+    Defender:
+       + Decreased reload time (from 0.70s -> 0.57s)
+       + Increased damage (from 6 -> 12)
+       + Now lingers slightly when not moving
+       + Projectiles pierce enemies
+
+    Punisher:
+       + Slightly protects against projectiles close to the Player
+
+    Andromeda Launcher:
+       + Removed explosive ammo cost
+       * Changed rad cost to always be 20% of your max rads
+       - Enemies removed by the Andromeda Launcher have a 60% chance of respawning in the next area
+
+
+Special thanks to the following people for helping out:
+    * Yokin (for letting us steal copious amounts of useful code snippets)
+    * Peas (creator of assets that never came to be :pensive:)
+    * THX (spriter of the smartest guns known to man)
+    * Atfooy (forger of the Tempo Gun)
+    * Menu (Defpack 1.0 tester, the things this guy has seen...)
+    * Hux (the cause of us adding the "sounds" folder to Defpack)
+    * Wonderis (hardcore tester for version 2.0 and being one of the coolest russian dweebs ive met)
+    * Master Sparky (metagame analysis on how shells suck, it was very eye opening)
+    * Golden Epsilon (actually submitted code and added Defpack support for his mod, very cool!)
+    * Aevusionian (Goodmod is so awesome :), also thanks for submitting the Impact Fist)
+    * Ned (spriter of the Impact Fist and an inspiration early on for me to sprite better weapons)
+    * Tildebee (lorekeeper of defpack and writer of way too many loading screen tips, also iris recoding support)
+    * Willow (Defpack 4.0 testing was very helpful, thank you bro)
+    * Squiddy (big coder brain and also a friend)
+    * Shane (Prismaticannon extravaganza and maker of cool weapons)
+    * Tech_Penguin (for being a real inspiration to get into spriting and coninuously improve on existing sprites)

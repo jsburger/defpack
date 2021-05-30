@@ -63,7 +63,7 @@ else{
 
 mod_script_call("mod", "defpack tools", "shell_yeah", 100, 40, 3 + random(3), c_purple);
 
-with mod_script_call("mod", "defhitscan", "create_psy_hitscan_bullet", x + lengthdir_x(8, gunangle), y + lengthdir_y(8, gunangle)){
+with mod_script_call("mod", "defhitscan", "create_hitscan_bullet", x + lengthdir_x(8, gunangle), y + lengthdir_y(8, gunangle)){
 	motion_set(other.gunangle + random_range(-25,25)*other.accuracy*sqrt(w.charge)/6, 5)
 	image_angle = direction
 	projectile_init(other.team, other)

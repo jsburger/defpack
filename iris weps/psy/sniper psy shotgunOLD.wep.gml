@@ -74,24 +74,6 @@ for (var i = 0; i < lq_size(global.performanceCache); i += 1) {
 trace_color("total: " + string(acc), c_gray)
 
 #define weapon_laser_sight
-with instances_matching(instances_matching(CustomObject, "name", "SniperCharge"), "creator", self){
-    with other {
-        draw_set_alpha(.3 + .7  * (other.charge/other.maxcharge))
-        var _c = 14074;
-        with mod_script_call_self("mod", "defpack tools", "sniper_fire", x, y, gunangle - (global.deviation * (1 - other.charge/other.maxcharge)) * accuracy, team, 1 + other.charge/other.maxcharge, 1){
-            draw_line_width_color(xstart, ystart, x, y, 1, _c, _c)
-            instance_destroy()
-        }
-        with mod_script_call_self("mod", "defpack tools", "sniper_fire", x, y, gunangle + (global.deviation * (1 - other.charge/other.maxcharge)) * accuracy, team, 1 + other.charge/other.maxcharge, 1){
-            draw_line_width_color(xstart, ystart, x, y, 1, _c, _c)
-            instance_destroy()
-        }
-        draw_set_alpha(1)
-    }
-    return false
-}
-return false;
-/*
 with instances_matching(instances_matching(CustomObject, "name", "PsySniperShotCharge"), "creator", self) {
     with other
     if global.epic{
@@ -189,7 +171,6 @@ with instances_matching(instances_matching(CustomObject, "name", "PsySniperShotC
     return true;
 }
 return false
-*/
 
 #define weapon_reloaded
     repeat(5)with mod_script_call("mod","defpack tools", "shell_yeah_long", 100, 8, 3+random(2),c_purple)
@@ -205,16 +186,6 @@ return -1;
     return choose("EYE ON YOU");
 
 #define weapon_fire
-	with mod_script_call_self("mod", "defpack tools", "create_sniper_charge", x, y){
-	    creator = other
-	    team = other.team
-	    index = other.index
-	    cost = weapon_cost()
-	    amount = 5;
-	    is_super = true;
-	    deviation = global.deviation * other.accuracy
-	}
-	/*
     with mod_script_call_self("mod", "defpack tools", "create_sniper_charge", x, y){
         name = "PsySniperShotCharge"
         creator = other
@@ -224,7 +195,6 @@ return -1;
         on_fire = script_ref_create(psy_rifle_fire)
         spr_flash = global.sprPsyBullet
     }
-	*/
 
 #define psy_rifle_fire
     var _ptch = random_range(-.5,.5)

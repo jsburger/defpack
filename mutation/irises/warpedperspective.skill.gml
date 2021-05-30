@@ -18,6 +18,9 @@
 #define skill_button
 	sprite_index = global.button;
 
+#define skill_type
+	return 1;
+
 #define skill_icon
 	return global.icon;
 
