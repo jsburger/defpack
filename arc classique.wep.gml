@@ -10,7 +10,7 @@ return "ARC CLASSIQUE"
 return 3
 
 #define weapon_cost
-return 1
+return 2
 
 #define weapon_area
 return 8
@@ -164,7 +164,7 @@ else {
             motion_add(random(360), choose(5, 6))
         }
     }
-    
+
     sound_play_pitchvol(sndShovel, 2, .8)
     sound_play_pitchvol(sndUltraCrossbow, 3, .8)
     var ang = creator.gunangle
