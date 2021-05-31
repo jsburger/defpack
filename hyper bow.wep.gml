@@ -2,6 +2,7 @@
 global.sprBow      = sprite_add_weapon("sprites/weapons/sprThunderBow.png",6,12)
 global.sprArrow    = sprite_add("sprites/projectiles/sprThunderArrow.png",1,4,2)
 global.sprArrowHUD = sprite_add_weapon("sprites/projectiles/sprThunderArrow.png",5,3)
+global.sprBoltStick = sprite_add("sprites/projectiles/sprBoltStickGround.png", 6, 6, 10)
 
 #define weapon_name
 return "HYPER BOW"
@@ -405,7 +406,16 @@ else{
 }
 
 #define BouncerBolt_anim
-
+if (walled) {
+    if !irandom(1){
+        image_speed = 0
+        image_index = 5
+    }
+    else{
+        image_index = irandom(3)
+        image_speed += .1
+    }
+}
 
 #define BouncerBolt_wall
 if (walled){
@@ -413,7 +423,7 @@ if (walled){
 }
 
 BouncerBolt_trail();
-instance_create(x, y, Dust)
+instance_create(x, y, Dust).depth = depth
 
 if (max_bounces > 0){
 	move_bounce_solid(true);
@@ -439,7 +449,11 @@ else{
 	move_contact_solid(direction, speed_raw);
 	walled = true;
 	speed = 0;
-  sound_play(sndBoltHitWall)
+	sound_play(sndBoltHitWall)
+	sprite_index = global.sprBoltStick
+    image_xscale = choose(-1,1)
+    image_speed = .4
+	image_angle += 90
 }
 
 #define BouncerBolt_hit
@@ -471,8 +485,8 @@ if (projectile_canhit(other)){
 		}
 
 		projectile_hit(self, _damage);
-    view_shake_max_at(x, y, 8 + 4 * clamp(size, 1, 3));
-    sleep(10 + 5 * clamp(size, 1, 3));
+	    view_shake_max_at(x, y, 8 + 4 * clamp(size, 1, 3));
+	    sleep(10 + 5 * clamp(size, 1, 3));
 	}
 
 	BouncerBolt_trail();

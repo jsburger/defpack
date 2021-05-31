@@ -16,19 +16,26 @@ global.scrGammaProjectile = ["mod", "defpack tools", "gamma_projectile"]
 #macro scrGammaProj global.scrGammaProjectile
 global.scrThunderDestroy = ["mod", "defpack tools", "thunder_destroy"]
 
-#macro neurons skill_get("excitedneurons")
+vertex_format_begin()
+vertex_format_add_position()
+global.psyTrailFormat = vertex_format_end()
 
+
+#macro neurons skill_get("excitedneurons")
 
 #macro hitscan_dis 300
 
-#define get_hitscan_target(x1, y1, angle, team)
+#define get_hitscan_target()
+/// get_hitscan_target(x1, y1, angle, team, dis = hitscan_dis)
+var x1 = argument[0], y1 = argument[1], angle = argument[2], team = argument[3];
+var dis = argument_count > 4 ? argument[4] : hitscan_dis;
     var noteam = get_ally_list(team);
     var shields = instances_matching(PopoShield, "team", team);
     with lasthit x += 10000
     with shields x += 10000
     with noteam x += 10000
 
-    var _wall   = collision_line_first(x1, y1, x1 + lengthdir_x(hitscan_dis, angle), y1 + lengthdir_y(hitscan_dis, angle), Wall, 0, 0);
+    var _wall   = collision_line_first(x1, y1, x1 + lengthdir_x(dis, angle), y1 + lengthdir_y(dis, angle), Wall, 0, 0);
     
     if instance_exists(Wall) {
 		if !place_meeting(_wall[0], _wall[1], Floor) {
@@ -310,7 +317,7 @@ global.scrThunderDestroy = ["mod", "defpack tools", "thunder_destroy"]
 		lasthit = -4
 		recycle_amount = 1
 		recycle_chance = 40
-
+		hashitwall = false
 
 		targetScript = scrGammaTravel
 		lastx = x
@@ -426,4 +433,397 @@ if (instance_exists(other) && other.typ > 0) {
 
 
 //alright now for the real shit
-//psy bullet goes here
+//PSY
+#define create_psy_hitscan_bullet(x, y)
+	with create_hitscan_bullet(x, y) {
+		name = "Psy Hitscan Bullet"
+		
+		spr_dead = spr.PsyBulletHit
+		//Pardon my French
+		trailcolor = [8388736, 13158104, 9572016, 5969481]
+		
+		damage = 3
+
+		isSniper = false
+		original_direction = undefined
+		sight = 80
+		radius = 10
+		
+		on_step = psy_hitscan_step
+		
+		return id
+		
+	}
+	
+#define psy_hitscan_step
+	if (original_direction = undefined || team != lastteam) original_direction = direction
+	lastteam = team
+	//This number works so well it should just be enforced
+	speed = 8
+	// var endPoint = script_ref_call(targetScript, x, y, direction, team);
+	// with create_bullet_trail(lastx, lasty, endPoint[0], endPoint[1]) {
+	// 	colors = other.trailcolor
+	// }
+	// x = endPoint[0]
+	// y = endPoint[1]
+	
+	var vbuf = vertex_create_buffer();
+	vertex_begin(vbuf, global.psyTrailFormat)
+
+	var results = psy_hitscan_travel(original_direction, vbuf)
+	
+	vertex_end(vbuf)
+	vertex_freeze(vbuf)
+	
+	with create_psy_bullet_trail(x, y, vbuf) {
+		colors = other.trailcolor
+	}
+	
+	if instance_exists(Wall) && !place_meeting(x, y, Floor) {
+		shouldDestroy = true
+	}
+	
+	x = results.x
+	y = results.y
+	direction = results.direction
+	lastx = x
+	lasty = y
+	image_angle = direction
+	move_outside_solid(direction + 180, 2)
+	xprevious = x
+	yprevious = y
+	hashitwall = false
+
+
+#macro sort_distance 10000
+
+#define psy_hitscan_travel(original_direction, vertex_buffer)
+	var bullet = {
+		dir    : direction,
+		x      : x,
+		y      : y,
+		odir   : original_direction,
+		radius : radius,
+		sight  : sight,
+		team   : team,
+		target : -4,
+		nextTarget: -4,
+		missCounter: 0,
+		targets: [],
+		hitList: [],
+		// targetcounter: array_length(instances_matching_ne([enemy, Player, Generator], "team", team))
+		targetcounter: instance_number(hitme),
+		pierce: isSniper,
+		lastHit: lasthit,
+		vbuf: vertex_buffer,
+		trailSize: 1
+	};
+	
+	var exists = true, count = 0, missedLast = false, missed = false;
+	//Has to initialize targetting, since there a buffer
+	bullet_target(bullet)
+	bullet_add_to_trail(bullet)
+
+	while(exists && ++count < 1000) {
+		missed = false
+		
+		if bullet.missCounter > 0 {
+			bullet.x += lengthdir_x(2 * bullet.missCounter, bullet.dir)
+			bullet.y += lengthdir_y(2 * bullet.missCounter, bullet.dir)
+		}
+			
+		bullet_add_to_trail(bullet)
+
+
+		//Get target
+		bullet_target(bullet)
+		
+		if (bullet.target == -4) {
+			// var _wall = collision_line_first(bullet.x, bullet.y,
+			// 			bullet.x + lengthdir_x(300, bullet.dir), bullet.y + lengthdir_y(300, bullet.dir),
+			// 			Wall, false, false);
+			var _wall = get_hitscan_target(bullet.x, bullet.y, bullet.dir, bullet.team);
+			bullet.x = _wall[0]
+			bullet.y = _wall[1]
+			exists = false
+			bullet_add_to_trail(bullet)
+			break
+		}
+		else {
+			var target = {
+				x: bullet.target.x - sort_distance,
+				y: bullet.target.y,
+				id: bullet.target.id
+			};
+		}
+		//LOS finding
+		var canReach = bullet_can_reach(bullet, target.x, target.y);
+		
+		//If target in sight cone
+		if (canReach != false) {
+			//If target can be reached
+			if (canReach.succeeded) {
+				bullet.x = canReach.x
+				bullet.y = canReach.y
+				var turn = bullet_turn(bullet, point_direction(bullet.x, bullet.y, target.x, target.y));
+				if (turn.succeeded) {
+					var _t = collision_line_first(bullet.x, bullet.y, target.x, target.y, hitme, 0, 0);
+					bullet.x = _t[0]
+					bullet.y = _t[1]
+					bullet.dir = point_direction(turn.x, turn.y, target.x, target.y)
+					bullet_add_to_trail(bullet)
+					array_push(bullet.hitList, target.id)
+					bullet.sight = max(bullet.sight - 5, 60)
+					if !bullet.pierce {
+						exists = false
+					}
+				}
+				else {
+					exists = false
+				}
+			}
+			//If target cannot be reached
+			else {
+				missed = true
+			}
+		}
+		//If not within bullet sight cone
+		else {
+			missed = true
+		}
+		
+		//Add a stacking penalty for repeated misses, basically prevents the bullet from checking literally everything if its stuck in a weird hallway
+		if missed {
+			if missedLast {
+				++bullet.missCounter
+			}
+			missedLast = true
+		}
+		else {
+			missedLast = false
+			bullet.missCounter = 0
+		}
+		
+		var _nearestWall = instance_nearest(bullet.x, bullet.y, Wall);
+		if (instance_exists(_nearestWall)) {
+			var _wallX = clamp(bullet.x, _nearestWall.bbox_left, _nearestWall.bbox_right),
+				_wallY = clamp(bullet.y, _nearestWall.bbox_top, _nearestWall.bbox_bottom);
+			if (point_distance(bullet.x, bullet.y, _wallX, _wallY) < 8) {
+				exists = false
+			}
+		}
+	}
+	
+	bullet_add_to_trail(bullet)
+	vertex_position(bullet.vbuf, bullet.x, bullet.y)
+	vertex_position(bullet.vbuf, bullet.x, bullet.y)
+	vertex_position(bullet.vbuf, bullet.x, bullet.y)
+
+	bullet_target_resolve(bullet)
+	
+	
+	return {
+		x: bullet.x,
+		y: bullet.y,
+		direction: bullet.dir,
+		hitList: bullet.hitList
+	}
+	
+	
+	
+//Turns the bullet, returning if it was successful or not
+#define bullet_turn_auto(bullet, dir)
+	if (bullet.dir == dir) return true
+	var turn = bullet_turn(bullet, dir);
+	if (turn.succeeded) {
+		bullet.x = turn.x
+		bullet.y = turn.y
+		bullet.dir = turn.dir
+		return true
+	}
+	else return false
+	
+
+//Gets the next target for the bullet
+#define bullet_target(_bullet)
+	if (_bullet.targetcounter > 0) {
+		var nearest = instance_nearest(_bullet.x, _bullet.y, hitme);
+		if (!instance_exists(nearest)) exit
+		
+		_bullet.targetcounter--
+		array_push(_bullet.targets, nearest)
+		nearest.x += sort_distance
+		if (nearest.team != _bullet.team && (!(instance_is(nearest, prop) || nearest.team == 0) || instance_is(nearest, Generator)) && (nearest != _bullet.lastHit)) {
+			//Buffers targets so it goes wiggly
+			_bullet.target = _bullet.nextTarget
+			_bullet.nextTarget = nearest
+		}
+		else {
+			bullet_target(_bullet)
+		}
+	}
+	else {
+		_bullet.target = _bullet.nextTarget
+		_bullet.nextTarget = -4
+	}
+
+
+//Undoes any effects the targeting script has
+#define bullet_target_resolve(_bullet)
+	with _bullet.targets x -= sort_distance
+
+
+//Checks if the bullet will have LOS to a point at some point along travel
+#define bullet_can_reach(_bullet, _x, _y)
+var _a = angle_difference(_bullet.odir, point_direction(_bullet.x, _bullet.y, _x, _y));
+	if abs(_a) > _bullet.sight
+		return false
+	var _wall = collision_line(_bullet.x, _bullet.y, _x, _y, Wall, 0, 0);
+	if _wall == noone
+		return {succeeded: true, x: _bullet.x, y: _bullet.y}
+	else {
+		var _dest = {
+			x : _x,
+			y : _y,
+			dir : _bullet.odir - _bullet.sight * sign(_a)
+		},
+		_max = point_intersect(_bullet, _dest);
+		var _wallMax = collision_line_first(_bullet.x, _bullet.y, _max.x, _max.y, Wall, false, false);
+		_max.x = _wallMax[0]
+		_max.y = _wallMax[1]
+
+		var _tries = floor(point_distance(_bullet.x, _bullet.y, _max.x, _max.y)/18),
+			xoff = (_max.x - _bullet.x)/_tries,
+			yoff = (_max.y - _bullet.y)/_tries;
+		for (var i = 1; i < _tries; i++) {
+			if (collision_line(_bullet.x + xoff * i, _bullet.y + yoff * i, _x, _y, Wall, false, false) == noone) {
+				return {
+					succeeded: true,
+					x: _bullet.x + xoff * i,
+					y: _bullet.y + yoff * i
+				}
+			}
+		}
+		
+		return {
+			succeeded : false,
+			x: _max.x,
+			y: _max.y
+		}
+		
+	}
+	
+	
+//Algebra moment
+#define nearest_point_on_line(_line, _point)
+//_line is anything with the variables x, y, and dir, being world position and direction, origin is the lines coordinates
+//_point is anything with x and y, those being world position
+var _slope = dtan(-_line.dir),
+	_dx = _point.x - _line.x,
+	_dy = _point.y - _line.y,
+	_x = (_dx + _slope * _dy)/(sqr(_slope) + 1),
+	_y = -1/_slope * _x + _dx/_slope + _dy;
+	if (_slope == 0) _y = 0;
+	return {x: _line.x + _x, y: (_line.y + _y)}
+	
+#define point_intersect(_line1, _line2)
+//Uses negative angle because of GML's y going 'down' as it increases, despite 90 degrees still being 'up'
+var _m1 = dtan(-_line1.dir),
+	_m2 = dtan(-_line2.dir),
+	_b1 = _line1.y,
+	_b2 = _line2.y,
+	_h1 = _line1.x,
+	_h2 = _line2.x,
+	_x  = (((-_m2 / _m1) * _h2) + ((_b2 - _b1)/_m1) + _h1)/(1 - (_m2/_m1)),
+	_y  = _m1 * (_x - _h1) + _b1;
+	return {x: _x, y: _y}
+	
+
+//Tries to turn the bullet, checking for wall collision along the arc, and returning the theoretical result
+#define bullet_turn(_bullet, _dir)
+var _dif = angle_difference(_bullet.dir, _dir),
+	_cdir = _bullet.dir - 90 * sign(_dif),
+	_cx = _bullet.x + lengthdir_x(_bullet.radius, _cdir),
+	_cy = _bullet.y + lengthdir_y(_bullet.radius, _cdir);
+
+	// draw_primitive_begin(pr_trianglestrip)
+	for var i = 0; i <= 1; i += .2 {
+		var a = _cdir - _dif * i + 180, l = _bullet.radius - _bullet.trailSize/2;
+		// draw_vertex_color(_cx + lengthdir_x(l, a) + 1, _cy + lengthdir_y(l, a) + 1, _col, 1)
+		// draw_vertex_color(_cx + lengthdir_x(l+1, a) + 1, _cy + lengthdir_y(l+1, a) + 1, _col, 1)
+		vertex_position(_bullet.vbuf, _cx + lengthdir_x(l + _bullet.trailSize, a), _cy + lengthdir_y(l + _bullet.trailSize, a))
+		vertex_position(_bullet.vbuf, _cx + lengthdir_x(l, a), _cy + lengthdir_y(l, a))
+	}
+	// draw_primitive_end()
+	
+	var _walls = instances_in_bbox(_cx - _bullet.radius, _cy - _bullet.radius, _cx + _bullet.radius, _cy + _bullet.radius, Wall);
+		
+	if array_length(_walls) > 0 {
+		with _walls {
+			if circle_in_bbox(_cx, _cy, _bullet.radius) {
+				var _x = clamp(_bullet.x, bbox_left, bbox_right),
+					_y = clamp(_bullet.y, bbox_top, bbox_bottom);
+					_d = point_direction(_cx, _cy, _x, _y);
+				if (_d > min(_bullet.dir, _dir) && _d < max(_bullet.dir, _dir)) {
+					return {
+						succeeded: false,
+						x: _x,
+						y: _y,
+						dir: _d + 90 * sign(_dif)
+					}
+				}
+			}
+		}
+	}
+	return {
+		succeeded: true,
+		x: _cx + lengthdir_x(_bullet.radius, _dir + 90 * sign(_dif)),
+		y: _cy + lengthdir_y(_bullet.radius, _dir + 90 * sign(_dif)),
+		dir: _dir
+	}
+
+
+#define circle_in_bbox(_x, _y, _r)
+	return circle_in_rectangle(_x, _y, _r, bbox_left, bbox_top, bbox_right, bbox_bottom)
+
+#define circle_in_rectangle(_x, _y, _r, _left, _top, _right, _bottom)
+var _dx = _x - clamp(_x, _left, _right),
+	_dy = _y - clamp(_y, _top, _bottom);
+	
+	return (_dx * _dx + _dy * _dy) < (_r * _r)
+
+#define instances_in_bbox(left,top,right,bottom,obj)
+	return instances_matching_gt(instances_matching_lt(instances_matching_gt(instances_matching_lt(obj,"bbox_top",bottom),"bbox_bottom",top),"bbox_left",right),"bbox_right",left)
+	
+
+#define create_psy_bullet_trail(x, y, vertex_buffer) {
+	with create_bullet_trail(x, y, 0, 0) {
+		vbuf = vertex_buffer
+		
+		on_draw = psy_trail_draw
+		on_destroy = psy_trail_destroy
+		
+		return self
+	}
+}
+
+#define psy_trail_draw
+	var n = clamp(lifeTime, 0, array_length(colors) - 1),
+	    col = merge_color(colors[floor(n)], colors[ceil(n)], frac(n)),
+	    alp = lerp(alpha[floor(n)], alpha[ceil(n)], frac(n));
+
+	// col = merge_color(col, background_color, 1-alp);
+
+	d3d_set_fog(1, col, 0, 0)
+	vertex_submit(vbuf, pr_trianglestrip)
+	d3d_set_fog(0, 0, 0, 0)
+
+#define psy_trail_destroy
+	vertex_delete_buffer(vbuf)
+
+#define add_point_to_trail(vbuf, x, y, direction, thickness)
+	vertex_position(vbuf, x + lengthdir_x(thickness/2, direction + 90), y + lengthdir_y(thickness/2, direction + 90))
+	vertex_position(vbuf, x + lengthdir_x(-thickness/2, direction + 90), y + lengthdir_y(-thickness/2, direction + 90))
+	
+#define bullet_add_to_trail(bullet)
+	add_point_to_trail(bullet.vbuf, bullet.x, bullet.y, bullet.dir, bullet.trailSize)
