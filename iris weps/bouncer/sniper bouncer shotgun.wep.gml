@@ -18,7 +18,7 @@ return 1;
 return mod_script_call_nc("mod", "defpack tools", "sniper_weapon_auto", self)
 
 #define weapon_load
-return 52;
+return 60;
 
 #define weapon_cost
 return 60;

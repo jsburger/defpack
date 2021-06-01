@@ -14,7 +14,7 @@ return 1;
 return false;
 
 #define weapon_load
-return 16;
+return 11;
 
 #define weapon_cost
 return 3;
@@ -42,6 +42,6 @@ repeat(3)
 		creator = other
 		motion_add(other.gunangle+random_range(-8,8)*other.accuracy,6)
 	}
-	wait(3)
+	wait(2)
 	if !instance_exists(self){exit}
 }

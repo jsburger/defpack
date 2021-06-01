@@ -14,7 +14,7 @@ return 1;
 return false;
 
 #define weapon_load
-return 14;
+return 9;
 
 #define weapon_cost
 return 6;
@@ -43,6 +43,6 @@ repeat(3)
 		motion_set(other.gunangle + random_range(-3,3) * other.accuracy,8)
 		image_angle = direction
 	}
-	wait(3)
+	wait(2)
 	if !instance_exists(self) exit
 }

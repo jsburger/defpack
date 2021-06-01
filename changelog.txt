@@ -1,9 +1,4 @@
-// IMPORTANT NOTICE //
-A few features couldnt't be finished before release and will be released in a hotfix later on.
-These features are:
-   * The Shotgun Assembly Kit being currently unavailable
-   * Psy versions of the Subata, Moby, Big Iron, Sniper Rifle and Sniper Shotgun behaving similar to theri
-     original counterpart
+Defpack 4.2 changelog
 
 // WEAPON ADDITIONS/REMOVAL //
 
@@ -117,6 +112,10 @@ These features are:
        + Moby
        + Big Iron
 
+    Bouncer Bullets:
+       * Decreased reload time of all bouncer bullet weapons to be on par with their unconverted
+         counterpart, wich in almost all cases was a buff
+
     Fire Bullets:
        * changed approximate DpS (from ~30% -> ~20%), they also deal additional damage at close range
          similar to shells for an increase of up to ~50%
@@ -189,6 +188,10 @@ These features are:
     Quartz Shotgun:
        - Increased reload time (from 0.40s -> 0.50s)
        - Increased ammo cost (from 0 -> 2)
+
+    S.A.K
+       * The Shotgun Assembly Kit is missing in the current version of Defpack and will be
+         reintroduced in a later patch (it will be awesome)
 
     Wide Slugger:
        + Shells and slugs created by the main projectile are launched further with Shotgun Shoulders
@@ -283,6 +286,10 @@ These features are:
 
 
 // BOLT WEAPONS //
+
+    Arc Classique:
+       - Increased ammo cost (from 1 -> 2)
+       - Added crit cooldown dor charged arrows
 
     Blood Crossbow:
        + Fires 3 Bolts now

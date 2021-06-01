@@ -10,7 +10,7 @@ return 1
 #define weapon_area
 return -1;
 #define weapon_load
-return 5
+return 3
 #define weapon_swap
 return sndSwapPistol
 #define weapon_auto
