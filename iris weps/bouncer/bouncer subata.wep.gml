@@ -50,6 +50,7 @@ with mod_script_call("mod", "defhitscan", "create_bouncer_hitscan_bullet", x + l
 	team = other.team
 	force += 4;
 	damage++
+	trailsize += .35
 }
 
 #define weapon_sprt

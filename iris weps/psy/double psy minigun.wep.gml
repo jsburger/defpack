@@ -36,19 +36,13 @@ weapon_post(8,-12,8)
 motion_add(gunangle-180,4)
 repeat(2)mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, random_range(2,4), c_purple)
 
-with mod_script_call("mod", "defpack tools", "create_psy_bullet",x,y){
-	creator = other
-	move_contact_solid(other.gunangle,10)
-	team = other.team
-	motion_add(other.gunangle+15+random_range(-17,17)*other.accuracy,8)
-	maxspeed = speed
-	image_angle = direction
-}
-with mod_script_call("mod", "defpack tools", "create_psy_bullet",x,y){
-	creator = other
-	move_contact_solid(other.gunangle,10)
-	team = other.team
-	motion_add(other.gunangle-15+random_range(-17,17)*other.accuracy,8)
-	maxspeed = speed
-	image_angle = direction
+var i = -1;
+repeat(2) {
+	with mod_script_call_self("mod", "defpack tools", "shoot_psy_random_target", x, y, 5, team) {
+		move_contact_solid(other.gunangle, 10)
+	    motion_set(other.gunangle + (random_range(-17, 17) + 15 * i) * other.accuracy, 8)
+	    image_angle = direction
+	    projectile_init(other.team, other)
+	    i+=2
+	}
 }

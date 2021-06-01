@@ -33,6 +33,7 @@ return sndSwapMachinegun;
 return -1;
 
 #define weapon_text
+if !irandom(99) return "ITS BALANCED BECAUSE IT#REDUCES YOUR @wFRAME RATE"
 return "ISOLATION";
 
 #define charge_base
@@ -63,8 +64,8 @@ else{
 
 mod_script_call("mod", "defpack tools", "shell_yeah", 100, 40, 3 + random(3), c_purple);
 
-with mod_script_call("mod", "defhitscan", "create_hitscan_bullet", x + lengthdir_x(8, gunangle), y + lengthdir_y(8, gunangle)){
-	motion_set(other.gunangle + random_range(-25,25)*other.accuracy*sqrt(w.charge)/6, 5)
+with mod_script_call("mod", "defhitscan", "create_psy_hitscan_bullet", x + lengthdir_x(8, gunangle), y + lengthdir_y(8, gunangle)){
+	motion_set(other.gunangle + random_range(-14, 14)*other.accuracy*sqrt(w.charge)/6, 5)
 	image_angle = direction
 	projectile_init(other.team, other)
 }
@@ -81,7 +82,7 @@ if lq_defget(w, "canbloom", 1){
     	image_angle = other.gunangle
     }
     w.canbloom = 0
-    weapon_post(5+random_range(w.charge * .04,-w.charge * .04),-3,2)
+    weapon_post(5+random_range(w.charge * .04,-w.charge * .04), (w.charge >= maxchrg) ? -3 - irandom(3): -3, 2 + w.charge/maxchrg/2)
     sound_play_pitch(sndQuadMachinegun,(.7 + w.charge * .02)*random_range(.95,1.05))
     sound_play_pitch(sndCursedChest,(.5 + w.charge * .015)*random_range(.95,1.05))
     sound_play_pitch(sndCursedReminder,(1.2 + w.charge * .03)*random_range(.95,1.05))

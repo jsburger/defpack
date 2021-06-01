@@ -41,16 +41,15 @@ repeat(2)
 	sound_play_pitchvol(sndGammaGutsKill,1.2*_p,.3+skill_get(17)*.2)
 	if !skill_get(17)sound_play_pitch(sndLightningRifle,1.5*_p)else sound_play_pitch(sndLightningRifleUpg,1.5*_p)
 	mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, random_range(2,5), c_navy)
-	repeat(7)
-	{
+	repeat(7) {
 		i += h/7
-	with mod_script_call("mod", "defpack tools", "create_lightning_bullet",x,y){
+		with mod_script_call("mod", "defpack tools", "create_lightning_bullet",x,y){
 			creator = other
 			move_contact_solid(other.gunangle,5)
 			team = other.team
 			motion_add(other.gunangle+i*other.accuracy+random_range(-3,3),16)
 			image_angle = direction
-	}
+		}
 	}
 	wait 4
 	if !instance_exists(self) exit

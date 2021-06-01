@@ -52,6 +52,7 @@ with mod_script_call("mod", "defhitscan", "create_pest_hitscan_bullet", x + leng
 	team = other.team
 	force += 4;
 	damage++
+	trailsize += .35
 }
 
 #define weapon_sprt

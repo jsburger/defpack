@@ -28,3 +28,5 @@
 /loadwep big bouncer iron
 /loadwep bouncer moby
 /loadwep bouncer subata
+
+/load ../pest

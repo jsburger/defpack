@@ -29,3 +29,5 @@
 /loadwep big thunder iron
 /loadwep thunder moby
 /loadwep thunder subata
+
+/load ../psy

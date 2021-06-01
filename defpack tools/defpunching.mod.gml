@@ -16,10 +16,10 @@
 
 #macro dashmax 8
 
-global.mouseAim = 1
-#macro mouseAim global.mouseAim
+// global.mouseAim = 1
+// #macro mouseAim global.mouseAim
 
-mod_script_call("mod", "defpermissions", "permission_register", "mod", mod_current, "mouseAim", "Fists use roll controls")
+// mod_script_call("mod", "defpermissions", "permission_register", "mod", mod_current, "mouseAim", "Fists use roll controls")
 
 
 #define bool_to_sign(n)
@@ -64,37 +64,37 @@ with Player {
 			spr_shadow_y += f.bounce
 			f.bounce -= current_time_scale
 		}
-		if !mouseAim{
-			var _fist = weapon_is_fist(wep);
-			if f.dashtime <= 0 or !_fist{
-				if _fist and speed > friction{
-					f.couldaim = max(canaim, f.couldaim)
-					gunangle = direction
-					canaim = 0
-				}
-				else {
-					if f.couldaim {
-						f.couldaim = 0
-						canaim = 1
-					}
-				}
-			}
-		}
+		// if !mouseAim{
+		// 	var _fist = weapon_is_fist(wep);
+		// 	if f.dashtime <= 0 or !_fist{
+		// 		if _fist and speed > friction{
+		// 			f.couldaim = max(canaim, f.couldaim)
+		// 			gunangle = direction
+		// 			canaim = 0
+		// 		}
+		// 		else {
+		// 			if f.couldaim {
+		// 				f.couldaim = 0
+		// 				canaim = 1
+		// 			}
+		// 		}
+		// 	}
+		// }
 	}
 }
 
 #define fist_fire(w)
 if "fistinfo" not in self fistinfo = newfistinfo
 var dir = gunangle;
-if speed > friction and !mouseAim{
-	var vs = 0, hs = 0;
-	if button_check(index, "nort") vs = -1
-	if button_check(index, "sout") vs = 1
-	if button_check(index, "east") hs = 1
-	if button_check(index, "west") hs = -1
-	if hs != 0 or vs != 0
-		dir = point_direction(0, 0, hs, vs)
-}
+// if speed > friction and !mouseAim{
+// 	var vs = 0, hs = 0;
+// 	if button_check(index, "nort") vs = -1
+// 	if button_check(index, "sout") vs = 1
+// 	if button_check(index, "east") hs = 1
+// 	if button_check(index, "west") hs = -1
+// 	if hs != 0 or vs != 0
+// 		dir = point_direction(0, 0, hs, vs)
+// }
 
 while fistinfo.bounce >= -bouncemax {
 	y -= fistinfo.bounce
@@ -105,11 +105,11 @@ while fistinfo.bounce >= -bouncemax {
 fistinfo.dashdir = dir
 fistinfo.dashtime = dashmax
 fistinfo.dashspeed = 8
-if !mouseAim{
-	fistinfo.couldaim = max(canaim, fistinfo.couldaim)
-	gunangle_set(dir)
-	canaim = 0
-}
+// if !mouseAim{
+// 	fistinfo.couldaim = max(canaim, fistinfo.couldaim)
+// 	gunangle_set(dir)
+// 	canaim = 0
+// }
 
 with instance_create(x + lengthdir_x(15, dir), y + lengthdir_y(15, dir), CustomSlash){
 	name = "FistSlash"
@@ -302,14 +302,14 @@ if f.combotime > 0 and f.dashcheck == 0{
 }
 f.dashcheck = 1
 
-if !mouseAim {
-	if (_p or (race == "steroids" and !_p)) and speed > friction {
-		var b = sign(dsin(gunangle));
-		if b != 0 back = b
-		var e = sign(dcos(gunangle));
-		if e != 0 right = e
-	}
-}
+// if !mouseAim {
+// 	if (_p or (race == "steroids" and !_p)) and speed > friction {
+// 		var b = sign(dsin(gunangle));
+// 		if b != 0 back = b
+// 		var e = sign(dcos(gunangle));
+// 		if e != 0 right = e
+// 	}
+// }
 
 var _k = abs(wkick), _b = abs(bwkick);
 if _p {

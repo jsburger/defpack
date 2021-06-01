@@ -2,8 +2,8 @@
 global.sprSniperPsyRifle = sprite_add_weapon("../../sprites/weapons/iris/psy/sprSniperPsyRifle.png", 5, 4);
 global.sprPsyBullet 		 = sprite_add("../../sprites/projectiles/iris/psy/sprPsyMuzzle.png", 1, 8, 8);
 global.sprPsyBulletHit   = sprite_add("../../sprites/projectiles/iris/psy/sprPsyBulletHit.png", 4, 8, 8);
-global.epic = 1
-mod_script_call_nc("mod","defpermissions","permission_register","weapon",mod_current,"epic","Psy Sniper Sight")
+// global.epic = 1
+// mod_script_call_nc("mod","defpermissions","permission_register","weapon",mod_current,"epic","Psy Sniper Sight")
 
 global.performanceCache = {};
 global.lastTime = 0;
@@ -62,7 +62,7 @@ for (var i = 0; i < lq_size(global.performanceCache); i += 1) {
 trace_color("total: " + string(acc), c_gray)
 
 #define weapon_laser_sight
-with instances_matching(instances_matching(CustomObject, "name", "SniperCharge"), "creator", self) {
+with instances_matching(instances_matching(CustomObject, "name", "PsySniperCharge"), "creator", self) {
     with other {
         with mod_script_call_self("mod", "defpack tools", "sniper_fire", x, y, gunangle, team, 1 + other.charge/other.maxcharge, 1){
             draw_line_width_color(xstart, ystart, x, y, 1, 14074, 14074)
@@ -73,106 +73,6 @@ with instances_matching(instances_matching(CustomObject, "name", "SniperCharge")
 }
 return false;
 
-/*
-trace_time()
-with instances_matching(instances_matching(CustomObject, "name", "PsySniperCharge"), "creator", self) {
-    with other
-    if global.epic{
-	// trace_time_bulk_start("start", "movement", "reflect_checks", "reflection", "drawing", "nearest_matching", "homing_checks", "wall_collision", "turning")
-        draw_set_color(lasercolor)
-        draw_primitive_begin(pr_trianglestrip)
-        var l = .5;
-	// trace_time_bulk("start")
-        drawthing(x, y, l, gunangle + 90)
-        with instance_create(x+lengthdir_x(10,gunangle),y+lengthdir_y(10,gunangle),CustomObject){
-            move_contact_solid(other.gunangle,18)
-            drawthing(x, y, l, other.gunangle + 90)
-            typ = 1
-            sprite_index = mskBullet2
-            image_angle = other.gunangle
-            direction = image_angle
-            team = other.team
-            hyperspeed = 8
-            bangle = image_angle
-            lasthit = -4
-            image_yscale = .5
-            var shields = instances_matching_ne([CrystalShield,PopoShield], "team", team),
-                slashes = instances_matching_ne([EnergySlash,Slash,EnemySlash,EnergyHammerSlash,BloodSlash,GuitarSlash], "team", team),
-                shanks = instances_matching_ne([Shank,EnergyShank], "team", team),
-                customslashes = instances_matching_ne(CustomSlash, "team", team),
-                olddirection = direction;
-            var dir = 0
-    	// trace_time_bulk("start")
-            do
-            {
-                var _x = x; var _y = y
-            	dir += hyperspeed
-            	x += lengthdir_x(hyperspeed,direction)
-            	y += lengthdir_y(hyperspeed,direction)
-            	olddirection = direction
-    		// trace_time_bulk("movement")
-            	with shields {if place_meeting(x,y,other){other.team = team;other.direction = point_direction(x,y,other.x,other.y);other.image_angle = other.direction}}
-            	with slashes {if place_meeting(x,y,other){other.team = team;other.direction = direction ;other.image_angle = other.direction}}
-            	with shanks  {if place_meeting(x,y,other){with other{instance_destroy();exit}}}
-            	with customslashes {if place_meeting(x,y,other){mod_script_call_self(on_projectile[0],on_projectile[1],on_projectile[2]);}}
-        	// trace_time_bulk("reflect_checks")
-            	if direction != olddirection{
-            	    bangle = direction
-                    var shields = instances_matching_ne([CrystalShield,PopoShield], "team", team),
-                        slashes = instances_matching_ne([EnergySlash,Slash,EnemySlash,EnergyHammerSlash,BloodSlash,GuitarSlash], "team", team),
-                        shanks = instances_matching_ne([Shank,EnergyShank], "team", team),
-                        customslashes = instances_matching_ne(CustomSlash, "team", team);
-                    drawthing(x, y, l, olddirection + 90)
-                    olddirection = direction
-            	}
-            // trace_time_bulk("reflection")
-            	var q = instance_nearest_matching_ne(x,y,hitme,"team",team);
-            // trace_time_bulk("nearest_matching")
-            	var reset = 1;
-                var cap = 3*hyperspeed;
-            	if instance_exists(q){
-            	    if !collision_line(x - lengthdir_x(hyperspeed,direction),y - lengthdir_y(hyperspeed,direction),q.x,q.y,Wall,1,1){
-                        var ang1 = point_direction(x,y,q.x,q.y),
-                            ang2 = angle_difference(direction,ang1);
-                        if abs(ang2) < 90{
-                            direction -= clamp(ang2,-cap,cap)
-                            reset = 0
-                        }
-            	    }
-            	}
-            // trace_time_bulk("homing_checks")
-            	if reset{
-            	    direction -= clamp(angle_difference(direction,bangle),-cap,cap)
-            	}
-            	if direction != olddirection{
-            	    drawthing(x, y, l, direction + 90)
-            	}
-			// trace_time_bulk("turning")
-            	if place_meeting(x, y, Wall){
-            	    var e = mod_script_call_nc("mod", "defpack tools", "collision_line_first", x, y, x + lengthdir_x(hyperspeed, direction), y + lengthdir_y(hyperspeed, direction), Wall, 0, 0)
-            	    drawthing(e[0], e[1], l, direction + 90)
-            	    instance_destroy()
-            	}
-            // trace_time_bulk("wall_collision")
-            }
-            while instance_exists(self) and dir < 500
-            if instance_exists(self){
-                drawthing(x, y, l, direction + 90)
-                instance_destroy()
-            }
-
-        }
-        trace_time("e")
-        draw_primitive_end()
-        draw_set_color(c_white)
-        // trace_time("draw_primitive_end")
-        // trace_time_bulk_end()
-        return false;
-    }
-    return true;
-}
-return false
-*/
 
 #define weapon_reloaded
 with mod_script_call("mod","defpack tools", "shell_yeah_long", 100, 8, 3+random(2),c_purple)
@@ -185,18 +85,12 @@ weapon_post(-2,-4,5)
 return -1;
 
 #define weapon_text
-return choose("insanity");
+if !irandom(99) return "TEN THOUSAND PROGRAMMER HOURS"
+return "insanity";
 
 
 #define weapon_fire
-with mod_script_call_self("mod", "defpack tools", "create_sniper_charge", x, y){
-    creator = other
-    team = other.team
-    index = other.index
-    cost = weapon_cost()
-}
 
-/*
 with mod_script_call_self("mod", "defpack tools", "create_sniper_charge", x, y){
     name = "PsySniperCharge"
     creator = other
@@ -206,9 +100,43 @@ with mod_script_call_self("mod", "defpack tools", "create_sniper_charge", x, y){
     on_fire = script_ref_create(psy_rifle_fire)
     spr_flash = global.sprPsyBullet
 }
-*/
 
 #define psy_rifle_fire
+	var _ptch = random_range(-.5,.5)
+	sound_play_pitch(sndHeavyRevoler,.7-_ptch/3)
+	sound_play_pitch(sndCursedPickup,.6)
+	sound_play_pitch(sndSniperFire,random_range(.6,.8))
+	sound_play_pitch(sndHeavySlugger,1.3+_ptch/2)
+	var _c = charge, _cc = charge/maxcharge;
+	with creator{
+		weapon_post(12,2,158)
+		motion_add(gunangle -180, _c / 20)
+		sleep(120)
+		
+		create_psy_sniper_shot(x, y, _c)
+		
+	}
+
+#define create_psy_sniper_shot(x, y, _c)
+	with mod_script_call("mod", "defhitscan", "create_psy_hitscan_bullet", x, y) {
+		motion_set(other.gunangle, 8)
+		image_angle = direction
+		projectile_init(other.team, other)
+		
+		isSniper = true
+		sight = 80
+		minsight = 30
+		radius = 6
+		trailsize = 2
+		recycle_amount = weapon_cost()
+		damage = 20 + round(20*(_c/100))
+		pierce = 100000
+		
+		return self
+	}
+
+
+#define psy_rifle_fire_old
 var _ptch = random_range(-.5,.5)
 sound_play_pitch(sndHeavyRevoler,.7-_ptch/3)
 sound_play_pitch(sndCursedPickup,.6)

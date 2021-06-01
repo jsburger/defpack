@@ -403,6 +403,7 @@ if global.chargeType with Player if player_is_local_nonsync(index){
         	_x = _p.x - view_xview_nonsync
         	_y = _p.y - view_yview_nonsync
         }
+        _y = round(_y)
 
 
         var c = player_get_color(index), _col = c;
@@ -832,7 +833,7 @@ var num = instance_number(obj),
     found = [];
 if instance_exists(obj){
     while ++n <= num and amount > 0{
-        if variable_instance_get(man, varname) != value && (!instance_is(man, prop) || instance_is(man, Generator)){
+        if variable_instance_get(man, varname) != value && (!(instance_is(man, prop) || man.team == 0) || instance_is(man, Generator)){
             array_push(found, man)
             amount--
         }
@@ -1147,14 +1148,16 @@ with create_slash_bullet(x, y){
 	instance_create(x, y, Dust)
 	if bounce-- > 0 {
 		// bouncer_turn_dir = choose(-1, 1)
-		image_blend = merge_color(image_blend, bounce_color, .2)
-
 		move_bounce_solid(false)
-		instance_create(x + hspeed, y + vspeed, CaveSparkle)
 		direction += random_range(-bouncer_turn_speed, bouncer_turn_speed)
-		damage += 1
-		speed += .5
-
+		
+		if neurons {
+			image_blend = merge_color(image_blend, bounce_color, .2)
+			instance_create(x + hspeed, y + vspeed, CaveSparkle)
+			damage += 1
+			speed += .5
+		}
+		
 		sound_play_hit_ext(snd_bounce.snd, snd_bounce.pitch + random_nonsync(.1), snd_bounce.vol)
 
 		return true
@@ -1223,7 +1226,7 @@ with create_bullet(x,y){
 with create_psy_bullet(x, y){
     name = "PsyBullet"
     on_step = psy_step_new
-    on_draw = psy_draw_new
+    // on_draw = psy_draw_new
     target = -4
 
     return id;
@@ -1616,10 +1619,11 @@ with create_bullet(x, y){
 	other.thunder_charge += charge
 	var _team = team, _c = creator;
 	bullet_hit()
+	var laserbrain = ceil(skill_get(mut_laser_brain));
 	if other.my_health <= 0 {
-		var _charge = other.thunder_charge;
+		var _charge = max(other.thunder_charge, 5);
 		while(_charge) > 0 {
-			var r = min(irandom(_charge) + 1, 8);
+			var r = min(irandom(_charge) + 1 + laserbrain, 12 + laserbrain);
 			with instance_create(other.x, other.y, Lightning) {
 				image_angle = random(360)
 				direction = image_angle
@@ -1628,10 +1632,13 @@ with create_bullet(x, y){
 				team = _team
 				alarm0 = irandom(1) + 1
 			}
-			_charge -= r
+			_charge -= max(r - laserbrain, 1)
 		}
 		view_shake_at(other.x, other.y, other.thunder_charge/5)
 		sound_play_pitchvol(sndLightningCannonEnd, 1 + max(1 - other.thunder_charge/30, -.8), .4)
+		if laserbrain {
+			sound_play_pitchvol(sndLightningPistolUpg, .8, .4)
+		}
 	}
 
 #define new_thunder_destroy
@@ -1651,12 +1658,13 @@ with create_heavy_bullet(x, y){
     bounce_color = c_aqua
 
     typ = 2
-    damage = 8
+    damage = 7
     charge = choose(5, 5, 6)
 
     on_hit = new_thunder_hit
     on_step = heavy_thunder_step
-    on_destroy = heavy_thunder_destroy
+    // on_destroy = heavy_thunder_destroy
+    on_destroy = new_thunder_destroy
 
     return id
 }
@@ -1676,7 +1684,8 @@ with instance_create(x,y,Lightning){
 
 #define heavy_thunder_step
 if chance(12){
-    quick_lightning(2)
+	instance_create(x + random_range(-5, 5), y + random_range(-5, 5), LightningHit).image_speed += .2
+    // quick_lightning(2)
 }
 
 #define thunder_step
@@ -1751,8 +1760,8 @@ with target{
         friction *= 10;
         growspeed /= 8;
         move_contact_solid(other.direction, other.speed);
-}
-bullet_destroy()
+	}
+	bullet_destroy()
 
 #define heavy_toxic_destroy
 repeat(3){

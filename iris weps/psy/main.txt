@@ -29,3 +29,5 @@
 /loadwep big psy iron
 /loadwep psy moby
 /loadwep psy subata
+
+/load ../horror

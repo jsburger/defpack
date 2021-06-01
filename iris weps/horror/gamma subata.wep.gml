@@ -51,6 +51,7 @@ with mod_script_call("mod", "defhitscan", "create_gamma_hitscan_bullet", x + len
 	team = other.team
 	force += 4;
 	damage++
+	trailsize += .35
 }
 //Second bullet intentionally does not get the damage boost. It's spam
 with mod_script_call("mod", "defhitscan", "create_gamma_hitscan_bullet", x + lengthdir_x(12, gunangle), y + lengthdir_y(12, gunangle)){

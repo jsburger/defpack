@@ -36,6 +36,14 @@ return{
 }
 
 
+#define weapon_reloaded(primary)
+    repeat(interfacepop) {
+        with instance_create(x, y, Shell) {
+            sprite_index = skill_get(mut_shotgun_shoulders) ? sprShotShellBig : sprShotShell;
+            motion_set(other.gunangle + random_range(120, 160) * other.right, random_range(3, 4))
+        }
+    }
+
 #define weapon_text
 return "GIVE 'EM HELL";
 
@@ -106,6 +114,9 @@ if w.persist > 0{
 else if w.charge > 1{
     if random(100) <= 50 * current_time_scale with instance_create(x+lengthdir_x(16,gunangle),y+lengthdir_y(16,gunangle),Smoke) {vspeed -= random(1); image_xscale/=2;image_yscale/=2; hspeed/=2}
     w.charge = max (w.charge - current_time_scale*.25, 1)
+    if w.charge <= 1 {
+        sound_play(sndShotReload)
+    }
 }
 if lq_get(w, "defcharge") == undefined{
     w.defcharge = charge_base()

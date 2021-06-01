@@ -34,24 +34,12 @@ weapon_post(6,-5,15)
 sound_play_pitch(sndSwapCursed,random_range(1.2,1.4))
 sound_play_pitch(sndTripleMachinegun,random_range(.6,.8))
 repeat(3)mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, random_range(3,5), c_purple)
-with mod_script_call("mod", "defpack tools", "create_psy_bullet",x,y){
-	creator = other
-	move_contact_solid(other.gunangle,10)
-	team = other.team
-	motion_add(other.gunangle+random_range(-8,8)*other.accuracy,8)
-	image_angle = direction
-}
-with mod_script_call("mod", "defpack tools", "create_psy_bullet",x,y){
-	creator = other
-	move_contact_solid(other.gunangle,10)
-	team = other.team
-	motion_add(other.gunangle+26*other.accuracy+random_range(-8,8)*other.accuracy,8)
-	image_angle = direction
-}
-with mod_script_call("mod", "defpack tools", "create_psy_bullet",x,y){
-	creator = other
-	move_contact_solid(other.gunangle,10)
-	team = other.team
-	motion_add(other.gunangle-26*other.accuracy+random_range(-8,8)*other.accuracy,8)
-	image_angle = direction
+
+var i = -1;
+with mod_script_call_self("mod", "defpack tools", "shoot_n_psy_bullets", x, y, 3, team) {
+	move_contact_solid(other.gunangle, 10)
+    motion_set(other.gunangle + (random_range(-8, 8) + 26 * i) * other.accuracy, 8)
+    i++
+    image_angle = direction
+    projectile_init(other.team, other)
 }

@@ -116,7 +116,7 @@ with mod_script_call_self("mod", "defpack tools", "create_sniper_charge", x, y){
         	            ammo = choose(1, 2) * ceil(3*(.1 + _cc))
         	            alarm0 = ceil(i/12)
         	            image_angle = other.direction + random_range(-90, 90)
-        	            with instance_create(x, y, LightningSpawn) image_angle = other.image_angle
+        	            // with instance_create(x, y, LightningSpawn) image_angle = other.image_angle
         	        }
         	    }
         	mod_script_call_nc("mod", "defpack tools", "bolt_line_bulk", q, 2 * _cc, c_blue, c_aqua)

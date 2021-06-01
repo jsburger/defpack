@@ -38,6 +38,6 @@ with mod_script_call_self("mod", "defpack tools", "shoot_psy_random_target", x, 
 	creator = other
 	move_contact_solid(other.gunangle,10)
 	team = other.team
-	motion_add(other.gunangle+random_range(-15,15)*other.accuracy,8)
+	motion_add(other.gunangle+random_range(-15,15)*other.accuracy, 8)
 	image_angle = direction
 }

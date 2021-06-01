@@ -14,7 +14,8 @@ global.scrGammaProjectile = ["mod", "defpack tools", "gamma_projectile"]
 #macro scrTravel global.scrTravel
 #macro scrGammaTravel global.scrGammaTravel
 #macro scrGammaProj global.scrGammaProjectile
-global.scrThunderDestroy = ["mod", "defpack tools", "thunder_destroy"]
+global.scrThunderHit = ["mod", "defpack tools", "new_thunder_hit"]
+global.scrFireDestroy= ["mod", "defpack tools", "fire_destroy"]
 
 vertex_format_begin()
 vertex_format_add_position()
@@ -122,6 +123,7 @@ var dis = argument_count > 4 ? argument[4] : hitscan_dis;
 
 		xGoal = x2
 		yGoal = y2
+		width = .8
 
 		on_step = custom_trail_step
 		on_draw = custom_trail_draw
@@ -140,7 +142,7 @@ var dis = argument_count > 4 ? argument[4] : hitscan_dis;
 	    alp = lerp(alpha[floor(n)], alpha[ceil(n)], frac(n));
 
 	draw_set_alpha(alp)
-	draw_line_width_color(x, y, xGoal, yGoal, .8, col, col)
+	draw_line_width_color(x, y, xGoal, yGoal, width, col, col)
 	draw_set_alpha(1)
 
 
@@ -152,6 +154,7 @@ var dis = argument_count > 4 ? argument[4] : hitscan_dis;
 	var endPoint = script_ref_call(targetScript, x, y, direction, team);
 	with create_bullet_trail(lastx, lasty, endPoint[0], endPoint[1]) {
 		colors = other.trailcolor
+		width = other.trailsize
 	}
 	x = endPoint[0]
 	y = endPoint[1]
@@ -244,6 +247,7 @@ var dis = argument_count > 4 ? argument[4] : hitscan_dis;
 		lastteam = 0
 
 		trailcolor = [merge_color(c_yellow, c_red, random(.4)), c_white, c_ltgray, c_orange]
+		trailsize = .8
 		spr_dead = sprBulletHit
 
 		on_step = hitscan_travel
@@ -275,17 +279,12 @@ var dis = argument_count > 4 ? argument[4] : hitscan_dis;
 		trailcolor = [merge_color(c_red, c_yellow, random(.4) + .2), merge_color(c_yellow, c_white, .8), c_gray, c_red]
 		spr_dead = spr.FireBulletHit
 
-		on_hit = fire_hit
+		damage = 4
+		on_destroy = global.scrFireDestroy
 
 		return id
 	}
 
-#define fire_hit
-	with mod_script_call("mod", "defpack tools", "create_miniexplosion", x, y) {
-		team = other.team
-		creator = other.creator
-	}
-	hitscan_hit()
 
 #define fire_step
 	hitscan_travel()
@@ -325,6 +324,7 @@ var dis = argument_count > 4 ? argument[4] : hitscan_dis;
 		lastteam = 0
 
 		trailcolor = [merge_color(c_yellow, c_lime, .2), c_white, c_lime, c_orange]
+		trailsize = .8
 		spr_dead = spr.GammaBulletHit
 
 		on_step = hitscan_travel
@@ -423,14 +423,47 @@ if (instance_exists(other) && other.typ > 0) {
 	    trailcolor = [merge_color(c_blue, c_aqua, .3 + random(.4)), c_white, c_aqua, c_black]
 
 	    force = 7
-	    damage = 2
+	    damage = 3
 	    typ = 2
+	    charge = choose(2, 2, 3)
 
-		on_destroy = global.scrThunderDestroy
+		on_hit = global.scrThunderHit
 
 		return id
 	}
+	
+#define new_thunder_hit
+	if "thunder_charge" not in other {
+		other.thunder_charge = 0
+	}
+	other.thunder_charge += charge
+	var _team = team, _c = creator;
+	hitscan_hit()
+	var laserbrain = ceil(skill_get(mut_laser_brain));
+	if other.my_health <= 0 {
+		var _charge = max(other.thunder_charge, 5);
+		while(_charge) > 0 {
+			var r = min(irandom(_charge) + 1 + laserbrain, 12 + laserbrain);
+			with instance_create(other.x, other.y, Lightning) {
+				image_angle = random(360)
+				direction = image_angle
+				ammo = r + 1
+				creator = _c
+				team = _team
+				alarm0 = irandom(1) + 1
+			}
+			_charge -= max(r - laserbrain, 1)
+		}
+		view_shake_at(other.x, other.y, other.thunder_charge/5)
+		sound_play_pitchvol(sndLightningCannonEnd, 1 + max(1 - other.thunder_charge/30, -.8), .4)
+		if laserbrain {
+			sound_play_pitchvol(sndLightningPistolUpg, .8, .4)
+		}
+	}
 
+#define new_thunder_destroy
+	instance_create(x + random_range(-5, 5), y + random_range(-5, 5), LightningHit)
+	hitscan_destroy()
 
 //alright now for the real shit
 //PSY
@@ -440,13 +473,14 @@ if (instance_exists(other) && other.typ > 0) {
 		
 		spr_dead = spr.PsyBulletHit
 		//Pardon my French
-		trailcolor = [8388736, 13158104, 9572016, 5969481]
+		trailcolor = [$D73AFF, c_white, $CC14AD, c_purple]
 		
-		damage = 3
+		damage = 4
 
 		isSniper = false
 		original_direction = undefined
-		sight = 80
+		sight = 30
+		minsight = 5
 		radius = 10
 		
 		on_step = psy_hitscan_step
@@ -477,14 +511,24 @@ if (instance_exists(other) && other.typ > 0) {
 	
 	with create_psy_bullet_trail(x, y, vbuf) {
 		colors = other.trailcolor
+		if other.isSniper lifeMax *= 2
 	}
 	
 	if instance_exists(Wall) && !place_meeting(x, y, Floor) {
 		shouldDestroy = true
 	}
 	
-	x = results.x
-	y = results.y
+	if isSniper {
+		on_hit = nothing
+		with results.hitList {
+			create_psy_dummy(x, y, other)
+		}
+		shouldDestroy = true
+	}
+	
+	
+	x = results.x - hspeed
+	y = results.y - vspeed
 	direction = results.direction
 	lastx = x
 	lasty = y
@@ -495,6 +539,60 @@ if (instance_exists(other) && other.typ > 0) {
 	hashitwall = false
 
 
+#define create_psy_dummy(x, y, parent)
+	with instance_create(x, y, CustomProjectile) {
+		name = "PsyDummy"
+		mask_index = mskPlayer
+		// sprite_index = sprJockIdle
+		team = parent.team
+		creator = parent.creator
+		damage = parent.damage
+		force = parent.force
+		recycle_chance = parent.recycle_chance
+		self.parent = parent
+		
+		on_hit = dummy_hit
+		on_end_step = dummy_end_step
+		on_wall = nothing
+		
+		return self
+	}
+
+#define dummy_hit
+	if instance_exists(parent) {
+		projectile_hit(other, damage, force, point_direction(parent.xstart, parent.ystart, x, y))
+		if parent.recycle_amount > 0 {
+			if recycle_gland_roll_special_edition(recycle_chance) {
+				parent.recycle_amount -= 1
+			}
+		}
+		instance_destroy()
+	}
+	
+#define dummy_end_step
+	instance_destroy()
+
+#define recycle_gland_roll_special_edition
+/// recycle_gland_roll_special_edition(_chance = 60)
+var _chance = argument_count > 0 ? argument[0] : 60;
+
+	var _gland = skill_get(mut_recycle_gland) + (10 * skill_get("recycleglandx10"));
+	if chance_raw(_chance * _gland) {
+		instance_create(x, y, RecycleGland)
+		sound_play(sndRecGlandProc)
+		var num = 1 * _gland
+		with creator if instance_is(self, Player) {
+			ammo[1] = min(ammo[1] + num, typ_amax[1])
+		}
+		return true
+	}
+
+	return false
+
+#define chance_raw(percentage)
+return random(100) <= percentage
+	
+	
 #macro sort_distance 10000
 
 #define psy_hitscan_travel(original_direction, vertex_buffer)
@@ -505,6 +603,7 @@ if (instance_exists(other) && other.typ > 0) {
 		odir   : original_direction,
 		radius : radius,
 		sight  : sight,
+		minSight: minsight,
 		team   : team,
 		target : -4,
 		nextTarget: -4,
@@ -516,7 +615,7 @@ if (instance_exists(other) && other.typ > 0) {
 		pierce: isSniper,
 		lastHit: lasthit,
 		vbuf: vertex_buffer,
-		trailSize: 1
+		trailSize: trailsize
 	};
 	
 	var exists = true, count = 0, missedLast = false, missed = false;
@@ -528,8 +627,9 @@ if (instance_exists(other) && other.typ > 0) {
 		missed = false
 		
 		if bullet.missCounter > 0 {
-			bullet.x += lengthdir_x(2 * bullet.missCounter, bullet.dir)
-			bullet.y += lengthdir_y(2 * bullet.missCounter, bullet.dir)
+			var l = min(2 * bullet.missCounter, 16)
+			bullet.x += lengthdir_x(l, bullet.dir)
+			bullet.y += lengthdir_y(l, bullet.dir)
 		}
 			
 		bullet_add_to_trail(bullet)
@@ -542,7 +642,7 @@ if (instance_exists(other) && other.typ > 0) {
 			// var _wall = collision_line_first(bullet.x, bullet.y,
 			// 			bullet.x + lengthdir_x(300, bullet.dir), bullet.y + lengthdir_y(300, bullet.dir),
 			// 			Wall, false, false);
-			var _wall = get_hitscan_target(bullet.x, bullet.y, bullet.dir, bullet.team);
+			var _wall = get_psy_hitscan_target(bullet.x, bullet.y, bullet.dir, bullet.team);
 			bullet.x = _wall[0]
 			bullet.y = _wall[1]
 			exists = false
@@ -567,13 +667,19 @@ if (instance_exists(other) && other.typ > 0) {
 				bullet.y = canReach.y
 				var turn = bullet_turn(bullet, point_direction(bullet.x, bullet.y, target.x, target.y));
 				if (turn.succeeded) {
-					var _t = collision_line_first(bullet.x, bullet.y, target.x, target.y, hitme, 0, 0);
-					bullet.x = _t[0]
-					bullet.y = _t[1]
+					if bullet.pierce {
+						bullet.x = target.x
+						bullet.y = target.y
+					}
+					else {
+						var _t = collision_line_first(bullet.x + sort_distance, bullet.y, target.x + sort_distance, target.y, hitme, 0, 0);
+						bullet.x = _t[0] - sort_distance
+						bullet.y = _t[1]
+					}
 					bullet.dir = point_direction(turn.x, turn.y, target.x, target.y)
 					bullet_add_to_trail(bullet)
 					array_push(bullet.hitList, target.id)
-					bullet.sight = max(bullet.sight - 5, 60)
+					bullet.sight = max(bullet.sight - 5, bullet.minSight)
 					if !bullet.pierce {
 						exists = false
 					}
@@ -615,9 +721,10 @@ if (instance_exists(other) && other.typ > 0) {
 	}
 	
 	bullet_add_to_trail(bullet)
-	vertex_position(bullet.vbuf, bullet.x, bullet.y)
-	vertex_position(bullet.vbuf, bullet.x, bullet.y)
-	vertex_position(bullet.vbuf, bullet.x, bullet.y)
+	//Fix vertex connecting to 0,0
+	repeat(3) {
+		vertex_position(bullet.vbuf, bullet.x, bullet.y)
+	}
 
 	bullet_target_resolve(bullet)
 	
@@ -796,7 +903,7 @@ var _dx = _x - clamp(_x, _left, _right),
 	return instances_matching_gt(instances_matching_lt(instances_matching_gt(instances_matching_lt(obj,"bbox_top",bottom),"bbox_bottom",top),"bbox_left",right),"bbox_right",left)
 	
 
-#define create_psy_bullet_trail(x, y, vertex_buffer) {
+#define create_psy_bullet_trail(x, y, vertex_buffer)
 	with create_bullet_trail(x, y, 0, 0) {
 		vbuf = vertex_buffer
 		
@@ -805,14 +912,15 @@ var _dx = _x - clamp(_x, _left, _right),
 		
 		return self
 	}
-}
+
 
 #define psy_trail_draw
-	var n = clamp(lifeTime, 0, array_length(colors) - 1),
+	var q = (lifeTime/lifeMax) * (array_length(colors) - 1),
+		n = clamp(q, 0, array_length(colors) - 1),
 	    col = merge_color(colors[floor(n)], colors[ceil(n)], frac(n)),
 	    alp = lerp(alpha[floor(n)], alpha[ceil(n)], frac(n));
 
-	// col = merge_color(col, background_color, 1-alp);
+	col = merge_color(col, background_color, 1-alp);
 
 	d3d_set_fog(1, col, 0, 0)
 	vertex_submit(vbuf, pr_trianglestrip)
@@ -827,3 +935,43 @@ var _dx = _x - clamp(_x, _left, _right),
 	
 #define bullet_add_to_trail(bullet)
 	add_point_to_trail(bullet.vbuf, bullet.x, bullet.y, bullet.dir, bullet.trailSize)
+	
+	
+	
+#define get_psy_hitscan_target()
+/// get_hitscan_target(x1, y1, angle, team, dis = hitscan_dis)
+var x1 = argument[0], y1 = argument[1], angle = argument[2], team = argument[3];
+var dis = argument_count > 4 ? argument[4] : hitscan_dis;
+    var noteam = get_ally_list(team);
+    var shields = instances_matching(PopoShield, "team", team);
+    with lasthit x += 10000
+    with shields x += 10000
+    with noteam x += 10000
+
+    var _wall   = collision_line_first(x1, y1, x1 + lengthdir_x(dis, angle), y1 + lengthdir_y(dis, angle), Wall, 0, 0);
+    
+    if instance_exists(Wall) {
+		if !place_meeting(_wall[0], _wall[1], Floor) {
+			// trace("Missed first pass")
+			_wall = collision_line_first(x1 + 1, y1 + 1, _wall[0] + 1, _wall[1] + 1, Wall, 0, 0)
+			_wall[0] -= 1
+			_wall[1] -= 1
+			// Couldn't find a single instance of this missing twice, so no need to check again
+			// if !place_meeting(_wall[0], _wall[1], Floor) {
+			// 	trace("Missed second pass")
+			// }
+			// else {
+			// 	trace("But found on second pass")
+			// }
+		}
+    }
+
+    var _shield = collision_line_first(x1, y1, _wall[0], _wall[1], PopoShield, 1, 1),
+        _hitme  = collision_line_first(x1 + sort_distance, y1, _shield[0] + sort_distance, _shield[1], hitme, 0, 1);
+
+	_hitme[0] -= sort_distance
+    with lasthit x -= 10000
+    with shields x -= 10000
+    with noteam x -= 10000
+    return _hitme;
+

@@ -1,11 +1,13 @@
 #define init
-	global.color  = mod_current;
+	// global.color  = mod_current;
+	global.color = "cloudedstare"
 	global.button = sprite_add("../sprites/mutation/sprMutPrismaticIris0.png", 1, 12, 16);
 	global.icon   = sprite_add("../sprites/mutation/sprMutPrismaticIcon0.png", 1, 8, 7);
 	global.effect = sprite_add("../sprites/mutation/sprIrisEffect.png", 8, 16, 11);
 	global.arrow  = sprite_add("../sprites/mutation/sprIrisArrow.png", 1, 3, 10);
 	global.sprRandomGun = sprite_add("../sprites/mutation/sprLensRandomGun.png", 5, 2, 3);
-
+	global.gammaFix = false
+	
  // im picky and also lazy
 #macro color_current global.color
 
@@ -190,13 +192,20 @@ return 1;
 			else {
 				 // if it's a modded weapon with an iris prefix but no weapon_iris, scan for the non-iris version
 				var wep_lower = string_lower(w);
-
-				with(get_colors()){
+				
+				global.gammaFix = true;
+				var colors = get_colors();
+				trace(colors)
+				global.gammaFix = false;
+				
+				with(colors) {
 					var color_lower = string_lower(self);
 					var _pos = string_pos(color_lower + " ", wep_lower);
 
 					if (_pos >= 1) {
 						var _search = string_lower(string_delete(w, _pos, string_length(self + " ")));
+						
+						trace(_search)
 
 						var _found = false;
 

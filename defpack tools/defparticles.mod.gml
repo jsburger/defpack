@@ -1,8 +1,8 @@
 #define init
-    global.bonusparticles = 0
-    mod_script_call("mod","defpermissions","permission_register","mod",mod_current,"bonusparticles","Extra Particles")
-    global.particlelimit = 0
-    mod_script_call("mod","defpermissions","permission_register_range","mod",mod_current,"particlelimit","Particle Limit",[0, 200],["No Limit", "200"])
+    // global.bonusparticles = 0
+    // mod_script_call("mod","defpermissions","permission_register","mod",mod_current,"bonusparticles","Extra Particles")
+    // global.particlelimit = 0
+    // mod_script_call("mod","defpermissions","permission_register_range","mod",mod_current,"particlelimit","Particle Limit",[0, 200],["No Limit", "200"])
 
 #macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)
 
@@ -66,59 +66,59 @@ with instance_create(_x,_y,PlasmaTrail){
 
 
 #define step
-    if global.particlelimit{
-        var sparks = instances_matching(CustomObject,"name","spark")
-        var num = array_length_1d(sparks)
-        while num > global.particlelimit
-            with sparks[irandom(array_length_1d(sparks)-1)]
-                if instance_exists(self) {num--; instance_destroy();}
-    }
-    if global.bonusparticles{
-        /*with PlasmaBall{
-            if !irandom(3) with create_waver(x,y){
-                speed = random(1)
-                direction = other.direction + random_range(-90,90)
-            }
-        }*/
-        with instances_matching(Explosion,"sparked",null){
-            sparked = 1
-            var colors = [c_red,c_yellow]
-            if instance_is(self,GreenExplosion) colors = [c_green,c_yellow]
-            if instance_is(self,PopoExplosion) colors = [c_blue,c_aqua]
-            if array_length_1d(instances_matching(CustomObject,"name","spark")) < 40 repeat(random(2*damage)) with create_spark(x+random_range(-5,5),y+random_range(-5,5)){
-                vspeed -= 5
-                gravity = .4
-                color = colors[0]
-                fadecolor = colors[1]
-                age = 20
-                depth = other.depth+1
-            }
-        }
-        with instances_matching(RainSplash,"sparked",null){
-            sparked = 1
-            repeat(random(4)) with create_spark(x,y){
-                color = c_white
-                fadecolor = c_white
-            }
-        }
-        with SawBurst{
-            repeat(random(10/current_time_scale)) with create_spark(x,y){
-                direction = other.direction + random_range(-50,50)
-                speed = random(10)
-                gravity = 0
-                age = max(2*speed,5)
-                color = c_white
-                fadespeed = .4
-                fadecolor = c_white
-                friction = 1
-                depth++
-            }
-        }
-        with instances_matching(CustomProjectile,"name","mega lightning bullet"){
-            repeat(random(6)) with create_spark(x,y){
-                color = c_blue
-                fadecolor = c_aqua
-            }
-        }
-    }
-    //if button_check(0,"nort") create_spark(mouse_x,mouse_y)
+    // if global.particlelimit{
+    //     var sparks = instances_matching(CustomObject,"name","spark")
+    //     var num = array_length_1d(sparks)
+    //     while num > global.particlelimit
+    //         with sparks[irandom(array_length_1d(sparks)-1)]
+    //             if instance_exists(self) {num--; instance_destroy();}
+    // }
+    // if global.bonusparticles{
+    //     /*with PlasmaBall{
+    //         if !irandom(3) with create_waver(x,y){
+    //             speed = random(1)
+    //             direction = other.direction + random_range(-90,90)
+    //         }
+    //     }*/
+    //     with instances_matching(Explosion,"sparked",null){
+    //         sparked = 1
+    //         var colors = [c_red,c_yellow]
+    //         if instance_is(self,GreenExplosion) colors = [c_green,c_yellow]
+    //         if instance_is(self,PopoExplosion) colors = [c_blue,c_aqua]
+    //         if array_length_1d(instances_matching(CustomObject,"name","spark")) < 40 repeat(random(2*damage)) with create_spark(x+random_range(-5,5),y+random_range(-5,5)){
+    //             vspeed -= 5
+    //             gravity = .4
+    //             color = colors[0]
+    //             fadecolor = colors[1]
+    //             age = 20
+    //             depth = other.depth+1
+    //         }
+    //     }
+    //     with instances_matching(RainSplash,"sparked",null){
+    //         sparked = 1
+    //         repeat(random(4)) with create_spark(x,y){
+    //             color = c_white
+    //             fadecolor = c_white
+    //         }
+    //     }
+    //     with SawBurst{
+    //         repeat(random(10/current_time_scale)) with create_spark(x,y){
+    //             direction = other.direction + random_range(-50,50)
+    //             speed = random(10)
+    //             gravity = 0
+    //             age = max(2*speed,5)
+    //             color = c_white
+    //             fadespeed = .4
+    //             fadecolor = c_white
+    //             friction = 1
+    //             depth++
+    //         }
+    //     }
+    //     with instances_matching(CustomProjectile,"name","mega lightning bullet"){
+    //         repeat(random(6)) with create_spark(x,y){
+    //             color = c_blue
+    //             fadecolor = c_aqua
+    //         }
+    //     }
+    // }
+    // //if button_check(0,"nort") create_spark(mouse_x,mouse_y)

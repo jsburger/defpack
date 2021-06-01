@@ -1,2 +1,4 @@
 /loadmod PrismaticannonProjectiles
 /loadwep Prismaticannon
+
+/defclearcache

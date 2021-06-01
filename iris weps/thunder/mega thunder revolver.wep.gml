@@ -24,7 +24,7 @@ return 0;
 return 28;
 
 #define weapon_cost
-return 5;
+return 10;
 
 #define weapon_swap
 if instance_is(self, Player){
@@ -43,6 +43,7 @@ return 0;
 return -1;
 
 #define weapon_text
+if !irandom(100) return "ITS BIG"
 return "A GLORIOUS THUNDER"
 
 #define weapon_fire
@@ -68,8 +69,8 @@ repeat(2)
     sprite_index = global.sprMegaThunderBullet
     if _s sprite_index = global.sprMegaThunderBulletUpg
     mask_index = mskHeavyBullet
-    recycle_amount = 2
-    damage = 2
+    recycle_amount = 5
+    damage = 4
     team = other.team
     force = 18
     frames = 8

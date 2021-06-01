@@ -147,7 +147,7 @@ chest_add("Quartz",  10, ["quartz machinegun","quartz shotgun","quartz crossbow"
 chest_add("Flame",   8,  [wep_flare_gun,wep_dragon,wep_flamethrower,wep_flame_cannon,"firestorm"])
 chest_add("Blood",   9,  [wep_blood_hammer,"bone","big bone",wep_blood_launcher,wep_blood_cannon,"blood abris launcher","blood crossbow","punisher"])
 chest_add("Hyper",   9,  [wep_hyper_rifle,wep_hyper_slugger,wep_hyper_launcher,"hyper crossbow","hyper bow"])
-chest_add("Zenith",  13, ["herald","andromeda launcher","stopwatch",/*"sak"*/,"defender","flex","punisher","rapier","record dealer"])
+chest_add("Zenith",  13, ["herald","andromeda launcher","stopwatch",/*"sak",*/"defender","flex","punisher","rapier","record dealer"])
 var _l = ds_list_create();
 weapon_get_list(_l, clamp(GameCont.hard, 0, 4), GameCont.hard + 2 * array_length(instances_matching(Player,"race","robot")) + 3);
 var _a = ds_list_to_array(_l),

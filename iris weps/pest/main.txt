@@ -29,3 +29,5 @@
 /loadwep big pest iron
 /loadwep pest moby
 /loadwep pest subata
+
+/load ../thunder

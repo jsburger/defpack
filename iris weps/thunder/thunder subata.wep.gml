@@ -11,7 +11,7 @@ return 3
 #define weapon_area
 return -1;
 #define weapon_load
-return 8
+return 10
 #define weapon_swap
 return sndSwapPistol
 #define weapon_auto
@@ -52,6 +52,7 @@ var _p = random_range(.8, 1.4);
 		team = other.team
 		force += 4;
 		damage += 1
+		trailsize += .35
 	}
 	wait(2)
 }

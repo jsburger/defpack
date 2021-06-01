@@ -1,27 +1,3 @@
-//FIRE BULLET
+//FIRE BULLET (FIRE BULLET loads the rest of them in a chain)
 
 /load fire
-
-//BOUNCER BULLET
-
-/load bouncer
-
-//PEST BULLET
-
-/load pest
-
-//THUNDER BULLET
-
-/load thunder
-
-//PSY BULLET
-
-/load psy
-
-//HORROR BULLET
-
-/load horror
-
-//PRISMATICANNON
-
-/load prismaticannon
