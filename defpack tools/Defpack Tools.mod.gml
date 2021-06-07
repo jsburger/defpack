@@ -555,8 +555,8 @@ with Player if visible{
 			depth = other.depth - 1;
 			canfix = false;
 			damage = 36;
-			image_xscale = max(.5, other.defspeed[0] / sprite_get_width(mask_index) * 1.2);
-			image_yscale = 1;
+			image_xscale = max(1, other.defspeed[0] / sprite_get_width(mask_index) * 2.5);
+			image_yscale = 1.3;
 			image_speed = .5;
 			creator = other;
 			team = other.team;
@@ -1150,14 +1150,14 @@ with create_slash_bullet(x, y){
 		// bouncer_turn_dir = choose(-1, 1)
 		move_bounce_solid(false)
 		direction += random_range(-bouncer_turn_speed, bouncer_turn_speed)
-		
+
 		if neurons {
 			image_blend = merge_color(image_blend, bounce_color, .2)
 			instance_create(x + hspeed, y + vspeed, CaveSparkle)
 			damage += 1
 			speed += .5
 		}
-		
+
 		sound_play_hit_ext(snd_bounce.snd, snd_bounce.pitch + random_nonsync(.1), snd_bounce.vol)
 
 		return true
@@ -2192,7 +2192,6 @@ if other != lasthit{
 				repeat(3) instance_create(x, y, Dust){sprite_index = sprExtraFeet}
 			}
 		}
-		superforce *= .7
 
 		// Visuals:
 		with instance_create(x+lengthdir_x(12,direction),y+lengthdir_y(12,direction),AcidStreak){
@@ -2210,6 +2209,7 @@ if other != lasthit{
 			motion_add(random(360), random_range(1, 3) + 1)
 			image_angle = direction
 		}
+		superforce *= .4
 	}
 
 	// Enemy Enemy collision:
@@ -2232,6 +2232,7 @@ if other != lasthit{
 			superforce *= .85 + .15 * min(skill_get(mut_impact_wrists), 1);
 		}
 	}
+	if superforce <= 1 instance_delete(self)
 
 #define extraspeed_add(_player, _speed, _direction)
 	if instance_exists(_player) with _player{

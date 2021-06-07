@@ -1,6 +1,6 @@
 #define init
 	global.button = sprite_add("../../sprites/mutation/sprMutPrismaticIris8.png", 1, 12, 16);
-	global.icon   = sprite_add("../../sprites/mutation/sprMutPrismaticIcon1.png", 1, 8, 7);
+	global.icon   = sprite_add("../../sprites/mutation/sprMutPrismaticIcon8.png", 1, 8, 7);
 
 #define skill_name
 	return "WARPED PERSPECTIVE";

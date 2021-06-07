@@ -277,15 +277,28 @@ if weapon_get_type(_i) = 1 && skill_get("prismaticiris") > 0{
         }
     }
     else{
-		trace("----------")
 		var _c = -4;
-		switch mod_variable_get("skill", "prismaticiris", "color"){
-			case "balzingvisage": _c = "fire"; break;
-			case "quiveringsight": _c = "bouncer"; break;
-			case "pestilentgaze+": _c = "pest"; break;
-			case "cloudedstare": _c = "thunder"; break;
-			case "allseeingeye": _c = "psy"; break;
-			case "warpedperspective": _c = "gamma"; break;
+		var _iris = mod_variable_get("skill", "prismaticiris", "color"),
+	      _icol = 0;
+	  switch _iris{
+	    case "fantasticrefractions":  _icol = irandom(5); break;
+	    case "quiveringsight"      : _icol = 0; break;
+	    case "blazingvisage"       : _icol = 1; break;
+	    case "pestilentgaze"       : _icol = 2; break;
+	    case "cloudedstare"        : _icol = 3; break;
+	    case "allseeingeye"        : _icol = 4; break;
+	    case "warpedperspective"   : _icol = 5; break;
+	    default : _icol = 6; break;
+	  }
+	  if !skill_get("prismaticiris"){_icol = 6}
+
+		switch _icol{
+			case 0: _c = "bouncer";   break;
+			case 1: _c = "fire";      break;
+			case 2: _c = "pest";      break;
+			case 3: _c = "thunder";   break;
+			case 4: _c = "psy"; 		  break;
+			case 5: _c = "gamma";     break;
 			default: _c = "no color"; break;
 		}
 		var _cwep = mod_script_call_self("skill", "prismaticiris", "convert", _i, _c);

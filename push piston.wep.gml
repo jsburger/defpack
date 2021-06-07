@@ -169,8 +169,8 @@ if !charged sound_stop(sound)
 			image_index = 1;
 			with instance_create(x, y, ImpactWrists) image_speed = 1
 		}
-		image_xscale = 1.5
-		image_yscale = 1.5
+		image_xscale = 2
+		image_yscale = 2
 		damage = 0;
 		image_speed = 0.6
 		superfriction = 1.4 / (1 + _ch *.7);
