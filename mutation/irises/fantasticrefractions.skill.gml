@@ -24,7 +24,8 @@ return "@yBULLET@s WEAPONS BECOME " + `@(color:${make_colour_hsv(current_frame m
 	    	if(s[f] != mod_current and
 	    	   mod_exists("skill", s[f]) and
 	    	   mod_script_exists("skill", s[f], "skill_iris") and
-	    	   mod_script_call("skill", s[f], "skill_iris") != false) {
+	    	   mod_script_call("skill", s[f], "skill_iris") != false and
+	    	   mod_script_call("skill", s[f], "skill_iris") != "") {
 	    	   	array_push(i, mod_script_call("skill", s[f], "skill_iris")); // Add iris prefix to array
 	    	}
 		}

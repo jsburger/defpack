@@ -102,7 +102,7 @@ return 1;
 	else if(instance_exists(Player) and !instance_exists(LevCont)) {
 		with(instances_matching(WepPickup, "prismatic", null)) {
 			if(distance_to_object(Player) < 128) {
-				if(mod_exists("skill", color_current) and mod_script_exists("skill", color_current, "skill_iris")) {
+				if(roll and mod_exists("skill", color_current) and mod_script_exists("skill", color_current, "skill_iris")) {
 					prismatic = mod_script_call("skill", color_current, "skill_iris");
 				}
 				else prismatic = false;

@@ -673,7 +673,7 @@ with Player if visible{
 		if fork(){
 		    var _x = x, _y = y;
 		    wait(0)
-		    if !instance_exists(self) && instance_exists(Wall){
+		    if !instance_exists(self) && !instance_exists(GenCont){
 	    		with instance_create(_x, _y, WepPickup){
 	    		    if !irandom(99) and mod_exists("weapon", "soda popper") wep = "soda popper"
 	    		    else wep = soda_get()
