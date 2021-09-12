@@ -1,5 +1,6 @@
 #define init
-global.sprGasLigher = sprite_add_weapon("sprites/weapons/sprGasLighter.png",  7, 2);
+global.sprGasLigher     = sprite_add_weapon("sprites/weapons/sprGasLighter.png",  7, 2);
+global.sprGasLigherFire = sprite_add_weapon("sprites/weapons/sprGasLighterFire.png",  7, 2);
 
 #macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)
 
@@ -7,7 +8,14 @@ global.sprGasLigher = sprite_add_weapon("sprites/weapons/sprGasLighter.png",  7,
 return "GAS LIGHTER"
 
 #define weapon_sprt
-return global.sprGasLigher;
+if instance_is(self,Player){
+	with instances_matching(instances_matching(CustomObject, "name", "lighter charge"),"creator", id)
+		if charged{
+			return global.sprGasLigher;
+	}
+}
+
+return global.sprGasLigherFire;
 
 #define weapon_type
 return 4;
@@ -22,7 +30,7 @@ return 13;
 return 1;
 
 #define weapon_swap
-return sndSwapExplosive;
+return sndSwapFlame;
 
 #define weapon_area
 return 5;

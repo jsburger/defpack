@@ -32,7 +32,7 @@ var _p = random_range(.8, 1.4);
 
 	weapon_post(5, 10, 0)
 
-	with instance_create(x + lengthdir_x(16, gunangle), y + lengthdir_y(16, gunangle), CustomObject) {
+	with instance_create(x + lengthdir_x(16, gunangle) + hspeed, y + lengthdir_y(16, gunangle) + vspeed, CustomObject) {
 		depth = -1
 		sprite_index = global.sprBullet
 		image_speed = .9
@@ -45,7 +45,7 @@ var _p = random_range(.8, 1.4);
 
 	mod_script_call("mod", "defpack tools", "shell_yeah", 90, 40, 2 + random(2), c_navy);
 
-	with mod_script_call("mod", "defhitscan", "create_thunder_hitscan_bullet", x + lengthdir_x(12, gunangle), y + lengthdir_y(12, gunangle)){
+	with mod_script_call("mod", "defhitscan", "create_thunder_hitscan_bullet", x + lengthdir_x(12, gunangle) + hspeed, y + lengthdir_y(12, gunangle) + vspeed){
 		direction = other.gunangle + random_range(-5, 5) * other.accuracy;
 		image_angle = direction;
 		creator = other

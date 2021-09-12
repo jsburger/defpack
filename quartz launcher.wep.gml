@@ -163,6 +163,26 @@ image_angle = direction
 		image_speed = random_range(.4,.7)
 		image_index = irandom(5)
 	}
+	with mod_script_call("mod","defpack tools","create_sonic_explosion",x - lengthdir_x(2, direction),y - lengthdir_y(2, direction)){
+		image_xscale = 1
+		image_yscale = 1
+		image_speed = 0.8
+		team = other.team
+		creator = other.creator
+		repeat(12){ with instance_create(x,y,Dust) {sprite_index = sprExtraFeet; motion_add(random(360),3)}}
+	}
+	with instance_create(x, y, CustomObject){
+		team = other.team;
+		creator = other.creator;
+		direction = other.direction;
+		on_step = explo_step;
+		on_destroy = explo_destroy;
+	}
+
+#define explo_step
+	instance_destroy()
+
+#define explo_destroy
 	var i = random(360);
 	sleep(20)
 	view_shake_at(x,y,15)
@@ -177,17 +197,18 @@ image_angle = direction
 		}
 		i += 60
 	}
+	instance_create(x, y, SmallExplosion)
+	sound_play(sndExplosion)
+	sound_play_pitchvol(sndExplosionL, 1.6 * random_range(.8, 1.2), .6)
 	with mod_script_call("mod","defpack tools","create_sonic_explosion",x - lengthdir_x(2, direction),y - lengthdir_y(2, direction)){
 		image_xscale = 1
 		image_yscale = 1
-		image_speed = 0.8
+		image_speed = 0.2
+		image_alpha = 0;
 		team = other.team
 		creator = other.creator
 		repeat(12){ with instance_create(x,y,Dust) {sprite_index = sprExtraFeet; motion_add(random(360),3)}}
 	}
-	instance_create(x, y, SmallExplosion)
-	sound_play(sndExplosion)
-	sound_play_pitchvol(sndExplosionL, 1.6 * random_range(.8, 1.2), .6)
 
 #define step(p)
   if p && is_object(wep){

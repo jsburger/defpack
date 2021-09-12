@@ -1211,7 +1211,7 @@ with create_bullet(x,y){
 
     damage = 4
     typ = 2
-    force = -10
+    force = -12
 
     timer = irandom(6) + 4
     range = 70
@@ -1301,7 +1301,7 @@ with create_heavy_bullet(x, y){
 
     damage = 9
     typ = 2
-    force = -20
+    force = -18
     timer = irandom(4) + 3
     range = 130
     turnspeed = .42
@@ -1314,6 +1314,9 @@ with create_heavy_bullet(x, y){
 
 #define psy_hit()
 with other
+	if my_health - other.damage <= 0{
+		other.force = abs(other.force) / 2;
+	}
     motion_add(point_direction(x,y,other.x,other.y),5)
 bullet_hit()
 

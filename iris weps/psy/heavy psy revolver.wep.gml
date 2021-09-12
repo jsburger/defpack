@@ -30,7 +30,7 @@ return choose("AWAY IS YOU");
 
 #define weapon_fire
 
-weapon_post(5,-12,10)
+weapon_post(5,-9,2)
 var p = random_range(.8,1.2)
 sound_play_pitch(sndPistol,.7*p)
 sound_play_pitch(sndSwapCursed,.3*p)

@@ -76,7 +76,7 @@ return{
 
       team       = other.team;
       creator    = other;
-      damage     = 10;
+      damage     = 16;
       force      = 4;
       can_fix    = false;
       canreflect = false;

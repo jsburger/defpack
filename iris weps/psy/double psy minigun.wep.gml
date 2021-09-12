@@ -32,7 +32,7 @@ return "BANNED";
 
 sound_play_pitch(sndCursedReminder,.4)
 sound_play_pitch(sndDoubleMinigun,.8)
-weapon_post(8,-12,8)
+weapon_post(8,-14,5)
 motion_add(gunangle-180,4)
 repeat(2)mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, random_range(2,4), c_purple)
 

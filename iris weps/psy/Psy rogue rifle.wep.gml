@@ -31,7 +31,7 @@ return "TURN YOUR BACKS";
 #define weapon_fire
 
 repeat(2){
-	weapon_post(4,-8,3)
+	weapon_post(4,-6,2)
 	sound_play(sndRogueRifle)
 	sound_play_pitch(sndSwapCursed,random_range(1.3,1.6))
 	mod_script_call("mod","defpack tools", "shell_yeah", 180, 25, random_range(2,4), c_purple)

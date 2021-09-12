@@ -32,7 +32,7 @@ return "no hope";
 
 repeat(5)
 {
-	weapon_post(4,-5,5)
+	weapon_post(4,-7,2)
 	sound_play_pitch(sndSwapCursed,random_range(1.4,1.7))
 	sound_play_pitch(sndHyperRifle,.7)
 	mod_script_call("mod","defpack tools", "shell_yeah", 180, 15, random_range(3,5), c_purple)

@@ -41,8 +41,8 @@ return{
 return "INCOMING";
 
 #define weapon_fire
-var _strtsize = 18;
-var _endsize  = 24;
+var _strtsize = 16;
+var _endsize  = 34;
 with mod_script_call("mod","defpack tools","create_abris",self,_strtsize,_endsize,argument0){
 	accspeed = 1.75
 	damage = 10

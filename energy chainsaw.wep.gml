@@ -75,7 +75,7 @@ return{
 			}
 		}
 		with instance_create(creator.x+lengthdir_x(-l,creator.gunangle),creator.y+lengthdir_y(-l,creator.gunangle),CustomProjectile){
-			if !irandom(4) repeat(1 + irandom(2)) instance_create(x + random_range(-3, 3) + lengthdir_x(12+(6*skill_get(13)),other.creator.gunangle),y + random_range(-3, 3) + lengthdir_y(12+(6*skill_get(13)),other.creator.gunangle),PlasmaTrail)
+			if !irandom(4) repeat(1 + irandom(2)) instance_create(x + random_range(-3, 3) + lengthdir_x(12+(6*skill_get(13)),other.creator.gunangle) + hspeed, y + random_range(-3, 3) + lengthdir_y(12+(6*skill_get(13)) + vspeed, other.creator.gunangle),PlasmaTrail)
 			sprite_index = mskNone
 			canfix = false
 			force = 0
@@ -90,12 +90,22 @@ return{
 			with instances_matching_gt(instances_matching_ne(projectile,"team",other.team), "typ", 0){
 				if place_meeting(x,y,other){instance_destroy()}
 			}
-			if irandom(1) with instance_create(x + lengthdir_x(4 * other.creator.right, other.image_angle), y + lengthdir_y(4 * other.creator.right, other.image_angle), Wind){
+			if irandom(1) with instance_create(x + lengthdir_x(0, other.image_angle), y + lengthdir_y(4 * other.creator.right, other.image_angle), Wind){
 				sprite_index = global.sprChainsawShank;
 				image_angle = other.image_angle + random_range(-12, 12);
 				depth -= 1;
 				image_speed /= (1 + skill_get(mut_laser_brain));
 				motion_add(image_angle, random(1));
+				with instance_create(x, y, Wind){
+					sprite_index = global.sprChainsawShank;
+					image_angle = other.image_angle;
+					depth -= 1;
+					image_speed /= (1 + skill_get(mut_laser_brain));
+					motion_add(other.direction, other.speed);
+					image_xscale = 1.25;
+					image_yscale = 1.25;
+					image_alpha = .15;
+				}
 			}
 			on_hit        = chainsawshank_hit
 			on_wall       = chainsawshank_wall

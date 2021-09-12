@@ -86,7 +86,7 @@ image_index = 1
 
 #define dyn_destroy
 sleep(5)
-view_shake_at(x, y, 6)
+view_shake_at(x, y, 8)
 repeat(3)
 {
   with instance_create(x,y,Slug)
@@ -119,7 +119,7 @@ if current_frame mod 2 < current_time_scale with instances_matching_ne(hitme,"te
       other.direction = direction
       projectile_hit(_id,damage + 1 - floor(image_index),min(0,force + 5 * (1 - image_index)),direction)
       sleep(12)
-      view_shake_at(x,y,10)
+      view_shake_at(x,y,3 + 2 * clamp(other.size, 1, 3))
       if other.my_health <= 0{sleep(22);view_shake_at(x,y,15);speed += 2}
       if speed > maxspeed speed = maxspeed
       if pierce-- <= 0{instance_destroy();exit}
