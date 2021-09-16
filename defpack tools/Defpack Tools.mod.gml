@@ -2560,12 +2560,12 @@ if instance_exists(creator){
         ang = c.gunangle
     }
     else if targeting == abris_manual{
-        _x = c.y + lengthdir_x(length, angle)
-        _y = c.x + lengthdir_y(length, angle)
+        _x = c.x + lengthdir_x(length, angle)
+        _y = c.y + lengthdir_y(length, angle)
         ang = angle
     }else if targeting == abris_gunangle{
-        _x = c.y + lengthdir_x(length, c.gunangle + angle)
-        _y = c.x + lengthdir_y(length, c.gunangle + angle)
+        _x = c.x + lengthdir_x(length, c.gunangle + angle)
+        _y = c.y + lengthdir_y(length, c.gunangle + angle)
         ang = c.gunangle + angle
     }
 
