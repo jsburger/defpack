@@ -58,6 +58,7 @@ with instance_create(x, y, CustomSlash)
   image_speed = .5;
   creator = other;
   team    = other.team;
+  sage_no_bounce = true;
   damage = 0;
   force = 28;
   canwallhit = true

@@ -67,6 +67,7 @@ repeat(3){
 		mask_index   = mskBolt
 		damage = 10
 	    bounce = round(skill_get("compoundelbow") * 5)
+	    sage_no_bounce = true;
 		with instance_create(x+hspeed*1.5,y+vspeed*1.5,BloodStreak){image_angle = other.direction}
 		on_end_step = b_step
 		on_wall     = b_wall

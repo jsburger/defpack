@@ -100,6 +100,7 @@ with instance_create(x,y,CustomProjectile){
     	on_hit     = beam_hit
     	on_destroy = beam_destroy
 
+		sage_no_hitscan = true;
         sound = -1
         time = weapon_get_load(mod_current) + 1
         image_speed = 0

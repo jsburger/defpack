@@ -171,6 +171,7 @@ with instance_create(x,y,CustomSlash)
     torchid = w.torchid
 	lv = min(floor(w.cursecharge/10),4) + 1
 	damage = lv * 4
+	sage_no_bounce = true;
 	if lv >= 3 sprite_index = sprHeavySlash
 	if lv = 5 {
 		sprite_index = sprMegaSlash

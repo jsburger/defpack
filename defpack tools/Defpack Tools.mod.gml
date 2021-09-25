@@ -138,8 +138,10 @@
 		Stripes = sprite_add("../sprites/other/sprBigStripes.png", 1, 1, 1);
 
 		//Plasmites
-		Plasmite    = sprite_add(i + "sprPlasmite.png",    0, 3, 3);
-		PlasmiteUpg = sprite_add(i + "sprPlasmiteUpg.png", 0, 3, 3);
+		Plasmite    		  = sprite_add(i + "sprPlasmite.png",    0, 3, 3);
+		PlasmiteUpg 		  = sprite_add(i + "sprPlasmiteUpg.png", 0, 3, 3);
+		PlasmaImpactSmall     = sprite_add(i + "sprPlasmaImpactSmall.png", 7, 8, 8);
+		msk.PlasmaImpactSmall = sprite_add(i + "mskPlasmaImpactSmall.png", 7, 8, 8);
 
 		//Squares
 		Square     = sprite_add  (i + "sprSquare.png", 0, 7, 7);
@@ -188,7 +190,6 @@
 		Flechette       = sprite_add("..\sprites\projectiles\sprFlechette.png",      0,  6, 4)
 		msk.Flechette   = sprite_add("..\sprites\projectiles\mskFlechette.png",      0,  6, 2)
 		FlechetteBlink  = sprite_add("..\sprites\projectiles\sprFlechetteBlink.png", 3, 14, 4)
-
 
 		//Quartz Shards
 		Shard        = sprite_add_weapon("../sprites/weapons/sprShard.png", 0, 3);
@@ -1151,11 +1152,13 @@ with create_slash_bullet(x, y){
 		move_bounce_solid(false)
 		direction += random_range(-bouncer_turn_speed, bouncer_turn_speed)
 
-		if neurons {
+		if neurons{
 			image_blend = merge_color(image_blend, bounce_color, .2)
 			instance_create(x + hspeed, y + vspeed, CaveSparkle)
 			damage += 1
 			speed += .5
+		}else{
+			image_angle = direction;
 		}
 
 		sound_play_hit_ext(snd_bounce.snd, snd_bounce.pitch + random_nonsync(.1), snd_bounce.vol)
@@ -2098,12 +2101,31 @@ if other != lasthit{
 
 #define sonic_hit
 	if projectile_canhit_melee(other){
-		var _cwh = canwallhit
-		var _dwt = dontwait
-		if object_get_name(other.object_index) = "MeleeFake"{projectile_hit(other, 1, force, direction)}
-		if object_get_name(other.object_index) = "JungleAssassinHide"{projectile_hit(other, 1, force, direction)}
-		if object_get_name(other.object_index) = "Mimic"{projectile_hit(other, 100, force, direction)}
-		if object_get_name(other.object_index) = "SuperMimic"{projectile_hit(other, 100, force, direction)}
+		var _cwh = canwallhit,
+		    _dwt = dontwait,
+		      _s = self;
+		
+		switch object_get_name(other.object_index) {
+			case "MeleeFake":		   projectile_hit(other, 1, force, direction); break; 	
+			case "JungleAssassinHide": projectile_hit(other, 1, force, direction); break;
+			case "Mimic":              projectile_hit(other, 100, force, direction); break;
+			case "SuperMimic":         projectile_hit(other, 100, force, direction); break;
+		}
+		
+		if instance_is(other, Car) || instance_is(other, CarVenusFixed) || instance_is(other, CarVenus2) || instance_is(other, CarVenus) with other{
+			with instance_create (x, y, CarThrow){
+				sleep(4)
+				motion_add(_s.direction, 24);
+			}
+			instance_delete(self);
+			exit;
+		}
+		
+		if instance_is(other, prop){
+			projectile_hit(other, 8, force, direction);
+			exit;
+		}
+		
 		// incredibly lazy approach of me not wanting to copy paste the event into the sonic hammer file
 		if "fx_sleep" in self sleep(fx_sleep);
 		if "fx_shake" in self view_shake_max_at(x, y, fx_shake);
@@ -2907,12 +2929,18 @@ image_xscale = _x;
 
 #define plasmite_destroy
 sound_play_hit_ext(sndPlasmaHit, random_range(1.45, 1.83), 1)
-with instance_create(x + lengthdir_x(hspeed, direction), y + lengthdir_y(hspeed, direction), PlasmaImpact) {
-	image_xscale = .5;
-	image_yscale = .5;
-	image_speed *= random_range(.9, 1.1);
+with create_plasma_impact_small(x + lengthdir_x(hspeed, direction), y + lengthdir_y(hspeed, direction)) {
 	team = other.team;
 	damage = 4;
+}
+
+#define create_plasma_impact_small(_x, _y)
+with instance_create(_x, _y, PlasmaImpact){
+	sprite_index = spr.PlasmaImpactSmall;
+	mask_index = msk.PlasmaImpactSmall;
+	image_speed *= random_range(.85, 1.15);
+	damage = 4;
+	return self;
 }
 
 #define create_supersquare(_x,_y)
@@ -4004,6 +4032,7 @@ with instance_create(x, y, melee ? CustomSlash : CustomProjectile){
     whooshtime = 0
     maxwhoosh = 4
     bounce = 1 + round(skill_get("compoundelbow") * 5)
+    sage_no_bounce = true;
 
     if melee{
         on_anim = nothing

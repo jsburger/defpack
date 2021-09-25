@@ -53,6 +53,7 @@ return 1
 		image_angle = direction
 		projectile_init(other.team, _c)
 		origin = other
+		sage_no_bounce = true;
 		//steroids support baby
 		hand = 0
 		if "race_id" in _c {

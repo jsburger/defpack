@@ -227,6 +227,7 @@ with instance_create(x,y,CustomSlash)
 		radius   = 1;
 		target   = other;
 		index    = 0;
+		sage_no_bounce = true;
 
 		on_hit       = mb_hit
 		on_step 	 = mb_step

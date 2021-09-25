@@ -51,6 +51,7 @@ with instance_create(x,y,CustomSlash){
 	rotspeed = 2 * other.bigsword
 	damage = 8
 	force = 8
+	sage_no_bounce = true;
 	image_speed = .6
 	creator = other
 }

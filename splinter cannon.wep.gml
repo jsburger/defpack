@@ -39,6 +39,7 @@ with instance_create(x,y,CustomProjectile){
     projectile_init(other.team, other)
     damage = 30
     bounce = round(skill_get("compoundelbow") * 5)
+    sage_no_bounce = true
     sprite_index = global.sprSuperSplinter
     mask_index = mskHeavyBolt
     image_angle = direction
