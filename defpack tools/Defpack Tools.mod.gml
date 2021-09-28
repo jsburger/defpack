@@ -2104,14 +2104,14 @@ if other != lasthit{
 		var _cwh = canwallhit,
 		    _dwt = dontwait,
 		      _s = self;
-		
+
 		switch object_get_name(other.object_index) {
-			case "MeleeFake":		   projectile_hit(other, 1, force, direction); break; 	
+			case "MeleeFake":		   projectile_hit(other, 1, force, direction); break;
 			case "JungleAssassinHide": projectile_hit(other, 1, force, direction); break;
 			case "Mimic":              projectile_hit(other, 100, force, direction); break;
 			case "SuperMimic":         projectile_hit(other, 100, force, direction); break;
 		}
-		
+
 		if instance_is(other, Car) || instance_is(other, CarVenusFixed) || instance_is(other, CarVenus2) || instance_is(other, CarVenus) with other{
 			with instance_create (x, y, CarThrow){
 				sleep(4)
@@ -2120,12 +2120,12 @@ if other != lasthit{
 			instance_delete(self);
 			exit;
 		}
-		
+
 		if instance_is(other, prop){
 			projectile_hit(other, 8, force, direction);
 			exit;
 		}
-		
+
 		// incredibly lazy approach of me not wanting to copy paste the event into the sonic hammer file
 		if "fx_sleep" in self sleep(fx_sleep);
 		if "fx_shake" in self view_shake_max_at(x, y, fx_shake);
@@ -3222,7 +3222,7 @@ with instance_create(_x, _y, CustomProjectile){
     sprite_index = spr.Rocklet
     damage = 3
     name = "Rocklet"
-    maxspeed = 14
+    maxspeed = 18;
     immuneToDistortion = 1;
     typ = 1
     depth = -1
@@ -4001,7 +4001,7 @@ with create_sword(x, y){
     anglespeed = 120
 
     defbloom.sprite = sprite_index
-    slashrange = 40
+    slashrange = 28
     length = 4
 
     return id
@@ -4027,7 +4027,7 @@ with instance_create(x, y, melee ? CustomSlash : CustomProjectile){
     }
     draw_angle = random(360)
     anglespeed = 90
-    slashrange = 40
+    slashrange = 28
     length = 6
     whooshtime = 0
     maxwhoosh = 4

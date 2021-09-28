@@ -10,8 +10,8 @@ return "MEGA PEST REVOLVER";
 #define weapon_sprt
 return global.sprMegaPestRevolver;
 
-#define weapon_sprt_hud
-return global.sprMegaPestRevolverHUD;
+//#define weapon_sprt_hud
+//return global.sprMegaPestRevolverHUD;
 
 #define weapon_type
 return 1;
@@ -120,5 +120,5 @@ return "THROW THE HOLSTER IN THE WASH"
   sleep(15)
 
 #define step
-  with instances_matching(Player, "wep", mod_current){speed *= min(1, .8 + .2 * (skill_get(mut_extra_feet)))}
-  with instances_matching(instances_matching(Player, "race", "steroids"), "bwep", mod_current){speed *= min(1, .8 + .2 * (skill_get(mut_extra_feet)))}
+  //with instances_matching(Player, "wep", mod_current){speed *= min(1, .8 + .2 * (skill_get(mut_extra_feet)))}
+  //with instances_matching(instances_matching(Player, "race", "steroids"), "bwep", mod_current){speed *= min(1, .8 + .2 * (skill_get(mut_extra_feet)))}

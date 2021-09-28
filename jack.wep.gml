@@ -51,7 +51,7 @@ return "GIVE 'EM HELL";
 return {
     maxcharge : maxchrg,
     charge : 0,
-    style : 0,
+    style : 2,
     width : 12,
     power : 1
 }

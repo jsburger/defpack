@@ -30,6 +30,8 @@
 * swap effects
 * BRING BACK THE FAIRY BRO
 * Throne Butt is cringe rn (its awkward to use), please change
+*/
+
 /*
 NOTES FROM JSBURG:
 - Passive: Undecided and unimportant to sage's core gameplay, could have been more weapon chests.
@@ -40,7 +42,7 @@ NOTES FROM JSBURG:
 	- spells act as additional passives for sage, which are tuned to actively change gameplay instead of being slight like other passives
 	- only the spell in the first slot is active, the idea is to let people carry sidegrade abilities freely
 	- spells aim to modify gunplay, to make exploring options even more interesting.
-	
+
 - Spell ideas:
 	- Twin shot: shoot in a v in front of you with your current gunangle
 	- Haste: move and reload faster
@@ -75,7 +77,7 @@ NOTES FROM JSBURG:
 	global.spr_dead[1] = sprite_add("sprGunDie.png",	6, 12, 12);
 	global.spr_sit1[1] = sprite_add("sprGunWalk.png",	6, 12, 12);
 	global.spr_sit2[1] = sprite_add("sprGunIdle.png",	6, 12, 12);
-	
+
 	 // Character Selection / Loading Screen:
 	global.spr_slct = sprite_add("sprGunSlct.png", 1, 0,  0);
 	global.spr_port = sprite_add("sprGunPortrait.png",	1,	40, 243);
@@ -86,16 +88,16 @@ NOTES FROM JSBURG:
 	global.spr_ult_slct = sprite_add("sprGunMapIcon.png",	ultra_count(mod_current), 12, 16);
 	global.spr_ult_icon[1] = sprite_add("sprGunMapIcon.png", 1, 8, 9);
 	global.spr_ult_icon[2] = sprite_add("sprGunMapIcon.png", 1, 8, 9);
-	
+
 	 // Reapply sprites if the mod is reloaded. //
-	with(instances_matching(Player, "race", mod_current)) { 
+	with(instances_matching(Player, "race", mod_current)) {
 		assign_sprites();
 		assign_sounds();
 	}
-	
+
 	global.spellIcon = sprite_add("spellbullets.png", 10, 6, 7);
 	global.spellHold = sprite_add("spellbulletempty.png", 1, 6, 7);
-	
+
 	global.bind_late_step = noone;
 
 	var _race = [];
@@ -126,7 +128,6 @@ NOTES FROM JSBURG:
  // On Run Start:
 #define game_start
 	sound_play(sndMutant1Cnfm); // Play Confirm Sound
-	
 #define draw_outline(_sprIndex, _imgIndex, _x, _y)
 	d3d_set_fog(true, c_white, 0, 0);
 	draw_sprite(_sprIndex, _imgIndex, _x -1, _y);
@@ -134,15 +135,14 @@ NOTES FROM JSBURG:
 	draw_sprite(_sprIndex, _imgIndex, _x, _y -1);
 	draw_sprite(_sprIndex, _imgIndex, _x, _y +1);
 	d3d_set_fog(false, c_white, 0, 0);
-
 #define player_hud(_player, _hudIndex, _hudSide)
      // Spell Bullets:
-     
+
 	var _x = (_hudSide ? 8 : 99),
 		_w = sprite_get_width(global.spellIcon) / 2,
 		_y = 12+(_player.uiroll == i),
-		_h = sprite_get_height(global.spellIcon) / 2;     
-		   
+		_h = sprite_get_height(global.spellIcon) / 2;
+
 	if dev{
 		draw_set_font(fntSmall);
 		draw_text_nt(-13, 46, "@wRELOAD_SPEED = " + string(round(_player.reloadspeed * 100)) + "%")
@@ -153,31 +153,31 @@ NOTES FROM JSBURG:
 		draw_text_nt(-13, 81, "@bSPEED        = " + string(_player.maxspeed))
 		draw_set_font(fntM);
 	}
-	
+
 	for(var i = 0; i < 2 + ceil(skill_get(mut_throne_butt)); i++){
-		
+
 		if i < array_length(_player.spellBullets){
-			
+
 			//Draw Outline for bullets in active slots:
 			if i <= ultra_get("sage", 2){
 				draw_outline(global.spellIcon, spellbullet_index(_player.spellBullets[i]), _x, _y)
 			}
-			
+
 			//Draw Bullet:
 			draw_sprite_ext(global.spellIcon, spellbullet_index(_player.spellBullets[i]), _x, _y, (_hudSide ? -1 : 1), 1, 0, c_white, 1);
-		
+
 			//Darken in secondary Slots:
 			if i > ultra_get("sage", 2){
-				draw_sprite_ext(global.spellIcon,spellbullet_index(_player.spellBullets[i]),_x,_y,(_hudSide ? -1 : 1),1,0,c_black,.2);	
+				draw_sprite_ext(global.spellIcon,spellbullet_index(_player.spellBullets[i]),_x,_y,(_hudSide ? -1 : 1),1,0,c_black,.2);
 			}
-					
+
 			if !point_in_rectangle(ceil(mouse_x[_player.index] - view_xview[_player.index]) - 16, ceil(mouse_y[_player.index] - view_yview[_player.index]), (_hudSide ? 8 : 99) - _w * 2 * (_hudSide ? -1 : 1), _y - 2 - _h, (_hudSide ? 8 : 99) + _w+ _w * 2 * array_length(_player.spellBullets) * (_hudSide ? -1 : 1), _y - 1 + _h){
 				_player.sage_uitimer = 20;
 			}else{
 				_player.sage_uitimer = max(_player.sage_uitimer - current_time_scale, 0);
 			}
-			
-			if point_in_rectangle(mouse_x[_player.index] - view_xview[_player.index] - 16, mouse_y[_player.index] - view_yview[_player.index], _x - _w, _y - _h - 2, _x + 2, _y + _h){ //  
+
+			if point_in_rectangle(mouse_x[_player.index] - view_xview[_player.index] - 16, mouse_y[_player.index] - view_yview[_player.index], _x - _w, _y - _h - 2, _x + 2, _y + _h){ //
 			    if _player.sage_uitimer = 0{
 			      draw_set_font(fntM);
 			      draw_text_nt(_x - 4 - (11 * i - i) * (_hudSide ? -1 : 1), _y + _h + 3, _player.spellBullets[i]);
@@ -185,19 +185,19 @@ NOTES FROM JSBURG:
 			      draw_text_nt(_x - 4 - (11 * i - i) * (_hudSide ? -1 : 1), _y + _h + 12, spellbullet_examine(_player.spellBullets[i], _player));
 			    }
 			}
-			
+
 		}else{
 			//Draw empty bullet spaces:
 			draw_sprite_ext(global.spellHold, 0, _x, 12, (_hudSide ? -1 : 1), 1, 0, c_white, 1);
 		}
-		
+
 		//var _c = make_colour_hsv(_x * 1.5 mod 255, 255, 255);
-		//draw_rectangle_color(_x - _w, _y - _h - 2, _x + 2, _y + _h, _c, _c, _c, _c, true); 
-		
+		//draw_rectangle_color(_x - _w, _y - _h - 2, _x + 2, _y + _h, _c, _c, _c, _c, true);
+
 	    _x += _hudSide ? -10 : 10;
 		_y = 12 + (_player.uiroll == i);
 	}
-	
+
 	if(_player.uiroll < array_length(_player.spellBullets)){
 		_player.uiroll++;
 	}
@@ -205,9 +205,19 @@ NOTES FROM JSBURG:
  // On Character's Creation (Starting a run, getting revived in co-op, etc.):
  // Thanks Brokin
 #macro dev true;
+#macro c_neutral 					$BAB0A9
+#macro c_speed 						$CE7314
+#macro c_projectile_speed $E5BC16
+#macro c_accuracy					$0067F7
+#macro c_spellpower 			$A83487
+#macro c_projectile 			$00ABFA
+#macro c_ammo 						$00ABFA
+#macro c_bounce 					$00ABFA
+#macro c_reload 					$FFFFFF
+
 #define create
 	uiroll = 0;
-	
+
 	sage_projectile_speed = 1; // Projectile speed multiplier
 	sage_spell_power = 0;      // Sage spellpower multiplier
 	sage_ammo_cost = 0; 	   // ammo cost multiplier
@@ -215,7 +225,11 @@ NOTES FROM JSBURG:
 	sage_auto = 0;             // sage custom auto weapon var
 	sage_uitimer = 20; // how long to wait on mouse hover before the draw
 
-	spellBullets = ["default"];
+	if !dev{
+		spellBullets = ["default"];
+	}else{
+		spellBullets = ["default", "gold", "split", "warp", "burst", "ultra", "melee", "turret", "reflective", "haste", "precision"]
+	}
 	stat_gain(spellBullets[0], self);
 
 	assign_sprites();
@@ -227,12 +241,12 @@ NOTES FROM JSBURG:
         global.bind_late_step = script_bind_step(late_step, 0);
     }
 	///  ACTIVE : Swap Spells  \\\
-	
+
 	// Player effects:
 	if sage_auto > 0{
 		clicked = button_check(index, "fire");
 	}
-	
+
 	if(canspec && button_pressed(index, "spec") && array_length(spellBullets) > 1){
 		var _temp = spellBullets[0];
 		stat_lose(spellBullets[0], self);
@@ -244,7 +258,7 @@ NOTES FROM JSBURG:
 		uiroll = 0;
 	}
 	var _s = self;
-	
+
 	///  PASSIVE : Spawn Spellbullets on weapon chest open \\\
 	with(WeaponChest){
 		if(fork()){
@@ -263,16 +277,16 @@ NOTES FROM JSBURG:
 					image_angle = direction;
 					on_step = spellbullet_step;
 					on_pick = script_ref_create(spellbullet_pickup);
-					
+
 					type = "default"
-					
+
 					droplist = ds_list_create();
 					ds_list_add(droplist, "split", "reflective", "precision", "warp", "haste", "burst", "turret", "melee");
 					if GameCont.loops > 0{ds_list_add(droplist, "ultra")}
 					ds_list_shuffle(droplist);
-					
+
 					for (var _i = 0; _i < ds_list_size(droplist) - 1; _i++){
-						
+
 						for (var _j = 0; _j < array_length(_s.spellBullets); _i++){
 							if _s.spellBullets[_j] = droplist[| _i]{
 								continue;
@@ -286,7 +300,7 @@ NOTES FROM JSBURG:
 						}
 					}
 					ds_list_destroy(droplist);
-					
+
 					my_prompt = prompt_create(type);
 					image_index = spellbullet_index(type);
 				}
@@ -394,10 +408,10 @@ NOTES FROM JSBURG:
 			exit;
 		}
 	}
-	
+
 	with(instances_matching_ne(instances_matching(projectile, "creator", self), "sageCheck", true)){
 		sageCheck = true;
-		
+
 		// Increase speed and maxspeed with projectile speed stat:
 		speed *= creator.sage_projectile_speed;
 		if "maxspeed" in self{
@@ -406,20 +420,20 @@ NOTES FROM JSBURG:
 		if "max_speed" in self{
 			max_speed *= creator.sage_projectile_speed;
 		}
-		
+
 		for(var i = 0; i < (1 + ultra_get(mod_current, 2)); i++){
-			
+
 			//trace(other.spellBullets[i])
-			
+
 			if(!instance_exists(self)){break}
 			switch(other.spellBullets[i]){
-				
+
 				case "split":
 					var     a = creator.sage_spell_power,
 						angle = (27 + 7 * a) * creator.accuracy,
 					   amount = 2 + a;
 					for(var _i = 0; _i < amount; _i++){
-						
+
 						// Special split case for lasers because they dont want to cooperate on their own:
 						if instance_is(self, Laser){
 							if "SageCheckLaser" not in self{
@@ -433,7 +447,7 @@ NOTES FROM JSBURG:
 								}
 							}
 						}else with(instance_copy(false)){
-							
+
 							if !instance_is(self, Lightning){
 								image_angle += -angle + _i * angle + angle / 2 * (1 - a);
 								direction += -angle + _i * angle + angle / 2 * (1 - a);
@@ -442,9 +456,9 @@ NOTES FROM JSBURG:
 					}
 					instance_delete(self);
 					break;
-					
+
 				case "reflective":
-				
+
 					// if "bounce" or "bounces" are defined as a variable it will give that projectile bounce
 					// if "sage_no_bounce" is defined it will not use sages custom bounce event for bouncing, use this for melee attacks
 					if "bounce" not in self || instance_is(self, BouncerBullet){
@@ -457,7 +471,7 @@ NOTES FROM JSBURG:
 					}
 					break;
 				case "precision":
-					
+
 					/*if(skill_get(mut_throne_butt) && instance_exists(enemy)){
 						var _e = instance_nearest(x+lengthdir_x(5, direction), y+lengthdir_y(5, direction), enemy);
 						var _e2 = instance_nearest(x+lengthdir_x(15, direction), y+lengthdir_y(15, direction), enemy);
@@ -482,17 +496,17 @@ NOTES FROM JSBURG:
 					if instance_is(self, Flame){
 						speed += 4 + 2 * ultra_get("sage", 1);
 					}
-					
+
 					// define sage_no_hitscan to exclude this from running hitscan
 					if "sage_no_hitscan" not in self  && !instance_is(self, Flame) && !instance_is(self, Laser) && !instance_is(self, Lightning){
 						if(creator.sage_spell_power){
-							
+
 							sageHitscan = true;
 						}else{
-					
+
 							run_hitscan(self, 4 + 2 * ultra_get("sage", 1));
 						}
-					}	
+					}
 					break;
 			}
 		}
@@ -500,140 +514,136 @@ NOTES FROM JSBURG:
 	with(instances_matching(instances_matching(projectile, "creator", self), "sageHitscan", true)){
 		run_hitscan(self, 2);
 	}
-
 #define fire()
-ammo[weapon_get_type(wep)] -= weapon_get_cost(wep) * sage_ammo_cost;
-GameCont.rad -= weapon_get_cost(wep) * sage_ammo_cost;
-	
+	ammo[weapon_get_type(wep)] -= weapon_get_cost(wep) * sage_ammo_cost;
+	GameCont.rad -= weapon_get_cost(wep) * sage_ammo_cost;
 #define stat_gain(spellbullet, inst)
-switch spellbullet{
-	case "split":
-		sage_ammo_cost += 1 + 1 * inst.sage_spell_power;
+	switch spellbullet{
+		case "split":
+			sage_ammo_cost += 1 + 1 * inst.sage_spell_power;
+			break;
+		case "reflective":
+			sage_projectile_speed -= .2;
 		break;
-	case "reflective":
-		sage_projectile_speed -= .2;
-	break;
-	case "precision":
-		accuracy -= .6 + .3 * inst.sage_spell_power;
-		sage_projectile_speed += .2;
-	break;
-	case "warp":
-	break;
-	case "haste":
-		reloadspeed += .35 + .35 * inst.sage_spell_power;
-		accuracy += .65;
-	break;
-	case "burst":
-		sage_burst_size += 2 + 2 * inst.sage_spell_power;
-		sage_ammo_cost += 2 + 2 * inst.sage_spell_power;
-		reloadspeed -= .5;
-	break;
-	case "default":
-		accuracy -= .15 + .15 * inst.sage_spell_power;
-		reloadspeed += .1 + .1 * inst.sage_spell_power;
-	break;
-	case "gold":
-		accuracy -= .2 + .2 * inst.sage_spell_power;
-		reloadspeed += .15 + .15 * inst.sage_spell_power;
-		sage_projectile_speed += .15 + .15 * inst.sage_spell_power; 
-		maxspeed += .25 + .25 * inst.sage_spell_power;
-	break;
-	case "ultra":
-	break;
-	case "turret":
-		reloadspeed += .5 + .5 * inst.sage_spell_power;
-		maxspeed -= 3; 
-		sage_auto++;
-	break;
-	case "melee":
-		reloadspeed += .25 + .25 * inst.sage_spell_power;
-		maxspeed += 1.5;
-		accuracy += .4;
-}
-
+		case "precision":
+			accuracy -= .6 + .3 * inst.sage_spell_power;
+			sage_projectile_speed += .2;
+		break;
+		case "warp":
+		break;
+		case "haste":
+			reloadspeed += .35 + .35 * inst.sage_spell_power;
+			accuracy += .65;
+		break;
+		case "burst":
+			sage_burst_size += 2 + 2 * inst.sage_spell_power;
+			sage_ammo_cost += 2 + 2 * inst.sage_spell_power;
+			reloadspeed -= .5;
+		break;
+		case "default":
+			accuracy -= .15 + .15 * inst.sage_spell_power;
+			reloadspeed += .1 + .1 * inst.sage_spell_power;
+		break;
+		case "gold":
+			accuracy -= .2 + .2 * inst.sage_spell_power;
+			reloadspeed += .15 + .15 * inst.sage_spell_power;
+			sage_projectile_speed += .15 + .15 * inst.sage_spell_power;
+			maxspeed += .25 + .25 * inst.sage_spell_power;
+		break;
+		case "ultra":
+		break;
+		case "turret":
+			reloadspeed += .5 + .5 * inst.sage_spell_power;
+			maxspeed -= 3;
+			sage_auto++;
+		break;
+		case "melee":
+			reloadspeed += .25 + .25 * inst.sage_spell_power;
+			maxspeed += 1.5;
+			accuracy += .4;
+	}
 #define stat_lose(spellbullet, inst)
-switch spellbullet{
-	case "split":
-		sage_ammo_cost -= 1 + 1 * inst.sage_spell_power;
-	break;
-	case "reflective":
-		sage_projectile_speed += .2;
-	break;
-	case "precision":
-		accuracy += .6 + .3 * inst.sage_spell_power;
-		sage_projectile_speed -= .2;
-	break;
-	case "warp":
-	break;
-	case "haste":
-		reloadspeed -= .35 + .35 * inst.sage_spell_power;
-		accuracy -= .65;
-	break;
-	case "burst":
-		sage_burst_size -= 2 + 2 * inst.sage_spell_power;
-		sage_ammo_cost -= 2 + 2 * inst.sage_spell_power;
-		reloadspeed += .5;
-	break;
-	case "default":
-		accuracy += .15 + .15 * inst.sage_spell_power;
-		reloadspeed -= .1 + .1 * inst.sage_spell_power;
-	break;
-	case "gold":
-		accuracy += .2 + .2 * inst.sage_spell_power;
-		reloadspeed -= .15 + .15 * inst.sage_spell_power;
-		sage_projectile_speed -= .15 + .15 * inst.sage_spell_power; 
-		maxspeed -= .25 + .25 * inst.sage_spell_power;
-	break;
-	case "ultra":
-	break;
-	case "turret":
-		reloadspeed -= .5 + .5 * inst.sage_spell_power;
-		maxspeed += 3; 
-		sage_auto--;
-	break;
-	case "melee":
-		reloadspeed -= .25 + .25 * inst.sage_spell_power;
-		maxspeed -= 1.5;
-		accuracy -= .4;
-	break;
-}
-
+	switch spellbullet{
+		case "split":
+			sage_ammo_cost -= 1 + 1 * inst.sage_spell_power;
+		break;
+		case "reflective":
+			sage_projectile_speed += .2;
+		break;
+		case "precision":
+			accuracy += .6 + .3 * inst.sage_spell_power;
+			sage_projectile_speed -= .2;
+		break;
+		case "warp":
+		break;
+		case "haste":
+			reloadspeed -= .35 + .35 * inst.sage_spell_power;
+			accuracy -= .65;
+		break;
+		case "burst":
+			sage_burst_size -= 2 + 2 * inst.sage_spell_power;
+			sage_ammo_cost -= 2 + 2 * inst.sage_spell_power;
+			reloadspeed += .5;
+		break;
+		case "default":
+			accuracy += .15 + .15 * inst.sage_spell_power;
+			reloadspeed -= .1 + .1 * inst.sage_spell_power;
+		break;
+		case "gold":
+			accuracy += .2 + .2 * inst.sage_spell_power;
+			reloadspeed -= .15 + .15 * inst.sage_spell_power;
+			sage_projectile_speed -= .15 + .15 * inst.sage_spell_power;
+			maxspeed -= .25 + .25 * inst.sage_spell_power;
+		break;
+		case "ultra":
+		break;
+		case "turret":
+			reloadspeed -= .5 + .5 * inst.sage_spell_power;
+			maxspeed += 3;
+			sage_auto--;
+		break;
+		case "melee":
+			reloadspeed -= .25 + .25 * inst.sage_spell_power;
+			maxspeed -= 1.5;
+			accuracy -= .4;
+		break;
+	}
 #define spellbullet_examine(name, inst)
 switch(name){
 	case "split":
-		return "@s+" + string(1 + 1 * inst.sage_spell_power) + " @wPROJECTILES @sfired#+" + string(100 + 100 * inst.sage_spell_power) + "% @yAMMO @sCOST";
+		return `@(color:${c_neutral})+` + string(1 + 1 * inst.sage_spell_power) + ` @(color:${c_projectile})PROJECTILES @(color:${c_projectile})fired#@(color:${c_neutral})+` + string(100 + 100 * inst.sage_spell_power) +  `% @(color:${c_ammo})AMMO @(color:${c_neutral})COST`;
 	case "reflective":
-		return "@s+" + string(3	 + 2 * inst.sage_spell_power) + " @yBOUNCES#@s-20% @bPROJECTILE SPEED";
+		return `@(color:${c_neutral})+` + string(3	 + 2 * inst.sage_spell_power) +  ` @(color:${c_bounce})BOUNCES#@s-20% @(color:${c_projectile_speed})PROJECTILE SPEED`;
 	case "precision":
-		return "@s+" + string(60 + 30 * inst.sage_spell_power) + "% @yACCURACY#@s+20% @bPROJECTILE SPEED";
+		return `@(color:${c_neutral})+` + string(60 + 30 * inst.sage_spell_power) + `% @(color:${c_accuracy})ACCURACY#@(color:${c_neutral})+20% @(color:${c_projectile_speed})PROJECTILE SPEED`;
 	case "warp":
 		return ""
 	case "haste":
-		return "@s+" + string(35 + 50 * inst.sage_spell_power) + "% @wRELOAD SPEED#@s-65% @yACCURACY";
+		return `@(color:${c_neutral})+` + string(35 + 50 * inst.sage_spell_power) + `% @(color:${c_reload})RELOAD SPEED#@s-65% @(color:${c_accuracy})ACCURACY`;
 	case "burst":
-		return "@s+" + string(2 + 2 * inst.sage_spell_power) + " @wBURST SIZE#@s+" + string(200 + 200 * inst.sage_spell_power) + "% @yAMMO COST#@s-50% @wRELOAD SPEED";
+		return `@(color:${c_neutral})+` + string(2 + 2 * inst.sage_spell_power) + ` @(color:${c_ammo})BURST SIZE#@(color:${c_neutral})+` + string(200 + 200 * inst.sage_spell_power) + `% @(color:${c_ammo})AMMO COST#@s-50% @(color:${c_reload})RELOAD SPEED`;
 	case "default":
-		return "@s+" + string(10 + 10 * inst.sage_spell_power) + "% @wRELOAD SPEED#@s+" + string(15 + 15 * inst.sage_spell_power) + "% @yACCURACY";
+		return `@(color:${c_neutral})+` + string(10 + 10 * inst.sage_spell_power) + `% @(color:${c_reload})RELOAD SPEED#@(color:${c_neutral})+` + string(15 + 15 * inst.sage_spell_power) + `% @(color:${c_accuracy})ACCURACY`;
 	case "gold":
-		return "@s+" + string(15 + 15 * inst.sage_spell_power) + "% @wRELOAD SPEED#@s+" + string(20 + 20 * inst.sage_spell_power) + "% @yACCURACY#@s+" + string(15 + 15 * inst.sage_spell_power) + "% @bPROJECTILE SPEED#@s+" + string(25 + 25 * inst.sage_spell_power) + "% @bSPEED";
+		return `@(color:${c_neutral})+` + string(15 + 15 * inst.sage_spell_power) + `% @(color:${c_reload})RELOAD SPEED#@(color:${c_neutral})+` + string(20 + 20 * inst.sage_spell_power) + `% @(color:${c_accuracy})ACCURACY#@(color:${c_neutral})+` + string(15 + 15 * inst.sage_spell_power) + `% @(color:${c_projectile_speed})PROJECTILE SPEED#@(color:${c_neutral})+` + string(25 + 25 * inst.sage_spell_power) + `% @(color:${c_speed})SPEED`;
 	case "ultra":
 	case "turret":
-		return "@s+" + string(50 + 50 * inst.sage_spell_power) + "% @wRELOAD SPEED#@s-66% @bSPEED#@s+@wAUTOMATIC WEAPONS";
+		return `@(color:${c_neutral})+` + string(50 + 50 * inst.sage_spell_power) + `% @(color:${c_reload})RELOAD SPEED#@(color:${c_neutral})+@wAUTOMATIC WEAPONS#@s-66% @(color:${c_speed})SPEED`;
 	case "melee":
-		return "@s+" + string(25 + 25 * inst.sage_spell_power) + "% @wRELOAD SPEED#@s+150% @bSPEED#@s-40% @yACCURACY";
+		return `@(color:${c_neutral})+` + string(25 + 25 * inst.sage_spell_power) + `% @(color:${c_reload})RELOAD SPEED#@(color:${c_neutral})+150% @(color:${c_speed})SPEED#@s-40% @(color:${c_accuracy})ACCURACY`;
 	default:
 		return "???";
-	
+
 }
 
 #define spellbullet_index(name)
 	switch(name){
-		case "split":	   return 1;
+		case "split":	     return 1;
 		case "reflective": return 2;
 		case "precision":  return 3;
-		case "warp":	   return 4;
-		case "haste":	   return 5;	
-		case "burst":	   return 6;
+		case "warp":	     return 4;
+		case "haste":	     return 5;
+		case "burst":	     return 6;
 		case "default":	   return 7;
 		case "gold":       return 8;
 		case "ultra":      return 9;
@@ -641,7 +651,7 @@ switch(name){
 		case "melee":      return 11;
 		default:           return 0;
 	}
-	
+
 #define spellbullet_step
 	if(distance_to_object(Wall) < 1){
 		move_bounce_solid(false);
@@ -651,7 +661,7 @@ switch(name){
 	with(player_find(index)){
 		if(race == "sage"){
 			stat_gain(spellbullet, self)
-			
+
 			if(array_length(spellBullets) < (2 + ceil(skill_get(mut_throne_butt)))){
 				array_push(spellBullets, spellbullet.type);
 				uiroll = 0;
@@ -749,7 +759,7 @@ switch(name){
 	switch(argument0){
 		 // Play Ultra Sounds:
 		case 1:
-			sound_play(sndFishUltraA); 
+			sound_play(sndFishUltraA);
 			with instances_matching(Player, "race", "sage"){
 				stat_lose(spellBullets[0], self);
 				if ultra_get("sage", 1) > 0 && array_length(spellBullets) > 1{stat_lose(spellBullets[1], self)}
@@ -758,7 +768,7 @@ switch(name){
 				if ultra_get("sage", 1) > 0 && array_length(spellBullets) > 1{stat_gain(spellBullets[1], self)}
 			}
 		break;
-		case 2: 
+		case 2:
 			sound_play(sndFishUltraB);
 			with instances_matching(Player, "race", "sage") if array_length(spellBullets) > 1{
 				stat_gain(spellBullets[1], self);
@@ -807,23 +817,23 @@ switch(name){
 	snd_spch = sndMutant1Spch;	// YOU REACHED THE NUCLEAR THRONE
 	snd_idpd = sndMutant1IDPD;	// BEYOND THE PORTAL
 	snd_cptn = sndMutant1Cptn;	// THE STRUGGLE IS OVER
-	
-	
+
+
 #define prompt_create(_text)
 	/*
 		Creates an E key prompt with the given text that targets the current instance
 	*/
-	
+
 	with(Prompt_create(x, y)){
 		text    = _text;
 		creator = other;
 		depth   = other.depth;
-		
+
 		return self;
 	}
-	
+
 	return noone;
-	
+
 #define Prompt_create(_x, _y)
 	with(instance_create(_x, _y, CustomObject)){
 		 // Vars:
@@ -836,22 +846,22 @@ switch(name){
 		pick       = -1;
 		xoff       = 0;
 		yoff       = 0;
-		
+
 		 // Events:
 		on_meet = null;
-		
+
 		on_begin_step = Prompt_begin_step;
 		on_end_step = Prompt_end_step;
 		on_cleanup = Prompt_cleanup;
-		
+
 		return self;
 	}
-	
+
 #define Prompt_begin_step
 	with(nearwep){
 		instance_delete(self);
 	}
-	
+
 #define Prompt_end_step
 	 // Follow Creator:
 	if(creator != noone){
@@ -868,7 +878,7 @@ switch(name){
 		}
 		else instance_destroy();
 	}
-	
+
 #define Prompt_cleanup
 	with(nearwep){
 		instance_delete(self);
@@ -886,7 +896,7 @@ switch(name){
 				pick = -1;
 			}
 		}
-		
+
 		 // Player Collision:
 		if(instance_exists(Player)){
 			_inst = instances_matching(_inst, "visible", true);
@@ -899,7 +909,7 @@ switch(name){
 						&& !place_meeting(x, y, CarVenusFixed)
 					){
 						var _noVan = true;
-						
+
 						 // Van Check:
 						if(instance_exists(Van) && place_meeting(x, y, Van)){
 							with(instances_meeting(x, y, instances_matching(Van, "drawspr", sprVanOpenIdle))){
@@ -909,12 +919,12 @@ switch(name){
 								}
 							}
 						}
-						
+
 						if(_noVan){
 							var	_nearest  = noone,
 								_maxDis   = null,
 								_maxDepth = null;
-								
+
 							// Find Nearest Touching Indicator:
 							if(instance_exists(nearwep)){
 								_maxDis   = point_distance(x, y, nearwep.x, nearwep.y);
@@ -939,7 +949,7 @@ switch(name){
 									}
 								}
 							}
-							
+
 							 // Secret IceFlower:
 							with(_nearest){
 								nearwep = instance_create(x + xoff, y + yoff, IceFlower);
@@ -982,24 +992,24 @@ switch(name){
 			}
 		}
 	}
-	
+
 #define instances_meeting(_x, _y, _obj)
 	/*
 		Returns all instances whose bounding boxes overlap the calling instance's bounding box at the given position
 		Much better performance than manually performing 'place_meeting(x, y, other)' on every instance
 	*/
-	
+
 	var	_tx = x,
 		_ty = y;
-		
+
 	x = _x;
 	y = _y;
-	
+
 	var _inst = instances_matching_ne(instances_matching_le(instances_matching_ge(instances_matching_le(instances_matching_ge(_obj, "bbox_right", bbox_left), "bbox_left", bbox_right), "bbox_bottom", bbox_top), "bbox_top", bbox_bottom), "id", id);
-	
+
 	x = _tx;
 	y = _ty;
-	
+
 	return _inst;
 
 

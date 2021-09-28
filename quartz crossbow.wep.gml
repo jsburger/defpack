@@ -72,7 +72,7 @@ return{
       }
       wep = w
   }
-	weapon_post(12,-100,16)
+	weapon_post(12,-40,16)
 	sleep(50)
 	sound_play_pitch(sndHeavyCrossbow,random_range(.6,.8))
 	sound_play_pitch(sndLaserCrystalHit,random_range(1.5,1.6))
@@ -104,6 +104,6 @@ return{
 		image_xscale = .75
 	    image_yscale = .75
 	    image_speed = choose(.7,.7,.7,.45)
-	}	
+	}
   }
 #define chance(_v) return mod_script_call("mod", "defpack tools", "chance", _v);

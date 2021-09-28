@@ -55,13 +55,13 @@ with mod_script_call("mod","defpack tools","create_megadisc",x,y)
 image_angle = direction
 
 #define step
-with instances_matching(Player, "wep", mod_current){speed *= min(1, .8 + .2 * (skill_get(mut_extra_feet)))}
-with instances_matching(instances_matching(Player, "race", "steroids"), "bwep", mod_current){speed *= min(1, .8 + .2 * (skill_get(mut_extra_feet)))}
+//with instances_matching(Player, "wep", mod_current){speed *= min(1, .8 + .2 * (skill_get(mut_extra_feet)))}
+//with instances_matching(instances_matching(Player, "race", "steroids"), "bwep", mod_current){speed *= min(1, .8 + .2 * (skill_get(mut_extra_feet)))}
 #define weapon_sprt
 return global.sprMegaDiscGun;
 
-#define weapon_sprt_hud
-return global.sprMegaDiscGunHUD;
+//#define weapon_sprt_hud
+//return global.sprMegaDiscGunHUD;
 
 #define weapon_text
 return "watch out"
