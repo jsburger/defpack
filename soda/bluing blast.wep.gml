@@ -1,10 +1,10 @@
 #define init
-global.sprSaltshake = sprite_add_weapon("../sprites/weapons/sprSolvedSolution.png",-2,1)
+global.sprSaltshake = sprite_add_weapon("../sprites/weapons/sprBluingBlast.png",-2,1)
 mod_script_call("mod", "defpack tools", "add_soda", mod_current)
 #define weapon_sprt
 return global.sprSaltshake
 #define weapon_name
-return "SOLVED SOLUTION"
+return "BLUING BLAST"
 #define weapon_type
 return 0
 #define weapon_cost
@@ -27,11 +27,19 @@ return 0
 mod_script_call_self("mod", "sodaeffect", "sound_play_drink")
 mod_script_call_self("mod", "sodaeffect", "soda_swap")
 
-GameCont.skillpoints++;
-sound_play_pitchvol(sndMutRhinoSkin, 1.5, .02)
+sound_play_pitchvol(sndMutRhinoSkin, 1.5, .02);
+
+if "sage_spell_power" in self{
+	spellpower_change(spellBullets[0], self, .2);
+}
+
+my_health = min(my_health + 1 * round(skill_get(mut_second_stomach)), maxhealth);
+
 with mod_script_call("mod", "sodaeffect", "drink", x, y){
-	subtext = "MUTATION CHOICES UP!"
+	subtext = "SPELLPOWER UP!"
 }
 
 #define weapon_text
-return "TO SOLVE YOUR PROBLEMS WITH"
+return "TASTES LIKE GUNS"
+
+#define spellpower_change(spellbullet, inst, spellpower) return mod_script_call("race", "sage", "spellpower_change", spellbullet, inst, spellpower);

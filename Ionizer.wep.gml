@@ -106,11 +106,8 @@ motion_add(gunangle-180,4)
         team = other.team
         creator = other.creator
       }
-      with instance_create(x+random_range(-30,30),y+random_range(-30,30),PlasmaImpact)
-      {
-        s = .25
-        image_xscale = s
-        image_yscale = s
+
+      with mod_script_call("mod", "defpack tools", "create_plasma_impact_small", x+random_range(-30,30),y+random_range(-30,30)){
         image_speed = random_range(.3,.6)
         team = other.team
         creator = other.creator

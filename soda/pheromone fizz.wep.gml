@@ -27,12 +27,14 @@ mod_script_call_self("mod", "sodaeffect", "sound_play_drink")
 mod_script_call_self("mod", "sodaeffect", "soda_swap")
 
 sound_play_pitchvol(sndMutRhinoSkin, 1.5, .02)
-Player.ntte_pet_max++;
-
+if mod_exists("mod", "telib"){
+	Player.ntte_pet_max++;
+}
+my_health = min(my_health + 1 * round(skill_get(mut_second_stomach)), maxhealth);
 with mod_script_call("mod", "sodaeffect", "drink", x, y){
 	subtext = "ADDITIONAL PET SLOT!"
 }
 
 
 #define weapon_text
-return "CHARMING COMPOSITION"
+return choose("CHARMING COMPOSITION", "TASTES LIKE FRIENDSHIP")

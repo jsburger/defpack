@@ -77,6 +77,8 @@ return choose("PERSONAL SECURITY DEVICE", "ABSORB THEIR @wBULLETS");
     image_index  = 0;
     depth = -2;
 
+    sage_no_hitscan = true;
+
     creator = other;
     team    = other.team;
     damage  = 12;

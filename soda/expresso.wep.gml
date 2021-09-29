@@ -29,9 +29,10 @@ mod_script_call_self("mod", "sodaeffect", "soda_swap")
 
 sound_play_pitchvol(sndMutExtraFeet, 1.5, .1)
 maxspeed += .25
+my_health = min(my_health + 1 * round(skill_get(mut_second_stomach)), maxhealth);
 with mod_script_call("mod", "sodaeffect", "drink", x, y){
 	subtext = "MAX SPEED UP!"
 }
 
 #define weapon_text
-return "A CLASSIC, REALLY"
+return choose("A CLASSIC, REALLY", "TASTES LIKE COFFEE")

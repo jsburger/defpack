@@ -34,8 +34,8 @@ return 0
 return 1
 #define weapon_sprt
 return global.sprMegaDrillLauncher
-#define weapon_sprt_hud
-return global.sprMegaDrillLauncherHUD
+//#define weapon_sprt_hud
+//return global.sprMegaDrillLauncherHUD
 #define nts_weapon_examine
 return{
     "d": "Once they were used to dig tunnels for underground railways. ",
@@ -85,8 +85,8 @@ return "PIERCE THE HEAVENS"
   }
 
 #define step
-with instances_matching(Player, "wep", mod_current){speed *= min(1, .8 + .2 * (skill_get(mut_extra_feet)))}
-with instances_matching(instances_matching(Player, "race", "steroids"), "bwep", mod_current){speed *= min(1, .8 + .2 * (skill_get(mut_extra_feet)))}
+//with instances_matching(Player, "wep", mod_current){speed *= min(1, .8 + .2 * (skill_get(mut_extra_feet)))}
+//with instances_matching(instances_matching(Player, "race", "steroids"), "bwep", mod_current){speed *= min(1, .8 + .2 * (skill_get(mut_extra_feet)))}
 #define bolt_step
   if skill_get(mut_bolt_marrow){
       var q = mod_script_call("mod","defpack tools","instance_nearest_matching_ne",x,y,hitme,"team",team)

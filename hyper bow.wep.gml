@@ -156,7 +156,7 @@ if charged = 1{
       team = other.creator.team;
       creator = other.creator;
       damage = 50;
-      max_bounces = 4 * _elbow;
+      bounce = 4 * _elbow;
       hitscan = true;
 
 	}
@@ -219,7 +219,7 @@ with(instance_create(_x, _y, CustomProjectile)){
 	damage = 20;
 	destroy_timer = 30;
 
-	max_bounces = 4;
+	bounce = 4;
 	homing_dist = 24;
 	old_x = x;
 	old_y = y;
@@ -425,12 +425,12 @@ if (walled){
 BouncerBolt_trail();
 instance_create(x, y, Dust).depth = depth
 
-if (max_bounces > 0){
+if (bounce > 0){
 	move_bounce_solid(true);
 
 	image_angle = direction;
 
-	max_bounces -= 1;
+	bounce -= 1;
 
   sound_play_pitchvol(sndBoltHitWall, random_range(1.4, 1.7), .7);
 

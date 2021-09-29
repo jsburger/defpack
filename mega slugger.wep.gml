@@ -43,8 +43,8 @@ return -4;
 #define weapon_sprt
   return global.sprMassiveSlugger;
 
-#define weapon_sprt_hud
-  return global.sprMassiveSluggerHUD;
+//#define weapon_sprt_hud
+//  return global.sprMassiveSluggerHUD;
 
 #define nts_weapon_examine
 return{
@@ -75,8 +75,8 @@ return{
   {
     creator = other;
     team    = other.team;
-    damage[0]  = 8;
-    damage[1]  = 12;
+    damage = 12;
+    damagefalloff = 4;
     maxframes = 2 + skill_get(15) * 2
     frames    = maxframes
     force = 30;
@@ -148,7 +148,7 @@ return{
         if other.team != team
         {
           repeat(2+_s) instance_create(x+random_range(-8,8),y+random_range(-8,8),Smoke)
-          projectile_hit(other,damage[min(frames,1)],force,direction)
+          projectile_hit(other,damage[frames > 0 ? damage : damage - damagefalloff],force,direction)
           x -= lengthdir_x(other.size * 2, direction)
           y -= lengthdir_y(other.size * 2, direction)
           with other{
@@ -221,9 +221,8 @@ return{
   }
 
 #define step
-
-  with instances_matching(Player, "wep", mod_current){speed *= min(1, .8 + .2 * (skill_get(mut_extra_feet)))}
-  with instances_matching(instances_matching(Player, "race", "steroids"), "bwep", mod_current){speed *= min(1, .8 + .2 * (skill_get(mut_extra_feet)))}
+  //with instances_matching(Player, "wep", mod_current){speed *= min(1, .8 + .2 * (skill_get(mut_extra_feet)))}
+  //with instances_matching(instances_matching(Player, "race", "steroids"), "bwep", mod_current){speed *= min(1, .8 + .2 * (skill_get(mut_extra_feet)))}
 
 #define weapon_reloaded
   sound_play_pitchvol(sndShotReload,.8,.7);

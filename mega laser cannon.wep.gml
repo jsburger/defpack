@@ -46,8 +46,8 @@ return false;
 #define weapon_sprt
 return global.sprBeamer;
 
-#define weapon_sprt_hud
-return global.sprBeamerHUD;
+//#define weapon_sprt_hud
+//return global.sprBeamerHUD;
 
 #define weapon_text
 return "MASSIVE POWER";
@@ -72,6 +72,7 @@ with instance_create(x,y,CustomProjectile){
 	team = other.team
 	gunangle = other.gunangle
 	ammo = 30
+	sage_no_hitscan = true;
 	orammo = ammo
 	on_step = sphere_step
 	on_wall = nothing
@@ -80,8 +81,8 @@ with instance_create(x,y,CustomProjectile){
 }
 
 #define step
-with instances_matching(Player, "wep", mod_current){speed *= min(1, .8 + .2 * (skill_get(mut_extra_feet)))}
-with instances_matching(instances_matching(Player, "race", "steroids"), "bwep", mod_current){speed *= min(1, .8 + .2 * (skill_get(mut_extra_feet)))}
+//with instances_matching(Player, "wep", mod_current){speed *= min(1, .8 + .2 * (skill_get(mut_extra_feet)))}
+//with instances_matching(instances_matching(Player, "race", "steroids"), "bwep", mod_current){speed *= min(1, .8 + .2 * (skill_get(mut_extra_feet)))}
 #define nothing
 
 #define sphere_hit
@@ -117,6 +118,7 @@ if floor(ammo) < current_time_scale and floor(ammo) >= 0{
         team = other.team
         direction = creator.gunangle
         image_angle = direction
+				sage_no_hitscan = true;
     	sprite_index = global.sprBeam
     	spr_head     = global.sprBeamEnd
     	spr_tail     = global.sprBeamStart

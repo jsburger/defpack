@@ -52,6 +52,7 @@ with instance_create(x,y,CustomProjectile){
     angle = random(360)
     angle_speed = 5
     canshoot = 0
+    sage_no_bounce = true;
 
     on_step = flarestep
     on_anim = flareanim

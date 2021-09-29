@@ -227,6 +227,7 @@ with instance_create(x,y,CustomSlash)
 		radius   = 1;
 		target   = other;
 		index    = 0;
+		sage_no_bounce = true;
 
 		on_hit       = mb_hit
 		on_step 	 = mb_step
@@ -243,7 +244,9 @@ with instance_create(x,y,CustomSlash)
 
 #define mb_destroy
 	sound_play_pitch(sndPlasmaHit,random_range(1.55,1.63))
-	with instance_create(x,y,PlasmaImpact){image_xscale=.5;image_yscale=.5;damage = round(damage/2);team = other.team}
+	with mod_script_call("mod", "defpack tools", "create_plasma_impact_small", x, y){
+    team = other.team;
+  }
 
 #define mb_step
 	if !instance_exists(target){instance_destroy(); exit}else{

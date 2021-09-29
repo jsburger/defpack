@@ -1,0 +1,2 @@
+/loadrace sage
+/loadmod SageMod

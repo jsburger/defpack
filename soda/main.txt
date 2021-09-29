@@ -2,7 +2,6 @@
 /loadwep extra double triple coffee
 /loadwep frog milk
 /loadwep guardian juice
-/loadwep lightning blue lifting drink(tm)
 /loadwep munitions mist
 /loadwep saltshake
 /loadwep soda popper
@@ -12,3 +11,4 @@
 /loadwep canned poison
 /loadwep pheromone fizz
 /loadwep cocaineum cola
+/loadwep bluing blast

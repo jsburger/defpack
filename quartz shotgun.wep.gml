@@ -155,8 +155,6 @@ return{
 #define quartzbullet_destroy
   repeat(3) with instance_create(x+random_range(-4,4),y+random_range(-4,4),Dust){sprite_index = sprExtraFeetDust}
   instance_create(x+lengthdir_x(sprite_width/2,direction),y+lengthdir_y(sprite_height/2,direction),WepSwap){image_angle = random(360)}
-  view_shake_at(x,y,2)
-  sleep(1)
 
 #define quartzbullet_hit
   if projectile_canhit_melee(other) || lasthit != other{

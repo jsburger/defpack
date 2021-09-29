@@ -30,6 +30,7 @@ mod_script_call_self("mod", "sodaeffect", "sound_play_drink")
 mod_script_call_self("mod", "sodaeffect", "soda_swap")
 
 sound_play_pitch(sndHealthChest, 1.3)
+my_health = maxhealth);
 
 #define weapon_text
 return "IN CASE OF @rEMERGENCY@s"

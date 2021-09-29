@@ -29,10 +29,11 @@ mod_script_call_self("mod", "sodaeffect", "soda_swap")
 
 maxhealth++
 my_health++
+my_health = min(my_health + 1 * round(skill_get(mut_second_stomach)), maxhealth);
 sound_play_pitchvol(sndMutRhinoSkin, 1.5, .02)
 with mod_script_call("mod", "sodaeffect", "drink", x, y){
 	subtext = "MAX HEALTH UP!"
 }
 
 #define weapon_text
-return "@rREALLY@s CLEARS THE THROAT"
+return choose("@rREALLY@s CLEARS THE THROAT", "TASTES LIKE ELECTROLYTES")

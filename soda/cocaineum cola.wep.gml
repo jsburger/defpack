@@ -28,10 +28,12 @@ mod_script_call_self("mod", "sodaeffect", "sound_play_drink")
 mod_script_call_self("mod", "sodaeffect", "soda_swap")
 
 sound_play_pitchvol(sndMutPatience, 1.5, .1)
+if infammo >= 0 infammo += 240;
 mod_script_call("mod", "metamorphosis", "haste", 240, 0.4);
+my_health = min(my_health + 1 * round(skill_get(mut_second_stomach)), maxhealth);
 with mod_script_call("mod", "sodaeffect", "drink", x, y){
-	subtext = "HASTENED! GET IN THERE!"
+	subtext = "GET IN THERE!"
 }
 
 #define weapon_text
-return "GO GO GO GO"
+return choose("GO GO GO GO", "TASTES LIKE SUGAR")

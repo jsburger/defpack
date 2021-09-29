@@ -29,6 +29,7 @@ mod_script_call_self("mod", "sodaeffect", "soda_swap")
 
 sound_play_pitchvol(sndMutBackMuscle, 1.5, .1)
 typ_ammo[1] += 2 //more boolet
+my_health = min(my_health + 1 * round(skill_get(mut_second_stomach)), maxhealth);
 for (var i = 1; i < array_length(ammo); i++){
 	typ_ammo[i]++
 }
@@ -37,4 +38,4 @@ with mod_script_call("mod", "sodaeffect", "drink", x, y){
 }
 
 #define weapon_text
-return "A WONDERFUL @yGRAPEFRUIT-BULLET@s BLEND"
+return choose("A WONDERFUL @yGRAPEFRUIT-BULLET@s BLEND", "TASTES LIKE GRAPESHOTS")

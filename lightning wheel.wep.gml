@@ -47,13 +47,20 @@
   sound_play_pitch(skill_get(mut_laser_brain) > 0 ? sndEnergyScrewdriverUpg : sndEnergyScrewdriver, 1.6 * _pitch)
   sound_play_pitch(sndLightningReload, .7 * _pitch)
 
-
     var _c = instance_is(self, FireCont) && "creator" in self ? creator : self;
 
     with create_lightning_wheel(x, y) {
         motion_set(other.gunangle, maxspeed)
         team = other.team
         creator = other
+
+    //Move enemies directly in front of player further away to prevent close proximity deadzone:
+    with instances_matching_ne(hitme, "team", other.team){
+        if point_distance(other.x + lengthdir_x(14, other.direction), other.y + lengthdir_y(14, other.direction), x, y) <= 28{
+            x += lengthdir_x(10, other.direction);
+            y += lengthdir_y(1, other.direction);
+        }
+    }
 
         wheel_throw(self, _c)
     }
@@ -127,10 +134,10 @@
         sprite_index = global.sprLightningWheelProj
         mask_index   = sprHeavyGrenadeBlink
         //Mask used for colliding with projectiles and hitme
-        proj_mask    = mskSnowTank
+        proj_mask    = mskStreetLight
         image_speed  = .4
 
-        damage = 5
+        damage = 4
 
         friction = max(1.4 - skill_get(mut_long_arms)*.25, .2) //arbitrary minimum
         depth  = -1
@@ -413,8 +420,12 @@
         //Delay the wheel on hit
         var size = clamp(other.size, 1, 3);
         if !instance_is(other, prop) {
-            wheel.x -= lengthdir_x(speed_raw, direction) * (1 - size / 10)
-            wheel.y -= lengthdir_y(speed_raw, direction) * (1 - size / 10)
+            wheel.x -= lengthdir_x(speed_raw, direction) * (.5 + size / 10)
+            wheel.y -= lengthdir_y(speed_raw, direction) * (.5 + size / 10)
+            
+            //Increase knockback, but not not while returning
+            other.x += lengthdir_x(speed_raw / (1 + other.size), direction) * (1 - wheel.returning);
+            other.y += lengthdir_y(speed_raw / (1 + other.size), direction) * (1 - wheel.returning);
         }
 
         //Screenshake
@@ -528,7 +539,7 @@
       }
     }
   }
-  mask_index = mskSnowTank;
+  mask_index = mskStreetLight;
   with instances_matching_ne(hitme,"team",team)
   {
     if distance_to_object(other) <= 8

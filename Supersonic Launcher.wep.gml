@@ -45,6 +45,7 @@ sound_play_gun(sndClickBack,1,.2)
 sound_stop(sndClickBack)
 weapon_post(12,-16,23)
 motion_add(gunangle -180,6)
+
 with instance_create(x,y,CustomProjectile){
 	move_contact_solid(other.gunangle,10)
 	sleep(55)
@@ -54,9 +55,13 @@ with instance_create(x,y,CustomProjectile){
 	team  = other.team
 	damage = 20
 	dir = 0
+	bounce = 0;
+	hasbounced = false;
 	image_angle = other.gunangle
 	Ring1Amount = 6
 	Ring2Amount = 12
+	xdir = 1;
+	ydir = 1;
 	ringoffset	= random(360)
 	instance_create(x,y,Smoke)
 	direction = other.gunangle+random_range(-2,2)*other.accuracy
@@ -66,14 +71,64 @@ with instance_create(x,y,CustomProjectile){
 		image_speed = .5
 	}
 	do{
+		hasbounced = false;
 	    dir += 1
-	    x += lengthdir_x(1,direction)
-	    y += lengthdir_y(1,direction)
+	    x += lengthdir_x(xdir,direction)
+	    y += lengthdir_y(ydir,direction)
+	    
     	if irandom(1) = 0 with instance_create(x,y,Dust){
     	    motion_add(other.direction-random_range(-80,80),random_range(2,7));
     	    growspeed = random_range(0.1,0.06)
     	}
-    	if place_meeting(x,y,enemy) || place_meeting(x,y,Wall) || place_meeting(x,y,prop){
+    	
+    	if hasbounced = false && place_meeting(x + xdir,y,Wall){
+    		
+    		if bounce > 0{
+			
+				wall_burst();
+				hasbounced = true;
+				bounce--;
+				xdir *= -1;
+				move_bounce_solid(false);
+    		}else{
+				
+				dir = 1000;
+				break;
+			}
+		}
+		if hasbounced = false && place_meeting(x,y + ydir,Wall){
+    		
+    		if bounce > 0{
+			
+				wall_burst();
+				hasbounced = true;
+				bounce--;
+				ydir *= -1;
+				move_bounce_solid(false);
+    		}else{
+				
+				dir = 1000;
+				break;
+			}
+		}
+		if hasbounced = false && place_meeting(x + xdir,y + ydir,Wall){
+    		
+    		if bounce > 0{
+			
+				wall_burst();
+				hasbounced = true;
+				bounce--;
+				xdir *= -1;
+				ydir *= -1;
+				move_bounce_solid(false);
+    		}else{
+				
+				dir = 1000;
+				break;
+			}
+		}
+		
+    	if place_meeting(x,y,enemy) || place_meeting(x,y,prop){
     	    break
     	}
     }
@@ -102,6 +157,18 @@ with mod_script_call_nc("mod", "defpack tools", "create_sonic_explosion", x + le
     if dustspeed repeat(10 * scale) with instance_create(x, y, Smoke) {motion_set(random(360), dustspeed * random_range(.8, 1.1)); sprite_index = sprExtraFeetDust}
 
     return id
+}
+
+#define wall_burst
+with mod_script_call_nc("mod", "defpack tools", "create_sonic_explosion", x, y){
+    image_xscale = .75;
+    image_yscale = .75;
+
+    team = other.team
+    creator = other.creator
+    image_speed = .6;
+	superforce = 24
+	superfriction = 0.05
 }
 
 #define supersonic_burst

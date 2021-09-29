@@ -174,7 +174,7 @@ else {
       hand = other.hand;
       creator = other.creator
       team    = creator.team
-      damage = 25
+      damage = 12
       move_contact_solid(creator.gunangle, 6)
       motion_add(ang, 28)
       image_angle = direction
@@ -221,8 +221,8 @@ if skill_get(mut_bolt_marrow){
 with instance_create(x,y,BoltTrail){
     image_xscale = point_distance(x,y,other.xprevious,other.yprevious)
     image_angle = point_direction(x,y,other.xprevious,other.yprevious)
-    image_blend = c_black
-    if fork(){
+    image_blend = other.cooldown <= 0 ? c_black : c_white
+    if other.cooldown <= 0 if fork(){
         while instance_exists(self){
             image_blend = merge_color(image_blend,c_red,.8*current_time_scale)
             wait(0)
@@ -236,7 +236,7 @@ if hitem with q with other bolt_hit()
 sleep(10)
 var o = other, hp = other.my_health;
 if charged && cooldown <= 0 {
-	cooldown = 3;
+	cooldown = 99999999;
 	mod_script_call_self("mod","defpack tools","crit")
 }
 projectile_hit(o, damage, force, direction)

@@ -29,9 +29,10 @@ mod_script_call_self("mod", "sodaeffect", "soda_swap")
 
 sound_play_pitchvol(sndMutStress, 1.5, .02)
 reloadspeed += .1
+my_health = min(my_health + 1 * round(skill_get(mut_second_stomach)), maxhealth);
 with mod_script_call("mod", "sodaeffect", "drink", x, y){
 	subtext = "RELOAD SPEED UP!"
 }
 
 #define weapon_text
-return "@qHUMMINA @qHUMMINA @qHUMMINA"
+return choose("@qHUMMINA @qHUMMINA @qHUMMINA", "TASTES LIKE SHAKING")

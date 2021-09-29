@@ -49,6 +49,7 @@ return "VORTEX-SHAPED DESTRUCTION";
 		time = ftimer
 		canshoot = 0
 		dirfac = random(359)
+		sage_no_bounce = true;
 		on_hit = script_ref_create(cannon_hit)
 		on_wall = script_ref_create(cannon_wall)
 		on_step = script_ref_create(cannon_step)

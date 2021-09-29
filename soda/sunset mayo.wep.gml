@@ -28,10 +28,11 @@ mod_script_call_self("mod", "sodaeffect", "sound_play_drink")
 mod_script_call_self("mod", "sodaeffect", "soda_swap")
 
 sound_play_pitchvol(sndMutBoilingVeins, 1.5, .1)
-boilcap++
+boilcap++;
+my_health = min(my_health + 1 * round(skill_get(mut_second_stomach)), maxhealth);
 with mod_script_call("mod", "sodaeffect", "drink", x, y){
 	subtext = "FIRE RESISTANCE UP!"
 }
 
 #define weapon_text
-return "CAREFUL, @rITS SPICY@s"
+return choose("CAREFUL, @rITS SPICY@s", "TASTES LIKE A CREAMY DAWN")

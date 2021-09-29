@@ -11,8 +11,8 @@ return "MEGA THUNDER REVOLVER";
 #define weapon_sprt
 return global.sprMegaThunderRevolver;
 
-#define weapon_sprt_hud
-return global.sprMegaThunderRevolverHUD;
+//#define weapon_sprt_hud
+//return global.sprMegaThunderRevolverHUD;
 
 #define weapon_type
 return 1;
@@ -160,5 +160,5 @@ image_speed = 0
 sleep(15)
 
 #define step
-  with instances_matching(Player, "wep", mod_current){speed *= min(1, .8 + .2 * (skill_get(mut_extra_feet)))}
-  with instances_matching(instances_matching(Player, "race", "steroids"), "bwep", mod_current){speed *= min(1, .8 + .2 * (skill_get(mut_extra_feet)))}
+  //with instances_matching(Player, "wep", mod_current){speed *= min(1, .8 + .2 * (skill_get(mut_extra_feet)))}
+  //with instances_matching(instances_matching(Player, "race", "steroids"), "bwep", mod_current){speed *= min(1, .8 + .2 * (skill_get(mut_extra_feet)))}
