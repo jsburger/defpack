@@ -23,7 +23,7 @@
             var _hudFade  = 0,
                 _hudIndex = 0,
                 _lastSeed = random_get_seed();
-                
+
              // Game Win Fade Out:
             if(array_length(instances_matching(TopCont, "fadeout", true))){
                 with(TopCont){
@@ -36,13 +36,13 @@
                 catch(_error){
                     _hudFade = min(_hudFade, round(_hudFade));
                 }
-                
+
                  // Dim Drawing:
                 if(_hudFade > 0){
                     draw_set_fog(true, c_black, 0, 16000 / _hudFade);
                 }
             }
-            
+
              // Draw Player HUD:
             for(var _isOnline = 0; _isOnline <= 1; _isOnline++){
                 for(var _index = 0; _index < maxp; _index++){
@@ -52,7 +52,7 @@
                         && (player_is_local_nonsync(_index) ^^ _isOnline)
                     ){
                         var _hudVisible = false;
-                        
+
                          // HUD Visibility:
                         for(var i = 0; true; i++){
                             var _local = player_find_local_nonsync(i);
@@ -64,7 +64,7 @@
                                 break;
                             }
                         }
-                        
+
                          // Draw HUD:
                         if(_hudVisible || _isOnline == 0){
                             if(_hudVisible){
@@ -85,12 +85,12 @@
                                         );
                                     }
                                     else draw_set_projection(2, _index);
-                                    
+
                                      // Draw:
                                     if(_player.race == "sage"){
 										mod_script_call("race", "sage", "player_hud", _player, _hudIndex, _hudIndex % 2);
 									}
-                                    
+
                                     draw_reset_projection();
                                 }
                             }
@@ -115,7 +115,7 @@ with instances_matching(Player, "race", "sage"){
   with instances_matching(projectile,"team",Player.team){
 	bounce(self);
   }
-  
+
   if player_firing{
   	mod_script_call("race", "sage", "fire")
   }
@@ -123,11 +123,11 @@ with instances_matching(Player, "race", "sage"){
 
 #define bounce(_proj)
 with(_proj){
-	
+
 	if "sage_no_bounce" in self{
 		exit;
 	}
-	
+
 	if "sage_bounce" in self
 	{
 	  if sage_bounce > 0 && place_meeting(x + hspeed, y + vspeed, Wall) && !instance_is(self, Shank) && !instance_is(self, Slash) && !instance_is(self, BloodSlash) && !instance_is(self, EnergySlash) && !instance_is(self, EnergyShank)
@@ -584,14 +584,14 @@ instance_delete(self);
 		if(array_length(_inst)){
 			var	_searchDis  = 16,
 				_bounceList = [];
-				
+
 			with(_inst){
 				var _obj = hitbounce(self, _searchDis);
 				if(is_array(_obj)){
 					array_push(_bounceList, _obj);
 				}
 			}
-			
+
 			 // Anti-Duplicate Insurance:
 			if(array_length(_bounceList)){
 				with(instance_create(0, 0, CustomObject)){
@@ -607,7 +607,7 @@ instance_delete(self);
 	with(_proj){
 		if(distance_to_object(hitme) <= _searchDis + max(0, abs(speed_raw) - friction_raw) + abs(gravity_raw)){
 			motion_step(1);
-			
+
 			if(distance_to_object(hitme) <= _searchDis){
 				var _instMeet = instance_rectangle_bbox(
 					bbox_left   - _searchDis,
@@ -620,13 +620,13 @@ instance_delete(self);
 					var _break = false;
 					with(_instMeet){
 						motion_step(1);
-						
+
 						if(place_meeting(x, y, other)){
 							var	_x = x,
 								_y = y;
-								
+
 							_break = true;
-							
+
 							with(other){
 								with(instance_copy(false)){
 									 // Bounce:
@@ -637,26 +637,26 @@ instance_delete(self);
 										y += vspeed_raw;
 									}
 									motion_step(-1);
-									
+
 									 // Temporarily Deactivate:
 									retVal = [id, other, mask_index];
 									mask_index = mskNone;
 								}
 							}
 						}
-						
+
 						motion_step(-1);
-						
+
 						if(_break) break;
 					}
 				}
 			}
-			
+
 			motion_step(-1);
 		}
 	}
 	return retVal;
-	
+
 #define hitbounce_check_end_step
 	 // Delete/Activate Bounced Projectiles:
 	with(list){
@@ -666,36 +666,36 @@ instance_delete(self);
 			if(instance_exists(other[1])){
 				instance_delete(id);
 			}
-			
+
 			 // Activate:
 			else{
 				mask_index = other[2];
-				
+
 				 // Sound:
 				sound_play_hit(sndShotgunHitWall, 0.2);
-				
+
 				 // Reset Bonus:
 				bonus  = true;
 				alarm2 = 2;
 			}
 		}
 	}
-	
+
 	instance_destroy();
-	
+
 #define instance_rectangle_bbox(_x1, _y1, _x2, _y2, _obj)
 	/*
 		Returns all given instances with their bounding box touching a given rectangle
 		Much better performance than manually performing 'place_meeting()' on every instance
 	*/
-	
+
 	return instances_matching_le(instances_matching_ge(instances_matching_le(instances_matching_ge(_obj, "bbox_right", _x1), "bbox_left", _x2), "bbox_bottom", _y1), "bbox_top", _y2);
-	
+
 #define motion_step(_mult)
 	/*
 		Performs the calling instance's basic movement code, scaled by a given number
 	*/
-	
+
 	if(_mult > 0){
 		if(friction_raw != 0 && speed_raw != 0){
 			speed_raw -= min(abs(speed_raw), friction_raw * _mult) * sign(speed_raw);
@@ -722,7 +722,7 @@ instance_delete(self);
 			speed_raw -= min(abs(speed_raw), friction_raw * _mult) * sign(speed_raw);
 		}
 	}
-	
+
 #define cleanup
 	 // Destroy Script Bindings:
 	with(global.bind_step){

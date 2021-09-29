@@ -2030,6 +2030,8 @@ if other != lasthit{
 		canwallhit = true
 		synstep = (GameCont.area = 101) //oasis synergy
 
+		sage_no_hitscan = true;
+
 		on_step       = sonic_step
 		on_projectile = sonic_projectile
 		on_grenade    = sonic_grenade

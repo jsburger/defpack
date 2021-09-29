@@ -18,7 +18,7 @@ return 0
 #define weapon_laser_sight
 return 0
 #define weapon_text
-return "CAN'T GET ENOUGH"
+return choose("CAN'T GET ENOUGH", "SO MANY FLAVORS")
 #define weapon_fire(w)
 if is_object(w)
 {
@@ -30,6 +30,7 @@ if is_object(w)
       weapon_post(3,4,0)
       sound_play_pitch(sndSodaMachineBreak,random_range(.85,.95))
       sound_play_pitch(sndGunGun,1.4)
+      sound_play_pitch(sndGrenade, 2);
       with instance_create(x+lengthdir_x(4,gunangle),y+lengthdir_y(4,gunangle),ThrownWep){
     	wep = mod_script_call("mod", "defpack tools", "soda_get");
         sprite_index = weapon_get_sprt(wep)

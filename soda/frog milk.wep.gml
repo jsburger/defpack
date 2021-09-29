@@ -29,9 +29,10 @@ mod_script_call_self("mod", "sodaeffect", "soda_swap")
 
 sound_play_pitchvol(sndFrogUltraA, 1.5, .1)
 notoxic = 1
+my_health = min(my_health + 1 * round(skill_get(mut_second_stomach)), maxhealth);
 with mod_script_call("mod", "sodaeffect", "drink", x, y){
 	subtext = "TOXIC IMMUNITY!"
 }
 
 #define weapon_text
-return "A VALUABLE SOURCE OF @gFROG MINERALS@s"
+return choose("A VALUABLE SOURCE OF @gFROG MINERALS@s", "TASTES LIKE AN AIR FRESHNER")

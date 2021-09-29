@@ -29,9 +29,15 @@ mod_script_call_self("mod", "sodaeffect", "soda_swap")
 
 sound_play_pitchvol(sndHorrorUltraC, 1.5, .1)
 GameCont.radmaxextra += 24
+my_health = min(my_health + 1 * round(skill_get(mut_second_stomach)), maxhealth);
 with mod_script_call("mod", "sodaeffect", "drink", x, y){
 	subtext = "MAX RADS UP!"
 }
+repeat(16){
+	with instance_create(x, y, Rad){
+		motion_add(random(360), random_range(2.5, 4));
+	}
+}
 
 #define weapon_text
-return "@gRADS#@s-IN A CAN-"
+return choose("@gRADS#@s-IN A CAN-", "YOUR TASTE BUDS ARE MUTATING", "TASTES LIKE POWER");

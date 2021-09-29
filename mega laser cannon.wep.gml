@@ -72,6 +72,7 @@ with instance_create(x,y,CustomProjectile){
 	team = other.team
 	gunangle = other.gunangle
 	ammo = 30
+	sage_no_hitscan = true;
 	orammo = ammo
 	on_step = sphere_step
 	on_wall = nothing
@@ -117,6 +118,7 @@ if floor(ammo) < current_time_scale and floor(ammo) >= 0{
         team = other.team
         direction = creator.gunangle
         image_angle = direction
+				sage_no_hitscan = true;
     	sprite_index = global.sprBeam
     	spr_head     = global.sprBeamEnd
     	spr_tail     = global.sprBeamStart

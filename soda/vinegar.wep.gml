@@ -29,9 +29,10 @@ mod_script_call_self("mod", "sodaeffect", "soda_swap")
 
 sound_play_pitchvol(sndMutEagleEyes, 1.5, .02)
 accuracy /= 1.2
+my_health = min(my_health + 1 * round(skill_get(mut_second_stomach)), maxhealth);
 with mod_script_call("mod", "sodaeffect", "drink", x, y){
 	subtext = "ACCURACY UP!"
 }
 
 #define weapon_text
-return "YOU'RE @wREALLY@s NOT SUPPOSED TO DRINK THIS"
+return choose("YOU'RE @wREALLY@s NOT SUPPOSED TO DRINK THIS", "THE TASTE...")
