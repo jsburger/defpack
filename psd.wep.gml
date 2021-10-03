@@ -6,7 +6,7 @@ global.sprSonicExplosion = sprite_add("sprites/projectiles/sprESonicExplosion.pn
 #macro e_radius max(16, 26 + 5 * skill_get(mut_long_arms));
 
 #define weapon_name
-return "P.S.D";
+return "P.S.D.";
 
 #define weapon_type
 return 5;

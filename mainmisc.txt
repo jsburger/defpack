@@ -56,5 +56,4 @@
 
 ///NON-WEAPONS///
 /load mutation
-/load crown
 /loadmod defpack tools/defpunching

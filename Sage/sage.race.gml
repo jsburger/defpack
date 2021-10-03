@@ -538,12 +538,12 @@ NOTES FROM JSBURG:
 					// if "bounce" or "bounces" are defined as a variable it will give that projectile bounce
 					// if "sage_no_bounce" is defined it will not use sages custom bounce event for bouncing, use this for melee attacks
 					if "bounce" not in self || instance_is(self, BouncerBullet){
-						sage_bounce = 3 + 2 * creator.sage_spell_power;
+						sage_bounce = ceil(3 + 2 * creator.sage_spell_power);
 					}else{
-						bounce += 3 + 2 * creator.sage_spell_power;
+						bounce += ceil(3 + 2 * creator.sage_spell_power);
 					}
 					if "bounces" in self{
-						bounces = 3 + 2 * creator.sage_spell_power;
+						bounces = ceil(3 + 2 * creator.sage_spell_power);
 					}
 					break;
 				case "precision":
@@ -582,7 +582,7 @@ NOTES FROM JSBURG:
 		}
 	}
 	with(instances_matching(instances_matching(projectile, "creator", self), "sageHitscan", true)){
-		run_hitscan(self, 2 + 2 * creator.sage_spell_power);
+		run_hitscan(self, 2 + ceil(2 * creator.sage_spell_power));
 	}
 #define fire()
 
@@ -648,7 +648,7 @@ NOTES FROM JSBURG:
 			accuracy += .65;
 		break;
 		case "burst":
-			sage_burst_size += 2 + 2 * inst.sage_spell_power;
+			sage_burst_size += ceil(2 + 1 * inst.sage_spell_power);
 			//sage_ammo_cost += 2 + 2 * inst.sage_spell_power;
 			reloadspeed -= .5;
 		break;
@@ -703,7 +703,7 @@ NOTES FROM JSBURG:
 			accuracy -= .65;
 		break;
 		case "burst":
-			sage_burst_size -= 2 + 2 * inst.sage_spell_power;
+			sage_burst_size -= ceil(2 + 1 * inst.sage_spell_power);
 			//sage_ammo_cost -= 2 + 2 * inst.sage_spell_power;
 			reloadspeed += .5;
 		break;
@@ -747,9 +747,9 @@ NOTES FROM JSBURG:
 #define spellbullet_examine(name, inst)
 	switch(name){
 		case "split":
-			return `@(color:${c_neutral})+` + string(ceil(1 + 1 * inst.sage_spell_power)) + ` @(color:${c_projectile})PROJECTILES @(color:${c_projectile})fired#@s+` + string(round(100 + 100 * inst.sage_spell_power)) +  `% @(color:${c_ammo})AMMO COST`;
+			return `@(color:${c_neutral})+` + string(ceil(1 + 1 * inst.sage_spell_power)) + ` @(color:${c_projectile})PROJECTILES @(color:${c_projectile})@sfired#+` + string(round(100 + 100 * inst.sage_spell_power)) +  `% @(color:${c_ammo})AMMO COST`;
 		case "reflective":
-			return `@(color:${c_neutral})+` + string(ceil(3	 + 2 * inst.sage_spell_power)) +  ` @(color:${c_bounce})BOUNCES#@s-20% @(color:${c_projectile_speed})PROJECTILE SPEED`;
+			return `@(color:${c_neutral})+` + string(ceil(3	+ 2 * inst.sage_spell_power)) +  ` @(color:${c_bounce})BOUNCES#@s-20% @(color:${c_projectile_speed})PROJECTILE SPEED`;
 		case "precision":
 			return `@(color:${c_neutral})+` + string(round(60 + 30 * inst.sage_spell_power)) + `% @(color:${c_accuracy})ACCURACY#@(color:${c_neutral})+20% @(color:${c_projectile_speed})PROJECTILE SPEED`;
 		case "warp":
@@ -757,7 +757,7 @@ NOTES FROM JSBURG:
 		case "haste":
 			return `@(color:${c_neutral})+` + string(round(35 + 50 * inst.sage_spell_power)) + `% @(color:${c_reload})RELOAD SPEED#@s-65% @(color:${c_accuracy})ACCURACY`;
 		case "burst":
-			return `@(color:${c_neutral})+` + string(round(3 + 2 * inst.sage_spell_power)) + ` @(color:${c_ammo})BURST SIZE#@s+` + string(round(200 + 200 * inst.sage_spell_power)) + `% @(color:${c_ammo})AMMO COST#@s-50% @(color:${c_reload})RELOAD SPEED`;
+			return `@(color:${c_neutral})+` + string(ceil(3 + 1 * inst.sage_spell_power)) + ` @(color:${c_ammo})BURST SIZE#@s+` + string(round(200 + 200 * inst.sage_spell_power)) + `% @(color:${c_ammo})AMMO COST#@s-50% @(color:${c_reload})RELOAD SPEED`;
 		case "default":
 			return `@(color:${c_neutral})+` + string(round(10 + 10 * inst.sage_spell_power)) + `% @(color:${c_reload})RELOAD SPEED#@(color:${c_neutral})+` + string(round(15 + 15 * inst.sage_spell_power)) + `% @(color:${c_accuracy})ACCURACY`;
 		case "gold":
@@ -765,9 +765,9 @@ NOTES FROM JSBURG:
 		case "ultra":
 			return `@(color:${c_neutral})+@(color:${c_ammo})AMMO @(color:${c_neutral})TO @gRAD @(color:${c_neutral})COST`;
 		case "turret":
-			return `@(color:${c_neutral})+` + string(round(50 + 50 * inst.sage_spell_power)) + `% @(color:${c_reload})RELOAD SPEED#@(color:${c_neutral})+@wAUTOMATIC WEAPONS#@s-66% @(color:${c_speed})SPEED`;
+			return `@(color:${c_neutral})+` + string(round(50 + 50 * inst.sage_spell_power)) + `% @(color:${c_reload})RELOAD SPEED#@(color:${c_neutral})+@wAUTOMATIC WEAPONS#@s-3 @(color:${c_speed})SPEED`;
 		case "melee":
-			return `@(color:${c_neutral})+` + string(round(25 + 25 * inst.sage_spell_power)) + `% @(color:${c_reload})RELOAD SPEED#@(color:${c_neutral})+150% @(color:${c_speed})SPEED#@s-60% @(color:${c_accuracy})ACCURACY`;
+			return `@(color:${c_neutral})+` + string(round(25 + 25 * inst.sage_spell_power)) + `% @(color:${c_reload})RELOAD SPEED#@(color:${c_neutral})+1.5 @(color:${c_speed})SPEED#@s-60% @(color:${c_accuracy})ACCURACY`;
 		case "infammo":
 			return `@(color:${c_neutral})+` + string(round(2 + 2 * inst.sage_spell_power)) + ` seconds @(color:${c_aqua})INFAMMO @(color:${c_neutral})PER KILL#+50% @(color:${c_speed})SPEED#@s-40% @(color:${c_projectile_speed})PROJECTILE SPEED`
 		case "cursed":
@@ -778,19 +778,19 @@ NOTES FROM JSBURG:
 
 #define spellbullet_index(name)
 	switch(name){
-		case "split":	     return 1;
-		case "reflective": return 2;
-		case "precision":  return 3;
-		case "warp":	     return 4;
-		case "haste":	     return 5;
-		case "burst":	     return 6;
-		case "default":	   return 7;
-		case "gold":       return 8;
-		case "ultra":      return 9;
-		case "turret":     return 10;
-		case "melee":      return 11;
-		case "infammo":		 return 12;
-		case "cursed":     return 13;
+		case "split":	     return 0;
+		case "reflective": return 1;
+		case "precision":  return 2;
+		case "warp":	     return 3;
+		case "haste":	     return 4;
+		case "burst":	     return 5;
+		case "default":	   return 6;
+		case "gold":       return 7;
+		case "ultra":      return 8;
+		case "turret":     return 9;
+		case "melee":      return 10;
+		case "infammo":		 return 11;
+		case "cursed":     return 12;
 		default:           return 0;
 	}
 
@@ -804,7 +804,7 @@ NOTES FROM JSBURG:
 		if(race == "sage"){
 			stat_gain(spellbullet, self)
 
-			if(array_length(spellBullets) < (2 + ceil(skill_get(mut_throne_butt)))){
+			if(array_length(spellBullets) < 2){
 				array_push(spellBullets, spellbullet.type);
 				uiroll = 0;
 			}else{
@@ -845,12 +845,14 @@ NOTES FROM JSBURG:
 
  // Throne Butt Description:
 #define race_tb_text
-	return "@sEXTRA @wSPELL SLOT";
+	return "NOTHING FOR NW"//"@pSPELLS @sBECOME MORE @wPOWERFUL";
 
 
  // On Taking Throne Butt:
 #define race_tb_take
-
+	/*with instances_matching(Player, "race", "sage"){
+		spellpower_change(spellBullets[0], self, 1/3);
+	}*/
 
  // Character Selection Icon:
 #define race_menu_button
@@ -890,7 +892,7 @@ NOTES FROM JSBURG:
  // Ultra Descriptions:
 #define race_ultra_text
 	switch(argument0){
-		case 1: return "SPELLS BECOME @wMORE POWERFUL@s";
+		case 1: return "SPELLS BECOME @sA LOT MORE POWERFUL@s";
 		case 2: return "SPELLS @wCOMBINE@s";
 		/// Add more cases if you have more ultras!
 	}

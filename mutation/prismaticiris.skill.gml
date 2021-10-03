@@ -6,7 +6,7 @@
 	global.arrow  = sprite_add("../sprites/mutation/sprIrisArrow.png", 1, 3, 10);
 	global.sprRandomGun = sprite_add("../sprites/mutation/sprLensRandomGun.png", 5, 2, 3);
 	global.gammaFix = false
-	
+
  // im picky and also lazy
 #macro color_current global.color
 
@@ -26,7 +26,7 @@ return 1;
 	if(color_current != mod_current and mod_exists("skill", color_current)) {
 		return mod_script_call("skill", color_current, "skill_text");
 	}
-	else return "@wREIMAGINE@s YOUR @yBULLET@s WEAPONS";
+	else return "@wREIMAGINE@s YOUR @yBULLETS";
 
 #define skill_button
 	sprite_index = global.button;
@@ -62,7 +62,7 @@ return 1;
 		    	LevCont.maxselect++;
 
 		    	skill_create("fantasticrefractions", 0.5);
-		    	if(array_length(instances_matching(Player, "race", "horror")) > 0) || GameCont.horror > 0 {
+		    	if(array_length(instances_matching(Player, "race", "horror")) > 0) || GameCont.horror >= 1 {
 		    		skill_create("warpedperspective", 1.5);
 		    	}
 		    }
@@ -191,18 +191,18 @@ return 1;
 			else {
 				 // if it's a modded weapon with an iris prefix but no weapon_iris, scan for the non-iris version
 				var wep_lower = string_lower(w);
-				
+
 				global.gammaFix = true;
 				var colors = get_colors();
 				global.gammaFix = false;
-				
+
 				with(colors) if self != "" {
 					var color_lower = string_lower(self);
 					var _pos = string_pos(color_lower + " ", wep_lower);
 
 					if (_pos >= 1) {
 						var _search = string_lower(string_delete(w, _pos, string_length(self + " ")));
-						
+
 						var _found = false;
 
 						 // combat inconsistent capitalization

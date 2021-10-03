@@ -12,7 +12,7 @@
 	return "@dNEVERMIND";
 
 #define skill_iris
-	return ""; // Return prefix of weapon variants
+	return false//""; // Return prefix of weapon variants
 
 #define skill_button
 	sprite_index = global.button;

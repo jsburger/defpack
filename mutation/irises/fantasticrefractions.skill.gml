@@ -15,7 +15,7 @@ return "@yBULLET@s WEAPONS BECOME " + `@(color:${make_colour_hsv(current_frame m
 	return 1;
 
 #define skill_iris
-	if(crown_current = 8 or mod_variable_get("skill", "prismaticiris", "color") = mod_current) {
+
 		var s = mod_get_names("skill");
 		var i = [];
 
@@ -32,8 +32,6 @@ return "@yBULLET@s WEAPONS BECOME " + `@(color:${make_colour_hsv(current_frame m
 
 		if(array_length(s) > 0) return i[irandom(array_length(i) - 1)]; // Return random prefix
 		else return ""; // Return nothing if there were no iris skills found, SUPER weird case but still worth checking for
-	}
-	else return false; // makes sure it doesnt appear if crown isnt destiny
 
 #define skill_button
 	sprite_index = global.button;

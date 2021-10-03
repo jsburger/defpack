@@ -1,9 +1,9 @@
-/loadskill irises/fantasticrefractions
 /loadskill irises/blazingvisage
 /loadskill irises/quiveringsight
 /loadskill irises/pestilentgaze
 /loadskill irises/cloudedstare
 /loadskill irises/allseeingeye
+/loadskill irises/fantasticrefractions
 /loadskill irises/filteredlens
 /loadskill irises/warpedperspective
 /loadskill prismaticiris

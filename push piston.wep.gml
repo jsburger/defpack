@@ -150,7 +150,7 @@ if !charged sound_stop(sound)
 	var timescale = (mod_variable_get("weapon", "stopwatch", "slowed") == 1) ? 30/room_speed : current_time_scale;
     reload += mod_script_call_nc("mod", "defpack tools", "get_reloadspeed", creator) * timescale * 1.2
 	var _ch = other.charged,
-	     _c = 21 + 36 * _ch;
+	     _c = 6 + 50 * _ch;
 
 	if !charged sound_stop(sound)
 
@@ -161,7 +161,7 @@ if !charged sound_stop(sound)
 
 	with creator{
 		weapon_post(12 + _ch * 8, 24 + _ch * 16, 12 + _ch * 8);
-		sleep(100 * _ch);
+		sleep(30 * _ch);
 	}
 
 	with mod_script_call("mod","defpack tools","create_sonic_explosion",creator.x + lengthdir_x(18, creator.gunangle),creator.y + lengthdir_y(18, creator.gunangle)){
@@ -173,7 +173,7 @@ if !charged sound_stop(sound)
 		image_yscale = 2
 		damage = 0;
 		image_speed = 0.6
-		superfriction = 1.4 / (1 + _ch *.7);
+		superfriction = 1.4 / (1.2 + _ch *.5);
 		sprite_index = mskNone;
 		image_index = 2;
 		image_speed = 2;
