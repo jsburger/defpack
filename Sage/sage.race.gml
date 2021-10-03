@@ -132,6 +132,11 @@ NOTES FROM JSBURG:
 	draw_sprite(_sprIndex, _imgIndex, _x, _y -1);
 	draw_sprite(_sprIndex, _imgIndex, _x, _y +1);
 	d3d_set_fog(false, c_white, 0, 0);
+	
+#define get_reloadspeed(p)
+if !instance_is(p, Player) return 1
+return (p.reloadspeed + ((p.race == "venuz") * (.2 + .4 * ultra_get("venuz", 1))) + ((1 - p.my_health/p.maxhealth) * skill_get(mut_stress)))
+
 #define player_hud(_player, _hudIndex, _hudSide)
      // Spell Bullets:
 
@@ -201,7 +206,7 @@ NOTES FROM JSBURG:
 
  // On Character's Creation (Starting a run, getting revived in co-op, etc.):
  // Thanks Brokin
-#macro dev true;
+#macro dev false;
 #macro c_neutral 					$BAB0A9
 #macro c_speed 						$CE7314
 #macro c_projectile_speed $E5BC16
@@ -293,8 +298,10 @@ NOTES FROM JSBURG:
 
 	if(canspec && button_pressed(index, "spec") && array_length(spellBullets) > 1){
 		var _temp = spellBullets[0];
-		stat_lose(spellBullets[0], self);
-		stat_gain(spellBullets[1 + ultra_get("sage", 2)], self);
+		if !ultra_get(mod_current, 2) {
+			stat_lose(spellBullets[0], self);
+			stat_gain(spellBullets[1], self);
+		}
 		for(var i = 1; i < array_length(spellBullets); i++){
 			spellBullets[i-1] = spellBullets[i];
 		}
@@ -611,13 +618,23 @@ NOTES FROM JSBURG:
 		if sage_burst_size > 1 if(fork()){
 
 			var w = wep;
-			repeat(sage_burst_size){
+			for (var i = 1; i <= sage_burst_size; i++) {
 				if(!instance_exists(self) or w != wep)exit;
 				player_fire(gunangle);
-				wait(max(2, (ceil(weapon_get_load(wep)) / (7 + sage_burst_size * 3 - 9) + weapon_is_melee(wep) * 2)));
+				if i != sage_burst_size {
+					var waitTime = get_burst_delay(wep, sage_burst_size)
+					//Add reload time to the player to account for the reloading done between burst shots, prevents overlapping
+					reload += waitTime * get_reloadspeed(self);
+					wait(waitTime);
+				}
 			}
-			repeat(sage_burst_size - 1){
-				reload -= weapon_get_load(wep);
+			repeat(sage_burst_size - 1) {
+				//Reduce reload time to what it would be had the player only fired once
+				reload -= weapon_get_load(wep) - get_reloadspeed(self);
+			}
+			if reload > 0 {
+				//Add back the reloading time from between shots now that overlapping has been taken care of
+				reload = max(frac(reload) - get_reloadspeed(self), reload - get_burst_delay(wep, sage_burst_size) * get_reloadspeed(self) * (sage_burst_size - 1))
 			}
 			if weapon_get_type(wep) = 0 || weapon_get_type(wep) = 1 || weapon_is_melee(wep) = true{
 				clicked = false;
@@ -625,6 +642,10 @@ NOTES FROM JSBURG:
 			exit;
 		}
 	}
+
+
+#define get_burst_delay(wep, burst_size)
+	return max(2, (ceil(weapon_get_load(wep) / (burst_size * 3 - 2) + weapon_is_melee(wep) * 2)));
 
 
 #define stat_gain(spellbullet, inst)
@@ -807,6 +828,7 @@ NOTES FROM JSBURG:
 			if(array_length(spellBullets) < (2 + ceil(skill_get(mut_throne_butt)))){
 				array_push(spellBullets, spellbullet.type);
 				uiroll = 0;
+				with spellbullet instance_destroy()
 			}else{
 				var temp = spellBullets[0];
 				stat_lose(spellBullets[0], self)
@@ -822,11 +844,9 @@ NOTES FROM JSBURG:
 				spellbullet.direction = random(360);
 				image_angle = direction;
 				uiroll = 0;
-				return;
 			}
 		}
 	}
-	instance_destroy();
 
  // Name:
 

@@ -2430,6 +2430,7 @@ with instance_create(0, 0, CustomObject){
     auto = 0
 	margin = 12
 	lockon = false;
+	closed = false
 	hover  = 3;
 	view_factor = 1;
 
@@ -2527,9 +2528,10 @@ if instance_exists(creator){
         view_pan_factor[index] = 4 - (_a * 1.3 * view_factor)
         defcharge.charge = _a
 
-		if _a > 0.99 && _a < 1 && lq_get(defcharge, "blinked") = 0 {
+		if _a > 0.99 && _a < 1 && closed = false {
 			weapon_charged(creator, sprite_get_width(weapon_get_sprt(hand ? creator.wep : creator.bwep)) / 2)
 			creator.gunshine = 1
+			closed = true
 		}
 
         if reload = -1 {
@@ -2598,10 +2600,12 @@ if instance_exists(creator){
 			var _e = instance_nearest_matching_los_ne(_x, _y, hitme, "team", creator.team),
 			    _dis = _e > -4 ? point_distance(creator.x, creator.y, _e.x, _e.y) : 0,
 				_dir = _e > -4 ? point_direction(creator.x, creator.y, _e.x, _e.y) : 0;
-			if _e > -4 && collision_line(creator.x, creator.y, _e.x ,_e.y, Wall, 0, 0) = noone && point_distance(mouse_x[index], mouse_y[index], _e.x, _e.y) <= (margin + ((6 + (20 * lockon / max(creator.accuracy, 0.1))) * !lq_get(defcharge, "blinked"))){
-				_x = c.x + lengthdir_x(_dis + _e.hspeed, _dir);
-				_y = c.y + lengthdir_y(_dis + _e.vspeed, _dir);
-				lockon = true
+			if instance_exists(_e)
+				&& collision_line(creator.x, creator.y, _e.x ,_e.y, Wall, 0, 0) = noone 
+				&& point_distance(_x, _y, _e.x, _e.y) <= (margin + ((6 + (20 * lockon / max(creator.accuracy, 0.1))) * !closed)) {
+					_x = c.x + lengthdir_x(_dis + _e.hspeed, _dir);
+					_y = c.y + lengthdir_y(_dis + _e.vspeed, _dir);
+					lockon = true
 			}
 			else {
 				lockon = false
@@ -2630,17 +2634,18 @@ if instance_exists(creator){
     //Dot in the center
     draw_sprite_ext(sprGrenadeBlink, 0, x, y, 1, 1, image_angle * -.7, _c2, 1)
 
-		with instances_matching_ne(hitme, "team", creator.team) {
-			if !instance_is(self, prop) && point_distance(x, y, other.x, other.y) <= r {
-				draw_set_fog(true, _c2, 0, 0)
-				var _xscale = image_xscale * ("right" in self ? right : sign(hspeed))
-				draw_sprite_ext(sprite_index, image_index, x - 1, y - 1, _xscale, image_yscale, image_angle, c_white, 1)
-				draw_sprite_ext(sprite_index, image_index, x + 1, y - 1, _xscale, image_yscale, image_angle, c_white, 1)
-				draw_sprite_ext(sprite_index, image_index, x - 1, y + 1, _xscale, image_yscale, image_angle, c_white, 1)
-				draw_sprite_ext(sprite_index, image_index, x + 1, y + 1, _xscale, image_yscale, image_angle, c_white, 1)
-				draw_set_fog(false, c_white, 0, 0)
-			}
+	draw_set_fog(true, _c2, 0, 0)
+	with instances_matching_ne(hitme, "team", creator.team) {
+		if !instance_is(self, prop) && point_distance(x, y, other.x, other.y) <= r {
+			var _xscale = image_xscale * ("right" in self ? right : sign(hspeed))
+			draw_sprite_ext(sprite_index, image_index, x - 1, y - 1, _xscale, image_yscale, image_angle, c_white, 1)
+			draw_sprite_ext(sprite_index, image_index, x + 1, y - 1, _xscale, image_yscale, image_angle, c_white, 1)
+			draw_sprite_ext(sprite_index, image_index, x - 1, y + 1, _xscale, image_yscale, image_angle, c_white, 1)
+			draw_sprite_ext(sprite_index, image_index, x + 1, y + 1, _xscale, image_yscale, image_angle, c_white, 1)
 		}
+	}
+	draw_set_fog(false, c_white, 0, 0)
+
 }
 
 #define abris_hit

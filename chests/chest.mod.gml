@@ -430,6 +430,7 @@ chest_add("Energy",    -1, 5)
             curse = other.curse
             wep = _w
             _k = wep;
+            roll = 1
             if weapon_get_type(wep) != 0 ammo = 1
             if _i = 99 exit;
             _i = 100;
