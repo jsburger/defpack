@@ -94,6 +94,8 @@ NOTES FROM JSBURG:
 
 	global.spellIcon = sprite_add("spellbullets.png", 20, 6, 7);
 	global.spellHold = sprite_add("spellbulletempty.png", 1, 6, 7);
+	
+	global.carryOver = [];
 
 	global.bind_late_step = noone;
 
@@ -120,6 +122,13 @@ NOTES FROM JSBURG:
 
  // On Level Start: (Custom Script, Look Above In #define init)
 #define level_start
+	with(Player){
+		for(var i = 0; i < array_length(global.carryOver); i++){
+			spellbullet_create(x,y, global.carryOver[i]);
+		}
+		global.carryOver = [];
+		break;
+	}
 
  // On Run Start:
 #define game_start
@@ -151,12 +160,12 @@ NOTES FROM JSBURG:
 		draw_set_font(fntM);
 	}
 
-	for(var i = 0; i < (2 + dev * 20); i++){
+	for(var i = 0; i < array_length(_player.spellBullets); i++){
 
 		if i < array_length(_player.spellBullets){
 
 			//Draw Outline for bullets in active slots:
-			if i <= ultra_get("sage", 2){
+			if i == 0 || ultra_get("sage", 2){
 				draw_outline(global.spellIcon, spellbullet_index(_player.spellBullets[i]), _x, _y)
 			}
 
@@ -164,7 +173,7 @@ NOTES FROM JSBURG:
 			draw_sprite_ext(global.spellIcon, spellbullet_index(_player.spellBullets[i]), _x, _y, (_hudSide ? -1 : 1), 1, 0, c_white, 1);
 
 			//Darken in secondary Slots:
-			if i > ultra_get("sage", 2){
+			if i == 0 || ultra_get("sage", 2){
 				draw_sprite_ext(global.spellIcon,spellbullet_index(_player.spellBullets[i]),_x,_y,(_hudSide ? -1 : 1),1,0,c_black,.2);
 			}
 
@@ -293,16 +302,16 @@ NOTES FROM JSBURG:
 
 	if(canspec && button_pressed(index, "spec") && array_length(spellBullets) > 1){
 		var _temp = spellBullets[0];
-		stat_lose(spellBullets[0], self);
-		stat_gain(spellBullets[1 + ultra_get("sage", 2)], self);
+		if(!ultra_get("sage", 2)){
+			stat_lose(spellBullets[0], self);
+			stat_gain(spellBullets[1], self);
+		}
 		for(var i = 1; i < array_length(spellBullets); i++){
 			spellBullets[i-1] = spellBullets[i];
 		}
 		spellBullets[array_length(spellBullets) - 1] = _temp;
 		uiroll = 0;
 	}
-
-	var _s = self;
 	///  PASSIVE : Spawn Spellbullets on weapon chest open \\\
 	with(WeaponChest){
 		if(fork()){
@@ -311,43 +320,9 @@ NOTES FROM JSBURG:
 			wait(0);
 			if(!instance_exists(self)){
 				wait(0);
-				with(instance_create(_x,_y,CustomObject)){
-					sprite_index = global.spellIcon;
-					mask_index = mskBandit;
-					image_speed = 0;
-					speed = 3;
-					friction = 0.1;
-					direction = random(360);
-					image_angle = direction;
-					on_step = spellbullet_step;
-					on_pick = script_ref_create(spellbullet_pickup);
-
-					type = "default"
-
-					droplist = ds_list_create();
-					ds_list_add(droplist, "split", "reflective", "precision", "warp", "burst", "turret", "melee");
-					if GameCont.loops > 0{ds_list_add(droplist, "ultra")}
-					ds_list_shuffle(droplist);
-
-					if instance_exists(_s) for (var _i = 0; _i < ds_list_size(droplist) - 1; _i++){
-
-						for (var _j = 0; _j < array_length(_s.spellBullets); _i++){
-							if _s.spellBullets[_j] = droplist[| _i]{
-								continue;
-							}else{
-								type = droplist[| _i];
-								break;
-							}
-						}
-						if type != "default"{
-							break;
-						}
-					}
-					ds_list_destroy(droplist);
-
-					my_prompt = prompt_create(type);
-					image_index = spellbullet_index(type);
-				}
+				//the player is passed in as an optional variable specifically for ""
+				//it makes it so the player gets spellbullets they don't have already from normal chests
+				spellbullet_create(_x,_y, "", other);
 			}
 			exit;
 		}
@@ -359,20 +334,7 @@ NOTES FROM JSBURG:
 			wait(0);
 			if(!instance_exists(self)){
 				wait(0);
-				with(instance_create(_x,_y,CustomObject)){
-					sprite_index = global.spellIcon;
-					mask_index = mskBandit;
-					image_speed = 0;
-					speed = 3;
-					friction = 0.1;
-					direction = random(360);
-					image_angle = direction;
-					on_step = spellbullet_step;
-					on_pick = script_ref_create(spellbullet_pickup);
-					type = choose("gold");
-					my_prompt = prompt_create(type);
-					image_index = spellbullet_index(type);
-				}
+				spellbullet_create(_x,_y, "gold");
 			}
 			exit;
 		}
@@ -384,20 +346,7 @@ NOTES FROM JSBURG:
 			wait(0);
 			if(!instance_exists(self)){
 				wait(0);
-				with(instance_create(_x,_y,CustomObject)){
-					sprite_index = global.spellIcon;
-					mask_index = mskBandit;
-					image_speed = 0;
-					speed = 3;
-					friction = 0.1;
-					direction = random(360);
-					image_angle = direction;
-					on_step = spellbullet_step;
-					on_pick = script_ref_create(spellbullet_pickup);
-					type = choose("ultra");
-					my_prompt = prompt_create(type);
-					image_index = spellbullet_index(type);
-				}
+				spellbullet_create(_x,_y, "ultra");
 			}
 			exit;
 		}
@@ -409,20 +358,7 @@ NOTES FROM JSBURG:
 			wait(0);
 			if(!instance_exists(self)){
 				wait(0);
-				repeat(2)with(instance_create(_x,_y,CustomObject)){
-					sprite_index = global.spellIcon;
-					mask_index = mskBandit;
-					image_speed = 0;
-					speed = 3;
-					friction = 0.1;
-					direction = random(360);
-					image_angle = direction;
-					on_step = spellbullet_step;
-					on_pick = script_ref_create(spellbullet_pickup);
-					type = choose("split", "reflective", "precision", "warp", "haste", "burst", "gold");
-					my_prompt = prompt_create(type);
-					image_index = spellbullet_index(type);
-				}
+				repeat(2) spellbullet_create(_x,_y, choose("split", "reflective", "precision", "warp", "haste", "burst", "gold"));
 			}
 			exit;
 		}
@@ -434,20 +370,7 @@ NOTES FROM JSBURG:
 			wait(0);
 			if(!instance_exists(self)){
 				wait(0);
-				repeat(12)with(instance_create(_x,_y,CustomObject)){
-					sprite_index = global.spellIcon;
-					mask_index = mskBandit;
-					image_speed = 0;
-					speed = 3;
-					friction = 0.1;
-					direction = random(360);
-					image_angle = direction;
-					on_step = spellbullet_step;
-					on_pick = script_ref_create(spellbullet_pickup);
-					type = choose("split", "reflective", "precision", "warp", "haste", "burst", "gold");
-					my_prompt = prompt_create(type);
-					image_index = spellbullet_index(type);
-				}
+				repeat(12) spellbullet_create(_x,_y, choose("split", "reflective", "precision", "warp", "haste", "burst", "gold"));
 			}
 			exit;
 		}
@@ -459,27 +382,15 @@ NOTES FROM JSBURG:
 			wait(0);
 			if(!instance_exists(self)){
 				wait(0);
-				repeat(2)with(instance_create(_x,_y,CustomObject)){
-					sprite_index = global.spellIcon;
-					mask_index = mskBandit;
-					image_speed = 0;
-					speed = 3;
-					friction = 0.1;
-					direction = random(360);
-					image_angle = direction;
-					on_step = spellbullet_step;
-					on_pick = script_ref_create(spellbullet_pickup);
-					type = choose("split", "reflective", "precision", "warp", "haste", "burst", "gold");
-					my_prompt = prompt_create(type);
-					image_index = spellbullet_index(type);
-				}
+				repeat(2) spellbullet_create(_x,_y, choose("split", "reflective", "precision", "warp", "haste", "burst", "gold"));
 			}
 			exit;
 		}
 	}
 
-	with(instances_matching_ne(instances_matching(projectile, "creator", self), "sageCheck", true)){
-		sageCheck = true;
+	var sageEffectNum = (ultra_get("sage", 2) ? array_length(other.spellBullets) : 1);
+	with(instances_matching_ne(instances_matching(projectile, "creator", self), "sageCheck", sageEffectNum)){
+		if("sageCheck" not in self){sageCheck = 0;}
 
 		// Increase speed and maxspeed with projectile speed stat:
 		speed *= creator.sage_projectile_speed;
@@ -496,12 +407,12 @@ NOTES FROM JSBURG:
 		if friction > 0{
 			friction *= power(creator.sage_projectile_speed, 1.25);
 		}
-
-		for(var i = 0; i < (1 + ultra_get(mod_current, 2)); i++){
-
-			//trace(other.spellBullets[i])
-
+		
+		for(var i = sageCheck; i < sageEffectNum; i++){
 			if(!instance_exists(self)){break}
+		
+			sageCheck = i + 1;
+			
 			switch(other.spellBullets[i]){
 
 				case "split":
@@ -512,18 +423,15 @@ NOTES FROM JSBURG:
 
 						// Special split case for lasers because they dont want to cooperate on their own:
 						if instance_is(self, Laser){
-							if "SageCheckLaser" not in self{
-								with instance_create(xstart, ystart, Laser){
-									alarm0 = 1;
-									team = other.team;
-									creator = other.creator;
-									image_angle = other.image_angle -angle + _i * angle + angle / 2 * (1 - a);
-									direction = image_angle;
-									SageCheckLaser = true;
-								}
+							with instance_create(xstart, ystart, Laser){
+								alarm0 = 1;
+								team = other.team;
+								creator = other.creator;
+								image_angle = other.image_angle -angle + _i * angle + angle / 2 * (1 - a);
+								direction = image_angle;
+								sageCheck = other.sageCheck
 							}
 						}else with(instance_copy(false)){
-
 							if !instance_is(self, Lightning){
 								image_angle += -angle + _i * angle + angle / 2 * (1 - a);
 								direction += -angle + _i * angle + angle / 2 * (1 - a);
@@ -740,10 +648,56 @@ NOTES FROM JSBURG:
 
 #define spellpower_change(spellbullet, inst, spellpower)
 	stat_lose(spellbullet, inst);
-	if ultra_get("sage", 2) > 0 && array_length(spellbullet) > 1{stat_lose(spellbullet, inst)}
+	if ultra_get("sage", 1) > 0 && array_length(spellbullet) > 1{stat_lose(spellbullet, inst)}
 	inst.sage_spell_power += spellpower;
 	stat_gain(spellbullet, inst);
-	if ultra_get("sage", 2) > 0 && array_length(spellbullet) > 1{stat_gain(spellbullet, inst)}
+	if ultra_get("sage", 1) > 0 && array_length(spellbullet) > 1{stat_gain(spellbullet, inst)}
+
+#define spellbullet_create
+	var _x = argument[0];
+	var _y = argument[1];
+	var _type = argument[2];
+	with(instance_create(_x,_y,CustomObject)){
+		sprite_index = global.spellIcon;
+		mask_index = mskBandit;
+		image_speed = 0;
+		speed = 3;
+		friction = 0.1;
+		direction = random(360);
+		image_angle = direction;
+		on_step = spellbullet_step;
+		on_pick = script_ref_create(spellbullet_pickup);
+
+		if(_type == ""){
+			type = "default"
+
+			droplist = ds_list_create();
+			ds_list_add(droplist, "split", "reflective", "precision", "warp", "burst", "turret", "melee");
+			if GameCont.loops > 0{ds_list_add(droplist, "ultra")}
+			ds_list_shuffle(droplist);
+
+			if argument_count > 3 && instance_exists(argument[3]) for (var _i = 0; _i < ds_list_size(droplist) - 1; _i++){
+
+				for (var _j = 0; _j < array_length(argument[3].spellBullets); _i++){
+					if argument[3].spellBullets[_j] = droplist[| _i]{
+						continue;
+					}else{
+						type = droplist[| _i];
+						break;
+					}
+				}
+				if type != "default"{
+					break;
+				}
+			}
+			ds_list_destroy(droplist);
+		}else{
+			type = _type
+		}
+
+		my_prompt = prompt_create(type);
+		image_index = spellbullet_index(type);
+	}
 
 #define spellbullet_examine(name, inst)
 	switch(name){
@@ -799,13 +753,31 @@ NOTES FROM JSBURG:
 	if(distance_to_object(Wall) < 1){
 		move_bounce_solid(false);
 	}
+	var _nearest = instance_nearest(x,y,Portal);
+	 // Move:
+	if(_nearest != noone && distance_to_object(_nearest) < 50){
+		var	_l = 6 * current_time_scale,
+			_d = point_direction(x, y, _nearest.x, _nearest.y),
+			_x = x + lengthdir_x(_l, _d),
+			_y = y + lengthdir_y(_l, _d);
+		
+		image_angle += 30 * current_time_scale;
+			
+		if(place_free(_x, y)) x = _x;
+		if(place_free(x, _y)) y = _y;
+		
+		if(distance_to_object(Portal) == 0){
+			array_push(global.carryOver, type);
+			instance_destroy();
+		}
+	}
 
 #define spellbullet_pickup(index, spellbullet, prompt)
 	with(player_find(index)){
 		if(race == "sage"){
 			stat_gain(spellbullet, self)
 
-			if(array_length(spellBullets) < 2){
+			if(array_length(spellBullets) < 2 + skill_get(5)){
 				array_push(spellBullets, spellbullet.type);
 				uiroll = 0;
 			}else{
@@ -846,7 +818,7 @@ NOTES FROM JSBURG:
 
  // Throne Butt Description:
 #define race_tb_text
-	return "NOTHING FOR NW"//"@pSPELLS @sBECOME MORE @wPOWERFUL";
+	return "EXTRA @pSPELL BULLET@s SLOT"
 
 
  // On Taking Throne Butt:
@@ -911,8 +883,8 @@ NOTES FROM JSBURG:
 		break;
 		case 2:
 			sound_play(sndFishUltraB);
-			with instances_matching(Player, "race", "sage") if array_length(spellBullets) > 1{
-				stat_gain(spellBullets[1], self);
+			with instances_matching(Player, "race", "sage") for(i = 1; i < array_length(spellBullets); i++) {
+				stat_gain(spellBullets[i], self);
 			}
 			break;
 		/// Add more cases if you have more ultras!
