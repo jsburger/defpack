@@ -92,7 +92,7 @@ NOTES FROM JSBURG:
 		assign_sounds();
 	}
 
-	global.spellIcon = sprite_add("spellbullets.png", 10, 6, 7);
+	global.spellIcon = sprite_add("spellbullets.png", 20, 6, 7);
 	global.spellHold = sprite_add("spellbulletempty.png", 1, 6, 7);
 
 	global.bind_late_step = noone;
@@ -201,7 +201,7 @@ NOTES FROM JSBURG:
 
  // On Character's Creation (Starting a run, getting revived in co-op, etc.):
  // Thanks Brokin
-#macro dev true;
+#macro dev false;
 #macro c_neutral 					$BAB0A9
 #macro c_speed 						$CE7314
 #macro c_projectile_speed $E5BC16
@@ -239,7 +239,7 @@ NOTES FROM JSBURG:
 	if !dev{
 		spellBullets = ["default"];
 	}else{
-		spellBullets = ["default", "gold", "split", "warp", "burst", "ultra", "melee", "turret", "reflective", "haste", "precision", "infammo", "cursed"]
+		spellBullets = ["default", "gold", "split", "warp", "burst", "ultra", "melee", "turret", "reflective", "precision", "infammo", "cursed"]
 	}
 
 
@@ -325,7 +325,7 @@ NOTES FROM JSBURG:
 					type = "default"
 
 					droplist = ds_list_create();
-					ds_list_add(droplist, "split", "reflective", "precision", "warp", "haste", "burst", "turret", "melee");
+					ds_list_add(droplist, "split", "reflective", "precision", "warp", "burst", "turret", "melee");
 					if GameCont.loops > 0{ds_list_add(droplist, "ultra")}
 					ds_list_shuffle(droplist);
 
@@ -637,7 +637,7 @@ NOTES FROM JSBURG:
 			sage_projectile_speed -= .2;
 		break;
 		case "precision":
-			accuracy -= .6 + .3 * inst.sage_spell_power;
+			accuracy /= 1.6 + .3 * inst.sage_spell_power;
 			sage_projectile_speed += .2;
 		break;
 		case "warp":
@@ -645,7 +645,7 @@ NOTES FROM JSBURG:
 		break;
 		case "haste":
 			reloadspeed += .35 + .35 * inst.sage_spell_power;
-			accuracy += .65;
+			accuracy *= 1.65;
 		break;
 		case "burst":
 			sage_burst_size += ceil(2 + 1 * inst.sage_spell_power);
@@ -653,11 +653,11 @@ NOTES FROM JSBURG:
 			reloadspeed -= .5;
 		break;
 		case "default":
-			accuracy -= .15 + .15 * inst.sage_spell_power;
+			accuracy /= 1.15 + .15 * inst.sage_spell_power;
 			reloadspeed += .1 + .1 * inst.sage_spell_power;
 		break;
 		case "gold":
-			accuracy -= .2 + .2 * inst.sage_spell_power;
+			accuracy /= 1.2 + .2 * inst.sage_spell_power;
 			reloadspeed += .15 + .15 * inst.sage_spell_power;
 			sage_projectile_speed += .15 + .15 * inst.sage_spell_power;
 			maxspeed += .25 + .25 * inst.sage_spell_power;
@@ -666,19 +666,20 @@ NOTES FROM JSBURG:
 			sage_ammo_to_rads++;
 		break;
 		case "turret":
-			reloadspeed += .5 + .5 * inst.sage_spell_power;
+			reloadspeed += .65 + .65 * inst.sage_spell_power;
 			maxspeed -= 3;
 			sage_auto++;
 		break;
 		case "melee":
-			reloadspeed += .25 + .25 * inst.sage_spell_power;
+			reloadspeed += .3 + .3 * inst.sage_spell_power;
 			maxspeed += 1.5;
-			accuracy += .6;
+			accuracy *= 1.6;
 		break;
 		case "infammo":
 			sage_infammo_gain += 2 + 2 * inst.sage_spell_power;
 			maxspeed += .5;
 			sage_projectile_speed -= .4;
+		break;
 
 	}
 
@@ -692,7 +693,7 @@ NOTES FROM JSBURG:
 			sage_projectile_speed += .2;
 		break;
 		case "precision":
-			accuracy += .6 + .3 * inst.sage_spell_power;
+			accuracy *= 1.6 + .3 * inst.sage_spell_power;
 			sage_projectile_speed -= .2;
 		break;
 		case "warp":
@@ -700,7 +701,7 @@ NOTES FROM JSBURG:
 		break;
 		case "haste":
 			reloadspeed -= .35 + .35 * inst.sage_spell_power;
-			accuracy -= .65;
+			accuracy /= 1.65;
 		break;
 		case "burst":
 			sage_burst_size -= ceil(2 + 1 * inst.sage_spell_power);
@@ -708,11 +709,11 @@ NOTES FROM JSBURG:
 			reloadspeed += .5;
 		break;
 		case "default":
-			accuracy += .15 + .15 * inst.sage_spell_power;
+			accuracy *= 1.15 + .15 * inst.sage_spell_power;
 			reloadspeed -= .1 + .1 * inst.sage_spell_power;
 		break;
 		case "gold":
-			accuracy += .2 + .2 * inst.sage_spell_power;
+			accuracy *= 1.2 + .2 * inst.sage_spell_power;
 			reloadspeed -= .15 + .15 * inst.sage_spell_power;
 			sage_projectile_speed -= .15 + .15 * inst.sage_spell_power;
 			maxspeed -= .25 + .25 * inst.sage_spell_power;
@@ -721,14 +722,14 @@ NOTES FROM JSBURG:
 			sage_ammo_to_rads--;
 		break;
 		case "turret":
-			reloadspeed -= .5 + .5 * inst.sage_spell_power;
+			reloadspeed -= .65 + .65 * inst.sage_spell_power;
 			maxspeed += 3;
 			sage_auto--;
 		break;
 		case "melee":
-			reloadspeed -= .25 + .25 * inst.sage_spell_power;
+			reloadspeed -= .3 + .3 * inst.sage_spell_power;
 			maxspeed -= 1.5;
-			accuracy -= .6;
+			accuracy /= 1.6;
 		break;
 		case "infammo":
 			sage_infammo_gain -= 2 + 2 * inst.sage_spell_power;
@@ -753,7 +754,7 @@ NOTES FROM JSBURG:
 		case "precision":
 			return `@(color:${c_neutral})+` + string(round(60 + 30 * inst.sage_spell_power)) + `% @(color:${c_accuracy})ACCURACY#@(color:${c_neutral})+20% @(color:${c_projectile_speed})PROJECTILE SPEED`;
 		case "warp":
-			return `@(color:${c_neutral})+@(color:${c_spellpower})WARPSPEED`;
+			return `@(color:${c_neutral})+@(color:${c_speed})WARPSPEED`;
 		case "haste":
 			return `@(color:${c_neutral})+` + string(round(35 + 50 * inst.sage_spell_power)) + `% @(color:${c_reload})RELOAD SPEED#@s-65% @(color:${c_accuracy})ACCURACY`;
 		case "burst":
@@ -765,9 +766,9 @@ NOTES FROM JSBURG:
 		case "ultra":
 			return `@(color:${c_neutral})+@(color:${c_ammo})AMMO @(color:${c_neutral})TO @gRAD @(color:${c_neutral})COST`;
 		case "turret":
-			return `@(color:${c_neutral})+` + string(round(50 + 50 * inst.sage_spell_power)) + `% @(color:${c_reload})RELOAD SPEED#@(color:${c_neutral})+@wAUTOMATIC WEAPONS#@s-3 @(color:${c_speed})SPEED`;
+			return `@(color:${c_neutral})+` + string(round(65 + 65 * inst.sage_spell_power)) + `% @(color:${c_reload})RELOAD SPEED#@(color:${c_neutral})+@wAUTOMATIC WEAPONS#@s-3 @(color:${c_speed})SPEED`;
 		case "melee":
-			return `@(color:${c_neutral})+` + string(round(25 + 25 * inst.sage_spell_power)) + `% @(color:${c_reload})RELOAD SPEED#@(color:${c_neutral})+1.5 @(color:${c_speed})SPEED#@s-60% @(color:${c_accuracy})ACCURACY`;
+			return `@(color:${c_neutral})+` + string(round(30 + 30 * inst.sage_spell_power)) + `% @(color:${c_reload})RELOAD SPEED#@(color:${c_neutral})+1.5 @(color:${c_speed})SPEED#@s-60% @(color:${c_accuracy})ACCURACY`;
 		case "infammo":
 			return `@(color:${c_neutral})+` + string(round(2 + 2 * inst.sage_spell_power)) + ` seconds @(color:${c_aqua})INFAMMO @(color:${c_neutral})PER KILL#+50% @(color:${c_speed})SPEED#@s-40% @(color:${c_projectile_speed})PROJECTILE SPEED`
 		case "cursed":
