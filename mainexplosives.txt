@@ -15,6 +15,7 @@
 
 /loadwep rocklet pistol
 /loadwep rocklet rifle
+/loadwep hydra
 /loadwep rocklet minigun
 /loadwep rocklet cannon
 /loadwep super rocklet cannon

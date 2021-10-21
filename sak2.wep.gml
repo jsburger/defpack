@@ -365,26 +365,31 @@ ds_map_destroy(global.flakmap)
 
 
 
-
-#define option_finalize
-var keys = ds_map_keys(global.optionMap),
-defaultlq = {
-	bodies : -1,
-	mods : -1,
-	text : "This is the default text, please report this to the devs if you see this.",
-	sound : -1,
-	sprite : mskNone,
-	spritem: mskNone,
-	index  : 0,
-	namecolor : c_white
-},
-defaultstats = {
+#define get_default_stat_object()
+return {
 	ammo : 1,
 	reload : 1,
 	projcount : 1,
 	radsammo : 0,
-	radsproj : 0
+	radsproj : 0,
+	auto: 0
 };
+
+
+#define option_finalize
+var keys = ds_map_keys(global.optionMap),
+	defaultlq = {
+		bodies : -1,
+		mods : -1,
+		text : "This is the default text, please report this to the devs if you see this.",
+		sound : -1,
+		sprite : mskNone,
+		spritem: mskNone,
+		index  : 0,
+		namecolor : c_white
+	},
+	defaultstats = get_default_stat_object();
+
 for (var i = 0, l = array_length(keys); i < l; i++) {
 	var opt = global.optionMap[? keys[i]];
 	if !(is_array(opt)) {
@@ -417,6 +422,7 @@ var a = global.optionMap;
 		projcount
 		radsammo (multiplied by final ammo cost, default 0, final multiplier calculated via addition)
 		radsproj (multiplied by final projectile count, default 0, rad cost is selected from the lowest calculated number)
+		auto (max of all parts)
 	}
 	proj : {
 		obj : object_index or script reference
@@ -608,7 +614,8 @@ a[? "pop gun"] = {
 	stats : {
 		ammo : 1,
 		reload : 2,
-		projcount : 1
+		projcount : 1,
+		auto : true
 	},
 	text : "Uses bullets to fire shells rapidly.",
 	sound : sndPopgun,
@@ -653,7 +660,7 @@ a[? "double"] = {
 		reload : 1.6,
 		projcount : 2
 	},
-	text : "Doubles the projectile count, effecient!",
+	text : "Doubles the projectile count, efficient!",
 	sound : sndDoubleShotgun,
 	sprite : global.sprMods,
 	spritem: global.sprModsM,
@@ -677,7 +684,8 @@ a[? "auto"] = {
 	stats : {
 		ammo : 1,
 		reload : .2,
-		projcount : 6/7
+		projcount : 6/7,
+		auto: true
 	},
 	text : "Rapid fire! Reduces accuracy and projectile count.",
 	sound : sndPopgun,
@@ -854,7 +862,10 @@ w.auto = 1
 if is_object(w){
 	if w.done return w.name
 }
-return `@(color:${make_color_rgb(255, 156, 0)})SHOTGUN ASSEMBLY KIT`
+if instance_is(self, WepPickup) {
+	return `@(color:${make_color_rgb(255, 156, 0)})SHOTGUN ASSEMBLY KIT`
+}
+return "SHOTGUN ASSEMBLY KIT"
 
 #define weapon_type(w)
 if is_object(w){
@@ -1002,6 +1013,16 @@ if (q && !is_object(wep)) || button_pressed(index, "horn"){
 if q && is_object(wep) && wep.wep = mod_current && !wep.isDone{
     script_bind_draw(sakBuilder, -17, index, wep)
 }
+if is_object(q ? wep : bwep) {
+	script_bind_draw(scrDebugDraw, -17, q ? wep : bwep)
+}
+
+#define scrDebugDraw(wep)
+	instance_destroy()
+	draw_set_halign(0)
+	draw_set_font(fntSmall)
+	trace_lwo_start(wep, view_xview_nonsync + 60, view_yview_nonsync + 30)
+	draw_set_font(fntM)
 
 //Distance between buttons, doesn't really need to be a macro but it was this way when I found it
 #macro buttonSpace 22
@@ -1127,6 +1148,9 @@ if q && is_object(wep) && wep.wep = mod_current && !wep.isDone{
 			if (selected) {
 				array_push(wepIn.selections, options[i])
 				draw_sprite(buttonSpr, buttonIndex, buttonX, yCenter - 2)
+				
+				//For debugging
+				wepIn.stats = calculate_stats(wepIn.selections)
 				//Prevents sounds for playing for players that can't see the menu (nonsync)
 				if (isLocal) {
 					sound_play(sndClick)
@@ -1260,7 +1284,9 @@ if q && is_object(wep) && wep.wep = mod_current && !wep.isDone{
 	draw_set_halign(1);
 
 
+//'Parts' are keys for the option map
 #define calculate_stats(partList)
+	//Blank stats object for the basic display
 	if (!is_array(partList)) {
 		return {
 			ammo: 0,
@@ -1271,22 +1297,20 @@ if q && is_object(wep) && wep.wep = mod_current && !wep.isDone{
 			radsammo: 0
 		}
 	}
-	var finalStats = {
-		ammo: 1,
-		reload: 1,
-		projcount: 1,
-		radsammo: 0,
-		radsproj: 0
-	};
+	var finalStats = get_default_stat_object();
+	//Iterate through all parts
 	with (partList) {
+		//Get their reference stats, apply them to the final stats
 		with (global.optionMap[? self].stats) {
 			finalStats.reload *= reload
 			finalStats.ammo *= ammo
 			finalStats.projcount *= projcount
 			finalStats.radsammo += radsammo
 			finalStats.radsproj += radsproj
+			finalStats.auto = max(finalStats.auto, auto)
 		}
 	}
+	//Calculate rads based on projectile/ammo count
 	finalStats.rads = calculate_rad_cost(finalStats)
 	return finalStats;
 	
@@ -1345,3 +1369,32 @@ if is_object(b) && b.done
     	}
     }
 }
+
+#define trace_lwo_start(lwo, _x, _y)
+	trace_lwo(lwo, {x: _x, y: _y})
+
+#define trace_lwo(lwo, pos)
+	for (var i = 0, l = lq_size(lwo); i < l; i++) {
+		var value = lq_get_value(lwo, i),
+			key =   lq_get_key(lwo, i) + " : ";
+		
+		if is_object(value) {
+			key += "{"
+		}
+		else {
+			key += string(value)
+		}
+		
+		draw_line_pos(pos, key)
+
+		if is_object(value) {
+			pos.x += 6
+			trace_lwo(value, pos)
+			pos.x -= 6
+			draw_line_pos(pos, "}")
+		}
+	}
+	
+#define draw_line_pos(pos, text)
+	draw_text_nt(pos.x, pos.y, text)
+	pos.y += string_height(text) + 1

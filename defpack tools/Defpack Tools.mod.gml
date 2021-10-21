@@ -4,7 +4,7 @@
 	File Format Overview (WIP)
 	Init
 		Sprite/Mask adding
-		Create Globals, Rocklet Surface, Charge and Abris Color permission registry
+		Create Globals, Charge and Abris Color permission registry
 
 	Macros
 	Init Relevant Functions (sprite_add_p)
@@ -29,6 +29,7 @@
 		soda_add soda_get (soda api)
 		instance_in type functions
 		various homing scripts (instance_nearest_matching_ne)
+		object_get_mouse
 		...
 	*/
 
@@ -122,10 +123,6 @@
 		HeavySplitShell          = sprite_add(i + "sprSplitSlug.png",           2, 9, 9);
 		HeavySplitShellDisappear = sprite_add(i + "sprSplitSlugDisappear.png",  5, 9, 8);
 
-		//Rocklets
-		Rocklet      = sprite_add(i + "sprRocklet.png", 2, 1, 6);
-		RockletFlame = sprite_add(i + "sprRockletFlame.png", 0, 8, 3);
-
 		//Sonic Explosions
 		SonicExplosion          = sprite_add(  i + "sprSonicExplosion.png", 8, 61, 59);
 		SmallSonicExplosion     = sprite_add(  i + "sprSonicExplosionSmall.png", 8, 20, 20);
@@ -210,27 +207,31 @@
 
 	}
 
-	if mod_exists("mod", "defhitscan") {
-		mod_variable_set("mod", "defhitscan", "spr", spr)
+	//Distribute sprites to other libraries (add mod name to list to expand)
+	with ["defhitscan"] {
+		if mod_exists("mod", self) {
+			mod_variable_set("mod", self, "spr", spr)
+		}
 	}
+	
+	//System for letting weapons draw on the hud
+	global.HUDRequests = []
 
 	global.SAKmode = 0
 	//mod_script_call("mod","defpermissions","permission_register","mod",mod_current,"SAKmode","SAK Mode")
 
-	global.traildrawer = -4
-	global.trailsf = surface_create(game_width*4,game_height*4)
-	surface_set_target(global.trailsf)
-	draw_clear_alpha(c_white,0)
-	surface_reset_target()
-
+	//Vertex format used for Lightning Bolts
 	vertex_format_begin()
 	vertex_format_add_position()
 	global.lightningformat = vertex_format_end()
 
+	//Config for abris colors
 	global.AbrisCustomColor = false;
 
+	//Configs for chargebars
 	global.chargeType = 1
 	global.chargeLocation = charge_mouse;
+	//Used for sliding new charge bars into place
 	global.chargeSmooth = [0, 0]
 
 	mod_script_call("mod","defpermissions","permission_register","mod",mod_current,"AbrisCustomColor","Use Player colors for Abris weapons")
@@ -306,10 +307,6 @@
 	}
 	return q
 
-#define cleanup
-	if surface_exists(global.trailsf) surface_destroy(global.trailsf)
-	with global.traildrawer instance_destroy()
-
 #define chat_command(cmd,arg,ind)
 	if cmd = "sakcity"{
 	    global.SAKmode = !global.SAKmode
@@ -352,7 +349,21 @@
 		draw_circle_color(x+lengthdir_x(sprite_width/2+2,direction),y+lengthdir_y(sprite_width/2+2,direction),20 + random(3), c_black,c_black,0)
 	}
 
+#define request_hud_draw(scriptRef)
+	array_push(global.HUDRequests, scriptRef)
+
 #define draw_gui
+
+	//Take care of hud drawing requests from weapons
+	for (var i = 0, l = array_length(global.HUDRequests); i < l; i++) {
+		script_ref_call(global.HUDRequests[i])
+	}
+	//Clear out requests
+	if l > 0 {
+		global.HUDRequests = []
+	}
+
+	//Sniper charge stuff. Could be moved to hud requests
 	var q = instances_matching(CustomObject, "parent", "SniperCharge");
 	if (array_length(q) > 0) with instances_matching_gt(q, "index", -1) if player_is_local_nonsync(index) {
 
@@ -619,21 +630,6 @@ with Player if visible{
 	    }
 	}
 
-	// Surface for Rocklet trails
-	if !surface_exists(global.trailsf) {
-	    global.trailsf = surface_create(game_width * 4, game_height * 4)
-	    surface_set_target(global.trailsf)
-	    draw_clear_alpha(c_black, 0)
-	    surface_reset_target()
-	}
-	// CustomDraw that uses said surface
-	if !instance_exists(global.traildrawer) {
-	    with script_bind_draw(draw_trails, 1){
-	        global.traildrawer = id
-	        persistent = 1
-	    }
-	}
-
 	// SAK city rolls
 	if global.SAKmode && mod_exists("weapon", "sak"){
 	    with instances_matching(instances_matching(WepPickup, "roll", 1), "saked", undefined) {
@@ -670,17 +666,19 @@ with Player if visible{
 	}
 
 	// Soda Drops
-	with SodaMachine {
-		if fork(){
-		    var _x = x, _y = y;
-		    wait(0)
-		    if !instance_exists(self) && !instance_exists(GenCont){
-	    		with instance_create(_x, _y, WepPickup){
-	    		    if !irandom(99) and mod_exists("weapon", "soda popper") wep = "soda popper"
-	    		    else wep = soda_get()
-	    		}
-	    	}
-	    	exit
+	if array_length(global.sodaList) > 0 {
+		with SodaMachine {
+			if fork(){
+			    var _x = x, _y = y;
+			    wait(0)
+			    if !instance_exists(self) && !instance_exists(GenCont){
+		    		with instance_create(_x, _y, WepPickup){
+		    		    if !irandom(99) and mod_exists("weapon", "soda popper") wep = "soda popper"
+		    		    else wep = soda_get()
+		    		}
+		    	}
+		    	exit
+			}
 		}
 	}
 
@@ -781,7 +779,10 @@ with global.sodaList {
 		array_push(available, self)
 	}
 }
-return available[irandom(array_length(available)-1)]
+if array_length(available) > 0 {
+	return available[irandom(array_length(available)-1)]
+}
+return wep_screwdriver
 
 #define instances_in(left,top,right,bottom,obj)
 return instances_matching_gt(instances_matching_lt(instances_matching_gt(instances_matching_lt(obj,"y",bottom),"y",top),"x",right),"x",left)
@@ -871,11 +872,47 @@ if instance_exists(obj){
 return found
 
 
+#define object_get_mouse(inst)
+// Returns a LWO with three fields:
+//	x and y: world space coordinates.
+//	is_input: indicates whether the coordinates should be treated as an active control source.
+//		A nuke for example might ignore the coords if they aren't coming from an actual mouse, as enemies don't really aim over time.
+// Used for logic and should be syncronous.
+// Of note, the format of the LWO and scr_get_mouse integration are what make this important, thats what ought to be standard.
+// If you don't like other choices, feel free to replace them. 
+
+	//Compat hook. If you need self, be sure to include it in your script ref as an argument.
+	//Return a LWO in your script that would match the output of this one.
+	//You can return to the default behavior by setting scr_get_mouse to something that isn't a script reference.
+	if "scr_get_mouse" in inst && is_array(inst.scr_get_mouse) {
+		with inst return script_ref_call(scr_get_mouse)
+	}
+	
+	//If there is a mouse at play, use it.
+	if instance_is(inst, Player) || ("index" in inst && player_is_active(inst.index)) {
+		return {x: mouse_x[inst.index], y: mouse_y[inst.index], is_input: true}
+	}
+	
+	//If there is a target, consider it the mouse position.
+	if "target" in inst && instance_exists(inst.target) {
+		return {x: target.x, y: target.y, is_input: false}
+	}
+	
+	//If no real way to find mouse coords is found, then make some assumptions regarding generally intended behavior.
+	//In this case, project a point a moderate distance from the source, with direction as the default angle, optionally picking up gunangle.
+	var _length = 48, _dir = inst.direction;
+	if "gunangle" in inst {
+		_dir = inst.gunangle;
+	}
+
+	return {x: inst.x + lengthdir_x(_length, _dir), y: inst.y + lengthdir_y(_length, _dir), is_input: false}
+
+
 #define script_ref_call_self(scr)
 return mod_script_call_self(scr[0], scr[1], scr[2])
 
 
- //shitty and bad sound stuff
+ //Poor replacement for sound_play_hit stuff, but used by swords, and can stack.
 #define get_coords_nonsync()
 var _x, _y, p = player_find_local_nonsync();
 if instance_exists(p){
@@ -940,34 +977,6 @@ return angle_difference(a, b) * (1 - power((n - 1)/n, dn))
 #define get_reloadspeed(p)
 if !instance_is(p, Player) return 1
 return (p.reloadspeed + ((p.race == "venuz") * (.2 + .4 * ultra_get("venuz", 1))) + ((1 - p.my_health/p.maxhealth) * skill_get(mut_stress)))
-
-#define draw_trails
-var q = instances_matching(CustomProjectile,"name","Rocklet","big rocklet","huge rocklet")
-if array_length(q){
-    surface_set_target(global.trailsf)
-    draw_clear_alpha(0,0)
-    draw_set_blend_mode(bm_normal)
-    draw_set_alpha(1)
-    draw_set_color_write_enable(1,1,1,1)
-
-    with instances_seen_nonsync(instances_matching(q, "name","big rocklet","huge rocklet")){
-        var _x = (x - view_xview_nonsync)*4, _y = (y - view_yview_nonsync)*4, _xp = (lerp(x,xprevious,4*speed/maxspeed) - view_xview_nonsync)*4, _yp = (lerp(y,yprevious,4*speed/maxspeed) - view_yview_nonsync)*4;
-        var len = ((random_nonsync(speed)/maxspeed))*16;
-        var xoff = lengthdir_x(len,direction + 90), yoff = lengthdir_y(len,direction + 90);
-        draw_triangle_color(_x + xoff, _y + yoff, _x - xoff, _y - yoff, _xp, _yp, c_white, c_white, c_black, 0)
-    }
-    with instances_seen_nonsync(instances_matching(q, "name","Rocklet")){
-        var _x = (x - view_xview_nonsync)*4, _y = (y - view_yview_nonsync)*4, _xp = (lerp(x,xprevious,4*speed/maxspeed) - view_xview_nonsync)*4, _yp = (lerp(y,yprevious,4*speed/maxspeed) - view_yview_nonsync)*4;
-        var len = (random_nonsync(speed)/maxspeed)*8;
-        var xoff = lengthdir_x(len,direction + 90), yoff = lengthdir_y(len,direction + 90);
-        draw_triangle_color(_x + xoff, _y + yoff, _x - xoff, _y - yoff, _xp, _yp, c_white, c_white, c_black, 0)
-    }
-
-    surface_reset_target()
-    draw_set_blend_mode(bm_add)
-    draw_surface_ext(global.trailsf,view_xview_nonsync,view_yview_nonsync,0.25,0.25,0,c_white,1)
-    draw_set_blend_mode(bm_normal)
-}
 
 #define weapon_get_chrg(w)
 if is_object(w) w = w.wep
@@ -2869,6 +2878,7 @@ time -= current_time_scale
 if time <= 0 instance_destroy()
 
 
+
 #define create_plasmite(_x,_y)
 with instance_create(_x, _y, CustomProjectile){
     name = "Plasmite"
@@ -3223,39 +3233,6 @@ if current_frame_active with instance_create(x + random_range(-8, 8) + lengthdir
 }
 if bounce <= 0 instance_destroy()
 
-
-#define create_rocklet(_x,_y)
-with instance_create(_x, _y, CustomProjectile){
-    sprite_index = spr.Rocklet
-    damage = 3
-    name = "Rocklet"
-    maxspeed = 18;
-    immuneToDistortion = 1;
-    typ = 1
-    depth = -1
-    direction_goal = 0
-    friction = -.6
-    on_step = rocket_step
-    on_destroy = rocket_destroy
-    on_anim = bullet_anim
-    on_draw = rocket_draw
-    return id
-}
-
-#define rocket_step
-direction -= angle_approach(direction, direction_goal, 8, current_time_scale)
-if speed > maxspeed
-	speed = maxspeed
-image_angle = direction
-
-#define rocket_destroy
-sound_play_hit_big_ext(sndExplosionS, 1.5 * random_range(.8, 1.2), .8)
-with instance_create(x, y, SmallExplosion)
-	damage = 3
-
-#define rocket_draw
-draw_self()
-draw_sprite_ext(spr.RockletFlame, -1, x, y, 1, 1, image_angle, c_white, image_alpha)
 
 #define determine_gore(_id)
 	switch (_id.object_index){
