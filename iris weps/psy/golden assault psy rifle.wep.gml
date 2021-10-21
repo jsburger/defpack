@@ -17,7 +17,7 @@ return 1;
 return false;
 
 #define weapon_load
-return 17;
+return 14;
 
 #define weapon_cost
 return 3;
@@ -35,7 +35,7 @@ return "NO REMORSE";
 
 repeat(3)
 {
-	weapon_post(4,-5,11)
+	weapon_post(4,-4,0)
 	sound_play_pitch(sndSwapCursed,random_range(1.4,1.7))
 	sound_play(sndGoldMachinegun)
 	mod_script_call("mod","defpack tools", "shell_yeah", 180, 25, random_range(2,4), c_purple)

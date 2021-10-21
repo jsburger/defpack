@@ -1,4 +1,4 @@
-/load sage
+/load races/sage
 /load mainbullets
 /loadmod defpack tools/defpermissions
 /loadmod defpack tools/defpack tools

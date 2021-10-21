@@ -1,0 +1,4 @@
+/loadrace sage
+/loadmod SageBullets
+/loadmod SageMod
+/loadtext allowmain

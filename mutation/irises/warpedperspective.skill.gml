@@ -12,7 +12,7 @@
 	return "@gCLOSE MINDED";
 
 #define skill_iris
-	if(array_length(instances_matching([Player, Revive], "race", "horror")) > 0 || mod_variable_get("skill", "prismaticiris", "color") = mod_current) || mod_variable_get("skill", "prismaticiris", "gammaFix") return "gamma"; // Return prefix of weapon variants
+	if(array_length(instances_matching([Player, Revive], "race", "horror")) > 0 || mod_variable_get("skill", "prismaticiris", "color") = mod_current) || mod_variable_get("skill", "prismaticiris", "gammaFix") || GameCont.horror > 0 return "gamma"; // Return prefix of weapon variants
 	else return false;
 
 #define skill_button

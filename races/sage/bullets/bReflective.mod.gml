@@ -1,0 +1,61 @@
+#define init
+  global.sprBullet = sprite_add("../../../sprites/sage/bullets/sprBulletBounce.png", 0, 7, 7);
+
+#macro c mod_variable_get("race", "sage", "colormap");
+
+#define bullet_sprite
+  return global.sprBullet;
+
+#define bullet_name
+  return "BOUNCE";
+
+#define bullet_area
+  return 0;
+
+#define bullet_description(power)
+  return `@(color:${c.neutral})+` + string(ceil(3	+ 2 * power)) + ` @(color:${c.bounce})BOUNCES#@s-20% @(color:${c.projectile_speed})PROJECTILE SPEED`;
+
+#define on_take(power)
+  sage_projectile_speed -= .2;
+  if "sage_bounce" not in self{
+
+    sage_bounce = ceil(3 + 2 * sage_spell_power);
+  }else{
+
+    sage_bounce += ceil(3 + 2 * sage_spell_power);
+  }
+
+#define on_lose(power)
+  sage_projectile_speed += .2;
+  sage_bounce -= ceil(3 + 2 * sage_spell_power);
+
+#define step
+
+  with instances_matching(Player, "race", "sage") {
+
+    if "sage_bounce" in self {
+
+      var _s = id;
+      with instances_matching(projectile, "creator", _s) {
+
+        if "sage_check_bounce" not in self {
+
+          sage_check_bounce = true;
+
+          // if "bounce" or "bounces" are defined as a variable it will give that projectile bounce
+          // if "sage_no_bounce" is defined it will not use sages custom bounce event for bouncing, use this for melee attacks
+          if "bounce" not in self || instance_is(self, BouncerBullet) {
+
+            sage_bounce = creator.sage_bounce;
+          }else {
+
+            bounce +=  creator.sage_bounce;
+          }
+          if "bounces" in self {
+
+            bounces =  creator.sage_bounce;
+          }
+        }
+      }
+    }
+  }
