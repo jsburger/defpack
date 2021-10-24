@@ -15,9 +15,7 @@
 
 /loadwep rocklet pistol
 /loadwep rocklet rifle
-/loadwep rocklet minigun
 /loadwep rocklet cannon
-/loadwep super rocklet cannon
 
 //SONIC
 
@@ -52,7 +50,6 @@
 /loadwep claymore
 /loadwep kaboomerang
 /loadwep heavy nuke launcher
-/loadwep firestorm
 /loadwep toxic carronader
 /loadwep blaster
 /loadwep puncher

@@ -12,7 +12,6 @@
 /loadwep plasmite pistol
 /loadwep plasmite rifle
 /loadwep plasmite shotgun
-/loadwep plasmite cannon
 /loadwep turbo-murderizer 3000
 
 //LIGHTNING

@@ -1,7 +1,7 @@
 #define init
 global.sprFireGunhammer 		 = sprite_add_weapon("../../sprites/weapons/iris/fire/sprFireGunhammer.png", 1, 6); //SHOULD BE THE NORM, LOOKING GOOD
 global.sprFireGunhammerHUD 	 = sprite_add_weapon("../../sprites/weapons/iris/fire/sprFireGunhammer.png", 12, 5);
-global.sprFireGunhammerSlash = sprite_add("../../sprites/projectiles/iris/fire/sprFireGunhammerSlash.png",3,0,24)
+global.sprFireGunhammerSlash = sprite_add("../../sprites/projectiles/iris/fire/sprFireGunhammerSlash.png",4,0,24)
 
 #define weapon_name
 return "FIRE GUNHAMMER";

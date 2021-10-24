@@ -121,6 +121,9 @@ switch disc{
             hitid[1] = sprite_index = global.sprMegaVinyl ? "MEGA VINYL" : "THE NUCLEAR THRONE#SOUNDTRACK"
             speed = 4
             maxspeed = speed
+            cansplat = false;
+            hitid = [sprite_index, name];
+            turn = 0;
             return id
         }
     case "toxic":

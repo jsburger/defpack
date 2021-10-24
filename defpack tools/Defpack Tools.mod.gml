@@ -157,10 +157,11 @@
 		LaserFlakBullet = sprite_add(i + "sprLaserFlak.png", 2, 8, 8);
 
 		//Vectors
-		VectorHead   = sprite_add(i + "sprVectorHead.png",1,8,2)
-		Vector	   = sprite_add(i + "sprVector.png",1,0,3)
-		VectorImpact = sprite_add(i + "sprVectorImpact.png",7,16,16)
-		VectorEffect = sprite_add(i + "sprVectorBeamEnd.png",3,5,5);
+		VectorHead   		 = sprite_add(i + "sprVectorHead.png", 1, 8, 2);
+		Vector	     		 = sprite_add(i + "sprVector.png", 1, 0, 3);
+		VectorImpact 		 = sprite_add(i + "sprVectorImpact.png", 14, 20, 20);
+		msk.VectorImpact = sprite_add(i + "mskVectorImpact.png", 14, 20, 20);
+		VectorEffect 		 = sprite_add(i + "sprVectorBeamEnd.png", 5, 5, 5);
 
 		//Spike Balls
 		MiniSpikeball      = sprite_add  (i + "sprMiniSpikeball.png", 0, 6, 5);
@@ -171,12 +172,21 @@
 		msk.HeavySpikeball = sprite_add_p(i + "mskHeavySpikeball.png", 0, 15, 15);
 
 		//Discs
-		BouncerDisc    = sprite_add  (i + "sprBouncerDisc.png", 2,  6,  6);
-		StickyDisc     = sprite_add  (i + "sprStickyDisc.png",  2,  7,  6);
-		MegaDisc       = sprite_add_p(i + "sprMegaDisc.png",    2, 12, 12);
-		MegaDiscDie    = sprite_add  (i + "sprMegaDiscDie.png",    6, 12, 12);
-		MegaDiscTrail  = sprite_add  (i + "sprMegaDiscTrail.png",  3, 12, 12);
-		MegaDiscBounce = sprite_add  (i + "sprMegaDiscBounce.png", 4, 12, 12);
+		BouncerDisc      = sprite_add  (i + "sprBouncerDisc.png", 2,  6,  6);
+		StickyDisc       = sprite_add  (i + "sprStickyDisc.png",  2,  7,  6);
+		MegaDisc         = sprite_add_p(i + "sprMegaDisc.png"      , 2, 12, 12);
+		MegaDiscHitId    = sprite_add_p(i + "sprMegaDiscHitId.png" , 2, 12, 12);
+		MegaDiscDie      = sprite_add  (i + "sprMegaDiscDie.png"   , 6, 12, 12);
+		MegaDiscTrail    = sprite_add  (i + "sprMegaDiscTrail.png" , 3, 12, 12);
+		MegaDiscBounce   = sprite_add  (i + "sprMegaDiscBounce.png", 4, 12, 12);
+		MegaDiscSplat[0] = sprite_add  (i + "sprMegaDiscSplat1.png", 1, 12, 12);
+		MegaDiscSplat[1] = sprite_add  (i + "sprMegaDiscSplat2.png", 1, 12, 12);
+		MegaDiscSplat[2] = sprite_add  (i + "sprMegaDiscSplat3.png", 1, 12, 12);
+		MegaDiscSplat[3] = sprite_add  (i + "sprMegaDiscSplat4.png", 1, 12, 12);
+		MegaDiscSplat[4] = sprite_add  (i + "sprMegaDiscSplat5.png", 1, 12, 12);
+		MegaDiscSplat[5] = sprite_add  (i + "sprMegaDiscSplat6.png", 1, 12, 12);
+		MegaDiscSplat[6] = sprite_add  (i + "sprMegaDiscSplat7.png", 1, 12, 12);
+
 
 		//Blades
 		Sword       = sprite_add  (i + "sprSword.png",      1, 10, 10)
@@ -3256,20 +3266,24 @@ draw_sprite_ext(spr.RockletFlame, -1, x, y, 1, 1, image_angle, c_white, image_al
 	switch (_id.object_index){
 		//FEATHER BLEEDERS
 		case Raven : return Feather;
+
 		//CURSED BLEEDERS
-		case InvSpider  	 :
+		case InvSpider  	   :
 		case InvCrystal      :
 		case InvLaserCrystal : return Curse;
+
 		//CRYSTAL BLEEDERS
 		case LaserCrystal :
 		case HyperCrystal :
 		case CrystalProp  :
-		case Spider		:
-		case RhinoFreak	: return Hammerhead;
+		case Spider		    :
+		case RhinoFreak	  : return Hammerhead;
+
 		//WHITE BLEEDERS
 		case YVStatue :
 		case BigSkull :
 		case SnowMan  : return MeleeHitWall;
+
 		//ROBOT BLEEDERS
 		case SnowBot       :
 		case SnowTank      :
@@ -3280,7 +3294,7 @@ draw_sprite_ext(spr.RockletFlame, -1, x, y, 1, 1, image_angle, c_white, image_al
 		case Wolf          :
 		case StreetLight   :
 		case SodaMachine   :
-		case Hydrant	   :
+		case Hydrant	     :
 		case Turret	       :
 		case TechnoMancer  :
 		case Terminal      :
@@ -3289,23 +3303,27 @@ draw_sprite_ext(spr.RockletFlame, -1, x, y, 1, 1, image_angle, c_white, image_al
 		case Sniper        :
 		case Car           :
 		case Pipe          :
-		case Anchor 	   :
+		case Anchor 	     :
 		case WaterMine	   :
 		case VenuzTV       :
-		case CarVenus	   :
+		case CarVenus	     :
 		case CarVenus2	   :
 		case CarVenusFixed :
-		case Van		   : return BulletHit;
+		case Van		       : return BulletHit;
+
 		//LIGHTNING BLEEDERS
 		case LightningCrystal : return LightningSpawn;
+
 		// BIG BLEEDERS
 		case JungleFly  :
 		case BigMaggot  :
 		case BanditBoss : return BloodGamble;
+
 		//BIG GREEN BLEEDERS
 		case Scorpion 	:
 		case GoldScorpion :
 		case GoldScorpion : return AcidStreak;
+
 		// ULTRA BOYS
 		case EnemyHorror      :
 		case CrownGuardianOld :
@@ -3314,6 +3332,7 @@ draw_sprite_ext(spr.RockletFlame, -1, x, y, 1, 1, image_angle, c_white, image_al
 		case GhostGuardian    :
 		case ExploGuardian    :
 		case DogGuardian      : return ScorpionBulletHit;
+
 		default : return AllyDamage;
 	}
 
@@ -3799,7 +3818,7 @@ dist += dis * current_time_scale
 if speed > 0 and current_frame_active
     with instance_create(x, y, DiscTrail){
         sprite_index = other.spr_trail
-        depth = 0;
+        depth = -1;
     }
 if instance_exists(creator) && team != -1 && !place_meeting(x,y,creator){
     lastteam = team
@@ -3923,72 +3942,117 @@ move_bounce_solid(true)
 
 
 #define create_megadisc(_x,_y)
-with instance_create(_x,_y,CustomProjectile){
-    sprite_index = spr.MegaDisc
-    damage = 2
-    image_speed = .4
-    maxspeed = speed
-    name = "Mega Disc"
+	with instance_create(_x,_y,CustomProjectile){
+			name = "Mega Disc";
+			disc_init();
 
-    disc_init()
-    spr_trail = spr.MegaDiscTrail
-    mask_index = sprite_index
+			sprite_index = spr.MegaDisc;
+			mask_index   = sprite_index
+			spr_trail    = spr.MegaDiscTrail;
+			spr_dead     = spr.MegaDiscDie;
+			spr_splat    = mskNone;
 
-    on_step    = md_step
-    on_wall    = md_wall
-    on_hit     = md_hit
-    on_destroy = md_destroy
+	    damage = 2
+	    maxspeed = speed
+			turn = irandom(99) < 10 ? -1 : 1; // Reflects percentage of left-handed population
+			image_yscale *= turn * -1;        // so it always cuts properly
+			cansplat = true;
+			hitid = [spr.MegaDiscHitId, name];
+			depth = -2;
 
-    return id
-}
+	    on_step    = md_step;
+	    on_wall    = md_wall;
+	    on_hit     = md_hit;
+	    on_destroy = md_destroy;
+			on_draw    = md_draw;
+
+	    return id
+	}
 
 #define md_step
-disc_step(1)
-if skill_get(21){
-    var q = instance_nearest_matching_ne(x,y,hitme,"team",lastteam)
-    if instance_exists(q) && distance_to_object(q) <= 40{
-        motion_add(point_direction(x,y,q.x,q.y),.5*current_time_scale)
-        speed = maxspeed
-    }
-}
+	disc_step(1);
+
+	image_angle += turn * (12 + speed) * current_time_scale;
+	if team != -4 && !place_meeting(x, y, Player) {
+
+		team = -4;
+	}
+
+	if skill_get(21) {
+
+	    var q = instance_nearest_matching_ne(x, y, hitme, "team", lastteam);
+	    if instance_exists(q) && distance_to_object(q) <= 40 {
+
+	        motion_add(point_direction(x, y, q.x, q.y), .5 * current_time_scale);
+	        speed = maxspeed;
+	    }
+	}
 
 #define md_wall
-dist += 5
-sleep(20)
-view_shake_at(x,y,8)
-sound_play_pitchvol(sndDiscBounce,random_range(.6,.8),.4)
-move_bounce_solid(false)
-direction += random_range(-12,12)
-with other{instance_create(x,y,FloorExplo);instance_destroy()}
-with instance_create(x,y,DiscBounce){
-    sprite_index = spr.MegaDiscBounce
-}
-if dist >= 200 instance_destroy()
+	dist += 5;
+	view_shake_at(x, y, 2);
+	sound_play_pitchvol(sndDiscBounce, random_range(.7, .9), .7);
+	move_bounce_solid(false);
+	direction += random_range(-4, 4);
+	with other {
+
+		instance_create(x, y, FloorExplo);
+		instance_destroy();
+	}
+	with instance_create(x, y, DiscBounce) {
+
+	    sprite_index = spr.MegaDiscBounce;
+	}
+	if dist >= 200 instance_destroy();
 
 #define md_destroy
-sound_play_pitchvol(sndDiscDie,random_range(.6,.8),.4)
-with instance_create(x,y,DiscDisappear){
-    sprite_index = spr.MegaDiscDie
-}
+	sound_play_pitchvol(sndDiscDie, random_range(.6, .8), .4);
+	with instance_create(x, y, DiscDisappear) {
+
+	    sprite_index = spr.MegaDiscDie;
+	}
 
 #define md_hit
-if current_frame_active{
-    if place_meeting(x,y,creator){
-        sound_play(sndDiscHit)
-        other.lasthit = hitid
-        sleep(3*other.size+4)
-    }
-    x -= hspeed/2
-    y -= vspeed/2
-    projectile_hit(other,damage,speed/4,direction)
-    if other.my_health <= 0{
-        sleep (other.size*2)
-    }
-    view_shake_at(x,y,8)
-    dist++
-}
+	if current_frame_active {
 
+	    if place_meeting(x,y,creator) {
 
+	        other.lasthit = hitid;
+	        sleep(3*other.size + 4);
+	    }
+
+			x -= hspeed/2;
+	    y -= vspeed/2;
+	    projectile_hit(other, damage, speed / 4, direction);
+	    if other.my_health <= 0 {
+
+					sleep( 32 + 12 * clamp(other.size, 1, 3));
+					view_shake_at(x, y, 5 + 3 * clamp(other.size, 1, 3));
+					with instance_create(x + hspeed, y + vspeed, determine_gore(other)) {
+
+						image_angle = _d + 360 / _a * _i;
+					}
+					sound_play_pitch(sndDiscHit, .9);
+					if cansplat && !instance_is(other, prop) {
+
+						cansplat = false;
+						spr_splat = spr.MegaDiscSplat[irandom(max(array_length(spr.MegaDiscSplat) - 1, 0))];
+						for(var _i = 0, _a = 3, _d = random(360); _i < _a; _i++) {
+
+							with instance_create(other.x, other.y, determine_gore(other)) {
+
+								image_angle = _d + 360 / _a * _i;
+							}
+						}
+					}
+	    }
+			image_angle -= turn * 3 * current_time_scale;
+	    dist++;
+	}
+
+#define md_draw
+	draw_self();
+	draw_sprite_ext(spr_splat, image_index, x, y, image_xscale, image_yscale, image_angle, image_blend, image_alpha);
 
 #define create_knife(x, y)
 with create_sword(x, y){
@@ -4706,6 +4770,7 @@ if !irandom((2 - brain_active) > 0) with instance_create(x-lengthdir_x(10,direct
         	sprite_index = spr.VectorEffect
         	image_angle = other.direction
 					image_speed = .4 - (brain_active ? .2 : 0);
+					friction = .2;
         	motion_set(other.direction,choose(1,2))
         }
 var _targ = instance_nearest_matching_ne(x, y, hitme, "team", team), _diff = angle_difference(direction, basedir);
@@ -4747,19 +4812,37 @@ if basedir == undefined {
 
 #define vector_head_destroy
 sound_play_hit_big(sndPlasmaHit, .2)
+
 with instance_create(x, y, PlasmaImpact) {
-	creator = other.creator
-	team = other.team
-	force = 0
-	damage += 2
-	image_speed *= .65
-	sprite_index = spr.VectorImpact
-}
+
+	creator = other.creator;
+	team 		= other.team;
+	force   = 0;
+	image_speed += .1;
+	sprite_index = spr.VectorImpact;
+	mask_index   = msk.VectorImpact;
+
+	repeat(10) {
+
+		var _d = random(360);
+
+		with instance_create(x + lengthdir_x(28 + random_range(-2, 6), _d), y + lengthdir_y(28 + random_range(-2, 6), _d), BulletHit) {
+
+				sprite_index = spr.VectorEffect;
+				image_index  = (brain_active ? 0 : irandom(1));
+				image_speed  = .4 - (brain_active ? .2 : 0);
+				depth = other.depth - 1;
+
+				motion_set(_d - 180, choose(1, 2));
+				image_angle = direction;
+			}
+		}
+	}
 
 #define vector_head_draw
 var _dis = point_distance(x, y, trail_x, trail_y), _dir = point_direction(x, y, trail_x, trail_y);
 draw_sprite_ext(spr_trail, 0, x, y, _dis/2, image_yscale, _dir, image_blend, image_alpha)
-draw_sprite_ext(spr_head, 0, x, y, image_xscale, image_xscale, image_angle - 45, image_blend, image_alpha)
+draw_sprite_ext(spr_head, 0, x, y, image_xscale, image_yscale, image_angle - 45, image_blend, image_alpha)
 
 
 #define create_vector_trail(_x, _y)

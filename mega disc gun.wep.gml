@@ -1,6 +1,6 @@
 #define init
-global.sprMegaDiscGun    = sprite_add_weapon("sprites/weapons/sprMegaDiscGun.png",5,9);
-global.sprMegaDiscGunHUD = sprite_add("sprites/interface/sprMegaDiscGunHUD.png",1,5,5);
+global.sprMegaDiscGun    = sprite_add_weapon("sprites/weapons/sprMegaDiscGun.png", 5, 9);
+global.sprMegaDiscGunHUD = sprite_add_weapon("sprites/weapons/sprMegaDiscGun.png", 6, 5);
 
 #define weapon_name
 return "MEGA DISC GUN"
@@ -36,23 +36,23 @@ return false;
 return false;
 
 #define weapon_fire
-weapon_post(12,-80,25)
-sleep(20)
-motion_add(gunangle-180,3)
-var _p = random_range(.8,1.2);
-sound_play_pitch(sndSuperDiscGun,.5*_p)
-sound_play_pitch(sndDiscgun,.7*_p)
-sound_play_pitch(sndNukeFire,.7*_p)
-sound_play_pitchvol(sndDiscHit,.5*_p,.8)
-sound_play_pitchvol(sndDiscDie,.4,.8*_p)
-with mod_script_call("mod","defpack tools","create_megadisc",x,y)
-{
-  move_contact_solid(other.gunangle,14)
-  team    = -100
-  motion_add(other.gunangle+random_range(-6,6),5)
-  maxspeed = speed
-}
-image_angle = direction
+	weapon_post(12, -80, 25);
+	sleep(20);
+	motion_add(gunangle-180, 3);
+	var _p = random_range(.8, 1.2);
+	sound_play_pitch(sndSuperDiscGun , .7 * _p);
+	sound_play_pitch(sndDiscgun, .7 * _p);
+	sound_play_pitchvol(sndNukeFire, .8 * _p, .4);
+	sound_play_pitch(sndDiscBounce, .3 * _p);
+	sound_play_pitchvol(sndDiscDie, .5 * _p, .8);
+
+	with mod_script_call("mod", "defpack tools", "create_megadisc", x, y) {
+
+	  move_contact_solid(other.gunangle, 14);
+	  team = other.team;
+	  motion_add(other.gunangle + random_range(-6, 6), 5);
+	  maxspeed = speed;
+	}
 
 #define step
 //with instances_matching(Player, "wep", mod_current){speed *= min(1, .8 + .2 * (skill_get(mut_extra_feet)))}
@@ -60,8 +60,8 @@ image_angle = direction
 #define weapon_sprt
 return global.sprMegaDiscGun;
 
-//#define weapon_sprt_hud
-//return global.sprMegaDiscGunHUD;
+#define weapon_sprt_hud
+return global.sprMegaDiscGunHUD;
 
 #define weapon_text
 return "watch out"
