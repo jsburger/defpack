@@ -21,10 +21,6 @@
 
 /loadwep scrapper
 
-///GOLD///
-
-/loadwep lucky machinegun
-
 ///QUARTZ///
 
 /loadwep quartz machinegun

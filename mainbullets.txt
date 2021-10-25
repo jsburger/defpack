@@ -7,11 +7,9 @@
 /loadwep ultra gunhammer
 
 //CANNON
-
 /loadwep bullet cannon
 
 //SNIPER RIFLES
-
 /loadwep sniper rifle
 /loadwep sniper shotgun
 
@@ -21,11 +19,9 @@
 /loadwep moby
 
 //SPAM
-
 /loadwep spam gun
 
 //COMPLEMENTARY
-
 /loadwep undulator
 /loadwep perpetrator
 

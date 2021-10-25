@@ -1,6 +1,7 @@
 #define init
-global.sprEnergyDevice = sprite_add("sprites/weapons/sprPSD.png", 7, 1, 2);
-global.sprSonicExplosion = sprite_add("sprites/projectiles/sprESonicExplosion.png", 8, 59, 56);
+global.sprEnergyDevice    = sprite_add("sprites/weapons/sprPSD.png", 7, 1, 2);
+global.sprSonicExplosion  = sprite_add("sprites/projectiles/sprESonicExplosion.png", 8, 59, 56);
+global.sprEnergyEffect    = sprite_add("sprites/projectiles/sprEnergyEffect.png", 6, 7, 7);
 
 #macro c_energy $23D900
 #macro e_radius max(16, 26 + 5 * skill_get(mut_long_arms));
@@ -44,33 +45,39 @@ return{
 return choose("PERSONAL SECURITY DEVICE", "ABSORB THEIR @wBULLETS");
 
 #define weapon_fire
-  wepangle = -wepangle
+
+  wepangle = -wepangle;
   weapon_post(-4, 4, 1);
   sleep(5);
 
   var _brain = skill_get(mut_laser_brain) > 0;
 
-  repeat(6 + irandom(2)){
-    var _dir = random(360)
-    with instance_create(x + hspeed + lengthdir_x(e_radius * .7, _dir), y + vspeed + lengthdir_y(e_radius * .7, _dir), PlasmaTrail){
-      friction = 1
-      motion_add(point_direction(other.x, other.y, x, y), 6)
+  repeat(6 + irandom(2)) {
+
+    var _dir = random(360);
+    with instance_create(x + hspeed + lengthdir_x(e_radius * .7, _dir), y + vspeed + lengthdir_y(e_radius * .7, _dir), PlasmaTrail) {
+
+      friction = 1;
+      motion_add(point_direction(other.x, other.y, x, y), 6);
     }
   }
 
   var _p = random_range(.8, 1.2);
-  if _brain{
+  if _brain {
+
     sound_play_pitchvol(sndEnergySword, 1.2 * _p, .6);
     sound_play_pitchvol(sndEnergyScrewdriverUpg, 1.3 * _p, .7);
     sound_play_pitchvol(sndLaserCannonCharge, 2.1 * _p, .4);
     sound_play_pitchvol(sndEnergyHammer, 1.6 * _p, .8);
-  }else{
+  }else {
+
     sound_play_pitchvol(sndEnergySword, 1.2 * _p, .6);
     sound_play_pitchvol(sndEnergyScrewdriver, 1.4 * _p, .7);
     sound_play_pitchvol(sndLaserCannonCharge, 2.4 * _p, .4);
   }
 
-  with instance_create(x, y, CustomSlash){
+  with instance_create(x, y, CustomSlash) {
+
     sprite_index = global.sprSonicExplosion;
     mask_index   = mskNone;
     image_speed  = .8 / (1 + skill_get(mut_laser_brain));
@@ -100,36 +107,52 @@ return choose("PERSONAL SECURITY DEVICE", "ABSORB THEIR @wBULLETS");
 #define slash_hit
 
 #define slash_step
-  if instance_exists(creator){
+  if instance_exists(creator) {
+
     x = creator.x + creator.hspeed;
     y = creator.y + creator.vspeed;
 
-    with instances_matching_ne(hitme, "team", other.team){
-      if distance_to_object(other) <= e_radius && other.image_index <= 3 && sprite_index != spr_hurt with other{
+    with instances_matching_ne(hitme, "team", other.team) {
+
+      if distance_to_object(other) <= e_radius && other.image_index <= 3 && sprite_index != spr_hurt with other {
+
           var _f = !instance_is(other, prop);
           projectile_hit(other, damage, force * _f, point_direction(x, y, other.x, other.y));
-          if other.my_health > 0{
+          if other.my_health > 0 && !_f{
+
             sleep(4 + 6 * clamp(other.size, 1, 2));
-            view_shake_max_at(other.x, other.y, 2 + 3 * clamp(other.size, 1, 2));
-          }else{
+            view_shake_max_at(other.x, other.y, 2 + 2 * clamp(other.size, 1, 2));
+          }else {
+
             sleep(12 + 12 * clamp(other.size, 1, 2));
-            view_shake_max_at(other.x, other.y, 15 + 5 * clamp(other.size, 1, 2));
+            view_shake_max_at(other.x, other.y, 5 + 3 * clamp(other.size, 1, 2));
           }
       }
     }
-    with instances_matching_ne(projectile, "team", other.team){
-      if distance_to_object(other) <= (other.radius + 6){
+    with instances_matching_ne(projectile, "team", other.team) {
+
+      if distance_to_object(other) <= (other.radius + 6) {
+
         var _o = self,
             _s = other;
-        with other.creator{
-          if _s.refund = false && ammo[5] < typ_amax[5]{
+        with other.creator {
+
+          if _s.refund = false && ammo[5] < typ_amax[5] {
+
             ammo[5]++;
-            sound_play(sndRecGlandProc)
-            instance_create(_o.x, _o.y, RecycleGland)
+            sound_play(sndRecGlandProc);
             _s.refund = true;
           }
+
+          with instance_create(_o.x, _o.y, PlasmaTrail) {
+
+            sprite_index = global.sprEnergyEffect;
+            image_index  = 0;
+            image_speed  = .5;
+          }
+
         }
-        instance_destroy();
+        instance_delete(self);
       }
     }
   }
@@ -138,8 +161,9 @@ return choose("PERSONAL SECURITY DEVICE", "ABSORB THEIR @wBULLETS");
   var _active = ((wep = mod_current) || (bwep = mod_current)) && ammo[5] > 0;
 
   if _active > 0{
-    with instance_create(x + hspeed, y + vspeed, CustomSlash){
-          mask_index  = mskNone
+    with instance_create(x + hspeed, y + vspeed, CustomSlash) {
+
+          mask_index  = mskNone;
           image_speed = 0;
 
           creator = other;
@@ -152,21 +176,29 @@ return choose("PERSONAL SECURITY DEVICE", "ABSORB THEIR @wBULLETS");
     }
 
 #define pgd_draw
-  with instances_matching_ne(hitme, "team", other.team){
-    if distance_to_object(other) <= other.radius{
+
+  var _set = false;
+  with instances_matching_ne(hitme, "team", other.team) {
+
+    if !instance_is(self, prop) && distance_to_object(other) <= other.radius {
+
       speed /= 3;
+      _set = true;
     }
   }
-  with instances_matching_ne(projectile, "team", other.team){
-    if distance_to_object(other) <= (other.radius){
+  with instances_matching_ne(projectile, "team", other.team) {
+
+    if distance_to_object(other) <= (other.radius) {
+
+      _set = true;
       var _brain = skill_get(mut_laser_brain) > 0;
-      var _gas = instance_is(self, ToxicGas) ? 3 : 1.35
+      var _gas = instance_is(self, ToxicGas) ? 3 : 1.35;
       x += lengthdir_x(max(1 + speed * (.2 + .055 * _brain), _gas), point_direction(other.x, other.y, x, y));
       y += lengthdir_y(max(1 + speed * (.2 + .055 * _brain), _gas), point_direction(other.x, other.y, x, y));
       if irandom(3) = 0 with instance_create(x + random_range(-2, 2), y + random_range(-2, 2), PlasmaTrail){motion_add(other.direction - 180, .5)}
     }
   }
-  draw_circle_width_colour(16, radius + random(1), 1, current_frame mod 360, x, y, c_energy, .5);
+  draw_circle_width_colour(16, radius + random(1 + _set), 1, (current_frame * (1 + _set * .2)) mod 360, x, y, merge_color(c_energy, c_yellow, .25 * _set), .5 + .5 * _set);
 
 #define nothing
 

@@ -197,9 +197,9 @@
 		SwordSlash  = sprite_add  (i + "sprSwordSlash.png", 5, 16, 16)
 
 		//Flechettes
-		Flechette       = sprite_add("..\sprites\projectiles\sprFlechette.png",      0,  6, 4)
+		Flechette       = sprBullet1 //sprite_add("..\sprites\projectiles\sprFlechette.png",      0,  6, 4)
 		msk.Flechette   = sprite_add("..\sprites\projectiles\mskFlechette.png",      0,  6, 2)
-		FlechetteBlink  = sprite_add("..\sprites\projectiles\sprFlechetteBlink.png", 3, 14, 4)
+		FlechetteBlink  = sprBullet1 //sprite_add("..\sprites\projectiles\sprFlechetteBlink.png", 3, 14, 4)
 
 		//Quartz Shards
 		Shard        = sprite_add_weapon("../sprites/weapons/sprShard.png", 0, 3);
@@ -3805,8 +3805,9 @@ instance_destroy()
 #define disc_init
 typ = 1
 dist = 0
-depth = 0
+depth = -2
 lastteam = -1
+teamset = false;
 mask_index = mskDisc
 spr_trail = sprDiscTrail
 spr_dead = sprDiscDisappear
@@ -3814,16 +3815,17 @@ hitid = [sprite_index, name]
 on_destroy = disc_destroy
 
 #define disc_step(dis)
-dist += dis * current_time_scale
-if speed > 0 and current_frame_active
-    with instance_create(x, y, DiscTrail){
-        sprite_index = other.spr_trail
-        depth = -1;
-    }
-if instance_exists(creator) && team != -1 && !place_meeting(x,y,creator){
-    lastteam = team
-    team = -1
-}
+	dist += dis * current_time_scale;
+	if speed > 0 and current_frame_active with instance_create(x, y, DiscTrail) {
+
+	        sprite_index = other.spr_trail;
+	        depth = -1;
+	    }
+
+	if instance_exists(creator) && !teamset && !place_meeting(x,y,creator) {
+	    team = -1;
+			teamset = true;
+	}
 
 #define disc_destroy()
 	sound_play_hit(sndDiscDie, .2)
@@ -3847,17 +3849,21 @@ if instance_exists(creator) && team != -1 && !place_meeting(x,y,creator){
 	}
 
 #define bouncerdisc_step
-	disc_step(speed/4)
-	if skill_get(mut_bolt_marrow){
-	    var q = instance_nearest_matching_ne(x,y,hitme,"team",lastteam)
-	    if instance_exists(q){
-	        if distance_to_object(q) < 30{
-	            var dir = point_direction(x,y,q.x,q.y)
-	            x += lengthdir_x(current_time_scale,dir)
-	            y += lengthdir_y(current_time_scale,dir)
+	disc_step(speed / 4);
+	if skill_get(mut_bolt_marrow) {
+
+	    var q = instance_nearest_matching_ne(x, y, enemy, "team", team);
+	    if instance_exists(q) {
+
+	        if distance_to_object(q) < 32 {
+
+							var _s = speed;
+			        motion_add(point_direction(x, y, q.x, q.y), 1.2 * current_time_scale);
+							speed = _s;
+
 	        }
 	    }
-	};
+	}
 
 #define bouncerdisc_hit
 	projectile_hit(other,damage+floor(speed/2),5,direction)
@@ -3910,10 +3916,19 @@ if instance_exists(stuckto){
     yprevious = y
     if current_frame_active instance_create(x,y,Dust)
 }
-else if skill_get(mut_bolt_marrow){
-    var q = instance_nearest_matching_ne(x,y,hitme,"team",lastteam)
-    if instance_exists(q) && distance_to_object(q) < 30
-        motion_add(point_direction(x,y,q.x,q.y),.25*current_time_scale)
+else if skill_get(mut_bolt_marrow) {
+
+		var q = instance_nearest_matching_ne(x, y, enemy, "team", team);
+		if instance_exists(q) {
+
+				if distance_to_object(q) < 32 {
+
+						var _s = speed;
+						motion_add(point_direction(x, y, q.x, q.y), .8 * current_time_scale);
+						speed = _s;
+
+				}
+		}
 }
 
 #define stickydisc_hit
@@ -3941,8 +3956,8 @@ if !instance_exists(stuckto) sound_play_hit(sndDiscBounce,.2)
 move_bounce_solid(true)
 
 
-#define create_megadisc(_x,_y)
-	with instance_create(_x,_y,CustomProjectile){
+#define create_megadisc(_x, _y)
+	with instance_create(_x, _y, CustomProjectile){
 			name = "Mega Disc";
 			disc_init();
 
@@ -3958,7 +3973,6 @@ move_bounce_solid(true)
 			image_yscale *= turn * -1;        // so it always cuts properly
 			cansplat = true;
 			hitid = [spr.MegaDiscHitId, name];
-			depth = -2;
 
 	    on_step    = md_step;
 	    on_wall    = md_wall;
@@ -3966,21 +3980,17 @@ move_bounce_solid(true)
 	    on_destroy = md_destroy;
 			on_draw    = md_draw;
 
-	    return id
+	    return id;
 	}
 
 #define md_step
 	disc_step(1);
 
-	image_angle += turn * (12 + speed) * current_time_scale;
-	if team != -4 && !place_meeting(x, y, Player) {
-
-		team = -4;
-	}
+	image_angle += turn * (9 + speed) * current_time_scale;
 
 	if skill_get(21) {
 
-	    var q = instance_nearest_matching_ne(x, y, hitme, "team", lastteam);
+	    var q = instance_nearest_matching_ne(x, y, hitme, "team", team);
 	    if instance_exists(q) && distance_to_object(q) <= 40 {
 
 	        motion_add(point_direction(x, y, q.x, q.y), .5 * current_time_scale);
@@ -4018,35 +4028,35 @@ move_bounce_solid(true)
 	    if place_meeting(x,y,creator) {
 
 	        other.lasthit = hitid;
-	        sleep(3*other.size + 4);
+	        sleep(3 * other.size + 4);
 	    }
 
-			x -= hspeed/2;
-	    y -= vspeed/2;
+			x -= hspeed / 2;
+	    y -= vspeed / 2;
 	    projectile_hit(other, damage, speed / 4, direction);
 	    if other.my_health <= 0 {
 
-					sleep( 32 + 12 * clamp(other.size, 1, 3));
-					view_shake_at(x, y, 5 + 3 * clamp(other.size, 1, 3));
-					with instance_create(x + hspeed, y + vspeed, determine_gore(other)) {
+				sleep( 32 + 12 * clamp(other.size, 1, 3));
+				view_shake_at(x, y, 5 + 3 * clamp(other.size, 1, 3));
+				with instance_create(x + hspeed, y + vspeed, determine_gore(other)) {
 
-						image_angle = _d + 360 / _a * _i;
-					}
-					sound_play_pitch(sndDiscHit, .9);
-					if cansplat && !instance_is(other, prop) {
+					image_angle = _d + 360 / _a * _i;
+				}
+				sound_play_pitch(sndDiscHit, .9);
+				if cansplat && !instance_is(other, prop) {
 
-						cansplat = false;
-						spr_splat = spr.MegaDiscSplat[irandom(max(array_length(spr.MegaDiscSplat) - 1, 0))];
-						for(var _i = 0, _a = 3, _d = random(360); _i < _a; _i++) {
+					cansplat = false;
+					spr_splat = spr.MegaDiscSplat[irandom(max(array_length(spr.MegaDiscSplat) - 1, 0))];
+					for(var _i = 0, _a = 3, _d = random(360); _i < _a; _i++) {
 
-							with instance_create(other.x, other.y, determine_gore(other)) {
+						with instance_create(other.x, other.y, determine_gore(other)) {
 
 								image_angle = _d + 360 / _a * _i;
-							}
 						}
 					}
+				}
 	    }
-			image_angle -= turn * 3 * current_time_scale;
+			image_angle -= turn * 2 * current_time_scale;
 	    dist++;
 	}
 

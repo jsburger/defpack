@@ -49,7 +49,8 @@ return false;
 	with mod_script_call("mod", "defpack tools", "create_megadisc", x, y) {
 
 	  move_contact_solid(other.gunangle, 14);
-	  team = other.team;
+		creator = other;
+		team = creator.team;
 	  motion_add(other.gunangle + random_range(-6, 6), 5);
 	  maxspeed = speed;
 	}
