@@ -15,6 +15,7 @@
 
 /loadwep rocklet pistol
 /loadwep rocklet rifle
+/loadwep hydra
 /loadwep rocklet cannon
 
 //SONIC
