@@ -9,6 +9,9 @@
 #define bullet_name
   return "GOLD";
 
+#define bullet_ttip
+  return "VALUABLE @yBULLETS";
+
 #define bullet_area
   return -1;
 

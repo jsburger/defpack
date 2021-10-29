@@ -722,3 +722,22 @@
 	with(global.bind_step){
 		instance_destroy();
 	}
+
+#define draw
+
+	// Loading screen tips:
+	if instance_exists(GenCont) && !mod_variable_get("race", "sage", "ttip_set") {
+
+		mod_variable_set("race", "sage", "ttip_set", true);
+
+		with instances_matching(Player, "race", "sage") if array_length(spellBullets) > 0 {
+
+			if irandom(9) < current_time_scale {
+
+				var _i = mod_variable_get("mod", "SageBullets", "BulletDirectory")[? spellBullets[max(0, irandom(array_length(spellBullets) - 1))]].ttip,
+						_t = is_array(_i) ? _i[max(0, irandom(array_length(spellBullets) - 1))] : _i;
+
+				GenCont.tip = "@s" + _t;
+			}
+		}
+	}

@@ -9,6 +9,9 @@
 #define bullet_name
   return "PRECISION";
 
+#define bullet_ttip
+  return "NEVER MISS";
+
 #define bullet_area
   return 0;
 

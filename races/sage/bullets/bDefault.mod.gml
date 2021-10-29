@@ -9,6 +9,9 @@
 #define bullet_name
   return "DEFAULT";
 
+#define bullet_ttip
+  return "SWAP @pSPELLS @sFREQUENTLY";
+
 #define bullet_area
   return -1;
 

@@ -15,6 +15,7 @@
   bullet[? "none"] = {
       name        : "NO BULLET",
     	description : "@s-",
+      ttip        : "NO LOADING SCREEN TIP",
       spr_index   : 0,
     	key         : "none",
       area        : true
@@ -30,8 +31,9 @@
     wait(0);
     var _i = string_replace(self.name, ".mod.gml", "");
     bullet[? _i] = {
-      name:        mod_script_call("mod", _i, "bullet_name",),
+      name:        mod_script_call("mod", _i, "bullet_name"),
       description: mod_script_call("mod", _i, "bullet_description", 0),
+      ttip:        mod_script_call("mod", _i, "bullet_ttip"),
       spr_index:   mod_script_call("mod", _i, "bullet_sprite"),
       area:        mod_script_call("mod", _i, "bullet_area")
     }

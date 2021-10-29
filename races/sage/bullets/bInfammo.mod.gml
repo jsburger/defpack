@@ -9,6 +9,9 @@
 #define bullet_name
   return "INFAMMO";
 
+#define bullet_ttip
+  return "SHOOT FOREVER";
+
 #define bullet_area
   return 0;
 

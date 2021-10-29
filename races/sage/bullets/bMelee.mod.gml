@@ -9,6 +9,9 @@
 #define bullet_name
   return "MELEE";
 
+#define bullet_ttip
+  return ["STAY CLOSE", "GET IN THERE"];
+
 #define bullet_area
   return 0;
 

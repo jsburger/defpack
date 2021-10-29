@@ -9,6 +9,9 @@
 #define bullet_name
   return "TURRET";
 
+#define bullet_ttip
+  return ["KILL FAST", "MOVE SLOW"];
+
 #define bullet_area
   return 0;
 

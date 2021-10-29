@@ -9,6 +9,9 @@
 #define bullet_name
   return "BURST";
 
+#define bullet_ttip
+  return "FIRE IN WAVES";
+
 #define bullet_area
   return 0;
 

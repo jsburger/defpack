@@ -9,6 +9,9 @@
 #define bullet_name
   return "ULTRA";
 
+#define bullet_ttip
+  return "@gRADS @sTO @yAMMO";
+
 #define bullet_area
   return 0;
 

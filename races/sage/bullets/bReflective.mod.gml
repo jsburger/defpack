@@ -9,6 +9,9 @@
 #define bullet_name
   return "BOUNCE";
 
+#define bullet_ttip
+  return "@yREFLECT";
+
 #define bullet_area
   return 0;
 

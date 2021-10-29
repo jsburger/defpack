@@ -9,6 +9,9 @@
 #define bullet_name
   return "HYPER";
 
+#define bullet_ttip
+  return "HYPER @yBULLETS";
+
 #define bullet_area
   return 0;
 

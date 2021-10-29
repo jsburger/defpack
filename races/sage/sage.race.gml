@@ -54,6 +54,7 @@ NOTES FROM JSBURG:
 // On Mod Load:
 #define init
 	global.newLevel = instance_exists(GenCont);
+	global.ttip_set = false;
 
 	/// Define Sprites : sprite_add("path/to/sprite/starting/from/mod/location.png", frames, x-offset, y-offset) \\\
 	 // A-Skin:
@@ -133,6 +134,7 @@ NOTES FROM JSBURG:
 
  // On Level Start: (Custom Script, Look Above In #define init)
 #define level_start
+	global.ttip_set = false;
 	with(Player){
 		for(var i = 0; i < array_length(global.carryOver); i++){
 			spellbullet_create(x,y, global.carryOver[i]);
@@ -144,6 +146,7 @@ NOTES FROM JSBURG:
  // On Run Start:
 #define game_start
 	sound_play(sndMutant1Cnfm); // Play Confirm Sound
+	global.ttip_set = false;
 
 #define draw_outline(_sprIndex, _imgIndex, _x, _y)
 	d3d_set_fog(true, c_white, 0, 0);
