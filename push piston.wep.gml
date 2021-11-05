@@ -4,7 +4,7 @@ global.sprPushPiston2   = sprite_add_weapon("sprites/weapons/sprPushPiston2.png"
 global.sprPushPiston3   = sprite_add_weapon("sprites/weapons/sprPushPiston3.png",  6, 2);
 global.sprPushPiston4   = sprite_add_weapon("sprites/weapons/sprPushPiston4.png",  8, 2);
 global.sprPushPistonHUD = sprite_add_weapon("sprites/weapons/sprPushPiston4.png", 11, 4);
-global.sprSonicStreak   = sprite_add("sprites/projectiles/sprSonicStreak.png",6,8,32);
+global.sprSonicStreak   = sprite_add("sprites/projectiles/sprSonicStreak.png", 7, 24, 8);
 
 #macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)
 
@@ -128,7 +128,10 @@ if button_check(index, btn){
     	weapon_post(2 * other.charge/other.maxcharge, 0, 0);
     }
 }
-else{instance_destroy()}
+else{instance_destroy(); exit}
+if charged {
+	creator.speed *= .75;
+}
 
 #define piston_cleanup
 view_pan_factor[index] = undefined
@@ -136,16 +139,16 @@ if !charged sound_stop(sound)
 
 #define piston_destroy
 	with instance_create(x + lengthdir_x(48, creator.gunangle), y + lengthdir_y(48, creator.gunangle), AcidStreak){
-		image_angle = other.creator.gunangle - 90;
+		image_angle = other.creator.gunangle;
 		sprite_index = global.sprSonicStreak;
 	}with instance_create(x + lengthdir_x(36, creator.gunangle - 20), y + lengthdir_y(36, creator.gunangle - 20), AcidStreak){
-		image_angle = other.creator.gunangle - 110;
+		image_angle = other.creator.gunangle - 20;
 		sprite_index = global.sprSonicStreak;
-		image_speed += .15;
+		image_speed += .1;
 	}with instance_create(x + lengthdir_x(36, creator.gunangle + 20), y + lengthdir_y(36, creator.gunangle + 20), AcidStreak){
-		image_angle = other.creator.gunangle - 70;
+		image_angle = other.creator.gunangle + 20;
 		sprite_index = global.sprSonicStreak;
-		image_speed += .15;
+		image_speed += .1;
 	}
 	var timescale = (mod_variable_get("weapon", "stopwatch", "slowed") == 1) ? 30/room_speed : current_time_scale;
     reload += mod_script_call_nc("mod", "defpack tools", "get_reloadspeed", creator) * timescale * 1.2

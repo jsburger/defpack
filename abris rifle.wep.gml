@@ -50,6 +50,7 @@ with mod_script_call("mod","defpack tools","create_abris",self,_strtsize,_endsiz
 	maxdamage = 16
 	margin += 16
 	name = mod_current
+  view_factor = .6
 	payload = script_ref_create(pop)
 }
 sound_play_pitch(sndSniperTarget,1.75)

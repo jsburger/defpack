@@ -128,7 +128,7 @@
 		SmallSonicExplosion     = sprite_add(  i + "sprSonicExplosionSmall.png", 8, 20, 20);
 		msk.SonicExplosion      = sprite_add_p(i + "mskSonicExplosion.png", 8, 61, 59);
 		msk.SmallSonicExplosion = sprite_add_p(i + "mskSonicExplosionSmall.png", 8, 20, 20);
-		SonicStreak             = sprite_add(i + "sprSonicStreak.png",6,8,32);
+		SonicStreak             = sprite_add(i + "sprSonicStreak.png",7, 24, 8);
 		snd.SonicExplosion 		  = sound_add("../sounds/sndSonicExplosion.ogg");
 
 		//Abris Stripes
@@ -223,7 +223,7 @@
 			mod_variable_set("mod", self, "spr", spr)
 		}
 	}
-	
+
 	//System for letting weapons draw on the hud
 	global.HUDRequests = []
 
@@ -889,7 +889,7 @@ return found
 //		A nuke for example might ignore the coords if they aren't coming from an actual mouse, as enemies don't really aim over time.
 // Used for logic and should be syncronous.
 // Of note, the format of the LWO and scr_get_mouse integration are what make this important, thats what ought to be standard.
-// If you don't like other choices, feel free to replace them. 
+// If you don't like other choices, feel free to replace them.
 
 	//Compat hook. If you need self, be sure to include it in your script ref as an argument.
 	//Return a LWO in your script that would match the output of this one.
@@ -897,17 +897,17 @@ return found
 	if "scr_get_mouse" in inst && is_array(inst.scr_get_mouse) {
 		with inst return script_ref_call(scr_get_mouse)
 	}
-	
+
 	//If there is a mouse at play, use it.
 	if instance_is(inst, Player) || ("index" in inst && player_is_active(inst.index)) {
 		return {x: mouse_x[inst.index], y: mouse_y[inst.index], is_input: true}
 	}
-	
+
 	//If there is a target, consider it the mouse position.
 	if "target" in inst && instance_exists(inst.target) {
 		return {x: target.x, y: target.y, is_input: false}
 	}
-	
+
 	//If no real way to find mouse coords is found, then make some assumptions regarding generally intended behavior.
 	//In this case, project a point a moderate distance from the source, with direction as the default angle, optionally picking up gunangle.
 	var _length = 48, _dir = inst.direction;
@@ -998,19 +998,25 @@ return 0
 
 
 #define weapon_charged(c, l)
-sound_play_pitch(sndSnowTankCooldown, 8)
-sound_play_pitchvol(sndShielderDeflect, 4, .5)
-sound_play_pitchvol(sndBigCursedChest, 20, .1)
-sound_play_pitchvol(sndCursedChest, 12, .2)
-with instance_create(c.x + lengthdir_x(l, c.gunangle), c.y + lengthdir_y(l, c.gunangle), ChickenB) {
-	creator = c
-	image_xscale = .5
-	image_yscale = .5
-	with instance_create(x, y, ChickenB){
-		creator = c
-		image_speed = .75
-	};
-};
+sound_play_pitch(sndSnowTankCooldown, 8);
+sound_play_pitchvol(sndShielderDeflect, 4, .5);
+sound_play_pitchvol(sndBigCursedChest, 20, .1);
+sound_play_pitchvol(sndCursedChest, 12, .2);
+
+with instance_create(c.x + lengthdir_x(l, c.gunangle), c.y + lengthdir_y(l, c.gunangle), WepSwap) {
+	creator = c;
+	image_xscale = .5;
+	image_yscale = .5;
+	depth = other.depth -1;
+	sprite_index = sprChickenB;
+
+	with instance_create(x, y, WepSwap) {
+		creator = c;
+		image_speed = .75;
+		depth = other.depth;
+		sprite_index = sprChickenB;
+	}
+}
 
 
 #define abris_weapon_auto(name, creator)
@@ -2242,7 +2248,7 @@ if other != lasthit{
 		// Visuals:
 		with instance_create(x+lengthdir_x(12,direction),y+lengthdir_y(12,direction),AcidStreak){
 			sprite_index = spr.SonicStreak
-			image_angle = other.direction + random_range(-32, 32) - 90
+			image_angle = other.direction + random_range(-32, 32);
 			motion_add(image_angle+90,12)
 			friction = 2.1
 		}
@@ -2447,11 +2453,12 @@ with instance_create(0, 0, CustomObject){
     maxdamage = 8
     wep = weapon
     auto = 0
-	margin = 12
-	lockon = false;
-	closed = false
-	hover  = 3;
-	view_factor = 1;
+		margin = 18;
+		lockon = false;
+		closed = false
+		hover  = 3;
+		view_factor = 1;
+	  chargeblink = 0;
 
     scroll = random(16)
     scrollang = random(360)
@@ -2530,6 +2537,8 @@ if instance_exists(creator){
 		exit
 	}
 
+		chargeblink = false;
+
     image_angle += rotspeed * timescale
     scroll += timescale
     offset += offspeed * timescale
@@ -2551,6 +2560,7 @@ if instance_exists(creator){
 			weapon_charged(creator, sprite_get_width(weapon_get_sprt(hand ? creator.wep : creator.bwep)) / 2)
 			creator.gunshine = 1
 			closed = true
+			chargeblink = true;
 		}
 
         if reload = -1 {
@@ -2620,7 +2630,7 @@ if instance_exists(creator){
 			    _dis = _e > -4 ? point_distance(creator.x, creator.y, _e.x, _e.y) : 0,
 				_dir = _e > -4 ? point_direction(creator.x, creator.y, _e.x, _e.y) : 0;
 			if instance_exists(_e)
-				&& collision_line(creator.x, creator.y, _e.x ,_e.y, Wall, 0, 0) = noone 
+				&& collision_line(creator.x, creator.y, _e.x ,_e.y, Wall, 0, 0) = noone
 				&& point_distance(_x, _y, _e.x, _e.y) <= (margin + ((6 + (20 * lockon / max(creator.accuracy, 0.1))) * !closed)) {
 					_x = c.x + lengthdir_x(_dis + _e.hspeed, _dir);
 					_y = c.y + lengthdir_y(_dis + _e.vspeed, _dir);
@@ -2636,10 +2646,9 @@ if instance_exists(creator){
     y = w[1]
 
     var kick = hand ? creator.bwkick : creator.wkick, yoff = -4 * hand;
-    var r = acc+accmin, sides = 16, a = 1 - acc/accbase,
-    	_c = (global.AbrisCustomColor = true && instance_is(creator, Player)) ? player_get_color(creator.index) : lasercolour,
-		_c2 = defcharge.charge > 0.99 && defcharge.charge < 1 && lq_get(defcharge, "blinked") = 0 ? c_white : _c;
-
+    var  r = acc+accmin, sides = 16, a = 1 - acc/accbase,
+    	  _c = (global.AbrisCustomColor = true && instance_is(creator, Player)) ? player_get_color(creator.index) : lasercolour,
+		   _c2 = chargeblink = true ? c_white : _c;
     //Glow on gun
     draw_sprite_ext(sprHeavyGrenadeBlink, 0, c.x + lengthdir_x(14 - kick, ang), c.y + lengthdir_y(14 - kick, ang) + 1 + yoff, 1, 1, ang, _c, 1)
     //Actual boundary
@@ -4359,6 +4368,8 @@ if charge > maxcharge{
 defcharge.charge = charge
 
 if charged = 0{
+
+	creator.speed *= .75;
 	if holdtime >= 60 {var _m = 5}else{var _m = 3}
 	if current_frame mod _m < current_time_scale{
 	    creator.gunshine = 1

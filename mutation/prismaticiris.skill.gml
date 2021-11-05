@@ -151,7 +151,7 @@ return 1;
 
 	 // Fantastic Refractions needs a bit of extra code for its text + tips to work. bad ass
 	with(instances_matching(SkillIcon, "name", "FANTASTIC REFRACTIONS")) {
-		text = "@yBULLET@s WEAPONS BECOME " + `@(color:${make_colour_hsv(current_frame mod 255, 220, 255)})ANYTHING@s`;
+		text = "@yBULLET @sBECOME " + `@(color:${make_colour_hsv(current_frame mod 255, 220, 255)})ANYTHING@s`;
 	}
 
 	with(GenCont) {

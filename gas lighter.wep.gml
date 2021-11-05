@@ -117,7 +117,10 @@ if button_check(index, btn){
     	weapon_post(2 * other.charge/other.maxcharge, 0, 0);
     }
 }
-else{instance_destroy()}
+else{instance_destroy(); exit}
+if charged {
+	creator.speed *= .75;
+}
 
 #define lighter_cleanup
 view_pan_factor[index] = undefined

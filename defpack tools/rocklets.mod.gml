@@ -13,9 +13,9 @@
 		//Rocklets
 		Rocklet      = sprite_add(i + "sprRocklet.png", 2, 1, 6);
 		RockletFlame = sprite_add(i + "sprRockletFlame.png", 0, 8, 3);
-	
+
 	}
-	
+
 #macro spr global.spr
 #macro msk global.spr.msk
 #macro snd global.spr.snd
@@ -45,14 +45,14 @@ return angle_difference(a, b) * (1 - power((n - 1)/n, dn))
 	sound_volume(s, audio_sound_get_gain(s) * _volume);
 	return s;
 
-	
+
 // Returns a LWO with three fields:
 //	x and y: world space coordinates.
 //	is_input: indicates whether the coordinates should be treated as an active control source.
 //		A nuke for example might ignore the coords if they aren't coming from an actual mouse, as enemies don't really aim over time.
 // Used for logic and should be syncronous.
 // Of note, the format of the LWO and scr_get_mouse integration are what make this important, thats what ought to be standard.
-// If you don't like other choices, feel free to replace them. 
+// If you don't like other choices, feel free to replace them.
 #define object_get_mouse(inst)
 	//Compat hook. If you need self, be sure to include it in your script ref as an argument.
 	//Return a LWO in your script that would match the output of this one.
@@ -60,17 +60,17 @@ return angle_difference(a, b) * (1 - power((n - 1)/n, dn))
 	if "scr_get_mouse" in inst && is_array(inst.scr_get_mouse) {
 		with inst return script_ref_call(scr_get_mouse)
 	}
-	
+
 	//If there is a mouse at play, use it.
 	if instance_is(inst, Player) || ("index" in inst && player_is_active(inst.index)) {
 		return {x: mouse_x[inst.index], y: mouse_y[inst.index], is_input: true}
 	}
-	
+
 	//If there is a target, consider it the mouse position.
 	if "target" in inst && instance_exists(inst.target) {
 		return {x: target.x, y: target.y, is_input: false}
 	}
-	
+
 	//If no real way to find mouse coords is found, then make some assumptions regarding generally intended behavior.
 	//In this case, project a point a moderate distance from the source, with direction as the default angle, optionally picking up gunangle.
 	var _length = 48, _dir = inst.direction;
@@ -84,7 +84,7 @@ return angle_difference(a, b) * (1 - power((n - 1)/n, dn))
 #define rotate_around_point(center, point, angle)
     var _sin = dsin(angle),
         _cos = dcos(angle);
-    
+
     return {
         x: (point.x - center.x)*_cos - (point.y - center.y)*_sin + center.x,
         y: (point.x - center.x)*_sin + (point.y - center.y)*_cos + center.y
@@ -101,7 +101,7 @@ with instance_create(_x, _y, CustomProjectile) {
     immuneToDistortion = 1;
     typ = 1
     depth = -1
-    
+
     goal = -1
     phase = 0
     friction = .2
@@ -116,7 +116,7 @@ with instance_create(_x, _y, CustomProjectile) {
     // Used to reduce the amount of trails created
     lastTrail = {x: _x, y: _y}
     makeTrail = false
-    
+
     on_step = rocklet_step
     on_end_step = rocklet_end_step
     on_destroy = rocklet_destroy
@@ -133,13 +133,13 @@ with instance_create(_x, _y, CustomProjectile) {
 		vol = .4
 	}
 	global.lastRockletSound = current_frame
-	
+
 	// Uses audio functions so the sounds can stack
 	var q = audio_play_sound(sndRocket, 0, 0); //Play sound
 	audio_sound_pitch(q, 1 + random_nonsync(.2))  //Pitch
 	audio_sound_gain(q, (0.8 + random_nonsync(.1)) * vol, 0)  //Volume
 	audio_sound_set_track_position(q, .25) //Starting position
-	
+
 	q = audio_play_sound(sndToxicBoltGas, 0, 0);
 	audio_sound_pitch(q, 1 + random_nonsync(.4)) //Pitch
     audio_sound_gain(q, vol, 0) //Volume
@@ -155,7 +155,7 @@ with instance_create(_x, _y, CustomProjectile) {
 		image_angle = point_direction(x, y, goal.x, goal.y)
 	}
 	//Start boosters
-	if phase = 0 && speed <= 0 {
+	if phase = 0 && speed <= .3 {
 		phase = 1
 		direction = image_angle
 		sound_play_rocklet()
@@ -202,7 +202,7 @@ with instance_create(_x, _y, CustomProjectile) {
 		}
 		makeTrail = !makeTrail
 	}
-	
+
 #define rocklet_wall
 	if phase = 0  || speed < 2{
 		move_bounce_solid(false)
@@ -234,12 +234,12 @@ with instance_create(_x, _y, CustomProjectile) {
 		image_xscale = point_distance(x, y, x2, y2)
 		image_angle = point_direction(x, y, x2, y2)
 		image_yscale = 1
-		
+
 		on_step = rocklet_trail_step
-		
+
 		return self
 	}
-	
+
 #define rocklet_trail_step
 	// image_blend = merge_color(image_blend, c_dkgray, .2 * current_time_scale)
 	if image_yscale > .3 {

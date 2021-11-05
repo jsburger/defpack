@@ -122,7 +122,10 @@ if button_check(index, btn){
         }
     }
 }
-else{instance_destroy()}
+else{instance_destroy(); exit}
+if charged {
+  creator.speed *= .75;
+}
 
 #define bow_cleanup
 view_pan_factor[index] = undefined
@@ -509,6 +512,6 @@ return instances_matching_le(instances_matching_le(instances_matching_ge(instanc
 
 if "i" in self{
     with other{
-        
+
     }
 }

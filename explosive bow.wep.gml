@@ -111,7 +111,10 @@ with instance_create(x,y,CustomObject)
           }
       }
   }
-  else{instance_destroy()}
+  else{instance_destroy(); exit}
+  if charged {
+    creator.speed *= .75;
+  }
 
 #define weapon_reloaded
   return -4
@@ -283,7 +286,7 @@ if bounce > 0{
         creator = other.creator
         motion_set(random(360), random(3)+ 2)
 		}
-	}	
+	}
 }else{
 	if !charged{
 	    with instance_create(x+hspeed,y+vspeed,CustomObject){

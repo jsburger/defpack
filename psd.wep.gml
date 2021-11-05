@@ -193,8 +193,14 @@ return choose("PERSONAL SECURITY DEVICE", "ABSORB THEIR @wBULLETS");
       _set = true;
       var _brain = skill_get(mut_laser_brain) > 0;
       var _gas = instance_is(self, ToxicGas) ? 3 : 1.35;
-      x += lengthdir_x(max(1 + speed * (.2 + .055 * _brain), _gas), point_direction(other.x, other.y, x, y));
-      y += lengthdir_y(max(1 + speed * (.2 + .055 * _brain), _gas), point_direction(other.x, other.y, x, y));
+      var _xx = lengthdir_x(max(1 + speed * (.2 + .055 * _brain), _gas), point_direction(other.x, other.y, x, y)),
+          _yy = lengthdir_y(max(1 + speed * (.2 + .055 * _brain), _gas), point_direction(other.x, other.y, x, y));
+
+      if !place_meeting(x + _xx, y + _yy, Wall) {
+
+        x += _xx;
+        y += _yy;
+      }
       if irandom(3) = 0 with instance_create(x + random_range(-2, 2), y + random_range(-2, 2), PlasmaTrail){motion_add(other.direction - 180, .5)}
     }
   }

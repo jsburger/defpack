@@ -106,6 +106,9 @@ if current_frame mod 6 < current_time_scale && charged = 1{
 }
 x = creator.x + lengthdir_x(7, creator.gunangle)
 y = creator.y + lengthdir_y(7, creator.gunangle)
+if charged {
+  creator.speed *= .75;
+}
 
 #define chargedestroy
 if !instance_exists(creator) exit;

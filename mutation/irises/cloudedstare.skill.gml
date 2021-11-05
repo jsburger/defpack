@@ -6,10 +6,10 @@
 	return "CLOUDED STARE";
 
 #define skill_text
-	return "@yBULLET@s WEAPONS BECOME @bCHARGED";
+	return "@yBULLETS @sBECOME @bCHARGED";
 
 #define skill_tip
-	return "@bSTRIKE @s'EM DOWN";
+	return ["@bSTRIKE @s'EM DOWN", "@bTHUNDER BULLETS BUILD @wCHARGE @sON @wENEMIES"];
 
 #define skill_iris
 	return "thunder"; // Return prefix of weapon variants

@@ -6,10 +6,10 @@
 	return "QUIVERING SIGHT";
 
 #define skill_text
-	return "@yBULLET@s WEAPONS BECOME @yBOUNCY";
+	return "@yBULLETS @sBECOME @yBOUNCY";
 
 #define skill_tip
-	return "@sTHE @ySTARS @sHAVE ALIGNED";
+	return "@yBOUNCE @sFOREVER";
 
 #define skill_iris
 	return "bouncer"; // Return prefix of weapon variants

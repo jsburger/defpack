@@ -131,8 +131,11 @@ if button_check(index, btn) {
 }
 else {
 	instance_destroy()
+  exit;
 }
-
+if charged {
+	creator.speed *= .75;
+}
 #define bow_cleanup
   view_pan_factor[index] = undefined
   sound_stop(sound)
