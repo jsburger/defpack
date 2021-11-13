@@ -18,8 +18,9 @@ return 5
 return 1
 #define weapon_area
 return 15
-#define weapon_load
-return 12
+#define weapon_load(w)
+var _l = 12;
+if is_object(w) return _l + (w.maxhealth - w.health) * 4 else return _l;
 #define weapon_swap(w)
 if instance_is(self, Player) if is_object(w){w.prevhealth = my_health}
 sound_play_pitchvol(sndHyperCrystalHurt, 1.3, .6)
@@ -83,26 +84,29 @@ return{
       }
       wep = w
   }
+	var _t = 12;
+	if is_object(w) _t += (w.maxhealth - w.health) * 4 + 1;
+
 with instance_create(x,y,CustomProjectile){
-       name = "quartz beam"
-        creator = other
-        team = other.team
-        direction = creator.gunangle
-        image_angle = direction
+      name = "quartz beam"
+      creator = other
+      team = other.team
+      direction = creator.gunangle
+      image_angle = direction
     	sprite_index = global.sprBeam
     	spr_head     = global.sprBeamEnd
     	spr_tail     = global.sprBeamStart
     	mask_index   = global.mskBeam
 
-        on_step    = beam_step
-        on_wall    = beam_wall
+      on_step    = beam_step
+      on_wall    = beam_wall
     	on_draw    = beam_draw
     	on_hit     = beam_hit
     	on_destroy = beam_destroy
 
 		sage_no_hitscan = true;
         sound = -1
-        time = weapon_get_load(mod_current) + 1
+        time = _t;
         image_speed = 0
 }
 if button_pressed(index, "fire") = true{
@@ -199,8 +203,8 @@ else instance_destroy()
 
 		if other.my_health <= 0{
 			projectile_hit(other, 0, 10, direction);
-			view_shake_max_at(creator.x,creator.y, 6 + 6 * clamp(other.size, 1, 3));
-			sleep(24 + clamp(other.size, 1, 3) * 16)
+			view_shake_max_at(creator.x,creator.y, 4 + 3 * clamp(other.size, 1, 3));
+			sleep(16 + clamp(other.size, 1, 3) * 6)
 		}
 		instance_create(other.x + random_range(-15, 15), other.y + random_range(-15, 15), WepSwap)
 	}

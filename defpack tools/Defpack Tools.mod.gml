@@ -2130,10 +2130,11 @@ if other != lasthit{
 	if projectile_canhit_melee(other){
 		var _cwh = canwallhit,
 		    _dwt = dontwait,
-		      _s = self;
+		      _s = self,
+					_o = other;
 
 		switch object_get_name(other.object_index) {
-			case "MeleeFake":		   projectile_hit(other, 1, force, direction); break;
+			case "MeleeFake":		       projectile_hit(other, 1, force, direction); break;
 			case "JungleAssassinHide": projectile_hit(other, 1, force, direction); break;
 			case "Mimic":              projectile_hit(other, 100, force, direction); break;
 			case "SuperMimic":         projectile_hit(other, 100, force, direction); break;
@@ -2188,6 +2189,17 @@ if other != lasthit{
 			}
 			motion_set("superdirection" in self ? superdirection : other.direction, superforce); // for easier direction manipulation on wall hit
 
+			with instance_create(_o.x, _o.y, ImpactWrists){
+				var _fac = 2 + .15 * clamp(_o.size, 0, 3);
+				image_xscale = _fac * .5;
+				image_yscale = _fac
+				image_speed = .8;
+				image_alpha = .75;
+				image_index = 1;
+				motion_add(other.direction, -2);
+				friction = .02;
+				image_angle = direction
+			}
 			on_step = superforce_step;
 		}
 	}
@@ -2215,12 +2227,12 @@ if other != lasthit{
 			exit}
 		}
 	}
-	if superforce >= 3 with instance_create(creator.x + random_range(-3, 3), creator.y + random_range(-3, 3), ImpactWrists){
-		var _fac = .6
-		image_xscale = _fac
+	if superforce >= 3 with instance_create(creator.x, creator.y, ImpactWrists){
+		var _fac = .5 + .15 * clamp(other.creator.size, 0, 3);
+		image_xscale = _fac * .5;
 		image_yscale = _fac
-		image_speed = .75
-		motion_add(other.creator.direction, random_range(1, 3) + 1)
+		image_speed = .85 - .10 * clamp(other.creator.size, 0, 3);
+		motion_add(other.creator.direction, 2);
 		image_angle = direction
 	}
 
@@ -2236,7 +2248,7 @@ if other != lasthit{
 		if superforce > 4 with creator
 		{
 			//trace("wall hit")
-			projectile_hit(self,round(ceil(other.superforce) * 1.5),1 ,direction)
+			projectile_hit(self,max(3, round(ceil(other.superforce) * 1.5)),1 ,direction)
 			if my_health <= 0
 			{
 				sleep(30)
@@ -2246,21 +2258,15 @@ if other != lasthit{
 		}
 
 		// Visuals:
-		with instance_create(x+lengthdir_x(12,direction),y+lengthdir_y(12,direction),AcidStreak){
-			sprite_index = spr.SonicStreak
-			image_angle = other.direction + random_range(-32, 32);
-			motion_add(image_angle+90,12)
-			friction = 2.1
-		}
 		with instance_create(x, y, ChickenB) image_speed = .65
-		repeat(max(1, creator.size)) with instance_create(x, y, ImpactWrists){
+		/*repeat(max(1, creator.size)) with instance_create(x, y, ImpactWrists){
 			var _fac = random_range(.2, .5)
 			image_xscale = _fac
 			image_yscale = _fac * 1.5
 			image_speed = 1 - _fac
 			motion_add(random(360), random_range(1, 3) + 1)
 			image_angle = direction
-		}
+		}*/
 		superforce *= .4
 	}
 

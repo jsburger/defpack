@@ -40,7 +40,7 @@ var _p = random_range(.8, 1.2);
 sound_play_pitch(sndPopgun,.7 * _p)
 sound_play_pitch(sndMachinegun,.8 * _p)
 with instance_create(x, y, Shell){
-    motion_set(other.gunangle + 70 * other.right, random_range(2, 5))
+    motion_set(other.gunangle + (random_range(-20, 20) + 90) * other.right, random_range(2, 5))
 }
 with instance_create(x + lengthdir_x(4, gunangle),y + lengthdir_y(4, gunangle),Bullet2){
 	creator = other

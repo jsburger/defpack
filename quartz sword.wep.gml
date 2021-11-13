@@ -42,8 +42,8 @@ return false;
   if is_object(wep){
     switch wep.health{
       case 2: return 19;
-      case 1: return 14;
-      case 0: return 9;
+      case 1: return 16;
+      case 0: return 12;
     }
   }
   return 24;
@@ -87,7 +87,7 @@ return{
   wepangle = -wepangle
 	with instance_create(x+lengthdir_x(6,gunangle),y+lengthdir_y(6,gunangle),w.health > 0 ? Slash : Shank)
 	{
-    switch w.health{
+    /*switch w.health{
       case 2:
         sprite_index = global.sprHeavyQuartzSlash;
         sound_play_pitch(sndShovel, 1.4*random_range(.8, 1.2));
@@ -114,10 +114,17 @@ return{
       damage = 6;
       canfix = false;
       break;
-    }
+    }*/
+    sprite_index = global.sprHeavyQuartzSlash;
+    sound_play_pitch(sndScrewdriver, random_range(.6, .8));
+    sound_play_pitch(sndBlackSword, random_range(1.4, 1.6));
+    sound_play_pitch(sndHyperCrystalHurt,random_range(1.5,1.6));
+    sound_play_pitchvol(sndLaserCrystalDeath,random_range(1.6,2),.5);
+    damage = 18;
+
 		team = other.team
 		creator = other
-		motion_add(other.gunangle + random_range(-3, 3) * (other.accuracy + (1 - w.health/w.maxhealth)), 4 + w.health - w.maxhealth + (skill_get(13) * 3.5))
+		motion_add(other.gunangle + random_range(-3, 3) * (other.accuracy), 3 + (skill_get(13) * 2))
 		image_angle = direction
 		repeat(3 + irandom(2)) with instance_create(x + lengthdir_x(sprite_get_width(sprite_index) * (.6 + random(.4)) + speed, direction) + random_range(-12, 12), y + lengthdir_y(sprite_get_width(sprite_index) * (.6 + random(.4)) + speed, direction) + random_range(-12, 12), WepSwap){
 			image_xscale = .75
@@ -126,7 +133,7 @@ return{
 		}
 		repeat(3) with instance_create(x+random_range(-4,4),y+random_range(-4,4),Dust){sprite_index = sprExtraFeetDust}
 	}
-  motion_add(gunangle, 4)
+  //motion_add(gunangle, 4)
 
 #define step(p)
   if p && is_object(wep){

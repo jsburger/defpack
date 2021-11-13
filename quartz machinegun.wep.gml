@@ -44,8 +44,8 @@ return 2;
 return 13;
 
 #define weapon_load(w)
-var _l = 4;
-if is_object(w) return _l - (w.health - w.maxhealth) * .5 else return _l;
+var _l = 5;
+if is_object(w) return _l - (w.maxhealth - w.health) * 1 else return _l;
 
 #define weapon_swap(w)
 if instance_is(self, Player) if is_object(w){w.prevhealth = my_health}
@@ -85,8 +85,8 @@ return choose("GLASS CANNON","BE CAREFUL WITH IT")
       sprite_index = global.sprQuartzBullet
       mask_index   = mskHeavyBullet
       projectile_init(other.team,other)
-      force  = 4
-      damage = 6
+      force  = 3
+      damage = 4
       typ = 1
       image_speed = 1
 
@@ -96,7 +96,7 @@ return choose("GLASS CANNON","BE CAREFUL WITH IT")
           alpha : .1
       }
 
-      motion_add(other.gunangle+random_range(-2,2) * (other.accuracy + (4 - 4 * w.health/w.maxhealth)),20)
+      motion_add(other.gunangle + random_range(-3, 3), 20);
       image_angle = direction
       pierce  = 2
       lasthit = -4

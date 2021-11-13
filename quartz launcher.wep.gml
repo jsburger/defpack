@@ -38,8 +38,9 @@ return 4;
 #define weapon_auto
 return false;
 
-#define weapon_load
-return 28;
+#define weapon_load(w)
+var _l = 26;
+if is_object(w) return _l - (w.maxhealth - w.health) * 5 else return _l;
 
 #define weapon_cost
 return 2;
@@ -86,7 +87,7 @@ with instance_create(x,y,CustomProjectile)
 	damage = 8
 	force = 24
 	friction = 1
-	motion_add(other.gunangle+random_range(-4,4) * (other.accuracy + (2 - 2 * w.health/w.maxhealth)),20)
+	motion_add(other.gunangle+random_range(-4,4) * other.accuracy,20)
 	image_angle = direction
 	lifetime = 20
 	pierce = 1
