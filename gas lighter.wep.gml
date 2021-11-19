@@ -119,7 +119,7 @@ if button_check(index, btn){
 }
 else{instance_destroy(); exit}
 if charged {
-	creator.speed *= .75;
+	creator.speed *= .9;
 }
 
 #define lighter_cleanup
@@ -142,41 +142,12 @@ if !charged sound_stop(sound)
 		sound_play_pitch(sndDoubleFireShotgun, .8 * _p)
 		sound_play_pitch(sndSuperSlugger, .9 * _p)
 
-		repeat(42)with instance_create(x + hspeed, y + vspeed, Flame){
-			move_contact_solid(other.gunangle, 16);
-			motion_add(other.gunangle + random_range(-3, 3) * other.accuracy, 4 + irandom(8))
+		repeat(42)with create_gas_fire(x + hspeed, y + vspeed){
+			move_contact_solid(other.gunangle, 12);
+			motion_add(other.gunangle + random_range(-3, 3) * other.accuracy, 3.5 + irandom(8))
       friction += .25
 			team = other.team;
-		}
-		var _t = self;
-		if instance_exists(ToxicGas){
-			view_shake_at(_t.x, _t.y, 16);
-		}
-    var _c = false
-		with ToxicGas{
-      if !_c{
-        _c = true
-        sleep(50)
-        sound_play_pitchvol(sndFlareExplode, 1.5, 1.5)
-        sound_play_pitchvol(sndFlameCannonEnd, 3, .7)
-      }
-			repeat(4)with instance_create(x, y, Flame){
-				motion_add(random(360), 5)
-				team = _t.team;
-				damage += 3;
-			}
-			instance_destroy()
-		}
-		with FrogQueenBall{
-			sleep(80)
-			repeat(24)with instance_create(x, y, Flame){
-				motion_add(random(360), 8 + irandom(1))
-				team = _t.team;
-				damage += 3;
-			}
-			sound_play(sndExplosionS)
-			instance_create(x, y, SmallExplosion)
-			instance_destroy()
+			image_angle = direction + random_range(-12, 12);
 		}
 	}else{
 		sound_play_pitch(sndOasisExplosion, 2.5 * _p)
@@ -199,4 +170,4 @@ if !charged sound_stop(sound)
     }
   }
 
-#define extraspeed_add(_player, __speed, _direction) return mod_script_call("mod", "defpack tools", "extraspeed_add", _player, __speed, _direction);
+#define create_gas_fire( _x, _y) return mod_script_call("mod", "defpack tools", "create_gas_fire", _x, _y);

@@ -134,7 +134,7 @@ else {
   exit;
 }
 if charged {
-	creator.speed *= .75;
+	creator.speed *= .9;
 }
 #define bow_cleanup
   view_pan_factor[index] = undefined

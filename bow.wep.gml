@@ -147,7 +147,7 @@ if !instance_exists(creator){instance_delete(self); exit}
   }else{instance_destroy(); exit}
 
   if charged {
-    creator.speed *= .75;
+    creator.speed *= .9;
   }
 
 #define bow_cleanup

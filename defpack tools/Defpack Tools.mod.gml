@@ -198,6 +198,9 @@
 		msk.Flechette   = sprite_add("..\sprites\projectiles\mskFlechette.png",      0,  6, 2)
 		FlechetteBlink  = sprBullet1 //sprite_add("..\sprites\projectiles\sprFlechetteBlink.png", 3, 14, 4)
 
+		//Fire
+		GasFire = sprite_add("..\sprites\projectiles\sprGasFire.png", 6, 10, 10);
+
 		//Quartz Shards
 		Shard        = sprite_add_weapon("../sprites/weapons/sprShard.png", 0, 3);
 		GlassShard   = sprite_add("../sprites/other/sprGlassShard.png", 5, 4, 4)
@@ -566,6 +569,46 @@ with Player if visible{
 
 
 #define step
+
+	// Lazy gas fire implementation
+	with instances_matching(Flame, "can_ignite", true) {
+
+		var _t = self.team;
+		if place_meeting(x, y, ToxicGas) {
+
+			with instance_nearest(x, y, ToxicGas) {
+
+				 repeat(6) with create_gas_fire(x, y){
+
+					 motion_add(random(360), 4 + random(1))
+					 team = _t;
+					 image_angle = direction;
+				}
+
+				sound_play_pitchvol(sndFireShotgun, .7  * random_range(.8, 1.2), .5);
+				sound_play_pitchvol(sndBurn, random_range(.8, 1.2), .4);
+				instance_destroy();
+			}
+		}
+		if place_meeting(x, y, FrogQueenBall) {
+
+				repeat(32) with create_gas_fire(x, y){
+
+					motion_add(random(360), 6 + random(2));
+					team = _t;
+					image_angle = direction;
+			}
+
+			with instance_nearest(x, y, FrogQueenBall) {
+
+				sound_play_pitchvol(sndDoubleFireShotgun, .7  * random_range(.8, 1.2), .5);
+				sound_play_pitchvol(sndBurn, random_range(.8, 1.2), .4);
+				sound_play_pitchvol(sndExplosionS, 1.2 * random_range(.8, 1.2), 1.2);
+				instance_destroy();
+			}
+		}
+	}
+
 	// Gets rid of dummy weapons, I don't know why vanilla doesn't do this
 	with instances_matching(WepPickup, "wep", 0) instance_destroy()
 
@@ -4253,6 +4296,14 @@ if d {
 #define slasheffect_step
 if image_index + image_speed*current_time_scale > image_number instance_destroy()
 
+#define create_gas_fire(x, y)
+with instance_create(x, y, Flame) {
+
+	damage += 1;
+	can_ignite = true;
+	sprite_index = spr.GasFire;
+	return self;
+}
 
 #define create_charge_obj(x, y)
 	with instance_create(x, y, CustomObject) {
@@ -4375,7 +4426,7 @@ defcharge.charge = charge
 
 if charged = 0{
 
-	creator.speed *= .75;
+	creator.speed *= .9;
 	if holdtime >= 60 {var _m = 5}else{var _m = 3}
 	if current_frame mod _m < current_time_scale{
 	    creator.gunshine = 1

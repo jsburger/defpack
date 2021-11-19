@@ -107,7 +107,7 @@ with instance_create(x,y,CustomObject){
   }
   else{instance_destroy(); exit}
   if charged {
-  	creator.speed *= .75;
+  	creator.speed *= .9;
   }
 
 #define blaster_destroy

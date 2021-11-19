@@ -130,7 +130,7 @@ if button_check(index, btn){
 }
 else{instance_destroy(); exit}
 if charged {
-	creator.speed *= .75;
+	creator.speed *= .9;
 }
 
 #define piston_cleanup
