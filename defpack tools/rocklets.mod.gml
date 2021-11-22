@@ -10,8 +10,10 @@
 	//Sprites, sorted by ammo type, misc at the bottom
 	with spr {
 
+		msk = {};
 		//Rocklets
 		Rocklet      = sprite_add(i + "sprRocklet.png", 2, 1, 6);
+		msk.Rocklet  = sprite_add(i + "mskRocklet.png", 2, 1, 6);
 		RockletFlame = sprite_add(i + "sprRockletFlame.png", 0, 8, 3);
 
 	}
@@ -95,6 +97,7 @@ return angle_difference(a, b) * (1 - power((n - 1)/n, dn))
 #define create_rocklet(_x,_y)
 with instance_create(_x, _y, CustomProjectile) {
     sprite_index = spr.Rocklet
+		mask_index   = msk.Rocklet
     damage = 3
     name = "Rocklet"
     maxspeed = 14

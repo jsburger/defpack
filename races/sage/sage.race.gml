@@ -233,7 +233,7 @@ NOTES FROM JSBURG:
 
 #macro bullet mod_variable_get("mod", "SageBullets", "BulletDirectory")
 #macro min_spellbullets 2 + skill_get(5)
-#macro dev false
+#macro dev true
 
 #define create
 	uiroll = 0;

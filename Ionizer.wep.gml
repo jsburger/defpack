@@ -59,6 +59,7 @@ weapon_post(9,-20,16)
 with lightning_create(x,y,irandom_range(15,17) + 10 * skill_get(mut_laser_brain),gunangle+random_range(-10,10)){
     team = other.team
     creator = other
+    accuracy = other.accuracy
     lightning_grow();
 }
 motion_add(gunangle-180,4)
@@ -72,6 +73,7 @@ motion_add(gunangle-180,4)
         image_alpha = 0
         image_speed = (skill_get(mut_laser_brain) ? 0.3 : 0.4);
         direction = _direction;
+        accuracy = 1;
         image_angle = direction;
         creator = noone;
         damage = 20;
@@ -111,6 +113,7 @@ motion_add(gunangle-180,4)
         image_speed = random_range(.3,.6)
         team = other.team
         creator = other.creator
+        accuracy = other.accuracy
       }
       if skill_get(mut_laser_brain) > 0 with instance_create(x+random_range(-18,18),y+random_range(-18,18),GunGun){image_index = 3 + irandom(2)}
       instance_destroy()
@@ -120,7 +123,7 @@ motion_add(gunangle-180,4)
     var _target = instance_nearest(x + lengthdir_x(80, direction), y + lengthdir_y(80, direction), enemy);
 
      // Find Direction to Move:
-    direction += random_range(-2, 2);
+    direction += random_range(-6, 6) * accuracy;
     if(instance_exists(_target) && point_distance(x, y, _target.x, _target.y) < 120){ /// Weird homing system
         speed = 3;
         motion_add(point_direction(x, y, _target.x, _target.y), 1);

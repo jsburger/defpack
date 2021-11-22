@@ -4,7 +4,7 @@ global.sprPushPiston2   = sprite_add_weapon("sprites/weapons/sprPushPiston2.png"
 global.sprPushPiston3   = sprite_add_weapon("sprites/weapons/sprPushPiston3.png",  6, 2);
 global.sprPushPiston4   = sprite_add_weapon("sprites/weapons/sprPushPiston4.png",  8, 2);
 global.sprPushPistonHUD = sprite_add_weapon("sprites/weapons/sprPushPiston4.png", 11, 4);
-global.sprSonicStreak   = sprite_add("sprites/projectiles/sprSonicStreak.png", 7, 24, 8);
+global.sprToothbrushShank = sprite_add("sprites/projectiles/sprHexNeedleShank.png", 5, -6, 4);
 
 #macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)
 
@@ -138,16 +138,16 @@ view_pan_factor[index] = undefined
 if !charged sound_stop(sound)
 
 #define piston_destroy
-	with instance_create(x + lengthdir_x(48, creator.gunangle), y + lengthdir_y(48, creator.gunangle), AcidStreak){
+	with instance_create(x + lengthdir_x(24, creator.gunangle), y + lengthdir_y(24, creator.gunangle), AcidStreak){
 		image_angle = other.creator.gunangle;
-		sprite_index = global.sprSonicStreak;
-	}with instance_create(x + lengthdir_x(36, creator.gunangle - 20), y + lengthdir_y(36, creator.gunangle - 20), AcidStreak){
+		sprite_index = global.sprToothbrushShank;
+	}with instance_create(x + lengthdir_x(12, creator.gunangle - 20), y + lengthdir_y(12, creator.gunangle - 20), AcidStreak){
 		image_angle = other.creator.gunangle - 20;
-		sprite_index = global.sprSonicStreak;
+		sprite_index = global.sprToothbrushShank;
 		image_speed += .1;
-	}with instance_create(x + lengthdir_x(36, creator.gunangle + 20), y + lengthdir_y(36, creator.gunangle + 20), AcidStreak){
+	}with instance_create(x + lengthdir_x(12, creator.gunangle + 20), y + lengthdir_y(12, creator.gunangle + 20), AcidStreak){
 		image_angle = other.creator.gunangle + 20;
-		sprite_index = global.sprSonicStreak;
+		sprite_index = global.sprToothbrushShank;
 		image_speed += .1;
 	}
 	var timescale = (mod_variable_get("weapon", "stopwatch", "slowed") == 1) ? 30/room_speed : current_time_scale;

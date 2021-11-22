@@ -580,7 +580,7 @@ with Player if visible{
 
 				 repeat(6) with create_gas_fire(x, y){
 
-					 motion_add(random(360), 4 + random(1))
+					 motion_add(random(360), 3 + random(2))
 					 team = _t;
 					 image_angle = direction;
 				}
@@ -594,7 +594,8 @@ with Player if visible{
 
 				repeat(32) with create_gas_fire(x, y){
 
-					motion_add(random(360), 6 + random(2));
+					motion_add(random(360), 4 + irandom(4));
+					friction = random(.4)
 					team = _t;
 					image_angle = direction;
 			}
@@ -2183,16 +2184,31 @@ if other != lasthit{
 			case "SuperMimic":         projectile_hit(other, 100, force, direction); break;
 		}
 
-		if instance_is(other, Car) || instance_is(other, CarVenusFixed) || instance_is(other, CarVenus2) || instance_is(other, CarVenus) with other{
-			with instance_create (x, y, CarThrow){
-				sleep(4)
-				motion_add(_s.direction, 24);
-			}
-			instance_delete(self);
-			exit;
-		}
+		if instance_is(other, Car) || instance_is(other, CarVenusFixed) || instance_is(other, CarVenus2) || instance_is(other, CarVenus) {
 
-		if instance_is(other, prop){
+			with other {
+
+				with instance_create (x, y, CarThrow) {
+
+					if other.sprite_index = sprFrozenCar {
+
+						sprite_index = sprFrozenCarThrown;
+					}
+
+					sleep(4);
+					//trace(_s.superdirection)
+					motion_add("superdirection" in _s ? _s.superdirection : point_direction(_s.x, _s.y, x, y), 32);
+				}
+
+				// Sound fx:
+				sound_play_pitchvol(sndImpWristKill, .8, 1.4);
+				sound_play_pitchvol(sndSawedOffShotgun, .7, .6);
+				instance_delete(self);
+				exit;
+			}
+
+		}	else if instance_is(other, prop) {
+
 			projectile_hit(other, 8, force, direction);
 			exit;
 		}
@@ -2214,6 +2230,15 @@ if other != lasthit{
 					exit;
 				}
 			}
+
+			// fx:
+			var _p = random_range(.8, 1.2);
+			sound_play_pitchvol(sndImpWristKill, .8 * _p, 1.4);
+			sound_play_pitchvol(sndSawedOffShotgun, .8 * _p, .6);
+			sound_play_pitchvol(sndFlakExplode, 1 * _p, 1);
+			sleep(4 + 4 * clamp(_id.size, 1, 3));
+
+			// Setting up vars:
 			name         = "SuperForce";
 			team         = other.team;
 			creator      = other;
@@ -2236,7 +2261,7 @@ if other != lasthit{
 				var _fac = 2 + .15 * clamp(_o.size, 0, 3);
 				image_xscale = _fac * .5;
 				image_yscale = _fac
-				image_speed = .8;
+				image_speed = .75;
 				image_alpha = .75;
 				image_index = 1;
 				motion_add(other.direction, -2);
@@ -3639,7 +3664,7 @@ if speed < friction instance_destroy()
 
 		if _w.health < _w.maxhealth{
 			with AmmoPickup{
-				if "quartz_check" not in self && ((irandom(99) + 1) < (10 * (1 - _w.health/_w.maxhealth))){
+				if "quartz_check" not in self && ((irandom(99) + 1) < (7 * (1 - _w.health/_w.maxhealth))){
 					quartz_pickup_create(x, y);
 					instance_delete(self);
 					exit;
