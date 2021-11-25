@@ -147,8 +147,15 @@ if !charged sound_stop(sound)
 
 		repeat(24) with create_gas_fire(x + hspeed, y + vspeed){
 			move_contact_solid(other.gunangle, 12);
-			motion_add(other.gunangle + random_range(-1, 1) * other.accuracy, 4 + irandom(9))
-      friction += random_range(.1, .3)
+			motion_add(other.gunangle + random_range(-1, 1) * other.accuracy, min(12, 3 + irandom(4) + irandom(4) + irandom(4))); //yes thats for a bell curve distribution of speed biased towards higher speeds
+      friction += .4
+			team = other.team;
+			image_angle = direction + random_range(-12, 12);
+		}
+		with create_gas_fire(x + hspeed, y + vspeed){
+			move_contact_solid(other.gunangle, 12);
+			motion_add(other.gunangle + random_range(-1, 1) * other.accuracy, 4)
+      friction += .4
 			team = other.team;
 			image_angle = direction + random_range(-12, 12);
 		}

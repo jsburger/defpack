@@ -3403,14 +3403,13 @@ if bounce <= 0 instance_destroy()
 
 #define laserflak_hit
 if projectile_canhit_melee(other) == true{
-	var k = other.maxhealth;
 	projectile_hit(other, damage, ammo, direction)
 	repeat(3) with instance_create(x, y, PlasmaTrail){
 		view_shake_at(x, y, 8)
 		motion_add(random(180), random_range(7, 8))
 	}
 	sleep(damage * 2)
-	if k > damage instance_destroy()
+	if other.my_health > 0 instance_destroy()
 }
 
 //SPIKEBALL
@@ -3499,7 +3498,7 @@ with instance_create(x-lengthdir_x(speed,direction),y-lengthdir_y(speed,directio
 with instance_create(_x,_y,CustomProjectile) {
     name = "Laser Flak"
 	image_speed = 1
-	damage = 12
+	damage = 10
 	friction = .5
 	ammo = 5 + skill_get(mut_laser_brain) * 3;
 	typ = 1

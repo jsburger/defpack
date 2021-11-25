@@ -55,6 +55,6 @@ return choose("THE FUTURE OF PISTOLS", "ROCKLET EXPLOSIONS DEAL#LESS DAMAGE THAN
             team = creator.team
             move_contact_solid(other.gunangle, 12)
 
-            motion_set(other.gunangle + choose(-90, 90) + random_range(-10, 10), random(.5) + (rocklet_number mod 3)/2 + 1)
+            motion_set(other.gunangle + choose(-90, 90) + random_range(-10, 10), random(.15) + (rocklet_number mod 3)/2 + 1)
         }
     }

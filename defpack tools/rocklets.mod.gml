@@ -12,9 +12,10 @@
 
 		msk = {};
 		//Rocklets
-		Rocklet      = sprite_add(i + "sprRocklet.png", 2, 1, 6);
-		msk.Rocklet  = sprite_add(i + "mskRocklet.png", 2, 1, 6);
-		RockletFlame = sprite_add(i + "sprRockletFlame.png", 0, 8, 3);
+		Rocklet          = sprite_add(i + "sprRocklet.png", 3, 1, 6);
+		msk.Rocklet  		 = sprite_add(i + "mskRocklet.png", 1, 1, 6);
+		RockletExplosion = sprite_add(i + "sprRockletExplosion.png", 7, 12, 12);
+		RockletFlame 		 = sprite_add(i + "sprRockletFlame.png", 3, 10, 4);
 
 	}
 
@@ -38,8 +39,7 @@
 return angle_difference(a, b) * (1 - power((n - 1)/n, dn))
 
 #define bullet_anim
-	image_index = 1
-	image_speed = 0
+	image_index = 0;
 
 #define sound_play_hit_big_ext(_sound, _pitch, _volume)
 	var s = sound_play_hit_big(_sound, 0);
@@ -98,9 +98,10 @@ return angle_difference(a, b) * (1 - power((n - 1)/n, dn))
 with instance_create(_x, _y, CustomProjectile) {
     sprite_index = spr.Rocklet
 		mask_index   = msk.Rocklet
+		image_speed = .5;
     damage = 3
     name = "Rocklet"
-    maxspeed = 14
+    maxspeed = 12
     immuneToDistortion = 1;
     typ = 1
     depth = -1
@@ -123,7 +124,7 @@ with instance_create(_x, _y, CustomProjectile) {
     on_step = rocklet_step
     on_end_step = rocklet_end_step
     on_destroy = rocklet_destroy
-    on_anim = bullet_anim
+    //on_anim = bullet_anim
     on_draw = rocklet_draw
     on_wall = rocklet_wall
     return id
@@ -179,7 +180,7 @@ with instance_create(_x, _y, CustomProjectile) {
 			if mouse.is_input {
 				if is_array(transform_mouse) mouse = script_ref_call(transform_mouse, self, mouse)
 				if abs(angle_difference(direction, point_direction(x, y, mouse.x, mouse.y))) < 100 {
-					var dif = angle_approach(direction, point_direction(x, y, mouse.x, mouse.y), 6, current_time_scale)
+					var dif = angle_approach(direction, point_direction(x, y, mouse.x, mouse.y), 5.5, current_time_scale)
 					direction -= dif;
 					if abs(dif) >= 8 makeTrail = true
 					image_angle = direction
@@ -221,12 +222,15 @@ with instance_create(_x, _y, CustomProjectile) {
 
 #define rocklet_destroy
 	sound_play_hit_big_ext(sndExplosion, 2.5 * random_range(.8, 1.2), .8)
-	with instance_create(x, y, SmallExplosion)
-		damage = 3
+	with instance_create(x, y, SmallExplosion) {
+
+		sprite_index = spr.RockletExplosion;
+		damage = 3;
+	}
 
 #define rocklet_draw
-	draw_self()
-	if phase = 1 draw_sprite_ext(spr.RockletFlame, -1, x, y, 1, 1, point_direction(x, y, xprevious, yprevious) + 180, c_white, image_alpha)
+draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, image_yscale, phase = 1 ? point_direction(x, y, xprevious, yprevious) + 180 : image_angle, c_white, image_alpha)
+	if phase = 1 draw_sprite_ext(spr.RockletFlame, image_index, x, y, 1, 1, point_direction(x, y, xprevious, yprevious) + 180, c_white, image_alpha)
 
 
 #define create_rocklet_trail(x, y, x2, y2)

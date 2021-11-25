@@ -59,8 +59,8 @@ sound_play_pitch(sndSniperTarget,1.5)
 with mod_script_call_self("mod","defpack tools","create_abris",self,_strtsize,_endsize,argument0){
 	accspeed = 1.75
 	cost = 2
-	damage = 8
-    maxdamage = 16
+	damage = 6
+  maxdamage = 14
     name = mod_current
 	payload = script_ref_create(pop)
 }
@@ -78,7 +78,8 @@ with instance_create(x, y, CustomObject){
 
 #define pop_step
 if !instance_exists(creator){instance_delete(self);exit}
-if timer-- <= 0
+timer -= current_time_scale;
+if timer <= 0
 {
 	with instance_create((x + creator.x)/2, (y + creator.y)/2, BloodStreak){
 	    image_angle = point_direction(x, y, other.x, other.y)
