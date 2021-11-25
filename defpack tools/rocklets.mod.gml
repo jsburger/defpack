@@ -106,6 +106,7 @@ with instance_create(_x, _y, CustomProjectile) {
     typ = 1
     depth = -1
 
+		amp = sqrt(other.accuracy);
     goal = -1
     phase = 0
     friction = .2
@@ -190,7 +191,7 @@ with instance_create(_x, _y, CustomProjectile) {
 		// dX = timescale
 		slidetime += current_time_scale
 		// dY/dX * sin(x) = cos(x), therefor dY * sin(x) = dX * cos(x), i think.
-		var l = slidelength * dcos(slidetime * 20) * current_time_scale;
+		var l = slidelength * dcos(slidetime * 20) * current_time_scale * amp;
 		x += lengthdir_x(l, direction + 90);
 		y += lengthdir_y(l, direction + 90);
 	}
