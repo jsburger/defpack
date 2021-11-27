@@ -7,7 +7,7 @@ global.brush[4] = sprite_add_weapon("sprites/weapons/sprToothbrushBlue.png"  ,0,
 global.brush[5] = sprite_add_weapon("sprites/weapons/sprToothbrushInvert.png",0,0)
 global.brush[6] = sprite_add_weapon("sprites/weapons/sprToothbrushYellow.png",0,0)
 global.mskbrush = sprite_add_weapon("sprites/projectiles/mskToothbrush.png",20,0)
-global.sprToothbrushShank = sprite_add("sprites/projectiles/sprHexNeedleShank.png", 5, -6, 4);
+global.sprToothbrushShank = sprite_add("sprites/projectiles/sprHexNeedleShank.png", 4, -6, 4);
 #define weapon_name
 return "TOOTHBRUSH"
 #define weapon_type

@@ -22,7 +22,6 @@
 * sage b skin
 * sage sounds
 * swap effects
-* BRING BACK THE FAIRY BRO
 * Throne Butt is cringe rn (its awkward to use), please change
 */
 
@@ -156,6 +155,32 @@ NOTES FROM JSBURG:
 	draw_sprite(_sprIndex, _imgIndex, _x, _y +1);
 	d3d_set_fog(false, c_white, 0, 0);
 
+#define draw_begin
+	if !sign(fairy.y) fairy_draw();
+
+#define draw
+	if sign(fairy.y) fairy_draw();
+
+#define fairy_draw
+	if visible {
+
+		var h = fairy;
+		//draw_set_blend_mode(bm_add)
+		draw_sprite_ext(h.sprite, 0, h.x, h.y, 1, h.right, h.angle, merge_color(merge_colour(h.col, c_black, .7), c_white, clamp(fairy.swap / fairy_swap_time, 0, 1)), 1);
+		//draw_set_blend_mode(bm_normal)
+
+		var gsize = 1/64;
+		var w = sprite_get_width(h.sprite) + 12, l = sprite_get_height(h.sprite) + 16;
+		d3d_set_fog(1, merge_color(h.col, c_white, clamp(fairy.swap / fairy_swap_time, 0, 1)), 1, 1)
+		fairy.swap = max(0, fairy.swap - current_time_scale * 1.2)
+		draw_sprite_ext(sprGhostGuardianIdle, -1, h.x, h.y, w * gsize, l * gsize, 0, c_white, .2)
+		/*draw_set_blend_mode(bm_add);
+		draw_sprite_ext(sprGhostGuardianIdle, -1, h.x, h.y, w * gsize * 1.3, l * gsize * 1.3, 0, c_white, .05)
+		draw_set_blend_mode(bm_norm);
+		*/
+		d3d_set_fog(0, 0, 0, 0)
+	}
+
 #define player_hud(_player, _hudIndex, _hudSide)
      // Spell Bullets:
 
@@ -233,7 +258,10 @@ NOTES FROM JSBURG:
 
 #macro bullet mod_variable_get("mod", "SageBullets", "BulletDirectory")
 #macro min_spellbullets 2 + skill_get(5)
+#macro fairy_swap_time 6
 #macro dev true
+#macro c_darkteal c_purple
+#macro c_purblue c_purple
 
 #define create
 	uiroll = 0;
@@ -259,7 +287,31 @@ NOTES FROM JSBURG:
 		array_push(spellBullets, bullet[? "bReflective"].key);
 		array_push(spellBullets, bullet[? "bWarp"].key);
 		array_push(spellBullets, bullet[? "bBurst"].key);
+		array_push(spellBullets, bullet[? "bSplit"].key);
 	}
+
+	fairy = {
+
+			creator : self,
+			swap : 0,
+	    gx : x,
+	    gy : y,
+	    x : x,
+	    y : y,
+	    right : 0,
+	    xoff : 0,
+	    yoff : 0,
+	    dir : 0,
+	    spd : 0,
+	    move: 0,
+	    curve : 0,
+	    resettime : 0,
+	    col : c_purblue,
+	    sprite : sprSnowFlake,
+	    angle : 0
+	}
+
+	footkind = 0;
 
 	if instance_is(self, Player) stat_gain(spellBullets[0], self); // This check resolves an error with yokins cheat mod
 
@@ -268,6 +320,44 @@ NOTES FROM JSBURG:
 
  // Every Frame While Character Exists:
 #define step
+	// Fairy code;
+	var h = fairy;
+
+	h.sprite = mod_script_call("mod", bullet[? spellBullets[0]].key, "fairy_sprite", sage_spell_power);
+	h.col = mod_script_call("mod", bullet[? spellBullets[0]].key, "fairy_color", sage_spell_power);
+
+	if h.resettime <= 0{
+			h.x += approach(h.x, h.gx, 4, current_time_scale)
+			h.y += approach(h.y, h.gy, 4, current_time_scale)
+
+			h.right = -sign(h.x - x)
+			h.angle = 90 - (90 * h.right)
+
+			//h.col = merge_colour(c_purblue, c_black, .7)
+
+			h.gx = x + (h.xoff - 10) * right
+			h.gy = y + h.yoff - 16
+
+			if random(100) < 2 * current_time_scale{
+					h.dir = random(360)
+					h.move = irandom_range(4, 10)
+					h.spd = random(2)
+					h.curve = random_range(-10, 10)
+					h.curve += sign(h.curve) * 3
+			}
+			if h.move > 0{
+					h.move -= current_time_scale
+					h.xoff += lengthdir_x(h.spd*current_time_scale, h.dir)
+					h.yoff += lengthdir_y(h.spd*current_time_scale, h.dir)
+					h.dir += h.curve * current_time_scale
+					h.curve += sign(h.curve) * current_time_scale
+					if point_distance(h.xoff, h.yoff, 0, 0) > 10 {
+							h.dir -= angle_approach(h.dir, point_direction(h.xoff, h.yoff, 0, 0), 3, current_time_scale)
+					}
+			}
+	}
+	else h.resettime -= current_time_scale;
+
 	if dev && button_pressed(0, "horn"){
 		array_push(0.spellBullets, "bTurret")
 		if dev trace(0.spellBullets)
@@ -281,6 +371,9 @@ NOTES FROM JSBURG:
 
 	// Player effects:
 	if(canspec && button_pressed(index, "spec") && array_length(spellBullets) > 1){
+
+		fairy.swap = fairy_swap_time + 2;
+
 		var _temp = spellBullets[0];
 		if(!ultra_get("sage", 2)){
 			stat_lose(spellBullets[0], self);
@@ -395,32 +488,6 @@ NOTES FROM JSBURG:
 
 			/*switch(other.spellBullets[i]){
 
-				case "split":
-					var     a = creator.sage_spell_power,
-						angle = (27 + 7 * a) * creator.accuracy,
-					   amount = 2 + a;
-					for(var _i = 0; _i < amount; _i++){
-
-						// Special split case for lasers because they dont want to cooperate on their own:
-						if instance_is(self, Laser){
-							with instance_create(xstart, ystart, Laser){
-								alarm0 = 1;
-								team = other.team;
-								creator = other.creator;
-								image_angle = other.image_angle -angle + _i * angle + angle / 2 * (1 - a);
-								direction = image_angle;
-								sageCheck = other.sageCheck
-							}
-						}else with(instance_copy(false)){
-							if !instance_is(self, Lightning){
-								image_angle += -angle + _i * angle + angle / 2 * (1 - a);
-								direction += -angle + _i * angle + angle / 2 * (1 - a);
-							}
-						}
-					}
-					instance_delete(self);
-					break;
-
 				case "precision":
 
 					/*if(skill_get(mut_throne_butt) && instance_exists(enemy)){
@@ -451,10 +518,10 @@ NOTES FROM JSBURG:
 		mod_script_call("mod", bullet[? spellBullets[_i]].key, "on_fire", sage_spell_power);
 	}
 	// Custom ammo cost handling:
-	/*if infammo = 0{
+	if infammo = 0 {
 	  var _t = min(sage_ammo_to_rads, 1) * (weapon_get_type(wep) = 1 ? 4 : 16) * ceil(1 + sage_ammo_cost)  *weapon_get_cost(wep),
 		    _a = 1;
-		if GameCont.rad < _t || sage_ammo_to_rads = 0{
+		if GameCont.rad < _t || sage_ammo_to_rads = 0 {
 			_a = 0;
 		}
 
@@ -463,7 +530,7 @@ NOTES FROM JSBURG:
 	}
 
 	// Player doesnt have enough ammo:
-	if (weapon_get_cost(wep) * ceil(sage_ammo_cost + 1) * (_size) > ammo[weapon_get_type(wep)]){
+	/*if (weapon_get_cost(wep) * ceil(sage_ammo_cost + 1) * (_size) > ammo[weapon_get_type(wep)]){
 		weapon_post(-5, 0, 0);
 		sound_play(sndEmpty);
 		with instance_create(x, y, PopupText){
@@ -477,8 +544,6 @@ NOTES FROM JSBURG:
 	with inst mod_script_call("mod", spellbullet, "on_take", sage_spell_power);
 	if dev trace("STAT GAINED")
 	/*switch spellbullet{
-		case "split":
-			sage_ammo_cost += 1 + 1 * inst.sage_spell_power;
 		break;
 		case "ultra":
 			sage_ammo_to_rads++;
@@ -491,8 +556,6 @@ NOTES FROM JSBURG:
 	if dev trace("STAT LOST")
 
 	/*switch spellbullet{
-		case "split":
-			sage_ammo_cost -= 1 + 1 * inst.sage_spell_power;
 		break;
 		case "ultra":
 			sage_ammo_to_rads--;
@@ -559,8 +622,6 @@ NOTES FROM JSBURG:
 
 #define spellbullet_examine(name, inst)
 	switch(name){
-		case "split":
-			return `@(color:${c_neutral})+` + string(ceil(1 + 1 * inst.sage_spell_power)) + ` @(color:${c_projectile})PROJECTILES @(color:${c_projectile})@sfired#+` + string(round(100 + 100 * inst.sage_spell_power)) +  `% @(color:${c_ammo})AMMO COST`;
 		case "ultra":
 			return `@(color:${c_neutral})+@(color:${c_ammo})AMMO @(color:${c_neutral})TO @gRAD @(color:${c_neutral})COST`;
 		case "cursed":
@@ -1094,3 +1155,9 @@ NOTES FROM JSBURG:
 			}
 		}
 	}
+
+#define approach(a, b, n, dn)
+	return (b - a) * (1 - power((n - 1)/n, dn))
+
+#define angle_approach(a, b, n, dn)
+	return angle_difference(a, b) * (1 - power((n - 1)/n, dn))

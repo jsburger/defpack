@@ -195,7 +195,7 @@
 
 		//Flechettes
 		Flechette       = sprBullet1 //sprite_add("..\sprites\projectiles\sprFlechette.png",      0,  6, 4)
-		msk.Flechette   = sprite_add("..\sprites\projectiles\mskFlechette.png",      0,  6, 2)
+		msk.Flechette   = sprBullet1 //sprite_add("..\sprites\projectiles\mskFlechette.png",      0,  6, 2)
 		FlechetteBlink  = sprBullet1 //sprite_add("..\sprites\projectiles\sprFlechetteBlink.png", 3, 14, 4)
 
 		//Fire
@@ -578,7 +578,7 @@ with Player if visible{
 
 			with instance_nearest(x, y, ToxicGas) {
 
-				 repeat(6) with create_gas_fire(x, y){
+				 repeat(4) with create_gas_fire(x, y){
 
 					 motion_add(random(360), 3 + random(2))
 					 team = _t;
@@ -1831,23 +1831,30 @@ with target{
 }
 
 #define toxic_destroy
-    repeat(choose(1, 1, 2))with instance_create(x, y, ToxicGas){
-        friction *= 10;
-        growspeed /= 8;
-        move_contact_solid(other.direction, other.speed);
+
+		if (!instance_exists(creator) || point_distance(x, y, creator.x, creator.y) > 32) {
+
+		  repeat(choose(1, 1, 2))with instance_create(x, y, ToxicGas){
+
+		      friction *= 10;
+	        growspeed /= 8;
+	        move_contact_solid(other.direction, other.speed);
+		}
 	}
 	bullet_destroy()
 
 #define heavy_toxic_destroy
-repeat(3){
-	with instance_create(x, y, ToxicGas){
-        friction *= 24;
-        growspeed /= 4;
-        move_contact_solid(other.direction, other.speed);
-        motion_add(random(360), random_range(2, 4))
-    }
-}
-bullet_destroy()
+	if (!instance_exists(creator) || point_distance(x, y, creator.x, creator.y) > 32) {
+
+		repeat(3){ with instance_create(x, y, ToxicGas){
+		        friction *= 24;
+		        growspeed /= 4;
+		        move_contact_solid(other.direction, other.speed);
+		        motion_add(random(360), random_range(2, 4))
+		    }
+		}
+	}
+	bullet_destroy()
 
 #define create_flame_bullet(x,y)
 return create_fire_bullet(x,y)
@@ -3405,11 +3412,21 @@ if bounce <= 0 instance_destroy()
 if projectile_canhit_melee(other) == true{
 	projectile_hit(other, damage, ammo, direction)
 	repeat(3) with instance_create(x, y, PlasmaTrail){
-		view_shake_at(x, y, 8)
+		view_shake_at(x, y, 3)
 		motion_add(random(180), random_range(7, 8))
 	}
 	sleep(damage * 2)
-	if other.my_health > 0 instance_destroy()
+	if other.my_health > 0 {
+
+		instance_destroy();
+	}else {
+
+		with create_plasma_impact_small(x, y) {
+
+			creator = other.creator;
+			team = other.team;
+		}
+	}
 }
 
 //SPIKEBALL

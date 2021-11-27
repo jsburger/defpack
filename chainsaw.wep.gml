@@ -2,7 +2,7 @@
 	global.sprChainsaw 			= sprite_add_weapon("sprites/weapons/sprChainsaw.png",0,3)
 	global.mskChainsaw 			= sprite_add_weapon("sprites/projectiles/mskChainsaw.png",20,3)
 	global.sprMiniAmmo 			= sprite_add("sprites/other/sprMiniAmmo.png",7,3,3)
-	global.sprChainsawShank = sprite_add("sprites/projectiles/sprHexNeedleShank.png", 5, -6, 4);
+	global.sprChainsawShank = sprite_add("sprites/projectiles/sprHexNeedleShank.png", 4, -6, 4);
 
 #macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)
 
@@ -63,7 +63,7 @@ return{
 			}
 		}
 		with instance_create(creator.x+lengthdir_x(-l,creator.gunangle),creator.y+lengthdir_y(-l,creator.gunangle),CustomProjectile){
-			if !irandom(2) instance_create(x+lengthdir_x(6+(6*skill_get(13)),other.creator.gunangle),y+lengthdir_y(6+(6*skill_get(13)),other.creator.gunangle),Smoke)
+			//if !irandom(2) instance_create(x+lengthdir_x(6+(6*skill_get(13)),other.creator.gunangle),y+lengthdir_y(6+(6*skill_get(13)),other.creator.gunangle),Smoke)
 			sprite_index = mskNone
 			canfix = false
 			force = 0
@@ -77,11 +77,11 @@ return{
 			with instances_matching_gt(instances_matching_ne(projectile,"team",other.team), "typ", 0){
 				if place_meeting(x,y,other){instance_destroy()}
 			}
-			if irandom(1) with instance_create(x, y, Wind){
+			with instance_create(x, y, Wind){
 				sprite_index = global.sprChainsawShank;
 				image_angle = other.image_angle + random_range(-12, 12);
 				depth -= 1;
-				motion_add(image_angle, random(1));
+				motion_add(image_angle, 1 + random(.2));
 			}
 			on_hit        = chainsawshank_hit
 			on_wall       = chainsawshank_wall

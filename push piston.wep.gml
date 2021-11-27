@@ -4,7 +4,7 @@ global.sprPushPiston2   = sprite_add_weapon("sprites/weapons/sprPushPiston2.png"
 global.sprPushPiston3   = sprite_add_weapon("sprites/weapons/sprPushPiston3.png",  6, 2);
 global.sprPushPiston4   = sprite_add_weapon("sprites/weapons/sprPushPiston4.png",  8, 2);
 global.sprPushPistonHUD = sprite_add_weapon("sprites/weapons/sprPushPiston4.png", 11, 4);
-global.sprToothbrushShank = sprite_add("sprites/projectiles/sprHexNeedleShank.png", 5, -6, 4);
+global.sprToothbrushShank = sprite_add("sprites/projectiles/sprHexNeedleShank.png", 4, -6, 4);
 
 #macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)
 

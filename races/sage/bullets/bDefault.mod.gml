@@ -1,7 +1,14 @@
 #define init
   global.sprBullet = sprite_add("../../../sprites/sage/bullets/sprBulletDefault.png", 0, 7, 7);
+  global.sprFairy = sprite_add("../../../sprites/sage/bullet icons/sprFairyIconDefault.png", 0, 5, 5);
 
 #macro c mod_variable_get("race", "sage", "colormap");
+
+#define fairy_sprite
+  return global.sprFairy;
+
+#define fairy_color
+  return $B98291;
 
 #define bullet_sprite
   return global.sprBullet;

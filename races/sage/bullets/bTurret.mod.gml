@@ -1,7 +1,14 @@
 #define init
   global.sprBullet = sprite_add("../../../sprites/sage/bullets/sprBulletTurret.png", 0, 7, 7);
+  global.sprFairy = sprite_add("../../../sprites/sage/bullet icons/sprFairyIconTurret.png", 0, 5, 5);
 
 #macro c mod_variable_get("race", "sage", "colormap");
+
+#define fairy_sprite
+  return global.sprFairy;
+
+#define fairy_color
+  return $53352B;
 
 #define bullet_sprite
   return global.sprBullet;

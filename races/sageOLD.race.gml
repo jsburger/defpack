@@ -3,7 +3,7 @@
 global.spr = {}
     with spr{
         var i = "../sprites/sage/";
-        
+
         GunIdle = sprite_add(i + "sprGunIdle.png", 6, 12, 12)
         GunWalk = sprite_add(i + "sprGunWalk.png", 6, 12, 12)
         GunHurt = sprite_add(i + "sprGunHurt.png", 3, 12, 12)
@@ -16,10 +16,10 @@ global.spr = {}
 
     global.purblue = make_color_rgb(72, 61, 135)
     global.darkteal = make_color_rgb(1, 68, 65)
-    
+
     with Player if race = mod_current create()
 
-    
+
 #macro spr global.spr
 #macro c_purblue global.purblue
 #macro c_darkteal global.darkteal
@@ -41,7 +41,7 @@ global.spells = ds_map_create();
 
 #define race_mapicon
     return spr.GunIcon
-    
+
 #define race_tb_text
 	return `ADVANCED @(color:${c_purblue})MAGICS@s`;
 
@@ -127,24 +127,24 @@ return tips[irandom(array_length(tips) - 1)]
 	    move: 0,
 	    curve : 0,
 	    resettime : 0,
-	    col : c_purblue,
+	    col : c_purple,
 	    sprite : sprSnowFlake,
 	    angle : 0
 	}
-	
+
 	sagespellinfo = {
 		couldaim  : 0,
 		couldfire : 0,
 		couldspec : 0,
 		swapoffset: 0
 	}
-	
+
 	sagespells = []
-	
+
 
 #define draw_begin
     if !sign(sageblob.y) blob_draw()
-    
+
 #define draw
     if sign(sageblob.y) blob_draw()
 
@@ -155,7 +155,7 @@ return tips[irandom(array_length(tips) - 1)]
     if h.resettime <= 0{
         h.x += approach(h.x, h.gx, 4, current_time_scale)
         h.y += approach(h.y, h.gy, 4, current_time_scale)
-        
+
         h.right = -sign(h.x - x)
         h.angle = 90 - (90 * h.right)
 
@@ -183,7 +183,7 @@ return tips[irandom(array_length(tips) - 1)]
         }
     }
     else h.resettime -= current_time_scale
-    
+
     if canspec and (button_pressed(index, "spec") or usespec == 0) {
     	if ultra_get(mod_current, 2) {
     		//wtf does right click do with ultra b
@@ -194,8 +194,8 @@ return tips[irandom(array_length(tips) - 1)]
     		spell_enable(sagespells[0])
     	}
     }
-    
-    
+
+
     var _needfire = false, _firescripts = [],
     	_needproj = false, _projscripts = [];
 	with sagespells {
@@ -208,28 +208,28 @@ return tips[irandom(array_length(tips) - 1)]
 			array_push(_projscripts, on_)
 		}
 	}
-    
+
 	if _needfire {
 		while player_could_shoot() {
 			list_call_all
 		}
 	}
-	
 
-    
-    
+
+
+
 #define spell_step(_spell)
 	if _spell.gunangle_offset != 0 {
 		gunangle = point_direction(x, y, mouse_x[index], mouse_y[index]) + _spell.gunangle_offset
 	}
 
-    
+
 #define spell_enable(_spell)
     if _spell.gunangle_offset != 0 {
     	sagespellinfo.couldaim = max(canaim, sagespellinfo.couldaim)
     	canaim = 0
     }
-    
+
 #define spell_disable(_spell)
 	if _spell.gunangle_offset != 0 {
 		var _a = canaim;
@@ -248,19 +248,19 @@ return tips[irandom(array_length(tips) - 1)]
 
 #define angle_approach(a, b, n, dn)
 	return angle_difference(a, b) * (1 - power((n - 1)/n, dn))
-	
-	
+
+
 #define script_ref_call_self
 /// script_ref_call_self(scr, args = -1)
 	var scr = argument[0];
 var args = argument_count > 1 ? argument[1] : -1;
 	return mod_script_call_self(scr[0], scr[1], scr[2], args)
-	
+
 #define list_call_all(list)
 	for var i = 0; i < array_length(list); i++) {
 		script_ref_call_self(list[i])
 	}
-	
+
 #define blob_draw
 	if visible {
 	    var h = sageblob;
@@ -292,13 +292,3 @@ var _times = argument_count > 1 ? argument[1] : 1;
 
 
 #define doubleshot_wep_draw
-
-
-
-
-
-
-
-
-
-
