@@ -21,7 +21,6 @@
 * bullet hud doesnt draw during pause
 * sage b skin
 * sage sounds
-* swap effects
 * Throne Butt is cringe rn (its awkward to use), please change
 */
 
@@ -165,20 +164,26 @@ NOTES FROM JSBURG:
 	if visible {
 
 		var h = fairy;
-		//draw_set_blend_mode(bm_add)
-		draw_sprite_ext(h.sprite, 0, h.x, h.y, 1, h.right, h.angle, merge_color(merge_colour(h.col, c_black, .7), c_white, clamp(fairy.swap / fairy_swap_time, 0, 1)), 1);
-		//draw_set_blend_mode(bm_normal)
-
+		var a = .25;
 		var gsize = 1/64;
 		var w = sprite_get_width(h.sprite) + 12, l = sprite_get_height(h.sprite) + 16;
+
+
 		d3d_set_fog(1, merge_color(h.col, c_white, clamp(fairy.swap / fairy_swap_time, 0, 1)), 1, 1)
 		fairy.swap = max(0, fairy.swap - current_time_scale * 1.2)
-		draw_sprite_ext(sprGhostGuardianIdle, -1, h.x, h.y, w * gsize, l * gsize, 0, c_white, .2)
-		/*draw_set_blend_mode(bm_add);
+		draw_sprite_ext(sprGhostGuardianIdle, -1, h.x + 1, h.y + 1, w * gsize, l * gsize, 0, c_white, .4 * a);
+		draw_sprite_ext(sprGhostGuardianIdle, -1, h.x + 1, h.y - 1, w * gsize, l * gsize, 0, c_white, .4 * a);
+		draw_sprite_ext(sprGhostGuardianIdle, -1, h.x - 1, h.y + 1, w * gsize, l * gsize, 0, c_white, .4 * a);
+		draw_set_blend_mode(bm_add);
+		draw_sprite_ext(sprGhostGuardianIdle, -1, h.x - 1, h.y - 1, w * gsize, l * gsize, 0, c_white, .4 * a);
+		draw_sprite_ext(sprGhostGuardianIdle, -1, h.x, h.y, w * gsize, l * gsize, 0, c_white, 1 * a)
+		draw_set_blend_mode(bm_normal);
+		/*
 		draw_sprite_ext(sprGhostGuardianIdle, -1, h.x, h.y, w * gsize * 1.3, l * gsize * 1.3, 0, c_white, .05)
-		draw_set_blend_mode(bm_norm);
 		*/
 		d3d_set_fog(0, 0, 0, 0)
+
+		draw_sprite_ext(h.sprite, 0, h.x, h.y, 1, h.right, h.angle, merge_color(merge_colour(h.col, c_black, .7), c_white, clamp(fairy.swap / fairy_swap_time, 0, 1)), 1);
 	}
 
 #define player_hud(_player, _hudIndex, _hudSide)
@@ -262,6 +267,7 @@ NOTES FROM JSBURG:
 #macro dev true
 #macro c_darkteal c_purple
 #macro c_purblue c_purple
+#macro speed_boost_perma [Rocket, Nuke, PlasmaBall, PlasmaBig, PlasmaHuge, Seeker]
 
 #define create
 	uiroll = 0;
@@ -462,6 +468,34 @@ NOTES FROM JSBURG:
 	}
 
 	var sageEffectNum = (ultra_get("sage", 2) ? array_length(other.spellBullets) : 1);
+
+	with instances_matching(projectile, "creator", self) {
+
+		if "sage_speed" not in self {
+
+			sage_speed = creator.sage_projectile_speed;
+		}
+		var _s = self;
+		with speed_boost_perma {
+
+			if instance_is(_s, self) {
+
+				switch object_get_name(_s.object_index) {
+
+					case "Seeker":
+						var _n = _s.speed > .1 ? 1 : 0;
+						_s.x += lengthdir_x(speed * (_s.sage_speed - 1), direction) / 1.5 * _n;
+						_s.y += lengthdir_y(speed * (_s.sage_speed - 1), direction) / 1.5 * _n;
+						break;
+					default:
+						_s.x += lengthdir_x(speed * (_s.sage_speed - 1), direction);
+						_s.y += lengthdir_y(speed * (_s.sage_speed - 1), direction);
+						break;
+				}
+			}
+		}
+	}
+
 	with(instances_matching_ne(instances_matching(projectile, "creator", self), "sageCheck", sageEffectNum)) {
 		if("sageCheck" not in self){sageCheck = 0}
 

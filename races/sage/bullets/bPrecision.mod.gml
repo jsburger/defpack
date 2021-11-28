@@ -23,12 +23,12 @@
   return 0;
 
 #define bullet_description(power)
-  return `@(color:${c.neutral})+` + string(round(170 + 150 * power)) + `% @(color:${c.accuracy})ACCURACY#@(color:${c.neutral})+20% @(color:${c.projectile_speed})PROJECTILE SPEED`;
+  return `@(color:${c.neutral})+` + string(round(170 + 150 * power)) + `% @(color:${c.accuracy})ACCURACY#@(color:${c.neutral})+25% @(color:${c.projectile_speed})PROJECTILE SPEED`;
 
 #define on_take(power)
   accuracy /= 1.7 + 1.5 * power;
-  sage_projectile_speed += .2;
+  sage_projectile_speed += .25;
 
 #define on_lose(power)
   accuracy *= 1.7 + 1.5 * power;
-  sage_projectile_speed -= .2;
+  sage_projectile_speed -= .25;

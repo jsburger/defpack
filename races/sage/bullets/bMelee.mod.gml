@@ -23,14 +23,14 @@
   return 0;
 
 #define bullet_description(power)
-  return `@(color:${c.neutral})+` + string(round(35 + 35 * power)) + `% @(color:${c.reload})RELOAD SPEED#@(color:${c.neutral})+1.5 @(color:${c.speed})SPEED#@s-120% @(color:${c.accuracy})ACCURACY`;
+  return `@(color:${c.neutral})+` + string(round(35 + 35 * power)) + `% @(color:${c.reload})RELOAD SPEED#@(color:${c.neutral})+1.5 @(color:${c.speed})SPEED#@s-150% @(color:${c.accuracy})ACCURACY`;
 
 #define on_take(power)
   reloadspeed += .35 + .35 * power;
   maxspeed += 1.5;
-  accuracy *= 2.2;
+  accuracy *= 2.5;
 
 #define on_lose(power)
   reloadspeed -= .35 + .35 * power;
   maxspeed -= 1.5;
-  accuracy /= 2.2;
+  accuracy /= 2.5;
