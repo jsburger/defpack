@@ -23,7 +23,7 @@
   return 0;
 
 #define bullet_description(power)
-  return `@(color:${c.neutral})+` + string(ceil(1 + 1 * power)) + ` @(color:${c.projectile})PROJECTILES @(color:${c.neutral})@sfired#+` + string(round(100 + 100 * power)) +  `% @(color:${c.ammo})AMMO COST`;
+  return `@(color:${c.neutral})+` + string(ceil(1 + 1 * power)) + ` @(color:${c.projectile})PROJECTILE` + (ceil(1 + 1 * power) = 1 ? "" : "S") + ` @(color:${c.neutral})fired#+` + string(round(100 + 100 * power)) +  `% @(color:${c.ammo})AMMO COST`;
 
 #define on_take(power)
   if "sage_projectiles" not in self {

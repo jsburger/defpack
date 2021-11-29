@@ -1,6 +1,7 @@
 #define init
   global.sprBullet = sprite_add("../../../sprites/sage/bullets/sprBulletUltra.png", 0, 7, 7)
   global.sprFairy = sprite_add("../../../sprites/sage/bullet icons/sprFairyIconUltra.png", 0, 5, 5);
+  global.sprUltraSpark = sprite_add("../../../sprites/sage/fx/sprBulletFXUltraActivate.png", 5, 5, 5);
 
 #macro c mod_variable_get("race", "sage", "colormap");
 
@@ -17,44 +18,43 @@
   return "ULTRA";
 
 #define bullet_ttip
-  return "@gRADS @sTO @yAMMO";
+  return "@sFROM @gRADS @sTO @yAMMO";
 
 #define bullet_area
   return 0;
 
 #define bullet_description(power)
-  return `@(color:${c.neutral})+` + string(ceil(3 + 1 * power)) + ` @(color:${c.ammo})BURST SIZE#@s+` + string(round(200 + 200 * power)) + `% @(color:${c.ammo})AMMO COST#@s-60% @(color:${c.reload})RELOAD SPEED`;
+  return `@(color:${c.neutral})+@(color:${c.ammo})AMMO @(color:${c.neutral})TO @gRADS#@(color:${c.neutral})+` + string(round(50 + 50 * power)) + `% @wRELOAD SPEED @(color:${c.neutral})WHEN USING @gRADS`;
 
 #define on_take(power)
-  if "sage_burst_size" not in self {
+  if "sage_atr_reload_speed" not in self {
 
-    sage_burst_size = 1 + ceil(2 + 1 * power);
+    sage_atr_reload_speed = .5 + .5 * power;
   }else {
 
-    sage_burst_size += ceil(2 + 1 * power);
+    sage_atr_reload_speed += .5 + .5 * power;
   }
-  reloadspeed -= .6;
+
+  sage_ammo_to_rads++;
 
 #define on_lose(power)
-  sage_burst_size -= ceil(2 + 1 * power);
-  reloadspeed += .6;
+  sage_atr_reload_speed -= .5 + .5 * power;
+  sage_ammo_to_rads--;
 
-#define on_fire
+#define on_rads_use
+  with instance_create(x, y, WepSwap) {
 
-  // Burst firing:
-  if sage_burst_size > 1 if(fork()){
+    with instances_matching(instances_matching(WepSwap, "creator", other), "sprite_index", global.sprUltraSpark) {
 
-    var w = wep;
-    repeat(sage_burst_size){
-      if(!instance_exists(self) or w != wep or ammo[weapon_get_type(wep)] < weapon_get_cost(wep) * (1 + sage_ammo_cost) or GameCont.rad < weapon_get_rads(wep) * (1 + sage_ammo_cost)) exit;
-      player_fire(gunangle);
-      wait(max(2, (ceil(weapon_get_load(wep)) / (7 + sage_burst_size * 3 - 9) + weapon_is_melee(wep) * 2)));
+      instance_delete(self);
     }
-    repeat(sage_burst_size - 1){
-      reload -= weapon_get_load(wep);
-    }
-    if weapon_get_type(wep) = 0 || weapon_get_type(wep) = 1 || weapon_is_melee(wep) = true{
-      clicked = false;
-    }
-    exit;
+    creator = other;
+    sprite_index = global.sprUltraSpark;
+  }
+  sound_play_pitchvol(sndUltraEmpty, .75 * random_range(.8, 1.2), .5);
+
+  wait(1);
+  if instance_exists(self) {
+
+    reload *= 1 / (1 + sage_atr_reload_speed);
   }

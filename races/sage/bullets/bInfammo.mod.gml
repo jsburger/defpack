@@ -23,7 +23,7 @@
   return 0;
 
 #define bullet_description(power)
-  return `@(color:${c.neutral})+` + string(round(2 + 2 *power)) + ` seconds @(color:${c.aqua})INFAMMO @(color:${c.neutral})PER KILL#+50% @(color:${c.speed})SPEED#@s-50% @(color:${c.projectile_speed})PROJECTILE SPEED`
+  return `@(color:${c.neutral})+` + string(round(2 + 2 *power)) + ` second` + (round(2 + 2 * power) = 1 ? "" : "S") + ` OF @(color:${c.aqua})INFINITE AMMO @(color:${c.neutral})PER KILL#+0.5 @(color:${c.speed})SPEED#@s-50% @(color:${c.projectile_speed})PROJECTILE SPEED`
 
 #define on_take(power)
   maxspeed += .5;

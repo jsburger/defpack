@@ -23,7 +23,7 @@
   return 0;
 
 #define bullet_description(power)
-  return `@(color:${c.neutral})+` + string(2 + ceil(3 * power)) + ` @(color:${c.speed})WARPSPEED#@(color:${c.neutral})+25% @(color:${c.accuracy})ACCURACY`;
+  return `@(color:${c.neutral})+` + string(2 + ceil(3 * power)) + ` @(color:${c.speed})HYPERSPEED#@(color:${c.neutral})+25% @(color:${c.accuracy})ACCURACY`;
 
 #define on_take(power)
   sage_projectile_speed *= 1 - .35; // this one is hidden pssst

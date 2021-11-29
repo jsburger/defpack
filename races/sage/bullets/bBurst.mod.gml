@@ -45,12 +45,14 @@
   if sage_burst_size > 1 if(fork()){
 
     var w = wep;
-    repeat(sage_burst_size){
+    repeat(sage_burst_size) {
+
       if(!instance_exists(self) or w != wep or ammo[weapon_get_type(wep)] < weapon_get_cost(wep) * (1 + sage_ammo_cost) or GameCont.rad < weapon_get_rads(wep) * (1 + sage_ammo_cost)) exit;
       player_fire(gunangle);
       wait(max(2, (ceil(weapon_get_load(wep)) / (7 + sage_burst_size * 3 - 9) + weapon_is_melee(wep) * 2)));
     }
-    repeat(sage_burst_size - 1){
+    repeat(sage_burst_size - 1) {
+      
       reload -= weapon_get_load(wep);
     }
     if weapon_get_type(wep) = 0 || weapon_get_type(wep) = 1 || weapon_is_melee(wep) = true{

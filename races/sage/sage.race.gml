@@ -235,10 +235,12 @@ NOTES FROM JSBURG:
 
 				  if _player.sage_uitimer = 0 {
 
+						var _name = mod_script_call("mod", bullet[? _player.spellBullets[i]].key, "bullet_name", _player.sage_spell_power),
+						    _desc = mod_script_call("mod", bullet[? _player.spellBullets[i]].key, "bullet_description", _player.sage_spell_power);
 						draw_set_font(fntM);
-			      draw_text_nt(_x - 4 - (11 * i - i) * (_hudSide ? -1 : 1), _y + _h + 3, bullet[? _player.spellBullets[i]].name);
+			      draw_text_nt(_x - 4 - (11 * i - i) * (_hudSide ? -1 : 1), _y + _h + 3, _name);
 			      draw_set_font(fntSmall);
-			      draw_text_nt(_x - 4 - (11 * i - i) * (_hudSide ? -1 : 1), _y + _h + 12, bullet[? _player.spellBullets[i]].description);
+			      draw_text_nt(_x - 4 - (11 * i - i) * (_hudSide ? -1 : 1), _y + _h + 12, _desc);
 			    }
 			}
 
@@ -254,7 +256,8 @@ NOTES FROM JSBURG:
 		_y = 12 + (_player.uiroll == i);
 	}
 
-	if(_player.uiroll < array_length(_player.spellBullets)){
+	if (_player.uiroll < array_length(_player.spellBullets)) {
+
 		_player.uiroll++;
 	}
 
@@ -294,6 +297,7 @@ NOTES FROM JSBURG:
 		array_push(spellBullets, bullet[? "bWarp"].key);
 		array_push(spellBullets, bullet[? "bBurst"].key);
 		array_push(spellBullets, bullet[? "bSplit"].key);
+		array_push(spellBullets, bullet[? "bUltra"].key);
 	}
 
 	fairy = {
@@ -548,19 +552,48 @@ NOTES FROM JSBURG:
 
 #define fire()
 
-	for (var _i = 0; _i < 1 + ultra_get("sage", 2); _i++){
+	var _radprev = GameCont.rad;
+
+	for (var _i = 0; _i < 1 + ultra_get("sage", 2); _i++) {
+
 		mod_script_call("mod", bullet[? spellBullets[_i]].key, "on_fire", sage_spell_power);
 	}
 	// Custom ammo cost handling:
 	if infammo = 0 {
-	  var _t = min(sage_ammo_to_rads, 1) * (weapon_get_type(wep) = 1 ? 4 : 16) * ceil(1 + sage_ammo_cost)  *weapon_get_cost(wep),
+
+	  var _t = min(sage_ammo_to_rads, 1) * (weapon_get_type(wep) = 1 ? 4 : 16) * ceil(1 + sage_ammo_cost) * weapon_get_cost(wep),
 		    _a = 1;
-		if GameCont.rad < _t || sage_ammo_to_rads = 0 {
+		if GameCont.rad < _t || !sage_ammo_to_rads {
+
 			_a = 0;
 		}
 
-		ammo[weapon_get_type(wep)] -= _a * -weapon_get_cost(wep) + weapon_get_cost(wep) * ceil(sage_ammo_cost);
-		GameCont.rad = max(GameCont.rad - weapon_get_rads(wep) * ceil(sage_ammo_cost) -	 _t, 0);
+		var _acost = _a * -weapon_get_cost(wep) + weapon_get_cost(wep) * ceil(sage_ammo_cost),
+		    _rcost = max(GameCont.rad - weapon_get_rads(wep) * ceil(sage_ammo_cost) - _t, 0);
+
+		// Split extra cost handling:
+		if( "sage_projectiles" in self && _acost * sage_projectiles > ammo[weapon_get_type(wep)] && _rcost * sage_projectiles > GameCont.rads) {
+
+
+			sound_play(sndEmpty);
+			with instance_create(x, y, PopupText) {
+
+				ammo[weapon_get_type(wep)] += _acost;
+				mytext = "NOT ENOUGH AMMO";
+			}
+		}else {
+
+			ammo[weapon_get_type(wep)] -= _acost;
+			GameCont.rad = _rcost;
+		}
+	}
+
+	if (GameCont.rad < _radprev) {
+
+		for (var _i = 0; _i < 1 + ultra_get("sage", 2); _i++) {
+
+			mod_script_call("mod", bullet[? spellBullets[_i]].key, "on_rads_use", sage_spell_power);
+		}
 	}
 
 	// Player doesnt have enough ammo:
@@ -573,28 +606,13 @@ NOTES FROM JSBURG:
 	}else{
 	}*/
 
-
 #define stat_gain(spellbullet, inst)
 	with inst mod_script_call("mod", spellbullet, "on_take", sage_spell_power);
 	if dev trace("STAT GAINED")
-	/*switch spellbullet{
-		break;
-		case "ultra":
-			sage_ammo_to_rads++;
-		break;
-
-	}*/
 
 #define stat_lose(spellbullet, inst)
 	with inst mod_script_call("mod", spellbullet, "on_lose", sage_spell_power);
 	if dev trace("STAT LOST")
-
-	/*switch spellbullet{
-		break;
-		case "ultra":
-			sage_ammo_to_rads--;
-		break;
-	}*/
 
 #define spellpower_change(spellbullet, inst, spellpower)
 	stat_lose(spellbullet, inst);
@@ -656,8 +674,6 @@ NOTES FROM JSBURG:
 
 #define spellbullet_examine(name, inst)
 	switch(name){
-		case "ultra":
-			return `@(color:${c_neutral})+@(color:${c_ammo})AMMO @(color:${c_neutral})TO @gRAD @(color:${c_neutral})COST`;
 		case "cursed":
 			return `@(color:${c_neutral})+@(color:${c_spellpower})RANDOM @wEFFECTS`
 	}
