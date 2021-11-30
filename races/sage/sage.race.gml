@@ -83,6 +83,8 @@ NOTES FROM JSBURG:
 	global.spr_ult_icon[1] = sprite_add(_i + "sprGunMapIcon.png", 1, 8, 9);
 	global.spr_ult_icon[2] = sprite_add(_i + "sprGunMapIcon.png", 1, 8, 9);
 
+	 // FX:
+	 global.sprSwapFairy = sprite_add(_i + "fx/sprWepSwapL.png", 6, 16, 16);
 	 // Reapply sprites if the mod is reloaded. //
 	with(instances_matching(Player, "race", mod_current)) {
 		assign_sprites();
@@ -151,7 +153,7 @@ NOTES FROM JSBURG:
 	draw_sprite(_sprIndex, _imgIndex, _x -1, _y);
 	draw_sprite(_sprIndex, _imgIndex, _x +1, _y);
 	draw_sprite(_sprIndex, _imgIndex, _x, _y -1);
-	draw_sprite(_sprIndex, _imgIndex, _x, _y +1);
+	draw_sprite(_sprIndex, _imgIndex, _x, _y +2);
 	d3d_set_fog(false, c_white, 0, 0);
 
 #define draw_begin
@@ -169,21 +171,24 @@ NOTES FROM JSBURG:
 		var w = sprite_get_width(h.sprite) + 12, l = sprite_get_height(h.sprite) + 16;
 
 
-		d3d_set_fog(1, merge_color(h.col, c_white, clamp(fairy.swap / fairy_swap_time, 0, 1)), 1, 1)
-		fairy.swap = max(0, fairy.swap - current_time_scale * 1.2)
-		draw_sprite_ext(sprGhostGuardianIdle, -1, h.x + 1, h.y + 1, w * gsize, l * gsize, 0, c_white, .4 * a);
-		draw_sprite_ext(sprGhostGuardianIdle, -1, h.x + 1, h.y - 1, w * gsize, l * gsize, 0, c_white, .4 * a);
-		draw_sprite_ext(sprGhostGuardianIdle, -1, h.x - 1, h.y + 1, w * gsize, l * gsize, 0, c_white, .4 * a);
+		d3d_set_fog(1, merge_color(h.col, c_white, clamp(h.swap / fairy_swap_time, 0, 1)), 1, 1)
+		h.swap = max(0, h.swap - current_time_scale * 1.2)
+		draw_sprite_ext(h.sprite_back, -1, h.x + 1, h.y + 1, w * gsize, l * gsize, 0, c_white, .4 * a);
+		draw_sprite_ext(h.sprite_back, -1, h.x + 1, h.y - 1, w * gsize, l * gsize, 0, c_white, .4 * a);
+		draw_sprite_ext(h.sprite_back, -1, h.x - 1, h.y + 1, w * gsize, l * gsize, 0, c_white, .4 * a);
 		draw_set_blend_mode(bm_add);
-		draw_sprite_ext(sprGhostGuardianIdle, -1, h.x - 1, h.y - 1, w * gsize, l * gsize, 0, c_white, .4 * a);
-		draw_sprite_ext(sprGhostGuardianIdle, -1, h.x, h.y, w * gsize, l * gsize, 0, c_white, 1 * a)
+		draw_sprite_ext(h.sprite_back, -1, h.x - 1, h.y - 1, w * gsize, l * gsize, 0, c_white, .4 * a);
+		draw_sprite_ext(h.sprite_back, -1, h.x, h.y, w * gsize, l * gsize, 0, c_white, 1 * a)
 		draw_set_blend_mode(bm_normal);
 		/*
-		draw_sprite_ext(sprGhostGuardianIdle, -1, h.x, h.y, w * gsize * 1.3, l * gsize * 1.3, 0, c_white, .05)
+		draw_sprite_ext(h.sprite_back, -1, h.x, h.y, w * gsize * 1.3, l * gsize * 1.3, 0, c_white, .05)
 		*/
 		d3d_set_fog(0, 0, 0, 0)
 
 		draw_sprite_ext(h.sprite, 0, h.x, h.y, 1, h.right, h.angle, merge_color(merge_colour(h.col, c_black, .7), c_white, clamp(fairy.swap / fairy_swap_time, 0, 1)), 1);
+		if h.swapframes > 0 draw_sprite(global.sprSwapFairy, (6 - h.swapframes), h.x, h.y);
+		h.swapframes = max(0, h.swapframes - current_time_scale * .5);
+
 	}
 
 #define player_hud(_player, _hudIndex, _hudSide)
@@ -209,18 +214,22 @@ NOTES FROM JSBURG:
 
 		if i < array_length(_player.spellBullets){
 
+			var _sprt = mod_script_call("mod", bullet[? _player.spellBullets[i]].key, "bullet_sprite", _player.sage_spell_power);
+
 			//Draw Outline for bullets in active slots:
 			if i == 0 || ultra_get("sage", 2){
-				draw_outline(bullet[? _player.spellBullets[i]].spr_index, 0, _x, _y)
+				draw_outline(_sprt, 0, _x, _y)
 			}
 
 			//Draw Bullet:
-			draw_sprite_ext(bullet[? _player.spellBullets[i]].spr_index, 0, _x, _y, (_hudSide ? -1 : 1), 1, 0, c_white, 1);
+			draw_sprite_ext(_sprt, 0, _x, _y + 1, (_hudSide ? -1 : 1), 1, 0, c_white, 1);
+			draw_sprite_ext(_sprt, 0, _x, _y, (_hudSide ? -1 : 1), 1, 0, c_white, 1);
 
 			//Darken in secondary Slots:
 			if i != 0 {
 
-				draw_sprite_ext(bullet[? _player.spellBullets[i]].spr_index, 0, _x, _y, (_hudSide ? -1 : 1), 1, 0, c_black, .2);
+				draw_sprite_ext(_sprt, 0, _x, _y + 1, (_hudSide ? -1 : 1), 1, 0, c_black, .2);
+				draw_sprite_ext(_sprt, 0, _x, _y, (_hudSide ? -1 : 1), 1, 0, c_black, .2);
 			}
 
 			if !point_in_rectangle(ceil(mouse_x[_player.index] - view_xview[_player.index]) - 16, ceil(mouse_y[_player.index] - view_yview[_player.index]), (_hudSide ? 8 : 99) - _w * 2 * (_hudSide ? -1 : 1), _y - 2 - _h, (_hudSide ? 8 : 99) + _w+ _w * 2 * array_length(_player.spellBullets) * (_hudSide ? -1 : 1), _y - 1 + _h) {
@@ -314,8 +323,10 @@ NOTES FROM JSBURG:
 	    dir : 0,
 	    spd : 0,
 	    move: 0,
+			sprite_back: sprGhostGuardianIdle,
 	    curve : 0,
 	    resettime : 0,
+			swapframes : 0,
 	    col : c_purblue,
 	    sprite : sprSnowFlake,
 	    angle : 0
@@ -383,13 +394,20 @@ NOTES FROM JSBURG:
 	if(canspec && button_pressed(index, "spec") && array_length(spellBullets) > 1){
 
 		fairy.swap = fairy_swap_time + 2;
+		fairy.swapframes = 6;
+
+		for (var _i = 0; _i < 1 + ultra_get("sage", 2); _i++) {
+
+			mod_script_call("mod", bullet[? spellBullets[1]].key, "bullet_swap", sage_spell_power);
+		}
 
 		var _temp = spellBullets[0];
 		if(!ultra_get("sage", 2)){
 			stat_lose(spellBullets[0], self);
 			stat_gain(spellBullets[1], self);
 		}
-		for(var i = 1; i < array_length(spellBullets); i++){
+		for(var i = 1; i < array_length(spellBullets); i++) {
+
 			spellBullets[i-1] = spellBullets[i];
 		}
 		spellBullets[array_length(spellBullets) - 1] = _temp;
@@ -596,6 +614,14 @@ NOTES FROM JSBURG:
 		}
 	}
 
+	if (GameCont.rad <= 0 && _radprev > 0) {
+
+		for (var _i = 0; _i < 1 + ultra_get("sage", 2); _i++) {
+
+			mod_script_call("mod", bullet[? spellBullets[_i]].key, "on_rads_out", sage_spell_power);
+		}
+	}
+
 	// Player doesnt have enough ammo:
 	/*if (weapon_get_cost(wep) * ceil(sage_ammo_cost + 1) * (_size) > ammo[weapon_get_type(wep)]){
 		weapon_post(-5, 0, 0);
@@ -631,8 +657,9 @@ NOTES FROM JSBURG:
 		sprite_index = mskNone;
 		mask_index   = mskBandit;
 		image_speed  = 0;
-		speed    = 3;
-		friction = 0.1;
+		speed    = 5;
+		friction = 0.5;
+		shine = 45;
 
 		direction = random(360);
 		image_angle = direction;
@@ -682,6 +709,19 @@ NOTES FROM JSBURG:
 	if(distance_to_object(Wall) < 1){
 		move_bounce_solid(false);
 	}
+
+	shine -= current_time_scale;
+	if (shine <= 0) {
+
+		image_speed = .4;
+	}
+	if (image_index >= 6) {
+
+		image_speed = 0;
+		image_index = 0;
+		shine = 45;
+	}
+
 	var _nearest = instance_nearest(x,y,Portal);
 	 // Move:
 	if(_nearest != noone && distance_to_object(_nearest) < 50){
@@ -727,7 +767,7 @@ NOTES FROM JSBURG:
 				spellbullet.sprite_index = bullet[? spellBullets[0]].spr_index
 				spellBullets[0] = spellbullet.type;
 				spellbullet.type = temp;
-				spellbullet.my_prompt.text = temp;
+				spellbullet.my_prompt.text = bullet[? temp].name;
 				spellbullet.friction = 0.1;
 				spellbullet.direction = random(360);
 				image_angle = direction;

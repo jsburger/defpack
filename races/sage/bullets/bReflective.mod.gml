@@ -1,5 +1,5 @@
 #define init
-  global.sprBullet = sprite_add("../../../sprites/sage/bullets/sprBulletBounce.png", 0, 7, 7);
+  global.sprBullet = sprite_add_weapon("../../../sprites/sage/bullets/sprBulletBounce.png", 7, 7);
   global.sprFairy = sprite_add("../../../sprites/sage/bullet icons/sprFairyIconReflective.png", 0, 5, 5);
 
 #macro c mod_variable_get("race", "sage", "colormap");
@@ -21,6 +21,12 @@
 
 #define bullet_area
   return 0;
+
+#define bullet_swap
+  var _p = random_range(.9, 1.1);
+  sound_play_pitchvol(sndSwapHammer,   .6 * _p, .5);
+  sound_play_pitchvol(sndSwapShotgun, 1.2 * _p, .9);
+  sound_play_pitchvol(sndCrossReload, 1.4 * _p, .9);
 
 #define bullet_description(power)
   return `@(color:${c.neutral})+` + string(ceil(3	+ 2 * power)) + ` @(color:${c.bounce})BOUNCES#@s-20% @(color:${c.projectile_speed})PROJECTILE SPEED`;

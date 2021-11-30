@@ -1,5 +1,5 @@
 #define init
-  global.sprBullet = sprite_add("../../../sprites/sage/bullets/sprBulletWarp.png", 0, 7, 7);
+  global.sprBullet = sprite_add_weapon("../../../sprites/sage/bullets/sprBulletWarp.png", 7, 7);
   global.sprFairy = sprite_add("../../../sprites/sage/bullet icons/sprFairyIconWarp.png", 0, 4, 5);
 
 #macro c mod_variable_get("race", "sage", "colormap");
@@ -21,6 +21,12 @@
 
 #define bullet_area
   return 0;
+
+#define bullet_swap
+  var _p = random_range(.9, 1.1);
+  sound_play_pitchvol(sndSwapHammer,   .6 * _p, .5);
+  sound_play_pitchvol(sndSwapShotgun, 1.2 * _p, .9);
+  sound_play_pitchvol(sndCrossReload, 1.4 * _p, .9);
 
 #define bullet_description(power)
   return `@(color:${c.neutral})+` + string(2 + ceil(3 * power)) + ` @(color:${c.speed})HYPERSPEED#@(color:${c.neutral})+25% @(color:${c.accuracy})ACCURACY`;
@@ -70,3 +76,8 @@
       }
     }
   }
+
+#define on_fire
+var _p = random_range(.8, 1.2);
+
+sound_play_pitchvol(sndUltraCrossbow, 1.5 * _p, .5);

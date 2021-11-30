@@ -1,8 +1,9 @@
 #define init
-	global.sprChainsaw 			= sprite_add("sprites/weapons/sprEnergyChainsaw.png", 7, 3, 4);
-	global.mskChainsaw 			= sprite_add_weapon("sprites/projectiles/mskChainsaw.png",20,3)
-	global.sprMiniAmmo 			= sprite_add("sprites/other/sprMiniAmmo.png",7,3,3)
-	global.sprChainsawShank = sprite_add("sprites/projectiles/sprEShank.png", 4, -6, 4);
+	global.sprChainsaw 			 = sprite_add("sprites/weapons/sprEnergyChainsaw.png", 7, 3, 4);
+	global.sprChainsawActive = sprite_add_weapon("sprites/weapons/sprEnergyChainsawActive.png", 3, 4);
+	global.mskChainsaw 			 = sprite_add_weapon("sprites/projectiles/mskChainsaw.png",20,3)
+	global.sprMiniAmmo 			 = sprite_add("sprites/other/sprMiniAmmo.png",7,3,3)
+	global.sprChainsawShank  = sprite_add("sprites/projectiles/sprEShank.png", 4, -6, 4);
 
 #macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)
 
@@ -25,6 +26,13 @@
 #define weapon_laser_sight
 	return 0
 #define weapon_sprt
+	if instance_is(self, hitme) {
+
+		if "reload" in self && reload > 0 {
+
+			return global.sprChainsawActive;
+		}
+	}
 	return global.sprChainsaw
 #define weapon_text
 	return choose("PLASMA TEARER", "KILLED ENEMIES ALWAYS#DROP SOME @yAMMO")

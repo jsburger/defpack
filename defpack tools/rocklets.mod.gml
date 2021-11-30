@@ -106,7 +106,7 @@ with instance_create(_x, _y, CustomProjectile) {
     typ = 1
     depth = -1
 
-		amp = sqrt(other.accuracy);
+		amp = sqrt(abs(other.accuracy));
     goal = -1
     phase = 0
     friction = .2
