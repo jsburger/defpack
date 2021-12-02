@@ -269,21 +269,21 @@ NOTES FROM JSBURG:
 	    if GameCont.area == 103 array_push(tips, "PRIMITIVE, BUT VERY EFFECTIVE ENCAPSULATION...")
 	    if GameCont.area == 104 array_push(tips, "SO THIS IS WHERE @pIT@s COMES FROM")
 	}
-	
+
 	//Get bullet tips instead of flavor text
 	if (irandom(2) == 1) {
 		trace("bullet tips")
 		tips = []
 		var bulletTips = [];
-		
+
 		with instances_matching(Player, "race", mod_current) {
 			with spellBullets {
 				array_push(bulletTips, bullets[? self].ttip)
 			}
 		}
-		
+
 		unpack(tips, bulletTips)
-		
+
 	}
 
 	if array_length(tips) > 0 {
@@ -489,15 +489,15 @@ NOTES FROM JSBURG:
 		if resettime <= 0{
 			x += approach(x, goalX, 4, current_time_scale)
 			y += approach(y, goalY, 4, current_time_scale)
-	
+
 			right = -sign(x - other.x)
 			angle = 90 - (90 * right)
-	
+
 			//h.col = merge_colour(c_purblue, c_black, .7)
-	
+
 			goalX = other.x + (xoff - 10) * right
 			goalY = other.y + yoff - 16
-	
+
 			if random(100) < 2 * current_time_scale{
 				dir = random(360)
 				move = irandom_range(4, 10)
@@ -543,9 +543,8 @@ NOTES FROM JSBURG:
 		fairy.swap = fairy_swap_time + 2;
 		fairy.swapframes = 6;
 
-		for (var i = 0, l = bulletLoopMax; i < l; i++) {
-			mod_script_call("mod", spellBullets[i], "bullet_swap", sage_spell_power);
-		}
+		// This is only for playing the swap sound of the bullet youre swapping into
+		mod_script_call("mod", spellBullets[1], "bullet_swap", sage_spell_power);
 
 		var _temp = spellBullets[0];
 		if !ultra_b {
@@ -558,10 +557,10 @@ NOTES FROM JSBURG:
 		spellBullets[array_length(spellBullets) - 1] = _temp;
 		uiroll = 0;
 	}
-	
-	
-	
-	
+
+
+
+
 	///  PASSIVE : Spawn Spellbullets on weapon chest open \\\
 	with(WeaponChest){
 		if(fork()){
@@ -716,7 +715,7 @@ NOTES FROM JSBURG:
 			}*/
 		}
 	}
-	
+
 #define before_sage_shoot()
 
 	var shootEvent = {
@@ -729,7 +728,7 @@ NOTES FROM JSBURG:
 		//Ex: The secondary shots of Burst are Shooting, and the two shots for Split are both Firing.
 		mod_script_call("mod", spellBullets[i], "on_pre_shoot", sage_spell_power, shootEvent);
 	}
-	
+
 	return shootEvent
 
 
@@ -750,12 +749,12 @@ NOTES FROM JSBURG:
 			mod_script_call("mod", spellBullets[i], "on_rads_out", sage_spell_power);
 		}
 	}
-	
-	
+
+
 #define sage_shoot(direction)
 
 	var event = before_sage_shoot();
-	
+
 	if !event.cancelled {
 		player_fire(direction)
 		post_sage_shoot(event)
@@ -763,7 +762,7 @@ NOTES FROM JSBURG:
 
 #define sage_shoot_offset(direction, offset)
 	var event = before_sage_shoot();
-	
+
 	if !event.cancelled {
     	mod_script_call_self("mod", "bSplit", "player_fire_at", undefined, undefined, undefined, offset)
 		post_sage_shoot(event)
@@ -782,20 +781,20 @@ In Burst fire, call sage_shoot for each burst shot.
 		cancelled: false,
 		angle_offset: 0
 	}
-	
+
 
 	for (var i = 0, l = bulletLoopMax; i < l; i++) {
 		mod_script_call("mod", spellBullets[i], "on_pre_fire", sage_spell_power, event);
 	}
-	
-	
+
+
 	if !event.cancelled {
-		
+
 		if !fireEvent.cancelled {
 			mid_firing(event)
 			post_sage_shoot(fireEvent)
 		}
-		
+
 	}
 
 	if event.cancelled trace("Fire Event was cancelled. Please make sure its working")
@@ -819,12 +818,12 @@ In Burst fire, call sage_shoot for each burst shot.
 	for (var i = 0, l = bulletLoopMax; i < l; i++) {
 		mod_script_call_self("mod", spellBullets[i], "on_fire", sage_spell_power, fireEvent)
 	}
-	
+
 	if !fireEvent.cancelled {
 		post_firing(fireEvent)
 	}
-	
-	
+
+
 #define post_firing(fireEvent)
 
 
@@ -898,7 +897,7 @@ In Burst fire, call sage_shoot for each burst shot.
 #define get_bullets(_min, _max)
 	var values = ds_map_values(bullets),
 		returnlist = [];
-	
+
 	for (var i = 0; i < array_length(values); i++) {
 		if values[i].area >= _min && values[i].area <= _max {
 			array_push(returnlist, values[i].key)
@@ -962,7 +961,7 @@ In Burst fire, call sage_shoot for each burst shot.
 
 			//Below max bullets
 			if(array_length(spellBullets) < 2 + skill_get(5)) {
-				
+
 				array_push(spellBullets, spellbullet.type);
 				uiroll = 0;
 				with spellbullet instance_destroy()

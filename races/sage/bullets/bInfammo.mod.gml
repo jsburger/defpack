@@ -29,17 +29,17 @@
   sound_play_pitchvol(sndCrossReload, 1.4 * _p, .9);
 
 #define bullet_description(power)
-  return `@(color:${c.neutral})+` + string(round(2 + 2 *power)) + ` second` + (round(2 + 2 * power) = 1 ? "" : "S") + ` OF @(color:${c.aqua})INFINITE AMMO @(color:${c.neutral})PER KILL#+0.5 @(color:${c.speed})SPEED#@s-30% @(color:${c.projectile_speed})PROJECTILE SPEED`
+  return `@(color:${c.neutral})+` + string(round(1 + 1 *power)) + ` second` + (round(1 + 1 * power) = 1 ? "" : "S") + ` OF @(color:${c.aqua})INFINITE AMMO @(color:${c.neutral})PER KILL#+0.5 @(color:${c.speed})SPEED#@s-30% @(color:${c.projectile_speed})PROJECTILE SPEED`
 
 #define on_take(power)
   maxspeed += .5;
   sage_projectile_speed -= .3;
   if "sage_infammo_gain" not in self {
 
-    sage_infammo_gain = 2 + 2 * power;
+    sage_infammo_gain = 1 + 1 * power;
   }else {
 
-    sage_infammo_gain += 2 + 2 * power
+    sage_infammo_gain += 1 + 1 * power
   }
 
 #define on_lose(power)
