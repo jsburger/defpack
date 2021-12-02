@@ -127,8 +127,10 @@
 
 
 #define call_sage_shit_idc(sage, event)
-	with sage mod_script_call_self("race", "sage", "fire", event)
 	instance_destroy()
+	var f = current_frame;
+	with sage mod_script_call_self("race", "sage", "fire", event)
+	if f != current_frame trace_color("Something in sage's firing pipeline is wait()ing without a fork()! Fix that!", c_red)
 
 #define instance_is_melee(inst)
 	return (

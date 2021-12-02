@@ -47,35 +47,36 @@
 
 #define on_fire(spellPower, event)
 
-
-    var w = wep;
-    for (var i = 1; i <= sage_burst_size; i++) {
-        if(!instance_exists(self) or w != wep)exit;
-        //Only need to fire after waiting, since sage will shoot normally otherwise
-        if (i != 1) {
-            if event.angle_offset == 0 {
-                mod_script_call_self("race", "sage", "sage_shoot", gunangle)
+    if fork() {
+        var w = wep;
+        for (var i = 1; i <= sage_burst_size; i++) {
+            if(!instance_exists(self) or w != wep)exit;
+            //Only need to fire after waiting, since sage will shoot normally otherwise
+            if (i != 1) {
+                if event.angle_offset == 0 {
+                    mod_script_call_self("race", "sage", "sage_shoot", gunangle)
+                }
+                else {
+                    mod_script_call_self("race", "sage", "sage_shoot_offset", gunangle, event.angle_offset)
+                }
             }
-            else {
-                mod_script_call_self("race", "sage", "sage_shoot_offset", gunangle, event.angle_offset)
+            if i != sage_burst_size {
+                var waitTime = get_burst_delay(wep, sage_burst_size)
+                //Add reload time to the player to account for the reloading done between burst shots, prevents overlapping
+                reload += waitTime * get_reloadspeed(self);
+                wait(waitTime);
             }
         }
-        if i != sage_burst_size {
-            var waitTime = get_burst_delay(wep, sage_burst_size)
-            //Add reload time to the player to account for the reloading done between burst shots, prevents overlapping
-            reload += waitTime * get_reloadspeed(self);
-            wait(waitTime);
+        repeat(sage_burst_size - 1) {
+            //Reduce reload time to what it would be had the player only fired once
+            reload -= weapon_get_load(wep) - get_reloadspeed(self);
         }
+        if reload > 0 {
+            //Add back the reloading time from between shots now that overlapping has been taken care of
+            reload = max(frac(reload) - get_reloadspeed(self), reload - get_burst_delay(wep, sage_burst_size) * get_reloadspeed(self) * (sage_burst_size - 1))
+        }
+        exit
     }
-    repeat(sage_burst_size - 1) {
-        //Reduce reload time to what it would be had the player only fired once
-        reload -= weapon_get_load(wep) - get_reloadspeed(self);
-    }
-    if reload > 0 {
-        //Add back the reloading time from between shots now that overlapping has been taken care of
-        reload = max(frac(reload) - get_reloadspeed(self), reload - get_burst_delay(wep, sage_burst_size) * get_reloadspeed(self) * (sage_burst_size - 1))
-    }
-    
 
 #define get_burst_delay(wep, sage_burst_size)
 return max(2, (ceil(weapon_get_load(wep)) / (sage_burst_size * 3 - 2) + weapon_is_melee(wep) * 2))
