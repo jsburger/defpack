@@ -51,7 +51,7 @@
 
       if (irandom(34) <= current_time_scale) {
 
-        instance_create(fairy.gx + random_range(-sprite_get_width(fairy.sprite_back) / 2, sprite_get_width(fairy.sprite_back) / 2) * .7, fairy.gy + random_range(-sprite_get_height(fairy.sprite_back) / 2, sprite_get_width(fairy.sprite_back) / 2) * .7, CaveSparkle)
+        instance_create(fairy.goalX + random_range(-sprite_get_width(fairy.sprite_back) / 2, sprite_get_width(fairy.sprite_back) / 2) * .7, fairy.goalY + random_range(-sprite_get_height(fairy.sprite_back) / 2, sprite_get_width(fairy.sprite_back) / 2) * .7, CaveSparkle)
       }
     }
   }

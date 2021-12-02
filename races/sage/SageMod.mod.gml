@@ -4,6 +4,7 @@
 #macro player_firing
 
 	//thanks brokin
+	//please note: brokin is like hes our bro and not that hes broke please be nice to yokin
     canfire
     && can_shoot == true
     && (ammo[weapon_get_type(wep)] >= weapon_get_cost(wep) || infammo != 0)
@@ -113,16 +114,29 @@
 	if(!instance_exists(global.bind_step)){
 		global.bind_step = script_bind_step(hitbounce_step, 0);
 	}
-	with instances_matching(Player, "race", "sage"){
-	  with instances_matching(projectile,"team",Player.team){
+	with instances_matching(Player, "race", "sage") {
+	  with instances_matching(projectile, "creator", self) {
 		bounce(self);
 	  }
 
 	  if player_firing{
-	  	mod_script_call("race", "sage", "fire")
+	  	var event = mod_script_call_self("race", "sage", "before_sage_shoot");
+	  	script_bind_step(call_sage_shit_idc, 0, self, event)
 	  }
 	}
 
+
+#define call_sage_shit_idc(sage, event)
+	with sage mod_script_call_self("race", "sage", "fire", event)
+	instance_destroy()
+
+#define instance_is_melee(inst)
+	return (
+		instance_is(inst, Shank) || instance_is(inst, Slash) ||
+		instance_is(inst, BloodSlash) || instance_is(inst, GuitarSlash) ||
+		instance_is(inst, EnergySlash) || instance_is(inst, EnergyShank)
+	)
+	
 #define bounce(_proj)
 	with(_proj){
 
@@ -130,7 +144,7 @@
 
 		if "sage_bounce" in self {
 
-			if sage_bounce > 0 && place_meeting(x + hspeed, y + vspeed, Wall) && !instance_is(self, Shank) && !instance_is(self, Slash) && !instance_is(self, BloodSlash) && !instance_is(self, EnergySlash) && !instance_is(self, EnergyShank) {
+			if sage_bounce > 0 && place_meeting(x + hspeed, y + vspeed, Wall) && !instance_is_melee(self) {
 			switch(object_index) {
 
 				case HyperGrenade:
@@ -331,7 +345,6 @@
 			  }
 			  case EnemyBullet2:
 			  {
-				sleep(2)
 				sage_bounce--;
 				move_bounce_solid(false)
 				direction += random_range(-12, 12)
@@ -721,23 +734,4 @@
 	 // Destroy Script Bindings:
 	with(global.bind_step){
 		instance_destroy();
-	}
-
-#define draw
-
-	// Loading screen tips:
-	if instance_exists(GenCont) && !mod_variable_get("race", "sage", "ttip_set") {
-
-		mod_variable_set("race", "sage", "ttip_set", true);
-
-		with instances_matching(Player, "race", "sage") if array_length(spellBullets) > 0 {
-
-			if irandom(9) < current_time_scale {
-
-				var _i = mod_variable_get("mod", "SageBullets", "BulletDirectory")[? spellBullets[max(0, irandom(array_length(spellBullets) - 1))]].ttip,
-						_t = is_array(_i) ? _i[max(0, irandom(array_length(spellBullets) - 1))] : _i;
-
-				GenCont.tip = "@s" + _t;
-			}
-		}
 	}

@@ -20,7 +20,7 @@
   return "FIRE IN WAVES";
 
 #define bullet_area
-  return 0;
+  return 1;
 
 #define bullet_swap
   var _p = random_range(.9, 1.1);
@@ -45,24 +45,43 @@
   sage_burst_size -= ceil(2 + 1 * power);
   reloadspeed += .6;
 
-#define on_fire
+#define on_fire(spellPower, event)
 
-  // Burst firing:
-  if sage_burst_size > 1 if(fork()){
 
     var w = wep;
-    repeat(sage_burst_size) {
-
-      if(!instance_exists(self) or w != wep or ammo[weapon_get_type(wep)] < weapon_get_cost(wep) * (1 + sage_ammo_cost) or GameCont.rad < weapon_get_rads(wep) * (1 + sage_ammo_cost)) exit;
-      player_fire(gunangle);
-      wait(max(2, (ceil(weapon_get_load(wep)) / (7 + sage_burst_size * 3 - 9) + weapon_is_melee(wep) * 2)));
+    for (var i = 1; i <= sage_burst_size; i++) {
+        if(!instance_exists(self) or w != wep)exit;
+        //Only need to fire after waiting, since sage will shoot normally otherwise
+        if (i != 1) {
+            if event.angle_offset == 0 {
+                mod_script_call_self("race", "sage", "sage_shoot", gunangle)
+            }
+            else {
+                mod_script_call_self("race", "sage", "sage_shoot_offset", gunangle, event.angle_offset)
+            }
+        }
+        if i != sage_burst_size {
+            var waitTime = get_burst_delay(wep, sage_burst_size)
+            //Add reload time to the player to account for the reloading done between burst shots, prevents overlapping
+            reload += waitTime * get_reloadspeed(self);
+            wait(waitTime);
+        }
     }
     repeat(sage_burst_size - 1) {
+        //Reduce reload time to what it would be had the player only fired once
+        reload -= weapon_get_load(wep) - get_reloadspeed(self);
+    }
+    if reload > 0 {
+        //Add back the reloading time from between shots now that overlapping has been taken care of
+        reload = max(frac(reload) - get_reloadspeed(self), reload - get_burst_delay(wep, sage_burst_size) * get_reloadspeed(self) * (sage_burst_size - 1))
+    }
+    
 
-      reload -= weapon_get_load(wep);
-    }
-    if weapon_get_type(wep) = 0 || weapon_get_type(wep) = 1 || weapon_is_melee(wep) = true{
-      clicked = false;
-    }
-    exit;
-  }
+#define get_burst_delay(wep, sage_burst_size)
+return max(2, (ceil(weapon_get_load(wep)) / (sage_burst_size * 3 - 2) + weapon_is_melee(wep) * 2))
+
+
+#define get_reloadspeed(p)
+if !instance_is(p, Player) return 1
+return (p.reloadspeed + ((p.race == "venuz") * (.2 + .4 * ultra_get("venuz", 1))) + ((1 - p.my_health/p.maxhealth) * skill_get(mut_stress)))
+

@@ -27,7 +27,7 @@
   return "@sFROM @gRADS @sTO @yAMMO";
 
 #define bullet_area
-  return 0;
+  return -1;
 
 #define bullet_swap
   var _p = random_range(.9, 1.1);
@@ -52,6 +52,19 @@
 #define on_lose(power)
   sage_atr_reload_speed -= .5 + .5 * power;
   sage_ammo_to_rads--;
+
+#define on_pre_shoot(power)
+
+    if infammo == 0 {
+    	  var radCost = min(sage_ammo_to_rads, 1) * (weapon_get_type(wep) == 1 ? 4 : 16) * ceil(1 + sage_ammo_cost) * weapon_get_cost(wep);
+    	  
+    	  if GameCont.rad >= radCost {
+    	      GameCont.rad -= radCost
+    	      ammo[weapon_get_type(wep)] += weapon_get_cost(wep)
+    	  }
+    	  
+    }
+
 
 #define on_rads_use
   with instance_create(x, y, WepSwap) {

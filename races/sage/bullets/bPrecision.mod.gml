@@ -20,7 +20,7 @@
   return "NEVER MISS";
 
 #define bullet_area
-  return 0;
+  return 1;
 
 #define bullet_swap
   var _p = random_range(.9, 1.1);
