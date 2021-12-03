@@ -30,19 +30,19 @@
   sound_play_pitchvol(sndCrossReload, 1.4 * _p, .9);
 
 #define bullet_description(power)
-  return `@(color:${c.neutral})+` + string(round(15 + 15 * power)) + `% @(color:${c.reload})RELOAD SPEED#@(color:${c.neutral})+` + string(round(20 + 20 * power)) + `% @(color:${c.accuracy})ACCURACY#@(color:${c.neutral})+` + string(round(15 + 15 * power)) + `% @(color:${c.projectile_speed})PROJECTILE SPEED#@(color:${c.neutral})+` + string(round(25 + 25 * power)) + `% @(color:${c.speed})SPEED`;
+  return `@(color:${c.neutral})+` + string(round(20 + 20 * power)) + `% @(color:${c.reload})RELOAD SPEED#@(color:${c.neutral})+` + string(round(25 + 25 * power)) + `% @(color:${c.accuracy})ACCURACY#@(color:${c.neutral})+` + string(round(15 + 15 * power)) + `% @(color:${c.projectile_speed})PROJECTILE SPEED#@(color:${c.neutral})+0.5 @(color:${c.speed})SPEED`;
 
 #define on_take(power)
-  accuracy /= 1.2 + .2 * power;
-  reloadspeed += .15 + .15 * power;
+  accuracy /= 1.25 + .25 * power;
+  reloadspeed += .2 + .2 * power;
   sage_projectile_speed += .15 + .15 * power;
-  maxspeed += .25 + .25 * power;
+  maxspeed += .5;
 
 #define on_lose(power)
-  accuracy *= 1.2 + .2 * power;
-  reloadspeed -= .15 + .15 * power;
+  accuracy *= 1.25 + .25 * power;
+  reloadspeed -= .2 + .2 * power;
   sage_projectile_speed -= .15 + .15 * power;
-  maxspeed -= .25 + .25 * power;
+  maxspeed -= .5;
 
 #define step
   with instances_matching(Player, "race", "sage") {

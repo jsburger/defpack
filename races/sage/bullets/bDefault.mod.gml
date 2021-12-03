@@ -14,10 +14,10 @@
   return global.sprBullet;
 
 #define bullet_name
-  return "DEFAULT";
+  return "PROWESS";
 
 #define bullet_ttip
-  return "SWAP @pSPELLS @sFREQUENTLY";
+  return `SWAP @(color:${c.neutral})SPELLS @sFREQUENTLY`;
 
 #define bullet_area
   return -1;

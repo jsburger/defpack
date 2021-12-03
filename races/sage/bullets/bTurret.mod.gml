@@ -29,7 +29,7 @@
   sound_play_pitchvol(sndCrossReload, 1.4 * _p, .9);
 
 #define bullet_description(power)
-  return `@(color:${c.neutral})+` + string(round(65 + 65 * power)) + `% @(color:${c.reload})RELOAD SPEED#@(color:${c.neutral})+@wAUTOMATIC WEAPONS#@s-3.0 @(color:${c.speed})SPEED`;
+  return `@(color:${c.neutral})+` + string(round(65 + 65 * power)) + `% @(color:${c.reload})RELOAD SPEED#@(color:${c.neutral})+@wAUTOMATIC WEAPONS#@(color:${c.negative})-3.0 @(color:${c.speed})SPEED`;
 
 #define on_take(power)
   reloadspeed += .65 + .65 * power;

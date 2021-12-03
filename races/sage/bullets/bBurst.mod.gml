@@ -8,7 +8,7 @@
   return global.sprFairy;
 
 #define fairy_color
-  return $39486F;
+  return $0038FC;
 
 #define bullet_sprite
   return global.sprBullet;
@@ -29,7 +29,7 @@
   sound_play_pitchvol(sndCrossReload, 1.4 * _p, .9);
 
 #define bullet_description(power)
-  return `@(color:${c.neutral})+` + string(ceil(3 + 1 * power)) + ` @(color:${c.ammo})BURST SIZE#@s+` + string(round(200 + 200 * power)) + `% @(color:${c.ammo})AMMO COST#@s-60% @(color:${c.reload})RELOAD SPEED`;
+  return `@(color:${c.neutral})+` + string(ceil(3 + 1 * power)) + ` @(color:${c.ammo})BURST SIZE#@(color:${c.negative})+` + string(round(200 + 200 * power)) + `% @(color:${c.ammo})AMMO COST#@(color:${c.negative})-60% @(color:${c.reload})RELOAD SPEED`;
 
 #define on_take(power)
   if "sage_burst_size" not in self {
@@ -85,4 +85,3 @@ return max(2, (ceil(weapon_get_load(wep)) / (sage_burst_size * 3 - 2) + weapon_i
 #define get_reloadspeed(p)
 if !instance_is(p, Player) return 1
 return (p.reloadspeed + ((p.race == "venuz") * (.2 + .4 * ultra_get("venuz", 1))) + ((1 - p.my_health/p.maxhealth) * skill_get(mut_stress)))
-

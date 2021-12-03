@@ -28,7 +28,7 @@
   return "@sFROM @gRADS @sTO @yAMMO";
 
 #define bullet_area
-  return -1;
+  return 20;
 
 #define bullet_swap
   var _p = random_range(.9, 1.1);
@@ -37,12 +37,12 @@
   sound_play_pitchvol(sndCrossReload, 1.4 * _p, .9);
 
 #define bullet_description(power)
-  return `@(color:${c.neutral})+USE @gRADS @(color:${c.neutral})AS @(color:${c.ammo})AMMO#@(color:${c.neutral})+` + string(round(50 + 50 * power)) + `% @wRELOAD SPEED @(color:${c.neutral})WHEN USING @gRADS`;
+  return `@(color:${c.neutral})+USE @gRADS @(color:${c.neutral})AS @(color:${c.ammo})AMMO#@(color:${c.neutral})+` + string(round(35 + 35 * power)) + `% @wRELOAD SPEED @(color:${c.neutral})WHEN USING @gRADS`;
 
 
 #define get_reload_reduction(spellPower)
 
-    return .5 + .5 * spellPower
+    return .35 + .35 * spellPower
 
 #define on_take(power)
 
@@ -71,14 +71,14 @@
 
     if infammo == 0 {
     	  var radCost = get_rad_ammo_cost(wep);
-    	  
+
     	  if GameCont.rad >= radCost {
     	      GameCont.rad -= radCost
     	      ammo[weapon_get_type(wep)] += weapon_get_cost(wep)
     	  }
-    	  
+
     }
-    
+
 #define get_rad_ammo_cost(wep)
     return min(sage_ammo_to_rads, 1) * (weapon_get_type(wep) == 1 ? 4 : 16) * ceil(1 + sage_ammo_cost) * weapon_get_cost(wep);
 
@@ -96,7 +96,7 @@
     if !sage_ultra_boosted {
         toggle_boost(spellPower)
     }
-    
+
   with instance_create(x, y, WepSwap) {
 
     with instances_matching(instances_matching(WepSwap, "creator", other), "sprite_index", global.sprUltraSpark) {
@@ -107,7 +107,7 @@
     sprite_index = global.sprUltraSpark;
   }
   sound_play_pitchvol(sndUltraEmpty, .75 * random_range(.8, 1.2), .5);
-  
+
     if GameCont.rad > 0 && GameCont.rad < get_rad_ammo_cost(wep) {
         on_rads_out(spellPower)
     }
@@ -122,7 +122,7 @@
     // }
 
 #define on_rads_out(spellPower)
-    
+
     if sage_ultra_boosted {
         toggle_boost(spellPower)
     }

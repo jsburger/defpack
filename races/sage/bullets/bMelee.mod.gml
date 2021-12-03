@@ -14,7 +14,7 @@
   return global.sprBullet;
 
 #define bullet_name
-  return "MELEE";
+  return "RUSH";
 
 #define bullet_ttip
   return ["STAY CLOSE", "GET IN THERE"];
@@ -29,14 +29,14 @@
   sound_play_pitchvol(sndCrossReload, 1.4 * _p, .9);
 
 #define bullet_description(power)
-  return `@(color:${c.neutral})+` + string(round(35 + 35 * power)) + `% @(color:${c.reload})RELOAD SPEED#@(color:${c.neutral})+1.5 @(color:${c.speed})SPEED#@s-150% @(color:${c.accuracy})ACCURACY`;
+  return `@(color:${c.neutral})+` + string(round(25 + 25 * power)) + `% @(color:${c.reload})RELOAD SPEED#@(color:${c.neutral})+1.5 @(color:${c.speed})SPEED#@(color:${c.negative})-150% @(color:${c.accuracy})ACCURACY`;
 
 #define on_take(power)
-  reloadspeed += .35 + .35 * power;
+  reloadspeed += .25 + .25 * power;
   maxspeed += 1.5;
   accuracy *= 2.5;
 
 #define on_lose(power)
-  reloadspeed -= .35 + .35 * power;
+  reloadspeed -= .25 + .25 * power;
   maxspeed -= 1.5;
   accuracy /= 2.5;

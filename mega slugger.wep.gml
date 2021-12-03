@@ -148,7 +148,7 @@ return{
         if other.team != team
         {
           repeat(2+_s) instance_create(x+random_range(-8,8),y+random_range(-8,8),Smoke)
-          projectile_hit(other,damage[frames > 0 ? damage : damage - damagefalloff],force,direction)
+          projectile_hit(other,damage,force,direction)
           x -= lengthdir_x(other.size * 2, direction)
           y -= lengthdir_y(other.size * 2, direction)
           with other{

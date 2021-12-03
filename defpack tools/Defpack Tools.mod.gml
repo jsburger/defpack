@@ -4050,9 +4050,9 @@ move_bounce_solid(true)
 
 	    damage = 2
 	    maxspeed = speed
-			turn = irandom(99) < 10 ? -1 : 1; // Reflects percentage of left-handed population
+			turn = irandom(99) < 10 ? -1 : 1; // What direction to turn towards, reflects percentage of left-handed population
 			image_yscale *= turn * -1;        // so it always cuts properly
-			cansplat = true;
+			cansplat = true;                  // If a blood splat has been applied yet
 			hitid = [spr.MegaDiscHitId, name];
 
 	    on_step    = md_step;
@@ -4067,7 +4067,7 @@ move_bounce_solid(true)
 #define md_step
 	disc_step(1);
 
-	image_angle += turn * (9 + speed) * current_time_scale;
+	image_angle += turn * (12 + speed) * current_time_scale;
 
 	if skill_get(21) {
 

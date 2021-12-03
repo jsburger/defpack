@@ -6,22 +6,31 @@
   * All Vector guns
   * Sniper Rifle & Shotgun
 * Split code for:
-  * Popper (is wierdy rn)
-  * Sniper Rifle & Shotgun
-  * Mega Disc Gun
-  * Abris guns
   * all charge weps actually
-  * Plasmite Cannon (also wierdy rn)
-  * Mega Laser, Quartz Laser and Ionizer do split but dont change Angle
+  * Mega Laser does split but dont change Angle
 * Kaboomerang and LWheel dont work well in general
-* Brushlikes dont work well
-* Secondary Projectiles should not split (its too much bro)
 * Non sage players should not be able to pick up spell bullets
 * "LOW HP" text overlaps with bullet hud
 * bullet hud doesnt draw during pause
 * sage b skin
 * sage sounds
 * Throne Butt is cringe rn (its awkward to use), please change
+*/
+
+/*
+	Possible extra effect list:
+	Default: + Spellpower
+	Gold: + Spellpower when using golden weapons
+	Melee:
+	Turret:
+	Infammo:
+	Precision:
+	Bounce: + Hitbounce
+	Hyper:
+	Burst:
+	Ultra: + Auto weapons when using rads
+	Cursed: + Upside & Downside
+
 */
 
 /*
@@ -60,16 +69,16 @@ NOTES FROM JSBURG:
 	global.spr_walk[0] = sprite_add(_i + "sprGunWalk.png",	6, 12, 12);
 	global.spr_hurt[0] = sprite_add(_i + "sprGunHurt.png",	3, 12, 12);
 	global.spr_dead[0] = sprite_add(_i + "sprGunDie.png",  	6, 12, 12);
-	global.spr_sit1[0] = sprite_add(_i + "sprGunWalk.png",	6, 12, 12);
-	global.spr_sit2[0] = sprite_add(_i + "sprGunIdle.png",	6, 12, 12);
+	global.spr_sit1[0] = sprite_add(_i + "sprGunGoSit.png",	3, 12, 12);
+	global.spr_sit2[0] = sprite_add(_i + "sprGunSit.png",		1, 12, 12);
 
 	 // B-Skin:
 	global.spr_idle[1] = sprite_add(_i + "sprGunIdle.png",	6, 12, 12);
 	global.spr_walk[1] = sprite_add(_i + "sprGunWalk.png",	6, 12, 12);
 	global.spr_hurt[1] = sprite_add(_i + "sprGunHurt.png",	3, 12, 12);
 	global.spr_dead[1] = sprite_add(_i + "sprGunDie.png",	  6, 12, 12);
-	global.spr_sit1[1] = sprite_add(_i + "sprGunWalk.png",	6, 12, 12);
-	global.spr_sit2[1] = sprite_add(_i + "sprGunIdle.png",	6, 12, 12);
+	global.spr_sit1[1] = sprite_add(_i + "sprGunGoSit.png",	3, 12, 12);
+	global.spr_sit2[1] = sprite_add(_i + "sprGunSit.png",		1, 12, 12);
 
 	 // Character Selection / Loading Screen:
 	global.spr_slct = sprite_add(_i + "sprGunSlct.png", 1, 0,  0);
@@ -99,6 +108,7 @@ NOTES FROM JSBURG:
 	global.colormap = {
 
 		neutral: 					$BAB0A9,
+		negative:         $444FED,
 		speed:   					$CE7314,
 		projectile_speed: $E5BC16,
 		accuracy:         $0067F7,
@@ -107,7 +117,8 @@ NOTES FROM JSBURG:
 		ammo:             $00ABFA,
 		bounce:           $00ABFA,
 		reload:           $FFFFFF,
-		aqua:             c_aqua
+		aqua:             c_aqua,
+		spell:            make_color_rgb(21, 98, 85),
 	}
 
 	var _race = [];
@@ -161,7 +172,7 @@ NOTES FROM JSBURG:
 
  // Description:
 #define race_text
-	return "GETS @pSPELL BULLETS@s#@wSWAP @pSPELLS@s";
+	return `GETS @(color:${c.spell})SPELL BULLETS@s#@wSWAP @(color:${c.spell})SPELLS@s`;
 
 
  // Starting Weapon:
@@ -171,7 +182,7 @@ NOTES FROM JSBURG:
 
  // Throne Butt Description:
 #define race_tb_text
-	return "EXTRA @pSPELL BULLET@s SLOT"
+	return "NYI"
 
 
  // On Taking Throne Butt:
@@ -216,8 +227,8 @@ NOTES FROM JSBURG:
  // Ultra Descriptions:
 #define race_ultra_text
 	switch(argument0){
-		case 1: return "SPELLS BECOME @sA LOT MORE POWERFUL@s";
-		case 2: return "SPELLS @wCOMBINE@s";
+		case 1: return `@(color:${c.spell})SPELLS @sBECOME @sA LOT MORE POWERFUL@s`;
+		case 2: return `@(color:${c.spell})SPELLS @wCOMBINE@s`;
 		/// Add more cases if you have more ultras!
 	}
 
@@ -255,7 +266,7 @@ NOTES FROM JSBURG:
 
  // Loading Screen Tips:
 #define race_ttip
-	var tips = ["FIELD TESTING IN PROGRESS", "FASCINATING @wWEAPONRY@s", "SAGE CAN CAST SPELLS", "TWO IN THE CHAMBER"];
+	var tips = ["FIELD TESTING IN PROGRESS", "FASCINATING @wWEAPONRY@s", `SAGE CAN CAST @(color:${c.spell})SPELLS`, "TWO IN THE CHAMBER"];
 
 
 	if instance_exists(GameCont){
@@ -319,6 +330,11 @@ NOTES FROM JSBURG:
 		*/
 		d3d_set_fog(0, 0, 0, 0)
 
+		var _outlinecol = make_colour_hsv(color_get_hue(h.col), color_get_saturation(h.col) / 1.2, 255);
+		draw_sprite_ext(h.sprite, 0, h.x - 1, h.y, 1, /*h.right*/ 1, /*h.angle*/ 0, _outlinecol, 1);
+		draw_sprite_ext(h.sprite, 0, h.x + 1, h.y, 1, /*h.right*/ 1, /*h.angle*/ 0, _outlinecol, 1);
+		draw_sprite_ext(h.sprite, 0, h.x, h.y + 1, 1, /*h.right*/ 1, /*h.angle*/ 0, _outlinecol, 1);
+		draw_sprite_ext(h.sprite, 0, h.x, h.y - 1, 1, /*h.right*/ 1, /*h.angle*/ 0, _outlinecol, 1);
 		draw_sprite_ext(h.sprite, 0, h.x, h.y, 1, /*h.right*/ 1, /*h.angle*/ 0, merge_color(merge_colour(h.col, c_black, .7), c_white, clamp(fairy.swap / fairy_swap_time, 0, 1)), 1);
 		if h.swapframes > 0 draw_sprite(global.sprSwapFairy, (6 - h.swapframes), h.x, h.y);
 
@@ -359,7 +375,7 @@ NOTES FROM JSBURG:
 			draw_sprite_ext(_sprt, 0, _x, _y, (_hudSide ? -1 : 1), 1, 0, c_white, 1);
 
 			//Darken in secondary Slots:
-			if i != 0 {
+			if i > ultra_get("sage", 2) {
 
 				draw_sprite_ext(_sprt, 0, _x, _y + 1, (_hudSide ? -1 : 1), 1, 0, c_black, .2);
 				draw_sprite_ext(_sprt, 0, _x, _y, (_hudSide ? -1 : 1), 1, 0, c_black, .2);
@@ -409,7 +425,8 @@ NOTES FROM JSBURG:
 #macro bullets mod_variable_get("mod", "SageBullets", "BulletDirectory")
 #macro min_spellbullets 2 + skill_get(5)
 #macro fairy_swap_time 6
-#macro dev false
+#macro dev true
+#macro c global.colormap
 #macro c_darkteal c_purple
 #macro c_purblue c_purple
 #macro speed_boost_perma [Rocket, Nuke, PlasmaBall, PlasmaBig, PlasmaHuge, Seeker]
@@ -443,6 +460,7 @@ NOTES FROM JSBURG:
 		array_push(spellBullets, "bBurst");
 		array_push(spellBullets, "bSplit");
 		array_push(spellBullets, "bUltra");
+		array_push(spellBullets, "bRust");
 	}
 
 	fairy = {
@@ -519,10 +537,10 @@ NOTES FROM JSBURG:
 		else resettime -= current_time_scale;
 	}
 
-	if dev && button_pressed(0, "horn"){
+	/*if dev && button_pressed(0, "horn"){
 		array_push(0.spellBullets, "bTurret")
 		if dev trace(0.spellBullets)
-	}
+	}*/
 
 	if(!instance_exists(global.bind_late_step)) {
 		global.bind_late_step = script_bind_step(late_step, 0);
@@ -591,7 +609,7 @@ NOTES FROM JSBURG:
 	with(ProtoChest) {
 		if sprite_index == sprProtoChestOpen {
 			if "sage_ultra_bullet_drop" not in self {
-				spellbullet_create(x, y, "bUltra");
+				spellbullet_create(x, y, "bRust");
 				sage_ultra_bullet_drop = true
 			}
 		}
@@ -746,7 +764,7 @@ NOTES FROM JSBURG:
 		}
 	}
 
-	
+
 	for (var i = 1; i < array_length(ammo); i++) {
 		ammo[i] = max(0, ammo[i])
 	}
@@ -912,8 +930,8 @@ In Burst fire, call sage_shoot for each burst shot.
 	}
 
 #define spellbullet_step
-		
-	
+
+
 	shine -= current_time_scale;
 	if (shine <= 0) {
 
@@ -953,7 +971,7 @@ In Burst fire, call sage_shoot for each burst shot.
 			instance_destroy();
 		}
 	}
-	
+
 	if(distance_to_object(Wall) < 1){
 		move_bounce_solid(false);
 		if abs(speed) > 0 {
@@ -966,6 +984,12 @@ In Burst fire, call sage_shoot for each burst shot.
 	with(player_find(index)) {
 
 		if(race == mod_current) {
+
+			// Play swap sound:
+			mod_script_call("mod", spellbullet.type, "bullet_swap", sage_spell_power);
+			fairy.swap = fairy_swap_time + 2;
+			fairy.swapframes = 6;
+			sound_play_pitchvol(sndSwapPistol, 1.5, .5);
 
 			if array_length(spellBullets) == 0 { // Gain stats when you have no bullets:
 				stat_gain(spellbullet.type, self)

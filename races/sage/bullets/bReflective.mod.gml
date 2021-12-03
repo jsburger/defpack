@@ -29,7 +29,7 @@
   sound_play_pitchvol(sndCrossReload, 1.4 * _p, .9);
 
 #define bullet_description(power)
-  return `@(color:${c.neutral})+` + string(ceil(3	+ 2 * power)) + ` @(color:${c.bounce})BOUNCES#@s-20% @(color:${c.projectile_speed})PROJECTILE SPEED`;
+  return `@(color:${c.neutral})+` + string(ceil(3	+ 2 * power)) + ` @(color:${c.bounce})BOUNCES#@(color:${c.negative})-20% @(color:${c.projectile_speed})PROJECTILE SPEED`;
 
 #define on_take(power)
   sage_projectile_speed -= .2;

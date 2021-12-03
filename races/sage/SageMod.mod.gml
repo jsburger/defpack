@@ -138,7 +138,7 @@
 		instance_is(inst, BloodSlash) || instance_is(inst, GuitarSlash) ||
 		instance_is(inst, EnergySlash) || instance_is(inst, EnergyShank)
 	)
-	
+
 #define bounce(_proj)
 	with(_proj){
 
