@@ -14,11 +14,12 @@
   return $00EA81;
 
 #define bullet_sprite
-  if (GameCont.rad <= 0) {
-
-    return global.sprBulletOff;
-  }
-  return global.sprBullet;
+    if instance_exists(GameCont) && instance_is(self, Player) {
+        if (GameCont.rad <= get_rad_ammo_cost(wep)) {
+            return global.sprBulletOff;
+        }
+    }
+    return global.sprBullet;
 
 #define bullet_name
   return "ULTRA";
@@ -38,25 +39,38 @@
 #define bullet_description(power)
   return `@(color:${c.neutral})+USE @gRADS @(color:${c.neutral})AS @(color:${c.ammo})AMMO#@(color:${c.neutral})+` + string(round(50 + 50 * power)) + `% @wRELOAD SPEED @(color:${c.neutral})WHEN USING @gRADS`;
 
+
+#define get_reload_reduction(spellPower)
+
+    return .5 + .5 * spellPower
+
 #define on_take(power)
-  if "sage_atr_reload_speed" not in self {
 
-    sage_atr_reload_speed = .5 + .5 * power;
-  }else {
+    sage_ultra_boosted = true
+    reloadspeed += get_reload_reduction(power)
 
-    sage_atr_reload_speed += .5 + .5 * power;
-  }
+//   if "sage_atr_reload_speed" not in self {
+
+    // sage_atr_reload_speed = .5 + .5 * power;
+//   }else {
+
+    // sage_atr_reload_speed += .5 + .5 * power;
+//   }
 
   sage_ammo_to_rads++;
 
 #define on_lose(power)
-  sage_atr_reload_speed -= .5 + .5 * power;
-  sage_ammo_to_rads--;
+//   sage_atr_reload_speed -= .5 + .5 * power;
+
+    sage_ultra_boosted = false
+    reloadspeed -= get_reload_reduction(power)
+
+    sage_ammo_to_rads--;
 
 #define on_pre_shoot(power)
 
     if infammo == 0 {
-    	  var radCost = min(sage_ammo_to_rads, 1) * (weapon_get_type(wep) == 1 ? 4 : 16) * ceil(1 + sage_ammo_cost) * weapon_get_cost(wep);
+    	  var radCost = get_rad_ammo_cost(wep);
     	  
     	  if GameCont.rad >= radCost {
     	      GameCont.rad -= radCost
@@ -64,9 +78,25 @@
     	  }
     	  
     }
+    
+#define get_rad_ammo_cost(wep)
+    return min(sage_ammo_to_rads, 1) * (weapon_get_type(wep) == 1 ? 4 : 16) * ceil(1 + sage_ammo_cost) * weapon_get_cost(wep);
 
+#define toggle_boost(spellPower)
+    if sage_ultra_boosted {
+        reloadspeed -= get_reload_reduction(spellPower)
+    }
+    else {
+        reloadspeed += get_reload_reduction(spellPower)
+    }
+    sage_ultra_boosted = !sage_ultra_boosted
 
-#define on_rads_use
+#define on_rads_use(spellPower)
+
+    if !sage_ultra_boosted {
+        toggle_boost(spellPower)
+    }
+    
   with instance_create(x, y, WepSwap) {
 
     with instances_matching(instances_matching(WepSwap, "creator", other), "sprite_index", global.sprUltraSpark) {
@@ -77,14 +107,26 @@
     sprite_index = global.sprUltraSpark;
   }
   sound_play_pitchvol(sndUltraEmpty, .75 * random_range(.8, 1.2), .5);
+  
+    if GameCont.rad > 0 && GameCont.rad < get_rad_ammo_cost(wep) {
+        on_rads_out(spellPower)
+    }
 
-  wait(1);
-  if instance_exists(self) {
+    // if fork() {
+    //     // wait(1);
+    //     if instance_exists(self) {
+    //         trace("reload before: " + string(reload))
+    //         reload *= 1 / (1 + sage_atr_reload_speed);
+    //         trace("reload after:", reload)
+    //     }
+    // }
 
-    reload *= 1 / (1 + sage_atr_reload_speed);
-  }
+#define on_rads_out(spellPower)
+    
+    if sage_ultra_boosted {
+        toggle_boost(spellPower)
+    }
 
-#define on_rads_out
   with instance_create(x, y, WepSwap) {
 
     with instances_matching(instances_matching(WepSwap, "creator", other), "sprite_index", global.sprUltraSpark) {

@@ -42,7 +42,7 @@
     }
     sage_ammo_cost += ceil(1 + 1 * spellPower);
   
-    reloadspeed++
+    reloadspeed += get_split_shots(spellPower) - 1
   
     canaim = false
 
@@ -50,25 +50,64 @@
 #define on_lose(spellPower)
     canaim = true
     
-    reloadspeed--
+    reloadspeed -= get_split_shots(spellPower) - 1
 
     sage_projectiles -= ceil(1 + 1 * spellPower);
     sage_ammo_cost -= ceil(1 + 1 * spellPower);
 
 
-#define on_pre_fire()
-	var event = {
-		cancelled: false,
-		angle_offset: -2 * get_angle_offset(accuracy)
+#define on_pre_fire(spellPower)
+
+	var base_gun = get_base_gun_index(spellPower),
+		offset = get_angle_offset(accuracy, spellPower),
+		shots = get_split_shots(spellPower),
+		base_angle = gunangle - base_gun * offset;
+		
+	for (var i = 0; i < shots; i++) {
+		if i != base_gun {
+			var angoff = (i - base_gun) * offset;
+			var event = {
+				cancelled: false,
+				angle_offset: angoff
+			}
+			var shootEvent = mod_script_call_self("race", "sage", "before_sage_shoot");
+		    player_fire_at(undefined, undefined, undefined, event.angle_offset)
+		    mod_script_call_self("race", "sage", "mid_firing", event)
+		    mod_script_call_self("race", "sage", "post_sage_shoot", shootEvent)
+		}
 	}
-    player_fire_at(undefined, undefined, undefined, event.angle_offset)
-    mod_script_call_self("race", "sage", "mid_firing", event)
+	
+	
+/*
+potential ammo cost system
+
+each bullet (that matters) has ammo_priority and ammo_multiplier
+
+when sage's fire script is called, make an array and iterate through all bullets.
+	push the priority of the bullet + the index of the bullet divided by 10000 to the array
+	sort the array
+	iterate through the array in order, using frac to get the indexes of the bullets (in spellBullets) back
+	push the bullets into an array in order using those indexes
+	iterate through now priority sorted array
+		multiply base cost of gun by results in order
+		each cost script can accept a bool for if its multipier applies during subtraction or only during calculation (ultra has 0 in the latter and one in the former)
+		if calculated cost passes, continue with fire script, else dont even call fire.
+*/
     
-#define get_angle_offset(acc)
-    return 15 * acc;
+#define get_base_gun_index(spellPower)
+	return floor(get_split_shots(spellPower-1)/2);
+
+#define get_split_angle_range(acc, spellPower)
+	return (get_split_shots(spellPower) - 1 ) * get_angle_offset(acc, spellPower)
+
+#define get_angle_offset(acc, spellPower)
+    return (20 - 3 * spellPower) * acc;
     
-#define on_step
-    gunangle = point_direction(x, y, mouse_x[index], mouse_y[index]) + get_angle_offset(accuracy)
+#define get_split_shots(spellPower)
+	return ceil(2 + spellPower)
+
+#define on_step(spellPower)
+    gunangle = point_direction(x, y, mouse_x[index], mouse_y[index]) - get_split_angle_range(accuracy, spellPower)/2 + get_angle_offset(accuracy, spellPower) * get_base_gun_index(spellPower)
     
 
 #define balls

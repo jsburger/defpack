@@ -46,10 +46,10 @@
   sage_hitscan_strength -= 2 + ceil(3 * power);
   accuracy /= .75;
 
-#define step
+#define on_step(spellPower)
   with instances_matching(Player, "race", "sage") {
 
-    if "sage_hitscan_strength" in self {
+    if "sage_hitscan_strength" in self  && sage_hitscan_strength > 1{
 
       var _s = id;
       with instances_matching(projectile, "creator", _s) {
@@ -63,7 +63,7 @@
           if "sage_flame_epic" not in self {
 
             sage_flame_epic = true;
-            speed += 4 + 2 * ultra_get("sage", 1);
+            speed += 4 + 2 * spellPower;
           }
         }
 

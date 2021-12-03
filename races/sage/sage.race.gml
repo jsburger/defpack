@@ -144,7 +144,6 @@ NOTES FROM JSBURG:
  // On Run Start:
 #define game_start
 	sound_play(sndMutant1Cnfm); // Play Confirm Sound
-	global.ttip_set = false;
 
 #define draw_outline(_sprIndex, _imgIndex, _x, _y)
 	d3d_set_fog(true, c_white, 0, 0);
@@ -272,7 +271,7 @@ NOTES FROM JSBURG:
 
 	//Get bullet tips instead of flavor text
 	if (irandom(2) == 1) {
-		trace("bullet tips")
+		if dev trace("bullet tip")
 		tips = []
 		var bulletTips = [];
 
@@ -320,9 +319,8 @@ NOTES FROM JSBURG:
 		*/
 		d3d_set_fog(0, 0, 0, 0)
 
-		draw_sprite_ext(h.sprite, 0, h.x, h.y, 1, h.right, h.angle, merge_color(merge_colour(h.col, c_black, .7), c_white, clamp(fairy.swap / fairy_swap_time, 0, 1)), 1);
+		draw_sprite_ext(h.sprite, 0, h.x, h.y, 1, /*h.right*/ 1, /*h.angle*/ 0, merge_color(merge_colour(h.col, c_black, .7), c_white, clamp(fairy.swap / fairy_swap_time, 0, 1)), 1);
 		if h.swapframes > 0 draw_sprite(global.sprSwapFairy, (6 - h.swapframes), h.x, h.y);
-		h.swapframes = max(0, h.swapframes - current_time_scale * .5);
 
 	}
 
@@ -515,6 +513,8 @@ NOTES FROM JSBURG:
 					dir -= angle_approach(dir, point_direction(xoff, yoff, 0, 0), 3, current_time_scale)
 				}
 			}
+			swapframes = max(0, swapframes - current_time_scale * .5);
+
 		}
 		else resettime -= current_time_scale;
 	}
@@ -750,6 +750,10 @@ NOTES FROM JSBURG:
 		}
 	}
 
+	
+	for (var i = 1; i < array_length(ammo); i++) {
+		ammo[i] = max(0, ammo[i])
+	}
 
 #define sage_shoot(direction)
 
@@ -827,7 +831,6 @@ In Burst fire, call sage_shoot for each burst shot.
 #define post_firing(fireEvent)
 
 
-
 #define stat_gain(spellbullet, inst)
 	with inst mod_script_call("mod", spellbullet, "on_take", sage_spell_power);
 	if dev trace("STAT GAINED")
@@ -849,7 +852,7 @@ In Burst fire, call sage_shoot for each burst shot.
 	with(instance_create(_x,_y,CustomObject)){
 
 		sprite_index = mskNone;
-		mask_index   = mskBandit;
+		mask_index   = mskPlayer;
 		image_speed  = 0;
 		speed    = 5;
 		friction = 0.5;
@@ -913,10 +916,8 @@ In Burst fire, call sage_shoot for each burst shot.
 	}
 
 #define spellbullet_step
-	if(distance_to_object(Wall) < 1){
-		move_bounce_solid(false);
-	}
-
+		
+	
 	shine -= current_time_scale;
 	if (shine <= 0) {
 
@@ -927,6 +928,15 @@ In Burst fire, call sage_shoot for each burst shot.
 		image_speed = 0;
 		image_index = 0;
 		shine = 45;
+	}
+
+	if place_meeting(x, y, WepPickup) {
+		var n = instance_nearest(x, y, WepPickup),
+			d = point_direction(x, y, n.x, n.y) + 180;
+		move_contact_solid(d, 2 * current_time_scale)
+		with n {
+			move_contact_solid(d + 180, 2 * current_time_scale)
+		}
 	}
 
 	var _nearest = instance_nearest(x,y,Portal);
@@ -947,6 +957,14 @@ In Burst fire, call sage_shoot for each burst shot.
 			instance_destroy();
 		}
 	}
+	
+	if(distance_to_object(Wall) < 1){
+		move_bounce_solid(false);
+		if abs(speed) > 0 {
+			move_outside_solid(point_direction(x, y, xstart, ystart), 10)
+		}
+	}
+
 
 #define spellbullet_pickup(index, spellbullet, prompt)
 	with(player_find(index)) {
@@ -980,7 +998,6 @@ In Burst fire, call sage_shoot for each burst shot.
 				spellBullets[0] = spellbullet.type;
 				spellbullet.type = temp;
 				spellbullet.my_prompt.text = bullets[? temp].name;
-				spellbullet.friction = 0.1;
 				spellbullet.direction = random(360);
 				image_angle = direction;
 				uiroll = 0;
