@@ -583,7 +583,7 @@ NOTES FROM JSBURG:
 			wait(0);
 			if(!instance_exists(self)){
 				wait(0);
-				spellbullet_create(_x,_y, item[? "bGold"]);
+				spellbullet_create(_x,_y, bullets[? "bGold"]);
 			}
 			exit;
 		}
@@ -595,7 +595,7 @@ NOTES FROM JSBURG:
 			wait(0);
 			if(!instance_exists(self)){
 				wait(0);
-				spellbullet_create(_x,_y, item[? "bUltra"]);
+				spellbullet_create(_x,_y, bullets[? "bUltra"]);
 			}
 			exit;
 		}
@@ -607,7 +607,7 @@ NOTES FROM JSBURG:
 			wait(0);
 			if(!instance_exists(self)){
 				wait(0);
-				repeat(2) spellbullet_create(_x,_y, item[? choose("bSplit", "bReflective", "bPrecision", "bWarp", "bHaste", "bBurst", "bGold")]);
+				repeat(2) spellbullet_create(_x,_y, "", other]);
 			}
 			exit;
 		}
@@ -619,7 +619,7 @@ NOTES FROM JSBURG:
 			wait(0);
 			if(!instance_exists(self)){
 				wait(0);
-				repeat(12) spellbullet_create(_x,_y, item[? choose("bSplit", "bReflective", "bPrecision", "bWarp", "bHaste", "bBurst", "bGold")]);
+				repeat(12) spellbullet_create(_x,_y, "", other);
 			}
 			exit;
 		}
@@ -631,7 +631,7 @@ NOTES FROM JSBURG:
 			wait(0);
 			if(!instance_exists(self)){
 				wait(0);
-				repeat(2) spellbullet_create(_x,_y,  item[? choose("bSplit", "bReflective", "bPrecision", "bWarp", "bHaste", "bBurst", "bGold")]);
+				repeat(2) spellbullet_create(_x,_y, "", other);
 			}
 			exit;
 		}
