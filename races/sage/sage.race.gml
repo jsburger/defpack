@@ -583,21 +583,17 @@ NOTES FROM JSBURG:
 			wait(0);
 			if(!instance_exists(self)){
 				wait(0);
-				spellbullet_create(_x,_y, bullets[? "bGold"]);
+				spellbullet_create(_x,_y, "bGold");
 			}
 			exit;
 		}
 	}
-	with(ProtoChest){
-		if(fork()){
-			var _x = x;
-			var _y = y;
-			wait(0);
-			if(!instance_exists(self)){
-				wait(0);
-				spellbullet_create(_x,_y, bullets[? "bUltra"]);
+	with(ProtoChest) {
+		if sprite_index == sprProtoChestOpen {
+			if "sage_ultra_bullet_drop" not in self {
+				spellbullet_create(x, y, "bUltra");
+				sage_ultra_bullet_drop = true
 			}
-			exit;
 		}
 	}
 	with(BigWeaponChest){
@@ -607,7 +603,7 @@ NOTES FROM JSBURG:
 			wait(0);
 			if(!instance_exists(self)){
 				wait(0);
-				repeat(2) spellbullet_create(_x,_y, "", other]);
+				repeat(2) spellbullet_create(_x,_y, "", other);
 			}
 			exit;
 		}
