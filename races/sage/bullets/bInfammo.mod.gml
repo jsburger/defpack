@@ -43,7 +43,7 @@
   }
 
 #define on_lose(power)
-  sage_infammo_gain -= 2 + 2 * power;
+  sage_infammo_gain -= 1 + 1 * power;
   maxspeed -= .5;
   sage_projectile_speed += .3;
 
