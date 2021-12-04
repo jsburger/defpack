@@ -42,6 +42,7 @@
 /loadwep infinipistol
 /loadwep andromeda launcher
 /load soda
+/load races/sage
 
 /loadwep flak canon
 

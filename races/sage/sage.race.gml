@@ -227,8 +227,8 @@ NOTES FROM JSBURG:
  // Ultra Descriptions:
 #define race_ultra_text
 	switch(argument0){
-		case 1: return `@(color:${c.spell})SPELLS @sBECOME @sA LOT MORE POWERFUL@s`;
-		case 2: return `@(color:${c.spell})SPELLS @wCOMBINE@s`;
+		case 1: return `@(color:${c.spell})SPELLS @sBECOME @sA LOT MORE @wPOWERFUL@s`;
+		case 2: return `@wCOMBINE @sYOUR @(color:${c.spell})SPELLS@s`;
 		/// Add more cases if you have more ultras!
 	}
 
@@ -348,7 +348,8 @@ NOTES FROM JSBURG:
 		_y = 12+(_player.uiroll == i),
 		_h = sprite_get_height(global.spellHold) / 2;
 
-	if dev{
+	if dev {
+
 		draw_set_font(fntSmall);
 		draw_text_nt(-13, 46, "@wRELOAD_SPEED = " + string(round(_player.reloadspeed * 100)) + "%")
 		draw_text_nt(-13, 53, "@yACCURACY     = " + string(round(_player.accuracy * 100)) + "%")
@@ -359,26 +360,28 @@ NOTES FROM JSBURG:
 		draw_set_font(fntM);
 	}
 
-	for(var i = 0; i < max(array_length(_player.spellBullets), min_spellbullets); i++){
+	for(var i = 0; i < max(array_length(_player.spellBullets), min_spellbullets); i++) {
 
 		if i < array_length(_player.spellBullets){
 
-			var _sprt = mod_script_call("mod", _player.spellBullets[i], "bullet_sprite", _player.sage_spell_power);
+			var _sprt = mod_script_call("mod", _player.spellBullets[i], "bullet_sprite", _player.sage_spell_power),
+			    _hudx = (_hudSide ? -10 : 0); // x offset for multiplayer hud
 
 			//Draw Outline for bullets in active slots:
 			if i == 0 || ultra_get("sage", 2){
-				draw_outline(_sprt, 0, _x, _y)
+
+				draw_outline(_sprt, 0, _x + _hudx, _y)
 			}
 
 			//Draw Bullet:
-			draw_sprite_ext(_sprt, 0, _x, _y + 1, (_hudSide ? -1 : 1), 1, 0, c_white, 1);
-			draw_sprite_ext(_sprt, 0, _x, _y, (_hudSide ? -1 : 1), 1, 0, c_white, 1);
+			draw_sprite_ext(_sprt, 0, _x + _hudx, _y + 1, 1, 1, 0, c_white, 1);
+			draw_sprite_ext(_sprt, 0, _x + _hudx, _y, 1, 1, 0, c_white, 1);
 
 			//Darken in secondary Slots:
 			if i > ultra_get("sage", 2) {
 
-				draw_sprite_ext(_sprt, 0, _x, _y + 1, (_hudSide ? -1 : 1), 1, 0, c_black, .2);
-				draw_sprite_ext(_sprt, 0, _x, _y, (_hudSide ? -1 : 1), 1, 0, c_black, .2);
+				draw_sprite_ext(_sprt, 0, _x + _hudx, _y + 1, 1, 1, 0, c_black, .2);
+				draw_sprite_ext(_sprt, 0, _x + _hudx, _y, 1, 1, 0, c_black, .2);
 			}
 
 			if !point_in_rectangle(ceil(mouse_x[_player.index] - view_xview[_player.index]) - 16, ceil(mouse_y[_player.index] - view_yview[_player.index]), (_hudSide ? 8 : 99) - _w * 2 * (_hudSide ? -1 : 1), _y - 2 - _h, (_hudSide ? 8 : 99) + _w+ _w * 2 * array_length(_player.spellBullets) * (_hudSide ? -1 : 1), _y - 1 + _h) {
@@ -404,13 +407,13 @@ NOTES FROM JSBURG:
 
 		}else{
 			//Draw empty bullet spaces:
-			draw_sprite_ext(global.spellHold, 0, _x, 12, (_hudSide ? -1 : 1), 1, 0, c_white, 1);
+			draw_sprite_ext(global.spellHold, 0, _x + _hudx, 12, 1, 1, 0, c_white, 1);
 		}
 
 		//var _c = make_colour_hsv(_x * 1.5 mod 255, 255, 255);
 		//draw_rectangle_color(_x - _w, _y - _h - 2, _x + 2, _y + _h, _c, _c, _c, _c, true);
 
-	    _x += _hudSide ? -10 : 10;
+	  _x += _hudSide ? -9 : 9;
 		_y = 12 + (_player.uiroll == i);
 	}
 
@@ -461,6 +464,7 @@ NOTES FROM JSBURG:
 		array_push(spellBullets, "bSplit");
 		array_push(spellBullets, "bUltra");
 		array_push(spellBullets, "bRust");
+		array_push(spellBullets, "bCursed");
 	}
 
 	fairy = {
@@ -560,6 +564,8 @@ NOTES FROM JSBURG:
 
 		fairy.swap = fairy_swap_time + 2;
 		fairy.swapframes = 6;
+		sleep(5);
+		weapon_post(0, 4, 0);
 
 		// This is only for playing the swap sound of the bullet youre swapping into
 		mod_script_call("mod", spellBullets[1], "bullet_swap", sage_spell_power);
@@ -1257,7 +1263,6 @@ In Burst fire, call sage_shoot for each burst shot.
 	y = _ty;
 
 	return _inst;
-
 
 #define run_hitscan(_proj, _mod)
 	with(_proj){

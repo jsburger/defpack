@@ -340,7 +340,7 @@
                   }
                   instance_delete(self)
               }
-            }else if random(100) <= 8 and !instance_is(self, BigWeaponChest) and !instance_is(self, BigCursedChest) and !instance_is(self, GiantWeaponChest) && skill_get(mut_open_mind) > 0{
+            }else if random(100) <= 10 and !instance_is(self, BigWeaponChest) and !instance_is(self, BigCursedChest) and !instance_is(self, GiantWeaponChest) && (skill_get(mut_open_mind) > 0 || skill_get("thinktank") > 0) {
                 var q = get_chests(0, GameCont.hard)
                 if array_length(q){
                     customchest_create(x, y, q[irandom(array_length(q) - 7)])

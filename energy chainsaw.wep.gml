@@ -35,7 +35,7 @@
 	}
 	return global.sprChainsaw
 #define weapon_text
-	return choose("PLASMA TEARER", "KILLED ENEMIES ALWAYS#DROP SOME @yAMMO")
+	return choose("PLASMA TEARER")
 #define nts_weapon_examine
 return{
     "d": "A point-blank melee weapon. #The trees are long gone ",
@@ -104,16 +104,6 @@ return{
 				depth -= 1;
 				image_speed /= (1 + skill_get(mut_laser_brain));
 				motion_add(image_angle, 1 + random(1));
-				with instance_create(x, y, Wind){
-					sprite_index = global.sprChainsawShank;
-					image_angle = other.image_angle;
-					depth -= 1;
-					image_speed /= (1 + skill_get(mut_laser_brain));
-					motion_add(other.direction, other.speed);
-					image_xscale = 1.25;
-					image_yscale = 1.25;
-					image_alpha = .15;
-				}
 			}
 			on_hit        = chainsawshank_hit
 			on_wall       = chainsawshank_wall

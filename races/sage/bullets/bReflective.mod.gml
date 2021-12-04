@@ -45,6 +45,9 @@
   sage_projectile_speed += .2;
   sage_bounce -= ceil(3 + 2 * sage_spell_power);
 
+#define on_fire
+  sound_play_pitchvol(sndBouncerSmg, random_range(.8, 1.2), .6);
+
 #define step
 
   with instances_matching(Player, "race", "sage") {

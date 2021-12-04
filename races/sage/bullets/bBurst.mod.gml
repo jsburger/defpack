@@ -20,7 +20,7 @@
   return "FIRE IN WAVES";
 
 #define bullet_area
-  return 1;
+  return 4;
 
 #define bullet_swap
   var _p = random_range(.9, 1.1);

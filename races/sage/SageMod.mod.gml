@@ -109,6 +109,8 @@
         }
     }
 
+#define draw_pause
+
 #define step
 	 // Bind Step:
 	if(!instance_exists(global.bind_step)){
@@ -242,290 +244,282 @@
 				break;
 			  }
 			  case ToxicGrenade:
-			  {
-				sound_play_pitch(sndGrenadeHitWall, 1)
-				sound_play_pitch(sndBouncerBounce, random_range(.8, 1.2))
-				sound_play_pitchvol(sndToxicBoltGas, 1.3, .7)
-				sage_bounce--
-				sleep(5)
-				view_shake_at(x, y, 2)
-				move_bounce_solid(false)
-				image_angle = direction
-				with instance_create(x, y, AcidStreak){image_angle = other.direction}
-				repeat(3) instance_create(x, y, ToxicGas)
-				speed *= 1.2
-				friction *= 1.2
-				direction += random_range(-7, 7);
-				image_angle = direction
-				break;
-			  }
+					sound_play_pitch(sndGrenadeHitWall, 1)
+					sound_play_pitch(sndBouncerBounce, random_range(.8, 1.2))
+					sound_play_pitchvol(sndToxicBoltGas, 1.3, .7)
+					sage_bounce--
+					sleep(5)
+					view_shake_at(x, y, 2)
+					move_bounce_solid(false)
+					image_angle = direction
+					with instance_create(x, y, AcidStreak){image_angle = other.direction}
+					repeat(3) instance_create(x, y, ToxicGas)
+					speed *= 1.2
+					friction *= 1.2
+					direction += random_range(-7, 7);
+					image_angle = direction
+					break;
+
 			  case FlameBall:
-			  {
-				sage_bounce--
-				move_bounce_solid(false)
-				sound_play(sndExplosionS)
-				instance_create(x, y, SmallExplosion)
-				repeat(12)
-				{
-				  with instance_create(x, y, Flame)
-				  {
-					team = other.team
-					creator = other
-					motion_add(random(360), random_range(4,6))
+					sage_bounce--
+					move_bounce_solid(false)
+					sound_play(sndExplosionS)
+					instance_create(x, y, SmallExplosion)
+					repeat(12)
+					{
+					  with instance_create(x, y, Flame)
+					  {
+						team = other.team
+						creator = other
+						motion_add(random(360), random_range(4,6))
+						}
 					}
-				}
-				speed *= 1.5
-				sound_play_pitchvol(sndFlareExplode, 1.3, .7)
-				sleep(12)
-				view_shake_at(x, y, 8)
-				break;
-			  }
+					speed *= 1.5
+					sound_play_pitchvol(sndFlareExplode, 1.3, .7)
+					sleep(12)
+					view_shake_at(x, y, 8)
+					break;
+
 			  case BloodBall:
-			  {
-				sound_play_pitchvol(sndBloodHammer, random_range(1, 1.4), .8)
-				sound_play_pitchvol(sndBloodLauncherExplo, random_range(1.3, 1.6), .8)
-				sage_bounce--
-				sleep(15)
-				view_shake_at(x, y, 10)
-				move_bounce_solid(false)
-				with instance_create(x, y, MeatExplosion){team = other.team;creator = other.creator}
-				with instance_create(x, y, BloodStreak){image_angle = other.direction}
-				with instance_nearest(x, y, Wall){instance_create(x, y, FloorExplo); instance_destroy()}
-				speed *= 1.2
-				direction += random_range(-6, 6);
-				image_angle = direction
-				break;
-			  }
+					sound_play_pitchvol(sndBloodHammer, random_range(1, 1.4), .8)
+					sound_play_pitchvol(sndBloodLauncherExplo, random_range(1.3, 1.6), .8)
+					sage_bounce--
+					sleep(15)
+					view_shake_at(x, y, 10)
+					move_bounce_solid(false)
+					with instance_create(x, y, MeatExplosion){team = other.team;creator = other.creator}
+					with instance_create(x, y, BloodStreak){image_angle = other.direction}
+					with instance_nearest(x, y, Wall){instance_create(x, y, FloorExplo); instance_destroy()}
+					speed *= 1.2
+					direction += random_range(-6, 6);
+					image_angle = direction
+					break;
+
 			  case Rocket: case Nuke:
-			  {
-				sage_bounce--;
-				move_bounce_solid(false)
-				direction += random_range(-4, 4)
-				image_angle = direction
-				repeat(6){with instance_create(x, y, Flame){team = other.team; motion_add(other.direction + random_range(-12,12),choose(2,3,2))}}
-				sound_play_pitchvol(sndHitWall, 1, 2)
-				//sound_play_pitchvol(sndGrenadeHitWall, .7, .7)
-				sleep(7)
-				view_shake_at(x, y, 4)
-				speed = 1.2;
-				break;
-			  }
+					sage_bounce--;
+					move_bounce_solid(false)
+					direction += random_range(-4, 4)
+					image_angle = direction
+					repeat(6){with instance_create(x, y, Flame){team = other.team; motion_add(other.direction + random_range(-12,12),choose(2,3,2))}}
+					sound_play_pitchvol(sndHitWall, 1, 2)
+					//sound_play_pitchvol(sndGrenadeHitWall, .7, .7)
+					sleep(7)
+					view_shake_at(x, y, 4)
+					speed = 1.2;
+					break;
+
 			  case MiniNade:
-			  {
-				sage_bounce--;
-				move_bounce_solid(false)
-				direction += random_range(-15, 15)
-				image_angle = direction
-				speed *= .8
-				instance_create(x, y, Dust)
-				sound_play_pitchvol(sndGrenadeHitWall, 1.2 * random_range(.9, 1.1), .7)
-				sleep(2)
-				view_shake_at(x, y, 1)
-				break;
-			  }
+					sage_bounce--;
+					move_bounce_solid(false)
+					direction += random_range(-15, 15)
+					image_angle = direction
+					speed *= .8
+					instance_create(x, y, Dust)
+					sound_play_pitchvol(sndGrenadeHitWall, 1.2 * random_range(.9, 1.1), .7)
+					sleep(2)
+					view_shake_at(x, y, 1)
+					break;
+
 			  case Flare:
-			  {
-				sage_bounce--;
-				move_bounce_solid(false)
-				direction += random_range(-12, 12)
-				image_angle = direction
-				speed += 2
-				instance_create(x, y, Dust)
-				repeat(8)
-				{
-				  with instance_create(x, y, Flame)
-				  {
-					team = other.team
-					creator = other
-					motion_add(random(360), random_range(4,8))
+					sage_bounce--;
+					move_bounce_solid(false)
+					direction += random_range(-12, 12)
+					image_angle = direction
+					speed += 2
+					instance_create(x, y, Dust)
+					repeat(8)
+					{
+					  with instance_create(x, y, Flame)
+					  {
+						team = other.team
+						creator = other
+						motion_add(random(360), random_range(4,8))
+						}
 					}
-				}
-				sound_play_pitchvol(sndFlareExplode, 1.3, .7)
-				sleep(3)
-				view_shake_at(x, y, 2)
-				break;
-			  }
+					sound_play_pitchvol(sndFlareExplode, 1.3, .7)
+					sleep(3)
+					view_shake_at(x, y, 2)
+					break;
+
 			  case EnemyBullet2:
-			  {
-				sage_bounce--;
-				move_bounce_solid(false)
-				direction += random_range(-12, 12)
-				image_angle = direction
-				instance_create(x, y, ScorpionBulletHit)
-				sound_play_pitchvol(sndHitWall, 1.2, .7)
-				break;
-			  }
+					sage_bounce--;
+					move_bounce_solid(false)
+					direction += random_range(-12, 12)
+					image_angle = direction
+					instance_create(x, y, ScorpionBulletHit)
+					sound_play_pitchvol(sndHitWall, 1.2, .7)
+					break;
+
 			  case LightningBall:
-			  {
-				sleep(30)
-				view_shake_at(x, y, 22)
-				sage_bounce--;
-				move_bounce_solid(false)
-				direction += random_range(-3, 3)
-				repeat(6) with instance_create(x, y, Lightning)
-				{
-				  with instance_create(x, y, LightningHit){image_angle = random(360)}
-				  image_angle = random(360)
-				  alarm0 = 1
-				  visible = 0
-				  team = other.team
-				  creator = other.creator
-				  ammo = 8 + irandom(6)
-				  with instance_create(x,y,LightningSpawn)
-				  {
-					image_angle = other.image_angle
-				  }
-				}
-				speed += 1
-				sound_play_pitchvol(sndLightningShotgun, 1.2, .7)
-				image_angle = direction
-				break;
-			  }
+					sleep(30)
+					view_shake_at(x, y, 22)
+					sage_bounce--;
+					move_bounce_solid(false)
+					direction += random_range(-3, 3)
+					repeat(6) with instance_create(x, y, Lightning)
+					{
+					  with instance_create(x, y, LightningHit){image_angle = random(360)}
+					  image_angle = random(360)
+					  alarm0 = 1
+					  visible = 0
+					  team = other.team
+					  creator = other.creator
+					  ammo = 8 + irandom(6)
+					  with instance_create(x,y,LightningSpawn)
+					  {
+						image_angle = other.image_angle
+					  }
+					}
+					speed += 1
+					sound_play_pitchvol(sndLightningShotgun, 1.2, .7)
+					image_angle = direction
+					break;
+
 			  case Splinter: case Seeker:
-			  {
-				round(x)
-				round(y)
-				sage_bounce--;
-				image_index = 0
-				image_speed = 1
-				move_bounce_solid(false)
-				direction += random_range(-4, 4)
-				image_angle = direction
-				instance_create(x, y, Dust)
-				sound_play_pitchvol(sndBoltHitWall, 1.3, .7)
-				sleep(2)
-				view_shake_at(x, y, 1)
-				break;
-			  }
+					round(x)
+					round(y)
+					sage_bounce--;
+					image_index = 0
+					image_speed = 1
+					move_bounce_solid(false)
+					direction += random_range(-4, 4)
+					image_angle = direction
+					instance_create(x, y, Dust)
+					sound_play_pitchvol(sndBoltHitWall, 1.3, .7)
+					sleep(2)
+					view_shake_at(x, y, 1)
+					break;
+
 			  case Bolt:
-			  {
-				sage_bounce--;
-				image_index = 0
-				image_speed = 1
-				move_bounce_solid(false)
-				direction += random_range(-2, 2)
-				image_angle = direction
-				instance_create(x, y, Dust)
-				sound_play_pitchvol(sndBoltHitWall, 1.3, .7)
-				sleep(5)
-				view_shake_at(x, y, 3)
-				break;
-			  }
+					sage_bounce--;
+					image_index = 0
+					image_speed = 1
+					move_bounce_solid(false)
+					direction += random_range(-2, 2)
+					image_angle = direction
+					instance_create(x, y, Dust)
+					sound_play_pitchvol(sndBoltHitWall, 1.3, .7)
+					sleep(5)
+					view_shake_at(x, y, 3)
+					break;
+
 			  case HeavyBolt:
-			  {
-				sage_bounce--;
-				image_index = 0
-				image_speed = 1
-				move_bounce_solid(false)
-				direction += random_range(-1, 1)
-				image_angle = direction
-				instance_create(x, y, Dust)
-				sound_play_pitchvol(sndBoltHitWall, 1.3, .7)
-				sleep(12)
-				view_shake_at(x, y, 7)
-				break;
-			  }
+					sage_bounce--;
+					image_index = 0
+					image_speed = 1
+					move_bounce_solid(false)
+					direction += random_range(-1, 1)
+					image_angle = direction
+					instance_create(x, y, Dust)
+					sound_play_pitchvol(sndBoltHitWall, 1.3, .7)
+					sleep(12)
+					view_shake_at(x, y, 7)
+					break;
+
 			  case UltraBolt:
-			  {
-				sage_bounce--;
-				image_index = 0
-				image_speed = 1
-				move_bounce_solid(false)
-				with instance_nearest(x, y, Wall){instance_create(x, y, FloorExplo); instance_destroy()}
-				direction += random_range(-3, 3)
-				image_angle = direction
-				instance_create(x, y, Dust)
-				sound_play_pitchvol(sndBoltHitWall, 1.3, .7)
-				sleep(20)
-				view_shake_at(x, y,15)
-				break;
-			  }
+					sage_bounce--;
+					image_index = 0
+					image_speed = 1
+					move_bounce_solid(false)
+					with instance_nearest(x, y, Wall){instance_create(x, y, FloorExplo); instance_destroy()}
+					direction += random_range(-3, 3)
+					image_angle = direction
+					instance_create(x, y, Dust)
+					sound_play_pitchvol(sndBoltHitWall, 1.3, .7)
+					sleep(20)
+					view_shake_at(x, y,15)
+					break;
+
 			  case ToxicBolt:
-			  {
-				sage_bounce--;
-				image_index = 0
-				image_speed = 1
-				move_bounce_solid(false)
-				direction += random_range(-3, 3)
-				image_angle = direction
-				repeat(3) instance_create(x, y, ToxicGas)
-				instance_create(x, y, Dust)
-				sound_play_pitchvol(sndBoltHitWall, 1.3, .7)
-				sound_play_pitchvol(sndToxicBoltGas, 1.3, .7)
-				sleep(5)
-				view_shake_at(x, y, 2)
-				break;
-			  }
-			  case Bullet1: case HeavyBullet: case UltraBullet: case Bullet2: case FlameShell: case UltraShell: case Slug: case HeavySlug: case CustomProjectile: default:
-			  {
-				sage_bounce--;
-				move_bounce_solid(false)
-				direction += random_range(-8, 8)
-				image_angle = direction
-				instance_create(x, y, Dust)
-				sound_play_pitchvol(sndHitWall, 1.3 * random_range(.9, 1.1), .7)
-				sleep(1)
-				break;
-			  }
+					sage_bounce--;
+					image_index = 0
+					image_speed = 1
+					move_bounce_solid(false)
+					direction += random_range(-3, 3)
+					image_angle = direction
+					repeat(3) instance_create(x, y, ToxicGas)
+					instance_create(x, y, Dust)
+					sound_play_pitchvol(sndBoltHitWall, 1.3, .7)
+					sound_play_pitchvol(sndToxicBoltGas, 1.3, .7)
+					sleep(5)
+					view_shake_at(x, y, 2)
+					break;
+
+			  case Bullet2: case FlameShell: case UltraShell: case Slug: case HeavySlug:
+					wallbounce = (wallbounce + 1) * 4;
+					speed *= 1.2;
+					sage_bounce = 0;
+					move_bounce_solid(false)
+					direction += random_range(-8, 8)
+					image_angle = direction
+					sound_play_pitchvol(sndHitWall, .8 * random_range(.9, 1.1), .7)
+					sleep(1)
+					break;
+
+				case Bullet1: case HeavyBullet: case UltraBullet: case CustomProjectile: default:
+					sage_bounce--;
+					move_bounce_solid(false)
+					direction += random_range(-8, 8)
+					image_angle = direction
+					instance_create(x, y, Dust)
+					sound_play_pitchvol(sndHitWall, 1.3 * random_range(.9, 1.1), .7)
+					sleep(1)
+					break;
+
 			  case BouncerBullet:
-			  {
-				sage_bounce--;
-				move_bounce_solid(false)
-				direction += random_range(-8, 8)
-				image_angle = direction
-				instance_create(x, y, Dust)
-				sound_play_pitchvol(sndBouncerBounce, random_range(.9, 1.1), .7)
-				sleep(1)
-				break;
-			  }
+					sage_bounce--;
+					move_bounce_solid(false)
+					direction += random_range(-8, 8)
+					image_angle = direction
+					instance_create(x, y, Dust)
+					sound_play_pitchvol(sndBouncerBounce, random_range(.9, 1.1), .7)
+					sleep(1)
+					break;
+
 			  case Devastator:
-			  {
-				sage_bounce--;
-				move_bounce_solid(false)
-				direction += random_range(-5, 5)
-				image_angle = direction
-				sound_play_pitchvol(sndPlasmaBigExplodeUpg, 1.5 * random_range(.9, 1.1), .7)
-				with instance_nearest(x, y, Wall){instance_create(x, y, FloorExplo); instance_destroy()}
-				speed *= .8
-				sleep(15)
-				view_shake_at(x, y, 7)
-				break;
-			  }
+					sage_bounce--;
+					move_bounce_solid(false)
+					direction += random_range(-5, 5)
+					image_angle = direction
+					sound_play_pitchvol(sndPlasmaBigExplodeUpg, 1.5 * random_range(.9, 1.1), .7)
+					with instance_nearest(x, y, Wall){instance_create(x, y, FloorExplo); instance_destroy()}
+					speed *= .8
+					sleep(15)
+					view_shake_at(x, y, 7)
+					break;
+
 			  case FlakBullet:case SuperFlakBullet:
-			  {
-				sound_play_pitchvol(sndHitWall, random_range(.8, 1.2), 1)
-				sound_play_pitchvol(sndFlakExplode, random_range(1.4, 1.6), 1)
-				sage_bounce--
-				sleep(8)
-				view_shake_at(x, y, 10)
-				move_bounce_solid(false)
-				repeat(3)
-				{
-				  with instance_create(x, y, Bullet2){blessed = true;team = other.team; creator = other.creator;motion_add(random(360), random_range(4,10))}
-				}
-				direction += random_range(-6, 6);
-				speed *= 1.5
-				friction *= 1.25
-				if speed > 20 speed = 20
-				direction += random_range(-15, 15);
-				image_angle = direction
-				break;
-			  }
+					sound_play_pitchvol(sndHitWall, random_range(.8, 1.2), 1)
+					sound_play_pitchvol(sndFlakExplode, random_range(1.4, 1.6), 1)
+					sage_bounce--
+					sleep(8)
+					view_shake_at(x, y, 10)
+					move_bounce_solid(false)
+					repeat(3) {
+
+					  with instance_create(x, y, Bullet2){blessed = true;team = other.team; creator = other.creator;motion_add(random(360), random_range(4,10))}
+					}
+					direction += random_range(-6, 6);
+					speed *= 1.5
+					friction *= 1.25
+					if speed > 20 speed = 20
+					direction += random_range(-15, 15);
+					image_angle = direction
+					break;
+
 			  case PlasmaBall: case PlasmaBig: case PlasmaHuge:
-			  {
-				with instance_create(x, y, PlasmaImpact){team = other.team; creator = other}
-				sage_bounce--;
-				move_bounce_solid(false)
-				image_angle = direction
-				speed *= .9
-				sleep(5)
-				view_shake_at(x, y, 5)
-				direction += random_range(-2, 2);
-				sound_play_pitch(skill_get(mut_laser_brain) = 1 ? sndPlasmaBigExplode : sndPlasmaBigExplodeUpg, random_range(1.5, 1.7))
-				sound_play_pitchvol(sndPlasmaHit, 1, .6)
-				break;
-			  }
-			}
+					with instance_create(x, y, PlasmaImpact){team = other.team; creator = other}
+					sage_bounce--;
+					move_bounce_solid(false)
+					image_angle = direction
+					speed *= .9
+					sleep(5)
+					view_shake_at(x, y, 5)
+					direction += random_range(-2, 2);
+					sound_play_pitch(skill_get(mut_laser_brain) = 1 ? sndPlasmaBigExplode : sndPlasmaBigExplodeUpg, random_range(1.5, 1.7))
+					sound_play_pitchvol(sndPlasmaHit, 1, .6)
+					break;
+				}
 		  }
 		}
 	}
@@ -588,7 +582,7 @@
 	instance_delete(self);
 
 #define hitbounce_step
-	if(skill_get(mut_throne_butt) && instance_exists(projectile) && instance_exists(hitme)){
+	if(skill_get("hitbounce") && instance_exists(projectile) && instance_exists(hitme)){
 		var _inst = instances_matching_gt(projectile, "sage_bounce", 0);
 		if(array_length(_inst)){
 			var	_searchDis  = 16,
