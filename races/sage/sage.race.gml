@@ -399,9 +399,9 @@ NOTES FROM JSBURG:
 						var _name = mod_script_call("mod", _player.spellBullets[i], "bullet_name", _player.sage_spell_power),
 						    _desc = mod_script_call("mod", _player.spellBullets[i], "bullet_description", _player.sage_spell_power);
 						draw_set_font(fntM);
-			      draw_text_nt(_x - 4 - (11 * i - i) * (_hudSide ? -1 : 1), _y + _h + 3, _name);
+			      draw_text_nt(_x - 7 - (10 * i - i) * (_hudSide ? -1 : 1), _y + _h + 3, _name);
 			      draw_set_font(fntSmall);
-			      draw_text_nt(_x - 4 - (11 * i - i) * (_hudSide ? -1 : 1), _y + _h + 12, _desc);
+			      draw_text_nt(_x - 7 - (10 * i - i) * (_hudSide ? -1 : 1), _y + _h + 12, _desc);
 			    }
 			}
 
@@ -428,7 +428,7 @@ NOTES FROM JSBURG:
 #macro bullets mod_variable_get("mod", "SageBullets", "BulletDirectory")
 #macro min_spellbullets 2 + skill_get(5)
 #macro fairy_swap_time 6
-#macro dev true
+#macro dev false
 #macro c global.colormap
 #macro c_darkteal c_purple
 #macro c_purblue c_purple

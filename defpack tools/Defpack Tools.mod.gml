@@ -227,6 +227,9 @@
 		}
 	}
 
+  //Keeps track of all dropped weps
+	global.WepDrops = ds_list_create();
+
 	//System for letting weapons draw on the hud
 	global.HUDRequests = []
 
@@ -554,6 +557,9 @@ with Player if visible{
 }
 
 #define game_start
+	// Clear tracked weapons for rerolling:
+	ds_list_clear(global.WepDrops);
+
 	// Finds all sodas available
 	var weps = mod_get_names("weapon");
 	with weps {
@@ -569,6 +575,46 @@ with Player if visible{
 
 
 #define step
+
+	// Weapon rerolling:
+	with Player if (race != "steroids") {
+
+		with instances_matching_ne(instances_matching(instances_matching_ne(WepPickup, "defpack_no_reroll", true), "roll", true), "defpack_weproll", true) {
+
+			defpack_weproll = true;
+			var _s = self;
+			var _weps = ds_list_create();
+			weapon_get_list(_weps, 1, weapon_get_area(_s.wep));
+
+			with ds_list_to_array(global.WepDrops) {
+
+				if (_s.wep = self) {
+					// Reroll:
+					ds_list_shuffle(_weps);
+
+					with ds_list_to_array(_weps) {
+
+						with ds_list_to_array(global.WepDrops) {
+
+							if (self != other) {
+
+								_s.wep = other;
+							}
+						}
+					}
+				}
+			}
+
+			// Add weapon to list:
+			ds_list_add(global.WepDrops, wep);
+
+			// If list size > x clear oldest weapon:
+			if (ds_list_size(global.WepDrops) > max(3, ds_list_size(_weps) * .4)) {
+
+				ds_list_delete(global.WepDrops, 0);
+			}
+		}
+	}
 
 	// Lazy gas fire implementation
 	with instances_matching(Flame, "can_ignite", true) {
@@ -3723,9 +3769,11 @@ if speed < friction instance_destroy()
 				_w.health--;
 				if _w.health < 0{
 		    	quartz_break();
-			    with instance_create(x,y,ThrownWep){
+			    with instance_create(x,y,ThrownWep) {
+
 			      wep = "shard"
 			      sprite_index = spr.Shard
+						roll = false;
 			      curse = _p ? other.curse : other.bcurse
 			      motion_set(other.gunangle-180-random_range(-2,2),3)
 			    }
@@ -3773,12 +3821,14 @@ if speed < friction instance_destroy()
 	sound_play_gun(sndLaserCrystalDeath,.1,.0001)//mute action
 	sleep(400)
 	view_shake_at(x,y,45)
-	repeat(14) with instance_create(x,y,Feather){
+	repeat(14) with instance_create(x,y,Feather) {
+
 		motion_add(random(360),random_range(3,6))
 		sprite_index = spr.GlassShard
 		image_speed = random_range(.4,.7)
 		image_index = irandom(5)
-	}repeat(12)with instance_create(x+random_range(-8,8),y+random_range(-8,8),WepSwap){
+	}
+	repeat(12)with instance_create(x+random_range(-8,8),y+random_range(-8,8),WepSwap) {
 		image_xscale = .75
 		image_yscale = .75
 		image_speed = choose(.45,.45,.45,.3)

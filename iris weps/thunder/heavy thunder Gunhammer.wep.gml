@@ -68,10 +68,12 @@ with instance_create(x + lengthdir_x(l, gunangle),y + lengthdir_y(l, gunangle),S
 		sprite_index = global.slash
 		sound_play_gun(sndClickBack,1,.3)
 		sound_stop(sndClickBack)
-    	repeat(8){
+		var _i = 0;
+		repeat(8){
+			_i++;
         	if other.ammo[1] >=2 {
     			with mod_script_call("mod","defpack tools","create_heavy_lightning_bullet",x,y){
-    				motion_set(other.direction + random_range(-32,32)*other.creator.accuracy, 10)
+    				motion_set(other.direction + random_range(-32,32)*other.creator.accuracy * (_i = 1 ? .1 : 1), 10)
     				image_angle = direction
     				creator = other.creator
     				team = other.team

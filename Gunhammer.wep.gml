@@ -1,7 +1,7 @@
 #define init
 global.sprGunhammer 	 = sprite_add_weapon("sprites/weapons/sprGunhammer.png", 0, 8);
 global.sprGunhammerHUD 	 = sprite_add_weapon("sprites/weapons/sprGunhammer.png", 11, 5);
-global.sprGunhammerSlash = sprite_add("sprites/projectiles/sprGunhammerSlash.png",3,0,24)
+global.sprGunhammerSlash = sprite_add("sprites/projectiles/sprGunhammerSlashW.png",3,0,24)
 
 #define weapon_name
 return "GUNHAMMER";
@@ -60,7 +60,7 @@ with instance_create(x + lengthdir_x(l, gunangle),y + lengthdir_y(l, gunangle),S
 		damage = 15
 		force = 15
 	}else{
-		sprite_index = sprHeavySlash
+		sprite_index = sprSlash
 		damage = 10
 		force = 7
 	}
@@ -69,7 +69,9 @@ with instance_create(x + lengthdir_x(l, gunangle),y + lengthdir_y(l, gunangle),S
 	team = other.team
 	creator = other
 	if other.ammo[1] >=1 {
+  var _i = 0;
 	repeat(4){
+      _i++;
 			//sound_play_pitch(sndLilHunterSniper,.3) nice energy sound
 			//sound_play_pitch(sndFlakExplode,2) nice sharp swing
 			//sound_play_pitch(sndFlakExplode,.6) also cool
@@ -80,7 +82,7 @@ with instance_create(x + lengthdir_x(l, gunangle),y + lengthdir_y(l, gunangle),S
 			sound_play_pitchvol(sndTripleMachinegun,.8*p,.7)
 			instance_create(x+lengthdir_x(sprite_width,direction),y+lengthdir_y(sprite_width,direction),Smoke)
 			with instance_create(x,y,Bullet1){
-				motion_set(other.direction + random_range(-20,20)*other.creator.accuracy, 20)
+				motion_set(other.direction + random_range(-20,20)*other.creator.accuracy * (_i = 1 ? .1 : 1), 20)
 				image_angle = direction
 				creator = other.creator
 				team = other.team

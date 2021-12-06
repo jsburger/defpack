@@ -26,14 +26,14 @@
 #define weapon_laser_sight
 	return 0
 #define weapon_sprt
-	if instance_is(self, hitme) {
+	if instance_is(self, Player) {
 
-		if "reload" in self && reload > 0 {
+		with instances_matching(instances_matching(CustomObject, "name" ,"energy chainsaw burst"), "creator", other) {
 
 			return global.sprChainsawActive;
 		}
 	}
-	return global.sprChainsaw
+	return global.sprChainsaw;
 #define weapon_text
 	return choose("PLASMA TEARER")
 #define nts_weapon_examine

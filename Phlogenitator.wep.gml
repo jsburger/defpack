@@ -97,7 +97,7 @@ sound_play_pitch(sndFlameCannonEnd,.6 * _p)
 weapon_post(8,-90,76)
 repeat(6){
     with mod_script_call_self("mod", "defpack tools 2", "create_flameshell_flak", x, y){
-        motion_set(other.gunangle + random_range(-40, 40) * other.accuracy, 16)
+        motion_set(other.gunangle + random_range(-40, 40) * other.accuracy, 12)
         projectile_init(other.team,other)
         image_angle = direction
         accuracy = other.accuracy
