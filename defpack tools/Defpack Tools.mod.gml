@@ -128,7 +128,7 @@
 		SmallSonicExplosion     = sprite_add(  i + "sprSonicExplosionSmall.png", 8, 20, 20);
 		msk.SonicExplosion      = sprite_add_p(i + "mskSonicExplosion.png", 8, 61, 59);
 		msk.SmallSonicExplosion = sprite_add_p(i + "mskSonicExplosionSmall.png", 8, 20, 20);
-		SonicStreak             = sprite_add(i + "sprSonicStreak.png",6,8,32);
+		SonicStreak             = sprite_add(i + "sprSonicStreak.png",7, 24, 8);
 		snd.SonicExplosion 		  = sound_add("../sounds/sndSonicExplosion.ogg");
 
 		//Abris Stripes
@@ -154,10 +154,11 @@
 		LaserFlakBullet = sprite_add(i + "sprLaserFlak.png", 2, 8, 8);
 
 		//Vectors
-		VectorHead   = sprite_add(i + "sprVectorHead.png",1,8,2)
-		Vector	   = sprite_add(i + "sprVector.png",1,0,3)
-		VectorImpact = sprite_add(i + "sprVectorImpact.png",7,16,16)
-		VectorEffect = sprite_add(i + "sprVectorBeamEnd.png",3,5,5);
+		VectorHead   		 = sprite_add(i + "sprVectorHead.png", 1, 8, 2);
+		Vector	     		 = sprite_add(i + "sprVector.png", 1, 0, 3);
+		VectorImpact 		 = sprite_add(i + "sprVectorImpact.png", 14, 20, 20);
+		msk.VectorImpact = sprite_add(i + "mskVectorImpact.png", 14, 20, 20);
+		VectorEffect 		 = sprite_add(i + "sprVectorBeamEnd.png", 5, 5, 5);
 
 		//Spike Balls
 		MiniSpikeball      = sprite_add  (i + "sprMiniSpikeball.png", 0, 6, 5);
@@ -168,12 +169,21 @@
 		msk.HeavySpikeball = sprite_add_p(i + "mskHeavySpikeball.png", 0, 15, 15);
 
 		//Discs
-		BouncerDisc    = sprite_add  (i + "sprBouncerDisc.png", 2,  6,  6);
-		StickyDisc     = sprite_add  (i + "sprStickyDisc.png",  2,  7,  6);
-		MegaDisc       = sprite_add_p(i + "sprMegaDisc.png",    2, 12, 12);
-		MegaDiscDie    = sprite_add  (i + "sprMegaDiscDie.png",    6, 12, 12);
-		MegaDiscTrail  = sprite_add  (i + "sprMegaDiscTrail.png",  3, 12, 12);
-		MegaDiscBounce = sprite_add  (i + "sprMegaDiscBounce.png", 4, 12, 12);
+		BouncerDisc      = sprite_add  (i + "sprBouncerDisc.png", 2,  6,  6);
+		StickyDisc       = sprite_add  (i + "sprStickyDisc.png",  2,  7,  6);
+		MegaDisc         = sprite_add_p(i + "sprMegaDisc.png"      , 2, 12, 12);
+		MegaDiscHitId    = sprite_add_p(i + "sprMegaDiscHitId.png" , 2, 12, 12);
+		MegaDiscDie      = sprite_add  (i + "sprMegaDiscDie.png"   , 6, 12, 12);
+		MegaDiscTrail    = sprite_add  (i + "sprMegaDiscTrail.png" , 3, 12, 12);
+		MegaDiscBounce   = sprite_add  (i + "sprMegaDiscBounce.png", 4, 12, 12);
+		MegaDiscSplat[0] = sprite_add  (i + "sprMegaDiscSplat1.png", 1, 12, 12);
+		MegaDiscSplat[1] = sprite_add  (i + "sprMegaDiscSplat2.png", 1, 12, 12);
+		MegaDiscSplat[2] = sprite_add  (i + "sprMegaDiscSplat3.png", 1, 12, 12);
+		MegaDiscSplat[3] = sprite_add  (i + "sprMegaDiscSplat4.png", 1, 12, 12);
+		MegaDiscSplat[4] = sprite_add  (i + "sprMegaDiscSplat5.png", 1, 12, 12);
+		MegaDiscSplat[5] = sprite_add  (i + "sprMegaDiscSplat6.png", 1, 12, 12);
+		MegaDiscSplat[6] = sprite_add  (i + "sprMegaDiscSplat7.png", 1, 12, 12);
+
 
 		//Blades
 		Sword       = sprite_add  (i + "sprSword.png",      1, 10, 10)
@@ -184,9 +194,12 @@
 		SwordSlash  = sprite_add  (i + "sprSwordSlash.png", 5, 16, 16)
 
 		//Flechettes
-		Flechette       = sprite_add("..\sprites\projectiles\sprFlechette.png",      0,  6, 4)
-		msk.Flechette   = sprite_add("..\sprites\projectiles\mskFlechette.png",      0,  6, 2)
-		FlechetteBlink  = sprite_add("..\sprites\projectiles\sprFlechetteBlink.png", 3, 14, 4)
+		Flechette       = sprBullet1 //sprite_add("..\sprites\projectiles\sprFlechette.png",      0,  6, 4)
+		msk.Flechette   = sprBullet1 //sprite_add("..\sprites\projectiles\mskFlechette.png",      0,  6, 2)
+		FlechetteBlink  = sprBullet1 //sprite_add("..\sprites\projectiles\sprFlechetteBlink.png", 3, 14, 4)
+
+		//Fire
+		GasFire = sprite_add("..\sprites\projectiles\sprGasFire.png", 6, 10, 10);
 
 		//Quartz Shards
 		Shard        = sprite_add_weapon("../sprites/weapons/sprShard.png", 0, 3);
@@ -213,7 +226,10 @@
 			mod_variable_set("mod", self, "spr", spr)
 		}
 	}
-	
+
+  //Keeps track of all dropped weps
+	global.WepDrops = ds_list_create();
+
 	//System for letting weapons draw on the hud
 	global.HUDRequests = []
 
@@ -541,6 +557,9 @@ with Player if visible{
 }
 
 #define game_start
+	// Clear tracked weapons for rerolling:
+	ds_list_clear(global.WepDrops);
+
 	// Finds all sodas available
 	var weps = mod_get_names("weapon");
 	with weps {
@@ -556,6 +575,87 @@ with Player if visible{
 
 
 #define step
+
+	// Weapon rerolling:
+	with Player if (race != "steroids") {
+
+		with instances_matching_ne(instances_matching(instances_matching_ne(WepPickup, "defpack_no_reroll", true), "roll", true), "defpack_weproll", true) {
+
+			defpack_weproll = true;
+			var _s = self;
+			var _weps = ds_list_create();
+			weapon_get_list(_weps, 1, weapon_get_area(_s.wep));
+
+			with ds_list_to_array(global.WepDrops) {
+
+				if (_s.wep = self) {
+					// Reroll:
+					ds_list_shuffle(_weps);
+
+					with ds_list_to_array(_weps) {
+
+						with ds_list_to_array(global.WepDrops) {
+
+							if (self != other) {
+
+								_s.wep = other;
+							}
+						}
+					}
+				}
+			}
+
+			// Add weapon to list:
+			ds_list_add(global.WepDrops, wep);
+
+			// If list size > x clear oldest weapon:
+			if (ds_list_size(global.WepDrops) > max(3, ds_list_size(_weps) * .4)) {
+
+				ds_list_delete(global.WepDrops, 0);
+			}
+		}
+	}
+
+	// Lazy gas fire implementation
+	with instances_matching(Flame, "can_ignite", true) {
+
+		var _t = self.team;
+		if place_meeting(x, y, ToxicGas) {
+
+			with instance_nearest(x, y, ToxicGas) {
+
+				 repeat(4) with create_gas_fire(x, y){
+
+					 motion_add(random(360), 3 + random(2))
+					 team = _t;
+					 image_angle = direction;
+				}
+
+				sound_play_pitchvol(sndFireShotgun, .7  * random_range(.8, 1.2), .5);
+				sound_play_pitchvol(sndBurn, random_range(.8, 1.2), .4);
+				instance_destroy();
+			}
+		}
+		if place_meeting(x, y, FrogQueenBall) {
+
+				repeat(32) with create_gas_fire(x, y){
+
+					motion_add(random(360), 4 + irandom(4));
+					friction = random(.4)
+					team = _t;
+					image_angle = direction;
+			}
+
+			with instance_nearest(x, y, FrogQueenBall) {
+
+				sound_play_pitchvol(sndDoubleFireShotgun, .7  * random_range(.8, 1.2), .5);
+				sound_play_pitchvol(sndBurn, random_range(.8, 1.2), .4);
+				sound_play_pitchvol(sndExplosionS, 1.2 * random_range(.8, 1.2), 1.2);
+				instance_destroy();
+			}
+		}
+	}
+
 	// Gets rid of dummy weapons, I don't know why vanilla doesn't do this
 	with instances_matching(WepPickup, "wep", 0) instance_destroy()
 
@@ -879,7 +979,7 @@ return found
 //		A nuke for example might ignore the coords if they aren't coming from an actual mouse, as enemies don't really aim over time.
 // Used for logic and should be syncronous.
 // Of note, the format of the LWO and scr_get_mouse integration are what make this important, thats what ought to be standard.
-// If you don't like other choices, feel free to replace them. 
+// If you don't like other choices, feel free to replace them.
 
 	//Compat hook. If you need self, be sure to include it in your script ref as an argument.
 	//Return a LWO in your script that would match the output of this one.
@@ -887,17 +987,17 @@ return found
 	if "scr_get_mouse" in inst && is_array(inst.scr_get_mouse) {
 		with inst return script_ref_call(scr_get_mouse)
 	}
-	
+
 	//If there is a mouse at play, use it.
 	if instance_is(inst, Player) || ("index" in inst && player_is_active(inst.index)) {
 		return {x: mouse_x[inst.index], y: mouse_y[inst.index], is_input: true}
 	}
-	
+
 	//If there is a target, consider it the mouse position.
 	if "target" in inst && instance_exists(inst.target) {
 		return {x: target.x, y: target.y, is_input: false}
 	}
-	
+
 	//If no real way to find mouse coords is found, then make some assumptions regarding generally intended behavior.
 	//In this case, project a point a moderate distance from the source, with direction as the default angle, optionally picking up gunangle.
 	var _length = 48, _dir = inst.direction;
@@ -988,19 +1088,25 @@ return 0
 
 
 #define weapon_charged(c, l)
-sound_play_pitch(sndSnowTankCooldown, 8)
-sound_play_pitchvol(sndShielderDeflect, 4, .5)
-sound_play_pitchvol(sndBigCursedChest, 20, .1)
-sound_play_pitchvol(sndCursedChest, 12, .2)
-with instance_create(c.x + lengthdir_x(l, c.gunangle), c.y + lengthdir_y(l, c.gunangle), ChickenB) {
-	creator = c
-	image_xscale = .5
-	image_yscale = .5
-	with instance_create(x, y, ChickenB){
-		creator = c
-		image_speed = .75
-	};
-};
+sound_play_pitch(sndSnowTankCooldown, 8);
+sound_play_pitchvol(sndShielderDeflect, 4, .5);
+sound_play_pitchvol(sndBigCursedChest, 20, .1);
+sound_play_pitchvol(sndCursedChest, 12, .2);
+
+with instance_create(c.x + lengthdir_x(l, c.gunangle), c.y + lengthdir_y(l, c.gunangle), WepSwap) {
+	creator = c;
+	image_xscale = .5;
+	image_yscale = .5;
+	depth = other.depth -1;
+	sprite_index = sprChickenB;
+
+	with instance_create(x, y, WepSwap) {
+		creator = c;
+		image_speed = .75;
+		depth = other.depth;
+		sprite_index = sprChickenB;
+	}
+}
 
 
 #define abris_weapon_auto(name, creator)
@@ -1771,23 +1877,30 @@ with target{
 }
 
 #define toxic_destroy
-    repeat(choose(1, 1, 2))with instance_create(x, y, ToxicGas){
-        friction *= 10;
-        growspeed /= 8;
-        move_contact_solid(other.direction, other.speed);
+
+		if (!instance_exists(creator) || point_distance(x, y, creator.x, creator.y) > 32) {
+
+		  repeat(choose(1, 1, 2))with instance_create(x, y, ToxicGas){
+
+		      friction *= 10;
+	        growspeed /= 8;
+	        move_contact_solid(other.direction, other.speed);
+		}
 	}
 	bullet_destroy()
 
 #define heavy_toxic_destroy
-repeat(3){
-	with instance_create(x, y, ToxicGas){
-        friction *= 24;
-        growspeed /= 4;
-        move_contact_solid(other.direction, other.speed);
-        motion_add(random(360), random_range(2, 4))
-    }
-}
-bullet_destroy()
+	if (!instance_exists(creator) || point_distance(x, y, creator.x, creator.y) > 32) {
+
+		repeat(3){ with instance_create(x, y, ToxicGas){
+		        friction *= 24;
+		        growspeed /= 4;
+		        move_contact_solid(other.direction, other.speed);
+		        motion_add(random(360), random_range(2, 4))
+		    }
+		}
+	}
+	bullet_destroy()
 
 #define create_flame_bullet(x,y)
 return create_fire_bullet(x,y)
@@ -2114,25 +2227,41 @@ if other != lasthit{
 	if projectile_canhit_melee(other){
 		var _cwh = canwallhit,
 		    _dwt = dontwait,
-		      _s = self;
+		      _s = self,
+					_o = other;
 
 		switch object_get_name(other.object_index) {
-			case "MeleeFake":		   projectile_hit(other, 1, force, direction); break;
+			case "MeleeFake":		       projectile_hit(other, 1, force, direction); break;
 			case "JungleAssassinHide": projectile_hit(other, 1, force, direction); break;
 			case "Mimic":              projectile_hit(other, 100, force, direction); break;
 			case "SuperMimic":         projectile_hit(other, 100, force, direction); break;
 		}
 
-		if instance_is(other, Car) || instance_is(other, CarVenusFixed) || instance_is(other, CarVenus2) || instance_is(other, CarVenus) with other{
-			with instance_create (x, y, CarThrow){
-				sleep(4)
-				motion_add(_s.direction, 24);
-			}
-			instance_delete(self);
-			exit;
-		}
+		if instance_is(other, Car) || instance_is(other, CarVenusFixed) || instance_is(other, CarVenus2) || instance_is(other, CarVenus) {
 
-		if instance_is(other, prop){
+			with other {
+
+				with instance_create (x, y, CarThrow) {
+
+					if other.sprite_index = sprFrozenCar {
+
+						sprite_index = sprFrozenCarThrown;
+					}
+
+					sleep(4);
+					//trace(_s.superdirection)
+					motion_add("superdirection" in _s ? _s.superdirection : point_direction(_s.x, _s.y, x, y), 32);
+				}
+
+				// Sound fx:
+				sound_play_pitchvol(sndImpWristKill, .8, 1.4);
+				sound_play_pitchvol(sndSawedOffShotgun, .7, .6);
+				instance_delete(self);
+				exit;
+			}
+
+		}	else if instance_is(other, prop) {
+
 			projectile_hit(other, 8, force, direction);
 			exit;
 		}
@@ -2154,6 +2283,15 @@ if other != lasthit{
 					exit;
 				}
 			}
+
+			// fx:
+			var _p = random_range(.8, 1.2);
+			sound_play_pitchvol(sndImpWristKill, .8 * _p, 1.4);
+			sound_play_pitchvol(sndSawedOffShotgun, .8 * _p, .6);
+			sound_play_pitchvol(sndFlakExplode, 1 * _p, 1);
+			sleep(4 + 4 * clamp(_id.size, 1, 3));
+
+			// Setting up vars:
 			name         = "SuperForce";
 			team         = other.team;
 			creator      = other;
@@ -2172,6 +2310,17 @@ if other != lasthit{
 			}
 			motion_set("superdirection" in self ? superdirection : other.direction, superforce); // for easier direction manipulation on wall hit
 
+			with instance_create(_o.x, _o.y, ImpactWrists){
+				var _fac = 2 + .15 * clamp(_o.size, 0, 3);
+				image_xscale = _fac * .5;
+				image_yscale = _fac
+				image_speed = .75;
+				image_alpha = .75;
+				image_index = 1;
+				motion_add(other.direction, -2);
+				friction = .02;
+				image_angle = direction
+			}
 			on_step = superforce_step;
 		}
 	}
@@ -2199,12 +2348,12 @@ if other != lasthit{
 			exit}
 		}
 	}
-	if superforce >= 3 with instance_create(creator.x + random_range(-3, 3), creator.y + random_range(-3, 3), ImpactWrists){
-		var _fac = .6
-		image_xscale = _fac
+	if superforce >= 3 with instance_create(creator.x, creator.y, ImpactWrists){
+		var _fac = .5 + .15 * clamp(other.creator.size, 0, 3);
+		image_xscale = _fac * .5;
 		image_yscale = _fac
-		image_speed = .75
-		motion_add(other.creator.direction, random_range(1, 3) + 1)
+		image_speed = .85 - .10 * clamp(other.creator.size, 0, 3);
+		motion_add(other.creator.direction, 2);
 		image_angle = direction
 	}
 
@@ -2220,7 +2369,7 @@ if other != lasthit{
 		if superforce > 4 with creator
 		{
 			//trace("wall hit")
-			projectile_hit(self,round(ceil(other.superforce) * 1.5),1 ,direction)
+			projectile_hit(self,max(3, round(ceil(other.superforce) * 1.5)),1 ,direction)
 			if my_health <= 0
 			{
 				sleep(30)
@@ -2230,21 +2379,15 @@ if other != lasthit{
 		}
 
 		// Visuals:
-		with instance_create(x+lengthdir_x(12,direction),y+lengthdir_y(12,direction),AcidStreak){
-			sprite_index = spr.SonicStreak
-			image_angle = other.direction + random_range(-32, 32) - 90
-			motion_add(image_angle+90,12)
-			friction = 2.1
-		}
 		with instance_create(x, y, ChickenB) image_speed = .65
-		repeat(max(1, creator.size)) with instance_create(x, y, ImpactWrists){
+		/*repeat(max(1, creator.size)) with instance_create(x, y, ImpactWrists){
 			var _fac = random_range(.2, .5)
 			image_xscale = _fac
 			image_yscale = _fac * 1.5
 			image_speed = 1 - _fac
 			motion_add(random(360), random_range(1, 3) + 1)
 			image_angle = direction
-		}
+		}*/
 		superforce *= .4
 	}
 
@@ -2437,11 +2580,12 @@ with instance_create(0, 0, CustomObject){
     maxdamage = 8
     wep = weapon
     auto = 0
-	margin = 12
-	lockon = false;
-	closed = false
-	hover  = 3;
-	view_factor = 1;
+		margin = 18;
+		lockon = false;
+		closed = false
+		hover  = 3;
+		view_factor = 1;
+	  chargeblink = 0;
 
     scroll = random(16)
     scrollang = random(360)
@@ -2520,6 +2664,8 @@ if instance_exists(creator){
 		exit
 	}
 
+		chargeblink = false;
+
     image_angle += rotspeed * timescale
     scroll += timescale
     offset += offspeed * timescale
@@ -2541,6 +2687,7 @@ if instance_exists(creator){
 			weapon_charged(creator, sprite_get_width(weapon_get_sprt(hand ? creator.wep : creator.bwep)) / 2)
 			creator.gunshine = 1
 			closed = true
+			chargeblink = true;
 		}
 
         if reload = -1 {
@@ -2610,7 +2757,7 @@ if instance_exists(creator){
 			    _dis = _e > -4 ? point_distance(creator.x, creator.y, _e.x, _e.y) : 0,
 				_dir = _e > -4 ? point_direction(creator.x, creator.y, _e.x, _e.y) : 0;
 			if instance_exists(_e)
-				&& collision_line(creator.x, creator.y, _e.x ,_e.y, Wall, 0, 0) = noone 
+				&& collision_line(creator.x, creator.y, _e.x ,_e.y, Wall, 0, 0) = noone
 				&& point_distance(_x, _y, _e.x, _e.y) <= (margin + ((6 + (20 * lockon / max(creator.accuracy, 0.1))) * !closed)) {
 					_x = c.x + lengthdir_x(_dis + _e.hspeed, _dir);
 					_y = c.y + lengthdir_y(_dis + _e.vspeed, _dir);
@@ -2626,10 +2773,9 @@ if instance_exists(creator){
     y = w[1]
 
     var kick = hand ? creator.bwkick : creator.wkick, yoff = -4 * hand;
-    var r = acc+accmin, sides = 16, a = 1 - acc/accbase,
-    	_c = (global.AbrisCustomColor = true && instance_is(creator, Player)) ? player_get_color(creator.index) : lasercolour,
-		_c2 = defcharge.charge > 0.99 && defcharge.charge < 1 && lq_get(defcharge, "blinked") = 0 ? c_white : _c;
-
+    var  r = acc+accmin, sides = 16, a = 1 - acc/accbase,
+    	  _c = (global.AbrisCustomColor = true && instance_is(creator, Player)) ? player_get_color(creator.index) : lasercolour,
+		   _c2 = chargeblink = true ? c_white : _c;
     //Glow on gun
     draw_sprite_ext(sprHeavyGrenadeBlink, 0, c.x + lengthdir_x(14 - kick, ang), c.y + lengthdir_y(14 - kick, ang) + 1 + yoff, 1, 1, ang, _c, 1)
     //Actual boundary
@@ -3237,20 +3383,24 @@ if bounce <= 0 instance_destroy()
 	switch (_id.object_index){
 		//FEATHER BLEEDERS
 		case Raven : return Feather;
+
 		//CURSED BLEEDERS
-		case InvSpider  	 :
+		case InvSpider  	   :
 		case InvCrystal      :
 		case InvLaserCrystal : return Curse;
+
 		//CRYSTAL BLEEDERS
 		case LaserCrystal :
 		case HyperCrystal :
 		case CrystalProp  :
-		case Spider		:
-		case RhinoFreak	: return Hammerhead;
+		case Spider		    :
+		case RhinoFreak	  : return Hammerhead;
+
 		//WHITE BLEEDERS
 		case YVStatue :
 		case BigSkull :
 		case SnowMan  : return MeleeHitWall;
+
 		//ROBOT BLEEDERS
 		case SnowBot       :
 		case SnowTank      :
@@ -3261,7 +3411,7 @@ if bounce <= 0 instance_destroy()
 		case Wolf          :
 		case StreetLight   :
 		case SodaMachine   :
-		case Hydrant	   :
+		case Hydrant	     :
 		case Turret	       :
 		case TechnoMancer  :
 		case Terminal      :
@@ -3270,23 +3420,27 @@ if bounce <= 0 instance_destroy()
 		case Sniper        :
 		case Car           :
 		case Pipe          :
-		case Anchor 	   :
+		case Anchor 	     :
 		case WaterMine	   :
 		case VenuzTV       :
-		case CarVenus	   :
+		case CarVenus	     :
 		case CarVenus2	   :
 		case CarVenusFixed :
-		case Van		   : return BulletHit;
+		case Van		       : return BulletHit;
+
 		//LIGHTNING BLEEDERS
 		case LightningCrystal : return LightningSpawn;
+
 		// BIG BLEEDERS
 		case JungleFly  :
 		case BigMaggot  :
 		case BanditBoss : return BloodGamble;
+
 		//BIG GREEN BLEEDERS
 		case Scorpion 	:
 		case GoldScorpion :
 		case GoldScorpion : return AcidStreak;
+
 		// ULTRA BOYS
 		case EnemyHorror      :
 		case CrownGuardianOld :
@@ -3295,19 +3449,29 @@ if bounce <= 0 instance_destroy()
 		case GhostGuardian    :
 		case ExploGuardian    :
 		case DogGuardian      : return ScorpionBulletHit;
+
 		default : return AllyDamage;
 	}
 
 #define laserflak_hit
 if projectile_canhit_melee(other) == true{
-	var k = other.maxhealth;
 	projectile_hit(other, damage, ammo, direction)
 	repeat(3) with instance_create(x, y, PlasmaTrail){
-		view_shake_at(x, y, 8)
+		view_shake_at(x, y, 3)
 		motion_add(random(180), random_range(7, 8))
 	}
 	sleep(damage * 2)
-	if k > damage instance_destroy()
+	if other.my_health > 0 {
+
+		instance_destroy();
+	}else {
+
+		with create_plasma_impact_small(x, y) {
+
+			creator = other.creator;
+			team = other.team;
+		}
+	}
 }
 
 //SPIKEBALL
@@ -3396,7 +3560,7 @@ with instance_create(x-lengthdir_x(speed,direction),y-lengthdir_y(speed,directio
 with instance_create(_x,_y,CustomProjectile) {
     name = "Laser Flak"
 	image_speed = 1
-	damage = 12
+	damage = 10
 	friction = .5
 	ammo = 5 + skill_get(mut_laser_brain) * 3;
 	typ = 1
@@ -3561,7 +3725,7 @@ if speed < friction instance_destroy()
 
 		if _w.health < _w.maxhealth{
 			with AmmoPickup{
-				if "quartz_check" not in self && ((irandom(99) + 1) < (10 * (1 - _w.health/_w.maxhealth))){
+				if "quartz_check" not in self && ((irandom(99) + 1) < (7 * (1 - _w.health/_w.maxhealth))){
 					quartz_pickup_create(x, y);
 					instance_delete(self);
 					exit;
@@ -3604,9 +3768,11 @@ if speed < friction instance_destroy()
 				_w.health--;
 				if _w.health < 0{
 		    	quartz_break();
-			    with instance_create(x,y,ThrownWep){
+			    with instance_create(x,y,ThrownWep) {
+
 			      wep = "shard"
 			      sprite_index = spr.Shard
+						roll = false;
 			      curse = _p ? other.curse : other.bcurse
 			      motion_set(other.gunangle-180-random_range(-2,2),3)
 			    }
@@ -3654,12 +3820,14 @@ if speed < friction instance_destroy()
 	sound_play_gun(sndLaserCrystalDeath,.1,.0001)//mute action
 	sleep(400)
 	view_shake_at(x,y,45)
-	repeat(14) with instance_create(x,y,Feather){
+	repeat(14) with instance_create(x,y,Feather) {
+
 		motion_add(random(360),random_range(3,6))
 		sprite_index = spr.GlassShard
 		image_speed = random_range(.4,.7)
 		image_index = irandom(5)
-	}repeat(12)with instance_create(x+random_range(-8,8),y+random_range(-8,8),WepSwap){
+	}
+	repeat(12)with instance_create(x+random_range(-8,8),y+random_range(-8,8),WepSwap) {
 		image_xscale = .75
 		image_yscale = .75
 		image_speed = choose(.45,.45,.45,.3)
@@ -3767,8 +3935,9 @@ instance_destroy()
 #define disc_init
 typ = 1
 dist = 0
-depth = 0
+depth = -2
 lastteam = -1
+teamset = false;
 mask_index = mskDisc
 spr_trail = sprDiscTrail
 spr_dead = sprDiscDisappear
@@ -3776,16 +3945,17 @@ hitid = [sprite_index, name]
 on_destroy = disc_destroy
 
 #define disc_step(dis)
-dist += dis * current_time_scale
-if speed > 0 and current_frame_active
-    with instance_create(x, y, DiscTrail){
-        sprite_index = other.spr_trail
-        depth = 0;
-    }
-if instance_exists(creator) && team != -1 && !place_meeting(x,y,creator){
-    lastteam = team
-    team = -1
-}
+	dist += dis * current_time_scale;
+	if speed > 0 and current_frame_active with instance_create(x, y, DiscTrail) {
+
+	        sprite_index = other.spr_trail;
+	        depth = -1;
+	    }
+
+	if instance_exists(creator) && !teamset && !place_meeting(x,y,creator) {
+	    team = -1;
+			teamset = true;
+	}
 
 #define disc_destroy()
 	sound_play_hit(sndDiscDie, .2)
@@ -3809,17 +3979,21 @@ if instance_exists(creator) && team != -1 && !place_meeting(x,y,creator){
 	}
 
 #define bouncerdisc_step
-	disc_step(speed/4)
-	if skill_get(mut_bolt_marrow){
-	    var q = instance_nearest_matching_ne(x,y,hitme,"team",lastteam)
-	    if instance_exists(q){
-	        if distance_to_object(q) < 30{
-	            var dir = point_direction(x,y,q.x,q.y)
-	            x += lengthdir_x(current_time_scale,dir)
-	            y += lengthdir_y(current_time_scale,dir)
+	disc_step(speed / 4);
+	if skill_get(mut_bolt_marrow) {
+
+	    var q = instance_nearest_matching_ne(x, y, enemy, "team", team);
+	    if instance_exists(q) {
+
+	        if distance_to_object(q) < 32 {
+
+							var _s = speed;
+			        motion_add(point_direction(x, y, q.x, q.y), 1.2 * current_time_scale);
+							speed = _s;
+
 	        }
 	    }
-	};
+	}
 
 #define bouncerdisc_hit
 	projectile_hit(other,damage+floor(speed/2),5,direction)
@@ -3872,10 +4046,19 @@ if instance_exists(stuckto){
     yprevious = y
     if current_frame_active instance_create(x,y,Dust)
 }
-else if skill_get(mut_bolt_marrow){
-    var q = instance_nearest_matching_ne(x,y,hitme,"team",lastteam)
-    if instance_exists(q) && distance_to_object(q) < 30
-        motion_add(point_direction(x,y,q.x,q.y),.25*current_time_scale)
+else if skill_get(mut_bolt_marrow) {
+
+		var q = instance_nearest_matching_ne(x, y, enemy, "team", team);
+		if instance_exists(q) {
+
+				if distance_to_object(q) < 32 {
+
+						var _s = speed;
+						motion_add(point_direction(x, y, q.x, q.y), .8 * current_time_scale);
+						speed = _s;
+
+				}
+		}
 }
 
 #define stickydisc_hit
@@ -3903,73 +4086,113 @@ if !instance_exists(stuckto) sound_play_hit(sndDiscBounce,.2)
 move_bounce_solid(true)
 
 
-#define create_megadisc(_x,_y)
-with instance_create(_x,_y,CustomProjectile){
-    sprite_index = spr.MegaDisc
-    damage = 2
-    image_speed = .4
-    maxspeed = speed
-    name = "Mega Disc"
+#define create_megadisc(_x, _y)
+	with instance_create(_x, _y, CustomProjectile){
+			name = "Mega Disc";
+			disc_init();
 
-    disc_init()
-    spr_trail = spr.MegaDiscTrail
-    mask_index = sprite_index
+			sprite_index = spr.MegaDisc;
+			mask_index   = sprite_index
+			spr_trail    = spr.MegaDiscTrail;
+			spr_dead     = spr.MegaDiscDie;
+			spr_splat    = mskNone;
 
-    on_step    = md_step
-    on_wall    = md_wall
-    on_hit     = md_hit
-    on_destroy = md_destroy
+	    damage = 2
+	    maxspeed = speed
+			turn = irandom(99) < 10 ? -1 : 1; // What direction to turn towards, reflects percentage of left-handed population
+			image_yscale *= turn * -1;        // so it always cuts properly
+			cansplat = true;                  // If a blood splat has been applied yet
+			hitid = [spr.MegaDiscHitId, name];
 
-    return id
-}
+	    on_step    = md_step;
+	    on_wall    = md_wall;
+	    on_hit     = md_hit;
+	    on_destroy = md_destroy;
+			on_draw    = md_draw;
+
+	    return id;
+	}
 
 #define md_step
-disc_step(1)
-if skill_get(21){
-    var q = instance_nearest_matching_ne(x,y,hitme,"team",lastteam)
-    if instance_exists(q) && distance_to_object(q) <= 40{
-        motion_add(point_direction(x,y,q.x,q.y),.5*current_time_scale)
-        speed = maxspeed
-    }
-}
+	disc_step(1);
+
+	image_angle += turn * (12 + speed) * current_time_scale;
+
+	if skill_get(21) {
+
+	    var q = instance_nearest_matching_ne(x, y, hitme, "team", team);
+	    if instance_exists(q) && distance_to_object(q) <= 40 {
+
+	        motion_add(point_direction(x, y, q.x, q.y), .5 * current_time_scale);
+	        speed = maxspeed;
+	    }
+	}
 
 #define md_wall
-dist += 5
-sleep(20)
-view_shake_at(x,y,8)
-sound_play_pitchvol(sndDiscBounce,random_range(.6,.8),.4)
-move_bounce_solid(false)
-direction += random_range(-12,12)
-with other{instance_create(x,y,FloorExplo);instance_destroy()}
-with instance_create(x,y,DiscBounce){
-    sprite_index = spr.MegaDiscBounce
-}
-if dist >= 200 instance_destroy()
+	dist += 5;
+	view_shake_at(x, y, 2);
+	sound_play_pitchvol(sndDiscBounce, random_range(.7, .9), .7);
+	move_bounce_solid(false);
+	direction += random_range(-4, 4);
+	with other {
+
+		instance_create(x, y, FloorExplo);
+		instance_destroy();
+	}
+	with instance_create(x, y, DiscBounce) {
+
+	    sprite_index = spr.MegaDiscBounce;
+	}
+	if dist >= 200 instance_destroy();
 
 #define md_destroy
-sound_play_pitchvol(sndDiscDie,random_range(.6,.8),.4)
-with instance_create(x,y,DiscDisappear){
-    sprite_index = spr.MegaDiscDie
-}
+	sound_play_pitchvol(sndDiscDie, random_range(.6, .8), .4);
+	with instance_create(x, y, DiscDisappear) {
+
+	    sprite_index = spr.MegaDiscDie;
+	}
 
 #define md_hit
-if current_frame_active{
-    if place_meeting(x,y,creator){
-        sound_play(sndDiscHit)
-        other.lasthit = hitid
-        sleep(3*other.size+4)
-    }
-    x -= hspeed/2
-    y -= vspeed/2
-    projectile_hit(other,damage,speed/4,direction)
-    if other.my_health <= 0{
-        sleep (other.size*2)
-    }
-    view_shake_at(x,y,8)
-    dist++
-}
+	if current_frame_active {
 
+	    if place_meeting(x,y,creator) {
 
+	        other.lasthit = hitid;
+	        sleep(3 * other.size + 4);
+	    }
+
+			x -= hspeed / 2;
+	    y -= vspeed / 2;
+	    projectile_hit(other, damage, speed / 4, direction);
+	    if other.my_health <= 0 {
+
+				sleep( 32 + 12 * clamp(other.size, 1, 3));
+				view_shake_at(x, y, 5 + 3 * clamp(other.size, 1, 3));
+				with instance_create(x + hspeed, y + vspeed, determine_gore(other)) {
+
+					image_angle = _d + 360 / _a * _i;
+				}
+				sound_play_pitch(sndDiscHit, .9);
+				if cansplat && !instance_is(other, prop) {
+
+					cansplat = false;
+					spr_splat = spr.MegaDiscSplat[irandom(max(array_length(spr.MegaDiscSplat) - 1, 0))];
+					for(var _i = 0, _a = 3, _d = random(360); _i < _a; _i++) {
+
+						with instance_create(other.x, other.y, determine_gore(other)) {
+
+								image_angle = _d + 360 / _a * _i;
+						}
+					}
+				}
+	    }
+			image_angle -= turn * 2 * current_time_scale;
+	    dist++;
+	}
+
+#define md_draw
+	draw_self();
+	draw_sprite_ext(spr_splat, image_index, x, y, image_xscale, image_yscale, image_angle, image_blend, image_alpha);
 
 #define create_knife(x, y)
 with create_sword(x, y){
@@ -4163,6 +4386,14 @@ if d {
 #define slasheffect_step
 if image_index + image_speed*current_time_scale > image_number instance_destroy()
 
+#define create_gas_fire(x, y)
+with instance_create(x, y, Flame) {
+
+	damage += 1;
+	can_ignite = true;
+	sprite_index = spr.GasFire;
+	return self;
+}
 
 #define create_charge_obj(x, y)
 	with instance_create(x, y, CustomObject) {
@@ -4284,6 +4515,8 @@ if charge > maxcharge{
 defcharge.charge = charge
 
 if charged = 0{
+
+	creator.speed *= .9;
 	if holdtime >= 60 {var _m = 5}else{var _m = 3}
 	if current_frame mod _m < current_time_scale{
 	    creator.gunshine = 1
@@ -4687,6 +4920,7 @@ if !irandom((2 - brain_active) > 0) with instance_create(x-lengthdir_x(10,direct
         	sprite_index = spr.VectorEffect
         	image_angle = other.direction
 					image_speed = .4 - (brain_active ? .2 : 0);
+					friction = .2;
         	motion_set(other.direction,choose(1,2))
         }
 var _targ = instance_nearest_matching_ne(x, y, hitme, "team", team), _diff = angle_difference(direction, basedir);
@@ -4728,19 +4962,37 @@ if basedir == undefined {
 
 #define vector_head_destroy
 sound_play_hit_big(sndPlasmaHit, .2)
+
 with instance_create(x, y, PlasmaImpact) {
-	creator = other.creator
-	team = other.team
-	force = 0
-	damage += 2
-	image_speed *= .65
-	sprite_index = spr.VectorImpact
-}
+
+	creator = other.creator;
+	team 		= other.team;
+	force   = 0;
+	image_speed += .1;
+	sprite_index = spr.VectorImpact;
+	mask_index   = msk.VectorImpact;
+
+	repeat(10) {
+
+		var _d = random(360);
+
+		with instance_create(x + lengthdir_x(28 + random_range(-2, 6), _d), y + lengthdir_y(28 + random_range(-2, 6), _d), BulletHit) {
+
+				sprite_index = spr.VectorEffect;
+				image_index  = (brain_active ? 0 : irandom(1));
+				image_speed  = .4 - (brain_active ? .2 : 0);
+				depth = other.depth - 1;
+
+				motion_set(_d - 180, choose(1, 2));
+				image_angle = direction;
+			}
+		}
+	}
 
 #define vector_head_draw
 var _dis = point_distance(x, y, trail_x, trail_y), _dir = point_direction(x, y, trail_x, trail_y);
 draw_sprite_ext(spr_trail, 0, x, y, _dis/2, image_yscale, _dir, image_blend, image_alpha)
-draw_sprite_ext(spr_head, 0, x, y, image_xscale, image_xscale, image_angle - 45, image_blend, image_alpha)
+draw_sprite_ext(spr_head, 0, x, y, image_xscale, image_yscale, image_angle - 45, image_blend, image_alpha)
 
 
 #define create_vector_trail(_x, _y)

@@ -6,7 +6,7 @@
 	return "FANTASTIC REFRACTIONS";
 
 #define skill_text
-return "@yBULLET@s WEAPONS BECOME " + `@(color:${make_colour_hsv(current_frame mod 255, 220, 255)})ANYTHING@s`;
+return "@yBULLETS @sBECOME " + `@(color:${make_colour_hsv(current_frame mod 255, 220, 255)})ANYTHING@s`;
 
 #define skill_tip
 	return mod_current;

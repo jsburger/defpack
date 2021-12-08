@@ -340,10 +340,13 @@
                   }
                   instance_delete(self)
               }
-            }else if random(100) <= 8 and !instance_is(self, BigWeaponChest) and !instance_is(self, BigCursedChest) and !instance_is(self, GiantWeaponChest) && skill_get(mut_open_mind) > 0{
+            }else if random(100) <= 10 and !instance_is(self, BigWeaponChest) and !instance_is(self, BigCursedChest) and !instance_is(self, GiantWeaponChest) && (skill_get(mut_open_mind) > 0 || skill_get("thinktank") > 0) {
                 var q = get_chests(0, GameCont.hard)
                 if array_length(q){
-                    customchest_create(x, y, q[irandom(array_length(q) - 7)])
+                    with customchest_create(x, y, q[irandom(array_length(q) - 7)]) {
+
+                      defpack_no_reroll = true;
+                    }
                     instance_delete(self)
                 }
             }
@@ -405,6 +408,7 @@
       with(o){
           curse = false
           name = "DefCustomChest";
+          defpack_no_reroll = false;
           type = Type// specifc chest type
           var q = global.chests[? Type]
           spr_open = q.spr_open
@@ -431,6 +435,7 @@
             wep = _w
             _k = wep;
             roll = 1
+            defpack_no_reroll = other.defpack_no_reroll;
             if weapon_get_type(wep) != 0 ammo = 1
             if _i = 99 exit;
             _i = 100;

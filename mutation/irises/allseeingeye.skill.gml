@@ -6,10 +6,10 @@
 	return "ALL-SEEING EYE";
 
 #define skill_text
-	return "@yBULLET@s WEAPONS BECOME @pHOMING";
+	return "@yBULLETS @sBECOME @pHOMING";
 
 #define skill_tip
-	return "@sIT @pBEGINS";
+	return ["@pPSY BULLETS @sARE @wSTRONG @sBUT @wSLOW", "THEY KNOW"];
 
 #define skill_iris
 	return "psy"; // Return prefix of weapon variants

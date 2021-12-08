@@ -6,10 +6,10 @@
 	return "PESTILENT GAZE";
 
 #define skill_text
-	return "@yBULLET@s WEAPONS BECOME @gTOXIC";
+	return "@yBULLETS @sBECOME @gTOXIC";
 
 #define skill_tip
-	return "@sREIGN OF @gTERROR";
+	return ["@gPEST BULLETS @sARE VERY @wSTRONG", "WATCH OUT FOR @gGAS"];
 
 #define skill_iris
 	return "pest"; // Return prefix of weapon variants

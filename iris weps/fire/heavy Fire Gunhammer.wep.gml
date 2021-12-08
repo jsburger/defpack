@@ -73,12 +73,14 @@ with instance_create(x + lengthdir_x(l, gunangle),y + lengthdir_y(l, gunangle),S
 		sound_play_gun(sndClickBack,1,.3)
 		sound_stop(sndClickBack)
 		sprite_index = global.sprHeavyFireGunhammerSlash
+		var _i = 0;
 	    repeat(4){
+					_i++;
             if other.ammo[1] >=2 {
         		mod_script_call("mod","defpack tools", "shell_yeah_heavy", -180, 35, random_range(3,5), c_red)
         		repeat(2)with instance_create(x+lengthdir_x(sprite_width,direction)+random_range(-2,2),y+lengthdir_y(sprite_width,direction)+random_range(-2,2),Smoke)motion_set(other.direction + random_range(-8,8), 1+random(3))
         		with mod_script_call("mod","defpack tools","create_heavy_fire_bullet",x,y){
-        			motion_set(other.direction + random_range(-30,30)*other.creator.accuracy, 16)
+        			motion_set(other.direction + random_range(-30,30)*other.creator.accuracy * (_i = 1 ? .3 : 1), 20)
         			image_angle = direction
         			creator = other.creator
         			team = other.team

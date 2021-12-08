@@ -1,7 +1,14 @@
 #define init
-  global.sprBullet = sprite_add("../../../sprites/sage/bullets/sprBulletWarp.png", 0, 7, 7);
+  global.sprBullet = sprite_add_weapon("../../../sprites/sage/bullets/sprBulletWarp.png", 7, 7);
+  global.sprFairy = sprite_add("../../../sprites/sage/bullet icons/sprFairyIconWarp.png", 0, 4, 5);
 
 #macro c mod_variable_get("race", "sage", "colormap");
+
+#define fairy_sprite
+  return global.sprFairy;
+
+#define fairy_color
+  return $FF721F;
 
 #define bullet_sprite
   return global.sprBullet;
@@ -9,11 +16,20 @@
 #define bullet_name
   return "HYPER";
 
+#define bullet_ttip
+  return "HYPER @yBULLETS";
+
 #define bullet_area
-  return 0;
+  return 1;
+
+#define bullet_swap
+  var _p = random_range(.9, 1.1);
+  sound_play_pitchvol(sndSwapHammer,   .6 * _p, .5);
+  sound_play_pitchvol(sndSwapShotgun, 1.2 * _p, .9);
+  sound_play_pitchvol(sndCrossReload, 1.4 * _p, .9);
 
 #define bullet_description(power)
-  return `@(color:${c.neutral})+` + string(2 + ceil(3 * power)) + ` @(color:${c.speed})WARPSPEED#@(color:${c.neutral})+25% @(color:${c.accuracy})ACCURACY`;
+  return `@(color:${c.neutral})+` + string(2 + ceil(3 * power)) + ` @(color:${c.speed})HYPERSPEED#@(color:${c.neutral})+25% @(color:${c.accuracy})ACCURACY`;
 
 #define on_take(power)
   sage_projectile_speed *= 1 - .35; // this one is hidden pssst
@@ -30,10 +46,10 @@
   sage_hitscan_strength -= 2 + ceil(3 * power);
   accuracy /= .75;
 
-#define step
+#define on_step(spellPower)
   with instances_matching(Player, "race", "sage") {
 
-    if "sage_hitscan_strength" in self {
+    if "sage_hitscan_strength" in self  && sage_hitscan_strength > 1{
 
       var _s = id;
       with instances_matching(projectile, "creator", _s) {
@@ -47,7 +63,7 @@
           if "sage_flame_epic" not in self {
 
             sage_flame_epic = true;
-            speed += 4 + 2 * ultra_get("sage", 1);
+            speed += 4 + 2 * spellPower;
           }
         }
 
@@ -60,3 +76,8 @@
       }
     }
   }
+
+#define on_fire
+var _p = random_range(.8, 1.2);
+
+sound_play_pitchvol(sndUltraCrossbow, 1.5 * _p, .5);

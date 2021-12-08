@@ -39,8 +39,9 @@ return 2;
 #define weapon_area
 return 13;
 
-#define weapon_load
-return 15;
+#define weapon_load(w)
+var _l = 15;
+if is_object(w) return _l - (w.maxhealth - w.health) * 2 else return _l;
 
 #define weapon_swap(w)
 if instance_is(self, Player) if is_object(w){w.prevhealth = my_health}
@@ -83,21 +84,21 @@ return{
   sound_play_pitch(sndSlugger,.75 * _p)
   sound_play_pitch(sndLaserCrystalHit,1.55 * _p)
 
-  repeat(5) with instance_create(x,y,CustomProjectile){
+  repeat(6) with instance_create(x,y,CustomProjectile){
       name = "Quartz Shell"
       sprite_index = global.sprQuartzBullet2
       mask_index   = mskBullet2
       team    = other.team
       creator = other
       force  = 4
-      damage = 6
+      damage = 5
       falloff = 2
       fallofftime = current_frame + 2 + skill_get(15) * 2
       typ = 1
-      friction = random_range(.6,2)
+      friction = random_range(.5, 1.5)
       image_speed = 1
       wallbounce = 3 + skill_get(15) * 5;
-      motion_add(other.gunangle+random_range(-9,9) * (other.accuracy + (2 - 2 * w.health/w.maxhealth)),24)
+      motion_add(other.gunangle + random_range(-11, 11), 21);
 
       if place_meeting(x + hspeed, y + vspeed, Wall){
         var _i = 0;

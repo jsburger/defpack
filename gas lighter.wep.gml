@@ -1,6 +1,10 @@
 #define init
 global.sprGasLigher     = sprite_add_weapon("sprites/weapons/sprGasLighter.png",  7, 2);
 global.sprGasLigherFire = sprite_add_weapon("sprites/weapons/sprGasLighterFire.png",  7, 2);
+global.sprGasLigterC[0] = sprite_add_weapon("sprites/weapons/sprGasLighter.png", 7, 2);
+global.sprGasLigterC[1] = sprite_add_weapon("sprites/weapons/sprGasLighterFireC1.png", 7, 2);
+global.sprGasLigterC[2] = sprite_add_weapon("sprites/weapons/sprGasLighterFireC2.png", 7, 2);
+global.sprGasLigterC[3] = sprite_add_weapon("sprites/weapons/sprGasLighterFireC3.png", 7, 2);
 
 #macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)
 
@@ -14,7 +18,6 @@ if instance_is(self,Player){
 			return global.sprGasLigher;
 	}
 }
-
 return global.sprGasLigherFire;
 
 #define weapon_type
@@ -117,7 +120,10 @@ if button_check(index, btn){
     	weapon_post(2 * other.charge/other.maxcharge, 0, 0);
     }
 }
-else{instance_destroy()}
+else{instance_destroy(); exit}
+if charged {
+	creator.speed *= .9;
+}
 
 #define lighter_cleanup
 view_pan_factor[index] = undefined
@@ -139,41 +145,19 @@ if !charged sound_stop(sound)
 		sound_play_pitch(sndDoubleFireShotgun, .8 * _p)
 		sound_play_pitch(sndSuperSlugger, .9 * _p)
 
-		repeat(42)with instance_create(x + hspeed, y + vspeed, Flame){
-			move_contact_solid(other.gunangle, 16);
-			motion_add(other.gunangle + random_range(-3, 3) * other.accuracy, 4 + irandom(8))
-      friction += .25
+		repeat(24) with create_gas_fire(x + hspeed, y + vspeed){
+			move_contact_solid(other.gunangle, 12);
+			motion_add(other.gunangle + random_range(-1, 1) * other.accuracy, min(12, 3 + irandom(4) + irandom(4) + irandom(4))); //yes thats for a bell curve distribution of speed biased towards higher speeds
+      friction += .4
 			team = other.team;
+			image_angle = direction + random_range(-12, 12);
 		}
-		var _t = self;
-		if instance_exists(ToxicGas){
-			view_shake_at(_t.x, _t.y, 16);
-		}
-    var _c = false
-		with ToxicGas{
-      if !_c{
-        _c = true
-        sleep(50)
-        sound_play_pitchvol(sndFlareExplode, 1.5, 1.5)
-        sound_play_pitchvol(sndFlameCannonEnd, 3, .7)
-      }
-			repeat(4)with instance_create(x, y, Flame){
-				motion_add(random(360), 5)
-				team = _t.team;
-				damage += 3;
-			}
-			instance_destroy()
-		}
-		with FrogQueenBall{
-			sleep(80)
-			repeat(24)with instance_create(x, y, Flame){
-				motion_add(random(360), 8 + irandom(1))
-				team = _t.team;
-				damage += 3;
-			}
-			sound_play(sndExplosionS)
-			instance_create(x, y, SmallExplosion)
-			instance_destroy()
+		with create_gas_fire(x + hspeed, y + vspeed){
+			move_contact_solid(other.gunangle, 12);
+			motion_add(other.gunangle + random_range(-1, 1) * other.accuracy, 4)
+      friction += .4
+			team = other.team;
+			image_angle = direction + random_range(-12, 12);
 		}
 	}else{
 		sound_play_pitch(sndOasisExplosion, 2.5 * _p)
@@ -182,7 +166,7 @@ if !charged sound_stop(sound)
 		repeat(42)with instance_create(x + hspeed, y + vspeed, ToxicGas){
       team = other.team
       move_contact_solid(other.gunangle, 16)
-			motion_add(other.gunangle + random_range(-2, 2) * other.accuracy, 6 + irandom(5))
+			motion_add(other.gunangle + random_range(-2, 2) * other.accuracy, 5 + irandom(8))
 			friction = .35;
       gas_special = true
 		}
@@ -196,4 +180,4 @@ if !charged sound_stop(sound)
     }
   }
 
-#define extraspeed_add(_player, __speed, _direction) return mod_script_call("mod", "defpack tools", "extraspeed_add", _player, __speed, _direction);
+#define create_gas_fire( _x, _y) return mod_script_call("mod", "defpack tools", "create_gas_fire", _x, _y);

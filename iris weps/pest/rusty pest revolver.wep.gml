@@ -1,5 +1,5 @@
 #define init
-global.sprRustyPestPistol = sprite_add_weapon("../../sprites/weapons/iris/pest/sprRustyPestRevolver.png", 0, 2);
+global.sprRustyPestPistol = sprite_add_weapon("../../sprites/weapons/iris/pest/sprRustyPestRevolver.png", -3, 2);
 
 #define weapon_name
 return "RUSTY PEST PISTOL";

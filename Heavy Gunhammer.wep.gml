@@ -59,8 +59,6 @@ var l = 20* skill_get(mut_long_arms)
 with instance_create(x + lengthdir_x(l, gunangle),y + lengthdir_y(l, gunangle),Slash){
 	damage = 15
 	force = 12
-	image_xscale *= 1.3
-	image_yscale *= 1.3
 	motion_add(other.gunangle, 2 + (skill_get(13) * 3))
 	if r{
 		sprite_index = global.sprGunhammerSlash
@@ -74,18 +72,21 @@ with instance_create(x + lengthdir_x(l, gunangle),y + lengthdir_y(l, gunangle),S
 	team = other.team
 	creator = other
 	if r{
-	    sound_play_pitchvol(sndSawedOffShotgun,.7*p,.7)
+	    sound_play_pitchvol(sndSawedOffShotgun,.6*p,.7)
 		sound_play_pitchvol(sndDoubleShotgun,.6*p,.7)
-		sound_play_pitchvol(sndQuadMachinegun,.7*p,.7)
-		sound_play_pitchvol(sndFlakExplode,.5*p,.4)
-		sound_play_pitch(sndHeavyRevoler,random_range(0.8,1.2))
+		sound_play_pitchvol(sndQuadMachinegun,.5*p,.7)
+		sound_play_pitchvol(sndFlakExplode,.5*p,.6)
+		sound_play_pitchvol(sndUltraGrenade,1.4*p,.6)
+		sound_play_pitch(sndHeavyRevoler,random_range(.6,.8))
 		sound_play_gun(sndClickBack,1,.3)
 		sound_stop(sndClickBack)
-    	repeat(4){
+			var _i = 0;
+			repeat(4){
+					_i++;
     	    if other.ammo[1] >= 2 {
     			instance_create(x+lengthdir_x(sprite_width,direction),y+lengthdir_y(sprite_width,direction),Smoke)
     			with instance_create(x,y,HeavyBullet){
-    				motion_set(other.direction + random_range(-20,20)*other.creator.accuracy, 16)
+    				motion_set(other.direction + random_range(-20,20) * other.creator.accuracy * (_i = 1 ? .1 : 1), 20)
     				image_angle = direction
     				creator = other.creator
     				team = other.team

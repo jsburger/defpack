@@ -6,7 +6,7 @@
 	return "WARPED PERSPECTIVE";
 
 #define skill_text
-	return "@yBULLET@s WEAPONS BECOME @gIRRADIATED";
+	return "@yBULLETS @sBECOME @gIRRADIATED";
 
 #define skill_tip
 	return "@gCLOSE MINDED";

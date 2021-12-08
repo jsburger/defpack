@@ -1,7 +1,7 @@
 #define init
 global.sprFireGunhammer 		 = sprite_add_weapon("../../sprites/weapons/iris/fire/sprFireGunhammer.png", 1, 6); //SHOULD BE THE NORM, LOOKING GOOD
 global.sprFireGunhammerHUD 	 = sprite_add_weapon("../../sprites/weapons/iris/fire/sprFireGunhammer.png", 12, 5);
-global.sprFireGunhammerSlash = sprite_add("../../sprites/projectiles/iris/fire/sprFireGunhammerSlash.png",3,0,24)
+global.sprFireGunhammerSlash = sprite_add("../../sprites/projectiles/iris/fire/sprFireGunhammerSlash.png",4,0,24)
 
 #define weapon_name
 return "FIRE GUNHAMMER";
@@ -66,14 +66,16 @@ with instance_create(x + lengthdir_x(l, gunangle),y + lengthdir_y(l, gunangle),S
 		sprite_index = global.sprFireGunhammerSlash
 		sound_play_gun(sndClickBack,1,.6)
 		sound_stop(sndClickBack)
+			var _i = 0;
 	    repeat(4){
+					_i++;
     	    if other.ammo[1] >=1 {
     			mod_script_call("mod","defpack tools", "shell_yeah", -180, 35, random_range(3,5), c_red)
     			damage = 15
     			force = 15
     			repeat(2)with instance_create(x+lengthdir_x(sprite_width,direction)+random_range(-2,2),y+lengthdir_y(sprite_width,direction)+random_range(-2,2),Smoke)motion_set(other.direction + random_range(-8,8), 1+random(3))
     			with mod_script_call("mod","defpack tools","create_fire_bullet",x,y){
-    				motion_set(other.direction + random_range(-30,30)*other.creator.accuracy, 16)
+    				motion_set(other.direction + random_range(-30,30)*other.creator.accuracy * (_i = 1 ? .3 : 1), 20)
     				image_angle = direction
     				creator = other.creator
     				team = other.team

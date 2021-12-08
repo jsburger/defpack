@@ -13,7 +13,7 @@ return 3
 #define weapon_area
 return 8
 #define weapon_load
-return 34
+return 70
 #define weapon_swap
 return sndSwapEnergy
 #define weapon_auto
@@ -129,7 +129,7 @@ with instance_create(x,y,CustomSlash)
       image_speed = .5;
 			sleep(15);
 			view_shake_at(other.x, other.y, 8);
-	    	sound_play_pitchvol(skill_get(mut_laser_brain) > 0 ? sndPlasmaMinigunUpg : sndPlasmaMinigun, other.ammo / 10, 1)
+	    	sound_play_pitchvol(skill_get(mut_laser_brain) > 0 ? sndPlasmaMinigunUpg : sndPlasmaMinigun, .5 + other.ammo / 10, 1)
 			with instance_create(other.x+random_range(-12,12),other.y+random_range(-12,12),GunGun){image_index=2-skill_get(17)}
 			if !_k with other{
 				instance_destroy()

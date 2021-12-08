@@ -37,11 +37,12 @@ return 3;
 #define weapon_auto
 return false;
 
-#define weapon_load
-return 27;
+#define weapon_load(w)
+var _l = 24;
+if is_object(w) return _l - (w.maxhealth - w.health) * 4 else return _l;
 
 #define weapon_cost
-return 2;
+return 1;
 
 #define weapon_swap(w)
 if instance_is(self, Player) if is_object(w){w.prevhealth = my_health}
@@ -84,8 +85,8 @@ return{
 		creator = other
 		sprite_index = global.sprQuartzBolt
 		mask_index   = global.mskQuartzBolt
-		damage = 60
-		motion_add(other.gunangle + (3 - 3 * w.health/w.maxhealth),30)
+		damage = 35
+		motion_add(other.gunangle, 26)
 		image_angle = direction
 		repeat(3) with instance_create(x+random_range(-4,4),y+random_range(-4,4),Dust){sprite_index = sprExtraFeetDust}
 	}

@@ -6,10 +6,10 @@
 	return "BLAZING VISAGE";
 
 #define skill_text
-	return "@yBULLET@s WEAPONS BECOME @rFLAMING";
+	return "@yBULLETS @sBECOME @rFLAMING";
 
 #define skill_tip
-	return "@rBURN @sTHE WORLD DOWN";
+	return ["@rBURN @sTHE WORLD DOWN", "@rFIRE BULLETS @sARE @wSTRONGER @sUP CLOSE", "@rFIRE BULLETS @sARE VERY @wINACCURATE"] ;
 
 #define skill_iris
 	return "fire"; // Return prefix of weapon variants

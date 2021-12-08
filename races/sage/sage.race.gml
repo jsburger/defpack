@@ -6,24 +6,31 @@
   * All Vector guns
   * Sniper Rifle & Shotgun
 * Split code for:
-  * Popper (is wierdy rn)
-  * Sniper Rifle & Shotgun
-  * Mega Disc Gun
-  * Abris guns
   * all charge weps actually
-  * Plasmite Cannon (also wierdy rn)
-  * Mega Laser, Quartz Laser and Ionizer do split but dont change Angle
+  * Mega Laser does split but dont change Angle
 * Kaboomerang and LWheel dont work well in general
-* Brushlikes dont work well
-* Secondary Projectiles should not split (its too much bro)
 * Non sage players should not be able to pick up spell bullets
 * "LOW HP" text overlaps with bullet hud
 * bullet hud doesnt draw during pause
 * sage b skin
 * sage sounds
-* swap effects
-* BRING BACK THE FAIRY BRO
 * Throne Butt is cringe rn (its awkward to use), please change
+*/
+
+/*
+	Possible extra effect list:
+	Default: + Spellpower
+	Gold: + Spellpower when using golden weapons
+	Melee:
+	Turret:
+	Infammo:
+	Precision:
+	Bounce: + Hitbounce
+	Hyper:
+	Burst:
+	Ultra: + Auto weapons when using rads
+	Cursed: + Upside & Downside
+
 */
 
 /*
@@ -62,16 +69,16 @@ NOTES FROM JSBURG:
 	global.spr_walk[0] = sprite_add(_i + "sprGunWalk.png",	6, 12, 12);
 	global.spr_hurt[0] = sprite_add(_i + "sprGunHurt.png",	3, 12, 12);
 	global.spr_dead[0] = sprite_add(_i + "sprGunDie.png",  	6, 12, 12);
-	global.spr_sit1[0] = sprite_add(_i + "sprGunWalk.png",	6, 12, 12);
-	global.spr_sit2[0] = sprite_add(_i + "sprGunIdle.png",	6, 12, 12);
+	global.spr_sit1[0] = sprite_add(_i + "sprGunGoSit.png",	3, 12, 12);
+	global.spr_sit2[0] = sprite_add(_i + "sprGunSit.png",		1, 12, 12);
 
 	 // B-Skin:
 	global.spr_idle[1] = sprite_add(_i + "sprGunIdle.png",	6, 12, 12);
 	global.spr_walk[1] = sprite_add(_i + "sprGunWalk.png",	6, 12, 12);
 	global.spr_hurt[1] = sprite_add(_i + "sprGunHurt.png",	3, 12, 12);
 	global.spr_dead[1] = sprite_add(_i + "sprGunDie.png",	  6, 12, 12);
-	global.spr_sit1[1] = sprite_add(_i + "sprGunWalk.png",	6, 12, 12);
-	global.spr_sit2[1] = sprite_add(_i + "sprGunIdle.png",	6, 12, 12);
+	global.spr_sit1[1] = sprite_add(_i + "sprGunGoSit.png",	3, 12, 12);
+	global.spr_sit2[1] = sprite_add(_i + "sprGunSit.png",		1, 12, 12);
 
 	 // Character Selection / Loading Screen:
 	global.spr_slct = sprite_add(_i + "sprGunSlct.png", 1, 0,  0);
@@ -84,6 +91,8 @@ NOTES FROM JSBURG:
 	global.spr_ult_icon[1] = sprite_add(_i + "sprGunMapIcon.png", 1, 8, 9);
 	global.spr_ult_icon[2] = sprite_add(_i + "sprGunMapIcon.png", 1, 8, 9);
 
+	 // FX:
+	 global.sprSwapFairy = sprite_add(_i + "fx/sprWepSwapL.png", 6, 16, 16);
 	 // Reapply sprites if the mod is reloaded. //
 	with(instances_matching(Player, "race", mod_current)) {
 		assign_sprites();
@@ -99,6 +108,7 @@ NOTES FROM JSBURG:
 	global.colormap = {
 
 		neutral: 					$BAB0A9,
+		negative:         $444FED,
 		speed:   					$CE7314,
 		projectile_speed: $E5BC16,
 		accuracy:         $0067F7,
@@ -107,7 +117,8 @@ NOTES FROM JSBURG:
 		ammo:             $00ABFA,
 		bounce:           $00ABFA,
 		reload:           $FFFFFF,
-		aqua:             c_aqua
+		aqua:             c_aqua,
+		spell:            make_color_rgb(21, 98, 85),
 	}
 
 	var _race = [];
@@ -150,479 +161,9 @@ NOTES FROM JSBURG:
 	draw_sprite(_sprIndex, _imgIndex, _x -1, _y);
 	draw_sprite(_sprIndex, _imgIndex, _x +1, _y);
 	draw_sprite(_sprIndex, _imgIndex, _x, _y -1);
-	draw_sprite(_sprIndex, _imgIndex, _x, _y +1);
+	draw_sprite(_sprIndex, _imgIndex, _x, _y +2);
 	d3d_set_fog(false, c_white, 0, 0);
 
-#define player_hud(_player, _hudIndex, _hudSide)
-     // Spell Bullets:
-
-	var _x = (_hudSide ? 8 : 99),
-		_w = sprite_get_width(global.spellHold) / 2,
-		_y = 12+(_player.uiroll == i),
-		_h = sprite_get_height(global.spellHold) / 2;
-
-	if dev{
-		draw_set_font(fntSmall);
-		draw_text_nt(-13, 46, "@wRELOAD_SPEED = " + string(round(_player.reloadspeed * 100)) + "%")
-		draw_text_nt(-13, 53, "@yACCURACY     = " + string(round(_player.accuracy * 100)) + "%")
-		draw_text_nt(-13, 60, "@gAMMO_COST    = " + string(round(1 + _player.sage_ammo_cost) * 100) + "%")
-		draw_text_nt(-13, 67, "@bPROJ_SPEED   = " + string(round(_player.sage_projectile_speed * 100)) + "%")
-		draw_text_nt(-13, 74, "@pSPELL_POWER  = " + string(round((1 + _player.sage_spell_power) * 100)) + "%")
-		draw_text_nt(-13, 81, "@bSPEED        = " + string(_player.maxspeed))
-		draw_set_font(fntM);
-	}
-
-	for(var i = 0; i < max(array_length(_player.spellBullets), min_spellbullets); i++){
-
-		if i < array_length(_player.spellBullets){
-
-			//Draw Outline for bullets in active slots:
-			if i == 0 || ultra_get("sage", 2){
-				draw_outline(bullet[? _player.spellBullets[i]].spr_index, 0, _x, _y)
-			}
-
-			//Draw Bullet:
-			draw_sprite_ext(bullet[? _player.spellBullets[i]].spr_index, 0, _x, _y, (_hudSide ? -1 : 1), 1, 0, c_white, 1);
-
-			//Darken in secondary Slots:
-			if i != 0 {
-
-				draw_sprite_ext(bullet[? _player.spellBullets[i]].spr_index, 0, _x, _y, (_hudSide ? -1 : 1), 1, 0, c_black, .2);
-			}
-
-			if !point_in_rectangle(ceil(mouse_x[_player.index] - view_xview[_player.index]) - 16, ceil(mouse_y[_player.index] - view_yview[_player.index]), (_hudSide ? 8 : 99) - _w * 2 * (_hudSide ? -1 : 1), _y - 2 - _h, (_hudSide ? 8 : 99) + _w+ _w * 2 * array_length(_player.spellBullets) * (_hudSide ? -1 : 1), _y - 1 + _h) {
-
-				_player.sage_uitimer = 20;
-			}else {
-
-				_player.sage_uitimer = max(_player.sage_uitimer - current_time_scale, 0);
-			}
-
-			if point_in_rectangle(mouse_x[_player.index] - view_xview[_player.index] - 16, mouse_y[_player.index] - view_yview[_player.index], _x - _w, _y - _h - 2, _x + 2, _y + _h) { //
-
-				  if _player.sage_uitimer = 0 {
-
-						draw_set_font(fntM);
-			      draw_text_nt(_x - 4 - (11 * i - i) * (_hudSide ? -1 : 1), _y + _h + 3, bullet[? _player.spellBullets[i]].name);
-			      draw_set_font(fntSmall);
-			      draw_text_nt(_x - 4 - (11 * i - i) * (_hudSide ? -1 : 1), _y + _h + 12, bullet[? _player.spellBullets[i]].description);
-			    }
-			}
-
-		}else{
-			//Draw empty bullet spaces:
-			draw_sprite_ext(global.spellHold, 0, _x, 12, (_hudSide ? -1 : 1), 1, 0, c_white, 1);
-		}
-
-		//var _c = make_colour_hsv(_x * 1.5 mod 255, 255, 255);
-		//draw_rectangle_color(_x - _w, _y - _h - 2, _x + 2, _y + _h, _c, _c, _c, _c, true);
-
-	    _x += _hudSide ? -10 : 10;
-		_y = 12 + (_player.uiroll == i);
-	}
-
-	if(_player.uiroll < array_length(_player.spellBullets)){
-		_player.uiroll++;
-	}
-
- // On Character's Creation (Starting a run, getting revived in co-op, etc.):
- // Thanks Brokin
-
-#macro bullet mod_variable_get("mod", "SageBullets", "BulletDirectory")
-#macro min_spellbullets 2 + skill_get(5)
-#macro dev false
-
-#define create
-	uiroll = 0;
-
-	sage_projectile_speed = 1; // Projectile speed multiplier
-	sage_spell_power = 0;      // Sage spellpower multiplier
-	sage_ammo_cost = 0; 	     // ammo cost multiplier
-	sage_ammo_to_rads = 0;     // ammo to rad bool
-	sage_uitimer = 20; // how long to wait on mouse hover before the draw
-	spellBullets = [];
-
-	if !dev {
-
-		array_push(spellBullets, bullet[? "bDefault"].key);
-	}else {
-
-		array_push(spellBullets, bullet[? "bDefault"].key);
-		array_push(spellBullets, bullet[? "bGold"].key);
-		array_push(spellBullets, bullet[? "bMelee"].key);
-		array_push(spellBullets, bullet[? "bTurret"].key);
-		array_push(spellBullets, bullet[? "bInfammo"].key);
-		array_push(spellBullets, bullet[? "bPrecision"].key);
-		array_push(spellBullets, bullet[? "bReflective"].key);
-		array_push(spellBullets, bullet[? "bWarp"].key);
-		array_push(spellBullets, bullet[? "bBurst"].key);
-	}
-
-	if instance_is(self, Player) stat_gain(spellBullets[0], self); // This check resolves an error with yokins cheat mod
-
-	assign_sprites();
-	assign_sounds();
-
- // Every Frame While Character Exists:
-#define step
-	if dev && button_pressed(0, "horn"){
-		array_push(0.spellBullets, "bTurret")
-		if dev trace(0.spellBullets)
-	}
-
-  if(!instance_exists(global.bind_late_step)){
-      global.bind_late_step = script_bind_step(late_step, 0);
-  }
-
-	///  ACTIVE : Swap Spells  \\\
-
-	// Player effects:
-	if(canspec && button_pressed(index, "spec") && array_length(spellBullets) > 1){
-		var _temp = spellBullets[0];
-		if(!ultra_get("sage", 2)){
-			stat_lose(spellBullets[0], self);
-			stat_gain(spellBullets[1], self);
-		}
-		for(var i = 1; i < array_length(spellBullets); i++){
-			spellBullets[i-1] = spellBullets[i];
-		}
-		spellBullets[array_length(spellBullets) - 1] = _temp;
-		uiroll = 0;
-	}
-	///  PASSIVE : Spawn Spellbullets on weapon chest open \\\
-	with(WeaponChest){
-		if(fork()){
-			var _x = x;
-			var _y = y;
-			wait(0);
-			if(!instance_exists(self)){
-				wait(0);
-				//the player is passed in as an optional variable specifically for ""
-				//it makes it so the player gets spellbullets they don't have already from normal chests
-				spellbullet_create(_x,_y, "", other);
-			}
-			exit;
-		}
-	}
-	with(GoldChest){
-		if(fork()){
-			var _x = x;
-			var _y = y;
-			wait(0);
-			if(!instance_exists(self)){
-				wait(0);
-				spellbullet_create(_x,_y, item[? "bGold"]);
-			}
-			exit;
-		}
-	}
-	with(ProtoChest){
-		if(fork()){
-			var _x = x;
-			var _y = y;
-			wait(0);
-			if(!instance_exists(self)){
-				wait(0);
-				spellbullet_create(_x,_y, item[? "bUltra"]);
-			}
-			exit;
-		}
-	}
-	with(BigWeaponChest){
-		if(fork()){
-			var _x = x;
-			var _y = y;
-			wait(0);
-			if(!instance_exists(self)){
-				wait(0);
-				repeat(2) spellbullet_create(_x,_y, item[? choose("bSplit", "bReflective", "bPrecision", "bWarp", "bHaste", "bBurst", "bGold")]);
-			}
-			exit;
-		}
-	}
-	with(GiantWeaponChest){
-		if(fork()){
-			var _x = x;
-			var _y = y;
-			wait(0);
-			if(!instance_exists(self)){
-				wait(0);
-				repeat(12) spellbullet_create(_x,_y, item[? choose("bSplit", "bReflective", "bPrecision", "bWarp", "bHaste", "bBurst", "bGold")]);
-			}
-			exit;
-		}
-	}
-	with instances_matching(chestprop, "name", "DefCustomChest"){
-		if(fork()){
-			var _x = x;
-			var _y = y;
-			wait(0);
-			if(!instance_exists(self)){
-				wait(0);
-				repeat(2) spellbullet_create(_x,_y,  item[? choose("bSplit", "bReflective", "bPrecision", "bWarp", "bHaste", "bBurst", "bGold")]);
-			}
-			exit;
-		}
-	}
-
-	var sageEffectNum = (ultra_get("sage", 2) ? array_length(other.spellBullets) : 1);
-	with(instances_matching_ne(instances_matching(projectile, "creator", self), "sageCheck", sageEffectNum)) {
-		if("sageCheck" not in self){sageCheck = 0}
-
-		// Increase speed and maxspeed with projectile speed stat:
-		speed *= creator.sage_projectile_speed;
-
-		// two vars for better mod compat
-		if "maxspeed" in self{
-			maxspeed *= creator.sage_projectile_speed;
-		}
-		if "max_speed" in self{
-			max_speed *= creator.sage_projectile_speed;
-		}
-
-		// this makes shells not godawful with low projectile speed
-		if friction > 0{
-			friction *= power(creator.sage_projectile_speed, 1.25);
-		}
-
-		for(var i = sageCheck; i < sageEffectNum; i++){
-			if(!instance_exists(self)){break}
-
-			sageCheck = i + 1;
-
-			/*switch(other.spellBullets[i]){
-
-				case "split":
-					var     a = creator.sage_spell_power,
-						angle = (27 + 7 * a) * creator.accuracy,
-					   amount = 2 + a;
-					for(var _i = 0; _i < amount; _i++){
-
-						// Special split case for lasers because they dont want to cooperate on their own:
-						if instance_is(self, Laser){
-							with instance_create(xstart, ystart, Laser){
-								alarm0 = 1;
-								team = other.team;
-								creator = other.creator;
-								image_angle = other.image_angle -angle + _i * angle + angle / 2 * (1 - a);
-								direction = image_angle;
-								sageCheck = other.sageCheck
-							}
-						}else with(instance_copy(false)){
-							if !instance_is(self, Lightning){
-								image_angle += -angle + _i * angle + angle / 2 * (1 - a);
-								direction += -angle + _i * angle + angle / 2 * (1 - a);
-							}
-						}
-					}
-					instance_delete(self);
-					break;
-
-				case "precision":
-
-					/*if(skill_get(mut_throne_butt) && instance_exists(enemy)){
-						var _e = instance_nearest(x+lengthdir_x(5, direction), y+lengthdir_y(5, direction), enemy);
-						var _e2 = instance_nearest(x+lengthdir_x(15, direction), y+lengthdir_y(15, direction), enemy);
-						if(abs(angle_difference(point_direction(x,y,_e.x,_e.y), direction)) < 45){
-							direction = point_direction(x,y,_e.x,_e.y);
-							image_angle = direction;
-						}else if(abs(angle_difference(point_direction(x,y,_e2.x,_e2.y), direction)) < 45){
-							direction = point_direction(x,y,_e2.x,_e2.y);
-							image_angle = direction;
-						}else{
-							direction = other.gunangle + random(5)-2.5;
-							image_angle = direction;
-						}
-					}else{
-						direction = other.gunangle + random(5)-2.5;
-						image_angle = direction;
-					}
-					break;
-			}*/
-		}
-	}
-
-#define fire()
-
-	for (var _i = 0; _i < 1 + ultra_get("sage", 2); _i++){
-		mod_script_call("mod", bullet[? spellBullets[_i]].key, "on_fire", sage_spell_power);
-	}
-	// Custom ammo cost handling:
-	/*if infammo = 0{
-	  var _t = min(sage_ammo_to_rads, 1) * (weapon_get_type(wep) = 1 ? 4 : 16) * ceil(1 + sage_ammo_cost)  *weapon_get_cost(wep),
-		    _a = 1;
-		if GameCont.rad < _t || sage_ammo_to_rads = 0{
-			_a = 0;
-		}
-
-		ammo[weapon_get_type(wep)] -= _a * -weapon_get_cost(wep) + weapon_get_cost(wep) * ceil(sage_ammo_cost);
-		GameCont.rad = max(GameCont.rad - weapon_get_rads(wep) * ceil(sage_ammo_cost) -	 _t, 0);
-	}
-
-	// Player doesnt have enough ammo:
-	if (weapon_get_cost(wep) * ceil(sage_ammo_cost + 1) * (_size) > ammo[weapon_get_type(wep)]){
-		weapon_post(-5, 0, 0);
-		sound_play(sndEmpty);
-		with instance_create(x, y, PopupText){
-			mytext = "NOT ENOUGH AMMO"
-		}
-	}else{
-	}*/
-
-
-#define stat_gain(spellbullet, inst)
-	with inst mod_script_call("mod", spellbullet, "on_take", sage_spell_power);
-	if dev trace("STAT GAINED")
-	/*switch spellbullet{
-		case "split":
-			sage_ammo_cost += 1 + 1 * inst.sage_spell_power;
-		break;
-		case "ultra":
-			sage_ammo_to_rads++;
-		break;
-
-	}*/
-
-#define stat_lose(spellbullet, inst)
-	with inst mod_script_call("mod", spellbullet, "on_lose", sage_spell_power);
-	if dev trace("STAT LOST")
-
-	/*switch spellbullet{
-		case "split":
-			sage_ammo_cost -= 1 + 1 * inst.sage_spell_power;
-		break;
-		case "ultra":
-			sage_ammo_to_rads--;
-		break;
-	}*/
-
-#define spellpower_change(spellbullet, inst, spellpower)
-	stat_lose(spellbullet, inst);
-	if ultra_get("sage", 1) > 0 && array_length(spellbullet) > 1{stat_lose(spellbullet, inst)}
-	inst.sage_spell_power += spellpower;
-	stat_gain(spellbullet, inst);
-	if ultra_get("sage", 1) > 0 && array_length(spellbullet) > 1{stat_gain(spellbullet, inst)}
-
-#define spellbullet_create
-  var 	 _x = argument[0],
-    		 _y = argument[1],
-	    _type = argument[2];
-
-	with(instance_create(_x,_y,CustomObject)){
-
-		sprite_index = mskNone;
-		mask_index   = mskBandit;
-		image_speed  = 0;
-		speed    = 3;
-		friction = 0.1;
-
-		direction = random(360);
-		image_angle = direction;
-
-		on_step = spellbullet_step;
-		on_pick = script_ref_create(spellbullet_pickup);
-
-		if(_type == ""){
-			type = "bDefault"
-
-			droplist = ds_list_create();
-			ds_list_add(droplist, "bSplit", "bReflective", "bPrecision", "bWarp", "bBurst", "bTurret", "bMelee");
-			ds_list_shuffle(droplist);
-
-			if argument_count > 3 && instance_exists(argument[3]) for (var _i = 0; _i < ds_list_size(droplist) - 1; _i++){
-
-				for (var _j = 0; _j < array_length(argument[3].spellBullets); _i++){
-					if argument[3].spellBullets[_j] = droplist[| _i]{
-						continue;
-					}else{
-						type = droplist[| _i];
-						break;
-					}
-				}
-				if type != "bDefault"{
-					break;
-				}
-			}
-			ds_list_destroy(droplist);
-		}else{
-			type = _type
-		}
-
-		if dev trace(type, bullet[? type])
-		my_prompt = prompt_create(bullet[? type].name);
-		sprite_index = bullet[? type].spr_index;
-		image_index = 0;
-	}
-
-#define spellbullet_examine(name, inst)
-	switch(name){
-		case "split":
-			return `@(color:${c_neutral})+` + string(ceil(1 + 1 * inst.sage_spell_power)) + ` @(color:${c_projectile})PROJECTILES @(color:${c_projectile})@sfired#+` + string(round(100 + 100 * inst.sage_spell_power)) +  `% @(color:${c_ammo})AMMO COST`;
-		case "ultra":
-			return `@(color:${c_neutral})+@(color:${c_ammo})AMMO @(color:${c_neutral})TO @gRAD @(color:${c_neutral})COST`;
-		case "cursed":
-			return `@(color:${c_neutral})+@(color:${c_spellpower})RANDOM @wEFFECTS`
-	}
-
-#define spellbullet_step
-	if(distance_to_object(Wall) < 1){
-		move_bounce_solid(false);
-	}
-	var _nearest = instance_nearest(x,y,Portal);
-	 // Move:
-	if(_nearest != noone && distance_to_object(_nearest) < 50){
-		var	_l = 6 * current_time_scale,
-			_d = point_direction(x, y, _nearest.x, _nearest.y),
-			_x = x + lengthdir_x(_l, _d),
-			_y = y + lengthdir_y(_l, _d);
-
-		image_angle += 30 * current_time_scale;
-
-		if(place_free(_x, y)) x = _x;
-		if(place_free(x, _y)) y = _y;
-
-		if(distance_to_object(Portal) == 0){
-			array_push(global.carryOver, type);
-			instance_destroy();
-		}
-	}
-
-#define spellbullet_pickup(index, spellbullet, prompt)
-	with(player_find(index)) {
-
-		if(race == "sage") {
-
-			if array_length(spellBullets) = 0 { // Gain stats when you have no bullets:
-					stat_gain(spellbullet.type, self)
-			}
-
-			if(array_length(spellBullets) < 2 + skill_get(5)) {
-
-				array_push(spellBullets, spellbullet.type);
-				uiroll = 0;
-			}else {
-
-				var temp = spellBullets[0];
-				if array_length(spellBullets) >= (2 + skill_get(5)) { // Gain the stats if you have all slots filled:
-
-					stat_lose(spellBullets[0], self)
-					stat_gain(spellbullet.type, self)
-				}
-
-				spellbullet.name = bullet[? spellBullets[0]].key
-				spellbullet.sprite_index = bullet[? spellBullets[0]].spr_index
-				spellBullets[0] = spellbullet.type;
-				spellbullet.type = temp;
-				spellbullet.my_prompt.text = temp;
-				spellbullet.friction = 0.1;
-				spellbullet.direction = random(360);
-				image_angle = direction;
-				uiroll = 0;
-				return;
-			}
-		}
-	}
-	instance_destroy();
 
  // Name:
 
@@ -631,7 +172,7 @@ NOTES FROM JSBURG:
 
  // Description:
 #define race_text
-	return "GETS @pSPELL BULLETS@s#@wSWAP @pSPELLS@s";
+	return `GETS @(color:${c.spell})SPELL BULLETS@s#@wSWAP @(color:${c.spell})SPELLS@s`;
 
 
  // Starting Weapon:
@@ -641,7 +182,7 @@ NOTES FROM JSBURG:
 
  // Throne Butt Description:
 #define race_tb_text
-	return "EXTRA @pSPELL BULLET@s SLOT"
+	return "NYI"
 
 
  // On Taking Throne Butt:
@@ -686,8 +227,8 @@ NOTES FROM JSBURG:
  // Ultra Descriptions:
 #define race_ultra_text
 	switch(argument0){
-		case 1: return "SPELLS BECOME @sA LOT MORE POWERFUL@s";
-		case 2: return "SPELLS @wCOMBINE@s";
+		case 1: return `@(color:${c.spell})SPELLS @sBECOME @sA LOT MORE @wPOWERFUL@s`;
+		case 2: return `@wCOMBINE @sYOUR @(color:${c.spell})SPELLS@s`;
 		/// Add more cases if you have more ultras!
 	}
 
@@ -704,7 +245,7 @@ NOTES FROM JSBURG:
 		break;
 		case 2:
 			sound_play(sndFishUltraB);
-			with instances_matching(Player, "race", "sage") for(i = 1; i < array_length(spellBullets); i++) {
+			with instances_matching(Player, "race", "sage") for(var i = 1; i < array_length(spellBullets); i++) {
 				stat_gain(spellBullets[i], self);
 			}
 			break;
@@ -725,17 +266,783 @@ NOTES FROM JSBURG:
 
  // Loading Screen Tips:
 #define race_ttip
-	var tips = ["A NEW WORLD", "WHERE WERE WE?", "FASCINATING @wWEAPONRY@s"];
+	var tips = ["FIELD TESTING IN PROGRESS", "FASCINATING @wWEAPONRY@s", `SAGE CAN CAST @(color:${c.spell})SPELLS`, "TWO IN THE CHAMBER"];
 
-	if !irandom(1) array_push(tips, "SAGE CAN DO COOL TRICKS")
 
 	if instance_exists(GameCont){
-	    if GameCont.loops > 0 array_push(tips, "IT ALL REVOLVES AROUND")
-	    if GameCont.area == 103 array_push(tips, "NO, THIS ISN'T IT")
+	    array_push(tips, "SEARCHING FOR SUBJECT " + string(GameCont.kills + 1) + "...")
+	    if GameCont.loops > 0 {
+	    	array_push(tips, "IT ALL REVOLVES AROUND") //not sure if keeping
+	    	array_push(tips, "THE CYLINDER KEEPS TURNING, TURNING")
+	    	array_push(tips, "PERFORMANCE EXCEEDING ALL EXPECTATIONS")
+	    }
+	    if GameCont.area == 103 array_push(tips, "PRIMITIVE, BUT VERY EFFECTIVE ENCAPSULATION...")
 	    if GameCont.area == 104 array_push(tips, "SO THIS IS WHERE @pIT@s COMES FROM")
 	}
 
-	return tips[irandom(array_length(tips) - 1)]
+	//Get bullet tips instead of flavor text
+	if (irandom(2) == 1) {
+		if dev trace("bullet tip")
+		tips = []
+		var bulletTips = [];
+
+		with instances_matching(Player, "race", mod_current) {
+			with spellBullets {
+				array_push(bulletTips, bullets[? self].ttip)
+			}
+		}
+
+		unpack(tips, bulletTips)
+
+	}
+
+	if array_length(tips) > 0 {
+		return tips[irandom(array_length(tips) - 1)]
+	}
+	return "SAGE CAN DO COOL TRICKS"
+
+#define draw_begin
+	if !sign(fairy.y) fairy_draw();
+
+#define draw
+	if sign(fairy.y) fairy_draw();
+
+#define fairy_draw
+	if visible {
+
+		var h = fairy;
+		var a = .25;
+		var gsize = 1/64;
+		var w = sprite_get_width(h.sprite) + 12, l = sprite_get_height(h.sprite) + 16;
+
+
+		d3d_set_fog(1, merge_color(h.col, c_white, clamp(h.swap / fairy_swap_time, 0, 1)), 1, 1)
+		h.swap = max(0, h.swap - current_time_scale * 1.2)
+		draw_sprite_ext(h.sprite_back, -1, h.x + 1, h.y + 1, w * gsize, l * gsize, 0, c_white, .4 * a);
+		draw_sprite_ext(h.sprite_back, -1, h.x + 1, h.y - 1, w * gsize, l * gsize, 0, c_white, .4 * a);
+		draw_sprite_ext(h.sprite_back, -1, h.x - 1, h.y + 1, w * gsize, l * gsize, 0, c_white, .4 * a);
+		draw_set_blend_mode(bm_add);
+		draw_sprite_ext(h.sprite_back, -1, h.x - 1, h.y - 1, w * gsize, l * gsize, 0, c_white, .4 * a);
+		draw_sprite_ext(h.sprite_back, -1, h.x, h.y, w * gsize, l * gsize, 0, c_white, 1 * a)
+		draw_set_blend_mode(bm_normal);
+		/*
+		draw_sprite_ext(h.sprite_back, -1, h.x, h.y, w * gsize * 1.3, l * gsize * 1.3, 0, c_white, .05)
+		*/
+		d3d_set_fog(0, 0, 0, 0)
+
+		var _outlinecol = make_colour_hsv(color_get_hue(h.col), color_get_saturation(h.col) / 1.2, 255);
+		draw_sprite_ext(h.sprite, 0, h.x - 1, h.y, 1, /*h.right*/ 1, /*h.angle*/ 0, _outlinecol, 1);
+		draw_sprite_ext(h.sprite, 0, h.x + 1, h.y, 1, /*h.right*/ 1, /*h.angle*/ 0, _outlinecol, 1);
+		draw_sprite_ext(h.sprite, 0, h.x, h.y + 1, 1, /*h.right*/ 1, /*h.angle*/ 0, _outlinecol, 1);
+		draw_sprite_ext(h.sprite, 0, h.x, h.y - 1, 1, /*h.right*/ 1, /*h.angle*/ 0, _outlinecol, 1);
+		draw_sprite_ext(h.sprite, 0, h.x, h.y, 1, /*h.right*/ 1, /*h.angle*/ 0, merge_color(merge_colour(h.col, c_black, .7), c_white, clamp(fairy.swap / fairy_swap_time, 0, 1)), 1);
+		if h.swapframes > 0 draw_sprite(global.sprSwapFairy, (6 - h.swapframes), h.x, h.y);
+
+	}
+
+#define player_hud(_player, _hudIndex, _hudSide)
+     // Spell Bullets:
+
+	var _x = (_hudSide ? 8 : 99),
+		_w = sprite_get_width(global.spellHold) / 2,
+		_y = 12+(_player.uiroll == i),
+		_h = sprite_get_height(global.spellHold) / 2;
+
+	if dev {
+
+		draw_set_font(fntSmall);
+		draw_text_nt(-13, 46, "@wRELOAD_SPEED = " + string(round(_player.reloadspeed * 100)) + "%")
+		draw_text_nt(-13, 53, "@yACCURACY     = " + string(round(_player.accuracy * 100)) + "%")
+		draw_text_nt(-13, 60, "@gAMMO_COST    = " + string(round(1 + _player.sage_ammo_cost) * 100) + "%")
+		draw_text_nt(-13, 67, "@bPROJ_SPEED   = " + string(round(_player.sage_projectile_speed * 100)) + "%")
+		draw_text_nt(-13, 74, "@pSPELL_POWER  = " + string(round((1 + _player.sage_spell_power) * 100)) + "%")
+		draw_text_nt(-13, 81, "@bSPEED        = " + string(_player.maxspeed))
+		draw_set_font(fntM);
+	}
+
+	for(var i = 0; i < max(array_length(_player.spellBullets), min_spellbullets); i++) {
+
+		if i < array_length(_player.spellBullets){
+
+			var _sprt = mod_script_call("mod", _player.spellBullets[i], "bullet_sprite", _player.sage_spell_power),
+			    _hudx = (_hudSide ? -10 : 0); // x offset for multiplayer hud
+
+			//Draw Outline for bullets in active slots:
+			if i == 0 || ultra_get("sage", 2){
+
+				draw_outline(_sprt, 0, _x + _hudx, _y)
+			}
+
+			//Draw Bullet:
+			draw_sprite_ext(_sprt, 0, _x + _hudx, _y + 1, 1, 1, 0, c_white, 1);
+			draw_sprite_ext(_sprt, 0, _x + _hudx, _y, 1, 1, 0, c_white, 1);
+
+			//Darken in secondary Slots:
+			if i > ultra_get("sage", 2) {
+
+				draw_sprite_ext(_sprt, 0, _x + _hudx, _y + 1, 1, 1, 0, c_black, .2);
+				draw_sprite_ext(_sprt, 0, _x + _hudx, _y, 1, 1, 0, c_black, .2);
+			}
+
+			if !point_in_rectangle(ceil(mouse_x[_player.index] - view_xview[_player.index]) - 16, ceil(mouse_y[_player.index] - view_yview[_player.index]), (_hudSide ? 8 : 99) - _w * 2 * (_hudSide ? -1 : 1), _y - 2 - _h, (_hudSide ? 8 : 99) + _w+ _w * 2 * array_length(_player.spellBullets) * (_hudSide ? -1 : 1), _y - 1 + _h) {
+
+				_player.sage_uitimer = 20;
+			}else {
+
+				_player.sage_uitimer = max(_player.sage_uitimer - current_time_scale, 0);
+			}
+
+			if point_in_rectangle(mouse_x[_player.index] - view_xview[_player.index] - 16, mouse_y[_player.index] - view_yview[_player.index], _x - _w, _y - _h - 2, _x + 2, _y + _h) { //
+
+				  if _player.sage_uitimer = 0 {
+
+						var _name = mod_script_call("mod", _player.spellBullets[i], "bullet_name", _player.sage_spell_power),
+						    _desc = mod_script_call("mod", _player.spellBullets[i], "bullet_description", _player.sage_spell_power);
+						draw_set_font(fntM);
+			      draw_text_nt(_x - 7 - (10 * i - i) * (_hudSide ? -1 : 1), _y + _h + 3, _name);
+			      draw_set_font(fntSmall);
+			      draw_text_nt(_x - 7 - (10 * i - i) * (_hudSide ? -1 : 1), _y + _h + 12, _desc);
+			    }
+			}
+
+		}else{
+			//Draw empty bullet spaces:
+			draw_sprite_ext(global.spellHold, 0, _x + _hudx, 12, 1, 1, 0, c_white, 1);
+		}
+
+		//var _c = make_colour_hsv(_x * 1.5 mod 255, 255, 255);
+		//draw_rectangle_color(_x - _w, _y - _h - 2, _x + 2, _y + _h, _c, _c, _c, _c, true);
+
+	  _x += _hudSide ? -9 : 9;
+		_y = 12 + (_player.uiroll == i);
+	}
+
+	if (_player.uiroll < array_length(_player.spellBullets)) {
+
+		_player.uiroll++;
+	}
+
+ // On Character's Creation (Starting a run, getting revived in co-op, etc.):
+ // Thanks Brokin
+
+#macro bullets mod_variable_get("mod", "SageBullets", "BulletDirectory")
+#macro min_spellbullets 2 + skill_get(5)
+#macro fairy_swap_time 6
+#macro dev false
+#macro c global.colormap
+#macro c_darkteal c_purple
+#macro c_purblue c_purple
+#macro speed_boost_perma [Rocket, Nuke, PlasmaBall, PlasmaBig, PlasmaHuge, Seeker]
+
+#macro ultra_a ultra_get(mod_current, 1)
+#macro ultra_b ultra_get(mod_current, 2)
+
+#define create
+	uiroll = 0;
+
+	sage_projectile_speed = 1; // Projectile speed multiplier
+	sage_spell_power = 0;      // Sage spellpower multiplier
+	sage_ammo_cost = 0; 	     // ammo cost multiplier
+	sage_ammo_to_rads = 0;     // ammo to rad bool
+	sage_uitimer = 20; // how long to wait on mouse hover before the draw
+	spellBullets = [];
+
+	if !dev {
+
+		array_push(spellBullets, "bDefault");
+	}else {
+
+		array_push(spellBullets, "bDefault");
+		array_push(spellBullets, "bGold");
+		array_push(spellBullets, "bMelee");
+		array_push(spellBullets, "bTurret");
+		array_push(spellBullets, "bInfammo");
+		array_push(spellBullets, "bPrecision");
+		array_push(spellBullets, "bReflective");
+		array_push(spellBullets, "bWarp");
+		array_push(spellBullets, "bBurst");
+		array_push(spellBullets, "bSplit");
+		array_push(spellBullets, "bUltra");
+		array_push(spellBullets, "bRust");
+		array_push(spellBullets, "bCursed");
+	}
+
+	fairy = {
+
+		creator : self,
+		swap : 0,
+	    goalX : x,
+	    goalY : y,
+	    x : x,
+	    y : y,
+	    right : 0,
+	    xoff : 0,
+	    yoff : 0,
+	    dir : 0,
+	    spd : 0,
+	    move: 0,
+		sprite_back: sprGhostGuardianIdle,
+	    curve : 0,
+	    resettime : 0,
+		swapframes : 0,
+	    col : c_purblue,
+	    sprite : sprSnowFlake,
+	    angle : 0
+	}
+
+	footkind = 0;
+
+	if instance_is(self, Player) stat_gain(spellBullets[0], self); // This check resolves an error with yokins cheat mod
+
+	assign_sprites();
+	assign_sounds();
+
+ // Every Frame While Character Exists:
+#define step
+	// Fairy code;
+	var h = fairy;
+
+	h.sprite = mod_script_call("mod",spellBullets[0], "fairy_sprite", sage_spell_power);
+	h.col = mod_script_call("mod", spellBullets[0], "fairy_color", sage_spell_power);
+
+	with fairy {
+		if resettime <= 0{
+			x += approach(x, goalX, 4, current_time_scale)
+			y += approach(y, goalY, 4, current_time_scale)
+
+			right = -sign(x - other.x)
+			angle = 90 - (90 * right)
+
+			//h.col = merge_colour(c_purblue, c_black, .7)
+
+			goalX = other.x + (xoff - 10) * right
+			goalY = other.y + yoff - 16
+
+			if random(100) < 2 * current_time_scale{
+				dir = random(360)
+				move = irandom_range(4, 10)
+				spd = random(2)
+				curve = random_range(-10, 10)
+				curve += sign(curve) * 3
+			}
+			if move > 0 {
+				move -= current_time_scale
+				xoff += lengthdir_x(spd * current_time_scale, dir)
+				yoff += lengthdir_y(spd * current_time_scale, dir)
+				dir += curve * current_time_scale
+				curve += sign(curve) * current_time_scale
+				if point_distance(xoff, yoff, 0, 0) > 10 {
+					dir -= angle_approach(dir, point_direction(xoff, yoff, 0, 0), 3, current_time_scale)
+				}
+			}
+			swapframes = max(0, swapframes - current_time_scale * .5);
+
+		}
+		else resettime -= current_time_scale;
+	}
+
+	/*if dev && button_pressed(0, "horn"){
+		array_push(0.spellBullets, "bTurret")
+		if dev trace(0.spellBullets)
+	}*/
+
+	if(!instance_exists(global.bind_late_step)) {
+		global.bind_late_step = script_bind_step(late_step, 0);
+	}
+
+
+	//Call bullet step events
+	for (var i = 0, l = bulletLoopMax; i < l; i++) {
+		mod_script_call("mod", spellBullets[i], "on_step", sage_spell_power);
+	}
+
+
+	///  ACTIVE : Swap Spells  \\\
+
+	// Player effects:
+	if(canspec && button_pressed(index, "spec") && array_length(spellBullets) > 1) {
+
+		fairy.swap = fairy_swap_time + 2;
+		fairy.swapframes = 6;
+		sleep(5);
+		weapon_post(0, 4, 0);
+
+		// This is only for playing the swap sound of the bullet youre swapping into
+		mod_script_call("mod", spellBullets[1], "bullet_swap", sage_spell_power);
+
+		var _temp = spellBullets[0];
+		if !ultra_b {
+			stat_lose(spellBullets[0], self);
+			stat_gain(spellBullets[1], self);
+		}
+		for(var i = 1; i < array_length(spellBullets); i++) {
+			spellBullets[i-1] = spellBullets[i];
+		}
+		spellBullets[array_length(spellBullets) - 1] = _temp;
+		uiroll = 0;
+	}
+
+
+
+
+	///  PASSIVE : Spawn Spellbullets on weapon chest open \\\
+	with(WeaponChest){
+		if(fork()){
+			var _x = x;
+			var _y = y;
+			wait(0);
+			if(!instance_exists(self)){
+				wait(0);
+				//the player is passed in as an optional variable specifically for ""
+				//it makes it so the player gets spellbullets they don't have already from normal chests
+				spellbullet_create(_x,_y, "", other);
+			}
+			exit;
+		}
+	}
+	with(GoldChest){
+		if(fork()){
+			var _x = x;
+			var _y = y;
+			wait(0);
+			if(!instance_exists(self)){
+				wait(0);
+				spellbullet_create(_x,_y, "bGold");
+			}
+			exit;
+		}
+	}
+	with(ProtoChest) {
+		if sprite_index == sprProtoChestOpen {
+			if "sage_ultra_bullet_drop" not in self {
+				spellbullet_create(x, y, "bRust");
+				sage_ultra_bullet_drop = true
+			}
+		}
+	}
+	with(BigWeaponChest){
+		if(fork()){
+			var _x = x;
+			var _y = y;
+			wait(0);
+			if(!instance_exists(self)){
+				wait(0);
+				repeat(2) spellbullet_create(_x,_y, "", other);
+			}
+			exit;
+		}
+	}
+	with(GiantWeaponChest){
+		if(fork()){
+			var _x = x;
+			var _y = y;
+			wait(0);
+			if(!instance_exists(self)){
+				wait(0);
+				repeat(12) spellbullet_create(_x,_y, "", other);
+			}
+			exit;
+		}
+	}
+	with instances_matching(chestprop, "name", "DefCustomChest"){
+		if(fork()){
+			var _x = x;
+			var _y = y;
+			wait(0);
+			if(!instance_exists(self)){
+				wait(0);
+				repeat(2) spellbullet_create(_x,_y, "", other);
+			}
+			exit;
+		}
+	}
+
+	var sageEffectNum = (ultra_get("sage", 2) ? array_length(other.spellBullets) : 1);
+
+	with instances_matching(projectile, "creator", self) {
+
+		if "sage_speed" not in self {
+
+			sage_speed = creator.sage_projectile_speed;
+		}
+		var _s = self;
+		with speed_boost_perma {
+
+			if instance_is(_s, self) {
+
+				switch object_get_name(_s.object_index) {
+
+					case "Seeker":
+						var _n = _s.speed > .1 ? 1 : 0;
+						_s.x += lengthdir_x(speed * (_s.sage_speed - 1), direction) / 1.5 * _n;
+						_s.y += lengthdir_y(speed * (_s.sage_speed - 1), direction) / 1.5 * _n;
+						break;
+					default:
+						_s.x += lengthdir_x(speed * (_s.sage_speed - 1), direction);
+						_s.y += lengthdir_y(speed * (_s.sage_speed - 1), direction);
+						break;
+				}
+			}
+		}
+	}
+
+	with(instances_matching_ne(instances_matching(projectile, "creator", self), "sageCheck", sageEffectNum)) {
+		if("sageCheck" not in self){sageCheck = 0}
+
+		// Increase speed and maxspeed with projectile speed stat:
+		speed *= creator.sage_projectile_speed;
+
+		// two vars for better mod compat
+		if "maxspeed" in self{
+			maxspeed *= creator.sage_projectile_speed;
+		}
+		if "max_speed" in self{
+			max_speed *= creator.sage_projectile_speed;
+		}
+
+		// this makes shells not godawful with low projectile speed
+		if friction > 0{
+			friction *= power(creator.sage_projectile_speed, 1.25);
+		}
+
+		for(var i = sageCheck; i < sageEffectNum; i++){
+			if(!instance_exists(self)){break}
+
+			sageCheck = i + 1;
+
+			/*switch(other.spellBullets[i]){
+
+				case "precision":
+
+					/*if(skill_get(mut_throne_butt) && instance_exists(enemy)){
+						var _e = instance_nearest(x+lengthdir_x(5, direction), y+lengthdir_y(5, direction), enemy);
+						var _e2 = instance_nearest(x+lengthdir_x(15, direction), y+lengthdir_y(15, direction), enemy);
+						if(abs(angle_difference(point_direction(x,y,_e.x,_e.y), direction)) < 45){
+							direction = point_direction(x,y,_e.x,_e.y);
+							image_angle = direction;
+						}else if(abs(angle_difference(point_direction(x,y,_e2.x,_e2.y), direction)) < 45){
+							direction = point_direction(x,y,_e2.x,_e2.y);
+							image_angle = direction;
+						}else{
+							direction = other.gunangle + random(5)-2.5;
+							image_angle = direction;
+						}
+					}else{
+						direction = other.gunangle + random(5)-2.5;
+						image_angle = direction;
+					}
+					break;
+			}*/
+		}
+	}
+
+#define before_sage_shoot()
+
+	var shootEvent = {
+		radPrevious: GameCont.rad,
+		cancelled: false
+	};
+
+	for (var i = 0, l = bulletLoopMax; i < l; i++) {
+		//"Shooting" is when the gun itself is fired, "Firing" is when sage goes to fire.
+		//Ex: The secondary shots of Burst are Shooting, and the two shots for Split are both Firing.
+		mod_script_call("mod", spellBullets[i], "on_pre_shoot", sage_spell_power, shootEvent);
+	}
+
+	return shootEvent
+
+
+#define post_sage_shoot(shootEvent)
+
+	if (GameCont.rad < shootEvent.radPrevious) {
+
+		for (var i = 0, l = bulletLoopMax; i < l; i++) {
+
+			mod_script_call("mod", spellBullets[i], "on_rads_use", sage_spell_power);
+		}
+	}
+
+	if (GameCont.rad <= 0 && shootEvent.radPrevious > 0) {
+
+		for (var i = 0, l = bulletLoopMax; i < l; i++) {
+
+			mod_script_call("mod", spellBullets[i], "on_rads_out", sage_spell_power);
+		}
+	}
+
+
+	for (var i = 1; i < array_length(ammo); i++) {
+		ammo[i] = max(0, ammo[i])
+	}
+
+#define sage_shoot(direction)
+
+	var event = before_sage_shoot();
+
+	if !event.cancelled {
+		player_fire(direction)
+		post_sage_shoot(event)
+	}
+
+#define sage_shoot_offset(direction, offset)
+	var event = before_sage_shoot();
+
+	if !event.cancelled {
+    	mod_script_call_self("mod", "bSplit", "player_fire_at", undefined, undefined, undefined, offset)
+		post_sage_shoot(event)
+	}
+
+
+/*
+In split prefire, call mid_fire again before shooting the split fire
+In Burst fire, call sage_shoot for each burst shot.
+
+*/
+
+#define fire(fireEvent)
+
+	var event = {
+		cancelled: false,
+		angle_offset: 0
+	}
+
+
+	for (var i = 0, l = bulletLoopMax; i < l; i++) {
+		mod_script_call("mod", spellBullets[i], "on_pre_fire", sage_spell_power, event);
+	}
+
+
+	if !event.cancelled {
+
+		if !fireEvent.cancelled {
+			mid_firing(event)
+			post_sage_shoot(fireEvent)
+		}
+
+	}
+
+	if event.cancelled trace("Fire Event was cancelled. Please make sure its working")
+
+
+
+	// Player doesnt have enough ammo:
+	/*if (weapon_get_cost(wep) * ceil(sage_ammo_cost + 1) * (_size) > ammo[weapon_get_type(wep)]){
+		weapon_post(-5, 0, 0);
+		sound_play(sndEmpty);
+		with instance_create(x, y, PopupText){
+			mytext = "NOT ENOUGH AMMO"
+		}
+	}else{
+	}*/
+
+#macro bulletLoopMax ultra_b ? array_length(spellBullets) : 1
+
+#define mid_firing(fireEvent)
+
+	for (var i = 0, l = bulletLoopMax; i < l; i++) {
+		mod_script_call_self("mod", spellBullets[i], "on_fire", sage_spell_power, fireEvent)
+	}
+
+	if !fireEvent.cancelled {
+		post_firing(fireEvent)
+	}
+
+
+#define post_firing(fireEvent)
+
+
+#define stat_gain(spellbullet, inst)
+	with inst mod_script_call("mod", spellbullet, "on_take", sage_spell_power);
+	if dev trace("STAT GAINED")
+
+#define stat_lose(spellbullet, inst)
+	with inst mod_script_call("mod", spellbullet, "on_lose", sage_spell_power);
+	if dev trace("STAT LOST")
+
+#define spellpower_change(spellbullet, inst, spellpower)
+	stat_lose(spellbullet, inst);
+	inst.sage_spell_power += spellpower;
+	stat_gain(spellbullet, inst);
+
+#define spellbullet_create
+  var 	 _x = argument[0],
+    		 _y = argument[1],
+	    _type = argument[2];
+
+	with(instance_create(_x,_y,CustomObject)){
+
+		sprite_index = mskNone;
+		mask_index   = mskPlayer;
+		image_speed  = 0;
+		speed    = 5;
+		friction = 0.5;
+		shine = 45;
+
+		direction = random(360);
+		image_angle = direction;
+
+		on_step = spellbullet_step;
+		on_pick = script_ref_create(spellbullet_pickup);
+
+		if(_type == ""){
+			type = "bDefault"
+
+			droplist = ds_list_create();
+			ds_list_add_array(droplist, get_bullets(0, GameCont.hard))
+			// ds_list_add(droplist, "bSplit", "bReflective", "bPrecision", "bWarp", "bBurst", "bTurret", "bMelee");
+			ds_list_shuffle(droplist);
+
+			if argument_count > 3 && instance_exists(argument[3]) for (var _i = 0; _i < ds_list_size(droplist) - 1; _i++){
+
+				for (var _j = 0; _j < array_length(argument[3].spellBullets); _i++){
+					if argument[3].spellBullets[_j] = droplist[| _i]{
+						continue;
+					}else{
+						type = droplist[| _i];
+						break;
+					}
+				}
+				if type != "bDefault"{
+					break;
+				}
+			}
+			ds_list_destroy(droplist);
+		}else{
+			type = _type
+		}
+
+		//if dev trace(type, bullets[? type])
+		my_prompt = prompt_create(bullets[? type].name);
+		sprite_index = bullets[? type].spr_index;
+		image_index = 0;
+	}
+
+#define get_bullets(_min, _max)
+	var values = ds_map_values(bullets),
+		returnlist = [];
+
+	for (var i = 0; i < array_length(values); i++) {
+		if values[i].area >= _min && values[i].area <= _max {
+			array_push(returnlist, values[i].key)
+		}
+	}
+	return returnlist;
+
+
+#define spellbullet_examine(name, inst)
+	switch(name){
+		case "cursed":
+			return `@(color:${c_neutral})+@(color:${c_spellpower})RANDOM @wEFFECTS`
+	}
+
+#define spellbullet_step
+
+
+	shine -= current_time_scale;
+	if (shine <= 0) {
+
+		image_speed = .4;
+	}
+	if (image_index >= 6) {
+
+		image_speed = 0;
+		image_index = 0;
+		shine = 45;
+	}
+
+	if place_meeting(x, y, WepPickup) {
+		var n = instance_nearest(x, y, WepPickup),
+			d = point_direction(x, y, n.x, n.y) + 180;
+		move_contact_solid(d, 2 * current_time_scale)
+		with n {
+			move_contact_solid(d + 180, 2 * current_time_scale)
+		}
+	}
+
+	var _nearest = instance_nearest(x,y,Portal);
+	 // Move:
+	if(_nearest != noone && distance_to_object(_nearest) < 50){
+		var	_l = 6 * current_time_scale,
+			_d = point_direction(x, y, _nearest.x, _nearest.y),
+			_x = x + lengthdir_x(_l, _d),
+			_y = y + lengthdir_y(_l, _d);
+
+		image_angle += 30 * current_time_scale;
+
+		if(place_free(_x, y)) x = _x;
+		if(place_free(x, _y)) y = _y;
+
+		if(distance_to_object(Portal) == 0){
+			array_push(global.carryOver, type);
+			instance_destroy();
+		}
+	}
+
+	if(distance_to_object(Wall) < 1){
+		move_bounce_solid(false);
+		if abs(speed) > 0 {
+			move_outside_solid(point_direction(x, y, xstart, ystart), 10)
+		}
+	}
+
+
+#define spellbullet_pickup(index, spellbullet, prompt)
+	with(player_find(index)) {
+
+		if(race == mod_current) {
+
+			// Play swap sound:
+			mod_script_call("mod", spellbullet.type, "bullet_swap", sage_spell_power);
+			fairy.swap = fairy_swap_time + 2;
+			fairy.swapframes = 6;
+			sound_play_pitchvol(sndSwapPistol, 1.5, .5);
+
+			if array_length(spellBullets) == 0 { // Gain stats when you have no bullets:
+				stat_gain(spellbullet.type, self)
+				with spellbullet instance_destroy()
+				exit
+			}
+
+			//Below max bullets
+			if(array_length(spellBullets) < 2 + skill_get(5)) {
+
+				array_push(spellBullets, spellbullet.type);
+				uiroll = 0;
+				with spellbullet instance_destroy()
+				exit
+			}
+			else {
+
+				var temp = spellBullets[0];
+				if array_length(spellBullets) >= (2 + skill_get(5)) { // Gain the stats if you have all slots filled:
+
+					stat_lose(spellBullets[0], self)
+					stat_gain(spellbullet.type, self)
+				}
+
+				spellbullet.sprite_index = bullets[? spellBullets[0]].spr_index
+				spellBullets[0] = spellbullet.type;
+				spellbullet.type = temp;
+				spellbullet.my_prompt.text = bullets[? temp].name;
+				spellbullet.direction = random(360);
+				image_angle = direction;
+				uiroll = 0;
+			}
+		}
+	}
+
+
+//'Flattens' stuff (an array), taking any content (even in subarrays) and adding it to the 'box'
+#define unpack(box, stuff)
+	for var i = 0; i < array_length(stuff); i++{
+	    if is_array(stuff[i]){
+	        unpack(box, stuff[i])
+	    }
+	    else{
+	        array_push(box, stuff[i])
+	    }
+	}
+
 
 #define assign_sprites
 	if(object_index == Player) {
@@ -957,7 +1264,6 @@ NOTES FROM JSBURG:
 
 	return _inst;
 
-
 #define run_hitscan(_proj, _mod)
 	with(_proj){
 		var size = 0.8;
@@ -1091,3 +1397,9 @@ NOTES FROM JSBURG:
 			}
 		}
 	}
+
+#define approach(a, b, n, dn)
+	return (b - a) * (1 - power((n - 1)/n, dn))
+
+#define angle_approach(a, b, n, dn)
+	return angle_difference(a, b) * (1 - power((n - 1)/n, dn))

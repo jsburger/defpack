@@ -1,6 +1,6 @@
 #define init
 global.sprSonicLauncher = sprite_add_weapon("sprites/weapons/sprSonicLauncher.png", 2, 2);
-global.sprSonicStreak   = sprite_add("sprites/projectiles/sprSonicStreak.png",6,8,32);
+global.sprSonicStreak   = sprite_add("sprites/projectiles/sprSonicStreak.png", 7, 24, 8);
 global.sprSonicNade     = sprite_add("sprites/projectiles/sprSonicGrenade.png",1,3,3);
 #define weapon_name
 return "SONIC LAUNCHER"
@@ -69,7 +69,7 @@ bounce -= 1
 sound_play_pitch(sndBouncerBounce,random_range(1.6,1.8))
 with instance_create(x+lengthdir_x(12,direction),y+lengthdir_y(12,direction),AcidStreak){
 	sprite_index = global.sprSonicStreak
-	image_angle = other.direction - 90
+	image_angle = other.direction
 	motion_add(image_angle+90,12)
 	friction = 2.1
 }
@@ -101,9 +101,9 @@ with mod_script_call("mod","defpack tools","create_sonic_explosion",x - lengthdi
 }
 var _a = random(360)
 repeat(3){
-	with instance_create(x+lengthdir_x(36,_a),y+lengthdir_y(36,_a),AcidStreak){
+	with instance_create(x + lengthdir_x(38, _a), y + lengthdir_y(38, _a), AcidStreak){
 		sprite_index = global.sprSonicStreak
-		image_angle = _a - 90
+		image_angle = _a
 	}
 	_a += 120
 }

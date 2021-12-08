@@ -121,7 +121,7 @@ return{
      walls--
      speed = 4
      //sleep(15)
-     view_shake_at(x,y,5)
+     view_shake_at(x,y,3)
   }
   else
   {
@@ -144,8 +144,8 @@ return{
   y = yprevious
   speed = 2
   other.speed = 0
-  sleep(8)
-  view_shake_at(x,y,4)
+  sleep(5);
+  view_shake_at(x, y, 1);
   projectile_hit(other,damage)
   var mans = other;
   if other = lasthit{

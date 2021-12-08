@@ -64,8 +64,8 @@ var _load = weapon_get_load(argument0);
 			move_contact_solid(other.gunangle,18);
 			gas_special = true
 			team = other.team
-			motion_add(other.gunangle + (random_range(-2, 2) * other.accuracy), random_range(10,12));
-            friction = .3
+			motion_add(other.gunangle + (random_range(-2, 2) * other.accuracy), random_range(10,14));
+            friction = .5
 		}
 		wait 1;
 	}

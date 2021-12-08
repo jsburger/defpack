@@ -105,7 +105,10 @@ with instance_create(x,y,CustomObject){
           }
       }
   }
-  else{instance_destroy()}
+  else{instance_destroy(); exit}
+  if charged {
+  	creator.speed *= .9;
+  }
 
 #define blaster_destroy
   var _h = hand;

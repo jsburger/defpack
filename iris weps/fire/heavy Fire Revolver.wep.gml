@@ -1,5 +1,5 @@
 #define init
-global.sprHeavyFireRevolver = sprite_add_weapon("../../sprites/weapons/iris/fire/sprHeavyFirePistol.png", 1, 2);
+global.sprHeavyFireRevolver = sprite_add_weapon("../../sprites/weapons/iris/fire/sprHeavyFirePistol.png", -2, 2);
 #define weapon_name
 return "HEAVY FIRE REVOLVER";
 

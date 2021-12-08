@@ -70,11 +70,13 @@ with instance_create(x + lengthdir_x(l, gunangle),y + lengthdir_y(l, gunangle),S
         sound_play_pitchvol(sndTripleMachinegun,.8*p,.7)
         sound_play_gun(sndClickBack,1,.6)
 		sound_stop(sndClickBack)
+			var _i = 0;
     	repeat(4){
+					_i++;
         	if other.ammo[1] >=1 {
     			instance_create(x+lengthdir_x(sprite_width,direction),y+lengthdir_y(sprite_width,direction),Smoke)
     			with instance_create(x,y,BouncerBullet){
-    				motion_set(other.direction + random_range(-30,30)*other.creator.accuracy, 10)
+    				motion_set(other.direction + random_range(-30,30)*other.creator.accuracy * (_i = 1 ? .1 : 1), 10)
     				image_angle = direction
     				creator = other.creator
     				team = other.team

@@ -37,7 +37,7 @@ var dis = argument_count > 4 ? argument[4] : hitscan_dis;
     with noteam x += 10000
 
     var _wall   = collision_line_first(x1, y1, x1 + lengthdir_x(dis, angle), y1 + lengthdir_y(dis, angle), Wall, 0, 0);
-    
+
     if instance_exists(Wall) {
 		if !place_meeting(_wall[0], _wall[1], Floor) {
 			// trace("Missed first pass")
@@ -179,12 +179,12 @@ var dis = argument_count > 4 ? argument[4] : hitscan_dis;
 			bounce -= 1
 			mod_script_call("mod", "defpack tools", "audio_play_hit_pitch", sndBouncerBounce, .5 + random(1.5))
 			if !irandom(1) instance_create(x, y, Dust)
-			
+
 			move_bounce_solid(true)
 			direction += random_range(-5, 5)
 			image_angle = direction
 			shouldDestroy = false
-	
+
 			if neurons {
 				instance_create(x + hspeed, y + vspeed, CaveSparkle)
 				damage += 1
@@ -245,6 +245,8 @@ var dis = argument_count > 4 ? argument[4] : hitscan_dis;
 		lastx = x
 		lasty = y
 		lastteam = 0
+
+    sage_no_hitscan = true;
 
 		trailcolor = [merge_color(c_yellow, c_red, random(.4)), c_white, c_ltgray, c_orange]
 		trailsize = .8
@@ -359,7 +361,7 @@ if (instance_exists(other) && other.typ > 0) {
     with Grenade x += 10000
 
     var _wall   = collision_line_first(x1, y1, x1 + lengthdir_x(hitscan_dis, angle), y1 + lengthdir_y(hitscan_dis, angle), Wall, 0, 0);
-    
+
     if instance_exists(Wall) {
 		if !place_meeting(_wall[0], _wall[1], Floor) {
 			_wall = collision_line_first(x1 + 1, y1 + 1, _wall[0] + 1, _wall[1] + 1, Wall, 0, 0)
@@ -367,7 +369,7 @@ if (instance_exists(other) && other.typ > 0) {
 			_wall[1] -= 1
 		}
     }
-    
+
     var _shield = collision_line_first(x1, y1, _wall[0], _wall[1], PopoShield, 1, 1),
         _hitme  = collision_line_first(x1, y1, _shield[0], _shield[1], hitme, 0, 1),
         _proj   = collision_line_first(x1, y1, _hitme[0], _hitme[1], projectile, 0, 1);
@@ -431,7 +433,7 @@ if (instance_exists(other) && other.typ > 0) {
 
 		return id
 	}
-	
+
 #define new_thunder_hit
 	if "thunder_charge" not in other {
 		other.thunder_charge = 0
@@ -470,11 +472,11 @@ if (instance_exists(other) && other.typ > 0) {
 #define create_psy_hitscan_bullet(x, y)
 	with create_hitscan_bullet(x, y) {
 		name = "Psy Hitscan Bullet"
-		
+
 		spr_dead = spr.PsyBulletHit
 		//Pardon my French
 		trailcolor = [$D73AFF, c_white, $CC14AD, c_purple]
-		
+
 		damage = 4
 
 		isSniper = false
@@ -482,13 +484,13 @@ if (instance_exists(other) && other.typ > 0) {
 		sight = 30
 		minsight = 5
 		radius = 10
-		
+
 		on_step = psy_hitscan_step
-		
+
 		return id
-		
+
 	}
-	
+
 #define psy_hitscan_step
 	if (original_direction = undefined || team != lastteam) original_direction = direction
 	lastteam = team
@@ -500,24 +502,24 @@ if (instance_exists(other) && other.typ > 0) {
 	// }
 	// x = endPoint[0]
 	// y = endPoint[1]
-	
+
 	var vbuf = vertex_create_buffer();
 	vertex_begin(vbuf, global.psyTrailFormat)
 
 	var results = psy_hitscan_travel(original_direction, vbuf)
-	
+
 	vertex_end(vbuf)
 	vertex_freeze(vbuf)
-	
+
 	with create_psy_bullet_trail(x, y, vbuf) {
 		colors = other.trailcolor
 		if other.isSniper lifeMax *= 2
 	}
-	
+
 	if instance_exists(Wall) && !place_meeting(x, y, Floor) {
 		shouldDestroy = true
 	}
-	
+
 	if isSniper {
 		on_hit = nothing
 		with results.hitList {
@@ -525,8 +527,8 @@ if (instance_exists(other) && other.typ > 0) {
 		}
 		shouldDestroy = true
 	}
-	
-	
+
+
 	x = results.x - hspeed
 	y = results.y - vspeed
 	direction = results.direction
@@ -550,11 +552,11 @@ if (instance_exists(other) && other.typ > 0) {
 		force = parent.force
 		recycle_chance = parent.recycle_chance
 		self.parent = parent
-		
+
 		on_hit = dummy_hit
 		on_end_step = dummy_end_step
 		on_wall = nothing
-		
+
 		return self
 	}
 
@@ -568,7 +570,7 @@ if (instance_exists(other) && other.typ > 0) {
 		}
 		instance_destroy()
 	}
-	
+
 #define dummy_end_step
 	instance_destroy()
 
@@ -591,8 +593,8 @@ var _chance = argument_count > 0 ? argument[0] : 60;
 
 #define chance_raw(percentage)
 return random(100) <= percentage
-	
-	
+
+
 #macro sort_distance 10000
 
 #define psy_hitscan_travel(original_direction, vertex_buffer)
@@ -617,7 +619,7 @@ return random(100) <= percentage
 		vbuf: vertex_buffer,
 		trailSize: trailsize
 	};
-	
+
 	var exists = true, count = 0, missedLast = false, missed = false;
 	//Has to initialize targetting, since there a buffer
 	bullet_target(bullet)
@@ -625,19 +627,19 @@ return random(100) <= percentage
 
 	while(exists && ++count < 1000) {
 		missed = false
-		
+
 		if bullet.missCounter > 0 {
 			var l = min(2 * bullet.missCounter, 16)
 			bullet.x += lengthdir_x(l, bullet.dir)
 			bullet.y += lengthdir_y(l, bullet.dir)
 		}
-			
+
 		bullet_add_to_trail(bullet)
 
 
 		//Get target
 		bullet_target(bullet)
-		
+
 		if (bullet.target == -4) {
 			// var _wall = collision_line_first(bullet.x, bullet.y,
 			// 			bullet.x + lengthdir_x(300, bullet.dir), bullet.y + lengthdir_y(300, bullet.dir),
@@ -658,7 +660,7 @@ return random(100) <= percentage
 		}
 		//LOS finding
 		var canReach = bullet_can_reach(bullet, target.x, target.y);
-		
+
 		//If target in sight cone
 		if (canReach != false) {
 			//If target can be reached
@@ -697,7 +699,7 @@ return random(100) <= percentage
 		else {
 			missed = true
 		}
-		
+
 		//Add a stacking penalty for repeated misses, basically prevents the bullet from checking literally everything if its stuck in a weird hallway
 		if missed {
 			if missedLast {
@@ -709,7 +711,7 @@ return random(100) <= percentage
 			missedLast = false
 			bullet.missCounter = 0
 		}
-		
+
 		var _nearestWall = instance_nearest(bullet.x, bullet.y, Wall);
 		if (instance_exists(_nearestWall)) {
 			var _wallX = clamp(bullet.x, _nearestWall.bbox_left, _nearestWall.bbox_right),
@@ -719,7 +721,7 @@ return random(100) <= percentage
 			}
 		}
 	}
-	
+
 	bullet_add_to_trail(bullet)
 	//Fix vertex connecting to 0,0
 	repeat(3) {
@@ -727,17 +729,17 @@ return random(100) <= percentage
 	}
 
 	bullet_target_resolve(bullet)
-	
-	
+
+
 	return {
 		x: bullet.x,
 		y: bullet.y,
 		direction: bullet.dir,
 		hitList: bullet.hitList
 	}
-	
-	
-	
+
+
+
 //Turns the bullet, returning if it was successful or not
 #define bullet_turn_auto(bullet, dir)
 	if (bullet.dir == dir) return true
@@ -749,14 +751,14 @@ return random(100) <= percentage
 		return true
 	}
 	else return false
-	
+
 
 //Gets the next target for the bullet
 #define bullet_target(_bullet)
 	if (_bullet.targetcounter > 0) {
 		var nearest = instance_nearest(_bullet.x, _bullet.y, hitme);
 		if (!instance_exists(nearest)) exit
-		
+
 		_bullet.targetcounter--
 		array_push(_bullet.targets, nearest)
 		nearest.x += sort_distance
@@ -811,16 +813,16 @@ var _a = angle_difference(_bullet.odir, point_direction(_bullet.x, _bullet.y, _x
 				}
 			}
 		}
-		
+
 		return {
 			succeeded : false,
 			x: _max.x,
 			y: _max.y
 		}
-		
+
 	}
-	
-	
+
+
 //Algebra moment
 #define nearest_point_on_line(_line, _point)
 //_line is anything with the variables x, y, and dir, being world position and direction, origin is the lines coordinates
@@ -832,7 +834,7 @@ var _slope = dtan(-_line.dir),
 	_y = -1/_slope * _x + _dx/_slope + _dy;
 	if (_slope == 0) _y = 0;
 	return {x: _line.x + _x, y: (_line.y + _y)}
-	
+
 #define point_intersect(_line1, _line2)
 //Uses negative angle because of GML's y going 'down' as it increases, despite 90 degrees still being 'up'
 var _m1 = dtan(-_line1.dir),
@@ -844,7 +846,7 @@ var _m1 = dtan(-_line1.dir),
 	_x  = (((-_m2 / _m1) * _h2) + ((_b2 - _b1)/_m1) + _h1)/(1 - (_m2/_m1)),
 	_y  = _m1 * (_x - _h1) + _b1;
 	return {x: _x, y: _y}
-	
+
 
 //Tries to turn the bullet, checking for wall collision along the arc, and returning the theoretical result
 #define bullet_turn(_bullet, _dir)
@@ -862,9 +864,9 @@ var _dif = angle_difference(_bullet.dir, _dir),
 		vertex_position(_bullet.vbuf, _cx + lengthdir_x(l, a), _cy + lengthdir_y(l, a))
 	}
 	// draw_primitive_end()
-	
+
 	var _walls = instances_in_bbox(_cx - _bullet.radius, _cy - _bullet.radius, _cx + _bullet.radius, _cy + _bullet.radius, Wall);
-		
+
 	if array_length(_walls) > 0 {
 		with _walls {
 			if circle_in_bbox(_cx, _cy, _bullet.radius) {
@@ -896,20 +898,20 @@ var _dif = angle_difference(_bullet.dir, _dir),
 #define circle_in_rectangle(_x, _y, _r, _left, _top, _right, _bottom)
 var _dx = _x - clamp(_x, _left, _right),
 	_dy = _y - clamp(_y, _top, _bottom);
-	
+
 	return (_dx * _dx + _dy * _dy) < (_r * _r)
 
 #define instances_in_bbox(left,top,right,bottom,obj)
 	return instances_matching_gt(instances_matching_lt(instances_matching_gt(instances_matching_lt(obj,"bbox_top",bottom),"bbox_bottom",top),"bbox_left",right),"bbox_right",left)
-	
+
 
 #define create_psy_bullet_trail(x, y, vertex_buffer)
 	with create_bullet_trail(x, y, 0, 0) {
 		vbuf = vertex_buffer
-		
+
 		on_draw = psy_trail_draw
 		on_destroy = psy_trail_destroy
-		
+
 		return self
 	}
 
@@ -932,12 +934,12 @@ var _dx = _x - clamp(_x, _left, _right),
 #define add_point_to_trail(vbuf, x, y, direction, thickness)
 	vertex_position(vbuf, x + lengthdir_x(thickness/2, direction + 90), y + lengthdir_y(thickness/2, direction + 90))
 	vertex_position(vbuf, x + lengthdir_x(-thickness/2, direction + 90), y + lengthdir_y(-thickness/2, direction + 90))
-	
+
 #define bullet_add_to_trail(bullet)
 	add_point_to_trail(bullet.vbuf, bullet.x, bullet.y, bullet.dir, bullet.trailSize)
-	
-	
-	
+
+
+
 #define get_psy_hitscan_target()
 /// get_hitscan_target(x1, y1, angle, team, dis = hitscan_dis)
 var x1 = argument[0], y1 = argument[1], angle = argument[2], team = argument[3];
@@ -949,7 +951,7 @@ var dis = argument_count > 4 ? argument[4] : hitscan_dis;
     with noteam x += 10000
 
     var _wall   = collision_line_first(x1, y1, x1 + lengthdir_x(dis, angle), y1 + lengthdir_y(dis, angle), Wall, 0, 0);
-    
+
     if instance_exists(Wall) {
 		if !place_meeting(_wall[0], _wall[1], Floor) {
 			// trace("Missed first pass")
@@ -974,4 +976,3 @@ var dis = argument_count > 4 ? argument[4] : hitscan_dis;
     with shields x -= 10000
     with noteam x -= 10000
     return _hitme;
-

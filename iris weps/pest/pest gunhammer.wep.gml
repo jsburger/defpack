@@ -67,11 +67,13 @@ with instance_create(x + lengthdir_x(l, gunangle),y + lengthdir_y(l, gunangle),S
 		sound_play_pitch(sndMinigun,random_range(1.2,1.6))
 		sound_play_pitch(sndToxicBoltGas,1.3)
 		sprite_index = global.slash
-	    repeat(4){
+		var _i = 0;
+		repeat(4){
+			_i++;
     		if other.ammo[1] >=1 {
     			instance_create(x+lengthdir_x(sprite_width,direction),y+lengthdir_y(sprite_width,direction),Smoke)
     			with mod_script_call("mod","defpack tools","create_toxic_bullet",x,y){
-    				motion_set(other.direction + random_range(-9,9)*other.creator.accuracy, 16)
+    				motion_set(other.direction + random_range(-9,9)*other.creator.accuracy * (_i = 1 ? .1 : 1), 16)
     				image_angle = direction
     				creator = other.creator
     				team = other.team

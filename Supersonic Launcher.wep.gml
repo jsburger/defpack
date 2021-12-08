@@ -1,6 +1,6 @@
 #define init
 global.sprSuperSonicLauncher   = sprite_add_weapon("sprites/weapons/sprSuperSonicLauncher.png", 1, 3);
-global.sprSonicStreak   = sprite_add("sprites/projectiles/sprSonicStreak.png",6,8,32);
+global.sprSonicStreak   = sprite_add("sprites/projectiles/sprSonicStreak.png", 7, 24, 8);
 
 #define weapon_name
 return "SUPERSONIC LAUNCHER"
@@ -67,7 +67,7 @@ with instance_create(x,y,CustomProjectile){
 	direction = other.gunangle+random_range(-2,2)*other.accuracy
 	with instance_create(x+lengthdir_x(16,direction),y+lengthdir_y(16,direction),AcidStreak){
 		sprite_index = global.sprSonicStreak
-		image_angle = other.direction - 90
+		image_angle = other.direction
 		image_speed = .5
 	}
 	do{
@@ -75,46 +75,46 @@ with instance_create(x,y,CustomProjectile){
 	    dir += 1
 	    x += lengthdir_x(xdir,direction)
 	    y += lengthdir_y(ydir,direction)
-	    
+
     	if irandom(1) = 0 with instance_create(x,y,Dust){
     	    motion_add(other.direction-random_range(-80,80),random_range(2,7));
     	    growspeed = random_range(0.1,0.06)
     	}
-    	
+
     	if hasbounced = false && place_meeting(x + xdir,y,Wall){
-    		
+
     		if bounce > 0{
-			
+
 				wall_burst();
 				hasbounced = true;
 				bounce--;
 				xdir *= -1;
 				move_bounce_solid(false);
     		}else{
-				
+
 				dir = 1000;
 				break;
 			}
 		}
 		if hasbounced = false && place_meeting(x,y + ydir,Wall){
-    		
+
     		if bounce > 0{
-			
+
 				wall_burst();
 				hasbounced = true;
 				bounce--;
 				ydir *= -1;
 				move_bounce_solid(false);
     		}else{
-				
+
 				dir = 1000;
 				break;
 			}
 		}
 		if hasbounced = false && place_meeting(x + xdir,y + ydir,Wall){
-    		
+
     		if bounce > 0{
-			
+
 				wall_burst();
 				hasbounced = true;
 				bounce--;
@@ -122,12 +122,12 @@ with instance_create(x,y,CustomProjectile){
 				ydir *= -1;
 				move_bounce_solid(false);
     		}else{
-				
+
 				dir = 1000;
 				break;
 			}
 		}
-		
+
     	if place_meeting(x,y,enemy) || place_meeting(x,y,prop){
     	    break
     	}
@@ -180,7 +180,7 @@ repeat(6){
 	var _r = 64
 	with instance_create(x+lengthdir_x(_r,_a),y+lengthdir_y(_r,_a),AcidStreak){
 		sprite_index = global.sprSonicStreak
-		image_angle = _a - 90
+		image_angle = _a
 		image_speed = .3
 	}
 	_a += 360/6

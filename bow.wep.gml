@@ -97,93 +97,117 @@ with instance_create(x,y,CustomObject){
 
 
 #define bow_step
-if !instance_exists(creator){instance_delete(self);exit}
-if button_check(creator.index, "swap") && (creator.canswap = true || creator.bwep != 0){
-  var _t = weapon_get_type(mod_current);
-  creator.ammo[_t] += weapon_get_cost(mod_current)
-  if creator.ammo[_t] > creator.typ_amax[_t] creator.ammo[_t] = creator.typ_amax[_t]
-  instance_delete(self)
-  exit
-}
+if !instance_exists(creator){instance_delete(self); exit}
 
-var timescale = (mod_variable_get("weapon", "stopwatch", "slowed") == 1) ? 30/room_speed : current_time_scale;
-if button_check(index,"swap"){instance_destroy();exit}
-if reload = -1{
-    reload = hand ? creator.breload : creator.reload
-    reload += mod_script_call_nc("mod", "defpack tools", "get_reloadspeed", creator) * timescale * 1.2
-}
-else{
-    if hand creator.breload = max(creator.breload, reload)
-    else creator.reload = max(reload, creator.reload)
-}
-view_pan_factor[index] = 3 - (charge/maxcharge * .5)
-defcharge.charge = charge
-if button_check(index, btn){
-    if charge < maxcharge{
-        charge += mod_script_call_nc("mod", "defpack tools", "get_reloadspeed", creator) * timescale * 1.2;
-        charged = 0
-        sound_play_pitchvol(sound,sqr((charge/maxcharge) * 3.5) + 6,1 - charge/maxcharge)
-    }
-    else{
-        if current_frame mod 6 < current_time_scale {
-            creator.gunshine = 1
-            with defcharge blinked = 1
-        }
-        charge = maxcharge;
-        if charged = 0{
-            mod_script_call_self("mod","defpack tools", "weapon_charged", creator, 12)
-            charged = 1
-        }
-    }
-}
-else{instance_destroy()}
+  if button_check(creator.index, "swap") && (creator.canswap = true || creator.bwep != 0) {
+
+    var _t = weapon_get_type(mod_current);
+
+    creator.ammo[_t] += weapon_get_cost(mod_current);
+    if creator.ammo[_t] > creator.typ_amax[_t] creator.ammo[_t] = creator.typ_amax[_t];
+
+    instance_delete(self);
+    exit;
+  }
+
+  var timescale = (mod_variable_get("weapon", "stopwatch", "slowed") == 1) ? 30/room_speed : current_time_scale;
+
+  if button_check(index, "swap"){instance_destroy(); exit}
+  if reload = -1 {
+
+      reload = hand ? creator.breload : creator.reload;
+      reload += mod_script_call_nc("mod", "defpack tools", "get_reloadspeed", creator) * timescale * 1.2;
+  }else {
+
+      if hand creator.breload = max(creator.breload, reload) else creator.reload = max(reload, creator.reload)
+  }
+  view_pan_factor[index] = 3 - (charge / maxcharge * .5);
+  defcharge.charge = charge;
+  if button_check(index, btn) {
+
+      if charge < maxcharge {
+
+          charge += mod_script_call_nc("mod", "defpack tools", "get_reloadspeed", creator) * timescale * 1.2;
+          charged = 0;
+          sound_play_pitchvol(sound, sqr((charge / maxcharge) * 3.5) + 6, 1 - charge / maxcharge);
+      }else {
+
+          if current_frame mod 6 < current_time_scale {
+              creator.gunshine = 1;
+              with defcharge blinked = 1;
+          }
+
+          charge = maxcharge;
+          if charged = 0 {
+
+              mod_script_call_self("mod","defpack tools", "weapon_charged", creator, 12);
+              charged = 1;
+          }
+      }
+  }else{instance_destroy(); exit}
+
+  if charged {
+    creator.speed *= .9;
+  }
 
 #define bow_cleanup
-view_pan_factor[index] = undefined
-sound_stop(sound)
+  view_pan_factor[index] = undefined;
+  sound_stop(sound);
 
 #define bow_destroy
-bow_cleanup()
-var _p = random_range(.8,1.2)
-sound_play_pitchvol(sndSwapGuitar,4*_p,.8)
-sound_play_pitchvol(sndAssassinAttack,2*_p,.8)
-sound_play_pitchvol(sndClusterOpen,2*_p,.2)
-if charged = 0{
-    with creator weapon_post(1,-10,0)
-    with instance_create(creator.x,creator.y,Bolt){
-        sprite_index = other.spr_arrow
-        mask_index   = mskBullet1
-        creator = other.creator
-        team    = creator.team
-        damage = 14
-        move_contact_solid(creator.gunangle,6)
-        motion_add(creator.gunangle+random_range(-2,2)*creator.accuracy*(1-(other.charge/other.maxcharge)),24+2*other.charge/other.maxcharge)
-        image_angle = direction
-    }
-}
-else
-{
-    with creator{
-        weapon_post(1,-30,0)
-        repeat(6) with instance_create(x,y,Dust){
-            motion_add(random(360),choose(5,6))
+  bow_cleanup();
+
+  var _p = random_range(.8, 1.2);
+  sound_play_pitchvol(sndSwapGuitar, 4 * _p, .8);
+  sound_play_pitchvol(sndAssassinAttack ,2 * _p, .8);
+  sound_play_pitchvol(sndClusterOpen, 2 * _p, .2);
+
+  if !charged {
+
+      with creator weapon_post(1, -10, 0)
+      with instance_create(creator.x, creator.y, Bolt) {
+
+          sprite_index = other.spr_arrow;
+          mask_index   = mskBullet1;
+
+          creator = other.creator;
+          team    = creator.team;
+
+          damage = 15;
+          move_contact_solid(creator.gunangle, 6);
+          motion_add(creator.gunangle + random_range(-2, 2) * creator.accuracy * (1 - (other.charge / other.maxcharge)), 22);
+          image_angle = direction;
+      }
+  }else {
+
+    with creator {
+
+        weapon_post(1, -30, 0);
+        repeat(6) with instance_create(x, y, Dust) {
+
+            motion_add(random(360), choose(5, 6));
         }
     }
-    sound_play_pitchvol(sndShovel,2,.8)
-    sound_play_pitchvol(sndUltraCrossbow,3,.8)
-    var ang = creator.gunangle + random_range(-5,5) * creator.accuracy
-    var i = -12 * accuracy;
-    repeat(3){
-        with instance_create(creator.x,creator.y,Bolt){
-            sprite_index = other.spr_arrow
-            mask_index   = mskBullet1
-            creator = other.creator
-            team    = creator.team
-            damage = 9
-            move_contact_solid(creator.gunangle,6)
-            motion_add(ang + i,20)
-            image_angle = direction
+    sound_play_pitchvol(sndShovel, 2, .8);
+    sound_play_pitchvol(sndUltraCrossbow, 3, .8);
+    var ang = creator.gunangle + random_range(-5, 5) * creator.accuracy,
+          i = -12 * accuracy;
+
+    repeat(3) {
+
+        with instance_create(creator.x, creator.y, Bolt) {
+
+            sprite_index = other.spr_arrow;
+            mask_index   = mskBullet1;
+
+            creator = other.creator;
+            team    = creator.team;
+
+            damage = 5;
+            move_contact_solid(creator.gunangle, 6);
+            motion_add(ang + i, 22);
+            image_angle = direction;
         }
         i += 12 * accuracy;
-    }
-}
+      }
+  }

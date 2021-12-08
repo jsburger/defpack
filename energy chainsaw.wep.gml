@@ -1,8 +1,9 @@
 #define init
-	global.sprChainsaw 			= sprite_add("sprites/weapons/sprEnergyChainsaw.png", 7, 3, 4);
-	global.mskChainsaw 			= sprite_add_weapon("sprites/projectiles/mskChainsaw.png",20,3)
-	global.sprMiniAmmo 			= sprite_add("sprites/other/sprMiniAmmo.png",7,3,3)
-	global.sprChainsawShank = sprite_add("sprites/projectiles/sprEShank.png", 5, -6, 4);
+	global.sprChainsaw 			 = sprite_add("sprites/weapons/sprEnergyChainsaw.png", 7, 3, 4);
+	global.sprChainsawActive = sprite_add_weapon("sprites/weapons/sprEnergyChainsawActive.png", 3, 4);
+	global.mskChainsaw 			 = sprite_add_weapon("sprites/projectiles/mskChainsaw.png",20,3)
+	global.sprMiniAmmo 			 = sprite_add("sprites/other/sprMiniAmmo.png",7,3,3)
+	global.sprChainsawShank  = sprite_add("sprites/projectiles/sprEShank.png", 4, -6, 4);
 
 #macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)
 
@@ -25,9 +26,16 @@
 #define weapon_laser_sight
 	return 0
 #define weapon_sprt
-	return global.sprChainsaw
+	if instance_is(self, Player) {
+
+		with instances_matching(instances_matching(CustomObject, "name" ,"energy chainsaw burst"), "creator", other) {
+
+			return global.sprChainsawActive;
+		}
+	}
+	return global.sprChainsaw;
 #define weapon_text
-	return choose("PLASMA TEARER", "KILLED ENEMIES ALWAYS#DROP SOME @yAMMO")
+	return choose("PLASMA TEARER")
 #define nts_weapon_examine
 return{
     "d": "A point-blank melee weapon. #The trees are long gone ",
@@ -90,22 +98,12 @@ return{
 			with instances_matching_gt(instances_matching_ne(projectile,"team",other.team), "typ", 0){
 				if place_meeting(x,y,other){instance_destroy()}
 			}
-			if irandom(1) with instance_create(x + lengthdir_x(0, other.image_angle), y + lengthdir_y(4 * other.creator.right, other.image_angle), Wind){
+			  with instance_create(x, y, Wind){
 				sprite_index = global.sprChainsawShank;
 				image_angle = other.image_angle + random_range(-12, 12);
 				depth -= 1;
 				image_speed /= (1 + skill_get(mut_laser_brain));
-				motion_add(image_angle, random(1));
-				with instance_create(x, y, Wind){
-					sprite_index = global.sprChainsawShank;
-					image_angle = other.image_angle;
-					depth -= 1;
-					image_speed /= (1 + skill_get(mut_laser_brain));
-					motion_add(other.direction, other.speed);
-					image_xscale = 1.25;
-					image_yscale = 1.25;
-					image_alpha = .15;
-				}
+				motion_add(image_angle, 1 + random(1));
 			}
 			on_hit        = chainsawshank_hit
 			on_wall       = chainsawshank_wall

@@ -64,7 +64,7 @@ motion_add(gunangle, 4)
 
 var shells = 0,
 	l = 20* skill_get(mut_long_arms);
-	
+
 with instance_create(x + lengthdir_x(l, gunangle), y + lengthdir_y(l, gunangle), Slash) {
 	creator = other
 	team = other.team
@@ -87,9 +87,11 @@ with instance_create(x + lengthdir_x(l, gunangle), y + lengthdir_y(l, gunangle),
 	else{sound_play_pitch(sndHammer,random_range(.97,1.03))}
 	image_angle = direction
 	if r {
-    	repeat(r){
+		var _i = 0;
+		repeat(r){
+			_i++;
 			with mod_script_call("mod","defpack tools","create_lightning_bullet",x,y){
-				motion_set(other.direction + random_range(-32,32)*other.creator.accuracy, 10)
+				motion_set(other.direction + random_range(-32,32)*other.creator.accuracy * (_i = 1 ? .1 : 1), 10)
 				image_angle = direction
 				creator = other.creator
 				team = other.team

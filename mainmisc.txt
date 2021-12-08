@@ -21,10 +21,6 @@
 
 /loadwep scrapper
 
-///GOLD///
-
-/loadwep lucky machinegun
-
 ///QUARTZ///
 
 /loadwep quartz machinegun
@@ -46,6 +42,7 @@
 /loadwep infinipistol
 /loadwep andromeda launcher
 /load soda
+/load races/sage
 
 /loadwep flak canon
 

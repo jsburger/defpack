@@ -4,7 +4,7 @@
   global.sprHexNeedleWall  = sprite_add_weapon("sprites/weapons/sprHexNeedle.png",      14, 5);
   global.sprHexNeedleStick = sprite_add_weapon("sprites/weapons/sprHexNeedle.png",      24, 5);
   global.mskHexNeedle      = sprite_add_weapon("sprites/projectiles/mskHexNeedle.png",  20, 6);
-  global.sprHexNeedleShank = sprite_add("sprites/projectiles/sprHexNeedleShank.png", 5, -6, 4);
+  global.sprHexNeedleShank = sprite_add("sprites/projectiles/sprHexNeedleShank.png", 4, -6, 4);
 
 #macro  current_frame_active (current_frame % 1) < current_time_scale
 

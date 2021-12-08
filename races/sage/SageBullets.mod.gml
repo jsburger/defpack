@@ -5,21 +5,16 @@
 #define _init()
   global.BulletDirectory = ds_map_create();
   global.defaultitem = {
-      name        : "NO BULLET",
-      description : "THIS SHOULDNT APPEAR",
+      name        : "THIS BULLET IS MISSING A NAME",
+      description : "THIS BULLET IS MISSING ITS DESCRIPTION",
+      ttip        : "THIS BULLET IS MISSING A TIP",
+      spr_index   : mskNone,
+      area        : 1
   }
 
 #macro bullet global.BulletDirectory;
 
 #define bullets_setup()
-  bullet[? "none"] = {
-      name        : "NO BULLET",
-    	description : "@s-",
-      spr_index   : 0,
-    	key         : "none",
-      area        : true
-    };
-
   while(!mod_sideload()){wait(0)}
   var arr = [];
   wait file_find_all("bullets", arr);
@@ -30,10 +25,11 @@
     wait(0);
     var _i = string_replace(self.name, ".mod.gml", "");
     bullet[? _i] = {
-      name:        mod_script_call("mod", _i, "bullet_name",),
-      description: mod_script_call("mod", _i, "bullet_description", 0),
-      spr_index:   mod_script_call("mod", _i, "bullet_sprite"),
-      area:        mod_script_call("mod", _i, "bullet_area")
+      name:        mod_script_call_nc("mod", _i, "bullet_name"),
+      description: mod_script_call_nc("mod", _i, "bullet_description", 0),
+      ttip:        mod_script_call_nc("mod", _i, "bullet_ttip"),
+      spr_index:   mod_script_call_nc("mod", _i, "bullet_sprite"),
+      area:        mod_script_call_nc("mod", _i, "bullet_area")
     }
   }
 

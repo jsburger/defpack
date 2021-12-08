@@ -18,7 +18,7 @@ return false;
 return 30;
 
 #define weapon_cost
-return 3;
+return 4;
 
 #define weapon_swap
 return sndSwapPistol
@@ -86,7 +86,7 @@ with instance_create(x,y,CustomProjectile){
     image_speed = 1
     friction = .6
 	force = 50
-	damage = 70
+	damage = 60
 	motion_add(other.gunangle,22)
 	team = other.team
 	creator = other
