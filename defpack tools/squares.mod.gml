@@ -17,6 +17,9 @@
 	with spr {
 
 		Square      = sprite_add(i + "sprNewSquare.png", 2, 4, 4);
+		SquareShell = sprite_add(i + "sprSquareShell.png", 2, 8, 8);
+		SquareShellDisappear = sprite_add(i + "sprSquareShellDisappear.png", 5, 8, 8)
+		SquareShank = sprite_add_precise(i + "sprSquareShank.png", 4, -5, 8)
 		// SquareUpg   = sprite_add(i + "sprNewSquareUpg.png", 0, 8, 3);
 	
 	}
@@ -24,6 +27,22 @@
 	
 #macro spr global.spr
 #macro msk global.spr.msk
+
+
+#define sprite_add_precise(sprite, subimages, xoffset, yoffset)
+	var q = sprite_add(sprite, subimages, xoffset, yoffset)
+	if fork(){
+		var t = sprite_get_texture(q, 0),
+		    w = 150;
+
+		while(t == sprite_get_texture(q, 0) && w-- > 0){
+		    wait 0;
+		}
+	    sprite_collision_mask(q, 1, 1, 0, 0, 0, 0, 0, 0)
+	    exit
+	}
+	return q
+
 
 
 #define request_hud_draw(scriptRef)
@@ -113,6 +132,13 @@ return angle_difference(a, b) * (1 - power((n - 1)/n, dn))
         yscale : 1.5,
         alpha : .1
     };
+
+#macro bloom_2x {
+        xscale : 2,
+        yscale : 2,
+        alpha : .1
+    };
+
 
     
 #macro easeFunction easeInBack
@@ -211,7 +237,7 @@ return x < 0.5 ? 4 * x * x * x : 1 - power(-2 * x + 2, 3) / 2;
 			ringSlot = get_square_ring_slot(squares.count),
 			angOff = 360/(ringTotal),
 			flip = ((ring mod 2) * 2 - 1),
-			angle = (angOff * ringSlot) + current_frame * flip;
+			angle = (angOff * ringSlot) + current_frame * 2 * flip;
 	
 		//amount of squares in ring * size of square/2*pi (divided bc its radius in terms of circumference)
 		//wrote this before i did the ring system
@@ -236,7 +262,7 @@ return x < 0.5 ? 4 * x * x * x : 1 - power(-2 * x + 2, 3) / 2;
 				Lerp_ringSlot = get_square_ring_slot(lerp_count),
 				Lerp_angOff = 360/(Lerp_ringTotal),
 				Lerp_flip = ((Lerp_ring mod 2) * 2 - 1),
-				Lerp_angle = (Lerp_angOff * Lerp_ringSlot) + current_frame * Lerp_flip;
+				Lerp_angle = (Lerp_angOff * Lerp_ringSlot) + current_frame * 2 * Lerp_flip;
 				
 			var r = max(14, (16 * (Lerp_ring)) + (Lerp_ringTotal * 2/(2*pi)));
 			lerp_xstart = creator.x + lengthdir_x(r, Lerp_angle) + creator.hspeed;
@@ -279,11 +305,12 @@ return x < 0.5 ? 4 * x * x * x : 1 - power(-2 * x + 2, 3) / 2;
 	var proj = other, square = self;
 	if other.team == pseudo_team {
 		if "on_square" in other {
-			script_ref_call(other.on_square, self, other)
+			script_ref_call(other.on_square, square, proj)
 		}
 		else if "square_boosted" not in other {
-			other.square_boosted = true
+			var dontMark = false;
 			switch (other.object_index) {
+				
 				case Laser: 
 					//Split the laser into three
 					var onLaser = nearest_point_on_line({x: proj.xstart, y: proj.ystart, dir: proj.image_angle}, square);
@@ -299,6 +326,7 @@ return x < 0.5 ? 4 * x * x * x : 1 - power(-2 * x + 2, 3) / 2;
 					}
 					instance_destroy()
 					break
+					
 				case PlasmaBall:
 					//Take squares away from the player and have them orbit the plasma
 					var fellowSquares = instances_matching_ne(instances_matching(instances_matching(CustomSlash, "name", "Square"), "creator", creator), "id", square),
@@ -317,12 +345,53 @@ return x < 0.5 ? 4 * x * x * x : 1 - power(-2 * x + 2, 3) / 2;
 						with taken on_destroy = ["mod", "defpack tools", "plasmite_destroy"]
 					}
 					break
+					
+				case EnergySlash:
+					dontMark = true;
+					with create_square_shell(x, y) {
+						motion_set(proj.direction, 20)
+						image_angle = direction
+						projectile_init(square.pseudo_team, square.creator)
+					}
+					instance_destroy()
+					break
+					
+				case EnergyShank:
+					with proj {
+						speed += 30
+						friction += 3
+						image_index = 0
+						sprite_index = spr.SquareShank
+					}
+					instance_destroy()
+					break
+			}
+			if dontMark == false {
+				other.square_boosted = true
 			}
 		}
 	}
 
 
 #define square_destroy
+
+	var s = audio_play_sound(sndPlasmaHit, 1, 0);
+	audio_sound_gain(s, .5, 0)
+	audio_sound_pitch(s, random_range(3, 6))
+
+	var n = irandom_range(3, 6), int = 360/n;
+	for (var i = 0; i < 360; i += int) {
+	    with mod_script_call("mod", "defparticles", "create_spark", x, y) {
+	        gravity = 0
+	        friction = 1.2
+	        motion_set(i + random_range(-int/3, int/3), random(8) + 1)
+	        age = speed
+	        color = c_white
+	        fadecolor = c_lime
+	    }
+	}
+
+
 
 
 //Orbital Math {
@@ -432,3 +501,80 @@ var _slope = dtan(-_line.dir),
 	audio_sound_pitch(q, 1 + random_nonsync(.4)) //Pitch
     audio_sound_gain(q, vol, 0) //Volume
 
+
+
+//Square adjacent projectiles
+//Square Shells (Created by Energy Slashes)
+#define create_square_shell(x, y)
+	with instance_create(x, y, CustomProjectile) {
+		name = "SquareShell"
+		
+		mask_index = mskBullet2
+		sprite_index = spr.SquareShell
+		spr_disappear = spr.SquareShellDisappear
+		image_speed = 1
+		defbloom = bloom_2x
+		
+		typ = 2
+		damage = 7
+		force = 6
+		friction = .25
+		disappearing = false
+		return_square = true
+		timer = 60
+		
+		on_anim = square_shell_anim
+		on_step = square_shell_step
+		on_hit  = square_shell_hit
+		on_wall = square_shell_wall
+		
+		return self;
+	}
+	
+#define square_shell_anim
+	if disappearing {
+		instance_destroy()
+	}
+	else {
+		image_speed = 0
+		image_index = 1
+	}
+
+#define square_shell_step
+	timer -= current_time_scale;
+	if (timer < current_time_scale || (abs(speed) < friction))  && !disappearing {
+		square_shell_disable()
+	}
+
+#define square_shell_disable
+	disappearing = true
+	sprite_index = spr_disappear
+	image_speed = .4
+	image_index = 0
+	speed *= .2
+	friction = .2
+	if return_square {
+		with create_square(x, y) {
+			creator = other.creator
+			team = creator.team
+		}
+	}
+	
+#define square_shell_hit
+	if !disappearing {
+		return_square = false
+		projectile_hit(other, damage, force, direction)
+		square_shell_disable()
+	}
+	
+#define square_shell_wall
+	if !disappearing {
+		//Secret attfooy code (badass)
+		move_contact_solid(direction + 180, 800)
+		timer -= 1
+		image_speed = 1
+		image_index = 0
+		var q = sound_play_hit(sndHitWall, .2);
+		sound_volume(q, .5)
+		sound_pitch(q, 2)
+	}
