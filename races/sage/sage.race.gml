@@ -161,6 +161,8 @@ NOTES FROM JSBURG:
 	draw_sprite(_sprIndex, _imgIndex, _x -1, _y);
 	draw_sprite(_sprIndex, _imgIndex, _x +1, _y);
 	draw_sprite(_sprIndex, _imgIndex, _x, _y -1);
+	draw_sprite(_sprIndex, _imgIndex, _x -1, _y +1);
+	draw_sprite(_sprIndex, _imgIndex, _x +1, _y +1);
 	draw_sprite(_sprIndex, _imgIndex, _x, _y +2);
 	d3d_set_fog(false, c_white, 0, 0);
 

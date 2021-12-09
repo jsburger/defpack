@@ -227,9 +227,6 @@
 		}
 	}
 
-  //Keeps track of all dropped weps
-	global.WepDrops = ds_list_create();
-
 	//System for letting weapons draw on the hud
 	global.HUDRequests = []
 
@@ -557,9 +554,6 @@ with Player if visible{
 }
 
 #define game_start
-	// Clear tracked weapons for rerolling:
-	ds_list_clear(global.WepDrops);
-
 	// Finds all sodas available
 	var weps = mod_get_names("weapon");
 	with weps {
@@ -575,47 +569,6 @@ with Player if visible{
 
 
 #define step
-
-	// Weapon rerolling:
-	with Player if (race != "steroids") {
-
-		with instances_matching_ne(instances_matching(instances_matching_ne(WepPickup, "defpack_no_reroll", true), "roll", true), "defpack_weproll", true) {
-
-			defpack_weproll = true;
-			var _s = self;
-			var _weps = ds_list_create();
-			weapon_get_list(_weps, 1, weapon_get_area(_s.wep));
-
-			with ds_list_to_array(global.WepDrops) {
-
-				if (_s.wep = self) {
-					// Reroll:
-					ds_list_shuffle(_weps);
-
-					with ds_list_to_array(_weps) {
-
-						with ds_list_to_array(global.WepDrops) {
-
-							if (self != other) {
-
-								_s.wep = other;
-							}
-						}
-					}
-				}
-			}
-
-			// Add weapon to list:
-			ds_list_add(global.WepDrops, wep);
-
-			// If list size > x clear oldest weapon:
-			if (ds_list_size(global.WepDrops) > max(3, ds_list_size(_weps) * .4)) {
-
-				ds_list_delete(global.WepDrops, 0);
-			}
-		}
-	}
-
 	// Lazy gas fire implementation
 	with instances_matching(Flame, "can_ignite", true) {
 
@@ -4275,7 +4228,7 @@ if skill_get(mut_bolt_marrow){
     }
 }
 whooshtime = (whooshtime + current_time_scale) mod maxwhoosh
-if whooshtime < current_time_scale audio_play_ext(sndMeleeFlip, x, y, 2 - length/6 + random_range(-.1, .1) + (skill_get("compoundelbow") > 0 ? .3 : 0), length/6, 0);
+if whooshtime < current_time_scale audio_play_ext(sndMeleeFlip, x, y, 2 - length/6 + random_range(-.1, .1) + (skill_get("compoundelbow") > 0 ? .3 : 0), max(.6, length/8), 0);
 
 #define sword_end_step
 var e = 0, w = 1.5;

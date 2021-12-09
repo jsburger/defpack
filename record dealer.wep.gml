@@ -246,5 +246,9 @@ if frac(current_frame) < current_time_scale{
     pitch -= decel
     sound_play_pitchvol(snd, pitch*p, vol)
     lifetime -= 1
-    if lifetime <= 0 instance_destroy()
+    if lifetime <= 0 {
+
+      sound_stop(snd)
+      instance_destroy()
+    }
 }
