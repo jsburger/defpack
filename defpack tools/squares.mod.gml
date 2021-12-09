@@ -60,6 +60,7 @@
 		with create_square(mouse_x[0], mouse_y[0]) {
 			team = Player.team
 			creator = Player.id
+			motion_set(random(360), random(6))
 		}
 	}
 	// if button_pressed(0, "swap") {
@@ -180,14 +181,17 @@ return x < 0.5 ? 4 * x * x * x : 1 - power(-2 * x + 2, 3) / 2;
 		defbloom = default_bloom
 		
 		pseudo_team = -1
-		lerp_progress = 0
+		
+		// lerp_progress = 0
 		can_lerp = false
-		lerp_xstart = x
-		lerp_ystart = y
-		in_orbit = false
-		last_count = 0
-		last_total = 1
-		last_ring = 0
+		// lerp_xstart = x
+		// lerp_ystart = y
+		// in_orbit = false
+		// last_count = 0
+		// last_total = 1
+		// last_ring = 0
+		
+		square_speed = 0
 		
 		on_hit = square_hit
 		on_step = square_step
@@ -195,6 +199,7 @@ return x < 0.5 ? 4 * x * x * x : 1 - power(-2 * x + 2, 3) / 2;
 		on_projectile = square_projectile
 		on_grenade = nothing
 		on_anim = square_anim
+		on_wall = square_wall
 		
 		return self
 	}
@@ -203,6 +208,9 @@ return x < 0.5 ? 4 * x * x * x : 1 - power(-2 * x + 2, 3) / 2;
 	bullet_anim()
 	can_lerp = true
 	speed = 0
+	
+#define square_wall
+	move_outside_solid(point_direction(x, y, creator.x, creator.y), 8 * current_time_scale)
 
 #define square_step
 	if !instance_exists(creator) {
@@ -215,14 +223,14 @@ return x < 0.5 ? 4 * x * x * x : 1 - power(-2 * x + 2, 3) / 2;
 		team = id
 	}
 	
-	//Part of the complicated orbiting code
-	if lerp_progress < 1 && can_lerp {
-		lerp_progress += .06 * current_time_scale
-		if lerp_progress >= 1 {
-			square_finish_lerp()
-			lerp_progress = 1
-		}
-	}
+	// //Part of the complicated orbiting code
+	// if lerp_progress < 1 && can_lerp {
+	// 	lerp_progress += .06 * current_time_scale
+	// 	if lerp_progress >= 1 {
+	// 		square_finish_lerp()
+	// 		lerp_progress = 1
+	// 	}
+	// }
 	
 	//Overly complicated orbiting code
 	if can_lerp {
@@ -245,49 +253,64 @@ return x < 0.5 ? 4 * x * x * x : 1 - power(-2 * x + 2, 3) / 2;
 		var r = max(12, (16 * (ring)) + (ringTotal * 2/(2*pi))),
 			wantX = creator.x + lengthdir_x(r, angle) + creator.hspeed,
 			wantY = creator.y + lengthdir_y(r, angle) + creator.vspeed;
+			
+		// WHO WOULD WIN ?
+		// FIVE LINES OF CODE
+		var distance = point_distance(x, y, wantX, wantY),
+			dir = point_direction(x, y, wantX, wantY);
 		
-		if in_orbit && (last_count != squares.count || (last_total != squares.total && ring == last_ring)) {
-			if lerp_progress >= .7 {
-				lerp_count = last_count
-				lerp_total = last_total
-				lerp_progress = 0
-			}
-			lerp_progress = max(0, lerp_progress - .2)
-			// trace(squares.count, last_count, squares.total, last_total)
-		}
-		if in_orbit && lerp_progress < 1 {
-			var Lerp_ring = get_square_ring(lerp_count),
-				Lerp_totalRings = get_square_ring(lerp_total),
-				Lerp_ringTotal = Lerp_ring < Lerp_totalRings ? (squarePerRing * Lerp_ring + startingAmount) : (get_square_ring_slot(lerp_total)),
-				Lerp_ringSlot = get_square_ring_slot(lerp_count),
-				Lerp_angOff = 360/(Lerp_ringTotal),
-				Lerp_flip = ((Lerp_ring mod 2) * 2 - 1),
-				Lerp_angle = (Lerp_angOff * Lerp_ringSlot) + current_frame * 2 * Lerp_flip;
+		square_speed = clamp(square_speed + 1 * current_time_scale, 0, distance/2);
+		
+		if place_free(x + lengthdir_x(square_speed, dir), y) x += lengthdir_x(square_speed, dir)
+		if place_free(x, y + lengthdir_y(square_speed, dir)) y += lengthdir_y(square_speed, dir)
+		// speed = square_speed
+		// direction = dir
+		
+		
+		// OR FOURTY LINES OF NONSENSE
+		
+		// if in_orbit && (last_count != squares.count || (last_total != squares.total && ring == last_ring)) {
+		// 	if lerp_progress >= .7 {
+		// 		lerp_count = last_count
+		// 		lerp_total = last_total
+		// 		lerp_progress = 0
+		// 	}
+		// 	lerp_progress = max(0, lerp_progress - .2)
+		// 	// trace(squares.count, last_count, squares.total, last_total)
+		// }
+		// if in_orbit && lerp_progress < 1 {
+		// 	var Lerp_ring = get_square_ring(lerp_count),
+		// 		Lerp_totalRings = get_square_ring(lerp_total),
+		// 		Lerp_ringTotal = Lerp_ring < Lerp_totalRings ? (squarePerRing * Lerp_ring + startingAmount) : (get_square_ring_slot(lerp_total)),
+		// 		Lerp_ringSlot = get_square_ring_slot(lerp_count),
+		// 		Lerp_angOff = 360/(Lerp_ringTotal),
+		// 		Lerp_flip = ((Lerp_ring mod 2) * 2 - 1),
+		// 		Lerp_angle = (Lerp_angOff * Lerp_ringSlot) + current_frame * 2 * Lerp_flip;
 				
-			var r = max(14, (16 * (Lerp_ring)) + (Lerp_ringTotal * 2/(2*pi)));
-			lerp_xstart = creator.x + lengthdir_x(r, Lerp_angle) + creator.hspeed;
-			lerp_ystart = creator.y + lengthdir_y(r, Lerp_angle) + creator.vspeed;
+		// 	var r = max(14, (16 * (Lerp_ring)) + (Lerp_ringTotal * 2/(2*pi)));
+		// 	lerp_xstart = creator.x + lengthdir_x(r, Lerp_angle) + creator.hspeed;
+		// 	lerp_ystart = creator.y + lengthdir_y(r, Lerp_angle) + creator.vspeed;
 	
-		}
+		// }
 		
-		if lerp_progress < 1 {
-			if !in_orbit {
-				x = lerp(lerp_xstart, wantX, easeOutBack(lerp_progress))
-				y = lerp(lerp_ystart, wantY, easeOutBack(lerp_progress))
-			}
-			else {
-				x = lerp(lerp_xstart, wantX, easeInOutCubic(lerp_progress))
-				y = lerp(lerp_ystart, wantY, easeInOutCubic(lerp_progress))
-			}
-		}
-		else {
-			x = wantX
-			y = wantY
-		}
+		// if lerp_progress < 1 {
+		// 	if !in_orbit {
+		// 		x = lerp(lerp_xstart, wantX, easeOutBack(lerp_progress))
+		// 		y = lerp(lerp_ystart, wantY, easeOutBack(lerp_progress))
+		// 	}
+		// 	else {
+		// 		x = lerp(lerp_xstart, wantX, easeInOutCubic(lerp_progress))
+		// 		y = lerp(lerp_ystart, wantY, easeInOutCubic(lerp_progress))
+		// 	}
+		// }
+		// else {
+		// 	x = wantX
+		// 	y = wantY
+		// }
 		
-		last_count = squares.count
-		last_total = squares.total
-		last_ring = ring
+		// last_count = squares.count
+		// last_total = squares.total
+		// last_ring = ring
 	}
 
 	image_angle -= current_time_scale * flip
@@ -342,11 +365,12 @@ return x < 0.5 ? 4 * x * x * x : 1 - power(-2 * x + 2, 3) / 2;
 						creator = proj
 					}
 					if mod_exists("mod", "defpack tools") {
-						with taken on_destroy = ["mod", "defpack tools", "plasmite_destroy"]
+						with taken on_destroy = ["mod", mod_current, "plasma_square_destroy"]
 					}
 					break
 					
 				case EnergySlash:
+					//Fire the squares as 'shells'
 					dontMark = true;
 					with create_square_shell(x, y) {
 						motion_set(proj.direction, 20)
@@ -357,6 +381,7 @@ return x < 0.5 ? 4 * x * x * x : 1 - power(-2 * x + 2, 3) / 2;
 					break
 					
 				case EnergyShank:
+					//Accelerate the shank
 					with proj {
 						speed += 30
 						friction += 3
@@ -504,6 +529,16 @@ var _slope = dtan(-_line.dir),
 
 
 //Square adjacent projectiles
+
+//Plasma Ball orbitals explode
+#define plasma_square_destroy
+	mod_script_call("mod", "defpack tools", "sound_play_hit_ext", sndPlasmaHit, random_range(1.45, 1.83), 1)
+	with mod_script_call("mod", "defpack tools", "create_plasma_impact_small", x + lengthdir_x(hspeed, direction), y + lengthdir_y(hspeed, direction)) {
+		team = other.pseudo_team;
+		creator = other.creator
+	}
+
+
 //Square Shells (Created by Energy Slashes)
 #define create_square_shell(x, y)
 	with instance_create(x, y, CustomProjectile) {
