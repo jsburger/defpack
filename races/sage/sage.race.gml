@@ -93,6 +93,7 @@ NOTES FROM JSBURG:
 
 	 // FX:
 	 global.sprSwapFairy = sprite_add(_i + "fx/sprWepSwapL.png", 6, 16, 16);
+	
 	 // Reapply sprites if the mod is reloaded. //
 	with(instances_matching(Player, "race", mod_current)) {
 		assign_sprites();
@@ -107,12 +108,12 @@ NOTES FROM JSBURG:
 
 	global.colormap = {
 
-		neutral: 					$BAB0A9,
+		neutral: 		  $BAB0A9,
 		negative:         $444FED,
-		speed:   					$CE7314,
+		speed:   		  $CE7314,
 		projectile_speed: $E5BC16,
 		accuracy:         $0067F7,
-		spellpower:				$A83487,
+		spellpower:		  $A83487,
 		projectile:       $00ABFA,
 		ammo:             $00ABFA,
 		bounce:           $00ABFA,
@@ -121,6 +122,14 @@ NOTES FROM JSBURG:
 		spell:            make_color_rgb(21, 98, 85),
 	}
 
+	// Holds all Players spell bullet inventories, spell power and ui roll:
+	for(var _i = 0; _i < maxp; _i++) {
+		
+		global.bulletInventory[_i] = [0];
+		global.spellPower[_i] = [0];
+		global.uiRoll[_i] = [0];
+	}
+	
 	var _race = [];
 	for(var i = 0; i < maxp; i++) _race[i] = player_get_race(i);
 	while(true){
@@ -154,6 +163,14 @@ NOTES FROM JSBURG:
 
  // On Run Start:
 #define game_start
+
+	for(var _i = 0; _i < maxp; _i++) {
+		
+		global.bulletInventory[_i] = ["bDefault"];
+		global.spellPower[_i] = [0];
+		global.uiRoll[_i] = [0];
+	}
+
 	sound_play(sndMutant1Cnfm); // Play Confirm Sound
 
 #define draw_outline(_sprIndex, _imgIndex, _x, _y)
@@ -342,31 +359,32 @@ NOTES FROM JSBURG:
 
 	}
 
-#define player_hud(_player, _hudIndex, _hudSide)
+#define player_hud(_playerindex, _hudIndex, _hudSide, _xOffset, _yOffset)
      // Spell Bullets:
 
-	var _x = (_hudSide ? 8 : 99),
+	var _x = (_hudSide ? 8 : 99) + _xOffset,
 		_w = sprite_get_width(global.spellHold) / 2,
-		_y = 12+(_player.uiroll == i),
-		_h = sprite_get_height(global.spellHold) / 2;
+		_y = 12+(global.uiRoll[_playerindex] == i) + _yOffset,
+		_h = sprite_get_height(global.spellHold) / 2,
+		_p = player_find(_playerindex);
 
-	if dev {
+	if dev && instance_exists(_p) {
 
 		draw_set_font(fntSmall);
-		draw_text_nt(-13, 46, "@wRELOAD_SPEED = " + string(round(_player.reloadspeed * 100)) + "%")
-		draw_text_nt(-13, 53, "@yACCURACY     = " + string(round(_player.accuracy * 100)) + "%")
-		draw_text_nt(-13, 60, "@gAMMO_COST    = " + string(round(1 + _player.sage_ammo_cost) * 100) + "%")
-		draw_text_nt(-13, 67, "@bPROJ_SPEED   = " + string(round(_player.sage_projectile_speed * 100)) + "%")
-		draw_text_nt(-13, 74, "@pSPELL_POWER  = " + string(round((1 + _player.sage_spell_power) * 100)) + "%")
-		draw_text_nt(-13, 81, "@bSPEED        = " + string(_player.maxspeed))
+		draw_text_nt(-13, 46, "@wRELOAD_SPEED = " + string(round(_p.reloadspeed * 100)) + "%")
+		draw_text_nt(-13, 53, "@yACCURACY     = " + string(round(_p.accuracy * 100)) + "%")
+		draw_text_nt(-13, 60, "@gAMMO_COST    = " + string(round(1 + _p.sage_ammo_cost) * 100) + "%")
+		draw_text_nt(-13, 67, "@bPROJ_SPEED   = " + string(round(_p.sage_projectile_speed * 100)) + "%")
+		draw_text_nt(-13, 74, "@pSPELL_POWER  = " + string(round((1 + _p.sage_spell_power) * 100)) + "%")
+		draw_text_nt(-13, 81, "@bSPEED        = " + string(_p.maxspeed))
 		draw_set_font(fntM);
 	}
 
-	for(var i = 0; i < max(array_length(_player.spellBullets), min_spellbullets); i++) {
+	for(var i = 0; i < max(array_length(global.bulletInventory[_playerindex]), min_spellbullets); i++) {
+		//	if _xOffset != 0 && i = 0 {i++; _x += 9}
+		if i < array_length(global.bulletInventory[_playerindex]){
 
-		if i < array_length(_player.spellBullets){
-
-			var _sprt = mod_script_call("mod", _player.spellBullets[i], "bullet_sprite", _player.sage_spell_power),
+			var _sprt = mod_script_call("mod", string(global.bulletInventory[_playerindex][i]), "bullet_sprite"),
 			    _hudx = (_hudSide ? -10 : 0); // x offset for multiplayer hud
 
 			//Draw Outline for bullets in active slots:
@@ -386,25 +404,16 @@ NOTES FROM JSBURG:
 				draw_sprite_ext(_sprt, 0, _x + _hudx, _y, 1, 1, 0, c_black, .2);
 			}
 
-			if !point_in_rectangle(ceil(mouse_x[_player.index] - view_xview[_player.index]) - 16, ceil(mouse_y[_player.index] - view_yview[_player.index]), (_hudSide ? 8 : 99) - _w * 2 * (_hudSide ? -1 : 1), _y - 2 - _h, (_hudSide ? 8 : 99) + _w+ _w * 2 * array_length(_player.spellBullets) * (_hudSide ? -1 : 1), _y - 1 + _h) {
 
-				_player.sage_uitimer = 20;
-			}else {
+		if point_in_rectangle(mouse_x[_playerindex] - view_xview[_playerindex] - 16 + _xOffset, mouse_y[_playerindex] - view_yview[_playerindex] + _yOffset, _x - _w, _y - _h - 2, _x + 2, _y + _h) {
 
-				_player.sage_uitimer = max(_player.sage_uitimer - current_time_scale, 0);
-			}
 
-			if point_in_rectangle(mouse_x[_player.index] - view_xview[_player.index] - 16, mouse_y[_player.index] - view_yview[_player.index], _x - _w, _y - _h - 2, _x + 2, _y + _h) { //
-
-				  if _player.sage_uitimer = 0 {
-
-						var _name = mod_script_call("mod", _player.spellBullets[i], "bullet_name", _player.sage_spell_power),
-						    _desc = mod_script_call("mod", _player.spellBullets[i], "bullet_description", _player.sage_spell_power);
-						draw_set_font(fntM);
-			      draw_text_nt(_x - 7 - (10 * i - i) * (_hudSide ? -1 : 1), _y + _h + 3, _name);
-			      draw_set_font(fntSmall);
-			      draw_text_nt(_x - 7 - (10 * i - i) * (_hudSide ? -1 : 1), _y + _h + 12, _desc);
-			    }
+				var _name = mod_script_call("mod", global.bulletInventory[_playerindex][i], "bullet_name", global.spellPower[_playerindex]),
+					_desc = mod_script_call("mod", global.bulletInventory[_playerindex][i], "bullet_description", global.spellPower[_playerindex]);
+				draw_set_font(fntM);
+			    draw_text_nt(_x - 4 - (10 * i - i) * (_hudSide ? -1 : 1), _y + _h + 3, _name);
+			    draw_set_font(fntSmall);
+			    draw_text_nt(_x - 2 - (10 * i - i) * (_hudSide ? -1 : 1), _y + _h + 12, _desc);
 			}
 
 		}else{
@@ -415,13 +424,16 @@ NOTES FROM JSBURG:
 		//var _c = make_colour_hsv(_x * 1.5 mod 255, 255, 255);
 		//draw_rectangle_color(_x - _w, _y - _h - 2, _x + 2, _y + _h, _c, _c, _c, _c, true);
 
-	  _x += _hudSide ? -9 : 9;
-		_y = 12 + (_player.uiroll == i);
+		trace(_x, i)
+		_x += _hudSide ? -9 : 9;
+		trace(_x)
+		_y = 12 + (global.uiRoll[_playerindex] == i);
 	}
 
-	if (_player.uiroll < array_length(_player.spellBullets)) {
+	if instance_exists(_p) && (_p.uiroll < array_length(_p.spellBullets)) {
 
-		_player.uiroll++;
+		_p.uiroll += 30 / room_speed;
+		
 	}
 
  // On Character's Creation (Starting a run, getting revived in co-op, etc.):
@@ -430,7 +442,7 @@ NOTES FROM JSBURG:
 #macro bullets mod_variable_get("mod", "SageBullets", "BulletDirectory")
 #macro min_spellbullets 2 + skill_get(5)
 #macro fairy_swap_time 6
-#macro dev false
+#macro dev true
 #macro c global.colormap
 #macro c_darkteal c_purple
 #macro c_purblue c_purple
@@ -501,6 +513,11 @@ NOTES FROM JSBURG:
 
  // Every Frame While Character Exists:
 #define step
+
+	global.bulletInventory[index] = spellBullets;
+	global.spellPower[index] = sage_spell_power;
+	global.uiRoll[index] = uiroll;
+
 	// Fairy code;
 	var h = fairy;
 

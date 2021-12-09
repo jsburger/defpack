@@ -70,7 +70,7 @@ sound_play_pitch(sndBouncerBounce,random_range(1.6,1.8))
 with instance_create(x+lengthdir_x(12,direction),y+lengthdir_y(12,direction),AcidStreak){
 	sprite_index = global.sprSonicStreak
 	image_angle = other.direction
-	motion_add(image_angle+90,12)
+	motion_add(image_angle,8)
 	friction = 2.1
 }
 
