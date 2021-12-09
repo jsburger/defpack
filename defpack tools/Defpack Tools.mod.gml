@@ -3047,7 +3047,6 @@ image_xscale = _x;
 sound_play_hit_ext(sndPlasmaHit, random_range(1.45, 1.83), 1)
 with create_plasma_impact_small(x + lengthdir_x(hspeed, direction), y + lengthdir_y(hspeed, direction)) {
 	team = other.team;
-	damage = 4;
 }
 
 #define create_plasma_impact_small(_x, _y)
