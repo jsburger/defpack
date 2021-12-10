@@ -1,9 +1,9 @@
 #define init
-global.sprShotCannon = sprite_add_weapon("sprites/weapons/sprShotCannon.png", 4, 2);
-global.sprShotBullet = sprite_add("sprites/projectiles/sprShot.png",3,8,8)
+global.sprShotCannon = sprite_add_weapon("sprites/weapons/sprFlameShotCannon.png", 4, 2);
+global.sprShotBullet = sprite_add("sprites/projectiles/sprFireShot.png",3,8,8)
 sprite_collision_mask(global.sprShotBullet,1,1,0,0,0,0,0,0)
 #define weapon_name
-return "SHOT CANNON";
+return "FLAME SHOT CANNON";
 
 #define weapon_sprt
 return global.sprShotCannon;
@@ -24,16 +24,17 @@ return 4;
 return sndSwapShotgun;
 
 #define weapon_area
-return 6;
+return 8;
 
 #define weapon_text
-return "VORTEX-SHAPED DESTRUCTION";
+return "RING OF FIRE";
 
 #define weapon_fire
 	weapon_post(7,43,0)
 	sound_play_pitch(sndFlakCannon,1.2)
 	sound_play_pitchvol(sndFlakExplode,random_range(.4,.7),.8)
-	sound_play_pitch(sndDoubleShotgun,1.2)
+	sound_play_pitch(sndDoubleFireShotgun,1.2)
+	sound_play_pitch(sndIncinerator,.8)
 	with instance_create(x+lengthdir_x(12,gunangle),y+lengthdir_y(12,gunangle),CustomProjectile) {
 		move_contact_solid(other.gunangle,6)
 		motion_set(other.gunangle + random_range(-3, 3) * other.accuracy, 15 + random(2))
@@ -41,10 +42,10 @@ return "VORTEX-SHAPED DESTRUCTION";
 		sprite_index = global.sprShotBullet
 		mask_index = mskFlakBullet
 		damage = 2
-		force = 1
+		force = 0
 		image_speed = .5
 		accuracy = other.accuracy;
-		ortimer = 10
+		ortimer = 12
 		timer = ortimer
 		ftimer = 1.5
 		time = ftimer
@@ -56,6 +57,7 @@ return "VORTEX-SHAPED DESTRUCTION";
 		on_wall = script_ref_create(cannon_wall)
 		on_step = script_ref_create(cannon_step)
 		on_draw = script_ref_create(cannon_draw)
+		on_destroy = cannon_destroy;
 	}
 
 #define cannon_wall
@@ -64,18 +66,18 @@ return "VORTEX-SHAPED DESTRUCTION";
 	if skill_get(15){speed ++;image_index = 0}
 	move_bounce_solid(1)
 	
-	cannon_fire();
+	repeat(2) cannon_fire();
 	if timer <= 0{instance_destroy()}
 
 #define cannon_fire()
 	dirfac += 14
 	timer -= 1;
-	sound_play_pitch(sndShotgun, 1 * random_range(1.2, .8))
-	sound_play_pitch(sndPopgun, .7 * random_range(1.2, .8))
+	sound_play_pitch(sndFireShotgun, 1 * random_range(1.2, .8))
+	sound_play_pitch(sndIncinerator, .7 * random_range(1.2, .8))
 	var ang = dirfac;
 	repeat (5){
-		with instance_create(x, y, Bullet2){
-			motion_set(ang + random_range(-4, 4) * other.accuracy, 12 + 2 * skill_get(mut_shotgun_shoulders) - irandom(2) * other.accuracy);
+		with instance_create(x, y, FlameShell){
+			motion_set(ang + random_range(-7, 7) * other.accuracy, 10 + 2 * skill_get(mut_shotgun_shoulders) - irandom(2) * other.accuracy);
 			team = other.team
 			creator = other.creator
 			ang += 72
@@ -113,7 +115,7 @@ return "VORTEX-SHAPED DESTRUCTION";
 				}
 				sleep(30)
 				view_shake_at(x, y, 4)
-				with instance_create(x, y, Bullet2){
+				with instance_create(x, y, FlameShell){
 					motion_set(other.direction + random_range(-32, 32), 13 + irandom(3))
 					team = other.team
 					creator = other.creator
@@ -175,3 +177,19 @@ return "VORTEX-SHAPED DESTRUCTION";
 	draw_set_blend_mode(bm_add);
 	draw_sprite_ext(sprite_index, image_index, x, y, 1.25*image_xscale+i*2, 1.25*image_yscale+i*2, image_angle, image_blend, i);
 	draw_set_blend_mode(bm_normal);
+
+
+#define cannon_destroy
+repeat(40) {
+	
+	with instance_create(x, y, Flame) {
+	
+		creator = other.creator;
+		team = other.team;
+		motion_add(random(360), random_range(6, 8))
+	}	
+}
+sleep(30);
+view_shake_at(x, y, 8);
+sound_play_pitchvol(sndFlameCannonEnd, 1.6, .7)
+sound_play_pitchvol(sndFlareExplode, 1.2, .7)

@@ -5,6 +5,7 @@
 
 	//thanks brokin
 	//please note: brokin is like hes our bro and not that hes broke please be nice to yokin
+	//ill keep that in mind for next time
     canfire
     && can_shoot == true
     && (ammo[weapon_get_type(wep)] >= weapon_get_cost(wep) || infammo != 0)
@@ -21,7 +22,7 @@
 
 
 #define draw_gui
-    if(!instance_exists(PopoScene) && TopCont.gameovertime = 0 && !instance_exists(CampChar)){
+    if(!instance_exists(PopoScene) && instance_exists(TopCont) && TopCont.gameovertime = 0 && !instance_exists(CampChar)){
     	
         if(instance_exists(TopCont) || instance_exists(GenCont) || instance_exists(LevCont)){
             var _hudFade  = 0,
@@ -110,7 +111,7 @@
     }
 
 #define draw_pause
-	if(!instance_exists(PopoScene) && TopCont.gameovertime = 0 && !instance_exists(CampChar)){ 
+	if(!instance_exists(ControlMenuButton) && !instance_exists(GameMenuButton) && !instance_exists(VisualsMenuButton) && !instance_exists(AudioMenuButton) && !instance_exists(OptionMenuButton) && !instance_exists(PopoScene) && TopCont.gameovertime = 0 && !instance_exists(CampChar)){ 
     	
         if(instance_exists(TopCont) || instance_exists(GenCont) || instance_exists(LevCont)){
             var _hudFade  = 0,
@@ -231,7 +232,7 @@
 #define bounce(_proj)
 	with(_proj){
 
-		if "sage_no_bounce" in self {exit}
+		if "sage_no_bounce" in self || instance_is(self, EnergyHammerSlash) || instance_is(self, LightningSlash) {exit}
 
 		if "sage_bounce" in self {
 
@@ -239,52 +240,75 @@
 			switch(object_index) {
 
 				case HyperGrenade:
-					with instance_create(x - lengthdir_x(10, direction), y - lengthdir_y(10, direction),CustomProjectile) {
+					with instance_create(x - lengthdir_x(16, direction), y - lengthdir_y(16, direction), CustomSlash) {
 
-					  team    = other.team
-					  creator = other.creator
-					  sprite_index = mskNone
-					  mask_index   = sprGrenade
-					  motion_set(other.direction, 9)
-					  sage_bounce = other.sage_bounce -1
-					  on_wall = hypernade_wall
-					  sageCheck = true
+					  team = other.team;
+					  creator = other.creator;
+					  
+					  sprite_index = mskNone;
+					  mask_index   = sprGrenade;
+					  image_speed  = 0;
+					  
+					  image_yscale = other.image_yscale;
+					  
+					  motion_add(other.direction, 26);
+					  bounces   	 = other.sage_bounce;
+					  sage_no_bounce = true;
+					  sageCheck 	 = true;
+					  
+					  on_wall = hypernade_wall;
 					}
 
-					sound_play(sndExplosionS)
-					instance_create(x, y, SmallExplosion)
-					instance_delete(self)
+					sound_play_pitch(sndExplosionS, random_range(1.2, 1.4));
+					instance_create(x, y, SmallExplosion);
+					instance_delete(self);
 				break;
 
 				case HyperSlug:
-					with instance_create(x - lengthdir_x(10, direction), y - lengthdir_y(10, direction),CustomProjectile) {
+					with instance_create(x - lengthdir_x(8, direction), y - lengthdir_y(8, direction), CustomSlash) {
 
-					  team    = other.team
-					  creator = other.creator
-					  sprite_index = mskNone
-					  mask_index   = sprGrenade
-					  motion_set(other.direction, 9)
-					  sage_bounce = other.sage_bounce -1
-					  on_wall = hyperslug_wall
-					  sageCheck = true
+					  team = other.team;
+					  creator = other.creator;
+					  
+					  sprite_index = mskNone;
+					  mask_index   = sprGrenade;
+					  image_speed  = 0;
+					  
+					  image_yscale = other.image_yscale;
+					  
+					  motion_add(other.direction, 14);
+					  bounces   	 = other.sage_bounce;
+					  sage_no_bounce = true;
+					  sageCheck 	 = true;
+					  
+					  on_wall = hyperslug_wall;
 					}
-					instance_delete(self)
+
+					sound_play_pitch(sndHitWall, random_range(1.2, 1.4));
+					instance_delete(self);
 				break;
 
 			  case Laser:
-					if "deny_bounce" not in self with instance_create(x - lengthdir_x(10, image_angle), y - lengthdir_y(10, image_angle),CustomProjectile) {
+					with instance_create(x - lengthdir_x(12, image_angle), y - lengthdir_y(12, image_angle), CustomSlash) {
 
-					  team = other.team
-					  creator = other.creator
-					  sprite_index = mskNone
-					  mask_index   = sprMapDot
-					  motion_add(other.image_angle, 9)
-					  image_yscale = other.image_yscale
-					  sage_bounce = other.sage_bounce -1
-					  on_wall = laser_wall
-					  sageCheck = true
+					  team = other.team;
+					  creator = other.creator;
+					  
+					  sprite_index = mskNone;
+					  mask_index   = other.mask_index;
+					  image_speed  = 0;
+					  
+					  image_yscale = other.image_yscale;
+					  
+					  motion_add(other.image_angle, 20);
+					  bounces   	 = other.sage_bounce;
+					  sage_no_bounce = true;
+					  sageCheck 	 = true;
+					  
+					  on_wall = laser_wall;
 					}
-					deny_bounce = true
+					sage_no_bounce = true;
+					sageCheck = true;
 				break;
 
 			  case BloodGrenade:
@@ -612,59 +636,63 @@
 	}
 
 #define hypernade_wall
-	move_bounce_solid(false)
-	move_contact_solid(direction, 6)
-	instance_create(x, y, Smoke)
-	with instance_create(x, y, HyperGrenade)
-	{
-	  team         = other.team
-	  creator      = other.creator
-	  direction    = other.direction
-	  sage_bounce = other.sage_bounce
-	  blessed = true
-	  repeat(6)with instance_create(x, y, Smoke){motion_add(other.direction, random_range(2, 4))}
-	  blessed = true
-	  sacred  = true
-	  sageCheck = true
-	  with other if "crit" in self with other crit = other.crit
+	move_bounce_solid(false);
+	move_contact_solid(direction, 2);
+	
+	with instance_create(x, y, HyperGrenade) {
+		
+	  team    = other.team;
+	  creator = other.creator;
+	  
+	  direction = other.direction;
+	  
+	  sage_bounce = other.bounces - 1;
+	  sage_check_bounce = true;
+	  repeat(6) with instance_create(x, y, Smoke){motion_add(other.direction, random_range(2, 4))}
 	}
-	sound_play_pitchvol(sndGrenadeHitWall, random_range(1.8, 2.2), .5)
-	sleep(15)
-	instance_destroy();
+	sound_play_pitchvol(sndGrenadeHitWall, random_range(1.8, 2.2), .5);
+	sleep(15);
+	instance_delete(self);
 
 #define hyperslug_wall
-	move_bounce_solid(false)
-	move_contact_solid(direction, 6)
-	instance_create(x, y, Smoke)
-	with instance_create(x, y, HyperSlug)
-	{
-	  team        = other.team
-	  creator     = other.creator
-	  direction   = other.direction
-	  sage_bounce = other.sage_bounce
-	  sageCheck = true;
+	move_bounce_solid(false);
+	move_contact_solid(direction, 8);
+	
+	with instance_create(x, y, HyperSlug) {
+		
+	  team    = other.team;
+	  creator = other.creator;
+	  
+	  direction = other.direction;
+	  
+	  sage_bounce = other.bounces - 1;
+	  sage_check_bounce = true;
+	  repeat(6) with instance_create(x, y, Dust){motion_add(other.direction, random_range(2, 4))}
 	}
-	sound_play_pitchvol(sndHitWall, random_range(.8, 1.2), .7)
-	sleep(15)
-	instance_destroy();
+	sound_play_pitchvol(sndGrenadeHitWall, random_range(1.8, 2.2), .5);
+	sleep(10);
+	instance_delete(self);
 
 #define laser_wall
-	move_bounce_solid(false)
-	instance_create(x, y, Smoke)
-	repeat(3)with instance_create(x, y, PlasmaTrail){motion_add(other.direction, random_range(.5, 2))}
-	with instance_create(x, y, Laser)
-	{
-	  team    = other.team
-	  creator = other.creator
-	  image_angle = other.direction + random_range(-4, 4)
-	  direction   = image_angle
-	  event_perform(ev_alarm,0)
-	  sage_bounce = other.sage_bounce;
-	  image_yscale = other.image_yscale
-	  blessed = true
-	  sacred  = true
-	  sageCheck = true
-	  with other if "crit" in self with other crit = other.crit
+	move_bounce_solid(false);
+	
+	repeat(4) with instance_create(x, y, PlasmaTrail) {
+		
+		motion_add(other.direction, random_range(.6, 3));
+	}
+	
+	with instance_create(x, y, Laser) {
+		
+	  team    = other.team;
+	  creator = other.creator;
+	  
+	  image_angle  = other.direction + random_range(-3, 3);
+	  direction    = image_angle;
+	  image_yscale = other.image_yscale;
+	  
+	  sage_bounce = other.bounces - 1;
+	  sage_check_bounce = true;
+	  event_perform(ev_alarm, 0);
 	}
 	instance_delete(self);
 

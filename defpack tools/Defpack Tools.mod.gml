@@ -4191,7 +4191,6 @@ with instance_create(x, y, melee ? CustomSlash : CustomProjectile){
     whooshtime = 0
     maxwhoosh = 4
     bounce = 1 + round(skill_get("compoundelbow") * 5)
-    sage_no_bounce = true;
 
     if melee{
         on_anim = nothing
@@ -4227,7 +4226,7 @@ if skill_get(mut_bolt_marrow){
     }
 }
 whooshtime = (whooshtime + current_time_scale) mod maxwhoosh
-if whooshtime < current_time_scale audio_play_ext(sndMeleeFlip, x, y, 2 - length/6 + random_range(-.1, .1) + (skill_get("compoundelbow") > 0 ? .3 : 0), max(.6, length/8), 0);
+if whooshtime < current_time_scale audio_play_ext(sndMeleeFlip, x, y, max(.4, 2 - length/6 + random_range(-.1, .1) + (skill_get("compoundelbow") > 0 ? .3 : 0)), length/8, 0);
 
 #define sword_end_step
 var e = 0, w = 1.5;
@@ -4261,8 +4260,8 @@ if bounce > 0 {
 	sound_play_hit_ext(sndDiscBounce, 2 * _p, .4)
 	sound_play_hit_ext(sndChickenSword, 1.5 * _p, .3)
 	move_bounce_solid(false)
-	speed *= .8 + (skill_get("compoundelbow") > 0 ? .08 : 0);
-	length *= 1.2 - (skill_get("compoundelbow") > 0 ? .05 : 0);
+	speed *= .85 + (skill_get("compoundelbow") > 0 ? .08 : 0);
+	length *= 1.1 - (skill_get("compoundelbow") > 0 ? .05 : 0);
 	direction += random_range(-7,7)
 	with instance_create(x, y, MeleeHitWall) {
 		image_angle = other.direction - 180

@@ -148,7 +148,7 @@ return choose("PERSONAL SECURITY DEVICE", "ABSORB THEIR @wBULLETS");
 
             sprite_index = global.sprEnergyEffect;
             image_index  = 0;
-            image_speed  = .5;
+            image_speed  = .4;
           }
 
         }

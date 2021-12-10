@@ -47,7 +47,7 @@ with instance_create(x,y,CustomSlash)
 	image_speed  = .5;
 	sprite_index = global.sprPlasmiteBig;
 	mask_index   = mskBullet1;
-	friction     = .2;
+	friction     = .25;
 
 	creator    = other;
 	team	   = other.team;
@@ -57,7 +57,7 @@ with instance_create(x,y,CustomSlash)
 	startspeed = 10;
 	timer	   = 30 * 6;
 	damage	   = 15;
-	margin     = 48;
+	margin     = 64;
 
 	motion_set(other.gunangle+random_range(-2,2)*other.accuracy, startspeed);
   image_angle = direction;
@@ -73,7 +73,7 @@ with instance_create(x,y,CustomSlash)
 	on_hit		  = atom_hit
 	on_step 	  = atom_step
 	on_wall 	  = atom_wall
-  on_anim     = atom_anim
+	on_anim       = atom_anim
 	on_destroy    = atom_destroy
 	on_projectile = atom_projectile
 	on_square     = script_ref_create(atom_square)
@@ -99,8 +99,6 @@ with instance_create(x,y,CustomSlash)
 	image_yscale = _scl
 
 	var _me = noone;
-	x += hspeed * 2
-	y += vspeed * 2
 	with instances_matching_ne(hitme, "team", other.team){
 		if !instance_is(self, prop) && collision_line(x, y, other.x, other.y, Wall, 0, 0) < 0
 		{
@@ -112,11 +110,10 @@ with instance_create(x,y,CustomSlash)
 		}
 	}
 	if distance_to_object(_me) <= margin{
-		with other{
-			var _s = speed;
-			motion_add(point_direction(x, y, _me.x, _me.y), 2 * current_time_scale)
-			speed = _s;
-		}
+			
+		var _d = point_direction(x, y, _me.x, _me.y);
+		x += lengthdir_x(max(3, min(speed * .7, 8)), _d);
+		y += lengthdir_y(max(3, min(speed * .7, 8)), _d);
 	}
 
 	with instances_matching_ne(hitme, "team", team){
@@ -125,8 +122,8 @@ with instance_create(x,y,CustomSlash)
 			projectile_hit(self, other.damage + other.ammo, other.speed, other.direction);
 			with other with create_electron() index = other.eindex++;
 			other.ammo++;
-      image_index = 0;
-      image_speed = .5;
+	        image_index = 0;
+	        image_speed = .5;
 			sleep(15);
 			view_shake_at(other.x, other.y, 8);
 	    	sound_play_pitchvol(skill_get(mut_laser_brain) > 0 ? sndPlasmaMinigunUpg : sndPlasmaMinigun, .5 + other.ammo / 10, 1)
@@ -137,8 +134,6 @@ with instance_create(x,y,CustomSlash)
 			}
 		}
 	}
-	x -= hspeed * 2
-	y -= vspeed * 2
 
 	timer -= current_time_scale;
 	if speed <= friction || timer <= 0{instance_destroy()}
