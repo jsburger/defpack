@@ -10,17 +10,23 @@
 	indexArray = []
 	#macro squareMax global.squareMax
 	squareMax = 0
+	
+	global.boostedDevastators = []
 
 	var i = "../sprites/projectiles/";
 	global.spr = {}
+	msk = {}
 
 	with spr {
 
-		Square      = sprite_add(i + "sprNewSquare.png", 2, 4, 4);
+		Square      = sprite_add(i + "sprNewSquare.png", 4, 4, 4);
 		SquareShell = sprite_add(i + "sprSquareShell.png", 2, 8, 8);
 		SquareShellDisappear = sprite_add(i + "sprSquareShellDisappear.png", 5, 8, 8)
 		SquareShank = sprite_add_precise(i + "sprSquareShank.png", 4, -5, 8)
-		// SquareUpg   = sprite_add(i + "sprNewSquareUpg.png", 0, 8, 3);
+
+		SquareImpactSmall = sprite_add(i + "sprSquareImpactSmall.png", 7, 8, 8);
+		msk.SquareImpactSmall = sprite_add_precise(i + "mskPlasmaImpactSmall.png", 7, 8, 8);
+		SquareImpactLarge = sprite_add(i + "sprSquareImpact.png", 7, 16, 16)
 	
 	}
 	with instances_matching(CustomSlash, "name", "Square") sprite_index = spr.Square
@@ -105,7 +111,7 @@
 return angle_difference(a, b) * (1 - power((n - 1)/n, dn))
 
 #define bullet_anim
-	image_index = 1
+	image_index = image_number-1
 	image_speed = 0
 	
 #define nothing
@@ -165,6 +171,27 @@ return x == 0
 
 #define easeInOutCubic(x)
 return x < 0.5 ? 4 * x * x * x : 1 - power(-2 * x + 2, 3) / 2;
+
+
+
+#define step
+	if instance_exists(GameCont) && GameCont.timer mod 1 < current_time_scale {
+		//Remove nonexistant projectiles from list
+		global.boostedDevastators = instances_matching_ne(global.boostedDevastators, "id", null);
+		
+		if array_length(global.boostedDevastators) > 0 {
+			//Spawn square explos on boosted devastator shots
+			with (global.boostedDevastators) {
+				var dir = random(360), length = random(15) + 15;
+				with create_square_explo(x + lengthdir_x(length, dir), y + lengthdir_y(length, dir)) {
+					team = other.team
+					creator = other.creator
+					image_angle = random(360)
+				}
+			}
+		}
+	}
+	
 
 #define create_square(x, y)
 	with instance_create(x, y, CustomSlash) {
@@ -245,7 +272,7 @@ return x < 0.5 ? 4 * x * x * x : 1 - power(-2 * x + 2, 3) / 2;
 			ringSlot = get_square_ring_slot(squares.count),
 			angOff = 360/(ringTotal),
 			flip = ((ring mod 2) * 2 - 1),
-			angle = (angOff * ringSlot) + current_frame * 2 * flip;
+			angle = (angOff * ringSlot) + GameCont.timer * 2 * flip;
 	
 		//amount of squares in ring * size of square/2*pi (divided bc its radius in terms of circumference)
 		//wrote this before i did the ring system
@@ -334,7 +361,7 @@ return x < 0.5 ? 4 * x * x * x : 1 - power(-2 * x + 2, 3) / 2;
 			var dontMark = false;
 			switch (other.object_index) {
 				
-				case Laser: 
+				case Laser:
 					//Split the laser into three
 					var onLaser = nearest_point_on_line({x: proj.xstart, y: proj.ystart, dir: proj.image_angle}, square);
 					proj.image_yscale = max(proj.image_yscale, 1)
@@ -390,9 +417,39 @@ return x < 0.5 ? 4 * x * x * x : 1 - power(-2 * x + 2, 3) / 2;
 					}
 					instance_destroy()
 					break
+					
+				case EnergyHammerSlash:
+					//CONSIDER: Square Slugs instead of this
+					//Convert squares to ammo
+					dontMark = true
+					if "ammo" in proj.creator {
+						var ammo = proj.creator.ammo,
+							amax = proj.creator.typ_amax;
+						if ammo[5] < amax[5] {
+							ammo[5] = min(ammo[5] + 1, amax[5])
+							instance_destroy()
+						}
+					}
+					break
+				
+				case Devastator:
+					//Grant the devastator Square Explos
+					var ownedSquares = instances_matching(instances_matching(CustomSlash, "name", "Square"), "creator", creator);
+					#macro devastatorCost 6
+					if array_length(ownedSquares) >= devastatorCost {
+						with array_slice(ownedSquares, 0, devastatorCost) {
+							instance_destroy()
+						}
+						proj.devastator_square_boost = true
+						array_push(global.boostedDevastators, proj)
+					}
+					else {
+						dontMark = true
+					}
+					break
 			}
 			if dontMark == false {
-				other.square_boosted = true
+				proj.square_boosted = true
 			}
 		}
 	}
@@ -613,3 +670,56 @@ var _slope = dtan(-_line.dir),
 		sound_volume(q, .5)
 		sound_pitch(q, 2)
 	}
+	
+//Square Explos (used by Devastators and Ionizer)	
+#define create_square_explo(x, y)
+	with instance_create(x, y, CustomProjectile) {
+		name = "SquareExplo"
+		sprite_index = spr.SquareImpactSmall
+		mask_index = msk.SquareImpactSmall
+		
+		defbloom = bloom_2x
+		depth = -6
+		image_speed = .4
+		
+		damage = 10
+		force = 6
+		typ = 0
+		hitlist = [];
+		
+		view_shake_at(x, y, 1)
+		
+		on_step = square_explo_step
+		on_hit = square_explo_hit
+		on_anim = square_explo_anim
+		on_wall = nothing
+		
+		return self
+	}
+	
+#define create_large_square_explo(x, y)
+	with create_square_explo(x, y) {
+		name = "LargeSquareExplo"
+		sprite_index = spr.SquareImpactLarge
+		mask_index = mskPlasmaImpact
+		
+		force = 8
+		
+		return self
+	}
+	
+#define square_explo_step
+	if frac(GameCont.timer) < current_time_scale && image_index < 5 {
+		if random(100) < 15 {
+			instance_create(x, y, Smoke)
+		}
+	}
+
+#define square_explo_hit
+	if array_find_index(hitlist, other) == -1 {
+		array_push(other, hitlist)
+		projectile_hit_push(other, damage, force)
+	}
+
+#define square_explo_anim
+	instance_destroy()

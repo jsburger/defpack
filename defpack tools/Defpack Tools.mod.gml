@@ -138,7 +138,7 @@
 		Plasmite    		  = sprite_add(i + "sprPlasmite.png",    0, 3, 3);
 		PlasmiteUpg 		  = sprite_add(i + "sprPlasmiteUpg.png", 0, 3, 3);
 		PlasmaImpactSmall     = sprite_add(i + "sprPlasmaImpactSmall.png", 7, 8, 8);
-		msk.PlasmaImpactSmall = sprite_add(i + "mskPlasmaImpactSmall.png", 7, 8, 8);
+		msk.PlasmaImpactSmall = sprite_add_p(i + "mskPlasmaImpactSmall.png", 7, 8, 8);
 
 		//Squares
 		Square     = sprite_add  (i + "sprSquare.png", 0, 7, 7);
@@ -2745,7 +2745,7 @@ if instance_exists(creator){
 	draw_set_fog(true, _c2, 0, 0)
 	with instances_matching_ne(hitme, "team", creator.team) {
 		if !instance_is(self, prop) && point_distance(x, y, other.x, other.y) <= r {
-			var _xscale = image_xscale * ("right" in self ? right : sign(hspeed))
+			var _xscale = image_xscale * ("right" in self ? right : sign(hspeed));
 			draw_sprite_ext(sprite_index, image_index, x - 1, y - 1, _xscale, image_yscale, image_angle, c_white, 1)
 			draw_sprite_ext(sprite_index, image_index, x + 1, y - 1, _xscale, image_yscale, image_angle, c_white, 1)
 			draw_sprite_ext(sprite_index, image_index, x - 1, y + 1, _xscale, image_yscale, image_angle, c_white, 1)
@@ -2760,6 +2760,8 @@ if instance_exists(creator){
 projectile_hit(other,damage,0,point_direction(x, y, other.x, other.y))
 sleep(min(damage * 3, 20))
 other.speed = 0
+
+
 #define collision_line_first(x1,y1,x2,y2,object,prec,notme)
 /// collision_line_first(x1,y1,x2,y2,object,prec,notme)
 //
@@ -3014,8 +3016,11 @@ image_angle = direction
 if speed > maxspeed {
 	speed = maxspeed
 }
-maxspeed /= power(1 + fric, current_time_scale)
-if maxspeed <= 1 + fric instance_destroy();
+//Check for projectile style
+if (!instance_exists(creator) || !instance_is(creator, Player)) || !(creator.race_id == char_eyes && ultra_get("eyes", 2) && (usespec == true || button_pressed(index, "spec"))) {
+	maxspeed /= power(1 + fric, current_time_scale)
+	if maxspeed <= 1 + fric instance_destroy();
+}
 
 #define plasmite_wall
 move_bounce_solid(false)
@@ -4628,7 +4633,7 @@ with instance_create(xx, yy, CustomProjectile){
     }
     until stop or place_meeting(x+_x, y+_y, Wall) or dir > 1000
     if !stop{
-        var e = collision_line_first(x, y, x+_x, y+_y, Wall, 0, 0)
+        var e = collision_line_first(x, y, x+_x, y+_y, Wall, 0, 0);
         dir += point_distance(x, y, e[0], e[1])
         x = e[0]
         y = e[1]
