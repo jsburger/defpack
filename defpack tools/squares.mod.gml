@@ -605,7 +605,12 @@ var _slope = dtan(-_line.dir),
 		sprite_index = spr.SquareShell
 		spr_disappear = spr.SquareShellDisappear
 		image_speed = 1
-		defbloom = bloom_2x
+		defbloom = {
+			
+			xscale : 2,
+			yscale : 2,
+			alpha : .1 + .1 * skill_get(mut_laser_brain)
+		}
 		
 		typ = 2
 		damage = 7
@@ -664,8 +669,6 @@ var _slope = dtan(-_line.dir),
 		//Secret attfooy code (badass)
 		move_contact_solid(direction + 180, 800)
 		timer -= 1
-		image_speed = 1
-		image_index = 0
 		var q = sound_play_hit(sndHitWall, .2);
 		sound_volume(q, .5)
 		sound_pitch(q, 2)

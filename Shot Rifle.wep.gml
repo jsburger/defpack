@@ -1,11 +1,11 @@
 #define init
-global.sprShotCannon = sprite_add_weapon("sprites/weapons/sprShotCannon.png", 4, 2);
+global.sprShotCannon = sprite_add_weapon("sprites/weapons/sprShotRifle.png", 4, 2);
 global.sprShotBullet = sprite_add("sprites/projectiles/sprShot.png",3,12,12)
 global.sndShotHit = sound_add("sounds/sndShotHit.ogg");
 sprite_collision_mask(global.sprShotBullet,1,1,0,0,0,0,0,0)
 
 #define weapon_name
-return "SHOT CANNON";
+return "SHOT RIFLE";
 
 #define weapon_sprt
 return global.sprShotCannon;
@@ -17,7 +17,7 @@ return 2;
 return false;
 
 #define weapon_load
-return 35;
+return 52;
 
 #define weapon_cost
 return 4;
@@ -26,12 +26,12 @@ return 4;
 return sndSwapShotgun;
 
 #define weapon_area
-return 7;
+return 12;
 
 #define weapon_text
-return "SPACE CADET";
+return "HIGH SCORE";
 
-#macro maxspeed 12
+#macro maxspeed 15
 
 #define weapon_fire
 	weapon_post(7,43,0)
@@ -48,27 +48,28 @@ return "SPACE CADET";
 		depth        = -1;
 		
 		move_contact_solid(other.gunangle, 6);
-		motion_set(other.gunangle + random_range(-3, 3) * other.accuracy, maxspeed);
+		motion_set(other.gunangle + random_range(-3, 3) * other.accuracy, 12);
 		friction = .6;
 		
 		team       = other.team;
 		creator    = other;
-		damage     = 6;
-		force      = 4;
+		damage     = 4;
+		force      = 3;
 		accuracy   = other.accuracy;
-		wallbounce = 8 + skill_get(mut_shotgun_shoulders) * 12;
+		wallbounce = 16 + skill_get(mut_shotgun_shoulders) * 20;
 		
-		ortimer = 10
+		ortimer = 22
 		hitammo = ortimer
 		ftimer = 1.5
 		time = ftimer
 		canshoot = 0
 		dirfac = random(359)
 		sage_no_bounce = true;
+		kills = 0;
 		
 		hitenemies    = ds_list_create(); // List of recently hit enemies
-		hitenemiesmax = 3; // Remember up to this many enemies
-		target_margin = 128; // aims at enemies up to this range
+		hitenemiesmax = 5; // Remember up to this many enemies
+		target_margin = 192; // aims at enemies up to this range
 		
 		on_hit     = script_ref_create(cannon_hit);
 		on_wall    = script_ref_create(cannon_wall);
@@ -93,19 +94,19 @@ return "SPACE CADET";
 
 #define cannon_fire()
 
-	dirfac += 14;
-	hitammo -= 1;
+	dirfac += 21;
+	hitammo -= 2;
 	
 	sound_play_pitch(sndShotgun, 1 * random_range(1.2, .8));
 	sound_play_pitch(sndPopgun, .7 * random_range(1.2, .8));
 	
 	var  _angle = dirfac,
-	    _amount = 5;
+	    _amount = 3;
 	repeat (_amount) {
 		
 		with instance_create(x, y, Bullet2) {
 			
-			motion_set(_angle + random_range(-4, 4) * other.accuracy, 11 + 1 * skill_get(mut_shotgun_shoulders));
+			motion_set(_angle + random_range(-2, 2) * other.accuracy, 9 + 1 * skill_get(mut_shotgun_shoulders));
 			team    = other.team;
 			creator = other.creator;
 			
@@ -159,11 +160,16 @@ return "SPACE CADET";
 		// Enemy hit stuff:
 		x = xprevious;
 		y = yprevious;
-		projectile_hit_push(other, damage + (speed > 9 ? 2 : 0), force);
+		projectile_hit_push(other, damage + (speed > 9 ? 1 : 0), force);
 		cannon_fire();
 		
-		sound_play_pitchvol(global.sndShotHit, random_range(.85, 1.3), .8);
-		view_shake_at(x, y, 5);
+		sound_play_pitchvol(global.sndShotHit, .8 + .15 * min(16, kills), .8);
+		view_shake_at(x, y, 4);
+		
+		if (other.my_health <= 0) {
+			
+			kills++;
+		}
 		
 		// Enter enemy to list
 		ds_list_add(hitenemies, other.id);

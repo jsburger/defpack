@@ -184,7 +184,7 @@ if !charged sound_stop(sound)
 		//superdirection = other.gunangle
 		team = other.creator.team
 		creator = other.creator
-		force = 20 + _ch * 8;
+		force = 22 + _ch * 8;
 		fx_check = false;
 		superdirection = creator.gunangle;
 		dontwait = true;

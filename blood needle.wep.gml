@@ -15,7 +15,7 @@
 // V. 5: on kill -> +1 HP
 
 #define weapon_name
-  return "BLOOD NEEDLE";
+  return "NEEDLE";
 
 #define weapon_type
   return 0;

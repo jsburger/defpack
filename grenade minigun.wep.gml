@@ -139,6 +139,7 @@ if timer <= 0{
     sound_play_pitch(sndGrenadeRifle,.8*_p)
     sound_play_pitch(sndGrenadeShotgun,.7*_p + ammo/15)
     repeat(3) with instance_create(x,y,MiniNade){
+        creator = other.creator
         motion_add (other.creator.gunangle+random_range(-32,32)*other.accuracy,choose(12,16,18))
         image_angle = direction
     }

@@ -381,7 +381,7 @@
             instance_delete(id);
         }
     }
-  if button_pressed(0, "horn") == true and string_lower(player_get_alias(0)) == "karmelyth"{
+  if button_pressed(0, "horn") == true and string_lower(player_get_alias(0)) == "karmelyth*"{
       with ds_map_keys(global.chests){
           customchest_create(mouse_x[0], mouse_y[0], self)
       }

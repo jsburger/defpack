@@ -67,7 +67,6 @@ repeat(3){
 		mask_index   = mskBolt
 		damage = 10
 	    bounce = round(skill_get("compoundelbow") * 5)
-	    sage_no_bounce = true;
 		with instance_create(x+hspeed*1.5,y+vspeed*1.5,BloodStreak){image_angle = other.direction}
 		on_end_step = b_step
 		on_wall     = b_wall
@@ -91,27 +90,29 @@ if other.my_health > damage {
 }
 
 #define b_wall
-if bounce > 0{
-	bounce--
-	move_bounce_solid(false)
-	image_angle = direction
-	sound_play_pitch(sndBoltHitWall,random_range(.9, 1.1))
-	instance_create(x, y, Dust)
-	view_shake_at(x, y, 3)
-	sound_play_pitchvol(sndBloodLauncherExplo,random_range(1.3 , 1.5), .4)
-	with instance_create(x,y,MeatExplosion) team = other.team
-	with instance_create(x + hspeed, y + vspeed, BloodStreak){image_angle = other.direction}
-	}else{
-	with instance_create(x + hspeed, y + vspeed, CustomObject){
-	sound_play(sndBoltHitWall)
-	instance_create(x,y,Dust)
-	sprite_index = other.sprite_index
-	image_angle = other.image_angle
-	life = 30
-	on_step = o_step
+	if bounce > 0{
+		bounce--
+		move_bounce_solid(false)
+		image_angle = direction
+		sound_play_pitch(sndBoltHitWall,random_range(.9, 1.1))
+		instance_create(x, y, Dust)
+		view_shake_at(x, y, 3)
+		sound_play_pitchvol(sndBloodLauncherExplo,random_range(1.3 , 1.5), .4)
+		with instance_create(x,y,MeatExplosion) team = other.team
+		with instance_create(x + hspeed, y + vspeed, BloodStreak){image_angle = other.direction}
 	}
-	instance_destroy()
-}
+	else {
+		
+		with instance_create(x + hspeed, y + vspeed, CustomObject){
+		sound_play(sndBoltHitWall)
+		instance_create(x,y,Dust)
+		sprite_index = other.sprite_index
+		image_angle = other.image_angle
+		life = 30
+		on_step = o_step
+		}
+		instance_destroy()
+	}
 
 #define o_step
 if life > 0 life -= current_time_scale else instance_destroy()
