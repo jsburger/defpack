@@ -1,11 +1,11 @@
 #define init
-global.sprShotCannon = sprite_add_weapon("sprites/weapons/sprShotCannon.png", 4, 2);
-global.sprShotBullet = sprite_add("sprites/projectiles/sprShot.png",3,12,12)
+global.sprShotCannon = sprite_add_weapon("sprites/weapons/sprFlameShotCannon.png", 4, 2);
+global.sprShotBullet = sprite_add("sprites/projectiles/sprFireShot.png",3,12,12)
 global.sndShotHit = sound_add("sounds/sndShotHit.ogg");
 sprite_collision_mask(global.sprShotBullet,1,1,0,0,0,0,0,0)
 
 #define weapon_name
-return "SHOT CANNON";
+return "FLAME SHOT CANNON";
 
 #define weapon_sprt
 return global.sprShotCannon;
@@ -26,19 +26,20 @@ return 4;
 return sndSwapShotgun;
 
 #define weapon_area
-return 7;
+return 9;
 
 #define weapon_text
-return "SPACE CADET";
+return "FIRE STRING";
 
 #macro maxspeed 12
 
 #define weapon_fire
 	weapon_post(7,43,0)
 	
-	sound_play_pitch(sndFlakCannon,1.2)
-	sound_play_pitchvol(sndFlakExplode,random_range(.4,.7),.8)
-	sound_play_pitch(sndDoubleShotgun,1.2)
+	var _p = random_range(.8, 1.2);
+	sound_play_pitch(sndFlakCannon,1.2 * _p)
+	sound_play_pitchvol(sndFlakExplode,.6 * _p,.8)
+	sound_play_pitch(sndDoubleFireShotgun,1.2 * _p)
 	
 	with instance_create(x + lengthdir_x(12, gunangle),y + lengthdir_y(12, gunangle), CustomProjectile) {
 		
@@ -81,7 +82,11 @@ return "SPACE CADET";
 	view_shake_at(x, y, 12);
 	sound_play_pitch(sndShotgunHitWall, .8);
 	
-	move_bounce_solid(false);
+	// Randomly dont bounce off of walls (makes it stick to it instead);
+	if (!irandom(1)) {
+		
+		move_bounce_solid(false);
+	}
 	ds_list_clear(hitenemies);
 	cannon_target(-1);
 	cannon_fire();
@@ -103,7 +108,7 @@ return "SPACE CADET";
 	    _amount = 5;
 	repeat (_amount) {
 		
-		with instance_create(x, y, Bullet2) {
+		with instance_create(x, y, FlameShell) {
 			
 			motion_set(_angle + random_range(-4, 4) * other.accuracy, 11 + 1 * skill_get(mut_shotgun_shoulders));
 			team    = other.team;

@@ -38,7 +38,7 @@ sound_play_pitchvol(sndCrystalRicochet, 1.6 * _p, 1.5)
 sound_play_pitchvol(sndSuperCrossbow, 1.4 * _p, .6)
 weapon_post(7, -44, 10)
 with mod_script_call_nc("mod", "defpack tools", "create_sword", x, y){
-    motion_set(other.gunangle + random_range(-2,2) * other.accuracy, 20)
+    motion_set(other.gunangle, 20)
     image_yscale = -other.right
     projectile_init(other.team, other)
     image_angle = direction

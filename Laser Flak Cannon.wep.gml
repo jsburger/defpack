@@ -23,7 +23,7 @@ return 2;
 return sndSwapEnergy;
 
 #define weapon_area
-return 5;
+return 7;
 
 #define weapon_text
 return "ENJOY THE SHOW";

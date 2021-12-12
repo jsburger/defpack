@@ -57,6 +57,7 @@
       var _s = id;
       with instances_matching(projectile, "creator", _s) {
 
+        if "sage_no_bounce" in self {exit}
         if "sage_check_bounce" not in self {
 
           sage_check_bounce = true;

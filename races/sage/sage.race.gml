@@ -424,9 +424,7 @@ NOTES FROM JSBURG:
 		//var _c = make_colour_hsv(_x * 1.5 mod 255, 255, 255);
 		//draw_rectangle_color(_x - _w, _y - _h - 2, _x + 2, _y + _h, _c, _c, _c, _c, true);
 
-		trace(_x, i)
 		_x += _hudSide ? -9 : 9;
-		trace(_x)
 		_y = 12 + (global.uiRoll[_playerindex] == i);
 	}
 

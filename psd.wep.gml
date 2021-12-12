@@ -65,6 +65,20 @@ return choose("PERSONAL SECURITY DEVICE", "ABSORB THEIR @wBULLETS");
   var _p = random_range(.8, 1.2);
   if _brain {
 
+    var _a = 2 + irandom(1),
+    _d = random(360);
+    repeat(_a) {
+          
+          
+        with instance_create(x, y, LaserBrain) {
+              
+            image_angle = _d;
+            image_speed *= random_range(.9, 1.1);
+            creator = other;
+        }
+        _d += 360/_a;
+    }
+
     sound_play_pitchvol(sndEnergySword, 1.2 * _p, .6);
     sound_play_pitchvol(sndEnergyScrewdriverUpg, 1.3 * _p, .7);
     sound_play_pitchvol(sndLaserCannonCharge, 2.1 * _p, .4);
@@ -148,7 +162,7 @@ return choose("PERSONAL SECURITY DEVICE", "ABSORB THEIR @wBULLETS");
 
             sprite_index = global.sprEnergyEffect;
             image_index  = 0;
-            image_speed  = .5;
+            image_speed  = .4;
           }
 
         }

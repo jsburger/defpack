@@ -1622,7 +1622,7 @@ with create_slash_bullet(x, y) {
     bounce_color = c_lime
 
     force = 4
-    damage = 2
+    damage = 1
 	typ = 1
 	pierce = 1
 	lasthit = -4
@@ -1639,7 +1639,8 @@ with create_slash_bullet(x, y) {
 if (instance_exists(other) && other.typ > 0) {
 	with other instance_destroy()
 	// sleep(4)
-	if (instance_exists(self) && --pierce < 0) instance_destroy()
+	pierce -= 2;
+	if (instance_exists(self) && pierce < 0) instance_destroy()
 }
 
 #define gamma_hit
@@ -4157,15 +4158,15 @@ with create_sword(x, y){
     name = "Knife"
     damage = 12
     force = 3
-    mask_index   = sprHeavyGrenadeBlink
+    mask_index   = mskBolt
     sprite_index = spr.Knife
     spr_dead     = spr.KnifeStick
     maxwhoosh = 3
-    bounce = 1 + round(skill_get("compoundelbow") * 5)
+    bounce = round(skill_get("compoundelbow") * 5)
     anglespeed = 120
 
     defbloom.sprite = sprite_index
-    slashrange = 28
+    slashrange = 20
     length = 4
 
     return id
@@ -4179,7 +4180,7 @@ with instance_create(x, y, melee ? CustomSlash : CustomProjectile){
     force  = 6
     typ = 1
     sprite_index = spr.Sword
-    mask_index   = sprEnemyBullet1
+    mask_index   = mskHeavyBolt
     spr_dead     = spr.SwordStick
 
     defbloom = {
@@ -4191,12 +4192,11 @@ with instance_create(x, y, melee ? CustomSlash : CustomProjectile){
     }
     draw_angle = random(360)
     anglespeed = 90
-    slashrange = 28
+    slashrange = 32
     length = 6
     whooshtime = 0
     maxwhoosh = 4
-    bounce = 1 + round(skill_get("compoundelbow") * 5)
-    sage_no_bounce = true;
+    bounce = round(skill_get("compoundelbow") * 5)
 
     if melee{
         on_anim = nothing
@@ -4232,7 +4232,7 @@ if skill_get(mut_bolt_marrow){
     }
 }
 whooshtime = (whooshtime + current_time_scale) mod maxwhoosh
-if whooshtime < current_time_scale audio_play_ext(sndMeleeFlip, x, y, 2 - length/6 + random_range(-.1, .1) + (skill_get("compoundelbow") > 0 ? .3 : 0), max(.6, length/8), 0);
+if whooshtime < current_time_scale audio_play_ext(sndMeleeFlip, x, y, max(.4, 2 - length/6 + random_range(-.1, .1) + (skill_get("compoundelbow") > 0 ? .3 : 0)), length/8, 0);
 
 #define sword_end_step
 var e = 0, w = 1.5;
@@ -4266,8 +4266,8 @@ if bounce > 0 {
 	sound_play_hit_ext(sndDiscBounce, 2 * _p, .4)
 	sound_play_hit_ext(sndChickenSword, 1.5 * _p, .3)
 	move_bounce_solid(false)
-	speed *= .8 + (skill_get("compoundelbow") > 0 ? .08 : 0);
-	length *= 1.2 - (skill_get("compoundelbow") > 0 ? .05 : 0);
+	speed *= .85 + (skill_get("compoundelbow") > 0 ? .08 : 0);
+	length *= 1.1 - (skill_get("compoundelbow") > 0 ? .05 : 0);
 	direction += random_range(-7,7)
 	with instance_create(x, y, MeleeHitWall) {
 		image_angle = other.direction - 180

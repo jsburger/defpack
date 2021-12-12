@@ -68,9 +68,7 @@ with instance_create(x,y,CustomProjectile){
     force  = 8
     typ       = 0
     friction  = 0
-    image_speed = 1
-    image_xscale = 1.25
-    image_yscale = 1.25
+    image_speed = .5
     pierce = 15
     on_destroy = dyn_destroy
     on_end_step = dyn_step
@@ -79,8 +77,6 @@ with instance_create(x,y,CustomProjectile){
     on_anim = dyn_anim
 }
 #define dyn_anim
-image_xscale = 1
-image_yscale = 1
 image_speed = 0
 image_index = 1
 
