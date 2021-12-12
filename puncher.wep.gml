@@ -47,7 +47,7 @@ if fork(){
 				maxspeed = 25
 				creator = other
 				damage = 15
-				motion_set(other.gunangle + random_range(-4-(i),4+(i)) * other.accuracy,1)
+				motion_set(other.gunangle + random_range(-2-(i),2+(i)) * other.accuracy,1)
 				extradir = random_range(.10,.25) * -sign(other.gunangle - direction) * other.accuracy * i
 				repeat(2){with instance_create(x,y,Smoke){speed = random_range(3,5);direction = other.direction+random_range(-5,5)}}
 				image_angle = direction

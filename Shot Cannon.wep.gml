@@ -1,7 +1,9 @@
 #define init
 global.sprShotCannon = sprite_add_weapon("sprites/weapons/sprShotCannon.png", 4, 2);
-global.sprShotBullet = sprite_add("sprites/projectiles/sprShot.png",3,8,8)
+global.sprShotBullet = sprite_add("sprites/projectiles/sprShot.png",3,12,12)
+global.sndShotHit = sound_add("sounds/sndShotHit.ogg");
 sprite_collision_mask(global.sprShotBullet,1,1,0,0,0,0,0,0)
+
 #define weapon_name
 return "SHOT CANNON";
 
@@ -15,7 +17,7 @@ return 2;
 return false;
 
 #define weapon_load
-return 25;
+return 35;
 
 #define weapon_cost
 return 4;
@@ -24,154 +26,308 @@ return 4;
 return sndSwapShotgun;
 
 #define weapon_area
-return 6;
+return 7;
 
 #define weapon_text
-return "VORTEX-SHAPED DESTRUCTION";
+return "SPACE CADET";
+
+#macro maxspeed 12
 
 #define weapon_fire
 	weapon_post(7,43,0)
+	
 	sound_play_pitch(sndFlakCannon,1.2)
 	sound_play_pitchvol(sndFlakExplode,random_range(.4,.7),.8)
 	sound_play_pitch(sndDoubleShotgun,1.2)
-	with instance_create(x+lengthdir_x(12,gunangle),y+lengthdir_y(12,gunangle),CustomProjectile) {
-		move_contact_solid(other.gunangle,6)
-		motion_set(other.gunangle + random_range(-3, 3) * other.accuracy, 15 + random(2))
-	    projectile_init(other.team,other)
-		sprite_index = global.sprShotBullet
-		mask_index = mskFlakBullet
-		damage = 2
-		force = 1
-		image_speed = .5
-		accuracy = other.accuracy;
+	
+	with instance_create(x + lengthdir_x(12, gunangle),y + lengthdir_y(12, gunangle), CustomProjectile) {
+		
+		sprite_index = global.sprShotBullet;
+		mask_index   = mskFlakBullet;
+		image_speed  = .25;
+		depth        = -1;
+		
+		move_contact_solid(other.gunangle, 6);
+		motion_set(other.gunangle + random_range(-3, 3) * other.accuracy, maxspeed);
+		friction = .6;
+		
+		team       = other.team;
+		creator    = other;
+		damage     = 6;
+		force      = 4;
+		accuracy   = other.accuracy;
+		wallbounce = 8 + skill_get(mut_shotgun_shoulders) * 12;
+		
 		ortimer = 10
-		timer = ortimer
+		hitammo = ortimer
 		ftimer = 1.5
 		time = ftimer
 		canshoot = 0
 		dirfac = random(359)
 		sage_no_bounce = true;
-		hittimer = 0;
-		on_hit = script_ref_create(cannon_hit)
-		on_wall = script_ref_create(cannon_wall)
-		on_step = script_ref_create(cannon_step)
-		on_draw = script_ref_create(cannon_draw)
+		
+		hitenemies    = ds_list_create(); // List of recently hit enemies
+		hitenemiesmax = 3; // Remember up to this many enemies
+		target_margin = 128; // aims at enemies up to this range
+		
+		on_hit     = script_ref_create(cannon_hit);
+		on_wall    = script_ref_create(cannon_wall);
+		on_step    = script_ref_create(cannon_step);
+		on_draw    = script_ref_create(cannon_draw);
+		on_cleanup = script_ref_create(cannon_cleanup);
 	}
 
 #define cannon_wall
-	view_shake_at(x,y,12)
-	sound_play_pitch(sndShotgunHitWall,.8)
-	if skill_get(15){speed ++;image_index = 0}
-	move_bounce_solid(1)
+	view_shake_at(x, y, 12);
+	sound_play_pitch(sndShotgunHitWall, .8);
 	
+	move_bounce_solid(false);
+	ds_list_clear(hitenemies);
+	cannon_target(-1);
 	cannon_fire();
-	if timer <= 0{instance_destroy()}
+	
+	if hitammo <= 0 {
+		
+		instance_destroy();
+	}
 
 #define cannon_fire()
-	dirfac += 14
-	timer -= 1;
-	sound_play_pitch(sndShotgun, 1 * random_range(1.2, .8))
-	sound_play_pitch(sndPopgun, .7 * random_range(1.2, .8))
-	var ang = dirfac;
-	repeat (5){
-		with instance_create(x, y, Bullet2){
-			motion_set(ang + random_range(-4, 4) * other.accuracy, 12 + 2 * skill_get(mut_shotgun_shoulders) - irandom(2) * other.accuracy);
-			team = other.team
-			creator = other.creator
-			ang += 72
-			image_angle = direction
+
+	dirfac += 14;
+	hitammo -= 1;
+	
+	sound_play_pitch(sndShotgun, 1 * random_range(1.2, .8));
+	sound_play_pitch(sndPopgun, .7 * random_range(1.2, .8));
+	
+	var  _angle = dirfac,
+	    _amount = 5;
+	repeat (_amount) {
+		
+		with instance_create(x, y, Bullet2) {
+			
+			motion_set(_angle + random_range(-4, 4) * other.accuracy, 11 + 1 * skill_get(mut_shotgun_shoulders));
+			team    = other.team;
+			creator = other.creator;
+			
+			_angle += 360 / _amount;
+			
+			image_angle = direction;
 		}
 	}
 
-#define cannon_hit
-	if hittimer <= 0 {
+#define cannon_target(DIRECTION)
+
+	// Change direction based on target:
+	var _t = nearest_enemy();
+	if (_t > -4) {
+			
+		direction = point_direction(x, y, _t.x, _t.y);
+			
+	}
+	else {
 		
-		hittimer = 3;
-		x = xprevious
-		y = yprevious
-		projectile_hit_push(other,damage + other.image_index = 0 ? 0 : 1,force)
-		view_shake_at(x,y,5)
+		if (DIRECTION != -1) {	
+		
+			direction = DIRECTION;
+		}
+	}
+		
+	// Reset speed with wallbounce:	
+	var _spd = maxspeed - speed;
+	if (_spd > 0) {
+				
+		var _diff = min(wallbounce, _spd);
+		speed += _diff;
+		wallbounce -= _diff;
+	}
+	
+#define cannon_hit
+	
+	// Check if enemy has been hit recently:
+	var _canhit = true;
+	with ds_list_to_array(hitenemies) {
+	
+		// Enemy is on the no hit list:
+		if (self = other) {
+			
+			_canhit = false;
+		}
+	}
+	
+	if (_canhit) {
+		
+		// Enemy hit stuff:
+		x = xprevious;
+		y = yprevious;
+		projectile_hit_push(other, damage + (speed > 9 ? 2 : 0), force);
 		cannon_fire();
-		if timer <= 0 {
-			instance_destroy()
+		
+		sound_play_pitchvol(global.sndShotHit, random_range(.85, 1.3), 1.5);
+		view_shake_at(x, y, 5);
+		
+		// Enter enemy to list
+		ds_list_add(hitenemies, other.id);
+		
+		// Toss out oldest entry
+		if (ds_list_size(hitenemies) > hitenemiesmax) {
+			
+			ds_list_delete(hitenemies, 0);
+		}
+		
+		cannon_target(random(360));
+		
+		if (hitammo <= 0) {
+			
+			instance_destroy();
 		}
 	}
 
 #define cannon_step
-	hittimer -= current_time_scale;
+
 	with instances_matching(Slash, "team", team){
-		if place_meeting(x, y, other){
+		if (place_meeting(x, y, other)) {
 			with other{
-				motion_add(other.direction, max(0, 12 - speed))
+				motion_add(other.direction, maxspeed);
+				
 				time = ftimer;
-				canshoot = false;
-				timer = ortimer;
-				with instance_create(x, y, Deflect){
-					image_angle = other.direction;
-					sound_play_pitchvol(sndFlakExplode, .6, .8);
-					sound_play_pitchvol(sndShotgun, 1, .8);
-				}
-				sleep(30)
-				view_shake_at(x, y, 4)
-				with instance_create(x, y, Bullet2){
-					motion_set(other.direction + random_range(-32, 32), 13 + irandom(3))
-					team = other.team
-					creator = other.creator
-					image_angle = direction
-				}
-			}
-		}
-	}
-	with instances_matching(instances_matching(CustomSlash, "candeflect", true), "team", team){
-		if place_meeting(x, y, other){
-			with other{
-				motion_add(other.direction, max(0, 12 - speed))
-				time = ftimer;
-				canshoot = false;
-				timer = ortimer;
-				with instance_create(x, y, Deflect){
-					image_angle = other.direction;
-					sound_play_pitchvol(sndFlakExplode, .6, .8);
-					sound_play_pitchvol(sndShotgun, 1, .8);
-				}
-				sleep(30)
-				view_shake_at(x, y, 4)
 				cannon_fire();
+				
+				with instance_create(x, y, Deflect) {
+					image_angle = other.direction;
+					sound_play_pitchvol(sndFlakExplode, .6, .8);
+					sound_play_pitchvol(sndShotgun, 1, .8);
+				}
+				sleep(30);
+				view_shake_at(x, y, 4);
+			}
+		}
+	}
+	
+	with instances_matching(instances_matching(CustomSlash, "candeflect", true), "team", team){
+		if (place_meeting(x, y, other)) {
+			with other{
+				motion_add(other.direction, maxspeed);
+				
+				time = ftimer;
+				cannon_fire();
+				
+				with instance_create(x, y, Deflect) {
+					image_angle = other.direction;
+					sound_play_pitchvol(sndFlakExplode, .6, .8);
+					sound_play_pitchvol(sndShotgun, 1, .8);
+				}
+				sleep(30);
+				view_shake_at(x, y, 4);
 			}
 		}
 	}
 
-	image_angle+=(6+speed*3)*current_time_scale
-	time -= current_time_scale
+	image_angle += (5 + speed * 3) * current_time_scale;
+	time -= current_time_scale;
 
-	if image_index >= 2.5{image_index = 1}
+	if (image_index >= 2.5) {
+		
+		image_index = 1;
+	}
 
-	image_xscale = clamp(image_xscale + (random_range(-.05,.05)*current_time_scale),1.2,1.4)
-	image_yscale = image_xscale
-	if timer = 4 ftimer = 3
-	speed /= 1 + (.1*current_time_scale)
-	if speed <= 1 {canshoot = 1; speed = 0}
+	image_xscale = clamp(image_xscale + (random_range(-.05, .05) * current_time_scale), 1.2, 1.4);
+	image_yscale = image_xscale;
+	
+	if (hitammo = 4) {
+		
+		ftimer = 3;
+	}
+	if (speed <= 1) {
+		
+		canshoot = 1;
+		speed = 0;
+	}
 
-	while time <= 0{
+	while (time <= 0) {
 		
 	    time += ftimer;
 	    
-	    if canshoot{
-			view_shake_at(x,y,5)
-
+	    if canshoot {
+	    	
+			view_shake_at(x, y, 5);
 			cannon_fire();
 				
-			if timer <= 0 {
+			if (hitammo <= 0) {
 					
-				instance_destroy()
+				instance_destroy();
 				exit;
 			}
-	   }
+		}
 	}
 
 #define cannon_draw
-	if image_index = 0{var i = .5}else{var i = .1}
+	if (image_index = 0) {
+		
+		var i = .4;
+	}else {
+		
+		var i = .1;
+		
+		if (speed > 9) {
+			
+			i += .1;
+		}
+	}
 	draw_sprite_ext(sprite_index, image_index, x, y, .7*image_xscale+i, .7*image_yscale+i, image_angle, image_blend, 1.0);
 	draw_set_blend_mode(bm_add);
 	draw_sprite_ext(sprite_index, image_index, x, y, 1.25*image_xscale+i*2, 1.25*image_yscale+i*2, image_angle, image_blend, i);
 	draw_set_blend_mode(bm_normal);
+
+#define cannon_cleanup
+	ds_list_destroy(hitenemies);
+#define nearest_enemy()
+
+	var _target = -4,
+	    _origin = self;
+	with instances_matching_ne(enemy, "team", _origin.team) {
+		
+		var _valid = true,
+		        _x = x + hspeed_raw,
+		        _y = y + vspeed_raw;
+		
+		// Check if in line of sight:
+		if (collision_line(_x, _y, _origin.x, _origin.y, Wall, false, false) > -4) {
+			
+			_valid = false;
+		}
+		
+		// Check if has been recently hit:
+		with ds_list_to_array(_origin.hitenemies) {
+			
+			if (other = self) {
+				
+				_valid = false;
+			}
+		}
+		
+		// Distance check:
+		if (point_distance(_x, _y, _origin.x, _origin.y) > _origin.target_margin) {
+			
+			_valid = false;
+		}
+		
+		// Enemy is a valid target:
+		if (_valid = true) {
+			
+			
+			// No target has been set:
+			if (_target = -4) {
+				
+				_target = self;
+			}
+			else {
+				
+				// Compare wich target is closer:
+				if (point_distance(_target.x, _target.y, _origin.x, _origin.y) > point_distance(_x, _y, _origin.x, _origin.y)) {
+					
+					_target = self;
+				}
+			}
+		}
+	}
+	return _target;

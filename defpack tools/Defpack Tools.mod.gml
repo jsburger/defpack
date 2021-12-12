@@ -1622,7 +1622,7 @@ with create_slash_bullet(x, y) {
     bounce_color = c_lime
 
     force = 4
-    damage = 2
+    damage = 1
 	typ = 1
 	pierce = 1
 	lasthit = -4
@@ -1639,7 +1639,8 @@ with create_slash_bullet(x, y) {
 if (instance_exists(other) && other.typ > 0) {
 	with other instance_destroy()
 	// sleep(4)
-	if (instance_exists(self) && --pierce < 0) instance_destroy()
+	pierce -= 2;
+	if (instance_exists(self) && pierce < 0) instance_destroy()
 }
 
 #define gamma_hit
@@ -4152,15 +4153,15 @@ with create_sword(x, y){
     name = "Knife"
     damage = 12
     force = 3
-    mask_index   = sprHeavyGrenadeBlink
+    mask_index   = mskBolt
     sprite_index = spr.Knife
     spr_dead     = spr.KnifeStick
     maxwhoosh = 3
-    bounce = 1 + round(skill_get("compoundelbow") * 5)
+    bounce = round(skill_get("compoundelbow") * 5)
     anglespeed = 120
 
     defbloom.sprite = sprite_index
-    slashrange = 28
+    slashrange = 20
     length = 4
 
     return id
@@ -4174,7 +4175,7 @@ with instance_create(x, y, melee ? CustomSlash : CustomProjectile){
     force  = 6
     typ = 1
     sprite_index = spr.Sword
-    mask_index   = sprEnemyBullet1
+    mask_index   = mskHeavyBolt
     spr_dead     = spr.SwordStick
 
     defbloom = {
@@ -4186,11 +4187,11 @@ with instance_create(x, y, melee ? CustomSlash : CustomProjectile){
     }
     draw_angle = random(360)
     anglespeed = 90
-    slashrange = 28
+    slashrange = 32
     length = 6
     whooshtime = 0
     maxwhoosh = 4
-    bounce = 1 + round(skill_get("compoundelbow") * 5)
+    bounce = round(skill_get("compoundelbow") * 5)
 
     if melee{
         on_anim = nothing
