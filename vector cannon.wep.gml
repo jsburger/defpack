@@ -2,7 +2,7 @@
 global.sprGeysir 		      = sprite_add_weapon("sprites/weapons/sprVectorCannon.png", 7, 7);
 global.sprWaterBeam       = sprite_add("sprites/projectiles/sprWaterBeam.png",1,0,6);
 global.mskWaterBeam       = sprite_add("sprites/projectiles/mskWaterBeam.png",1,2,6);
-global.sprVectorBeamEnd   = sprite_add("sprites/projectiles/sprVectorBeamEnd.png",3,5,5);
+global.sprVectorBeamEnd   = sprite_add("sprites/projectiles/sprVectorBeamEnd.png",5,5,5);
 global.sprVectorBeamStart = sprite_add("sprites/projectiles/sprVectorBeamStart.png",0,8,8);
 global.sprVectorHead 	    = sprite_add("sprites/projectiles/sprVectorHead.png",0,8,2)
 
