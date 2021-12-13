@@ -143,7 +143,7 @@ return choose("PERSONAL SECURITY DEVICE", "ABSORB THEIR @wBULLETS");
           }
       }
     }
-    with instances_matching_ne(projectile, "team", other.team) {
+    with instances_matching_ne(instances_matching_ge(projectile, "typ", 1), "team", other.team) {
 
       if distance_to_object(other) <= (other.radius + 6) {
 
@@ -200,7 +200,7 @@ return choose("PERSONAL SECURITY DEVICE", "ABSORB THEIR @wBULLETS");
       _set = true;
     }
   }
-  with instances_matching_ne(projectile, "team", other.team) {
+  with instances_matching_ne(instances_matching_ge(projectile, "typ", 1), "team", other.team) {
 
     if distance_to_object(other) <= (other.radius) {
 

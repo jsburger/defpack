@@ -100,6 +100,7 @@ return{
     mod_script_call_self("mod","defpack tools","quartz_penalty",mod_current, bwep, p)
     mod_script_call_self("mod","defpack tools","quartz_step", self, bwep);
   }
+  
   with instances_matching(HeavyBolt, "sprite_index", global.sprQuartzBolt){
 	if chance(speed * 2 + 15)with instance_create(x + random_range(-8, 8), y + random_range(-8, 8), WepSwap){
 		image_xscale = .75

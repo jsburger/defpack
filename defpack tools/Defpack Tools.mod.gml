@@ -3636,7 +3636,7 @@ if speed < friction instance_destroy()
 #define quartz_pickup_open
 	var _pitch = random_range(.9, 1.1);
 	sound_play_pitch(skill_get(mut_second_stomach) > 0 ? sndHPPickupBig : sndHPPickup, 1.5 * _pitch);
-	sound_play_pitchvol(sndHyperCrystalSearch, 6 * _pitch, .6)
+	sound_play_pitchvol(sndHyperCrystalSearch, 6 * _pitch, .9)
 
 	var _p = instance_nearest(x, y, Player),
 	    _q = self;
@@ -3679,13 +3679,18 @@ if speed < friction instance_destroy()
 	}
 
 #define quartz_step(_creator, _w)
-	if is_object(_w) && "is_quartz" in _w && _w.is_quartz = true{
+	
+	if (is_object(_w) && "is_quartz" in _w && _w.is_quartz = true) {
 		_w.prevhealth = _creator.my_health;
-
-		if _w.health < _w.maxhealth{
-			with AmmoPickup{
-				if "quartz_check" not in self && ((irandom(99) + 1) < (7 * (1 - _w.health/_w.maxhealth))){
+	
+		if (_w.health < _w.maxhealth) {
+			
+			with AmmoPickup {
+				
+				var _chance = random(99) < (19 * (1 - _w.health/_w.maxhealth));
+				if ("quartz_check" not in self && _chance) {
 					quartz_pickup_create(x, y);
+					
 					instance_delete(self);
 					exit;
 				}
