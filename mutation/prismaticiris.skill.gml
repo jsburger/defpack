@@ -23,7 +23,7 @@ return 1;
 	return "PRISMATIC IRIS";
 
 #define skill_text
-	if(color_current != mod_current and mod_exists("skill", color_current)) {
+	if(color_current != mod_current and mod_script_exists("skill", color_current, "skill_text")) {
 		return mod_script_call("skill", color_current, "skill_text");
 	}
 	else return "@wREIMAGINE@s YOUR @yBULLETS";
@@ -32,15 +32,14 @@ return 1;
 	sprite_index = global.button;
 
 #define skill_icon
-	if(color_current != mod_current and mod_exists("skill", color_current)) {
+	if(color_current != mod_current and mod_script_exists("skill", color_current, "skill_icon")) {
 		return mod_script_call("skill", color_current, "skill_icon");
 	}
 	else return global.icon;
 
 #define skill_tip
-	var colortip = mod_script_call("skill", color_current, "skill_tip");
-	if(color_current != "prismaticiris" and colortip != undefined) {
-		return colortip;
+	if(color_current != mod_current and mod_script_exists("skill", color_current, "skill_tip")) {
+		return mod_script_call("skill", color_current, "skill_tip");
 	}
 	else return "BELIEVE";
 
@@ -57,13 +56,12 @@ return 1;
 		    wait(0); // Very miniscule pause so the game can catch up
 		    GameCont.endpoints--; // Fix what we did before
 		    with(SkillIcon) instance_destroy(); // Obliterate all leftover skill icons
+		    LevCont.maxselect = -1; // reset maximum selection for proper icon alignment
 
 		    if(crown_current = 8) { // Crown of Destiny stuff
-		    	LevCont.maxselect++;
-
-		    	skill_create("fantasticrefractions", 0.5);
+		    	skill_create("fantasticrefractions", 0);
 		    	if(array_length(instances_matching(Player, "race", "horror")) > 0) || GameCont.horror >= 1 {
-		    		skill_create("warpedperspective", 1.5);
+		    		skill_create("warpedperspective", 1);
 		    	}
 		    }
 
@@ -76,14 +74,9 @@ return 1;
 	            	if(mod_exists("skill", s[f]) and
 	            	   mod_script_exists("skill", s[f], "skill_iris") and
 	            	   mod_script_call("skill", s[f], "skill_iris") != false) {
-	            		LevCont.maxselect++;
-	            		skill_create(s[f], instance_number(mutbutton) + 2);
+	            		skill_create(s[f], instance_number(mutbutton));
 	            	}
 	            }
-
-	             // For uneven amount of muts
-	            var n = instance_number(mutbutton)/2;
-	            if(n != round(n)) with(SkillIcon) num += 0.5;
 		    }
 
 		    exit;
@@ -373,6 +366,7 @@ return 1;
 		num     = _num;
 		alarm0  = num + 3;
 		skill   = _skill;
+		LevCont.maxselect += 1;
 
 		 // Apply relevant scripts
         mod_script_call("skill", _skill, "skill_button");
