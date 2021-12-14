@@ -66,7 +66,7 @@ return "SPACE CADET";
 		dirfac = random(359)
 		sage_no_bounce = true;
 		
-		hitenemies    = ds_list_create(); // List of recently hit enemies
+		hitenemies    = []; // List of recently hit enemies
 		hitenemiesmax = 3; // Remember up to this many enemies
 		target_margin = 128; // aims at enemies up to this range
 		
@@ -74,15 +74,19 @@ return "SPACE CADET";
 		on_wall    = script_ref_create(cannon_wall);
 		on_step    = script_ref_create(cannon_step);
 		on_draw    = script_ref_create(cannon_draw);
-		on_cleanup = script_ref_create(cannon_cleanup);
+		on_anim    = cannon_anim
+		
 	}
+
+#define cannon_anim
+	image_index = 1
 
 #define cannon_wall
 	view_shake_at(x, y, 12);
 	sound_play_pitch(sndShotgunHitWall, .8);
 	
 	move_bounce_solid(false);
-	ds_list_clear(hitenemies);
+	hitenemies = []
 	cannon_target(-1);
 	cannon_fire();
 	
@@ -144,16 +148,8 @@ return "SPACE CADET";
 #define cannon_hit
 	
 	// Check if enemy has been hit recently:
-	var _canhit = true;
-	with ds_list_to_array(hitenemies) {
-	
-		// Enemy is on the no hit list:
-		if (self = other) {
-			
-			_canhit = false;
-		}
-	}
-	
+	var _canhit = (array_find_index(hitenemies, other) == -1);
+
 	if (_canhit) {
 		
 		// Enemy hit stuff:
@@ -166,12 +162,11 @@ return "SPACE CADET";
 		view_shake_at(x, y, 5);
 		
 		// Enter enemy to list
-		ds_list_add(hitenemies, other.id);
+		array_push(hitenemies, other)
 		
 		// Toss out oldest entry
-		if (ds_list_size(hitenemies) > hitenemiesmax) {
-			
-			ds_list_delete(hitenemies, 0);
+		if (array_length(hitenemies) > hitenemiesmax) {
+			hitenemies = array_slice(hitenemies, 1, hitenemiesmax)
 		}
 		
 		cannon_target(random(360));
@@ -225,10 +220,6 @@ return "SPACE CADET";
 	image_angle += (5 + speed * 3) * current_time_scale;
 	time -= current_time_scale;
 
-	if (image_index >= 2.5) {
-		
-		image_index = 1;
-	}
 
 	image_xscale = clamp(image_xscale + (random_range(-.05, .05) * current_time_scale), 1.2, 1.4);
 	image_yscale = image_xscale;
@@ -278,55 +269,43 @@ return "SPACE CADET";
 	draw_sprite_ext(sprite_index, image_index, x, y, 1.25*image_xscale+i*2, 1.25*image_yscale+i*2, image_angle, image_blend, i);
 	draw_set_blend_mode(bm_normal);
 
-#define cannon_cleanup
-	ds_list_destroy(hitenemies);
 #define nearest_enemy()
 
 	var _target = -4,
-	    _origin = self;
+	    _origin = self,
+		_distance = _origin.target_margin;
 	with instances_matching_ne(enemy, "team", _origin.team) {
 		
-		var _valid = true,
-		        _x = x + hspeed_raw,
-		        _y = y + vspeed_raw;
+		var _x = x + hspeed_raw,
+	        _y = y + vspeed_raw;
 		
 		// Check if in line of sight:
-		if (collision_line(_x, _y, _origin.x, _origin.y, Wall, false, false) > -4) {
-			
-			_valid = false;
+		if (collision_line(_x, _y, _origin.x, _origin.y, Wall, false, false) > -4) {			
+			continue;
 		}
 		
 		// Check if has been recently hit:
-		with ds_list_to_array(_origin.hitenemies) {
-			
-			if (other = self) {
-				
-				_valid = false;
-			}
+		if array_find_index(_origin.hitenemies, self) != -1 {
+			continue;
 		}
 		
 		// Distance check:
-		if (point_distance(_x, _y, _origin.x, _origin.y) > _origin.target_margin) {
-			
-			_valid = false;
+		var tempDist = point_distance(_x, _y, _origin.x, _origin.y);
+		if (tempDist > _distance) {
+			continue;
 		}
 		
-		// Enemy is a valid target:
-		if (_valid = true) {
+		// No target has been set:
+		if (_target = -4) {
 			
+			_target = self;
+		}
+		else {
 			
-			// No target has been set:
-			if (_target = -4) {
-				
+			// Compare wich target is closer:
+			if (tempDist < _distance ) {
 				_target = self;
-			}
-			else {
-				
-				// Compare wich target is closer:
-				if (point_distance(_target.x, _target.y, _origin.x, _origin.y) > point_distance(_x, _y, _origin.x, _origin.y)) {
-					
-					_target = self;
-				}
+				_distance = tempDist
 			}
 		}
 	}

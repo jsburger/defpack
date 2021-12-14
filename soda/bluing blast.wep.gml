@@ -12,7 +12,8 @@ return 0
 #define weapon_area
 return -1
 #define soda_avail
-return 1
+return (player_count_race("sage") > 0)
+	
 #define weapon_load
 return 0
 #define weapon_swap

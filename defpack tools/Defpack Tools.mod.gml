@@ -247,11 +247,14 @@
 	//Used for sliding new charge bars into place
 	global.chargeSmooth = [0, 0]
 
-	mod_script_call("mod","defpermissions","permission_register","mod",mod_current,"AbrisCustomColor","Use Player colors for Abris weapons")
-
-	mod_script_call_nc("mod", "defpermissions", "permission_register_options", "mod", mod_current, "chargeType", "Weapon Charge Indicators", ["Off", "Wep Specific", "Bar Only", "Arc Only"])
-	mod_script_call_nc("mod", "defpermissions", "permission_register_options", "mod", mod_current, "chargeLocation", "Charge Indicator Position", ["Around Cursor", "Around Player"])
-
+	if fork() {
+		mod_script_call("mod","defpermissions","permission_register","mod",mod_current,"AbrisCustomColor","Use Player colors for Abris weapons")
+	
+		mod_script_call_nc("mod", "defpermissions", "permission_register_options", "mod", mod_current, "chargeType", "Weapon Charge Indicators", ["Off", "Wep Specific", "Bar Only", "Arc Only"])
+		mod_script_call_nc("mod", "defpermissions", "permission_register_options", "mod", mod_current, "chargeLocation", "Charge Indicator Position", ["Around Cursor", "Around Player"])
+		exit
+	}
+	
 	global.sodaList = []
 	game_start()
 	//todo:
@@ -3018,7 +3021,7 @@ if speed > maxspeed {
 	speed = maxspeed
 }
 //Check for projectile style
-if (!instance_exists(creator) || !instance_is(creator, Player)) || !(creator.race_id == char_eyes && ultra_get("eyes", 2) && (usespec == true || button_pressed(index, "spec"))) {
+if (!instance_exists(creator) || !instance_is(creator, Player)) || !(creator.race_id == char_eyes && ultra_get("eyes", 1) && (creator.usespec == true || button_pressed(creator.index, "spec"))) {
 	maxspeed /= power(1 + fric, current_time_scale)
 	if maxspeed <= 1 + fric instance_destroy();
 }
