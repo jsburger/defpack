@@ -154,8 +154,27 @@ return{
 				var _n = round(skill_get(mut_laser_brain)) + other.size * 3,
 					_i = random(360);
 					_c = instance_exists(creator) ? creator.accuracy : 0;
+				
+				var _i = random(360)
+				repeat(5) {
+					
+				
+				repeat(6) with create_defball(creator.x + creator.hspeed, creator.y + creator.vspeed) {
+		            
+		            team = other.team;
+		            creator = other.creator;
+		             move_contact_solid(creator.gunangle, 12);
+		            motion_add(_i + random_range(-3, 3) * creator.accuracy, 7);
+		            timer = 30 * (1 + random(2));
+		            friction = .2;
+		            accuracy = .3;
+		        }
+		        	_i = random(360)
+				}
 
-				repeat(_n){
+				/*repeat(_n){
+					
+					with instance_create
 						with instance_create(other.x, other.y, Laser){
 						image_angle = _i + random_range(-12, 12) * _c;
 						direction = image_angle;
@@ -172,7 +191,7 @@ return{
 						maxspeed = speed;
 					}
 					_i += 360 / (_n * 2);
-				}
+				}*/
 
 				with instance_create(other.x, other.y, PlasmaImpact){
 					team = other.team;
@@ -217,3 +236,4 @@ return{
 	instance_destroy()
 
 #define determine_gore(_id) return mod_script_call("mod", "defpack tools", "determine_gore", _id);
+#define create_defball(X, Y) return mod_script_call("mod", "defballs", "create_defball", X, Y);

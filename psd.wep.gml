@@ -42,7 +42,7 @@ return{
 }
 
 #define weapon_text
-return choose("PERSONAL SECURITY DEVICE", "ABSORB THEIR @wBULLETS");
+return choose("PERSONAL" + choose("SECURITY", "SAFETY", "SHIELD") + "DEVICE", "ABSORB THEIR @wBULLETS");
 
 #define weapon_fire
 
