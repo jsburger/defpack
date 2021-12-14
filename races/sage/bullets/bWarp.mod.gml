@@ -47,12 +47,11 @@
   accuracy /= .75;
 
 #define on_step(spellPower)
-  with instances_matching(Player, "race", "sage") {
-
-    if "sage_hitscan_strength" in self  && sage_hitscan_strength > 1{
+  with instances_matching_gt(instances_matching(Player, "race", "sage"), "sage_hitscan_strength", 0) {
 
       var _s = id;
-      with instances_matching(projectile, "creator", _s) {
+	//trace(array_length(instances_matching_ne(instances_matching(projectile, "creator", _s), "sage_no_hitscan", 1)));
+      with instances_matching_ne(instances_matching(projectile, "creator", _s), "sage_no_hitscan", 1) {
 
 
         sage_check_hitscan = true;
@@ -68,16 +67,198 @@
         }
 
         // define sage_no_hitscan to exclude this from running hitscan
-        if creator.sage_hitscan_strength > 0 && "sage_no_hitscan" not in self && !instance_is(self, Flame) && !instance_is(self, Laser) && !instance_is(self, Lightning) {
-
+        else if !instance_is(self, Laser) && !instance_is(self, Lightning) {
           sageHitscan = creator.sage_hitscan_strength;
-          mod_script_call("race", "sage", "run_hitscan", self, sageHitscan);
+          run_hitscan(self, sageHitscan);
         }
       }
-    }
   }
 
 #define on_fire
 var _p = random_range(.8, 1.2);
 
 sound_play_pitchvol(sndUltraCrossbow, 1.5 * _p, .5);
+
+
+#define run_hitscan(_proj, _mod)
+	with(_proj){
+		var size = 0.8;
+		trace_time();
+		repeat(_mod){
+			if(!instance_exists(self)){continue;}
+			event_perform(ev_step, ev_step_begin);
+			if(!instance_exists(self)){continue;}
+			event_perform(ev_step, ev_step_normal);
+			if(!instance_exists(self)){continue;}
+			if(image_index >= image_number){
+				event_perform(ev_other, ev_animation_end)
+			}
+			if(!instance_exists(self)){continue;}
+			image_index += image_speed_raw;
+			if(!instance_exists(self)){continue;}
+			with(instance_create(x,y,Effect)){
+				sprite_index = other.sprite_index;
+				image_index = other.image_index;
+				image_speed = 0;
+				image_xscale = other.image_xscale// * size;
+				image_yscale = other.image_yscale// * size;
+				image_alpha = other.image_alpha * size;
+				image_angle = other.image_angle;
+				if(fork()){
+					if(instance_exists(self)){
+						image_alpha *= 0.5;
+						//image_xscale *= 0.8;
+						//image_yscale *= 0.8;
+					}
+					wait(1);
+					if(instance_exists(self)){
+						image_alpha *= 0.5;
+						//image_xscale *= 0.8;
+						//image_yscale *= 0.8;
+					}
+					wait(1);
+					if(instance_exists(self)){
+						image_alpha *= 0.5;
+						//image_xscale *= 0.8;
+						//image_yscale *= 0.8;
+					}
+					wait(1);
+					if(instance_exists(self)){
+						instance_destroy();
+					}
+					exit;
+				}
+			}
+			if(!instance_exists(self)){continue;}
+			var _obj = noone;
+			if("sage_hitbounce" in self && sage_hitbounce > 0){
+				_obj = mod_script_call("mod", "SageMod", "hitbounce", self, 16);
+				if(!instance_exists(self)){continue;}
+			}
+			xprevious = x;
+			yprevious = y;
+			x += hspeed_raw;
+			y += vspeed_raw;
+			if(!instance_exists(self)){continue;}
+			if("sage_bounce" in self && sage_bounce > 0){
+				mod_script_call("mod", "SageMod", "bounce", self);
+				if(!instance_exists(self)){continue;}
+			}
+			var _inst = instances_meeting(x, y, [projectile, hitme, Wall]);
+			with(_inst){
+				if(!instance_exists(_proj)){continue;}
+				if("nexthurt" in self){nexthurt -= current_time_scale;}
+				with(_proj){
+					event_perform(ev_collision, other.object_index);
+					if(!instance_exists(self)){
+						if("sage_hitbounce" in self && sage_hitbounce > 0){
+							 // Anti-Duplicate Insurance:
+							if(_obj != noone && is_array(_obj)){
+								with(_obj[0]){
+									 // Delete:
+									if(instance_exists(_obj[1])){
+										instance_delete(id);
+									}
+
+									 // Activate:
+									else{
+										mask_index = _obj[2];
+
+										 // Sound:
+										sound_play_hit(sndShotgunHitWall, 0.2);
+
+										 // Reset Bonus:
+										bonus  = true;
+										alarm2 = 2;
+									}
+								}
+							}
+						}
+						continue;
+					}
+				}
+			}
+			if(!instance_exists(self)){continue;}
+			event_perform(ev_step, ev_step_end);
+			if(!instance_exists(self)){continue;}
+			if("sage_hitbounce" in self && sage_hitbounce > 0){
+				 // Anti-Duplicate Insurance:
+				if(_obj != noone && is_array(_obj)){
+					with(_obj[0]){
+						 // Delete:
+						if(instance_exists(_obj[1])){
+							instance_delete(id);
+						}
+
+						 // Activate:
+						else{
+							mask_index = _obj[2];
+
+							 // Sound:
+							sound_play_hit(sndShotgunHitWall, 0.2);
+
+							 // Reset Bonus:
+							bonus  = true;
+							alarm2 = 2;
+						}
+					}
+				}
+			}
+			if(!instance_exists(self)){continue;}
+			size += 0.2/_mod
+		}
+		//trace_time("");
+		if(!instance_exists(self)){continue;}
+		with(instance_create(x,y,Effect)){
+			sprite_index = other.sprite_index;
+			image_index = other.image_index;
+			image_speed = 0;
+			image_xscale = other.image_xscale// * size;
+			image_yscale = other.image_yscale// * size;
+			image_alpha = other.image_alpha * size;
+			image_angle = other.image_angle;
+			if(fork()){
+				if(instance_exists(self)){
+					image_alpha *= 0.5;
+					//image_xscale *= 0.8;
+					//image_yscale *= 0.8;
+				}
+				wait(1);
+				if(instance_exists(self)){
+					image_alpha *= 0.5;
+					//image_xscale *= 0.8;
+					//image_yscale *= 0.8;
+				}
+				wait(1);
+				if(instance_exists(self)){
+					image_alpha *= 0.5;
+					//image_xscale *= 0.8;
+					//image_yscale *= 0.8;
+				}
+				wait(1);
+				if(instance_exists(self)){
+					instance_destroy();
+				}
+				exit;
+			}
+		}
+	}
+
+#define instances_meeting(_x, _y, _obj)
+	/*
+		Returns all instances whose bounding boxes overlap the calling instance's bounding box at the given position
+		Much better performance than manually performing 'place_meeting(x, y, other)' on every instance
+	*/
+
+	var	_tx = x,
+		_ty = y;
+
+	x = _x;
+	y = _y;
+
+	var _inst = instances_matching_ne(instances_matching_le(instances_matching_ge(instances_matching_le(instances_matching_ge(_obj, "bbox_right", bbox_left), "bbox_left", bbox_right), "bbox_bottom", bbox_top), "bbox_top", bbox_bottom), "id", id);
+
+	x = _tx;
+	y = _ty;
+
+	return _inst;
