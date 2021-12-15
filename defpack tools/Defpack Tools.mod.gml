@@ -5104,6 +5104,7 @@ view_shake_at(x, y, 2);
 instance_destroy();
 
 #define defspeed_hit
+if !instance_exists(creator) {instance_delete(self); exit}
 if projectile_canhit_melee(other){
 	var _e = 0;
 	projectile_hit(other, damage, creator.defspeed[0], creator.defspeed[1]);

@@ -14,7 +14,7 @@
     return -1;
 
 #define weapon_load
-    return 20;
+    return 14;
 
 #define weapon_swap
     return sndSwapEnergy;
@@ -37,8 +37,6 @@
 #macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)
 #define weapon_fire
     
-    weapon_post(4, 6, 0);
-    
     with instance_create(x, y, CustomObject) {
         
         name = "plasmathrower burst";
@@ -59,15 +57,29 @@
     if (current_frame_active) {
         
         load--;
+        with creator {
+            
+            weapon_post(4, -16, 0);
+        }
         
-        repeat(2) with create_defball(creator.x + creator.hspeed, creator.y + creator.vspeed) {
+        if !irandom(5) with create_defball_xl(creator.x + creator.hspeed, creator.y + creator.vspeed) {
             
             team = other.team;
             creator = other.creator;
              move_contact_solid(creator.gunangle, 12);
-            motion_add(creator.gunangle + random_range(-3, 3) * creator.accuracy, 5 + random(1));
-            timer = 30 * 3;
-            friction = .2;
+            motion_add(creator.gunangle + random_range(-3, 3) * creator.accuracy, 7 + random(1));
+            timer = 30 * (1 + irandom(2));
+            friction = .35;
+            accuracy = .3;
+        }
+        repeat(2 + skill_get(mut_laser_brain)) with create_defball_l(creator.x + creator.hspeed, creator.y + creator.vspeed) {
+            
+            team = other.team;
+            creator = other.creator;
+             move_contact_solid(creator.gunangle, 12);
+            motion_add(creator.gunangle + random_range(-3, 3) * creator.accuracy, 7 + random(1));
+            timer = 30 * (1 + irandom(2));
+            friction = .35;
             accuracy = .3;
         }
         
@@ -76,5 +88,8 @@
             instance_destroy();
         }
     }
-    
-#define create_defball(X, Y) return mod_script_call("mod", "defballs", "create_defball", X, Y);
+
+#define create_defball(X, Y) return mod_script_call("mod", "defballs", "create_defball", X, Y);    
+#define create_defball_m(X, Y) return mod_script_call("mod", "defballs", "create_defball_m", X, Y);
+#define create_defball_l(X, Y) return mod_script_call("mod", "defballs", "create_defball_l", X, Y);
+#define create_defball_xl(X, Y) return mod_script_call("mod", "defballs", "create_defball_xl", X, Y);

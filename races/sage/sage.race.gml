@@ -158,6 +158,16 @@ NOTES FROM JSBURG:
 			spellbullet_create(x,y, global.carryOver[i]);
 		}
 		global.carryOver = [];
+		
+		if fork(){
+			
+			wait(14); // this is here so that the fairy doesnt draw over SpiralCont
+			if (race == "sage") {
+				
+				fairy.x = x;
+				fairy.y = y;
+			}
+		}
 		break;
 	}
 
@@ -321,13 +331,14 @@ NOTES FROM JSBURG:
 	return "SAGE CAN DO COOL TRICKS"
 
 #define draw_begin
-	if !sign(fairy.y) fairy_draw();
+	// Ternary operator is for drawing the fairy below the big spiral on level start
+	if !sign(fairy.y) script_bind_draw(fairy_draw, -11);
 
 #define draw
-	if sign(fairy.y) fairy_draw();
+	if sign(fairy.y)  script_bind_draw(fairy_draw, -11);
 
 #define fairy_draw
-	if visible {
+	with instances_matching(Player, "race", "sage") if visible {
 
 		var h = fairy;
 		var a = .25;
@@ -358,6 +369,7 @@ NOTES FROM JSBURG:
 		if h.swapframes > 0 draw_sprite(global.sprSwapFairy, (6 - h.swapframes), h.x, h.y);
 
 	}
+	instance_delete(self);
 
 #define player_hud(_playerindex, _hudIndex, _hudSide, _xOffset, _yOffset)
      // Spell Bullets:

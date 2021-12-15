@@ -1,13 +1,15 @@
 #define init
-	global.sprDefBallS = sprite_add("../sprites/projectiles/sprDefballS.png", 1, 3, 3);
-	global.sprDefBallM = sprite_add("../sprites/projectiles/sprDefballM.png", 1, 6, 6);
-	global.sprDefBallL = sprite_add("../sprites/projectiles/sprDefballL.png", 1, 13, 13);
-	global.sprDefSquareS = sprite_add("../sprites/projectiles/sprDefsquareS.png", 1, 3, 3);
-	global.sprDefSquareM = sprite_add("../sprites/projectiles/sprDefsquareM.png", 1, 6, 6);
-	global.sprDefSquareL = sprite_add("../sprites/projectiles/sprDefsquareL.png", 1, 13, 13);
+	global.sprDefBallS  = sprite_add("../sprites/projectiles/sprDefballS.png", 1, 3, 3);
+	global.sprDefBallM  = sprite_add("../sprites/projectiles/sprDefballM.png", 1, 7, 7);
+	global.sprDefBallL  = sprite_add("../sprites/projectiles/sprDefballL.png", 1, 15, 15);
+	global.sprDefBallXL = sprite_add("../sprites/projectiles/sprDefballXL.png", 1, 30, 30);
+	global.sprDefSquareS   = sprite_add("../sprites/projectiles/sprDefsquareS.png", 1, 3, 3);
+	global.sprDefSquareM   = sprite_add("../sprites/projectiles/sprDefsquareM.png", 1, 7, 7);
+	global.sprDefSquareL   = sprite_add("../sprites/projectiles/sprDefsquareL.png", 1, 15, 15);
+	global.sprDefSquarelXL = sprite_add("../sprites/projectiles/sprDefsquareXL.png", 1, 30, 30);
 	
-#macro dev true
-#macro alpha_cutoff .9   // must be > 255 * alpha_cutoff to be drawn
+#macro dev false
+#macro alpha_cutoff random_range(.9, 1) // must be > 255 * alpha_cutoff to be drawn
 #macro c_outline $00FF00 // colour of the outline
 #macro c_square $3AFFAA  // outline colour for squares
 
@@ -23,6 +25,38 @@
 		}
 	}
 
+#define create_defball_s(X, Y)
+	with create_defball(X, Y) {
+		
+		sprite_index = global.sprDefBallS;
+		
+		return self;
+	}
+
+#define create_defball_m(X, Y)
+	with create_defball(X, Y) {
+		
+		sprite_index = global.sprDefBallM;
+		
+		return self;
+	}
+
+#define create_defball_l(X, Y)
+	with create_defball(X, Y) {
+		
+		sprite_index = global.sprDefBallL;
+		
+		return self;
+	}
+
+#define create_defball_xl(X, Y)
+	with create_defball(X, Y) {
+		
+		sprite_index = global.sprDefBallXL;
+		
+		return self;
+	}
+
 #define create_defball(X, Y)
 	with instance_create(X, Y, CustomSlash) {
 		
@@ -33,11 +67,12 @@
 		name = "defball";
 		friction = 1;
 		minspeed = .3 + random(.2);
-		damage = 4;
+		damage = 5;
 		force  = 0;
 		accuracy = 1;
 		timer = 30 * choose(5, 6, 6, 8);
-		color = c_outline//make_colour_hsv(random(255), 255, 255);
+		color = c_outline // make_colour_hsv(random(255), 255, 255);
+		target = -4; // if a target exists it homes into that
 		
 		image_angle = random(360);
 		angspeed = choose(-1, 1) * (2 + random(40))
@@ -46,21 +81,31 @@
 		on_step = defball_step;
 		on_wall = defball_wall;
 		on_projectile = defball_proj;
+		on_grenade = nothing;
 		on_draw = nothing;
 		
 		return self;
 	}
 
 #define defball_proj
-	var _s = speed;
-	motion_add(other.direction, other.speed)
+	/*var _s = speed;
+	motion_add(other.direction, other.speed);
 	speed = _s;
-
+	other.x -= lengthdir_x(other.speed * .3, other.direction);
+	other.y -= lengthdir_y(other.speed * .3, other.direction);
+	*/
 #define defball_hit
 		if (projectile_canhit_melee(other)) {
 			
-			sleep(15)
 			projectile_hit(other, damage, speed * 1.6, direction);
+			
+			if (other.my_health <= 0) {
+				
+				sleep(10 + 20 * clamp(other.size, 1, 3));
+				view_shake_at(x, y, 2 + 2 * clamp(other.size, 1, 3));
+			}
+			
+			speed *= .5;
 		}
 
 #define defball_step
@@ -68,10 +113,35 @@
 
 	if (speed < minspeed) {
 		
-		speed += friction + .1;
+		speed += friction + .15;
+	}
+	
+	if (place_meeting(x, y, enemy)) {
+		
+		timer -= current_time_scale;
+	}
+	
+	if (skill_get(mut_laser_brain) > 0) {
+		
+		if (irandom(99) < current_time_scale) {
+			
+			with instance_create(x + hspeed, y + vspeed, PlasmaTrail) {
+				
+				
+				motion_add(random(360), .75 + random(.2));
+				image_speed = .1;
+			}
+		}
 	}
 	
 	angspeed *= .98;
+	
+	if (instance_exists(target)) {
+		
+		var _s = speed;
+		motion_add(point_direction(x, y, target.x, target.y), max(3, speed * .2));
+		speed = _s;
+	}
 	
 	image_angle += angspeed
 	
@@ -89,7 +159,8 @@
 
 #define defball_wall
 	move_bounce_solid(false);
-	speed *= .7;
+	speed *= .9;
+	direction += random_range(-12, 12);
 
 #define draw
 	script_bind_draw(draw_defballs, -2);
