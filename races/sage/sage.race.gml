@@ -162,7 +162,7 @@ NOTES FROM JSBURG:
 		if fork(){
 			
 			wait(14); // this is here so that the fairy doesnt draw over SpiralCont
-			if (race == "sage") {
+			if (instance_exists(self) && race == "sage") {
 				
 				fairy.x = x;
 				fairy.y = y;
