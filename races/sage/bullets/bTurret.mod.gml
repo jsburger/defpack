@@ -29,11 +29,11 @@
   sound_play_pitchvol(sndCrossReload, 1.4 * _p, .9);
 
 #define bullet_description(power)
-  return `@(color:${c.neutral})+` + string(round(65 + 65 * power)) + `% @(color:${c.reload})RELOAD SPEED#@(color:${c.neutral})+@wAUTOMATIC WEAPONS#@(color:${c.negative})-3.0 @(color:${c.speed})SPEED`;
+  return `@(color:${c.neutral})+` + string(round(50 + 50 * power)) + `% @(color:${c.reload})RELOAD SPEED#@(color:${c.neutral})+@wAUTOMATIC WEAPONS#@(color:${c.negative})-2.5 @(color:${c.speed})SPEED`;
 
 #define on_take(power)
-  reloadspeed += .65 + .65 * power;
-  maxspeed -= 3;
+  reloadspeed += .5 + .5 * power;
+  maxspeed -= 2.5;
   if "sage_auto" not in self {
 
     sage_auto = 1;
@@ -43,8 +43,8 @@
   }
 
 #define on_lose(power)
-  reloadspeed -= .65 + .65 * power;
-  maxspeed += 3;
+  reloadspeed -= .5 + .5 * power;
+  maxspeed += 2.5;
   sage_auto--;
 
 #define step
