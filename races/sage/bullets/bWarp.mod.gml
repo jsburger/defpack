@@ -75,9 +75,8 @@
   }
 
 #define on_fire
-var _p = random_range(.8, 1.2);
-
-sound_play_pitchvol(sndUltraCrossbow, 1.5 * _p, .5);
+	var _p = random_range(.8, 1.2);
+	sound_play_pitchvol(sndUltraCrossbow, 1.5 * _p, .5);
 
 
 #define run_hitscan(_proj, _mod)

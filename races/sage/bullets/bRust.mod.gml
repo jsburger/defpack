@@ -38,3 +38,7 @@
 #define on_lose(power)
   accuracy *= 1.35 + .35 * power;
   reloadspeed += .10;
+
+#define on_fire
+    var _p = random_range(.9, 1.1);
+    sound_play_pitchvol(sndRustyRevolver, .8 * _p, .4);

@@ -68,14 +68,13 @@ return "FIRE STRING";
 		sage_no_bounce = true;
 		
 		hitenemies    = []; // List of recently hit enemies
-		hitenemiesmax = 3; // Remember up to this many enemies
+		hitenemiesmax = 1; // Remember up to this many enemies
 		target_margin = 128; // aims at enemies up to this range
 		
 		on_hit     = script_ref_create(cannon_hit);
 		on_wall    = script_ref_create(cannon_wall);
 		on_step    = script_ref_create(cannon_step);
 		on_draw    = script_ref_create(cannon_draw);
-		on_cleanup = script_ref_create(cannon_cleanup);
 		on_anim    = cannon_anim
 		
 	}

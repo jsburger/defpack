@@ -557,14 +557,6 @@
 					break;
 
 			  case Bullet2: case FlameShell: case UltraShell: case Slug: case HeavySlug:
-					wallbounce = (wallbounce + 1) * 4;
-					speed *= 1.2;
-					sage_bounce = 0;
-					move_bounce_solid(false)
-					direction += random_range(-8, 8)
-					image_angle = direction
-					sound_play_pitchvol(sndHitWall, .8 * random_range(.9, 1.1), .7)
-					sleep(1)
 					break;
 
 				case Bullet1: case HeavyBullet: case UltraBullet: case CustomProjectile: default:

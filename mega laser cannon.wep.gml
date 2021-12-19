@@ -23,7 +23,7 @@ return 8;
 return 15;
 
 #define weapon_load
-return 64;
+return 78;
 
 #define weapon_swap
 if instance_is(self, Player){
@@ -189,13 +189,13 @@ sound_play_pitch(sndPlasmaRifle,.2*p)
 	
 	//Laser Phase
 	if (phase == 1) {
-		if progress > 30 {
+		if progress > 40 {
 			instance_destroy()
 			exit
 		}
 		
 		if "wkick" in creator {
-			creator.wkick += .5 * current_time_scale
+			creator.wkick += current_time_scale
 		}
 
 		#macro segments 3

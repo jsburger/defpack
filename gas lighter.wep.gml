@@ -50,12 +50,12 @@ return false;
 #define weapon_fire
 
 with instance_create(x,y,CustomObject){
-  sound   = sndOasisExplosionSmall
-	name    = "lighter charge"
-	creator = other
-	charge    = 0
-  maxcharge = 25
-  defcharge = {
+		sound   = sndOasisExplosionSmall
+		name    = "lighter charge"
+		creator = other
+		charge    = 0
+		maxcharge = 25
+		defcharge = {
         style : 2,
         width : 14,
         charge : 0,
@@ -89,8 +89,8 @@ var timescale = (mod_variable_get("weapon", "stopwatch", "slowed") == 1) ? 30/ro
 if button_check(index,"swap"){instance_destroy();exit}
 if reload = -1{
     reload = hand ? creator.breload : creator.reload
-    reload = .1
-    reload += mod_script_call_nc("mod", "defpack tools", "get_reloadspeed", creator) * timescale * 3
+    reload = 2;
+    reload += mod_script_call_nc("mod", "defpack tools", "get_reloadspeed", creator) * timescale; 
 
 }
 else{
@@ -101,9 +101,9 @@ view_pan_factor[index] = 3 + (charge/maxcharge * 2)
 defcharge.charge = charge
 if button_check(index, btn){
     if charge < maxcharge{
-        charge += mod_script_call_nc("mod", "defpack tools", "get_reloadspeed", creator) * timescale * 3;
+        charge += timescale * 3;
         charged = 0
-        sound_play_pitchvol(sound,.4 + (charge/maxcharge) * 2.1,.7)
+        if charge > 3 sound_play_pitchvol(sound,.4 + (charge/maxcharge) * 2.1, .7)
     }
     else{
         if current_frame mod 6 < current_time_scale {

@@ -3347,7 +3347,7 @@ if bounce <= 0 instance_destroy()
 		case Raven : return Feather;
 
 		//CURSED BLEEDERS
-		case InvSpider  	   :
+		case InvSpider  	 :
 		case InvCrystal      :
 		case InvLaserCrystal : return Curse;
 
@@ -3355,7 +3355,7 @@ if bounce <= 0 instance_destroy()
 		case LaserCrystal :
 		case HyperCrystal :
 		case CrystalProp  :
-		case Spider		    :
+		case Spider		  :
 		case RhinoFreak	  : return Hammerhead;
 
 		//WHITE BLEEDERS
@@ -3373,7 +3373,7 @@ if bounce <= 0 instance_destroy()
 		case Wolf          :
 		case StreetLight   :
 		case SodaMachine   :
-		case Hydrant	     :
+		case Hydrant	   :
 		case Turret	       :
 		case TechnoMancer  :
 		case Terminal      :
@@ -3382,13 +3382,13 @@ if bounce <= 0 instance_destroy()
 		case Sniper        :
 		case Car           :
 		case Pipe          :
-		case Anchor 	     :
+		case Anchor 	   :
 		case WaterMine	   :
 		case VenuzTV       :
-		case CarVenus	     :
+		case CarVenus	   :
 		case CarVenus2	   :
 		case CarVenusFixed :
-		case Van		       : return BulletHit;
+		case Van		   : return BulletHit;
 
 		//LIGHTNING BLEEDERS
 		case LightningCrystal : return LightningSpawn;

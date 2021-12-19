@@ -1,7 +1,7 @@
 #define init
-	global.sprChainsaw 			= sprite_add_weapon("sprites/weapons/sprChainsaw.png",0,3)
-	global.mskChainsaw 			= sprite_add_weapon("sprites/projectiles/mskChainsaw.png",20,3)
-	global.sprMiniAmmo 			= sprite_add("sprites/other/sprMiniAmmo.png",7,3,3)
+	global.sprChainsaw 		= sprite_add_weapon("sprites/weapons/sprChainsaw.png",0,3)
+	global.mskChainsaw 		= sprite_add_weapon("sprites/projectiles/mskChainsaw.png",20,3)
+	global.sprMiniAmmo 		= sprite_add("sprites/other/sprMiniAmmo.png",7,3,3)
 	global.sprChainsawShank = sprite_add("sprites/projectiles/sprHexNeedleShank.png", 4, -6, 4);
 
 #macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)
@@ -15,7 +15,7 @@
 #define weapon_area
 	return 6;
 #define weapon_load
-	return 9;
+	return 12;
 #define weapon_swap
 	return sndSwapMotorized
 #define weapon_auto
@@ -62,7 +62,7 @@ return{
 			    var l = wkick;
 			}
 		}
-		with instance_create(creator.x+lengthdir_x(-l,creator.gunangle),creator.y+lengthdir_y(-l,creator.gunangle),CustomProjectile){
+		with instance_create(creator.x+creator.hspeed+lengthdir_x(-l,creator.gunangle),creator.y+creator.vspeed+lengthdir_y(-l,creator.gunangle),CustomProjectile){
 			//if !irandom(2) instance_create(x+lengthdir_x(6+(6*skill_get(13)),other.creator.gunangle),y+lengthdir_y(6+(6*skill_get(13)),other.creator.gunangle),Smoke)
 			sprite_index = mskNone
 			canfix = false
@@ -91,10 +91,17 @@ return{
 	}
 
 #define chainsawshank_hit
-	if current_frame_active{
+	if current_frame_active && instance_exists(creator){
 		view_shake_max_at(x, y, 5)
 		sleep(20)
-		other.speed = 0
+	
+		with other {
+			
+			x = xprevious;
+			y = yprevious;
+			speed = 0;
+		}
+		
 		var _splat = -4,
 		        _o = self;
 
@@ -112,12 +119,9 @@ return{
 			view_shake_max_at(x, y, 28 + other.size * 12)
 			projectile_hit(other, 0, 9, _o.image_angle);
 
-			var _c = crown_current
-			crown_current = crwn_haste
 			if other.size > 1 && instance_is(other, enemy) repeat(min(5, other.size)){
-				 with instance_create(other.x,other.y,AmmoPickup){num = .5; blink = 200}
+				 with instance_create(other.x,other.y,AmmoPickup){motion_add(random(360), 5);num = .5; alarm0 = 1}
 			}
-			crown_current = _c
 		}
 	}
 

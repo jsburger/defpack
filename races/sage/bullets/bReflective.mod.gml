@@ -46,7 +46,7 @@
   sage_bounce -= ceil(3 + 2 * sage_spell_power);
 
 #define on_fire
-  sound_play_pitchvol(sndBouncerSmg, random_range(.8, 1.2), .6);
+  sound_play_pitchvol(sndBouncerSmg, .5 * random_range(.8, 1.2), .5);
 
 #define step
 
@@ -62,7 +62,7 @@
 
           sage_check_bounce = true;
 
-          // if "bounce" or "bounces" are defined as a variable it will give that projectile bounce
+          // if "bounce" or "bounces" or "wallbounce" are defined as a variable it will give that projectile bounce
           // if "sage_no_bounce" is defined it will not use sages custom bounce event for bouncing, use this for melee attacks
           if "bounce" not in self || instance_is(self, BouncerBullet) {
 
@@ -74,6 +74,12 @@
           if "bounces" in self {
 
             bounces =  creator.sage_bounce;
+          }
+          
+          // Wallbounce is multiplied:
+          if("wallbounce" in self) {
+              
+              wallbounce +=  round(1 + creator.sage_bounce / 3);
           }
         }
       }

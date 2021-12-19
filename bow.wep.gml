@@ -1,6 +1,7 @@
 #define init
 global.sprBow      = sprite_add_weapon("sprites/weapons/sprBow.png",2,8)
 global.sprArrow    = sprite_add("sprites/projectiles/sprArrow.png",1,3,4)
+global.sprArrowW   = sprite_add("sprites/projectiles/sprArrowWeak.png",1,3,3)
 global.sprArrowHUD = sprite_add_weapon("sprites/projectiles/sprArrow.png",5,3)
 
 global.sprBow2     = sprite_add_weapon_base64("iVBORw0KGgoAAAANSUhEUgAAAAoAAAASCAYAAABit09LAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7BAAAOwQG4kWvtAAAAB3RJTUUH4wEXBQ8FXZOvsQAAARBJREFUKM+Nkr9Kw1AUxn8ndJF2MlQQQ4OLNGSJgxXBIdAphYKPEOe+QZ31YXwAu3a1DrqEbkqhRTDoVHA8DnpvExP//OAul+/e833nHFFVBsc7yhc3ty9CDdLtNPU88ezF9P4NQCazvCIEUIA4ctnf3aoVO/PFGu/ghPliLdOHV56e34kPtwE06bU3Qvu1yK/iRsmHCIB8WnFLHq1QVUtvAr+l/WEKoKMjxOEH+sOUMAzrPdZhxLb05R5ceQXx2QiALMuqYQzjpRL4LSCthhkvN2ECv6Vx5PJ4dw0gp6scx3gTEXu+c7EqhDEt6naaakZZxDH9U1Vbsm7e/16KBqBx5P69ZgBJr20jT2Z5bec/ACvpa0JPoQuCAAAAAElFTkSuQmCC", 1, 8)
@@ -46,8 +47,8 @@ if instance_is(self,Player){
         with creator{
             var l = other.charge/other.maxcharge * 4 - 1
             if other.charged
-                for var i = -1; i <= 1; i++{
-                    draw_sprite_ext(other.spr_arrow, 0, x - lengthdir_x(l, gunangle), y - lengthdir_y(l, gunangle) + yoff, 1, 1, gunangle + 12*i, c_white, 1)
+                for var i = -2; i <= 1; i++{
+                    draw_sprite_ext(other.spr_arrow, 0, x - lengthdir_x(l, gunangle), y - lengthdir_y(l, gunangle) + yoff, 1, 1, gunangle + 16*i + 16, c_white, 1)
                 }
             else
                 draw_sprite_ext(other.spr_arrow, 0, x - lengthdir_x(l, gunangle), y - lengthdir_y(l, gunangle) + yoff, 1, 1, gunangle, c_white, 1)
@@ -113,24 +114,23 @@ if !instance_exists(creator){instance_delete(self); exit}
   var timescale = (mod_variable_get("weapon", "stopwatch", "slowed") == 1) ? 30/room_speed : current_time_scale;
 
   if button_check(index, "swap"){instance_destroy(); exit}
-  if reload = -1 {
+  if reload = -1{
+    reload = hand ? creator.breload : creator.reload
+    reload = weapon_get_load(mod_current) + mod_script_call_nc("mod", "defpack tools", "get_reloadspeed", creator) * timescale; 
 
-      reload = hand ? creator.breload : creator.reload;
-      reload += mod_script_call_nc("mod", "defpack tools", "get_reloadspeed", creator) * timescale * 1.2;
-  }else {
-
-      if hand creator.breload = max(creator.breload, reload) else creator.reload = max(reload, creator.reload)
-  }
-  view_pan_factor[index] = 3 - (charge / maxcharge * .5);
-  defcharge.charge = charge;
-  if button_check(index, btn) {
-
-      if charge < maxcharge {
-
-          charge += mod_script_call_nc("mod", "defpack tools", "get_reloadspeed", creator) * timescale * 1.2;
-          charged = 0;
-          sound_play_pitchvol(sound, sqr((charge / maxcharge) * 3.5) + 6, 1 - charge / maxcharge);
-      }else {
+}
+else{
+    if hand creator.breload = max(creator.breload, reload)
+    else creator.reload = max(reload, creator.reload)
+}
+view_pan_factor[index] = 3 + (charge/maxcharge * 2)
+defcharge.charge = charge
+if button_check(index, btn){
+    if charge < maxcharge{
+        charge += timescale * 3;
+        charged = 0
+        if charge > 4 sound_play_pitchvol(sound,4 + (charge/maxcharge) * 6, .7)
+    }else {
 
           if current_frame mod 6 < current_time_scale {
               creator.gunshine = 1;
@@ -142,6 +142,10 @@ if !instance_exists(creator){instance_delete(self); exit}
 
               mod_script_call_self("mod","defpack tools", "weapon_charged", creator, 12);
               charged = 1;
+              if (spr_arrow == global.sprArrow) {
+              	
+				spr_arrow = global.sprArrowW;
+			}
           }
       }
   }else{instance_destroy(); exit}
@@ -191,9 +195,9 @@ if !instance_exists(creator){instance_delete(self); exit}
     sound_play_pitchvol(sndShovel, 2, .8);
     sound_play_pitchvol(sndUltraCrossbow, 3, .8);
     var ang = creator.gunangle + random_range(-5, 5) * creator.accuracy,
-          i = -12 * accuracy;
+          i = -24 * accuracy;
 
-    repeat(3) {
+    repeat(4) {
 
         with instance_create(creator.x, creator.y, Bolt) {
 
@@ -203,11 +207,11 @@ if !instance_exists(creator){instance_delete(self); exit}
             creator = other.creator;
             team    = creator.team;
 
-            damage = 5;
+            damage = 4;
             move_contact_solid(creator.gunangle, 6);
             motion_add(ang + i, 22);
             image_angle = direction;
         }
-        i += 12 * accuracy;
+        i += 16 * accuracy;
       }
   }

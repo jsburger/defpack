@@ -35,15 +35,19 @@
 
 #define on_take(power)
 #define on_lose(power)
-
+#define on_fire
+    var _p = random_range(.9, 1.1);
+    var _s = sound_play_pitchvol(sndCursedPickup, 1 * _p, 1);
+    audio_sound_set_track_position(_s, .25);
+    
 #define step
   with instances_matching(Player, "race", "sage") {
 
     if (spellBullets[0] = mod_current) {
 
-      if (irandom(8) <= current_time_scale) {
+      if (irandom(6) <= current_time_scale) {
 
-        instance_create(fairy.goalX + random_range(-sprite_get_width(fairy.sprite_back) / 2, sprite_get_width(fairy.sprite_back) / 2), fairy.goalY - sprite_get_height(fairy.sprite_back) / 2 * random_range(.8, 1.1), Curse)
+        with instance_create(fairy.x + random_range(-sprite_get_width(fairy.sprite_back), sprite_get_width(fairy.sprite_back)) / 16 + fairy.creator.hspeed, fairy.y - sprite_get_height(fairy.sprite_back) / 32 * random_range(.8, 1), Curse) {depth = -12}
       }
     }
   }
