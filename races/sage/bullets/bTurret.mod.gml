@@ -52,6 +52,6 @@
 
     if sage_auto > 0 {
 
-      clicked = button_check(index, "fire");
+      clicked = (weapon_get_auto(wep) + 1) * button_check(index, "fire");
     }
   }

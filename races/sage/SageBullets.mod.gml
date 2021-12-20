@@ -20,7 +20,7 @@
   wait file_find_all("bullets", arr);
   with(arr){
 
-    mod_load(self.path);
+    wait(mod_load(self.path));
 
     wait(0);
     var _i = string_replace(self.name, ".mod.gml", "");
@@ -28,7 +28,6 @@
       name:        mod_script_call_nc("mod", _i, "bullet_name"),
       description: mod_script_call_nc("mod", _i, "bullet_description", 0),
       ttip:        mod_script_call_nc("mod", _i, "bullet_ttip"),
-      spr_index:   mod_script_call_nc("mod", _i, "bullet_sprite"),
       area:        mod_script_call_nc("mod", _i, "bullet_area")
     }
   }

@@ -2537,12 +2537,12 @@ with instance_create(0, 0, CustomObject){
     maxdamage = 8
     wep = weapon
     auto = 0
-		margin = 18;
-		lockon = false;
-		closed = false
-		hover  = 3;
-		view_factor = 1;
-	  chargeblink = 0;
+	margin = 18;
+	lockon = false;
+	closed = false
+	hover  = 3;
+	view_factor = 1;
+	chargeblink = 0;
 
     scroll = random(16)
     scrollang = random(360)
@@ -2555,7 +2555,7 @@ with instance_create(0, 0, CustomObject){
     payload = script_ref_create(nothing)
 
     defcharge = {
-        width : sqrt(3*abs(startsize)),
+        width : 13,
         charge : 0,
         maxcharge : 1,
         style : defcharge_bar

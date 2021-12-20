@@ -1,13 +1,8 @@
 #define init
-global.brush[0] = sprite_add_weapon("sprites/weapons/sprToothbrush.png"      ,0,0)
-global.brush[1] = sprite_add_weapon("sprites/weapons/sprToothbrushGreen.png" ,0,0)
-global.brush[2] = sprite_add_weapon("sprites/weapons/sprToothbrushRed.png"   ,0,0)
-global.brush[3] = sprite_add_weapon("sprites/weapons/sprToothbrushPurple.png",0,0)
-global.brush[4] = sprite_add_weapon("sprites/weapons/sprToothbrushBlue.png"  ,0,0)
-global.brush[5] = sprite_add_weapon("sprites/weapons/sprToothbrushInvert.png",0,0)
-global.brush[6] = sprite_add_weapon("sprites/weapons/sprToothbrushYellow.png",0,0)
-global.mskbrush = sprite_add_weapon("sprites/projectiles/mskToothbrush.png",20,0)
+global.brush			  = sprite_add_weapon("sprites/weapons/sprToothbrush.png", 0, 0);
+global.mskbrush 		  = sprite_add_weapon("sprites/projectiles/mskToothbrush.png", 20, 0);
 global.sprToothbrushShank = sprite_add("sprites/projectiles/sprHexNeedleShank.png", 4, -6, 4);
+
 #define weapon_name
 return "TOOTHBRUSH"
 #define weapon_type
@@ -33,7 +28,7 @@ weapon_post(-6 - (20*skill_get(13)),6,0)
 with instance_create(x+lengthdir_x(6+(20*skill_get(13)),gunangle),y+lengthdir_y(6+(20*skill_get(13)),gunangle),Shank){
 	sprite_index = mskNone
 	canfix = false
-	if skill_get(13) mask_index = global.mskbrush else mask_index = global.brush[0]
+	if skill_get(13) mask_index = global.mskbrush else mask_index = global.brush
 	creator = other
 	team = other.team
 	image_angle = other.gunangle
@@ -45,8 +40,8 @@ with instance_create(x+lengthdir_x(6+(20*skill_get(13)),gunangle),y+lengthdir_y(
 	}
 }
 #define weapon_sprt
-if mod_exists("skill", "prismatic iris") return global.brush[mod_variable_get("skill", "prismatic iris", "color")]
-return global.brush[0]
+if (mod_exists("skill", "prismaticiris") && skill_get("prismaticiris") > 0) return mod_script_call("skill", mod_variable_get("skill", "prismaticiris", "color"), "skill_toothbrush_sprite")
+return global.brush
 #define weapon_text
 return "no toothpaste"
 #define nts_weapon_examine

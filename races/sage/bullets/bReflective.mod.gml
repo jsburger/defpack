@@ -79,7 +79,7 @@
           // Wallbounce is multiplied:
           if("wallbounce" in self) {
               
-              wallbounce +=  round(1 + creator.sage_bounce / 3);
+              wallbounce +=  round(creator.sage_bounce);
           }
         }
       }

@@ -116,9 +116,16 @@ return{
 	if current_frame_active{
 		view_shake_max_at(x, y, 5)
 		sleep(20)
-		other.speed = 0
+
 		var _splat = -4,
 		        _o = self;
+
+		with other {
+					
+			x = xprevious;
+			y = yprevious;
+			speed = 0;
+		}
 
 		_splat = determine_gore(other)
 	    with instance_create((other.x*other.size+x)/(other.size+1),(other.y*other.size+y)/(other.size+1),_splat){image_angle = random(360)}

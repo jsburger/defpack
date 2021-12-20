@@ -56,86 +56,112 @@ return 1
 #define weapon_text
 return "FAST TRAVEL";
 #define weapon_fire
-
-with instance_create(x,y,CustomObject){
-  sound   = sndCrossReload
-	name    = "piston charge"
-	creator = other
-	charge    = 0
-  maxcharge = 25
-  defcharge = {
-        style : 2,
-        width : 14,
-        charge : 0,
-        maxcharge : maxcharge
-    }
-	charged = 0
-	depth = TopCont.depth
-	index = creator.index
-  accuracy = other.accuracy
-	on_step    = piston_step
-	on_destroy = piston_destroy
-	on_cleanup = piston_cleanup
-	reload = -1
-	btn = other.specfiring ? "spec" : "fire"
-	hand = other.specfiring and other.race == "steroids"
-}
+	with instance_create(x,y,CustomObject){
+	
+		sound   = sndCrossReload;
+		name    = "piston charge";
+		creator = other;
+		
+		charge    = 0;
+		charged   = 0;
+		maxcharge = 25;
+		
+		defcharge = {
+	
+			style : 2,
+			width : 13,
+			charge : 0,
+			maxcharge : maxcharge
+		}
+		
+		depth = TopCont.depth;
+		index = creator.index;
+		accuracy = other.accuracy;
+		on_step    = piston_step;
+		on_destroy = piston_destroy;
+		on_cleanup = piston_cleanup;
+		reload = -1;
+		btn = other.specfiring ? "spec" : "fire";
+		hand = other.specfiring and other.race == "steroids";
+	}
 
 #define piston_step
-if !instance_exists(creator){instance_delete(self);exit}
-x = creator.x + creator.hspeed
-y = creator.y + creator.vspeed
-if button_check(creator.index, "swap") && (creator.canswap = true || creator.bwep != 0){
-  var _t = weapon_get_type(mod_current);
-  creator.ammo[_t] += weapon_get_cost(mod_current)
-  if creator.ammo[_t] > creator.typ_amax[_t] creator.ammo[_t] = creator.typ_amax[_t]
-  instance_delete(self)
-  exit
-}
+	// Delete self if creator doesnt exist:
+	if !instance_exists(creator){instance_delete(self); exit}
 
-var timescale = (mod_variable_get("weapon", "stopwatch", "slowed") == 1) ? 30/room_speed : current_time_scale;
-if button_check(index,"swap"){instance_destroy();exit}
-if reload = -1{
-    reload = hand ? creator.breload : creator.reload
-    reload = .1
-    reload += mod_script_call_nc("mod", "defpack tools", "get_reloadspeed", creator) * timescale * 1.2
+	x = creator.x + creator.hspeed;
+	y = creator.y + creator.vspeed;
 
-}
-else{
-    if hand creator.breload = max(creator.breload, reload)
-    else creator.reload = max(reload, creator.reload)
-}
-view_pan_factor[index] = 3 + (charge/maxcharge * 2)
-defcharge.charge = charge
-if button_check(index, btn){
-    if charge < maxcharge{
-        charge += mod_script_call_nc("mod", "defpack tools", "get_reloadspeed", creator) * timescale * 1.2;
-        charged = 0
-        sound_play_pitchvol(sound,(charge/maxcharge) * .55,.7)
-    }
-    else{
-        if current_frame mod 6 < current_time_scale {
-            creator.gunshine = 1
-            with defcharge blinked = 1
-        }
-        charge = maxcharge;
-        if charged = 0{
-            mod_script_call_self("mod","defpack tools", "weapon_charged", creator, 12)
-            charged = 1
-        }
-    }
-    with creator{
-    	weapon_post(2 * other.charge/other.maxcharge, 0, 0);
-    }
-}
-else{instance_destroy(); exit}
-if charged {
-	creator.speed *= .9;
-}
+	// Refund spent ammo on swap (cancel charge):
+	if (button_check(creator.index, "swap") && (creator.canswap = true || creator.bwep != 0)) {
+		
+		var _t = weapon_get_type(mod_current);
+		
+		creator.ammo[_t] += weapon_get_cost(mod_current);
+		if creator.ammo[_t] > creator.typ_amax[_t] creator.ammo[_t] = creator.typ_amax[_t];
+		
+		instance_delete(self);
+		exit;
+	}
+
+	var _timescale = (mod_variable_get("weapon", "stopwatch", "slowed") == 1) ? 30/room_speed : current_time_scale,
+	    _reloadspd = weapon_get_load(mod_current) + mod_script_call_nc("mod", "defpack tools", "get_reloadspeed", creator) * _timescale;
+
+	// Freeze reloadspeed:
+	if(reload = -1) {
+		
+	    reload = hand ? creator.breload : creator.reload;
+	    creator.reload = _reloadspd; 
+	}
+	else {
+		
+	    if hand creator.breload = max(_reloadspd, reload);
+	    else creator.reload = max(reload, _reloadspd);
+	}
+	
+	view_pan_factor[index] = 3 + (charge/maxcharge * 2);
+	defcharge.charge = charge;
+	
+	if(button_check(index, btn)) {
+		
+		// Do this while charging:
+	    if(charge < maxcharge) {
+	    
+		    charge += _timescale * 3;
+		    charged = 0
+		    
+		    // Charge sound:
+        	if(charge > maxcharge * .2) { 
+        	
+        		sound_play_pitchvol(sound,.2 + (charge/maxcharge) * .35, .7);
+        	}	
+		}
+    	else {
+
+			// On-weapon fx:
+			if(current_frame mod 6 < current_time_scale) {
+				
+				creator.gunshine = 1;
+				with defcharge blinked = 1;
+			}
+			
+			charge = maxcharge;
+			
+			// Arrow drawing:
+			if(!charged) {
+			
+				mod_script_call_self("mod","defpack tools", "weapon_charged", creator, 12);
+				charged = 1;
+			}
+		}	
+	}else{instance_destroy(); exit}
+	
+	// Reduce speed just a bit for gamefeel when charged:
+	if(charged) {creator.speed *= .9}
 
 #define piston_cleanup
-view_pan_factor[index] = undefined
-if !charged sound_stop(sound)
+	view_pan_factor[index] = undefined
+	if !charged sound_stop(sound)
 
 #define piston_destroy
 	with instance_create(x + lengthdir_x(24, creator.gunangle), y + lengthdir_y(24, creator.gunangle), AcidStreak){
@@ -153,7 +179,7 @@ if !charged sound_stop(sound)
 	var timescale = (mod_variable_get("weapon", "stopwatch", "slowed") == 1) ? 30/room_speed : current_time_scale;
     reload += mod_script_call_nc("mod", "defpack tools", "get_reloadspeed", creator) * timescale * 1.2
 	var _ch = other.charged,
-	     _c = 6 + 50 * _ch;
+	     _c = 5 + 50 * _ch;
 
 	if !charged sound_stop(sound)
 
@@ -201,4 +227,4 @@ if !charged sound_stop(sound)
 	}
 	extraspeed_add(creator, _c, creator.gunangle + 180);
 
-	#define extraspeed_add(_player, __speed, _direction) return mod_script_call("mod", "defpack tools", "extraspeed_add", _player, __speed, _direction);
+#define extraspeed_add(_player, __speed, _direction) return mod_script_call("mod", "defpack tools", "extraspeed_add", _player, __speed, _direction);
