@@ -130,6 +130,11 @@ NOTES FROM JSBURG:
 		global.uiRoll[_i] = [0];
 	}
 	
+	
+	if dev {
+		mod_script_call("mod", "defpackloader", "add_post_load_statement", "Sage's race mod has loaded in dev mode", c_yellow)
+	}
+	
 	var _race = [];
 	for(var i = 0; i < maxp; i++) _race[i] = player_get_race(i);
 	while(true){

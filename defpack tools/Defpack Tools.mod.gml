@@ -4889,16 +4889,18 @@ if !irandom((2 - brain_active) > 0) with instance_create(x-lengthdir_x(10,direct
 					friction = .2;
         	motion_set(other.direction,choose(1,2))
         }
-var _targ = instance_nearest_matching_ne(x, y, hitme, "team", team), _diff = angle_difference(direction, basedir);
-if instance_exists(_targ) {
-	if distance_to_object(_targ) < homing_range and !collision_line(x, y, _targ.x, _targ.y, Wall, 0, 0) {
-		var _diff2 = angle_difference(basedir, point_direction(x, y, _targ.x, _targ.y));
-		if abs(_diff2) <= homing_scope {
-			_diff = angle_difference(direction, point_direction(x, y, _targ.x, _targ.y))
+if basedir != undefined {
+	var _targ = instance_nearest_matching_ne(x, y, hitme, "team", team), _diff = angle_difference(direction, basedir);
+	if instance_exists(_targ) {
+		if distance_to_object(_targ) < homing_range and !collision_line(x, y, _targ.x, _targ.y, Wall, 0, 0) {
+			var _diff2 = angle_difference(basedir, point_direction(x, y, _targ.x, _targ.y));
+			if abs(_diff2) <= homing_scope {
+				_diff = angle_difference(direction, point_direction(x, y, _targ.x, _targ.y))
+			}
 		}
 	}
+	direction -= clamp(_diff, -homing_scope * current_time_scale, homing_scope * current_time_scale)
 }
-direction -= clamp(_diff, -homing_scope * current_time_scale, homing_scope * current_time_scale)
 image_angle = direction
 defbloom.angle = direction - 45
 var _dist = point_distance(x, y, trail_x, trail_y);
