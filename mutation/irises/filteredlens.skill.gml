@@ -1,6 +1,7 @@
 #define init
 	global.button = sprite_add("../../sprites/mutation/sprMutPrismaticIris5.png", 1, 12, 16);
 	global.icon   = sprite_add("../../sprites/mutation/sprMutPrismaticIcon5.png", 1, 8, 7);
+	global.brush  = sprite_add_weapon("../../sprites/weapons/sprToothbrushInvert.png", 0, 0);
 
 #define skill_name
 	return "FILTERED LENS";
@@ -13,6 +14,9 @@
 
 #define skill_iris
 	return false//""; // Return prefix of weapon variants
+	
+#define skill_toothbrush_sprite
+	return global.brush;
 
 #define skill_button
 	sprite_index = global.button;

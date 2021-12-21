@@ -17,7 +17,7 @@
   return "PROWESS";
 
 #define bullet_ttip
-  return `SWAP @(color:${c.neutral})SPELLS @sFREQUENTLY`;
+  return `SWAP @(color:${c.spell})SPELLS @sFREQUENTLY`;
 
 #define bullet_area
   return -1;

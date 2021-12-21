@@ -1,6 +1,7 @@
 #define init
 	global.button = sprite_add("../../sprites/mutation/sprMutPrismaticIris8.png", 1, 12, 16);
 	global.icon   = sprite_add("../../sprites/mutation/sprMutPrismaticIcon8.png", 1, 8, 7);
+	global.brush  = sprite_add_weapon("../../sprites/weapons/sprToothbrushBrown.png", 0, 0);
 
 #define skill_name
 	return "WARPED PERSPECTIVE";
@@ -15,6 +16,9 @@
 	if(array_length(instances_matching([Player, Revive], "race", "horror")) > 0 || mod_variable_get("skill", "prismaticiris", "color") = mod_current) || mod_variable_get("skill", "prismaticiris", "gammaFix") || GameCont.horror > 0 return "gamma"; // Return prefix of weapon variants
 	else return false;
 
+#define skill_toothbrush_sprite
+	return global.brush;
+	
 #define skill_button
 	sprite_index = global.button;
 

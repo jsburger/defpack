@@ -14,7 +14,7 @@
     return -1;
 
 #define weapon_load
-    return 5;
+    return 7;
 
 #define weapon_swap
     return sndSwapEnergy;
@@ -70,7 +70,7 @@
         var _t = self;
     }
     
-    with create_defball_xl(x, y) {
+    repeat(2) with create_defball_xl(x, y) {
             
         team = other.team;
         creator = other;
@@ -86,7 +86,7 @@
             
         team = other.team;
         creator = other;
-        motion_add(other.gunangle + random_range(-24, 24) * other.accuracy, _speed * random_range(.8, 1.2));
+        motion_add(other.gunangle + random_range(-24, 24) * other.accuracy, _speed * random_range(.9, 1.1));
         timer = _timer;
         friction = _frict;
         minspeed = _minsp;

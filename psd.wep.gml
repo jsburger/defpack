@@ -102,8 +102,8 @@ return choose("PERSONAL" + choose("SECURITY", "SAFETY", "SHIELD") + "DEVICE", "A
 
     creator = other;
     team    = other.team;
-    damage  = 12;
-    force   = 5;
+    damage  = 10;
+    force   = 4;
     refund  = false;
     candeflect = true;
     can_fix    = false;

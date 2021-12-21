@@ -1,6 +1,7 @@
 #define init
 	global.button = sprite_add("../../sprites/mutation/sprMutPrismaticIris2.png", 1, 12, 16);
 	global.icon   = sprite_add("../../sprites/mutation/sprMutPrismaticIcon2.png", 1, 8, 7);
+	global.brush  = sprite_add_weapon("../../sprites/weapons/sprToothbrushRed.png", 0, 0);
 
 #define skill_name
 	return "BLAZING VISAGE";
@@ -13,6 +14,9 @@
 
 #define skill_iris
 	return "fire"; // Return prefix of weapon variants
+
+#define skill_toothbrush_sprite
+	return global.brush;
 
 #define skill_type
     return 1;

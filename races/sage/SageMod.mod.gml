@@ -111,7 +111,7 @@
     }
 
 #define draw_pause
-	if(!instance_exists(ControlMenuButton) && !instance_exists(GameMenuButton) && !instance_exists(VisualsMenuButton) && !instance_exists(AudioMenuButton) && !instance_exists(OptionMenuButton) && !instance_exists(PopoScene) && TopCont.gameovertime = 0 && !instance_exists(CampChar)){ 
+	if(!instance_exists(ControlMenuButton) && !instance_exists(GameMenuButton) && !instance_exists(VisualsMenuButton) && !instance_exists(AudioMenuButton) && !instance_exists(OptionMenuButton) && !instance_exists(PopoScene) && !(instance_exists(PopoScene) && TopCont.gameovertime = 0) && !instance_exists(CampChar)){ 
     	
         if(instance_exists(TopCont) || instance_exists(GenCont) || instance_exists(LevCont)){
             var _hudFade  = 0,
@@ -140,6 +140,10 @@
              // Draw Player HUD:
             for(var _isOnline = 0; _isOnline <= 1; _isOnline++){
                 for(var _index = 0; _index < maxp; _index++){
+                	if(!player_is_local_nonsync(_index)) {
+                		
+                		continue;
+                	}
                     if(
                         player_is_active(_index)
                         && (_hudIndex < 2 || !instance_exists(LevCont))
@@ -496,7 +500,7 @@
 					direction += random_range(-4, 4)
 					image_angle = direction
 					instance_create(x, y, Dust)
-					sound_play_pitchvol(sndBoltHitWall, 1.3, .7)
+					sound_play_pitchvol(sndBoltHitWall, 1.3 * random_range(.8, 1.2), .7)
 					sleep(2)
 					view_shake_at(x, y, 1)
 					break;

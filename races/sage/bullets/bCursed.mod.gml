@@ -40,9 +40,7 @@
     var _s = sound_play_pitchvol(sndCursedPickup, 1 * _p, 1);
     audio_sound_set_track_position(_s, .25);
     
-#define step
-  with instances_matching(Player, "race", "sage") {
-
+#define on_step
     if (spellBullets[0] = mod_current) {
 
       if (irandom(6) <= current_time_scale) {
@@ -50,4 +48,3 @@
         with instance_create(fairy.x + random_range(-sprite_get_width(fairy.sprite_back), sprite_get_width(fairy.sprite_back)) / 16 + fairy.creator.hspeed, fairy.y - sprite_get_height(fairy.sprite_back) / 32 * random_range(.8, 1), Curse) {depth = -12}
       }
     }
-  }

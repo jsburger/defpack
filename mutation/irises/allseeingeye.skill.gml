@@ -1,6 +1,7 @@
 #define init
 	global.button = sprite_add("../../sprites/mutation/sprMutPrismaticIris3.png", 1, 12, 16);
 	global.icon   = sprite_add("../../sprites/mutation/sprMutPrismaticIcon3.png", 1, 8, 7);
+	global.brush  = sprite_add_weapon("../../sprites/weapons/sprToothbrushPurple.png", 0, 0);
 
 #define skill_name
 	return "ALL-SEEING EYE";
@@ -13,6 +14,9 @@
 
 #define skill_iris
 	return "psy"; // Return prefix of weapon variants
+
+#define skill_toothbrush_sprite
+	return global.brush;
 
 #define skill_button
 	sprite_index = global.button;
