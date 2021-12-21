@@ -31,6 +31,15 @@
 	}
 	with instances_matching(CustomSlash, "name", "Square") sprite_index = spr.Square
 	
+	
+	#macro dev true
+	if dev {
+		if mod_exists("mod", "defpackloader") {
+			mod_script_call("mod", "defpackloader", "add_post_load_statement", "Squares mod has loaded in dev mode", c_yellow)
+		}
+		else trace_color("Squares mod has loaded in dev mode", c_yellow)
+	}
+	
 #macro spr global.spr
 #macro msk global.spr.msk
 
@@ -49,29 +58,6 @@
 	}
 	return q
 
-
-
-#define request_hud_draw(scriptRef)
-	array_push(global.HUDRequests, scriptRef)
-
-#define draw_gui
-	for (var i = 0, l = array_length(global.HUDRequests); i < l; i++) {
-		script_ref_call(global.HUDRequests[i])
-	}
-	if l > 0 {
-		global.HUDRequests = []
-	}
-	
-	if button_check(0, "horn") {
-		with create_square(mouse_x[0], mouse_y[0]) {
-			team = Player.team
-			creator = Player.id
-			motion_set(random(360), random(6))
-		}
-	}
-	// if button_pressed(0, "swap") {
-	// 	with instances_matching(CustomSlash, "name", "Square") instance_destroy()
-	// }
 
 // DEBUG {
 #define trace_lwo_start(lwo, _x, _y)
@@ -175,6 +161,16 @@ return x < 0.5 ? 4 * x * x * x : 1 - power(-2 * x + 2, 3) / 2;
 
 
 #define step
+	if dev && instance_exists(Player) {
+		if button_check(0, "horn") {
+			with create_square(mouse_x[0], mouse_y[0]) {
+				team = Player.team
+				creator = Player.id
+				motion_set(random(360), random(6))
+			}
+		}
+	}
+	
 	if instance_exists(GameCont) && GameCont.timer mod 1 < current_time_scale {
 		//Remove nonexistant projectiles from list
 		global.boostedDevastators = instances_matching_ne(global.boostedDevastators, "id", null);
