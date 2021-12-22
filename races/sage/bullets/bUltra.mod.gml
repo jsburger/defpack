@@ -1,6 +1,6 @@
 #define init
-  global.sprBullet = sprite_add_weapon("../../../sprites/sage/bullets/sprBulletUltra.png", 7, 7);
-  global.sprBulletOff = sprite_add_weapon("../../../sprites/sage/bullets/sprBulletUltraOff.png", 7, 7);
+  global.sprBullet = sprite_add("../../../sprites/sage/bullets/sprBulletUltra.png", 2, 7, 11);
+  global.sprBulletOff = sprite_add("../../../sprites/sage/bullets/sprBulletUltraOff.png", 2, 7, 11);
   global.sprFairy = sprite_add("../../../sprites/sage/bullet icons/sprFairyIconUltra.png", 0, 5, 5);
   global.sprUltraSpark = sprite_add("../../../sprites/sage/fx/sprBulletFXUltraActivate.png", 5, 5, 5);
   global.sprUltraSpark2 = sprite_add("../../../sprites/sage/fx/sprBulletFXUltraNoRads.png", 5, 9, 9);

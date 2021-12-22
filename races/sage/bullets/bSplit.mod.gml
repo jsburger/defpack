@@ -1,5 +1,5 @@
 #define init
-  global.sprBullet = sprite_add_weapon("../../../sprites/sage/bullets/sprBulletSplit.png", 7, 7);
+  global.sprBullet = sprite_add("../../../sprites/sage/bullets/sprBulletSplit.png", 2, 7, 11);
   global.sprFairy = sprite_add("../../../sprites/sage/bullet icons/sprFairyIconSplit.png", 0, 5, 5);
 
   player_fire_at_init()

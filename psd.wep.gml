@@ -126,7 +126,7 @@ return choose("PERSONAL" + choose("SECURITY", "SAFETY", "SHIELD") + "DEVICE", "A
     x = creator.x + creator.hspeed;
     y = creator.y + creator.vspeed;
 
-    with instances_matching_ne(hitme, "team", other.team) {
+    if (image_index <= 2) with instances_matching_ne(hitme, "team", other.team) {
 
       if distance_to_object(other) <= e_radius && other.image_index <= 3 && sprite_index != spr_hurt with other {
 
@@ -143,7 +143,7 @@ return choose("PERSONAL" + choose("SECURITY", "SAFETY", "SHIELD") + "DEVICE", "A
           }
       }
     }
-    with instances_matching_ne(instances_matching_ge(projectile, "typ", 1), "team", other.team) {
+    if (image_index <= 2) with instances_matching_ne(instances_matching_ge(projectile, "typ", 1), "team", other.team) {
 
       if distance_to_object(other) <= (other.radius + 6) {
 

@@ -91,7 +91,14 @@ NOTES FROM JSBURG:
 	global.spr_ult_icon[2] = sprite_add(_i + "sprGunMapIcon.png", 1, 8, 9);
 
 	 // FX:
-	 global.sprSwapFairy = sprite_add(_i + "fx/sprWepSwapL.png", 6, 16, 16);
+	global.sprSwapFairy = sprite_add(_i + "fx/sprWepSwapL.png", 6, 16, 16);
+	
+	 // Fairy:
+	global.sprFairyIcon	= sprite_add(_i + "/bullet icons/sprFairyIconEmpty.png", 0, 5, 5);
+	 
+	 // Bullet Shines:
+	global.sprShineA	= sprite_add_weapon(_i + "/bullets/sprBulletAShine.png", 7, 11);
+	global.sprShineAUpg = sprite_add_weapon(_i + "/bullets/sprBulletAShineUpg.png", 7, 11);
 	
 	 // Reapply sprites if the mod is reloaded. //
 	with(instances_matching(Player, "race", mod_current)) {
@@ -193,6 +200,15 @@ NOTES FROM JSBURG:
 	}
 
 	sound_play(sndMutant1Cnfm); // Play Confirm Sound
+	
+	if fork() {
+		
+		wait(1)
+		with instances_matching(CustomObject, "name", "spellbullet") {
+		
+			instance_delete(self);
+		}
+	}
 
 #define draw_outline(_sprIndex, _imgIndex, _x, _y)
 	d3d_set_fog(true, c_white, 0, 0);
@@ -280,7 +296,7 @@ NOTES FROM JSBURG:
 		case 1:
 			sound_play(sndFishUltraA);
 			with instances_matching(Player, "race", "sage"){
-				spellpower_change(spellBullets[0], self, 1);
+				if array_length(spellBullets) > 0 spellpower_change(spellBullets[0], self, 1);
 			}
 		break;
 		case 2:
@@ -355,28 +371,108 @@ NOTES FROM JSBURG:
 		var a = .25;
 		var gsize = 1/64;
 		var w = sprite_get_width(h.sprite) + 12, l = sprite_get_height(h.sprite) + 16;
+		var u = ultra_get("sage", 2);
+		var s = max(0, -1 + u + (array_length(h.creator.spellBullets) > 1 && (h.creator.spellBullets[0] != h.creator.spellBullets[1])));
+		var b = min(array_length(h.creator.spellBullets), 1 + u);
 
+		var _h = 0,
+			_s = 0,
+			_v = 0,
+			_col = h.col;
+		
+		
+		// Ultra b merged drawing:
+		if(u) > 0 {
+			
+			if !b{// Draw this when no haves bullets:
+				// Back draw:
+				d3d_set_fog(1, merge_color(_col, c_white, clamp(h.swap / fairy_swap_time, 0, 1)), 1, 1)
+				h.swap = max(0, h.swap - current_time_scale * 1.2)
+				draw_sprite_ext(h.sprite_back, -1, h.x + 1, h.y + 1, w * gsize, l * gsize, 0, c_white, .4 * a);
+				draw_sprite_ext(h.sprite_back, -1, h.x + 1, h.y - 1, w * gsize, l * gsize, 0, c_white, .4 * a);
+				draw_sprite_ext(h.sprite_back, -1, h.x - 1, h.y + 1, w * gsize, l * gsize, 0, c_white, .4 * a);
+				draw_set_blend_mode(bm_add);
+				draw_sprite_ext(h.sprite_back, -1, h.x - 1, h.y - 1, w * gsize, l * gsize, 0, c_white, .4 * a);
+				draw_sprite_ext(h.sprite_back, -1, h.x, h.y, w * gsize, l * gsize, 0, c_white, 1 * a)
+				draw_set_blend_mode(bm_normal);
+				d3d_set_fog(0, 0, 0, 0)
+				
+				// Draw the fairy icon outline:
+				var _outlinecol = make_colour_hsv(color_get_hue(_col), color_get_saturation(_col) / 1.2, 255);
+					 
+				draw_sprite_ext(h.sprite, s, h.x - 1, h.y, 1, /*h.right*/ 1, /*h.angle*/ 0, _outlinecol, 1);
+				draw_sprite_ext(h.sprite, s, h.x + 1, h.y, 1, /*h.right*/ 1, /*h.angle*/ 0, _outlinecol, 1);
+				draw_sprite_ext(h.sprite, s, h.x, h.y + 1, 1, /*h.right*/ 1, /*h.angle*/ 0, _outlinecol, 1);
+				draw_sprite_ext(h.sprite, s, h.x, h.y - 1, 1, /*h.right*/ 1, /*h.angle*/ 0, _outlinecol, 1);
+				
+				draw_sprite_ext(h.sprite, s, h.x, h.y, 1, /*h.right*/ 1, /*h.angle*/ 0, merge_color(merge_colour(_col, c_black, .7), c_white, clamp(fairy.swap / fairy_swap_time, 0, 1)), 1);
+			}
+			else { // else:
+				for(var _i = 0; _i < b; _i++) {
+				
+					_h += color_get_hue(mod_script_call("mod", h.creator.spellBullets[_i], "fairy_color"));
+					_s += color_get_saturation(mod_script_call("mod", h.creator.spellBullets[_i], "fairy_color"));
+					_v += color_get_value(mod_script_call("mod", h.creator.spellBullets[_i], "fairy_color"));
+				}
+				_col = (make_color_hsv(_h / max(1, b), _s / max(1, b), _v / max(1, b)));
+			
+				// Back draw:
+				d3d_set_fog(1, merge_color(_col, c_white, clamp(h.swap / fairy_swap_time, 0, 1)), 1, 1)
+				h.swap = max(0, h.swap - current_time_scale * 1.2)
+				draw_sprite_ext(h.sprite_back, -1, h.x + 1, h.y + 1, w * gsize, l * gsize, 0, c_white, .4 * a);
+				draw_sprite_ext(h.sprite_back, -1, h.x + 1, h.y - 1, w * gsize, l * gsize, 0, c_white, .4 * a);
+				draw_sprite_ext(h.sprite_back, -1, h.x - 1, h.y + 1, w * gsize, l * gsize, 0, c_white, .4 * a);
+				draw_set_blend_mode(bm_add);
+				draw_sprite_ext(h.sprite_back, -1, h.x - 1, h.y - 1, w * gsize, l * gsize, 0, c_white, .4 * a);
+				draw_sprite_ext(h.sprite_back, -1, h.x, h.y, w * gsize, l * gsize, 0, c_white, 1 * a)
+				draw_set_blend_mode(bm_normal);
+				d3d_set_fog(0, 0, 0, 0)
+				
+				// Draw the fairy icon outline:
+				var _outlinecol = make_colour_hsv(color_get_hue(_col), color_get_saturation(_col) / 1.2, 255);
+				for(var _i = 0; _i < b; _i++) {
+					 
+					_spr = mod_script_call("mod", h.creator.spellBullets[_i], "fairy_sprite");
+					draw_sprite_ext(_spr, s, h.x - 1, h.y, 1, /*h.right*/ 1, /*h.angle*/ 0, _outlinecol, 1);
+					draw_sprite_ext(_spr, s, h.x + 1, h.y, 1, /*h.right*/ 1, /*h.angle*/ 0, _outlinecol, 1);
+					draw_sprite_ext(_spr, s, h.x, h.y + 1, 1, /*h.right*/ 1, /*h.angle*/ 0, _outlinecol, 1);
+					draw_sprite_ext(_spr, s, h.x, h.y - 1, 1, /*h.right*/ 1, /*h.angle*/ 0, _outlinecol, 1);
+				}
+				
+				// Draw merged icons:
+				for(var _i = 0; _i < b; _i++) {
+				
+					_spr = array_length(h.creator.spellBullets) > 0 ? mod_script_call("mod", h.creator.spellBullets[_i], "fairy_sprite") : h.sprite;
+					draw_sprite_ext(_spr, s, h.x, h.y, 1, /*h.right*/ 1, /*h.angle*/ 0, merge_color(merge_colour(_col, c_black, .7), c_white, clamp(fairy.swap / fairy_swap_time, 0, 1)), 1);
+				}
+			}
+		}
+		else { // Normal drawing:
+			
+			// Back draw:
+			d3d_set_fog(1, merge_color(_col, c_white, clamp(h.swap / fairy_swap_time, 0, 1)), 1, 1)
+			h.swap = max(0, h.swap - current_time_scale * 1.2)
+			draw_sprite_ext(h.sprite_back, -1, h.x + 1, h.y + 1, w * gsize, l * gsize, 0, c_white, .4 * a);
+			draw_sprite_ext(h.sprite_back, -1, h.x + 1, h.y - 1, w * gsize, l * gsize, 0, c_white, .4 * a);
+			draw_sprite_ext(h.sprite_back, -1, h.x - 1, h.y + 1, w * gsize, l * gsize, 0, c_white, .4 * a);
+			draw_set_blend_mode(bm_add);
+			draw_sprite_ext(h.sprite_back, -1, h.x - 1, h.y - 1, w * gsize, l * gsize, 0, c_white, .4 * a);
+			draw_sprite_ext(h.sprite_back, -1, h.x, h.y, w * gsize, l * gsize, 0, c_white, 1 * a)
+			draw_set_blend_mode(bm_normal);
+			d3d_set_fog(0, 0, 0, 0)
+			
+			// Draw the fairy icon outline:
+			var _outlinecol = make_colour_hsv(color_get_hue(_col), color_get_saturation(_col) / 1.2, 255);
+				 
+			draw_sprite_ext(h.sprite, s, h.x - 1, h.y, 1, /*h.right*/ 1, /*h.angle*/ 0, _outlinecol, 1);
+			draw_sprite_ext(h.sprite, s, h.x + 1, h.y, 1, /*h.right*/ 1, /*h.angle*/ 0, _outlinecol, 1);
+			draw_sprite_ext(h.sprite, s, h.x, h.y + 1, 1, /*h.right*/ 1, /*h.angle*/ 0, _outlinecol, 1);
+			draw_sprite_ext(h.sprite, s, h.x, h.y - 1, 1, /*h.right*/ 1, /*h.angle*/ 0, _outlinecol, 1);
+			
+			// Draw the icon:
+			draw_sprite_ext(h.sprite, s, h.x, h.y, 1, /*h.right*/ 1, /*h.angle*/ 0, merge_color(merge_colour(_col, c_black, .7), c_white, clamp(fairy.swap / fairy_swap_time, 0, 1)), 1);
+		}
 
-		d3d_set_fog(1, merge_color(h.col, c_white, clamp(h.swap / fairy_swap_time, 0, 1)), 1, 1)
-		h.swap = max(0, h.swap - current_time_scale * 1.2)
-		draw_sprite_ext(h.sprite_back, -1, h.x + 1, h.y + 1, w * gsize, l * gsize, 0, c_white, .4 * a);
-		draw_sprite_ext(h.sprite_back, -1, h.x + 1, h.y - 1, w * gsize, l * gsize, 0, c_white, .4 * a);
-		draw_sprite_ext(h.sprite_back, -1, h.x - 1, h.y + 1, w * gsize, l * gsize, 0, c_white, .4 * a);
-		draw_set_blend_mode(bm_add);
-		draw_sprite_ext(h.sprite_back, -1, h.x - 1, h.y - 1, w * gsize, l * gsize, 0, c_white, .4 * a);
-		draw_sprite_ext(h.sprite_back, -1, h.x, h.y, w * gsize, l * gsize, 0, c_white, 1 * a)
-		draw_set_blend_mode(bm_normal);
-		/*
-		draw_sprite_ext(h.sprite_back, -1, h.x, h.y, w * gsize * 1.3, l * gsize * 1.3, 0, c_white, .05)
-		*/
-		d3d_set_fog(0, 0, 0, 0)
-
-		var _outlinecol = make_colour_hsv(color_get_hue(h.col), color_get_saturation(h.col) / 1.2, 255);
-		draw_sprite_ext(h.sprite, 0, h.x - 1, h.y, 1, /*h.right*/ 1, /*h.angle*/ 0, _outlinecol, 1);
-		draw_sprite_ext(h.sprite, 0, h.x + 1, h.y, 1, /*h.right*/ 1, /*h.angle*/ 0, _outlinecol, 1);
-		draw_sprite_ext(h.sprite, 0, h.x, h.y + 1, 1, /*h.right*/ 1, /*h.angle*/ 0, _outlinecol, 1);
-		draw_sprite_ext(h.sprite, 0, h.x, h.y - 1, 1, /*h.right*/ 1, /*h.angle*/ 0, _outlinecol, 1);
-		draw_sprite_ext(h.sprite, 0, h.x, h.y, 1, /*h.right*/ 1, /*h.angle*/ 0, merge_color(merge_colour(h.col, c_black, .7), c_white, clamp(fairy.swap / fairy_swap_time, 0, 1)), 1);
 		if h.swapframes > 0 draw_sprite(global.sprSwapFairy, (6 - h.swapframes), h.x, h.y);
 
 	}
@@ -389,7 +485,8 @@ NOTES FROM JSBURG:
 		_w = sprite_get_width(global.spellHold) / 2,
 		_y = 12 + _yOffset,
 		_h = sprite_get_height(global.spellHold) / 2,
-		_p = player_find(_playerindex);
+		_p = player_find(_playerindex),
+		_v = ultra_get("sage", 1) > 0;
 
 	var _playerNum = 0;
 	for(var i = 0; i < maxp; i++){
@@ -421,18 +518,18 @@ NOTES FROM JSBURG:
 			//Draw Outline for bullets in active slots:
 			if i <= ultra_get("sage", 2){
 
-				draw_outline(_sprt, 0, _x + _hudx, _y + _hudy)
+				draw_outline(_sprt, _v, _x + _hudx, _y + _hudy)
 			}
 
 			//Draw Bullet:
-			draw_sprite_ext(_sprt, 0, _x + _hudx, _y + _hudy + 1, 1, 1, 0, c_white, 1);
-			draw_sprite_ext(_sprt, 0, _x + _hudx, _y + _hudy, 1, 1, 0, c_white, 1);
+			draw_sprite_ext(_sprt, _v, _x + _hudx, _y + _hudy + 1, 1, 1, 0, c_white, 1);
+			draw_sprite_ext(_sprt, _v, _x + _hudx, _y + _hudy, 1, 1, 0, c_white, 1);
 
 			//Darken in secondary Slots:
 			if i > ultra_get("sage", 2) {
 
-				draw_sprite_ext(_sprt, 0, _x + _hudx, _y + _hudy + 1, 1, 1, 0, c_black, .2);
-				draw_sprite_ext(_sprt, 0, _x + _hudx, _y + _hudy, 1, 1, 0, c_black, .2);
+				draw_sprite_ext(_sprt, _v, _x + _hudx, _y + _hudy + 1, 1, 1, 0, c_black, .2);
+				draw_sprite_ext(_sprt, _v, _x + _hudx, _y + _hudy, 1, 1, 0, c_black, .2);
 			}
 
 			var _mpwidth = _playerNum > 1 ? 18 * (_hudSide ? -1 : 1) : 0;
@@ -473,6 +570,7 @@ NOTES FROM JSBURG:
 #macro fairy_swap_time 6
 #macro dev false
 #macro c global.colormap
+#macro c_fairy $AFA79A
 #macro c_darkteal c_purple
 #macro c_purblue c_purple
 #macro speed_boost_perma [Rocket, Nuke, PlasmaBall, PlasmaBig, PlasmaHuge, Seeker]
@@ -525,8 +623,8 @@ NOTES FROM JSBURG:
 	    curve : 0,
 	    resettime : 0,
 		swapframes : 0,
-	    col : c_purblue,
-	    sprite : sprSnowFlake,
+	    col : c_fairy,
+	    sprite : global.sprFairyIcon,
 	    angle : 0
 	}
 
@@ -939,7 +1037,11 @@ In Burst fire, call sage_shoot for each burst shot.
 
 		sprite_index = mskNone;
 		mask_index   = mskPlayer;
+		spr_shine    = ultra_get("sage", 1) > 0 ? global.sprShineAUpg : global.sprShineA;
 		image_speed  = 0;
+		shine_index  = 0;
+		shine_speed  = 0;
+		name     = "spellbullet";
 		speed    = 5;
 		friction = 0.5;
 		shine = 45;
@@ -949,6 +1051,7 @@ In Burst fire, call sage_shoot for each burst shot.
 
 		on_step = spellbullet_step;
 		on_pick = script_ref_create(spellbullet_pickup);
+		on_draw = spellbullet_draw;
 
 		if(_type == ""){
 			type = "bDefault"
@@ -985,8 +1088,14 @@ In Burst fire, call sage_shoot for each burst shot.
 		//if dev trace(type, bullets[? type])
 		my_prompt = prompt_create(bullets[? type].name);
 		sprite_index = mod_script_call_nc("mod", type, "bullet_sprite");
-		image_index = 0;
+		image_index = ultra_get("sage", 1);
 	}
+
+#define spellbullet_draw
+	draw_self();
+	draw_set_blend_mode(bm_add);
+	draw_sprite_ext(spr_shine, shine_index, x, y, image_xscale, image_yscale, image_angle, c_white, image_alpha);
+	draw_set_blend_mode(bm_normal);
 
 #define get_bullets(_min, _max)
 	var values = ds_map_values(bullets),
@@ -999,25 +1108,18 @@ In Burst fire, call sage_shoot for each burst shot.
 	}
 	return returnlist;
 
-
-#define spellbullet_examine(name, inst)
-	switch(name){
-		case "cursed":
-			return `@(color:${c_neutral})+@(color:${c_spellpower})RANDOM @wEFFECTS`
-	}
-
 #define spellbullet_step
-
 
 	shine -= current_time_scale;
 	if (shine <= 0) {
 
-		image_speed = .4;
+		shine_speed = .35;
 	}
-	if (image_index >= 6) {
+	shine_index += shine_speed * current_time_scale;
+	if (shine_index >= 6) {
 
-		image_speed = 0;
-		image_index = 0;
+		shine_speed = 0;
+		shine_index = 0;
 		shine = 45;
 	}
 
@@ -1073,6 +1175,13 @@ In Burst fire, call sage_shoot for each burst shot.
 				array_push(spellBullets, spellbullet.type);
 				with spellbullet instance_destroy()
 				exit
+			}
+			
+			// Create popup text:
+			with instance_create(x, y, PopupText) {
+				
+				target = index;
+				text = bullets[? spellbullet.type].name;
 			}
 
 			//Below max bullets
