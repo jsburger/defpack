@@ -1,5 +1,5 @@
 #define init
-  global.sprBullet = sprite_add_weapon("../../../sprites/sage/bullets/sprBulletTurret.png", 7, 7);
+  global.sprBullet = sprite_add("../../../sprites/sage/bullets/sprBulletTurret.png", 2, 7, 11);
   global.sprFairy = sprite_add("../../../sprites/sage/bullet icons/sprFairyIconTurret.png", 0, 5, 5);
 
 #macro c mod_variable_get("race", "sage", "colormap");
@@ -29,11 +29,11 @@
   sound_play_pitchvol(sndCrossReload, 1.4 * _p, .9);
 
 #define bullet_description(power)
-  return `@(color:${c.neutral})+` + string(round(50 + 50 * power)) + `% @(color:${c.reload})RELOAD SPEED#@(color:${c.neutral})+@wAUTOMATIC WEAPONS#@(color:${c.negative})-2.5 @(color:${c.speed})SPEED`;
+  return `@(color:${c.neutral})+` + string(round(50 + 50 * power)) + `% @(color:${c.reload})RELOAD SPEED#@(color:${c.neutral})+@wAUTOMATIC WEAPONS#@(color:${c.negative})-1.5 @(color:${c.speed})SPEED`;
 
 #define on_take(power)
   reloadspeed += .5 + .5 * power;
-  maxspeed -= 2.5;
+  maxspeed -= 1.5;
   if "sage_auto" not in self {
 
     sage_auto = 1;
@@ -44,7 +44,7 @@
 
 #define on_lose(power)
   reloadspeed -= .5 + .5 * power;
-  maxspeed += 2.5;
+  maxspeed += 1.5;
   sage_auto--;
 
 #define step

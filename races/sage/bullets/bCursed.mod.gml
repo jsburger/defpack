@@ -1,5 +1,5 @@
 #define init
-  global.sprBullet = sprite_add_weapon("../../../sprites/sage/bullets/sprBulletCursed.png", 7, 7);
+  global.sprBullet = sprite_add("../../../sprites/sage/bullets/sprBulletCursed.png", 2, 7, 11);
   global.sprFairy = sprite_add("../../../sprites/sage/bullet icons/sprFairyIconCursed.png", 0, 5, 5);
 
 #macro c mod_variable_get("race", "sage", "colormap");
