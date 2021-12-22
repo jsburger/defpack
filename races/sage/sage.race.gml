@@ -1046,6 +1046,7 @@ In Burst fire, call sage_shoot for each burst shot.
 		if(distance_to_object(Portal) == 0){
 			array_push(global.carryOver, type);
 			instance_destroy();
+			exit
 		}
 	}
 
