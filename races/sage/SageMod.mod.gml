@@ -9,6 +9,7 @@
     canfire
     && can_shoot == true
     && (ammo[weapon_get_type(wep)] >= weapon_get_cost(wep) || infammo != 0)
+    && (GameCont.rad >= weapon_get_rads(wep) || infammo != 0)
     && (
         weapon_get_auto(wep)
         ? button_check(index, "fire")
