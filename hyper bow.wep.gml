@@ -244,24 +244,11 @@ with(instance_create(_x, _y, CustomProjectile)){
 	image_speed = 0.4;
 	speed = 20;
 	
-	on_anim = script_ref_create(HitscanBolt_anim);
 	on_step = script_ref_create(HitscanBolt_step);
 	on_wall = script_ref_create(HitscanBolt_wall);
 	on_hit = script_ref_create(HitscanBolt_hit);
 	
 	return self;
-}
-
-#define HitscanBolt_anim
-if (walled) {
-    if !irandom(1){
-        image_speed = 0
-        image_index = 5
-    }
-    else{
-        image_index = irandom(3)
-        image_speed += .1
-    }
 }
 
 #define HitscanBolt_trail()
@@ -435,18 +422,26 @@ if (!instance_exists(self)){
 
 if (bounce > 0){
 	bounce -= 1;
+	
 	move_bounce_solid(true);
 	image_angle = direction;
+	
 	sound_play_pitchvol(sndBoltHitWall, random_range(1.4, 1.7), 0.7);
+	HitscanBolt_trail();
 }
 
 else if (other.solid && !walled){
-	speed = 0;
 	walled = true;
+	
 	sound_play(sndBoltHitWall);
 	move_contact_solid(direction, speed_raw);
+	speed = 0;
+	
 	sprite_index = global.sprBoltStick;
+	image_index = 0;
+	image_speed = 0.4;
 	image_angle += 90;
+	
 	HitscanBolt_trail();
 	instance_create(x, y, Dust).depth = depth;
 }
