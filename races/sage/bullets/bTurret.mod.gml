@@ -17,7 +17,7 @@
   return "TURRET";
 
 #define bullet_ttip
-  return ["KILL FAST", "MOVE SLOW"];
+  return ["KILL FAST", "MOVE SLOW", "DIVERTING CYCLES TO FIRING PROCESS."];
 
 #define bullet_area
   return 4;

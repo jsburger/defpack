@@ -17,7 +17,7 @@
   return "HYPER";
 
 #define bullet_ttip
-  return "HYPER @yBULLETS";
+  return ["@yBULLETS @sRIPPLE IN AIR", "CAPTIVE SPACIAL CAVITIES EX-8826:#TEMPORAL STABILITY ACHIEVED."];
 
 #define bullet_area
   return 1;

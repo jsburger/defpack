@@ -25,7 +25,7 @@
   return "ULTRA";
 
 #define bullet_ttip
-  return "@sFROM @gRADS @sTO @yAMMO";
+  return ["@sFROM @gRADS @sTO @yAMMO", "INLINE PROTON ASSIMILATION SUCCESSFUL."];
 
 #define bullet_area
   return 20;
@@ -36,35 +36,25 @@
   sound_play_pitchvol(sndSwapShotgun, 1.2 * _p, .9);
   sound_play_pitchvol(sndCrossReload, 1.4 * _p, .9);
 
-#define bullet_description(power)
-  return `@(color:${c.neutral})+USE @gRADS @(color:${c.neutral})AS @(color:${c.ammo})AMMO#@(color:${c.neutral})+` + string(round(35 + 35 * power)) + `% @wRELOAD SPEED @(color:${c.neutral})WHEN USING @gRADS`;
+#define bullet_description(spellPower)
+  return `@(color:${c.neutral})+USE @gRADS @(color:${c.neutral})AS @(color:${c.ammo})AMMO#@(color:${c.neutral})+${get_reload_reduction(spellPower) * 100}% @wRELOAD SPEED @(color:${c.neutral})WHEN USING @gRADS`;
 
 
 #define get_reload_reduction(spellPower)
-
-    return .35 + .35 * spellPower
+    return .35 * (1 + spellPower)
 
 #define on_take(power)
 
-    sage_ultra_boosted = true
-    reloadspeed += get_reload_reduction(power)
-
-//   if "sage_atr_reload_speed" not in self {
-
-    // sage_atr_reload_speed = .5 + .5 * power;
-//   }else {
-
-    // sage_atr_reload_speed += .5 + .5 * power;
-//   }
-
-  sage_ammo_to_rads++;
+    if "sage_ultra_boosted" not in self sage_ultra_boosted = false
+    // enable_boost(power)
+    
+    sage_ammo_to_rads++;
 
 #define on_lose(power)
 //   sage_atr_reload_speed -= .5 + .5 * power;
 
-    sage_ultra_boosted = false
-    reloadspeed -= get_reload_reduction(power)
-
+    disable_boost(power)
+    
     sage_ammo_to_rads--;
 
 #define on_pre_shoot(power)
@@ -82,31 +72,31 @@
 #define get_rad_ammo_cost(wep)
     return min(sage_ammo_to_rads, 1) * (weapon_get_type(wep) == 1 ? 4 : 16) * ceil(1 + sage_ammo_cost) * weapon_get_cost(wep);
 
-#define toggle_boost(spellPower)
+#define disable_boost(spellPower)
     if sage_ultra_boosted {
         reloadspeed -= get_reload_reduction(spellPower)
+        sage_ultra_boosted = false
     }
-    else {
+    
+#define enable_boost(spellPower)
+    if !sage_ultra_boosted {
         reloadspeed += get_reload_reduction(spellPower)
+        sage_ultra_boosted = true
     }
-    sage_ultra_boosted = !sage_ultra_boosted
 
 #define on_rads_use(spellPower)
 
-    if !sage_ultra_boosted {
-        toggle_boost(spellPower)
-    }
-
-  with instance_create(x, y, WepSwap) {
+    enable_boost(spellPower)
 
     with instances_matching(instances_matching(WepSwap, "creator", other), "sprite_index", global.sprUltraSpark) {
-
-      instance_delete(self);
+        instance_destroy();
     }
-    creator = other;
-    sprite_index = global.sprUltraSpark;
-  }
-  sound_play_pitchvol(sndUltraEmpty, .75 * random_range(.8, 1.2), .5);
+
+    with instance_create(x, y, WepSwap) {
+        creator = other;
+        sprite_index = global.sprUltraSpark;
+    }
+    sound_play_pitchvol(sndUltraEmpty, .75 * random_range(.8, 1.2), .5);
 
     if GameCont.rad > 0 && GameCont.rad < get_rad_ammo_cost(wep) {
         on_rads_out(spellPower)
@@ -123,10 +113,8 @@
 
 #define on_rads_out(spellPower)
 
-    if sage_ultra_boosted {
-        toggle_boost(spellPower)
-    }
-
+    disable_boost(spellPower)
+    
   with instance_create(x, y, WepSwap) {
 
     with instances_matching(instances_matching(WepSwap, "creator", other), "sprite_index", global.sprUltraSpark) {

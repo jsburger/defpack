@@ -17,7 +17,7 @@
   return "BOUNCE";
 
 #define bullet_ttip
-  return "@yREFLECT";
+  return ["@yREFLECT", "ELECTROSTATIC ENCAPSULATION EX-8804:#REPULSION SIGNIFICANTLY AFFECTING RELIABILITY."];
 
 #define bullet_area
   return 1;
@@ -48,40 +48,49 @@
 #define on_fire
   sound_play_pitchvol(sndBouncerSmg, .5 * random_range(.8, 1.2), .5);
 
-#define step
+#define on_step
 
-  with instances_matching(Player, "race", "sage") {
+    if "sage_bounce" not in self exit
+    if sage_bounce > 0 {
 
-    if "sage_bounce" in self {
-
-      var _s = id;
-      with instances_matching(projectile, "creator", _s) {
-
-        if "sage_no_bounce" in self {exit}
-        if "sage_check_bounce" not in self {
-
-          sage_check_bounce = true;
-
-          // if "bounce" or "bounces" or "wallbounce" are defined as a variable it will give that projectile bounce
-          // if "sage_no_bounce" is defined it will not use sages custom bounce event for bouncing, use this for melee attacks
-          if "bounce" not in self || instance_is(self, BouncerBullet) {
-
-            sage_bounce = creator.sage_bounce;
-          }else {
-
-            bounce +=  creator.sage_bounce;
-          }
-          if "bounces" in self {
-
-            bounces =  creator.sage_bounce;
-          }
-          
-          // Wallbounce is multiplied:
-          if("wallbounce" in self) {
-              
-              wallbounce +=  round(creator.sage_bounce);
-          }
+        var _s = id;
+        with instances_matching(instances_matching(projectile, "creator", _s), "sage_no_bounce", null, false) {
+        
+            if "sage_check_bounce" not in self {
+                
+                sage_check_bounce = true;
+                
+                // if "bounce" or "bounces" or "wallbounce" are defined as a variable it will give that projectile bounce
+                // if "sage_no_bounce" is defined it will not use sages custom bounce event for bouncing, use this for melee attacks
+                if "bounce" in self && !instance_is(self, BouncerBullet) {
+                    bounce += _s.sage_bounce;
+                }
+                else if "bounces" in self {
+                    bounces += _s.sage_bounce;
+                }
+                else if "wallbounce" in self {
+                    wallbounce += round(_s.sage_bounce)
+                }
+                else {
+                    sage_bounce = _s.sage_bounce
+                }
+                
+                
+                // if "bounce" not in self || instance_is(self, BouncerBullet) {
+                //     sage_bounce = creator.sage_bounce;
+                // }
+                // else {
+                //     bounce +=  creator.sage_bounce;
+                // }
+                // if "bounces" in self {
+                //     bounces =  creator.sage_bounce;
+                // }
+                
+                // // Wallbounce is multiplied:
+                // if("wallbounce" in self) {
+                
+                //     wallbounce +=  round(creator.sage_bounce);
+                // }
+            }
         }
-      }
     }
-  }

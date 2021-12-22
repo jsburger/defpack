@@ -17,7 +17,8 @@
   return "GOLD";
 
 #define bullet_ttip
-  return "VALUABLE @yBULLETS";
+    //"EFFICIENCY VASTLY INCREASED"
+  return ["VALUABLE @yBULLETS", "@yAURUM @sEMULATION COMPLETE.#HIGHER PRESENCE DETECTED."];
 
 #define bullet_area
   return -1;
@@ -30,19 +31,28 @@
   sound_play_pitchvol(sndCrossReload, 1.4 * _p, .9);
 
 #define bullet_description(power)
-  return `@(color:${c.neutral})+` + string(round(15 + 15 * power)) + `% @(color:${c.reload})RELOAD SPEED#@(color:${c.neutral})+` + string(round(25 + 25 * power)) + `% @(color:${c.accuracy})ACCURACY#@(color:${c.neutral})+` + string(round(15 + 15 * power)) + `% @(color:${c.projectile_speed})PROJECTILE SPEED#@(color:${c.neutral})+0.5 @(color:${c.speed})SPEED`;
+  return `@(color:${c.neutral})+${reloadBoost(power) * 100}% @(color:${c.reload})RELOAD SPEED#@(color:${c.neutral})+${accuracyBoost(power) * 100}% @(color:${c.accuracy})ACCURACY#@(color:${c.neutral})+${projectileBoost(power) * 100}% @(color:${c.projectile_speed})PROJECTILE SPEED#@(color:${c.neutral})+${speedBoost} @(color:${c.speed})SPEED`;
+
+#macro spellBoost (1 + spellPower)
+#define reloadBoost(spellPower)
+    return .15 * spellBoost
+#define projectileBoost(spellPower)
+    return .15 * spellBoost
+#define accuracyBoost(spellPower)
+    return .25 * spellBoost
+#macro speedBoost .5
 
 #define on_take(power)
-  accuracy /= 1.25 + .25 * power;
-  reloadspeed += .15 + .15 * power;
-  sage_projectile_speed += .15 + .15 * power;
-  maxspeed += .5;
+  accuracy /= 1 + accuracyBoost(power)
+  reloadspeed += reloadBoost(power)
+  sage_projectile_speed += projectileBoost(power);
+  maxspeed += speedBoost;
 
 #define on_lose(power)
-  accuracy *= 1.25 + .25 * power;
-  reloadspeed -= .15 + .15 * power;
-  sage_projectile_speed -= .15 + .15 * power;
-  maxspeed -= .5;
+  accuracy *= 1 + accuracyBoost(power)
+  reloadspeed -= reloadBoost(power);
+  sage_projectile_speed -= projectileBoost(power);
+  maxspeed -= speedBoost;
   
 #define on_fire
     if(wep != wep_golden_crossbow) {

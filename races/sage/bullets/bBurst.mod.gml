@@ -17,7 +17,7 @@
   return "BURST";
 
 #define bullet_ttip
-  return "FIRE IN WAVES";
+  return ["FIRE IN WAVES", "WEAPON OPTIMIZATION EX-8837:#PART DAMAGE MINIMIZED."];
 
 #define bullet_area
   return 4;

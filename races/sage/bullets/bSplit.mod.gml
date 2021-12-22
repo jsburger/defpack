@@ -19,7 +19,7 @@
   return "SPLIT";
 
 #define bullet_ttip
-  return ["DUPLICATION TECHNOLOGY"];
+  return ["DUPLICATION TECHNOLOGY", "BALLISTIC REFRACTION SUCCESSFUL.#CONSISTENT ACROSS ALL PLANES."];
 
 #define bullet_area
   return 1;

@@ -820,21 +820,22 @@ NOTES FROM JSBURG:
 
 #define post_sage_shoot(shootEvent)
 
+	for (var i = 0, l = bulletLoopMax; i < l; i++) {
+		mod_script_call("mod", spellBullets[i], "on_post_shoot", sage_spell_power, shootEvent)
+	}
+	
 	if (GameCont.rad < shootEvent.radPrevious) {
-
 		for (var i = 0, l = bulletLoopMax; i < l; i++) {
-
 			mod_script_call("mod", spellBullets[i], "on_rads_use", sage_spell_power);
 		}
 	}
 
 	if (GameCont.rad <= 0 && shootEvent.radPrevious > 0) {
-
 		for (var i = 0, l = bulletLoopMax; i < l; i++) {
-
 			mod_script_call("mod", spellBullets[i], "on_rads_out", sage_spell_power);
 		}
 	}
+
 
 
 	for (var i = 1; i < array_length(ammo); i++) {

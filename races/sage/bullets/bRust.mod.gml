@@ -17,7 +17,7 @@
   return "RUST";
 
 #define bullet_ttip
-  return "ACHING RELOADS";
+  return ["ACHING RELOADS", "AMMO SYNTHESIS EX-8238:#OUTDATED. OVERLOADS BRIDGING PROCESS."];
 
 #define bullet_area
   return -1;

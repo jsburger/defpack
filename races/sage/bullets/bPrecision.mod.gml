@@ -17,7 +17,7 @@
   return "PRECISION";
 
 #define bullet_ttip
-  return "NEVER MISS";
+  return ["NEVER MISS", "AIRSTREAM RIFLING EX-8831:#MATCHING PREVIOUS METRICS."];
 
 #define bullet_area
   return 1;

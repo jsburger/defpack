@@ -17,7 +17,7 @@
   return "RUSH";
 
 #define bullet_ttip
-  return ["STAY CLOSE", "GET IN THERE"];
+  return ["STAY CLOSE", "GET IN THERE", "SUBSONIC EVASION OPTIMIZED.#PRECISION LOSS DETECTED."];
 
 #define bullet_area
   return 4;

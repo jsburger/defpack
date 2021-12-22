@@ -17,7 +17,7 @@
   return "SUSTAIN";
 
 #define bullet_ttip
-  return "SHOOT FOREVER";
+  return ["SHOOT FOREVER", "DECREASE IN POWDER QUALITY DETECTED.#FURTHER WORK REQUIRED."];
 
 #define bullet_area
   return 4;
@@ -28,13 +28,47 @@
   sound_play_pitchvol(sndSwapShotgun, 1.2 * _p, .9);
   sound_play_pitchvol(sndCrossReload, 1.4 * _p, .9);
 
-#define bullet_description(power)
-  return `@(color:${c.neutral})+20% TO NOT USE @(color:${c.ammo})AMMO#@(color:${c.neutral})+0.5 @(color:${c.speed})SPEED#@(color:${c.negative})-30% @(color:${c.projectile_speed})PROJECTILE SPEED`
+#define bullet_description(spellPower)
+  return `@(color:${c.neutral})+${get_save_chance(spellPower) * 100}% TO NOT USE @(color:${c.ammo})AMMO#@(color:${c.neutral})+0.5 @(color:${c.speed})SPEED#@(color:${c.negative})-30% @(color:${c.projectile_speed})PROJECTILE SPEED`
 
-#define on_take(power)
+#define on_take(spellPower)
   maxspeed += .5;
   sage_projectile_speed -= .3;
+  if "sage_sustain_chance" not in self sage_sustain_chance = 0
+  sage_sustain_chance += get_save_chance(spellPower)
 
-#define on_lose(power)
+#define on_lose(spellPower)
   maxspeed -= .5;
   sage_projectile_speed += .3;
+  sage_sustain_chance -= get_save_chance(spellPower)
+
+#define get_save_chance(spellPower)
+    return .25 * (1 + spellPower)
+    
+#define on_pre_shoot(spellPower, shootEvent)
+    if (random(1) <= sage_sustain_chance) {
+        if !lq_exists(shootEvent, "infammo_restore") {
+            shootEvent.infammo_restore = infammo
+            shootEvent.infammo_restore_valid = true
+        }
+        infammo = -1
+        with instance_create(x + lengthdir_x(7, gunangle), y + lengthdir_y(7, gunangle), CaveSparkle) {
+            image_blend = fairy_color()
+            depth = other.depth -1
+            image_speed *= 1.5
+            image_angle = random(360)
+            x += random_range(-3, 3)
+            y += random_range(-3, 3)
+        }
+    }
+
+#define on_post_shoot(spellPower, shootEvent)
+    if lq_exists(shootEvent, "infammo_restore") {
+        if shootEvent.infammo_restore_valid {
+            infammo = shootEvent.infammo_restore
+            shootEvent.infammo_restore_valid = false
+        }
+        else {
+            infammo = 0
+        }
+    }
