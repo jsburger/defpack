@@ -1,6 +1,7 @@
 #define init
   global.sprBullet = sprite_add("../../../sprites/sage/bullets/sprBulletInfammo.png", 2, 7, 11);
-  global.sprFairy = sprite_add("../../../sprites/sage/bullet icons/sprFairyIconInfammo.png", 2, 5, 5);
+  global.sprFairy  = sprite_add("../../../sprites/sage/bullet icons/sprFairyIconInfammo.png", 2, 5, 5);
+  global.sprEffect = sprite_add("../../../sprites/sage/fx/sprBulletFXInfammoProc.png", 5, 5, 5);
 
 #macro c mod_variable_get("race", "sage", "colormap");
 
@@ -53,13 +54,17 @@
         }
         infammo = -1
         with instance_create(x + lengthdir_x(7, gunangle), y + lengthdir_y(7, gunangle), CaveSparkle) {
-            image_blend = fairy_color()
+            
+            sprite_index = global.sprEffect;
             depth = other.depth -1
-            image_speed *= 1.5
+            //image_speed *= 1.5
             image_angle = random(360)
             x += random_range(-3, 3)
             y += random_range(-3, 3)
         }
+        var _p = random_range(.9, 1.1);
+        sound_play_pitchvol(sndRecGlandProc, 1.4 * _p, 1.3);
+        sound_play_pitchvol(sndLuckyShotProc, .8 * _p, 1.3);
     }
 
 #define on_post_shoot(spellPower, shootEvent)
