@@ -511,6 +511,12 @@ NOTES FROM JSBURG:
 		var _hudx = (_hudSide ? -10 : 0), // x offset for multiplayer hud
 			_hudy = (ceil(global.uiRoll[_playerindex]) = i) - (ceil(global.uiRoll[_playerindex] + 1) = i);
 		
+		//Draw big fat white line in the back so its more obvious that for Ultra B the effects are combined:
+		if(ultra_get("sage", 2) && i == 0){
+				
+			draw_rectangle_color(_x + 1, _y + _hudy - 2, _x + (_hudSide ? -4 : 4), _y + _hudy, c_white, c_white, c_white, c_white, false);
+		}
+		
 		if i < array_length(global.bulletInventory[_playerindex]){
 
 			var _sprt = mod_script_call("mod", string(global.bulletInventory[_playerindex][i]), "bullet_sprite");
@@ -546,6 +552,7 @@ NOTES FROM JSBURG:
 
 		}
 		else if(player_is_local_nonsync(_playerindex)){
+			
 			//Draw empty bullet spaces:
 			draw_sprite_ext(global.spellHold, 0, _x + _hudx, _y + _hudy, 1, 1, 0, c_white, 1);
 		}
@@ -589,8 +596,6 @@ NOTES FROM JSBURG:
 	spellBullets = [];
 
 	if dev {
-
-		array_push(spellBullets, "bDefault");
 		array_push(spellBullets, "bGold");
 		array_push(spellBullets, "bMelee");
 		array_push(spellBullets, "bTurret");
@@ -603,6 +608,7 @@ NOTES FROM JSBURG:
 		array_push(spellBullets, "bUltra");
 		array_push(spellBullets, "bRust");
 		array_push(spellBullets, "bCursed");
+		array_push(spellBullets, "bLove");
 	}
 
 	fairy = {
