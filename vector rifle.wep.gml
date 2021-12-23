@@ -46,7 +46,7 @@ if skill_get(17) > 0{
 	sound_play_pitch(sndLaser,.7*_pitch)
 }
 with mod_script_call("mod", "defpack tools", "create_vector", x, y) {
-	motion_set(other.gunangle + random_range(-1, 1) * other.accuracy, 12)
+	motion_set(other.gunangle + random_range(-1, 1) * other.accuracy, 15)
 	image_angle = direction
 	projectile_init(other.team, other)
 }

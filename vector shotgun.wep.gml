@@ -51,7 +51,7 @@ var ang = gunangle + random_range(-9,9) * accuracy;
 for var i = -1; i <= 1; i++ {
 	with mod_script_call("mod", "defpack tools", "create_vector", x, y) {
 		shrinkspeed += .05
-		motion_set(ang - 40 * i * other.accuracy, random_range(7, 9))
+		motion_set(ang - 40 * i * other.accuracy, random_range(7, 9) + 3)
 		projectile_init(other.team, other)
 	}
 }

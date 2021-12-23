@@ -229,6 +229,17 @@
             var _mwr = (irandom(99) + 1) <= (_chance)
             if _mwr = true{
               var _a = [];
+                for (var i = 0; i <= 100; i++) {
+                    var skill = skill_get_at(i);
+                    if skill == undefined {
+                        break
+                    }
+                    if is_real(skill) continue
+                    var typeTest = mod_script_call("skill", skill, "skill_chest_type");
+                    if typeTest != undefined && is_real(typeTest) && typeTest >= 0 && typeTest <= 5 {
+                        array_push(_a, typeTest)
+                    }
+                }
                   if skill_get(mut_long_arms)         > 0 array_push(_a, 2);
                   if skill_get("longarmsx10")         > 0 array_push(_a, 2);
                   if skill_get("dividedelbows")       > 0 array_push(_a, 2);
