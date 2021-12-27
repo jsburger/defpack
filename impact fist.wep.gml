@@ -1,7 +1,21 @@
 #define init
 global.sprMegaImpactFist  = sprite_add_weapon("sprites/weapons/sprImpactFist.png", 4, 8);
-global.sprMegaRealFist    = sprite_add("sprites/projectiles/sprImpactFistProj.png", 4, 0, 13);
-global.sprMegaRealFistUpg = sprite_add("sprites/projectiles/sprImpactFistProjUpg.png", 4, 0, 13);
+global.sprMegaRealFist    = sprite_add_precise("sprites/projectiles/sprImpactFistProj.png", 4, 0, 13);
+global.sprMegaRealFistUpg = sprite_add_precise("sprites/projectiles/sprImpactFistProjUpg.png", 4, 0, 13);
+
+#define sprite_add_precise(sprite, subimages, xoffset, yoffset)
+	var q = sprite_add(sprite, subimages, xoffset, yoffset);
+	if fork(){
+		var t = sprite_get_texture(q, 0),
+		    w = 150;
+
+		while(t == sprite_get_texture(q, 0) && w-- > 0){
+		    wait 0;
+		}
+	    sprite_collision_mask(q, 1, 1, 0, 0, 0, 0, 0, 0)
+	    exit
+	}
+	return q
 
 #define weapon_name
 return "IMPACT FIST"
@@ -120,8 +134,8 @@ if lifespan <= 4 && (projectile_canhit_melee(other) || (array_find_index(hitlist
 }
 
 #define is_any
-	for (var i = 1; i < array_length(argument); i++) {
-		if instance_is(argument0, argument[i]) return true
+	for (var i = 1; i < argument_count; i++) {
+		if instance_is(argument[0], argument[i]) return true
 	}
 	return false
 
