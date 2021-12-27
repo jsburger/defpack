@@ -1,7 +1,11 @@
 #define init
 global.sprScrapper = sprite_add_weapon("sprites/weapons/sprScrapper.png", 8, 1)
-global.sprScrapperBack = sprite_add_weapon("sprites/weapons/sprScrapperBack.png", 8, 1)
-global.a = [global.sprScrapper, global.sprScrapperBack]
+
+global.sprScrapperHud = [
+        sprite_add("sprites/weapons/sprScrapperHud.png", 1, 0, 3),
+        sprite_add("sprites/weapons/sprScrapperHudActive.png", 1, 0, 3)
+    ]
+
 #define weapon_name
 return `SCRAPPER`
 #define weapon_type
@@ -11,7 +15,7 @@ return 0
 #define weapon_area
 return 7
 #define weapon_load
-return 24
+return 18
 #define weapon_swap
 return sndSwapHammer
 #define weapon_auto
@@ -21,7 +25,10 @@ return 1
 #define weapon_laser_sight
 return 0
 #define weapon_sprt(w)
-return mod_script_call("mod", "defpunching", "fist_sprite", w, global.a)
+return global.sprScrapper
+
+#define weapon_sprt_hud(wep)
+return mod_script_call("mod", "defpunching", "fist_hud_sprite", wep, global.sprScrapperHud)
 
 #define weapon_text
 return "@bCOMBO@s turns projectiles into splinters"
@@ -37,7 +44,7 @@ return mod_script_call_self(scr[0], scr[1], scr[2])
 #define weapon_fire(w)
 var active = mod_script_call("mod", "defpunching", "fist_active", w);
 with mod_script_call("mod", "defpunching", "fist_fire", wep){
-    damage = 10
+    damage = 6
     if active on_projectile = scrapper_proj
 }
 weapon_post(-12, 10, 6)

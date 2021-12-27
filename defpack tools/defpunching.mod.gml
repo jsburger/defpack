@@ -180,6 +180,7 @@ with other {
 }
 #define hitbox_hit
 with creator {
+	wkick = 15
 	fistinfo.dashdir = fistinfo.dashdir + 180
 	fistinfo.dashtime = 5
 	fistinfo.dashspeed = 4
@@ -219,6 +220,12 @@ with instance_create(x, y, CustomObject){
 	big = (_num mod _bignum == 0)
 	basecolor = c_aqua
 	blendcolor = big ? c_white : c_black
+	
+	if (_num < _bignum) {
+		basecolor = merge_color(c_red, c_yellow, .2)
+		blendcolor = c_yellow
+	}
+	
 	image_xscale += .2 * big
 	image_yscale = image_xscale
 
@@ -256,10 +263,16 @@ if instance_is(self, Player){
 }
 return sprites[0]
 
+#define fist_hud_sprite(weapon, sprites)
+if fist_active(weapon) {
+	return sprites[1]
+}
+return sprites[0]
+
 #define fist_init()
 	is_fist = 1
 	fistowner = other
-	combotime = 60
+	combotime = 75
 
 #define fist_step(_p)
 var _w = _p ? wep : bwep;
@@ -284,13 +297,37 @@ else if !weapon_is_fist(_w){
 var f = fistinfo;
 if f.dashtime > 0 and f.dashcheck == 0{
 	f.dashtime -= current_time_scale
+	
+	if instance_is(self, Player) && f.bounce <= -bouncemax {
+		
+		var influence = f.dashspeed/2 * current_time_scale,
+			_x, _y;
+		
+		if button_check(index, "nort") _y -= 1
+		if button_check(index, "sout") _y += 1
+		if button_check(index, "west") _x -= 1
+		if button_check(index, "east") _x += 1
+		
+		var dis = point_distance(0, 0, _x, _y);
+		
+		if dis != 0 {
+			_x /= dis;
+			_y /= dis;
+			
+			x += _x * influence
+			y += _y * influence
+		}
+		// x += lengthdir_x(current_time_scale, direction)
+		// y += lengthdir_y(current_time_scale, direction)
+	}
+	
 	speed = f.dashspeed
 	direction = f.dashdir
 }
-if f.combotime > 0 and f.dashcheck == 0{
-	f.combotime -= current_time_scale
-	if f.combotime <= 0 and f.combo > 0{
-		with counter_create(0, 1){
+if f.combotime > 0 and f.dashcheck == 0 {
+	f.combotime -= current_time_scale * (_p ? 1 : .5)
+	if f.combotime <= 0 and f.combo > 0 {
+		with counter_create(0, 1) {
 			text = string(f.combo) + " HIT" + (f.combo > 1 ? "S!" : "!")
 			basecolor = merge_color(c_red, c_yellow, .2)
 			blendcolor = c_yellow
