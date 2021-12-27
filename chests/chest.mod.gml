@@ -148,34 +148,29 @@
   chest_add("Blood",   9,  [wep_blood_hammer,"bone","big bone",wep_blood_launcher,wep_blood_cannon,"blood abris launcher","blood crossbow","punisher"])
   chest_add("Hyper",   9,  [wep_hyper_rifle,wep_hyper_slugger,wep_hyper_launcher,"hyper crossbow","hyper bow"])
   chest_add("Zenith",  13, ["herald","andromeda launcher","stopwatch",/*"sak",*/"defender","flex","punisher","rapier","record dealer"])
-  var _l = ds_list_create();
-  weapon_get_list(_l, clamp(GameCont.hard, 0, 4), GameCont.hard + 2 * array_length(instances_matching(Player,"race","robot")) + 3);
-  var _a = ds_list_to_array(_l),
-     _c0 = [],
-     _c1 = [],
-     _c2 = [],
-     _c3 = [],
-     _c4 = [],
-     _c5 = [];
-  for (var _i = 0; _i < array_length(_a) - 1; _i++){
-    switch weapon_get_type(_a[_i]){
-      case 0: array_push(_c0, _a[_i]); break;
-      case 1: array_push(_c1, _a[_i]); break;
-      case 2: array_push(_c2, _a[_i]); break;
-      case 3: array_push(_c3, _a[_i]); break;
-      case 4: array_push(_c4, _a[_i]); break;
-      case 5: array_push(_c5, _a[_i]); break;
-    }
-  }
-  chest_add("Melee",     -1, 0)
-  chest_add("Bullet",    -1, 1)
-  chest_add("Shell",     -1, 2)
-  chest_add("Bolt",      -1, 3)
-  chest_add("Explosive", -1, 4)
-  chest_add("Energy",    -1, 5)
+
+  chest_add("Melee",     -1, 0).wep_script = script_ref_create(typed_chest_get_weps, 0)
+  chest_add("Bullet",    -1, 1).wep_script = script_ref_create(typed_chest_get_weps, 1)
+  chest_add("Shell",     -1, 2).wep_script = script_ref_create(typed_chest_get_weps, 2)
+  chest_add("Bolt",      -1, 3).wep_script = script_ref_create(typed_chest_get_weps, 3)
+  chest_add("Explosive", -1, 4).wep_script = script_ref_create(typed_chest_get_weps, 4)
+  chest_add("Energy",    -1, 5).wep_script = script_ref_create(typed_chest_get_weps, 5)
+  
+    global.meleeSkills  = [mut_long_arms, "longarmsx10", "dividedelbows", "vote1", "screwdriver mastery"]
+    global.bulletSkills = [mut_recycle_gland, "recycleglandx10", "prismaticiris", "excitedneurons", "vote2", "Rocket Casings"]
+    global.shellSkills  = [mut_shotgun_shoulders, "shotgunshouldersx10", "powderedgums", "vote3", "Shattered Skull", "Shocked Skin", "shells to shots"]
+    global.boltSkills   = [mut_bolt_marrow, "boltmarrowx10", "vote4", "Staked Chest", "Energized Intestines"]
+    global.exploSkills  = [mut_boiling_veins, "boilingveinsx10", "pyromania", "vote5", "Waste Gland", "Toxic Thoughts", "Fractured Fingers", "Pressurized Lungs", "flamingpalms"]
+    global.energySkills = [mut_laser_brain, "laserbrainx10", "concentration", "vote6", "Neural Network", "Deep Convolutional Network", "Deep Residual Network",
+                            "Echo State Network", "Feed Forward Network", "Generative Adversarial Network", "Markov Chain", "Recurrent Neural Network",
+                            "Support Vector Machines", "conductivity"]
+
+    global.typeArray = ["Melee", "Bullet", "Shell", "Bolt", "Explosive", "Energy"]
+  
 
 #define game_start
-  // weapon mods innate support because the original creators aint going to touch their own stuff again
+    
+      // weapon mods innate support because the original creators aint going to touch their own stuff again
   if mod_exists("weapon", "NetheriteSword"){ //minecraft weapons
     chest_add("Minecraft", 3, ["WoodenSword", "WoodenShovel", "WoodenPickaxe", "WoodenHod", "WoodenAxe", "Bow", "Crossbow", "StoneSword", "StoneShovel", "StonePickaxe", "StoneHod", "StoneAxe", "IronSword", "IronShovel", "IronPickaxe", "IronHod", "IronAxe", "GoldenSword", "GoldenPickaxe", "GoldenHod", "GoldenAxe", "DiamondSword", "DiamondShovel", "DiamondPickaxe", "DiamondHod", "DiamondAxe", "NetheriteSword", "NetheriteShovel", "NetheritePickaxe", "NetheriteHod", "NetheriteAxe"])
   }
@@ -221,140 +216,78 @@
 #define step
      // replacing chests
     if !instance_exists(GenCont){
-        with instances_matching(instances_matching(WeaponChest, "object_index", 458), "defcustomchestcheck", null){
+        with instances_matching(WeaponChest, "defcustomchestcheck", null){
             defcustomchestcheck = 1
             var _chance = min((GameCont.wepmuts > 0 ? 10 : 0) + GameCont.wepmuts * 10 + (crown_current = crwn_guns) * 33 + (crown_current = "exchange") * 33, 80);
 
             if skill_get(mut_heavy_heart) > 0 && _chance > 0 _chance = 100 * skill_get(mut_heavy_heart)
-            var _mwr = (irandom(99) + 1) <= (_chance)
-            if _mwr = true{
-              var _a = [];
+            
+            if (random(100) <= _chance) {
+                
+                var typeList = [];
                 for (var i = 0; i <= 100; i++) {
                     var skill = skill_get_at(i);
                     if skill == undefined {
                         break
                     }
-                    if is_real(skill) continue
-                    var typeTest = mod_script_call("skill", skill, "skill_chest_type");
-                    if typeTest != undefined && is_real(typeTest) && typeTest >= 0 && typeTest <= 5 {
-                        array_push(_a, typeTest)
+                    var typeTest = skill_get_chest_type(skill);
+                    if typeTest != undefined {
+                        if global.chests[? typeTest] == undefined
+                            trace_color(`Skill mod '${skill}' returned a chest type that doesn't exist`, c_red)
+                        else array_push(typeList, typeTest)
                     }
                 }
-                  if skill_get(mut_long_arms)         > 0 array_push(_a, 2);
-                  if skill_get("longarmsx10")         > 0 array_push(_a, 2);
-                  if skill_get("dividedelbows")       > 0 array_push(_a, 2);
-                  if skill_get("vote1")               > 0 array_push(_a, 2);
-                  if skill_get("srewdriver mastery")  > 0 array_push(_a, 2);
-                  if skill_get(mut_recycle_gland)     > 0 array_push(_a, 3);
-                  if skill_get("recycleglandx10")     > 0 array_push(_a, 3);
-                  if skill_get("prismatic iris")      > 0 array_push(_a, 3);
-                  if skill_get("excitedneurons")      > 0 array_push(_a, 3);
-                  if skill_get("vote2")               > 0 array_push(_a, 3);
-                  if skill_get("Rocket Casings")      > 0 array_push(_a, 3);
-                  if skill_get(mut_shotgun_shoulders) > 0 array_push(_a, 0);
-                  if skill_get("shotgunshouldersx10") > 0 array_push(_a, 0);
-                  if skill_get("powderedgums")        > 0 array_push(_a, 0);
-                  if skill_get("vote3")               > 0 array_push(_a, 0);
-                  if skill_get("Shattered Skull")     > 0 array_push(_a, 0);
-                  if skill_get("Shocked Skin")        > 0 array_push(_a, 0);
-                  if skill_get("shells to shots")     > 0 array_push(_a, 0);
-                  if skill_get(mut_bolt_marrow)       > 0 array_push(_a, 4);
-                  if skill_get("boltmarrowx10")       > 0 array_push(_a, 4);
-                  if skill_get("compoundelbow")       > 0 array_push(_a, 4);
-                  if skill_get("vote4")               > 0 array_push(_a, 4);
-                  if skill_get("Staked Chest")        > 0 array_push(_a, 4);
-                  if skill_get("Energized Intestines")> 0 array_push(_a, 4);
-                  if skill_get(mut_boiling_veins)     > 0 array_push(_a, 5);
-                  if skill_get("boilingveinsx10")     > 0 array_push(_a, 5);
-                  if skill_get("pyromania")           > 0 array_push(_a, 5);
-                  if skill_get("vote5")               > 0 array_push(_a, 5);
-                  if skill_get("Waste Gland")         > 0 array_push(_a, 5);
-                  if skill_get("Toxic Thoughts")      > 0 array_push(_a, 5);
-                  if skill_get("Fractured Fingers")   > 0 array_push(_a, 5);
-                  if skill_get("Pressurized Lungs")   > 0 array_push(_a, 5);
-                  // why does this break if skill_get("flamingplams")        > 0 array_push(_a, 5);
-                  if skill_get(mut_laser_brain)       > 0 array_push(_a, 1);
-                  if skill_get("laserbrainx10")       > 0 array_push(_a, 1);
-                  if skill_get("concentration")       > 0 array_push(_a, 1);
-                  if skill_get("vote6")               > 0 array_push(_a, 1);
-                  if skill_get("Neural Network")      > 0 array_push(_a, 1);
-                  if skill_get("Deep Convolutional Network")     > 0 array_push(_a, 1);
-                  if skill_get("Deep Residual Network")          > 0 array_push(_a, 1);
-                  if skill_get("Echo State Network")             > 0 array_push(_a, 1);
-                  if skill_get("Feed Forward Network")           > 0 array_push(_a, 1);
-                  if skill_get("Generative Adversarial Network") > 0 array_push(_a, 1);
-                  if skill_get("Markov Chain")                   > 0 array_push(_a, 1);
-                  if skill_get("Recurrent Neural Network")       > 0 array_push(_a, 1);
-                  if skill_get("Support Vector Machines")        > 0 array_push(_a, 1);
-                  if skill_get("conductivity")        > 0 array_push(_a, 1);
-                  if crown_current = crwn_guns || crown_current = "exchange"{
-                    array_push(_a, 0);
-                    array_push(_a, 1);
-                    array_push(_a, 2);
-                    array_push(_a, 3);
-                    array_push(_a, 4);
-                    array_push(_a, 5);
-                  }
-              var q = get_chests(-1, -1)
-              if array_length(q){
-                  if array_length(_a) > 0 with customchest_create(x, y, q[_a[irandom(array_length(_a) - 1)]]){
-                    curse = other.curse
+                
+                if (crown_current = crwn_guns || crown_current = "exchange") {
+                    array_push(typeList, "Melee")
+                    array_push(typeList, "Bullet")
+                    array_push(typeList, "Shell")
+                    array_push(typeList, "Bolt")
+                    array_push(typeList, "Explosive")
+                    array_push(typeList, "Energy")
+                }
 
-                    var _l = ds_list_create();
-                    weapon_get_list(_l, clamp(GameCont.hard, 0, 6), GameCont.hard + 2 * array_length(instances_matching(Player,"race","robot")) + 3^+ curse);
-                    var _weparray = ds_list_to_array(_l),
-                        _weapons  = [];
-
-                    with _weparray{
-                        var _break = false;
-
-                        if weapon_get_type(self) = other.weps{
-
-                            for(var _a = 0; _a < array_length(global.chest_ban_list); _a++){
-                                if weapon_get_name(self) = global.chest_ban_list[_a]{
-                                    _break = true;
-                                    //trace("found", weapon_get_name(global.chest_ban_list[_a]))
-                                }
-                            }
-
-                            if _break = false array_push(_weapons, self);
+                
+                if array_length(typeList) > 0 {
+                    with customchest_create(x, y, typeList[irandom(array_length(typeList) - 1)]) {
+                        curse = other.curse
+                        
+                        if curse switch subname {
+                            case "Bullet":
+                                sprite_index = global.sprBulletChestC;
+                                spr_open = global.sprBulletChestOpenC;
+                                break;
+                            case "Shell":
+                                sprite_index = global.sprShellChestC;
+                                spr_open = global.sprShellChestOpenC;
+                                break;
+                            case "Bolt":
+                                sprite_index = global.sprBoltChestC;
+                                spr_open = global.sprBoltChestOpenC;
+                                break;
+                            case "Explosive":
+                                sprite_index = global.sprExplosiveChestC;
+                                spr_open = global.sprExplosiveChestOpenC;
+                                break;
+                            case "Energy":
+                                sprite_index = global.sprEnergyChestC;
+                                spr_open = global.sprEnergyChestOpenC;
+                                break;
+                            case "Melee":
+                                sprite_index = global.sprMeleeChestC;
+                                spr_open = global.sprMeleeChestOpenC;
+                                break;
                         }
                     }
-                    weps = _weapons;
-
-                    if curse = true switch subname{
-                        case "Bullet":
-                            sprite_index = global.sprBulletChestC;
-                            spr_open = global.sprBulletChestOpenC;
-                            break;
-                        case "Shell":
-                            sprite_index = global.sprShellChestC;
-                            spr_open = global.sprShellChestOpenC;
-                            break;
-                        case "Bolt":
-                            sprite_index = global.sprBoltChestC;
-                            spr_open = global.sprBoltChestOpenC;
-                            break;
-                        case "Explosive":
-                            sprite_index = global.sprExplosiveChestC;
-                            spr_open = global.sprExplosiveChestOpenC;
-                            break;
-                        case "Energy":
-                            sprite_index = global.sprEnergyChestC;
-                            spr_open = global.sprEnergyChestOpenC;
-                            break;
-                        case "Melee":
-                            sprite_index = global.sprMeleeChestC;
-                            spr_open = global.sprMeleeChestOpenC;
-                            break;
-                    }
-                  }
-                  instance_delete(self)
-              }
-            }else if random(100) <= 10 and !instance_is(self, BigWeaponChest) and !instance_is(self, BigCursedChest) and !instance_is(self, GiantWeaponChest) && (skill_get(mut_open_mind) > 0 || skill_get("thinktank") > 0) {
+                    
+                    instance_delete(self)
+                }
+            }
+            
+            else if random(100) <= 10 and !instance_is(self, BigWeaponChest) and !instance_is(self, BigCursedChest) and !instance_is(self, GiantWeaponChest) && (skill_get(mut_open_mind) > 0 || skill_get("thinktank") > 0) {
                 var q = get_chests(0, GameCont.hard)
                 if array_length(q){
-                    with customchest_create(x, y, q[irandom(array_length(q) - 7)]) {
+                    with customchest_create(x, y, q[irandom(array_length(q) - 1)]) {
 
                       defpack_no_reroll = true;
                     }
@@ -405,8 +338,10 @@
       spr_idle : mod_variable_get("mod", mod_current, "spr"+Name+"Chest"),
       spr_open : mod_variable_get("mod", mod_current, "spr"+Name+"ChestOpen"),
       weps : Weapons,
-      difficulty : Hard
+      difficulty : Hard,
+      wep_script : script_ref_create(custom_chest_get_weps)
   }
+  return global.chests[? Name]
 
 #define get_chests(areamin, areamax)
   var q = ds_map_values(global.chests), a = [];
@@ -426,33 +361,116 @@
           spr_open = q.spr_open
           sprite_index = q.spr_idle
           weps = q.weps
+          scrGetWeps = q.wep_script
           subname = q.name
           on_open = customchest_open;
       }
       return o;
 
 #define customchest_open
-  var _k = 0;
-  repeat(2){
-    var _w = wep_screwdriver;
-
     sound_play(sndAmmoChest);
-    var _i = 0;
-    do{
-        _w = weps[irandom(array_length(weps)-1)]
-        if _i = 99{_w = weps[0]}
-        if ((weapon_get_area(_w) <= max(0, GameCont.hard + 2) && _w != 0) || _i = 99) && _k != _w{
-          with instance_create(x,y,WepPickup){
-            curse = other.curse
-            wep = _w
-            _k = wep;
-            roll = 1
-            defpack_no_reroll = other.defpack_no_reroll;
-            if weapon_get_type(wep) != 0 ammo = 1
-            if _i = 99 exit;
-            _i = 100;
-          }
-        }
-        _i++;
-      } while _i < 100
+
+    var wepList = filter_weps_by_existing(script_ref_call(scrGetWeps, self)),
+        length = array_length(wepList),
+        finalWeps = [];
+        
+    switch (length) {
+        case 0:
+            finalWeps = [wep_screwdriver];
+            break
+        case 1:
+        case 2:
+            finalWeps = wepList
+            break
+        default:
+            var first = irandom(length - 1),
+                second = first;
+            while (second == first) {
+                second = irandom(length - 1)
+            }
+            finalWeps = [wepList[first], wepList[second]]
+            break
     }
+
+    for (var i = array_length(finalWeps) - 1; i >= 0; i--) {
+        with instance_create(x, y, WepPickup) {
+            curse = other.curse;
+            wep = finalWeps[i];
+            roll = 1;
+            if (weapon_get_type(wep) != 0) ammo = 1
+            //What does this variable do?
+            defpack_no_reroll = other.defpack_no_reroll;
+        }
+    }
+    
+#define custom_chest_get_weps(chest)
+//Default script used by weapon chests
+    return filter_weps_by_difficulty(chest.weps, 0, GameCont.hard + 2, chest.curse);
+    
+#define weapon_get(w)
+    return is_object(w) ? w.wep : w;
+
+#define filter_weps_by_existing(wepArray)
+//Filters out weapons that don't exist, returns an array
+    var results = [];
+    for (var i = array_length(wepArray) - 1; i >= 0; i--) {
+        if is_real(weapon_get(wepArray[i])) || mod_exists("weapon", weapon_get(wepArray[i])) {
+            array_push(results, wepArray[i])
+        }
+    }
+    return results;
+
+#define filter_weps_by_difficulty(wepArray, minimumHard, maxHard, cursed)
+    var results = [],
+        area;
+    maxHard += get_difficulty_bonus(cursed)
+    
+    for (var i = array_length(wepArray) - 1; i >= 0; i--) {
+        area = weapon_get_area(wepArray[i]);
+        if (area >= minimumHard && area <= maxHard) {
+            array_push(results, wepArray[i])
+        }
+    }
+    return results;
+
+#define get_difficulty_bonus(cursed)
+    return (2 * cursed) + (player_count_race("robot"));
+
+//Chest is always last argument as it is provided by the script_ref_call
+#define typed_chest_get_weps(type, chest)
+//Script used by typed weapon chests
+    var weplist = ds_list_create();
+    weapon_get_list(weplist, clamp(GameCont.hard - 1, 0, 6), GameCont.hard + get_difficulty_bonus(chest.curse) + 1)
+    
+    var returnedWeps = [];
+    
+    for (var i = ds_list_size(weplist) - 1; i >= 0; i--) {
+        if weapon_get_type(weplist[| i]) == type && (array_find_index(global.chest_ban_list, weplist[| i]) == -1) {
+            array_push(returnedWeps, weplist[| i])
+        }
+    }
+    
+    ds_list_destroy(weplist)
+    return returnedWeps;
+    
+#define skill_get_chest_type(skill)
+    if !is_real(skill) {
+        var typeTest = mod_script_call("skill", skill, "skill_chest_type");
+        if typeTest != undefined {
+            if (is_real(typeTest) && typeTest >= 0 && typeTest <= 5)
+                return index_get_ammo_type(typeTest)
+            return typeTest
+        }
+    }
+    
+    if array_find_index(global.meleeSkills,  skill) != -1 return "Melee"
+    if array_find_index(global.bulletSkills, skill) != -1 return "Bullet"
+    if array_find_index(global.shellSkills,  skill) != -1 return "Shell"
+    if array_find_index(global.boltSkills,   skill) != -1 return "Bolt"
+    if array_find_index(global.exploSkills,  skill) != -1 return "Explosive"
+    if array_find_index(global.energySkills, skill) != -1 return "Energy"
+    
+    return undefined
+    
+#define index_get_ammo_type(index)
+    return global.typeArray[index]
