@@ -40,7 +40,7 @@ return 9;
 
 #define weapon_fire()
 var f = other.race == "steroids" and other.specfiring
-with instance_create(x,y - 4 * f,CustomSlash) {
+with instance_create(x, y - 4 * f, CustomSlash) {
     sprite_index = skill_get(mut_long_arms) ? global.sprMegaRealFistUpg : global.sprMegaRealFist
     creator = other
     team = other.team
@@ -60,6 +60,8 @@ with instance_create(x,y - 4 * f,CustomSlash) {
     on_anim = fistanim
     on_projectile = fistproj
     on_grenade = fistproj
+    
+    hitlist = []
 }
 var r = random_range(.9,1.2)
 sound_play_pitchvol(sndShotgun,.7*r,1);
@@ -74,7 +76,8 @@ if lifespan < 10 with other if typ > 0 instance_destroy()
 #define fistanim
 
 #define fisthit
-if lifespan <= 4 and (floor(current_frame) < current_frame + current_time_scale) and (projectile_canhit_melee(other) or other.size < 4){
+if lifespan <= 4 && (projectile_canhit_melee(other) || (array_find_index(hitlist, other) == -1)) {
+	array_push(hitlist, other)
     projectile_hit(other, damage, direction, 40)
     //other.speed += 40
     sleep(100)
@@ -91,7 +94,7 @@ if lifespan <= 4 and (floor(current_frame) < current_frame + current_time_scale)
 		direction = other.direction+choose(d, d, 80, -80)-180;
 	}
 
-    if other.size < 4{
+    if other.size < 4 && !is_any(other, ProtoStatue, Nothing, Nothing2, GuardianStatue, Generator, GeneratorInactive, TechnoMancer) {
         var dir = direction
         with other{
             var s = 5, l = 80
@@ -115,6 +118,13 @@ if lifespan <= 4 and (floor(current_frame) < current_frame + current_time_scale)
 	    }
 	}
 }
+
+#define is_any
+	for (var i = 1; i < array_length(argument); i++) {
+		if instance_is(argument0, argument[i]) return true
+	}
+	return false
+
 #define fiststep
 if instance_exists(creator){
     var c = creator
