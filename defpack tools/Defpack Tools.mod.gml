@@ -3928,16 +3928,24 @@ instance_destroy()
 		teamset = true;
 	}
 	
-
-#define disc_homing(range, strength)
+#define disc_homing(target, range, strength)
 	//Recreation of vanilla homing. Default values are unknown. Scales with timescale and Bolt Marrow automatically
 	range *= skill_get(mut_bolt_marrow)
 	if range > 0 {
-		var nearest = instance_nearest(x, y, enemy);
-		if instance_exists(nearest) && point_distance(x, y, nearest.x, nearest.y) <= range {
-			var dir = point_direction(x + hspeed_raw, y + vspeed_raw, nearest.x, nearest.y);
+		if instance_exists(target) && point_distance(x, y, target.x, target.y) <= range {
+			var dir = point_direction(x, y, target.x, target.y);
 			x += lengthdir_x(strength * current_time_scale, dir)
 			y += lengthdir_y(strength * current_time_scale, dir)
+		}
+	}
+
+#define disc_homing_alt(target, range, strength, setspeed)
+	//Alternative homing that rotates the disc around according to motion_add, while retaining speed.
+	range *= skill_get(mut_bolt_marrow)
+	if range > 0 {
+		if instance_exists(target) && point_distance(x, y, target.x, target.y) <= range {
+			motion_add(point_direction(x, y, target.x, target.y), strength * current_time_scale)
+			speed = setspeed
 		}
 	}
 
@@ -3965,7 +3973,8 @@ instance_destroy()
 
 #define bouncerdisc_step
 	disc_step(speed / 4);
-	disc_homing(32 + speed, speed / 2)
+	// disc_homing(instance_nearest(x, y, enemy), 32, speed / 3)
+	disc_homing_alt(instance_nearest(x, y, enemy), 32, 1.2, speed)
 
 #define bouncerdisc_hit
 	projectile_hit(other, (other == creator) ? damage : damage + floor(speed / 2), force, direction)
@@ -3996,7 +4005,7 @@ instance_destroy()
 
 
 #define create_stickydisc(_x,_y)
-	with instance_create(_x, _y, CustomProjectile){
+	with instance_create(_x, _y, CustomProjectile) {
 	    damage = 4
 	    image_speed = .4
 	    name = "Sticky Disc"
@@ -4027,7 +4036,8 @@ instance_destroy()
 	    if current_frame_active instance_create(x,y,Dust)
 	}
 	else {
-		disc_homing(32, 2)
+		// disc_homing(instance_nearest(x, y, enemy), 32, 2)
+		disc_homing_alt(instance_nearest(x, y, enemy), 32, .8, speed)
 	}
 
 #define stickydisc_hit
@@ -4060,7 +4070,6 @@ move_bounce_solid(true)
 	with instance_create(_x, _y, CustomProjectile){
 		
 		name = "pizza disc";
-		disc_init();
 		
 		image_speed = 0;
 		if(skill_get("crystallinegrowths") > 0) {
@@ -4072,30 +4081,24 @@ move_bounce_solid(true)
 			image_index  = irandom(3);
 		}
 
+		disc_init();
 		damage = 1; // "damage", healing power would be more accurate
 		
-		on_hit  = pd_hit;
-		on_step = pd_step;
-		on_wall = pd_wall;
+		on_hit  = pizzadisc_hit;
+		on_step = pizzadisc_step;
+		on_wall = pizzadisc_wall;
 	
 		return(self);
 	}
 
-#define pd_step
+#define pizzadisc_step
 	disc_step(1);
 	image_angle += (10 + speed * 3) * current_time_scale;
 
-	if skill_get(21) {
-
-	    var q = instance_nearest_matching_ne(x, y, hitme, "team", team);
-	    if instance_exists(q) && distance_to_object(q) <= 40 {
-
-	        motion_add(point_direction(x, y, q.x, q.y), .5 * current_time_scale);
-	        speed = maxspeed;
-	    }
-	}
+	disc_homing_alt(instance_nearest_matching_ne(x, y, hitme, "team", team), 40, .5, maxspeed)
 	
-#define pd_hit
+
+#define pizzadisc_hit
 	if (projectile_canhit_melee(other)) {
 		
 		projectile_hit(other, 1, force, direction); // to set iframes properly;
@@ -4128,7 +4131,7 @@ move_bounce_solid(true)
 		}
 	}
 
-#define pd_wall
+#define pizzadisc_wall
 	move_bounce_solid(false);
 	if (dist >= 120) {
 		
@@ -4166,16 +4169,8 @@ move_bounce_solid(true)
 	disc_step(1);
 
 	image_angle += turn * (12 + speed) * current_time_scale;
-
-	if skill_get(21) {
-
-	    var q = instance_nearest_matching_ne(x, y, hitme, "team", (lastteam == undefined ? team : lastteam));
-	    if instance_exists(q) && distance_to_object(q) <= 40 {
-
-	        motion_add(point_direction(x, y, q.x, q.y), .5 * current_time_scale);
-	        speed = maxspeed;
-	    }
-	}
+	
+	disc_homing_alt(instance_nearest_matching_ne(x, y, hitme, "team", team), 40, .5, maxspeed)
 
 #define megadisc_wall
 	dist += 5;
