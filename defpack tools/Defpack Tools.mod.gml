@@ -171,6 +171,8 @@
 		//Discs
 		BouncerDisc      = sprite_add  (i + "sprBouncerDisc.png", 2,  6,  6);
 		StickyDisc       = sprite_add  (i + "sprStickyDisc.png",  2,  7,  6);
+		PizzaDisc        = sprite_add  (i + "sprPizza.png",  4,   8,   8);
+		CrizzaDisc       = sprite_add  (i + "sprCrizza.png", 1,  10,  10);
 		MegaDisc         = sprite_add_p(i + "sprMegaDisc.png"      , 2, 12, 12);
 		MegaDiscHitId    = sprite_add_p(i + "sprMegaDiscHitId.png" , 2, 12, 12);
 		MegaDiscDie      = sprite_add  (i + "sprMegaDiscDie.png"   , 6, 12, 12);
@@ -4054,6 +4056,84 @@ instance_destroy()
 if !instance_exists(stuckTo) sound_play_hit(sndDiscBounce,.2)
 move_bounce_solid(true)
 
+#define create_pizzadisc(_x, _y)
+	with instance_create(_x, _y, CustomProjectile){
+		
+		name = "pizza disc";
+		disc_init();
+		
+		image_speed = 0;
+		if(skill_get("crystallinegrowths") > 0) {
+			
+			sprite_index = spr.CrizzaDisc;
+		}else {
+			
+			sprite_index = spr.PizzaDisc;
+			image_index  = irandom(3);
+		}
+
+		damage = 1; // "damage", healing power would be more accurate
+		
+		on_hit  = pd_hit;
+		on_step = pd_step;
+		on_wall = pd_wall;
+	
+		return(self);
+	}
+
+#define pd_step
+	disc_step(1);
+	image_angle += (10 + speed * 3) * current_time_scale;
+
+	if skill_get(21) {
+
+	    var q = instance_nearest_matching_ne(x, y, hitme, "team", team);
+	    if instance_exists(q) && distance_to_object(q) <= 40 {
+
+	        motion_add(point_direction(x, y, q.x, q.y), .5 * current_time_scale);
+	        speed = maxspeed;
+	    }
+	}
+	
+#define pd_hit
+	if (projectile_canhit_melee(other)) {
+		
+		projectile_hit(other, 1, force, direction); // to set iframes properly;
+		if (!instance_is(other, prop) && other.my_health < (other.maxhealth * (1 + !instance_is(other, Player)))) {
+			
+			other.my_health += 1 + ceil(max(1, damage * (1 + skill_get(mut_second_stomach))));
+			if (other.my_health > other.maxhealth * (1 + !instance_is(other, Player))) {
+				
+				other.my_health = other.maxhealth * (1 + !instance_is(other, Player));
+			}
+			sound_play_pitch(!skill_get(mut_second_stomach) ? sndHPPickup : sndHPPickupBig, 1.4 * random_range(.9, 1.1));
+			
+			var _o = other;
+			with instance_create(other.x, other.y, BloodLust) {
+				
+				sprite_index = !skill_get(mut_second_stomach) ? sprHealFX : sprHealBigFX;
+				creator = _o;
+			}
+			
+			if ("nexthurt" in other && skill_get("crystallinegrowths") > 0) {
+				
+				var _d = (25 * current_time_scale) * skill_get("crystallinegrowths")+ (10 * skill_get("tougherstuff"))
+				other.nexthurt = current_frame + _d;
+				with mod_script_call("mod", "metamorphosis", "obj_create", x, y, "CrystallineEffect"){
+					
+				creator = _o;
+				time	= _d;
+			}
+			}
+		}
+	}
+
+#define pd_wall
+	move_bounce_solid(false);
+	if (dist >= 120) {
+		
+		instance_destroy();
+	}
 
 #define create_megadisc(_x, _y)
 	with instance_create(_x, _y, CustomProjectile){

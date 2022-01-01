@@ -17,7 +17,7 @@
   return "LOVE";
 
 #define bullet_ttip
-  return `PIZZA LOVERS DELIGHT`;
+  return [`PIZZA LOVERS DELIGHT`, "EVERYONE LOVES PIZZA", "IN THE SHAPE OF LOVE"];
 
 #define bullet_area
   return -1;
@@ -44,3 +44,24 @@
 
 #define on_lose(power)
     sage_pizza_power -= 3 + ceil(2 * power);
+    
+#define on_step
+
+    if current_frame % 60 = true{
+        
+        var _i = random(360),
+            _a = sage_pizza_power;
+        
+        repeat(_a) {
+            
+            with create_pizzadisc(x, y) {
+                
+                creator = other;
+                motion_add(_i, 5);
+            }
+            
+            _i += 360 / _a;
+        }
+    }
+    
+#define create_pizzadisc(_x, _y) return (mod_script_call("mod", "defpack tools", "create_pizzadisc", _x, _y))

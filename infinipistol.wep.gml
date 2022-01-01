@@ -1,9 +1,13 @@
 #define init
 global.sprInfiniPistol = sprite_add_weapon("sprites/weapons/sprPelletPistol.png", -3, 2);
+global.sprHUD          = sprite_add("sprites/interface/sprPelletPistolHUD.png", 1, -3, 2);
 global.sprPellet       = mod_script_call("mod", "defpack tools", "sprite_add_p", "../sprites/projectiles/sprPellet.png", 2, 8, 8)
 global.sprPelletHit    = sprite_add("sprites/projectiles/sprPelletHit.png",4,8,8)
 #define weapon_name
 return "INFINIPISTOL";
+
+#define weapon_sprt_hud
+return global.sprHUD;
 
 #define weapon_sprt
 return global.sprInfiniPistol;

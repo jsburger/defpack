@@ -29,21 +29,21 @@
   sound_play_pitchvol(sndCrossReload, 1.4 * _p, .9);
 
 #define bullet_description(power)
-  return `@(color:${c.neutral})+` + string(ceil(3	+ 2 * power)) + ` @(color:${c.bounce})BOUNCES#@(color:${c.negative})-15% @(color:${c.accuracy})ACCURACY`;
+  return `@(color:${c.neutral})+` + string(ceil(2	+ 2 * power)) + ` @(color:${c.bounce})BOUNCES#@(color:${c.negative})-15% @(color:${c.accuracy})ACCURACY`;
 
 #define on_take(power)
   accuracy /= .85;
   if "sage_bounce" not in self{
 
-    sage_bounce = ceil(3 + 2 * sage_spell_power);
+    sage_bounce = ceil(2 + 2 * sage_spell_power);
   }else{
 
-    sage_bounce += ceil(3 + 2 * sage_spell_power);
+    sage_bounce += ceil(2 + 2 * sage_spell_power);
   }
 
 #define on_lose(power)
   accuracy *= .85;
-  sage_bounce -= ceil(3 + 2 * sage_spell_power);
+  sage_bounce -= ceil(2 + 2 * sage_spell_power);
 
 #define on_fire
   sound_play_pitchvol(sndBouncerSmg, .5 * random_range(.8, 1.2), .5);
