@@ -4123,10 +4123,10 @@ move_bounce_solid(true)
 				var _d = (25 * current_time_scale) * skill_get("crystallinegrowths")+ (10 * skill_get("tougherstuff"))
 				other.nexthurt = current_frame + _d;
 				with mod_script_call("mod", "metamorphosis", "obj_create", x, y, "CrystallineEffect"){
-					
-				creator = _o;
-				time	= _d;
-			}
+						
+					creator = _o;
+					time	= _d;
+				}
 			}
 		}
 	}
@@ -4144,7 +4144,7 @@ move_bounce_solid(true)
 		disc_init();
 
 		sprite_index = spr.MegaDisc;
-		mask_index   = sprite_index
+		mask_index   = sprDisc
 		spr_trail    = spr.MegaDiscTrail;
 		spr_dead     = spr.MegaDiscDie;
 		spr_splat    = mskNone;
@@ -4170,7 +4170,18 @@ move_bounce_solid(true)
 
 	image_angle += turn * (12 + speed) * current_time_scale;
 	
-	disc_homing_alt(instance_nearest_matching_ne(x, y, hitme, "team", team), 40, .5, maxspeed)
+	if skill_get(mut_bolt_marrow) > 0 {
+		
+		var target = instance_nearest_matching_ne(x, y, hitme, "team", team);
+		//If target is player, try to get a new one before homing
+		if instance_exists(target) && instance_is(target, Player) {
+			var newTarget = instance_nearest(x, y, enemy);
+			if instance_exists(newTarget) && point_distance(x, y, newTarget.x, newTarget.y) <= 40 * skill_get(mut_bolt_marrow) {
+				target = newTarget
+			}
+		}
+		disc_homing_alt(target, 40, .5, maxspeed)
+	}
 
 #define megadisc_wall
 	dist += 5;
