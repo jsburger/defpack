@@ -1835,26 +1835,26 @@ with target{
 
 #define toxic_destroy
 
-		if (!instance_exists(creator) || point_distance(x, y, creator.x, creator.y) > 32) {
-
-		  repeat(choose(1, 1, 2))with instance_create(x, y, ToxicGas){
-
-		      friction *= 10;
-	        growspeed /= 8;
-	        move_contact_solid(other.direction, other.speed);
+	if (!instance_exists(creator) || point_distance(x, y, creator.x, creator.y) > 32) {
+		repeat(choose(1, 1, 2)) {
+			with instance_create(x, y, ToxicGas) {
+				friction *= 10;
+				growspeed /= 8;
+				move_contact_solid(other.direction, other.speed);
+			}
 		}
 	}
 	bullet_destroy()
 
 #define heavy_toxic_destroy
 	if (!instance_exists(creator) || point_distance(x, y, creator.x, creator.y) > 32) {
-
-		repeat(3){ with instance_create(x, y, ToxicGas){
-		        friction *= 24;
-		        growspeed /= 4;
-		        move_contact_solid(other.direction, other.speed);
-		        motion_add(random(360), random_range(2, 4))
-		    }
+		repeat(3) {
+			with instance_create(x, y, ToxicGas) {
+				friction *= 24;
+				growspeed /= 4;
+				move_contact_solid(other.direction, other.speed);
+				motion_add(random(360), random_range(2, 4))
+			}
 		}
 	}
 	bullet_destroy()
@@ -3900,28 +3900,43 @@ instance_destroy()
 
 
 #define disc_init
-typ = 1
-dist = 0
-depth = -2
-lastteam = -1
-teamset = false;
-mask_index = mskDisc
-spr_trail = sprDiscTrail
-spr_dead = sprDiscDisappear
-hitid = [sprite_index, name]
-on_destroy = disc_destroy
+	typ = 1
+	dist = 0
+	depth = -2
+	lastteam = undefined
+	teamset = false;
+	mask_index = mskDisc
+	spr_trail = sprDiscTrail
+	spr_dead = sprDiscDisappear
+	hitid = [sprite_index, name]
+	on_destroy = disc_destroy
 
 #define disc_step(dis)
 	dist += dis * current_time_scale;
-	if speed > 0 and current_frame_active with instance_create(x, y, DiscTrail) {
-
+	if speed > 0 and current_frame_active {
+		with instance_create(x, y, DiscTrail) {
 	        sprite_index = other.spr_trail;
 	        depth = -1;
 	    }
-
-	if instance_exists(creator) && !teamset && !place_meeting(x,y,creator) {
+	}
+	
+	if instance_exists(creator) && !teamset && !place_meeting(x, y, creator) {
+	    lastteam = team
 	    team = -1;
-			teamset = true;
+		teamset = true;
+	}
+	
+
+#define disc_homing(range, strength)
+	//Recreation of vanilla homing. Default values are unknown. Scales with timescale and Bolt Marrow automatically
+	range *= skill_get(mut_bolt_marrow)
+	if range > 0 {
+		var nearest = instance_nearest(x, y, enemy);
+		if instance_exists(nearest) && point_distance(x, y, nearest.x, nearest.y) <= range {
+			var dir = point_direction(x + hspeed_raw, y + vspeed_raw, nearest.x, nearest.y);
+			x += lengthdir_x(strength * current_time_scale, dir)
+			y += lengthdir_y(strength * current_time_scale, dir)
+		}
 	}
 
 #define disc_destroy()
@@ -3930,8 +3945,9 @@ on_destroy = disc_destroy
 	    sprite_index = other.spr_dead
 
 #define create_bouncerdisc(_x,_y)
-	with instance_create(_x,_y,CustomProjectile) {
+	with instance_create(_x, _y, CustomProjectile) {
 	    damage = 2
+	    force = 5
 	    image_speed = .5
 	    name = "Bouncer Disc"
 	    sprite_index = spr.BouncerDisc
@@ -3947,40 +3963,34 @@ on_destroy = disc_destroy
 
 #define bouncerdisc_step
 	disc_step(speed / 4);
-	if skill_get(mut_bolt_marrow) {
-
-	    var q = instance_nearest_matching_ne(x, y, enemy, "team", team);
-	    if instance_exists(q) {
-
-	        if distance_to_object(q) < 32 {
-
-							var _s = speed;
-			        motion_add(point_direction(x, y, q.x, q.y), 1.2 * current_time_scale);
-							speed = _s;
-
-	        }
-	    }
-	}
+	disc_homing(32 + speed, speed / 2)
 
 #define bouncerdisc_hit
-	projectile_hit(other,damage+floor(speed/2),5,direction)
-	if other.my_health > 0{
-	    direction = point_direction(other.x,other.y,x,y)
+	projectile_hit(other, (other == creator) ? damage : damage + floor(speed / 2), force, direction)
+	
+	if other.my_health > 0 {
+	    direction = point_direction(other.x, other.y, x, y)
 	    if speed < 12 speed += .6
 	}
-	sound_play_pitch(sndDiscBounce,random_range(.8,1.2))
-	sound_play_pitch(sndBouncerBounce,random_range(1,1))
+	
+	sound_play_pitch(sndDiscBounce, random_range(.8, 1.2))
+	sound_play_pitch(sndBouncerBounce, random_range(1, 1))
 	image_angle = direction
 
 #define bouncerdisc_wall
 	move_bounce_solid(false)
-	direction += random_range(-6,6)
+	direction += random_range(-6, 6)
 	instance_create(x,y,DiscBounce)
 	image_angle = direction
-	sound_play_pitch(sndDiscBounce,random_range(.9,1.1)+((speed/4)-1)*.2)
-	sound_play_pitch(sndBouncerBounce,random_range(1,1))
-	if dist > 250{instance_destroy();exit}
-	if speed < 12{speed+=.6}
+	sound_play_pitch(sndDiscBounce, random_range(.9, 1.1) + ((speed / 4) - 1) * .2)
+	sound_play_pitch(sndBouncerBounce, random_range(1, 1))
+	if dist > 250 {
+		instance_destroy();
+		exit
+	}
+	if speed < 12 {
+		speed += .6
+	}
 
 
 #define create_stickydisc(_x,_y)
@@ -3992,7 +4002,8 @@ on_destroy = disc_destroy
 
 	    disc_init()
 
-	    stuckto = -4
+	    stuckTo = -4
+	    nextHit = GameCont.timer
 	    orspeed = 0
 	    depth = -3
 	    on_step    = stickydisc_step
@@ -4006,88 +4017,79 @@ on_destroy = disc_destroy
 	disc_step(1)
 	if dist > 200{instance_destroy();exit}
 
-if instance_exists(stuckto){
-    x = stuckto.x - xoff + stuckto.hspeed_raw
-    y = stuckto.y - yoff + stuckto.vspeed_raw
-    xprevious = x
-    yprevious = y
-    if current_frame_active instance_create(x,y,Dust)
-}
-else if skill_get(mut_bolt_marrow) {
-
-		var q = instance_nearest_matching_ne(x, y, enemy, "team", team);
-		if instance_exists(q) {
-
-				if distance_to_object(q) < 32 {
-
-						var _s = speed;
-						motion_add(point_direction(x, y, q.x, q.y), .8 * current_time_scale);
-						speed = _s;
-
-				}
-		}
-}
+	if instance_exists(stuckTo) {
+	    x = stuckTo.x - xoff + stuckTo.hspeed_raw
+	    y = stuckTo.y - yoff + stuckTo.vspeed_raw
+	    xprevious = x
+	    yprevious = y
+	    if current_frame_active instance_create(x,y,Dust)
+	}
+	else {
+		disc_homing(32, 2)
+	}
 
 #define stickydisc_hit
-var _dmg = instance_is(other, Player) = true ? 1 : damage;
-if projectile_canhit_melee(other){
-    sound_play_hit(sndDiscHit,.2)
-    projectile_hit(other, _dmg, 5, direction)
-    if other.my_health > 0{
-        if stuckto != other{
-            stuckto = other
-            xoff = (other.x - x)/2
-            yoff = (other.y - y)/2
-            sound_play(sndGrenadeStickWall)
-            repeat(12){with instance_create(x,y,Smoke){depth = -4}}
-        }
-    }
-    else {
-        speed = orspeed
-        stuckto = -4
-    }
-}
+	if projectile_canhit_melee(other) || (nextHit <= GameCont.timer && projectile_canhit_np(other)) {
+		nextHit = GameCont.timer + 6
+	    sound_play_hit(sndDiscHit, .2)
+	    var dmg = instance_is(other, Player) ? 1 : damage;
+	    projectile_hit(other, dmg, 5, direction)
+	    if other.my_health > 0 {
+	        if stuckTo != other {
+	            stuckTo = other
+	            xoff = (other.x - x)/2
+	            yoff = (other.y - y)/2
+	            sound_play(sndGrenadeStickWall)
+	            repeat(12){with instance_create(x,y,Smoke){depth = -4}}
+	        }
+	    }
+	    else {
+	    	nextHit = GameCont.timer
+	        speed = orspeed
+	        stuckTo = -4
+	    }
+	}
 
 #define stickydisc_wall
-if !instance_exists(stuckto) sound_play_hit(sndDiscBounce,.2)
+if !instance_exists(stuckTo) sound_play_hit(sndDiscBounce,.2)
 move_bounce_solid(true)
 
 
 #define create_megadisc(_x, _y)
 	with instance_create(_x, _y, CustomProjectile){
-			name = "Mega Disc";
-			disc_init();
+		name = "Mega Disc";
+		disc_init();
 
-			sprite_index = spr.MegaDisc;
-			mask_index   = sprite_index
-			spr_trail    = spr.MegaDiscTrail;
-			spr_dead     = spr.MegaDiscDie;
-			spr_splat    = mskNone;
+		sprite_index = spr.MegaDisc;
+		mask_index   = sprite_index
+		spr_trail    = spr.MegaDiscTrail;
+		spr_dead     = spr.MegaDiscDie;
+		spr_splat    = mskNone;
 
 	    damage = 2
 	    maxspeed = speed
-			turn = irandom(99) < 10 ? -1 : 1; // What direction to turn towards, reflects percentage of left-handed population
-			image_yscale *= turn * -1;        // so it always cuts properly
-			cansplat = true;                  // If a blood splat has been applied yet
-			hitid = [spr.MegaDiscHitId, name];
+		turn = random(100) <= 11 ? -1 : 1; // What direction to turn towards, reflects percentage of left-handed population
+		image_yscale *= turn * -1;        // so it always cuts properly
+		cansplat = true;                  // If a blood splat has been applied yet
+		hitid = [spr.MegaDiscHitId, name];
 
-	    on_step    = md_step;
-	    on_wall    = md_wall;
-	    on_hit     = md_hit;
-	    on_destroy = md_destroy;
-			on_draw    = md_draw;
+	    on_step    = megadisc_step;
+	    on_wall    = megadisc_wall;
+	    on_hit     = megadisc_hit;
+	    on_destroy = megadisc_destroy;
+		on_draw    = megadisc_draw;
 
 	    return id;
 	}
 
-#define md_step
+#define megadisc_step
 	disc_step(1);
 
 	image_angle += turn * (12 + speed) * current_time_scale;
 
 	if skill_get(21) {
 
-	    var q = instance_nearest_matching_ne(x, y, hitme, "team", team);
+	    var q = instance_nearest_matching_ne(x, y, hitme, "team", (lastteam == undefined ? team : lastteam));
 	    if instance_exists(q) && distance_to_object(q) <= 40 {
 
 	        motion_add(point_direction(x, y, q.x, q.y), .5 * current_time_scale);
@@ -4095,7 +4097,7 @@ move_bounce_solid(true)
 	    }
 	}
 
-#define md_wall
+#define megadisc_wall
 	dist += 5;
 	view_shake_at(x, y, 2);
 	sound_play_pitchvol(sndDiscBounce, random_range(.7, .9), .7);
@@ -4112,14 +4114,14 @@ move_bounce_solid(true)
 	}
 	if dist >= 200 instance_destroy();
 
-#define md_destroy
+#define megadisc_destroy
 	sound_play_pitchvol(sndDiscDie, random_range(.6, .8), .4);
 	with instance_create(x, y, DiscDisappear) {
 
 	    sprite_index = spr.MegaDiscDie;
 	}
 
-#define md_hit
+#define megadisc_hit
 	if current_frame_active {
 
 	    if place_meeting(x,y,creator) {
@@ -4128,36 +4130,32 @@ move_bounce_solid(true)
 	        sleep(3 * other.size + 4);
 	    }
 
-			x -= hspeed / 2;
+		x -= hspeed / 2;
 	    y -= vspeed / 2;
 	    projectile_hit(other, damage, speed / 4, direction);
 	    if other.my_health <= 0 {
 
-				sleep( 32 + 12 * clamp(other.size, 1, 3));
-				view_shake_at(x, y, 5 + 3 * clamp(other.size, 1, 3));
-				with instance_create(x + hspeed, y + vspeed, determine_gore(other)) {
+			sleep( 32 + 12 * clamp(other.size, 1, 3));
+			view_shake_at(x, y, 5 + 3 * clamp(other.size, 1, 3));
+			sound_play_pitch(sndDiscHit, .9);
+			if cansplat && !instance_is(other, prop) {
 
-					image_angle = _d + 360 / _a * _i;
-				}
-				sound_play_pitch(sndDiscHit, .9);
-				if cansplat && !instance_is(other, prop) {
+				cansplat = false;
+				spr_splat = spr.MegaDiscSplat[irandom(max(array_length(spr.MegaDiscSplat) - 1, 0))];
+				for(var _i = 0, _a = 3, _d = random(360); _i < _a; _i++) {
 
-					cansplat = false;
-					spr_splat = spr.MegaDiscSplat[irandom(max(array_length(spr.MegaDiscSplat) - 1, 0))];
-					for(var _i = 0, _a = 3, _d = random(360); _i < _a; _i++) {
+					with instance_create(other.x, other.y, determine_gore(other)) {
 
-						with instance_create(other.x, other.y, determine_gore(other)) {
-
-								image_angle = _d + 360 / _a * _i;
-						}
+						image_angle = _d + 360 / _a * _i;
 					}
 				}
+			}
 	    }
-			image_angle -= turn * 2 * current_time_scale;
+		image_angle -= turn * 2 * current_time_scale;
 	    dist++;
 	}
 
-#define md_draw
+#define megadisc_draw
 	draw_self();
 	draw_sprite_ext(spr_splat, image_index, x, y, image_xscale, image_yscale, image_angle, image_blend, image_alpha);
 
@@ -4175,6 +4173,7 @@ with create_sword(x, y){
 
     defbloom.sprite = sprite_index
     slashrange = 20
+    homing_range = 20
     length = 4
 
     return id
@@ -4201,6 +4200,7 @@ with instance_create(x, y, melee ? CustomSlash : CustomProjectile){
     draw_angle = random(360)
     anglespeed = 90
     slashrange = 32
+    homing_range = 16
     length = 6
     whooshtime = 0
     maxwhoosh = 4
@@ -4234,7 +4234,7 @@ defbloom.angle = draw_angle + image_angle;
 
 if skill_get(mut_bolt_marrow){
     var q = instance_nearest_matching_ne(x, y, hitme, "team", team)
-    if instance_exists(q) and q.mask_index != mskNone and point_distance(x, y, q.x, q.y) <= 20 * skill_get(mut_bolt_marrow) * 2 - length/6{
+    if instance_exists(q) and q.mask_index != mskNone and point_distance(x, y, q.x, q.y) <= homing_range * skill_get(mut_bolt_marrow) {
         x = q.x - hspeed_raw
         y = q.y - vspeed_raw
     }
