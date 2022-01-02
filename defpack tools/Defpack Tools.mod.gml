@@ -3932,7 +3932,7 @@ instance_destroy()
 	//Recreation of vanilla homing. Default values are unknown. Scales with timescale and Bolt Marrow automatically
 	range *= skill_get(mut_bolt_marrow)
 	if range > 0 {
-		if instance_exists(target) && point_distance(x, y, target.x, target.y) <= range {
+		if target_in_range(target, range) {
 			var dir = point_direction(x, y, target.x, target.y);
 			x += lengthdir_x(strength * current_time_scale, dir)
 			y += lengthdir_y(strength * current_time_scale, dir)
@@ -3943,11 +3943,14 @@ instance_destroy()
 	//Alternative homing that rotates the disc around according to motion_add, while retaining speed.
 	range *= skill_get(mut_bolt_marrow)
 	if range > 0 {
-		if instance_exists(target) && point_distance(x, y, target.x, target.y) <= range {
+		if target_in_range(target, range) {
 			motion_add(point_direction(x, y, target.x, target.y), strength * current_time_scale)
 			speed = setspeed
 		}
 	}
+
+#define target_in_range(target, range)
+	return instance_exists(target) && distance_to_object(target) <= range
 
 #define disc_destroy()
 	sound_play_hit(sndDiscDie, .2)
@@ -4102,13 +4105,12 @@ move_bounce_solid(true)
 	if (projectile_canhit_melee(other)) {
 		
 		projectile_hit(other, 1, force, direction); // to set iframes properly;
-		if (!instance_is(other, prop) && other.my_health < (other.maxhealth * (1 + !instance_is(other, Player)))) {
+		var maxhp = other.maxhealth * (1 + !instance_is(other, Player)), //Non players can be overhealed
+			heal = 1 + max(1, ceil(damage * (1 + skill_get(mut_second_stomach)))) //Healing is doubled with second stomach
+		if (!instance_is(other, prop) && other.my_health < maxhp) {
 			
-			other.my_health += 1 + ceil(max(1, damage * (1 + skill_get(mut_second_stomach))));
-			if (other.my_health > other.maxhealth * (1 + !instance_is(other, Player))) {
-				
-				other.my_health = other.maxhealth * (1 + !instance_is(other, Player));
-			}
+			other.my_health = min(other.my_health + heal, maxhp)
+			
 			sound_play_pitch(!skill_get(mut_second_stomach) ? sndHPPickup : sndHPPickupBig, 1.4 * random_range(.9, 1.1));
 			
 			var _o = other;
@@ -4176,7 +4178,7 @@ move_bounce_solid(true)
 		//If target is player, try to get a new one before homing
 		if instance_exists(target) && instance_is(target, Player) {
 			var newTarget = instance_nearest(x, y, enemy);
-			if instance_exists(newTarget) && point_distance(x, y, newTarget.x, newTarget.y) <= 40 * skill_get(mut_bolt_marrow) {
+			if target_in_range(newTarget, 40 * skill_get(mut_bolt_marrow)) {
 				target = newTarget
 			}
 		}
@@ -4271,7 +4273,7 @@ with instance_create(x, y, melee ? CustomSlash : CustomProjectile){
     name = "Sword"
     damage = 25
     force  = 6
-    typ = 1
+    typ = 2
     sprite_index = spr.Sword
     mask_index   = mskHeavyBolt
     spr_dead     = spr.SwordStick
