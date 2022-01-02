@@ -188,12 +188,14 @@
 
 
 		//Blades
-		Sword       = sprite_add  (i + "sprSword.png",      1, 10, 10)
-		SwordStick  = sprite_add_p(i + "sprSwordStick.png", 1, 10, 10)
-		SwordImpact = sprMeleeHitWall   //sprite_add(i + "sprSwordImpact.png", 8, 16, 16)
-		Knife       = sprite_add  (i + "sprKnife.png",      1, 7, 7)
-		KnifeStick  = sprite_add_p(i + "sprKnifeStick.png", 1, 4, 7)
-		SwordSlash  = sprite_add  (i + "sprSwordSlash.png", 5, 16, 16)
+		Sword         = sprite_add  (i + "sprSword.png",      1, 10, 10)
+		SwordStick    = sprite_add_p(i + "sprSwordStick.png", 1, 10, 10)
+		SwordImpact   = sprMeleeHitWall   //sprite_add(i + "sprSwordImpact.png", 8, 16, 16)
+		Knife         = sprite_add  (i + "sprKnife.png",      1, 7, 7)
+		KnifeStick    = sprite_add_p(i + "sprKnifeStick.png", 1, 4, 7)
+		SwordSlash    = sprite_add  (i + "sprSwordSlash.png", 5, 16, 16)
+		Shuriken      = sprite_add  (i + "sprShuriken.png",   1, 7, 7)
+		ShurikenStick = sprite_add  (i + "sprShurikenStick.png", 1, 7, 7)
 
 		//Flechettes
 		Flechette       = sprBullet1 //sprite_add("..\sprites\projectiles\sprFlechette.png",      0,  6, 4)
@@ -4261,7 +4263,7 @@ with create_sword(x, y){
 
     defbloom.sprite = sprite_index
     slashrange = 20
-    homing_range = 20
+    homing_range = 36
     length = 4
 
     return id
@@ -4288,12 +4290,15 @@ with instance_create(x, y, melee ? CustomSlash : CustomProjectile){
     draw_angle = random(360)
     anglespeed = 90
     slashrange = 32
-    homing_range = 16
+    homing_range = 30
     length = 6
     whooshtime = 0
     maxwhoosh = 4
     bounce = round(skill_get("compoundelbow") * 5)
-
+	trailPoints = 2
+	trailWidth = 1.5
+	trailScaling = .5
+	
     if melee{
         on_anim = nothing
         on_projectile = sword_proj
@@ -4331,8 +4336,8 @@ whooshtime = (whooshtime + current_time_scale) mod maxwhoosh
 if whooshtime < current_time_scale audio_play_ext(sndMeleeFlip, x, y, max(.4, 2 - length/6 + random_range(-.1, .1) + (skill_get("compoundelbow") > 0 ? .3 : 0)), length/8, 0);
 
 #define sword_end_step
-var e = 0, w = 1.5;
-repeat(2){
+var e = 0, w = trailWidth;
+repeat(trailPoints) {
     var aspeed = anglespeed * sign(hspeed) * current_time_scale;
     var a = draw_angle + image_angle - 45 * sign(image_yscale) + e, l = length;
     var c = 3;
@@ -4347,8 +4352,8 @@ repeat(2){
         _x2 = _x
         _y2 = _y
     }
-    w /= 2
-    e += 180
+    w *= trailScaling
+    e += 360/trailPoints
 }
 
 #define sword_wall
@@ -4439,6 +4444,113 @@ if d {
 
 #define slasheffect_step
 if image_index + image_speed*current_time_scale > image_number instance_destroy()
+
+#define create_shuriken(x, y)
+	with create_sword(x, y) {
+		name = "Shuriken"
+
+		mask_index = sprGrenade
+		sprite_index = spr.Shuriken
+		defbloom.sprite = sprite_index
+		spr_dead = spr.ShurikenStick
+		
+		/*
+		Balancing notes:
+			Shurikens do a lot of raw damage for their ammo cost, but are very bad at applying it effectively.
+			For that reason, be very careful with changes, and be sure to test them against varied enemies.
+			The damage number allows tuning dps, but will also affect the amount of slashes it can output.
+		*/ 
+		totaldamage = 25 //Total damage the shuriken can do via direct hit
+		damage = 1.5 //Damage dealt per frame of contact with the shuriken
+		force = 1
+		slashdamage = 2 //Damage dealt by the slashing effect
+		slashrange = 50
+		
+		bounce += 1 //Unsure on this. Important for loop viability but that could be achieved with a new gun.
+		
+		maxwhoosh = 3
+		length = 4
+		trailPoints = 4
+		trailWidth = 1
+		trailScaling = .75
+		anglespeed = 45
+		
+		
+		on_hit = shuriken_hit
+		
+		return self
+	}
+
+
+#define shuriken_hit
+	if current_frame_active {
+		var a = other;
+		view_shake_max_at(x, y, force * 3)
+		//Floor damage against players because they have health bars
+		var dmg = min(instance_is(other, Player) ? floor(damage) : damage, totaldamage);
+		projectile_hit(other, dmg, force, direction)
+		totaldamage -= dmg
+		
+		if other.my_health > 0 {
+			x -= hspeed
+			y -= vspeed
+			other.speed = 0
+		}
+
+		var dir = point_direction(x, y, other.x, other.y);
+		with instance_create(clamp(other.x, bbox_left, bbox_right), clamp(other.y, bbox_top, bbox_bottom), MeleeHitWall) {
+			image_angle = dir + random_range(120, 65) * choose(-1, 1);
+			image_yscale *= .5
+			image_speed = 1
+			image_index = irandom(1)
+			depth = -3
+		}
+		
+		other.x += 10000
+		var targets = get_n_targets(x, y, hitme, "team", team, 4);
+		if array_length(targets) > 0 {
+			var q = noone,
+				passed = false;
+			while (array_length(targets) > 0) {
+				q = targets[irandom(array_length(targets) - 1)];
+				if (q != other and q.mask_index != mskNone and distance_to_object(q) < slashrange) {
+					passed = true
+					break
+				}
+				targets = instances_matching_ne(targets, "id", q)
+			}
+			if passed {
+				
+			    projectile_hit(q, slashdamage, force, point_direction(x, y, q.x, q.y))
+			    
+			    with instance_create(q.x, q.y, CustomObject){
+				    sound_play_hit_ext(sndChickenSword, 1.4*random_range(.9,1.2), .6)
+						sound_play_pitchvol(sndDiscDie, 1.5*random_range(.9,1.2), .6)
+				    instance_destroy()
+			    }
+			    with instance_create(q.x + random_range(-2, 2), q.y + random_range(-2, 2), ImpactWrists) {
+			        sprite_index = spr.SwordSlash
+			        image_blend = merge_color(c_red, c_black, random(.4))
+			        image_angle = point_direction(other.x, other.y, q.x, q.y) + random_range(-40, 40)
+			        image_speed = 1
+			        image_yscale = 1
+			        depth = -3
+			        view_shake_max_at(x, y, 7)
+			    }
+			}
+		}
+		other.x -= 10000
+		if totaldamage <= 0 {
+		    with instance_create(x, y, BoltStick){
+		        sprite_index = other.spr_dead
+		        target = a
+		        image_angle = dir
+		    }
+		    sword_end_step()
+		    instance_destroy()
+		}
+	}
+
 
 #define create_gas_fire(x, y)
 with instance_create(x, y, Flame) {
