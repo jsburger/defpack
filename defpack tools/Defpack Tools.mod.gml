@@ -4161,11 +4161,12 @@ move_bounce_solid(true)
 		disc_init();
 		damage = 1; // "damage", healing power would be more accurate
 		force  = 4;
+		maxspeed = 6;
 		
-		on_hit     = pd_hit;
-		on_step    = pd_step;
-		on_wall    = pd_wall;
-		on_destroy = pd_destroy;
+		on_hit     = pizzadisc_hit;
+		on_step    = pizzadisc_step;
+		on_wall    = pizzadisc_wall;
+		on_destroy = pizzadisc_destroy;
 	
 		return(self);
 	}
@@ -4209,7 +4210,7 @@ move_bounce_solid(true)
 		}
 	}
 
-#define pd_wall
+#define pizzadisc_wall
 	var _p = random_range(.9, 1.1);
 	sound_play_pitchvol(sndHitFlesh, 1.3 * _p, .6);
 	sound_play_pitchvol(sndFrogExplode, 4 * _p, .4);
@@ -4220,7 +4221,7 @@ move_bounce_solid(true)
 		instance_destroy();
 	}
 
-#define pd_destroy
+#define pizzadisc_destroy
 	instance_create(x, y, DiscDisappear);
 
 #define create_megadisc(_x, _y)
