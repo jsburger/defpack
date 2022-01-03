@@ -1416,11 +1416,83 @@ if timer <= 0{
 
 //shells{
 
+#define create_burster(_x, _y)
+	with instance_create(_x, _y, CustomProjectile) {
+		
+		name = "burster bubble";
+		
+		sprite_index = sprFlakBullet;
+		mask_index   = mskBigRad;
+		image_speed  = .5;
+		
+		damage     = 2;
+		force      = 2;
+		friction   = .6;
+		tar_x = x;
+		tar_y = y;
+		
+		defbloom = {
+		    xscale : 2,
+		    yscale : 2,
+		    alpha : .1
+		}
+		
+		on_hit     = burster_hit;
+		on_step    = burster_step;
+		on_wall    = burster_wall;
+		on_destroy = burster_destroy;
+		
+		return self;
+	}
+
+#define burster_step
+	if (speed <= friction) {
+		
+		instance_destroy();
+	}
+
+#define burster_wall
+	move_bounce_solid(false);
+	sound_play_pitch(sndHitWall, random_range(.8, 1.2));
+	instance_create(x, y, Dust);
+
+#define burster_hit
+	do {
+		
+		x -= lengthdir_x(1, direction);
+		y -= lengthdir_y(1, direction);
+	}until(!place_meeting(x, y, other));
+	
+	direction -= 180 + random_range(-12, 12);
+	projectile_hit(other, damage, force, direction);
+	
+#define burster_destroy
+	sound_play_pitchvol(sndGuardianFire, 1.7 * random_range(.7, 1.2), .8);
+
+	with instance_create(x, y, Bullet2) {
+		
+		team	= other.team;
+		creator = other.creator;
+		
+		motion_add(point_direction(x, y, other.tar_x, other.tar_y), 16);
+		image_angle = direction;
+	}
+	
+#define create_burster_shell(_x, _y)
+	with instance_create(_x, _y, CustomProjectile) {
+		
+		sprite_index = sprBullet2;
+		image_speed  = 0;
+		wallbounce = skill_get(mut_shotgun_shoulders) * 5 + (skill_get("shotgunshouldersx10") * 50);
+		
+		return self;
+	}
+
 #define create_psy_shell(x, y)
 with instance_create(x, y, CustomProjectile){
 	name = "Psy Shell"
 	sprite_index = spr.PsyPellet
-	friction = .6
+	friction = 1;
 	image_angle = direction
 	mask_index = mskBullet2
 	wallbounce = skill_get(15) * 5 + (skill_get("shotgunshouldersx10")*50)
@@ -4071,10 +4143,12 @@ move_bounce_solid(true)
 		}
 
 		damage = 1; // "damage", healing power would be more accurate
+		force  = 4;
 		
-		on_hit  = pd_hit;
-		on_step = pd_step;
-		on_wall = pd_wall;
+		on_hit     = pd_hit;
+		on_step    = pd_step;
+		on_wall    = pd_wall;
+		on_destroy = pd_destroy;
 	
 		return(self);
 	}
@@ -4107,10 +4181,10 @@ move_bounce_solid(true)
 			sound_play_pitch(!skill_get(mut_second_stomach) ? sndHPPickup : sndHPPickupBig, 1.4 * random_range(.9, 1.1));
 			
 			var _o = other;
-			with instance_create(other.x, other.y, BloodLust) {
+			with instance_create(other.x, other.y, HealFX) {
 				
 				sprite_index = !skill_get(mut_second_stomach) ? sprHealFX : sprHealBigFX;
-				creator = _o;
+				depth = _o.depth - 1;
 			}
 			
 			if ("nexthurt" in other && skill_get("crystallinegrowths") > 0) {
@@ -4119,43 +4193,50 @@ move_bounce_solid(true)
 				other.nexthurt = current_frame + _d;
 				with mod_script_call("mod", "metamorphosis", "obj_create", x, y, "CrystallineEffect"){
 					
-				creator = _o;
-				time	= _d;
-			}
+					creator = _o;
+					time	= _d;
+				}
 			}
 		}
 	}
 
 #define pd_wall
+	var _p = random_range(.9, 1.1);
+	sound_play_pitchvol(sndHitFlesh, 1.3 * _p, .6);
+	sound_play_pitchvol(sndFrogExplode, 4 * _p, .4);
 	move_bounce_solid(false);
+	instance_create(x, y, DiscBounce);
 	if (dist >= 120) {
 		
 		instance_destroy();
 	}
 
+#define pd_destroy
+	instance_create(x, y, DiscDisappear);
+
 #define create_megadisc(_x, _y)
 	with instance_create(_x, _y, CustomProjectile){
-			name = "Mega Disc";
-			disc_init();
+		name = "Mega Disc";
+		disc_init();
 
-			sprite_index = spr.MegaDisc;
-			mask_index   = sprite_index
-			spr_trail    = spr.MegaDiscTrail;
-			spr_dead     = spr.MegaDiscDie;
-			spr_splat    = mskNone;
+		sprite_index = spr.MegaDisc;
+		mask_index   = sprite_index
+		spr_trail    = spr.MegaDiscTrail;
+		spr_dead     = spr.MegaDiscDie;
+		spr_splat    = mskNone;
 
 	    damage = 2
 	    maxspeed = speed
-			turn = irandom(99) < 10 ? -1 : 1; // What direction to turn towards, reflects percentage of left-handed population
-			image_yscale *= turn * -1;        // so it always cuts properly
-			cansplat = true;                  // If a blood splat has been applied yet
-			hitid = [spr.MegaDiscHitId, name];
+		turn = irandom(99) < 10 ? -1 : 1; // What direction to turn towards, reflects percentage of left-handed population
+		image_yscale *= turn * -1;        // so it always cuts properly
+		cansplat = true;                  // If a blood splat has been applied yet
+		hitid = [spr.MegaDiscHitId, name];
 
 	    on_step    = md_step;
 	    on_wall    = md_wall;
 	    on_hit     = md_hit;
 	    on_destroy = md_destroy;
-			on_draw    = md_draw;
+		on_draw    = md_draw;
 
 	    return id;
 	}
@@ -4240,7 +4321,7 @@ move_bounce_solid(true)
 #define md_draw
 	draw_self();
 	draw_sprite_ext(spr_splat, image_index, x, y, image_xscale, image_yscale, image_angle, image_blend, image_alpha);
-
+	
 #define create_knife(x, y)
 with create_sword(x, y){
     name = "Knife"
