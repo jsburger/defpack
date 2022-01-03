@@ -216,7 +216,7 @@
 #define step
      // replacing chests
     if !instance_exists(GenCont){
-        with instances_matching(WeaponChest, "defcustomchestcheck", null){
+        with instances_matching(instances_matching(WeaponChest, "object_index", WeaponChest), "defcustomchestcheck", null){
             defcustomchestcheck = 1
             var _chance = min((GameCont.wepmuts > 0 ? 10 : 0) + GameCont.wepmuts * 10 + (crown_current = crwn_guns) * 33 + (crown_current = "exchange") * 33, 80);
 

@@ -4420,7 +4420,7 @@ if instance_exists(q) and q != other and q.mask_index != mskNone and distance_to
 			sound_play_pitchvol(sndDiscDie, 1.5*random_range(.9,1.2), .8)
 	    instance_destroy()
     }
-    with instance_create(q.x, q.y, CustomObject){
+    with instance_create(q.x, q.y, ImpactWrists){
         sprite_index = spr.SwordSlash
         image_angle = point_direction(other.x, other.y, q.x, q.y)
         image_speed = .6
@@ -4428,7 +4428,6 @@ if instance_exists(q) and q != other and q.mask_index != mskNone and distance_to
         depth = -3
         sleep(30)
         view_shake_max_at(x, y, 7)
-        on_step = slasheffect_step
     }
 }
 other.x -= 10000
@@ -4442,8 +4441,6 @@ if d {
     instance_destroy()
 }
 
-#define slasheffect_step
-if image_index + image_speed*current_time_scale > image_number instance_destroy()
 
 #define create_shuriken(x, y)
 	with create_sword(x, y) {
@@ -4531,9 +4528,9 @@ if image_index + image_speed*current_time_scale > image_number instance_destroy(
 			    with instance_create(q.x + random_range(-2, 2), q.y + random_range(-2, 2), ImpactWrists) {
 			        sprite_index = spr.SwordSlash
 			        image_blend = merge_color(c_red, c_black, random(.4))
-			        image_angle = point_direction(other.x, other.y, q.x, q.y) + random_range(-40, 40)
+			        image_angle = point_direction(other.x, other.y, q.x, q.y) + random_range(-30, 30)
 			        image_speed = 1
-			        image_yscale = 1
+			        image_yscale = choose(-1, 1)
 			        depth = -3
 			        view_shake_max_at(x, y, 7)
 			    }
