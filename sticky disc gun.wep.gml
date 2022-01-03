@@ -24,20 +24,20 @@ return global.sprStickyDiscGun
 return "THIS IS YOUR OWN FAULT"
 #define nts_weapon_examine
 return{
-    "d": "Sticky Discs are an almost guaranteed deathsentence #for anything that touches them.",
+    "d": "Sticky Discs are an almost guaranteed death sentence #for anything that touches them.",
 }
 #define weapon_fire
-weapon_post(5,-30,0)
-var _p = random_range(.8,1.2)
-sound_play_pitch(sndDiscHit,1.3*_p)
-sound_play_pitch(sndDiscBounce,.7*_p)
-sound_play_pitchvol(sndSuperDiscGun,3*_p,.4)
+weapon_post(5, -30, 0)
+var _p = random_range(.8, 1.2);
+sound_play_pitch(sndDiscHit, 1.3 * _p)
+sound_play_pitch(sndDiscBounce, .7 * _p)
+sound_play_pitchvol(sndSuperDiscGun, 3 * _p, .4)
 sound_play_gun(sndDiscgun, 0.2, 0.3);
-with mod_script_call("mod","defpack tools","create_stickydisc",x,y)
-{
-  creator = other
-  team = other.team
-  motion_add(other.gunangle+random_range(-8,8)*other.accuracy,4)
-  image_angle = direction
-  orspeed = speed
+
+with mod_script_call("mod", "defpack tools", "create_stickydisc", x, y) {
+    creator = other
+    team = other.team
+    motion_add(other.gunangle + random_range(-8, 8) * other.accuracy, 4)
+    image_angle = direction
+    orspeed = speed
 }
