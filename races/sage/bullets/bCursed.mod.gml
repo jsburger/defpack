@@ -1,7 +1,9 @@
 #define init
     global.sprBullet = sprite_add("../../../sprites/sage/bullets/sprBulletCursed.png", 2, 7, 11);
     global.sprFairy = sprite_add("../../../sprites/sage/bullet icons/sprFairyIconCursed.png", 0, 5, 5);
+    global.sprEmote = sprite_add("../../../sprites/sage/sprBulletEmoji.png", 1, 6, 0);
     effects_init();
+    names_init();
 
 #macro c mod_variable_get("race", "sage", "colormap");
 
@@ -14,9 +16,13 @@
 #define bullet_sprite
   return global.sprBullet;
 
-#define bullet_name
-  return "CURSED";
-
+#define bullet_name(bullet)
+    if (bullet != undefined) {
+        
+        return bullet.name;
+    }
+    return "CURSED";
+    
 #define bullet_ttip
   return `A FOREIGN POWER`;
 
@@ -31,16 +37,29 @@
   sound_play_pitchvol(sndSwapShotgun, 1.2 * _p, .9);
   sound_play_pitchvol(sndCrossReload, 1.4 * _p, .9);
 
-#define bullet_description(power)
-  return `@(color:${c.neutral})NYI`;
-
+#define bullet_description(power, bullet)
+    if (bullet != undefined) {
+        
+        return stat_effect_describe(power, bullet);
+    }
+    
 #define on_init(bullet)
     with bullet {
         
-        bullet_power = random_range(.85, 1.4);
+        bullet_power = random_range(1, 1.4);
         effects = [global.positiveEffects[irandom(array_length(global.positiveEffects) - 1)],
+                   global.positiveEffects[irandom(array_length(global.positiveEffects) - 1)],
                    global.negativeEffects[irandom(array_length(global.negativeEffects) - 1)]];
-    
+        
+        // Name the bullet:
+        var adjective = irandom(14) == 0 ? global.special_adjectives[irandom(array_length(global.special_adjectives) - 1)] : global.adjectives[irandom(array_length(global.adjectives) - 1)],
+            noun = irandom(14) == 0 ? global.special_nouns[irandom(array_length(global.special_nouns) - 1)] : global.nouns[irandom(array_length(global.nouns) - 1)];
+
+        name = adjective + noun; 
+        if (name == "") {
+            
+            name = "idk";
+        }
         based = true;
     }
 
@@ -68,6 +87,59 @@ enum operators {
         add,
         multiply
     }
+#define names_init
+    global.adjectives = [
+        "CHANNELED ",
+        "MASTER'S ",
+        "VOLATILE ",
+        "QUIRKY ",
+        "POWERFUL ",
+        "ENIGMATIC ",
+        "HIGH ",
+        "ENCHANTED ",
+        "ENERGETIC ",
+        "MYSTERIOUS ",
+        "HOLLOW POINT ",
+        "FULL METAL ",
+        "STEEL ",
+        "BRASS ",
+        "LEAD ",
+        "TERMINAL ",
+        "CRYSTAL ",
+        "CURSED ",
+        "SUPER ",
+        "MEGA-",
+        "POWER-"
+        ];
+    global.special_adjectives = [ // Rarely used adjectives
+        "THE ",
+        "HUMOROUS ",
+        "", // this is intentional
+        "GOATED ",
+        "NORMAL "
+        ];
+    global.nouns = [
+        "ROUND",
+        "CALIBER",
+        "SPELL",
+        "SHELL",
+        "FUEL",
+        "POWDER",
+        "BLANK",
+        "CAP",
+        "CARTRIDGE",
+        "PROJECTILE",
+        "BULLET",
+        "INCANTATION",
+        "HEX",
+        "BLESSING"
+        ];
+    global.special_nouns = [ // Rarely used nouns
+        "END",
+        "ROCK",
+        `@0(${global.sprEmote}:0)`,
+        "" // also intentional
+        ];
 #define effects_init
     global.positiveEffects = [];
     global.negativeEffects = [];
@@ -108,19 +180,72 @@ enum operators {
     stat_effect_create({
         
         variable   : "maxspeed",
-        value      : .5,
+        value      : 1,
         descriptor : `@(color:${c.speed})SPEED`,
-        scr_value_descriptor : script_ref_create(describe_percentage),
+        scr_value_descriptor : script_ref_create(describe_2a),
         operator   : operators.add,
-        spellpower_scaling : .5,
+        spellpower_scaling : 1,
         scr_finalize : script_ref_create(finalize_nothing)
     }, true);
+    
+    /*stat_effect_create({
+        
+        variable   : "accuracy",
+        value      : .75,
+        descriptor : `@(color:${c.accuracy})ACCURACY`,
+        scr_value_descriptor : script_ref_create(describe_percentage),
+        operator   : operators.multiply,
+        spellpower_scaling : .75,
+        scr_finalize : script_ref_create(finalize_nothing)
+    }, true);*/
+    
+    /*stat_effect_create({ // no dude
+        
+        variable   : "sage_spell_power",
+        value      : .2,
+        descriptor : `@(color:${c.spellpower})SPELLPOWER`,
+        scr_value_descriptor : script_ref_create(describe_percentage),
+        operator   : operators.add,
+        spellpower_scaling : .2,
+        scr_finalize : script_ref_create(finalize_nothing)
+    }, true);*/
 
 #define effects_call(_spellpower, _spellbullet, _script)
     for(var i = 0; i < array_length(_spellbullet.effects); i++) {
         
         script_ref_call(lq_get(_spellbullet.effects[i], _script), _spellbullet.effects[i], _spellpower, _spellbullet);
     }
+    
+#define stat_effect_describe(_spellpower, _spellbullet)
+    var     str = "",
+        effects = _spellbullet.effects;
+        
+    for(var i = 0; i < array_length(effects); i++) {
+        
+        // Add newline:
+        if (i > 0) {
+            
+            str += "#";
+        }
+        
+        // Add the operator at the beginning:
+        if (effects[i].stateffect.value < 0) {
+            
+            str += `@(color:${c.negative})`;
+        }
+        else {
+            
+            str += `@(color:${c.neutral})+`;
+        }
+        
+        // Add the value:
+        str += script_ref_call(effects[i].stateffect.scr_value_descriptor, (effects[i].stateffect.value + effects[i].stateffect.spellpower_scaling * _spellpower) * _spellbullet.bullet_power) + " ";
+        
+        // Add the name of the stat changed:
+        str += effects[i].stateffect.descriptor;
+        
+    }
+    return (str);
     
 #define stat_effect_create(_stat_effect, _reversible)
     var copy = lq_clone(_stat_effect);
@@ -190,13 +315,32 @@ enum operators {
     return script_ref_call(_effect.scr_finalize, (_effect.value + _effect.spellpower_scaling * _spellpower) * _spellbullet.bullet_power);
 
 #define finalize_ceil(_var)
-    return (ceil(_var));
+    var v = ceil(abs(_var)) * sign(_var);
+    return (v);
 
 #define finalize_nothing(_var)
     return (_var); // so cool
     
 #define describe_whole(_var)
-    return (string(ceil(_var)));
+    var v = ceil(abs(_var)) * sign(_var);
+    return string(v);
     
 #define describe_percentage(_var)
-    return (string(_var * 100) + "%");
+    var v = (round(abs(_var * 100)) * sign(_var));
+    return string(v) + "%";
+#define describe_2a(_var) // 2a = accuracy of 2, 2 digits after the comma (1,xx)
+    var v = string(round(_var * 100) / 100);
+    
+    for(var i = string_length(v); i < (sign(_var) == -1 ? 5 : 4); i++){
+        
+        if (i == 2) {
+            
+            v += ".";
+        }
+        else {
+            
+            v += "0";
+        }
+    }
+
+    return(v);

@@ -372,7 +372,7 @@ NOTES FROM JSBURG:
 		var w = sprite_get_width(h.sprite) + 12, l = sprite_get_height(h.sprite) + 16;
 		var u = ultra_get("sage", 2);
 		var s = max(0, -1 + u + (array_length(h.creator.spellBullets) > 1 && (h.creator.spellBullets[0] != h.creator.spellBullets[1])));
-		var b = min(array_length(h.creator.spellBullets), 1 + u);
+		var b = bulletLoopMax;
 
 		var _h = 0,
 			_s = 0,
@@ -407,7 +407,7 @@ NOTES FROM JSBURG:
 				draw_sprite_ext(h.sprite, s, h.x, h.y, 1, /*h.right*/ 1, /*h.angle*/ 0, merge_color(merge_colour(_col, c_black, .7), c_white, clamp(fairy.swap / fairy_swap_time, 0, 1)), 1);
 			}
 			else { // else:
-				for(var _i = 0; _i < b; _i++) {
+				for(var i = 0, l = bulletLoopMax; i < l; i++) {
 				
 					_h += color_get_hue(spell_call_self(spellBullets[_i], "fairy_color"));
 					_s += color_get_saturation(spell_call_self(spellBullets[_i], "fairy_color"));
@@ -511,7 +511,7 @@ NOTES FROM JSBURG:
 			_hudy = (ceil(global.uiRoll[_playerindex]) = i) - (ceil(global.uiRoll[_playerindex] + 1) = i);
 		
 		//Draw big fat white line in the back so its more obvious that for Ultra B the effects are combined:
-		if(ultra_get("sage", 2) && i == 0){
+		if(ultra_get("sage", 2) && i < array_length(global.bulletInventory[_playerindex]) - 1){
 				
 			draw_rectangle_color(_x + 1, _y + _hudy - 2, _x + (_hudSide ? -4 : 4), _y + _hudy, c_white, c_white, c_white, c_white, false);
 		}
@@ -521,7 +521,7 @@ NOTES FROM JSBURG:
 			var _sprt = spell_call_nc(global.bulletInventory[_playerindex][i], "bullet_sprite", global.spellPower[_playerindex]);
 
 			//Draw Outline for bullets in active slots:
-			if i <= ultra_get("sage", 2){
+			if (i == 0 || ultra_get("sage", 2)){
 
 				draw_outline(_sprt, _v, _x + _hudx, _y + _hudy)
 			}
@@ -531,7 +531,7 @@ NOTES FROM JSBURG:
 			draw_sprite_ext(_sprt, _v, _x + _hudx, _y + _hudy, 1, 1, 0, c_white, 1);
 
 			//Darken in secondary Slots:
-			if i > ultra_get("sage", 2) {
+			if (i > 0 && !ultra_get("sage", 2)) {
 
 				draw_sprite_ext(_sprt, _v, _x + _hudx, _y + _hudy + 1, 1, 1, 0, c_black, .2);
 				draw_sprite_ext(_sprt, _v, _x + _hudx, _y + _hudy, 1, 1, 0, c_black, .2);
@@ -541,8 +541,8 @@ NOTES FROM JSBURG:
 			if point_in_rectangle(mouse_x[_playerindex] - view_xview[_playerindex] - 16 + _xOffset + _mpwidth, mouse_y[_playerindex] - view_yview[_playerindex] + _yOffset, _x - _w, _y - _h - 2, _x + 3, _y + _h) {
 				
 
-				var _name = spell_call_nc(global.bulletInventory[_playerindex][i], "bullet_name", global.spellPower[_playerindex]),
-					_desc = spell_call_nc(global.bulletInventory[_playerindex][i], "bullet_description", global.spellPower[_playerindex]);
+				var _name = spell_call_nc(global.bulletInventory[_playerindex][i], "bullet_name", global.bulletInventory[_playerindex][i]),
+					_desc = spell_call_nc(global.bulletInventory[_playerindex][i], "bullet_description", global.spellPower[_playerindex], global.bulletInventory[_playerindex][i]);
 				draw_set_font(fntM);
 			    draw_text_nt(_x - 4 - (10 * i - i) * (_hudSide ? -1 : 1), _y + _h + 3, _name);
 			    draw_set_font(fntSmall);
@@ -562,7 +562,7 @@ NOTES FROM JSBURG:
 		_x += _hudSide ? -9 : 9;
 	}
 
-	if instance_exists(_p) && (_p.uiroll < (array_length(_p.spellBullets) + 1)) {
+	if instance_exists(_p) && (_p.uiroll < (array_length(_p.spellBullets))) {
 
 		_p.uiroll += 0.7 * current_time_scale;
 		
@@ -572,9 +572,9 @@ NOTES FROM JSBURG:
  // Thanks Brokin
 
 #macro bullets mod_variable_get("mod", "SageBullets", "BulletDirectory")
-#macro max_spellbullets 2 + dev * 20// + skill_get(5)
+#macro max_spellbullets 2 + dev * 2// + skill_get(5)
 #macro fairy_swap_time 6
-#macro dev true
+#macro dev false
 #macro c global.colormap
 #macro c_fairy $AFA79A
 #macro c_darkteal c_purple
@@ -595,7 +595,7 @@ NOTES FROM JSBURG:
 	spellBullets = [];
 
 	if dev {
-		spell_give(self, "bGold");
+		/*spell_give(self, "bGold");
 		spell_give(self, "bMelee");
 		spell_give(self, "bTurret");
 		spell_give(self, "bInfammo");
@@ -607,7 +607,7 @@ NOTES FROM JSBURG:
 		spell_give(self, "bUltra");
 		spell_give(self, "bRust");
 		spell_give(self, "bCursed");
-		spell_give(self, "bLove");
+		spell_give(self, "bLove");*/
 	}
 
 	fairy = {
@@ -745,7 +745,7 @@ NOTES FROM JSBURG:
 				
 				with spellbullet_create(_x, _y, self) {
 					
-					motion_add(random(360), 2);
+					motion_add(random(360), 5);
 				}
 			}
 		}
@@ -763,7 +763,10 @@ NOTES FROM JSBURG:
 				wait(0);
 				//the player is passed in as an optional variable specifically for ""
 				//it makes it so the player gets spellbullets they don't have already from normal chests
-				spellbullet_create(_x,_y, "", other);
+				with spellbullet_create(_x,_y, "", other){
+					
+					motion_add(random(360), 5);
+				}
 			}
 			exit;
 		}
@@ -775,7 +778,10 @@ NOTES FROM JSBURG:
 			wait(0);
 			if(!instance_exists(self)){
 				wait(0);
-				spellbullet_create(_x,_y, "bGold");
+				with spellbullet_create(_x,_y, "bGold"){
+					
+					motion_add(random(360), 5);
+				}
 			}
 			exit;
 		}
@@ -783,7 +789,10 @@ NOTES FROM JSBURG:
 	with(ProtoChest) {
 		if sprite_index == sprProtoChestOpen {
 			if "sage_ultra_bullet_drop" not in self {
-				spellbullet_create(x, y, "bRust");
+				with spellbullet_create(x, y, "bRust"){
+					
+					motion_add(random(360), 5);
+				}
 				sage_ultra_bullet_drop = true
 			}
 		}
@@ -795,7 +804,10 @@ NOTES FROM JSBURG:
 			wait(0);
 			if(!instance_exists(self)){
 				wait(0);
-				repeat(2) spellbullet_create(_x,_y, "", other);
+				repeat(2) with spellbullet_create(_x,_y, "", other){
+					
+					motion_add(random(360), 6);
+				}
 			}
 			exit;
 		}
@@ -807,7 +819,10 @@ NOTES FROM JSBURG:
 			wait(0);
 			if(!instance_exists(self)){
 				wait(0);
-				repeat(12) spellbullet_create(_x,_y, "", other);
+				repeat(12) with spellbullet_create(_x,_y, "", other){
+					
+					motion_add(random(360), 12);
+				}
 			}
 			exit;
 		}
@@ -819,7 +834,10 @@ NOTES FROM JSBURG:
 			wait(0);
 			if(!instance_exists(self)){
 				wait(0);
-				repeat(2) spellbullet_create(_x,_y, "", other);
+				repeat(2) with spellbullet_create(_x,_y, "", other){
+					
+					motion_add(random(360), 5);
+				}
 			}
 			exit;
 		}
@@ -1023,6 +1041,13 @@ In Burst fire, call sage_shoot for each burst shot.
 #define stat_gain(spellbullet, inst)
 	with inst spell_call_self(spellbullet, "on_take");
 	if dev trace("STAT GAINED")
+	
+	// Health check for cursed bullets:
+	if (my_health > maxhealth) {
+		
+		my_health = maxhealth;
+		lasthit = [sprHealFX, "SPELL BULLET"];
+	}
 
 #define stat_lose(spellbullet, inst)
 	with inst spell_call_self(spellbullet, "on_lose");
@@ -1157,7 +1182,6 @@ In Burst fire, call sage_shoot for each burst shot.
 		shine_index  = 0;
 		shine_speed  = 0;
 		name     = "spellbullet";
-		speed    = 5;
 		friction = 0.5;
 		shine = 45;
 
@@ -1206,7 +1230,7 @@ In Burst fire, call sage_shoot for each burst shot.
 
 		//if dev trace(type, bullets[? type])
 		spell = spell_init(spell);
-		my_prompt = prompt_create(bullets[? spell.type].name);
+		my_prompt = prompt_create(spell_call_nc(spell, "bullet_name", spell));
 		sprite_index = spell_call_nc(spell, "bullet_sprite", 1);
 		image_index = ultra_get("sage", 1);
 		
@@ -1302,7 +1326,7 @@ In Burst fire, call sage_shoot for each burst shot.
 			with instance_create(x, y, PopupText) {
 				
 				target = index;
-				text = bullets[? spellSwap.type].name;
+				text = spell_call_nc(spellSwap, "bullet_name", spellSwap);
 			}
 			
 			// Play swap sound:
@@ -1513,7 +1537,7 @@ In Burst fire, call sage_shoot for each burst shot.
 										_nearest.pick = index;
 										if(instance_exists(_nearest.creator) && "on_pick" in _nearest.creator){
 											with(_nearest.creator){
-												if dev trace(spell)
+												//if dev trace(spell) // too large cmon bro
 												script_ref_call(on_pick, _id.index, _nearest.creator, _nearest);
 											}
 										}

@@ -25,8 +25,8 @@
     wait(0);
     var _i = string_replace(self.name, ".mod.gml", "");
     bullet[? _i] = {
-      name:        mod_script_call_nc("mod", _i, "bullet_name"),
-      description: mod_script_call_nc("mod", _i, "bullet_description", 0),
+      name:        mod_script_call_nc("mod", _i, "bullet_name", undefined),
+      description: mod_script_call_nc("mod", _i, "bullet_description", 0, undefined),
       ttip:        mod_script_call_nc("mod", _i, "bullet_ttip"),
       area:        mod_script_call_nc("mod", _i, "bullet_area")
     }
