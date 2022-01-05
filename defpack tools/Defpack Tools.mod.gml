@@ -109,6 +109,9 @@
 		GenShellHeavy = sprite_add("../sprites/other/sprGenShellH.png",  8, 2, 3);
 		GenShellBig   = sprite_add("../sprites/other/sprGenShellXL.png", 8, 2, 3);
 
+		//Burster Shells
+		BursterBubble = sprite_add(i + "sprBursterBubble.png", 2, 8, 8);
+
 		//Psy Shells
 		PsyPellet          = sprite_add(i + "sprPsyShell.png", 2, 8, 8);
 		PsyPelletDisappear = sprite_add(i + "sprPsyShellDisappear.png", 5, 8, 8);
@@ -1423,10 +1426,11 @@ if timer <= 0{
 		
 		name = "burster bubble";
 		
-		sprite_index = sprFlakBullet;
+		sprite_index = spr.BursterBubble;
 		mask_index   = mskBigRad;
 		image_speed  = .5;
 		
+		wallbounce = skill_get(mut_shotgun_shoulders) * 2 + (skill_get("shotgunshouldersx10") * 20);
 		damage     = 2;
 		force      = 2;
 		friction   = .6;

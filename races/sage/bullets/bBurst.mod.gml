@@ -45,7 +45,7 @@
   sage_burst_size -= ceil(2 + 1 * power);
   reloadspeed += .6;
 
-#define on_fire(spellPower, event)
+#define on_fire(spellPower, spellBullet, event)
 
     if fork() {
         var w = wep;

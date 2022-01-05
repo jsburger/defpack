@@ -31,7 +31,7 @@ mod_script_call_self("mod", "sodaeffect", "soda_swap")
 sound_play_pitchvol(sndMutRhinoSkin, 1.5, .02);
 
 if "sage_spell_power" in self{
-	spellpower_change(spellBullets[0], self, .2);
+	spellpower_change(self, .2);
 }
 
 my_health = min(my_health + 1 * round(skill_get(mut_second_stomach)), maxhealth);
@@ -43,4 +43,4 @@ with mod_script_call("mod", "sodaeffect", "drink", x, y){
 #define weapon_text
 return "TASTES LIKE GUNS"
 
-#define spellpower_change(spellbullet, inst, spellpower) return mod_script_call("race", "sage", "spellpower_change", spellbullet, inst, spellpower);
+#define spellpower_change(inst, spellpower) return mod_script_call("race", "sage", "spellpower_change", inst, spellpower);

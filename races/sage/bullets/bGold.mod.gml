@@ -63,10 +63,7 @@
     }
 
 #define on_step
-    if (spellBullets[0] = mod_current) {
-
-      if (irandom(29) <= current_time_scale) {
+    if (random(30) < current_time_scale) {
 
         with instance_create(fairy.goalX + random_range(-sprite_get_width(fairy.sprite_back), sprite_get_width(fairy.sprite_back)) / 10, fairy.goalY + random_range(-sprite_get_height(fairy.sprite_back), sprite_get_width(fairy.sprite_back)) / 10, CaveSparkle) {depth = -10 - irandom(1)}
-      }
     }

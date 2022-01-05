@@ -46,7 +46,7 @@
 #define get_save_chance(spellPower)
     return .25 * (1 + spellPower)
     
-#define on_pre_shoot(spellPower, shootEvent)
+#define on_pre_shoot(spellPower, spellBullet, shootEvent)
     if (random(1) <= sage_sustain_chance) {
         if !lq_exists(shootEvent, "infammo_restore") {
             shootEvent.infammo_restore = infammo
@@ -67,7 +67,7 @@
         sound_play_pitchvol(sndLuckyShotProc, .8 * _p, 1.3);
     }
 
-#define on_post_shoot(spellPower, shootEvent)
+#define on_post_shoot(spellPower, spellBullet, shootEvent)
     if lq_exists(shootEvent, "infammo_restore") {
         if shootEvent.infammo_restore_valid {
             infammo = shootEvent.infammo_restore

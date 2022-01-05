@@ -246,10 +246,10 @@ var dis = argument_count > 4 ? argument[4] : hitscan_dis;
 		lasty = y
 		lastteam = 0
 
-    sage_no_hitscan = true;
+    	sage_no_hitscan = true;
 
 		trailcolor = [merge_color(c_yellow, c_red, random(.4)), c_white, c_ltgray, c_orange]
-		trailsize = .8
+		trailsize = 1.4
 		spr_dead = sprBulletHit
 
 		on_step = hitscan_travel
@@ -326,7 +326,7 @@ var dis = argument_count > 4 ? argument[4] : hitscan_dis;
 		lastteam = 0
 
 		trailcolor = [merge_color(c_yellow, c_lime, .2), c_white, c_lime, c_orange]
-		trailsize = .8
+		trailsize = 1.4
 		spr_dead = spr.GammaBulletHit
 
 		on_step = hitscan_travel
