@@ -138,6 +138,7 @@
 			yprevious = y;
 			x += hspeed_raw;
 			y += vspeed_raw;
+			speed_raw -= min(abs(speed_raw), friction_raw) * sign(speed_raw);
 			if(!instance_exists(self)){continue;}
 			if("sage_bounce" in self && sage_bounce > 0){
 				mod_script_call("mod", "SageMod", "bounce", self);
