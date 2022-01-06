@@ -100,6 +100,18 @@ NOTES FROM JSBURG:
 	global.sprShineA	= sprite_add_weapon(_i + "/bullets/sprBulletAShine.png", 7, 11);
 	global.sprShineAUpg = sprite_add_weapon(_i + "/bullets/sprBulletAShineUpg.png", 7, 11);
 	
+	var soundPath = "sounds/"
+	
+	global.sndSelect  = sound_add(soundPath+"sndSelect.ogg");
+	global.sndConfirm = sound_add(soundPath+"sndConfirm.ogg");
+	global.sndChest   = sound_add(soundPath+"sndChest.ogg");
+	global.sndWrld    = sound_add(soundPath+"sndFlashyn.ogg");
+	global.sndHurt    = sound_add(soundPath+"sndHurt.ogg");
+	global.sndLowA    = sound_add(soundPath+"sndLowAmmo.ogg");
+	global.sndLowH    = sound_add(soundPath+"sndLowHp.ogg");
+	global.sndVault   = sound_add(soundPath+"sndVault.ogg");
+	global.sndDie     = sound_add(soundPath+"sndDie.ogg");
+	
 	 // Reapply sprites if the mod is reloaded. //
 	with(instances_matching(Player, "race", mod_current)) {
 		assign_sprites();
@@ -691,7 +703,11 @@ NOTES FROM JSBURG:
 	}
 
 	if button_pressed(0, "horn"){
-		spellbullet_create(0.x, 0.y, "bCursed")
+		
+		with spellbullet_create(0.x, 0.y, "bCursed") {
+			
+			//lmao
+		}
 	}
 
 	if(!instance_exists(global.bind_late_step)) {
@@ -754,16 +770,17 @@ NOTES FROM JSBURG:
 	}
 
 	///  PASSIVE : Spawn Spellbullets on weapon chest open \\\
-	with(WeaponChest){
+	with(instances_matching(WeaponChest, "object_index", WeaponChest)){
 		if(fork()){
 			var _x = x;
 			var _y = y;
+			var _c = curse;
 			wait(0);
 			if(!instance_exists(self) && instance_exists(other)){
 				wait(0);
 				//the player is passed in as an optional variable specifically for ""
 				//it makes it so the player gets spellbullets they don't have already from normal chests
-				with spellbullet_create(_x,_y, "", other){
+				with spellbullet_create(_x,_y, _c == true ? "bCursed" : "", other){
 					
 					motion_add(random(360), 5);
 				}
@@ -804,9 +821,29 @@ NOTES FROM JSBURG:
 			wait(0);
 			if(!instance_exists(self)){
 				wait(0);
-				repeat(2) with spellbullet_create(_x,_y, "", other){
+				repeat(3) with spellbullet_create(_x,_y, "", other){
 					
 					motion_add(random(360), 6);
+				}
+			}
+			exit;
+		}
+	}
+	with(BigCursedChest){
+		if(fork()){
+			var _x = x;
+			var _y = y;
+			wait(0);
+			if(!instance_exists(self)){
+				wait(0);
+				repeat(3) with spellbullet_create(_x,_y, "bCursed", other){
+					
+					motion_add(random(360), 6);
+					
+					var posEffects = mod_variable_get("mod", "bCursed", "positiveEffects"),
+						negEffects = mod_variable_get("mod", "bCursed", "negativeEffects");
+					array_push(spell.effects, posEffects[irandom(array_length(posEffects) - 1)]);
+					array_push(spell.effects, negEffects[irandom(array_length(negEffects) - 1)]);
 				}
 			}
 			exit;
@@ -1362,14 +1399,14 @@ In Burst fire, call sage_shoot for each burst shot.
 	}
 
 #define assign_sounds
-	 // Set Sounds:
-	snd_wrld = sndMutant1Wrld;	// FLÄSHYN
-	snd_hurt = sndMutant1Hurt;	// THE WIND HURTS
-	snd_dead = sndMutant1Dead;	// THE STRUGGLE CONTINUES
-	snd_lowa = sndMutant1LowA;	// ALWAYS KEEP ONE EYE ON YOUR AMMO
-	snd_lowh = sndMutant1LowH;	// THIS ISN'T GOING TO END WELL
-	snd_chst = sndMutant1Chst;	// TRY NOT OPENING WEAPON CHESTS
-	snd_valt = sndMutant1Valt;	// AWWW YES
+	  // Set Sounds:
+	snd_wrld = global.sndWrld;	// FLÄSHYN
+	snd_hurt = global.sndHurt;	// THE WIND HURTS
+	snd_dead = global.sndDie;	// THE STRUGGLE CONTINUES
+	snd_lowa = global.sndLowA;	// ALWAYS KEEP ONE EYE ON YOUR AMMO
+	snd_lowh = global.sndLowH;	// THIS ISN'T GOING TO END WELL
+	snd_chst = global.sndChest;	// TRY NOT OPENING WEAPON CHESTS
+	snd_valt = global.sndVault;	// AWWW YES
 	snd_crwn = sndMutant1Crwn;	// CROWNS ARE LOYAL
 	snd_spch = sndMutant1Spch;	// YOU REACHED THE NUCLEAR THRONE
 	snd_idpd = sndMutant1IDPD;	// BEYOND THE PORTAL

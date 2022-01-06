@@ -46,7 +46,7 @@
 #define on_init(bullet)
     with bullet {
         
-        bullet_power = random_range(1, 1.4);
+        var bulletPower = random_range(.8, 1.2);
         effects = [global.positiveEffects[irandom(array_length(global.positiveEffects) - 1)],
                    global.positiveEffects[irandom(array_length(global.positiveEffects) - 1)],
                    global.negativeEffects[irandom(array_length(global.negativeEffects) - 1)]];
@@ -58,8 +58,24 @@
         name = adjective + noun; 
         if (name == "") {
             
+            bulletPower += 3;
             name = "idk";
         }
+        
+        switch (adjective) {
+            
+            case "HORRENDOUS ":
+                repeat(3) {
+                    
+                    array_push(effects, global.negativeEffects[irandom(array_length(global.negativeEffects) - 1)]);
+                }
+                break;
+            case "NORMAL ":
+                bulletPower = 1;
+                break;
+        }
+        
+        bullet_power = bulletPower;
         based = true;
     }
 
@@ -89,6 +105,7 @@ enum operators {
     }
 #define names_init
     global.adjectives = [
+        "DUBIOUS ",
         "CHANNELED ",
         "MASTER'S ",
         "VOLATILE ",
@@ -116,10 +133,13 @@ enum operators {
         "HUMOROUS ",
         "", // this is intentional
         "GOATED ",
-        "NORMAL "
+        "NORMAL ",
+        "HORRENDOUS ",
+        `@0(${sprMaggotIdle}:-1) `
         ];
     global.nouns = [
         "ROUND",
+        "EVOCATION",
         "CALIBER",
         "SPELL",
         "SHELL",
@@ -137,6 +157,8 @@ enum operators {
     global.special_nouns = [ // Rarely used nouns
         "END",
         "ROCK",
+        "BUSTER",
+        `@0(${sprMaggotIdle}:-1)`,
         `@0(${global.sprEmote}:0)`,
         "" // also intentional
         ];
@@ -187,6 +209,39 @@ enum operators {
         spellpower_scaling : 1,
         scr_finalize : script_ref_create(finalize_nothing)
     }, true);
+    
+    stat_effect_create({
+      
+        variable   : "sage_auto",
+        value      : 1,
+        descriptor : "@wAUTOMATIC WEAPONS",
+        scr_value_descriptor : script_ref_create(describe_nothing),
+        operator   : operators.add,
+        spellpower_scaling : 0,
+        scr_finalize : script_ref_create(finalize_nothing)
+    }, false);    
+    
+    stat_effect_create({
+      
+        variable   : "sage_bounce",
+        value      : 1,
+        descriptor : `@(color:${c.bounce})BOUNCES`,
+        scr_value_descriptor : script_ref_create(describe_whole),
+        operator   : operators.add,
+        spellpower_scaling : 1,
+        scr_finalize : script_ref_create(finalize_ceil)
+    }, false);    
+    
+    stat_effect_create({
+      
+        variable   : "notoxic",
+        value      : 1,
+        descriptor : `@gTOXIC IMMUNITY`,
+        scr_value_descriptor : script_ref_create(describe_nothing),
+        operator   : operators.add,
+        spellpower_scaling : 0,
+        scr_finalize : script_ref_create(finalize_nothing)
+    }, false);  
     
     /*stat_effect_create({
         
@@ -239,7 +294,7 @@ enum operators {
         }
         
         // Add the value:
-        str += script_ref_call(effects[i].stateffect.scr_value_descriptor, (effects[i].stateffect.value + effects[i].stateffect.spellpower_scaling * _spellpower) * _spellbullet.bullet_power) + " ";
+        str += script_ref_call(effects[i].stateffect.scr_value_descriptor, (effects[i].stateffect.value + effects[i].stateffect.spellpower_scaling * _spellpower) * _spellbullet.bullet_power) + (effects[i].stateffect.scr_value_descriptor[2] == "describe_nothing" ? "" : " ");
         
         // Add the name of the stat changed:
         str += effects[i].stateffect.descriptor;
@@ -283,6 +338,11 @@ enum operators {
 #define stat_effect_take(_effect, _spellpower, _spellbullet)
     var n = stat_effect_calculate(_effect.stateffect, _spellpower, _spellbullet),
         value = variable_instance_get(self, _effect.stateffect.variable);
+        
+    if (value == undefined) {
+        
+        value = 0;
+    }
     
     if (_effect.stateffect.operator == operators.add) {
         
@@ -333,7 +393,7 @@ enum operators {
     
     for(var i = string_length(v); i < (sign(_var) == -1 ? 5 : 4); i++){
         
-        if (i == 2) {
+        if (i == 1) {
             
             v += ".";
         }
@@ -344,3 +404,5 @@ enum operators {
     }
 
     return(v);
+#define describe_nothing
+    return "";
