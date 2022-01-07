@@ -114,7 +114,7 @@
 #define draw_pause
 	if(!instance_exists(ControlMenuButton) && !instance_exists(GameMenuButton) && !instance_exists(VisualsMenuButton) && !instance_exists(AudioMenuButton) && !instance_exists(OptionMenuButton) && !instance_exists(PopoScene) && !(instance_exists(PopoScene) && TopCont.gameovertime = 0) && !instance_exists(CampChar)){ 
     	
-        if(instance_exists(TopCont) || instance_exists(GenCont) || instance_exists(LevCont)){
+        if(true/*instance_exists(TopCont) || instance_exists(GenCont) || instance_exists(LevCont)// im too lazy to ident this properly*/){
             var _hudFade  = 0,
                 _hudIndex = 0,
                 _lastSeed = random_get_seed();

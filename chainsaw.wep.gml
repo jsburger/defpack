@@ -100,6 +100,10 @@ return{
 			x = xprevious;
 			y = yprevious;
 			speed = 0;
+		
+			// Make enemy brain freeze:
+			if("alarm0" in self) {alarm0 = min(alarm0 + current_time_scale, 25)}
+			if("alarm1" in self) {alarm0 = min(alarm1 + current_time_scale, 25)}
 		}
 		
 		var _splat = -4,
@@ -149,8 +153,7 @@ return{
 			instance_create((x + other.creator.x)/2, (y + other.creator.y)/2, Debris)
 		}
 	}
-	view_shake_max_at(x, y, 4)
-	sleep(12)
+	view_shake_max_at(x, y, 3)
 	sound_play_pitchvol(sndMeleeWall, random_range(1.3, 1.6), .8)
 
 #define anim_destroy

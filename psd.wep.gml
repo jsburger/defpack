@@ -4,7 +4,7 @@ global.sprSonicExplosion  = sprite_add("sprites/projectiles/sprESonicExplosion.p
 global.sprEnergyEffect    = sprite_add("sprites/projectiles/sprEnergyEffect.png", 6, 7, 7);
 
 #macro c_energy $23D900
-#macro e_radius max(16, 26 + 5 * skill_get(mut_long_arms));
+#macro e_radius max(16, 24 + 4 * skill_get(mut_long_arms));
 
 #define weapon_name
 return "P.S.D.";

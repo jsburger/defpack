@@ -417,14 +417,14 @@ NOTES FROM JSBURG:
 				draw_sprite_ext(h.sprite, s, h.x, h.y, 1, /*h.right*/ 1, /*h.angle*/ 0, merge_color(merge_colour(_col, c_black, .7), c_white, clamp(fairy.swap / fairy_swap_time, 0, 1)), 1);
 			}
 			else { // else:
-				for(var i = 0, l = bulletLoopMax; i < l; i++) {
+				for(var i = 0, _l = bulletLoopMax; i < _l; i++) {
 				
-					_h += color_get_hue(spell_call_self(spellBullets[_i], "fairy_color"));
-					_s += color_get_saturation(spell_call_self(spellBullets[_i], "fairy_color"));
-					_v += color_get_value(spell_call_self(spellBullets[_i], "fairy_color"));
+					_h += color_get_hue(spell_call_self(spellBullets[i], "fairy_color"));
+					_s += color_get_saturation(spell_call_self(spellBullets[i], "fairy_color"));
+					_v += color_get_value(spell_call_self(spellBullets[i], "fairy_color"));
 				}
-				_col = (make_color_hsv(_h / max(1, b), _s / max(1, b), _v / max(1, b)));
-			
+				_col = (make_color_hsv(_h / max(1, i), _s / max(1, i), _v / max(1, i)));
+				
 				// Back draw:
 				d3d_set_fog(1, merge_color(_col, c_white, clamp(h.swap / fairy_swap_time, 0, 1)), 1, 1)
 				h.swap = max(0, h.swap - current_time_scale * 1.2)

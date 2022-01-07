@@ -139,12 +139,12 @@ return "UNSEEN ALLIES";
 			image_angle = 270
 			force = 0
 			damage = 8
-      bounce = skill_get("compoundelbow") * 5
-      zfriction = 1.5
+	        bounce = skill_get("compoundelbow") * 5
+	        zfriction = 1.5
 			team = other.team
 			z = irandom_range(300,350)
-      maxzspd = 20
-      zspd = maxzspd;
+    		maxzspd = 20
+    		zspd = maxzspd;
 			zstart = z
 			on_step = rainarrow_step
 			on_wall = rainarrow_wall
@@ -193,7 +193,7 @@ return "UNSEEN ALLIES";
 	var dn = z
 	z -= current_time_scale*zspd
 	if z <= 25 and z > -25{
-	    mask_index = sprHeavyGrenadeBlink;
+	    mask_index = sprFlak;
 	    depth = TopCont.depth+1
 	    if skill_get(mut_bolt_marrow){
 	        var q = mod_script_call_self("mod", "defpack tools", "instance_nearest_matching_ne", x, y, hitme, "team", team)
