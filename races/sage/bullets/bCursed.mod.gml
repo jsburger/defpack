@@ -64,14 +64,22 @@
         
         switch (adjective) {
             
-            case "HORRENDOUS ":
+            case "HORRENDOUS ": // Add 3 downsides:
                 repeat(3) {
                     
                     array_push(effects, global.negativeEffects[irandom(array_length(global.negativeEffects) - 1)]);
                 }
                 break;
-            case "NORMAL ":
+            case "NORMAL ": // Remove random bullet power spread:
                 bulletPower = 1;
+                break;
+            case "THE WORST ": // Make this bullet contain all possible downsides and nothing else, then increase bullet power by 50%:
+            
+                for(var i = 0; i < array_length(global.negativeEffects); i++) {
+                    
+                    effects[i] = global.negativeEffects[i];
+                }
+                bulletPower *= 1.5;
                 break;
         }
         
@@ -135,6 +143,7 @@ enum operators {
         "GOATED ",
         "NORMAL ",
         "HORRENDOUS ",
+        "THE WORST ",
         `@0(${sprMaggotIdle}:-1) `
         ];
     global.nouns = [
@@ -155,7 +164,6 @@ enum operators {
         "BLESSING"
         ];
     global.special_nouns = [ // Rarely used nouns
-        "END",
         "ROCK",
         "BUSTER",
         `@0(${sprMaggotIdle}:-1)`,
@@ -229,6 +237,17 @@ enum operators {
         scr_value_descriptor : script_ref_create(describe_whole),
         operator   : operators.add,
         spellpower_scaling : 1,
+        scr_finalize : script_ref_create(finalize_ceil)
+    }, false);    
+    
+    stat_effect_create({
+      
+        variable   : "sage_hitscan_strength",
+        value      : 2,
+        descriptor : `@(color:${c.speed})HYPERSPEED`,
+        scr_value_descriptor : script_ref_create(describe_whole),
+        operator   : operators.add,
+        spellpower_scaling : 3,
         scr_finalize : script_ref_create(finalize_ceil)
     }, false);    
     

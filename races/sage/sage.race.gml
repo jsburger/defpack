@@ -1,5 +1,4 @@
 /*TODO:
-* Error for custom sage stats in multiplayer
 * Bounce code for:
   * Mega Laser Cannon
   * Quartz Laser
@@ -12,7 +11,6 @@
 * Non sage players should not be able to pick up spell bullets
 * "LOW HP" text overlaps with bullet hud
 * sage b skin
-* sage sounds
 * Throne Butt is cringe rn (its awkward to use), please change
 */
 
@@ -160,7 +158,7 @@ NOTES FROM JSBURG:
 		for(var i = 0; i < maxp; i++){
 			var r = player_get_race(i);
 			if(_race[i] != r && r = mod_current){
-				sound_play(sndMutant1Slct); // Select Sound
+				sound_play(global.sndSelect); // Select Sound
 			}
 			_race[i] = r;
 		}
@@ -210,7 +208,7 @@ NOTES FROM JSBURG:
 		global.bulletInventory[index] = spellBullets;
 	}
 
-	sound_play(sndMutant1Cnfm); // Play Confirm Sound
+	sound_play(global.sndConfirm); // Play Confirm Sound
 	
 	if fork() {
 		

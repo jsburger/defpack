@@ -23,7 +23,7 @@
 
 
 #define draw_gui
-    if(!instance_exists(PopoScene) && instance_exists(TopCont) && TopCont.gameovertime = 0 && !instance_exists(CampChar)){
+    if(!instance_exists(PopoScene) && ((instance_exists(TopCont) && TopCont.gameovertime = 0) || instance_exists(SpiralCont)) && !instance_exists(CampChar)){
     	
         if(instance_exists(TopCont) || instance_exists(GenCont) || instance_exists(LevCont)){
             var _hudFade  = 0,
