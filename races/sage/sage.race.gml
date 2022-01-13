@@ -127,6 +127,7 @@ NOTES FROM JSBURG:
 		neutral: 		  $BAB0A9,
 		negative:         $444FED,
 		speed:   		  $CE7314,
+		friction:   	  merge_color($CE7314, c_aqua, .3),
 		projectile_speed: $E5BC16,
 		accuracy:         $0067F7,
 		spellpower:		  $A83487,
@@ -599,7 +600,8 @@ NOTES FROM JSBURG:
 
 	sage_projectile_speed = 1; // Projectile speed multiplier
 	sage_spell_power = 0;      // Sage spellpower multiplier
-	sage_ammo_cost = 0; 	     // ammo cost multiplier
+	sage_ammo_cost = 0; 	   // ammo cost multiplier
+	sage_friction = 1;         // friction multiplier
 	sage_ammo_to_rads = 0;     // ammo to rad bool
 	sage_uitimer = 20; // how long to wait on mouse hover before the draw
 	spellBullets = [];
@@ -712,6 +714,8 @@ NOTES FROM JSBURG:
 		global.bind_late_step = script_bind_step(late_step, 0);
 	}
 
+	// Friction:
+	friction = max(0, friction * sage_friction);
 
 	//Call bullet step events
 	for (var i = 0, l = bulletLoopMax; i < l; i++) {

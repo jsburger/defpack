@@ -44,8 +44,10 @@
     }
     
 #define on_init(bullet)
+    
     with bullet {
         
+        // Set effects and bullet power:
         var bulletPower = random_range(.8, 1.2);
         effects = [global.positiveEffects[irandom(array_length(global.positiveEffects) - 1)],
                    global.positiveEffects[irandom(array_length(global.positiveEffects) - 1)],
@@ -55,32 +57,74 @@
         var adjective = irandom(14) == 0 ? global.special_adjectives[irandom(array_length(global.special_adjectives) - 1)] : global.adjectives[irandom(array_length(global.adjectives) - 1)],
             noun = irandom(14) == 0 ? global.special_nouns[irandom(array_length(global.special_nouns) - 1)] : global.nouns[irandom(array_length(global.nouns) - 1)];
 
-        name = adjective + noun; 
-        if (name == "") {
-            
-            bulletPower += 3;
-            name = "idk";
-        }
-        
+        // Do wacky name effects:
         switch (adjective) {
             
+            case "GOATED ": // Increase bullet power by 20%:
+                bulletPower += .2;
+                break;
+            case "NORMAL ": // Remove random bullet power spread:
+                bulletPower = 1;
+                break;
+            case "SOMEONE'S ": // Every version of cursed bullets is personalized
+                var player = instance_nearest(1016, 1016, Player),
+                    str_name = "SOMEONE";
+                if (instance_exists(player)){            
+                    str_name = string_upper(player_get_alias(player.index));
+                  
+                    // Seed setup so you always get the same ups/downs based on your alias:  
+                    var seed = 0,
+                        i = 0;
+                    repeat(string_length(str_name)){
+                        
+                        seed += ord(string_char_at(str_name, i++));
+                    }
+                    
+                    effects[0] = global.positiveEffects[seed          % (array_length(global.positiveEffects) - 1)]
+                    effects[1] = global.positiveEffects[(seed * .43)  % (array_length(global.positiveEffects) - 1)]
+                    effects[2] = global.negativeEffects[(seed * 1.78) % (array_length(global.negativeEffects) - 1)]
+                    
+                    adjective = str_name + "'S ";
+                }
+                break;
+            case "MANIFOLD ": // +1 up +1 down
+                effects[2] = global.positiveEffects[irandom(array_length(global.positiveEffects) - 1)];
+                effects[3] = global.negativeEffects[irandom(array_length(global.negativeEffects) - 1)];
+                effects[4] = global.negativeEffects[irandom(array_length(global.negativeEffects) - 1)];
+                break;
             case "HORRENDOUS ": // Add 3 downsides:
                 repeat(3) {
                     
                     array_push(effects, global.negativeEffects[irandom(array_length(global.negativeEffects) - 1)]);
                 }
                 break;
-            case "NORMAL ": // Remove random bullet power spread:
-                bulletPower = 1;
-                break;
-            case "THE WORST ": // Make this bullet contain all possible downsides and nothing else, then increase bullet power by 50%:
-            
+            case "THE WORST ": // Make this bullet contain all possible downsides and nothing else, then increase bullet power by 100%:
                 for(var i = 0; i < array_length(global.negativeEffects); i++) {
                     
                     effects[i] = global.negativeEffects[i];
                 }
-                bulletPower *= 1.5;
+                bulletPower += 1;
                 break;
+            case "TEST ": // For testing
+                effects[0] = global.positiveEffects[1];
+                effects[1] = global.positiveEffects[1];
+                effects[2] = global.positiveEffects[2];
+                effects[3] = global.positiveEffects[1];
+                effects[4] = global.positiveEffects[1];
+                effects[5] = global.negativeEffects[2];
+                break;
+        }
+        
+        name = adjective + noun; 
+        if (name == "") {
+            
+            bulletPower += 3;
+            name = "idk";
+        }
+        var endchar = string_char_at(name, string_length(name));
+        if ( endchar == " " || endchar == "-"){
+            
+                name = string_delete(name, string_length(name), 1);
         }
         
         bullet_power = bulletPower;
@@ -142,9 +186,11 @@ enum operators {
         "", // this is intentional
         "GOATED ",
         "NORMAL ",
+        "MANIFOLD ",
         "HORRENDOUS ",
         "THE WORST ",
-        `@0(${sprMaggotIdle}:-1) `
+        `@0(${sprMaggotIdle}:-1) `,
+        "SOMEONE'S "
         ];
     global.nouns = [
         "ROUND",
@@ -219,6 +265,17 @@ enum operators {
     }, true);
     
     stat_effect_create({
+        
+        variable   : "sage_friction",
+        value      : .9,
+        descriptor : `@(color:${c.friction})TRACTION`,
+        scr_value_descriptor : script_ref_create(describe_percentage),
+        operator   : operators.add,
+        spellpower_scaling : .9,
+        scr_finalize : script_ref_create(finalize_nothing)
+    }, true);
+    
+    stat_effect_create({ // not implemented?
       
         variable   : "sage_auto",
         value      : 1,
@@ -229,7 +286,7 @@ enum operators {
         scr_finalize : script_ref_create(finalize_nothing)
     }, false);    
     
-    stat_effect_create({
+    stat_effect_create({ // not implemented
       
         variable   : "sage_bounce",
         value      : 1,
@@ -240,7 +297,7 @@ enum operators {
         scr_finalize : script_ref_create(finalize_ceil)
     }, false);    
     
-    stat_effect_create({
+    stat_effect_create({ // not implemented
       
         variable   : "sage_hitscan_strength",
         value      : 2,
@@ -265,22 +322,22 @@ enum operators {
     /*stat_effect_create({
         
         variable   : "accuracy",
-        value      : .75,
+        value      : .6,
         descriptor : `@(color:${c.accuracy})ACCURACY`,
         scr_value_descriptor : script_ref_create(describe_percentage),
         operator   : operators.multiply,
-        spellpower_scaling : .75,
+        spellpower_scaling : .6,
         scr_finalize : script_ref_create(finalize_nothing)
     }, true);*/
     
     /*stat_effect_create({ // no dude
         
         variable   : "sage_spell_power",
-        value      : .2,
+        value      : .5,
         descriptor : `@(color:${c.spellpower})SPELLPOWER`,
         scr_value_descriptor : script_ref_create(describe_percentage),
         operator   : operators.add,
-        spellpower_scaling : .2,
+        spellpower_scaling : 0,
         scr_finalize : script_ref_create(finalize_nothing)
     }, true);*/
 
@@ -292,34 +349,78 @@ enum operators {
     
 #define stat_effect_describe(_spellpower, _spellbullet)
     var     str = "",
-        effects = _spellbullet.effects;
+        effects = _spellbullet.effects,
+         recall = [],
+         recallval = [];
         
+    // Combine duplicate effect descriptions:
     for(var i = 0; i < array_length(effects); i++) {
         
-        // Add newline:
-        if (i > 0) {
+        if (i == 0) {
             
-            str += "#";
-        }
-        
-        // Add the operator at the beginning:
-        if (effects[i].stateffect.value < 0) {
-            
-            str += `@(color:${c.negative})`;
+            recall[0] = effects[i];
+            recallval[0] = effects[i].stateffect.value + max(sign(effects[i].stateffect.value) * effects[i].stateffect.spellpower_scaling * _spellpower, 0);
         }
         else {
             
-            str += `@(color:${c.neutral})+`;
+            var j = 0;
+            var exists = 0;
+            with recall {
+                
+                // Entry exists already:
+                if (self.stateffect.descriptor == effects[i].stateffect.descriptor) {
+                    recallval[j] += effects[i].stateffect.value + max(sign(effects[i].stateffect.value) * effects[i].stateffect.spellpower_scaling * _spellpower, 0);
+                    exists = 1;
+                }
+                j++;
+            }
+            
+            if (!exists) {
+                
+                var length = array_length(recall);
+                recall[length] = effects[i];
+                recallval[length] = effects[i].stateffect.value + max(sign(effects[i].stateffect.value) * effects[i].stateffect.spellpower_scaling * _spellpower, 0);
+            }   
         }
-        
-        // Add the value:
-        str += script_ref_call(effects[i].stateffect.scr_value_descriptor, (effects[i].stateffect.value + effects[i].stateffect.spellpower_scaling * _spellpower) * _spellbullet.bullet_power) + (effects[i].stateffect.scr_value_descriptor[2] == "describe_nothing" ? "" : " ");
-        
-        // Add the name of the stat changed:
-        str += effects[i].stateffect.descriptor;
-        
     }
-    return (str);
+    
+    // Get all the text:
+    var i = 0;
+    with recall {
+        
+        if (recallval[i] != 0) {
+            // Add newline:
+            if (string_length(str) > 0) {
+                
+                str += "#";
+            }
+            
+            // Add the operator at the beginning:
+            if (recallval[i] < 0) {
+                    
+                str += `@(color:${c.negative})`;
+            }
+            else if (recallval[i] > 0){
+                    
+                str += `@(color:${c.neutral})+`;
+            }
+        
+            
+            // Add the value:
+            str += script_ref_call(self.stateffect.scr_value_descriptor, (recallval[i]) * _spellbullet.bullet_power) + (self.stateffect.scr_value_descriptor[2] == "describe_nothing" ? "" : " ");
+        
+            // Add the name of the stat changed:
+            str += recall[i].stateffect.descriptor;
+        }
+        i++;
+    }
+    
+    // Just in case you get nothing out of a bullet:
+    if (str == "") {
+        
+        str = `@(color:${c.neutral})DOES NOTHING`;
+    }
+    return(str);
     
 #define stat_effect_create(_stat_effect, _reversible)
     var copy = lq_clone(_stat_effect);
@@ -328,6 +429,7 @@ enum operators {
         takescript : script_ref_create(stat_effect_take),
         losescript : script_ref_create(stat_effect_lose),
         stateffect : _stat_effect
+        stateffect : _stat_effect,
     };
     
     array_push(global.positiveEffects, e);
@@ -407,6 +509,7 @@ enum operators {
 #define describe_percentage(_var)
     var v = (round(abs(_var * 100)) * sign(_var));
     return string(v) + "%";
+    
 #define describe_2a(_var) // 2a = accuracy of 2, 2 digits after the comma (1,xx)
     var v = string(round(_var * 100) / 100);
     
