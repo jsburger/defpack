@@ -1,14 +1,15 @@
 #define init
     global.sprBullet = sprite_add("../../../sprites/sage/bullets/sprBulletCursed.png", 2, 7, 11);
-    global.sprFairy = sprite_add("../../../sprites/sage/bullet icons/sprFairyIconCursed.png", 0, 5, 5);
-    global.sprEmote = sprite_add("../../../sprites/sage/sprBulletEmoji.png", 1, 6, 0);
+    global.sprFairy  = sprite_add("../../../sprites/sage/bullet icons/sprFairyIconCursed.png", 1, 5, 5);
+    global.sprFairy2 = sprite_add("../../../sprites/sage/bullet icons/sprFairyIconCurseBlink.png", 1, 5, 5);
+    global.sprEmote  = sprite_add("../../../sprites/sage/sprBulletEmoji.png", 1, 6, 0);
     effects_init();
     names_init();
 
 #macro c mod_variable_get("race", "sage", "colormap");
 
 #define fairy_sprite
-  return global.sprFairy;
+  return (random(59) < current_time_scale ? global.sprFairy2 :  global.sprFairy);
 
 #define fairy_color
   return $FF3DAE;
@@ -116,15 +117,16 @@
         }
         
         name = adjective + noun; 
-        if (name == "") {
-            
-            bulletPower += 3;
-            name = "idk";
-        }
         var endchar = string_char_at(name, string_length(name));
         if ( endchar == " " || endchar == "-"){
             
                 name = string_delete(name, string_length(name), 1);
+        }
+        
+        if (name == "") {
+            
+            bulletPower += 3;
+            name = "idk";
         }
         
         bullet_power = bulletPower;

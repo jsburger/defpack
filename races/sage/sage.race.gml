@@ -123,7 +123,6 @@ NOTES FROM JSBURG:
 	global.bind_late_step = noone;
 
 	global.colormap = {
-
 		neutral: 		  $BAB0A9,
 		negative:         $444FED,
 		speed:   		  $CE7314,
@@ -136,7 +135,7 @@ NOTES FROM JSBURG:
 		bounce:           $00ABFA,
 		reload:           $FFFFFF,
 		aqua:             c_aqua,
-		spell:            make_color_rgb(21, 98, 85),
+		spell:            merge_color(make_color_rgb(28, 98, 85), c_white, .1),
 	}
 
 	// Holds all Players spell bullet inventories, spell power and ui roll:
