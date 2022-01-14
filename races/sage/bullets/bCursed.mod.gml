@@ -429,7 +429,6 @@ enum operators {
         takescript : script_ref_create(stat_effect_take),
         losescript : script_ref_create(stat_effect_lose),
         stateffect : _stat_effect
-        stateffect : _stat_effect,
     };
     
     array_push(global.positiveEffects, e);
