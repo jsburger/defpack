@@ -32,7 +32,7 @@
 	with instances_matching(CustomSlash, "name", "Square") sprite_index = spr.Square
 	
 	
-	#macro dev true
+	#macro dev false
 	if dev {
 		if mod_exists("mod", "defpackloader") {
 			mod_script_call("mod", "defpackloader", "add_post_load_statement", "Squares mod has loaded in dev mode", c_yellow)

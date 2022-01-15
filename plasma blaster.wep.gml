@@ -47,7 +47,7 @@
     weapon_post(6, 0, 8);
     
     var _speed = 12,
-        _minsp = .01,
+        _minsp = 1,
         _timer = 40,
         _frict = .7;
     with instance_create(x, y, CustomProjectile) {
@@ -79,7 +79,7 @@
         friction = _frict;
         minspeed = _minsp;
         accuracy = .1;
-        target = _t;
+        // target = _t;
     }
 
     repeat(4 + skill_get(mut_laser_brain) * 4) with create_defball_l(x, y) {
@@ -91,7 +91,7 @@
         friction = _frict;
         minspeed = _minsp;
         accuracy = .1;
-        target = _t;
+        // target = _t;
     }
     
     repeat(2 + skill_get(mut_laser_brain)) with create_defball_m(x, y) {
@@ -103,7 +103,7 @@
         friction = _frict;
         minspeed = _minsp;
         accuracy = .1;
-        target = _t;
+        // target = _t;
     }
 
 #define plastarget_step
