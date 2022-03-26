@@ -305,13 +305,13 @@ NOTES FROM JSBURG:
 		case 1:
 			sound_play(sndFishUltraA);
 			with instances_matching(Player, "race", "sage"){
-				if array_length(spellBullets) > 0 spellpower_change(self, 1);
+				if array_length(spellBullets) > 0 spellpower_change(self, ultra_a * 2 - 1);
 			}
-		break;
+			break;
 		case 2:
 			sound_play(sndFishUltraB);
-			with instances_matching(Player, "race", "sage") for(var i = 1; i < array_length(spellBullets); i++) {
-				stat_gain(spellBullets[i], self);
+			with instances_matching(Player, "race", "sage") {
+				refresh_effects()
 			}
 			break;
 		/// Add more cases if you have more ultras!
@@ -502,16 +502,19 @@ NOTES FROM JSBURG:
 		
 		_playerNum += player_is_active(i);
 	}
+	
+	if instance_exists(_p) {
+		var d = mod_script_call("mod", effectMod, "effects_descriptions", _p.activeEffects, _p.sage_spell_power);
+		draw_set_font(fntSmall);
+		draw_text_nt(-13, 46, "Active Effects :#" + d)
+		draw_set_font(fntM);
+	}
 
 	if dev && instance_exists(_p) {
 
+		var d = mod_script_call("mod", effectMod, "effects_descriptions", _p.activeEffects, _p.sage_spell_power);
 		draw_set_font(fntSmall);
-		draw_text_nt(-13, 46, "@wRELOAD_SPEED = " + string(round(_p.reloadspeed * 100)) + "%")
-		draw_text_nt(-13, 53, "@yACCURACY     = " + string(round(_p.accuracy * 100)) + "%")
-		draw_text_nt(-13, 60, "@gAMMO_COST    = " + string(round(1 + _p.sage_ammo_cost) * 100) + "%")
-		draw_text_nt(-13, 67, "@bPROJ_SPEED   = " + string(round(_p.sage_projectile_speed * 100)) + "%")
-		draw_text_nt(-13, 74, "@pSPELL_POWER  = " + string(round((1 + _p.sage_spell_power) * 100)) + "%")
-		draw_text_nt(-13, 81, "@bSPEED        = " + string(_p.maxspeed))
+		draw_text_nt(-13, 46, "Active Effects :#" + d)
 		draw_set_font(fntM);
 	}
 
@@ -552,7 +555,8 @@ NOTES FROM JSBURG:
 				
 
 				var _name = spell_call_nc(global.bulletInventory[_playerindex][i], "bullet_name", global.bulletInventory[_playerindex][i]),
-					_desc = spell_call_nc(global.bulletInventory[_playerindex][i], "bullet_description", global.spellPower[_playerindex], global.bulletInventory[_playerindex][i]);
+					// _desc = spell_call_nc(global.bulletInventory[_playerindex][i], "bullet_description", global.spellPower[_playerindex], global.bulletInventory[_playerindex][i]);
+					_desc = mod_script_call("mod", effectMod, "bullet_get_description", global.bulletInventory[_playerindex][i], global.spellPower[_playerindex])
 				draw_set_font(fntM);
 			    draw_text_nt(_x - 4 - (10 * i - i) * (_hudSide ? -1 : 1), _y + _h + 3, _name);
 			    draw_set_font(fntSmall);
@@ -590,9 +594,12 @@ NOTES FROM JSBURG:
 #macro c_darkteal c_purple
 #macro c_purblue c_purple
 #macro speed_boost_perma [Rocket, Nuke, PlasmaBall, PlasmaBig, PlasmaHuge, Seeker]
+#macro effectMod "sageeffects"
 
 #macro ultra_a ultra_get(mod_current, 1)
 #macro ultra_b ultra_get(mod_current, 2)
+#macro has_ultra_a ultra_get(mod_current, 1) > 0
+#macro has_ultra_b ultra_get(mod_current, 2) > 0
 
 #define create
 	uiroll = 0;
@@ -604,6 +611,7 @@ NOTES FROM JSBURG:
 	sage_ammo_to_rads = 0;     // ammo to rad bool
 	sage_uitimer = 20; // how long to wait on mouse hover before the draw
 	spellBullets = [];
+	activeEffects = [];
 
 	if dev {
 		/*spell_give(self, "bGold");
@@ -737,14 +745,18 @@ NOTES FROM JSBURG:
 		spell_call_self(spellBullets[1], "bullet_swap");
 
 		var _temp = spellBullets[0];
-		if !ultra_b {
-			stat_lose(spellBullets[0], self);
-			stat_gain(spellBullets[1], self);
-		}
+		// if !ultra_b {
+		// 	stat_lose(spellBullets[0], self);
+		// 	stat_gain(spellBullets[1], self);
+		// }
 		for(var i = 1; i < array_length(spellBullets); i++) {
 			spellBullets[i-1] = spellBullets[i];
 		}
 		spellBullets[array_length(spellBullets) - 1] = _temp;
+		
+		if !(has_ultra_b) {
+			refresh_effects()
+		}
 		uiroll = -1;
 	}
 
@@ -967,37 +979,62 @@ NOTES FROM JSBURG:
 		cancelled: false
 	};
 
-	for (var i = 0, l = bulletLoopMax; i < l; i++) {
-		//"Shooting" is when the gun itself is fired, "Firing" is when sage goes to fire.
-		//Ex: The secondary shots of Burst are Shooting, and the two shots for Split are both Firing.
-		spell_call_self(spellBullets[i], "on_pre_shoot", shootEvent);
-	}
+	// for (var i = 0, l = bulletLoopMax; i < l; i++) {
+	// 	spell_call_self(spellBullets[i], "on_pre_shoot", shootEvent);
+	// }
+	
+	//"Shooting" is when the gun itself is fired, "Firing" is when sage goes to fire.
+	//Ex: The secondary shots of Burst are Shooting, and the two shots for Split are both Firing.
+
+	effects_call(activeEffects, "on_pre_shoot", shootEvent)
 
 	return shootEvent
 
 
 #define post_sage_shoot(shootEvent)
 
-	for (var i = 0, l = bulletLoopMax; i < l; i++) {
-		spell_call_self(spellBullets[i], "on_post_shoot", shootEvent)
-	}
+	// for (var i = 0, l = bulletLoopMax; i < l; i++) {
+	// 	spell_call_self(spellBullets[i], "on_post_shoot", shootEvent)
+	// }
+	
+	effects_call(activeEffects, "on_post_shoot", shootEvent)
+
 	
 	if (GameCont.rad < shootEvent.radPrevious) {
-		for (var i = 0, l = bulletLoopMax; i < l; i++) {
-			spell_call_self(spellBullets[i], "on_rads_use");
-		}
+		effects_call(activeEffects, "on_rads_use")
+		// for (var i = 0, l = bulletLoopMax; i < l; i++) {
+		// 	spell_call_self(spellBullets[i], "on_rads_use");
+		// }
 	}
 
 	if (GameCont.rad <= 0 && shootEvent.radPrevious > 0) {
-		for (var i = 0, l = bulletLoopMax; i < l; i++) {
-			spell_call_self(spellBullets[i], "on_rads_out");
-		}
+		effects_call(activeEffects, "on_rads_out")
+		// for (var i = 0, l = bulletLoopMax; i < l; i++) {
+		// 	spell_call_self(spellBullets[i], "on_rads_out");
+		// }
 	}
 
 
-
+	//Firing effects don't actually check for Sage having enough ammo for things like Burst and Split.
+	//So he could go negative if he used Burst at low ammo. This 'prevents' that.
+	//Sage can have a little free ammo, as a treat.
 	for (var i = 1; i < array_length(ammo); i++) {
 		ammo[i] = max(0, ammo[i])
+	}
+
+
+#define sage_has_hook(script)
+	for (var i = 0, l = array_length(activeEffects); i < l; i++) {
+		if (lq_exists(activeEffects[i].type, script)) return true
+	}
+	return false
+
+#define on_new_projectiles(newProjectiles)
+	if sage_has_hook("on_new_projectiles") {
+		var myProjectiles = instances_matching(newProjectiles, "creator", self);
+		if (array_length(myProjectiles) > 0) {
+			effects_call(activeEffects, "on_new_projectiles", myProjectiles)
+		}
 	}
 
 #define sage_shoot(direction)
@@ -1024,7 +1061,7 @@ In Burst fire, call sage_shoot for each burst shot.
 
 */
 
-#define fire(fireEvent)
+#define fire(shootEvent)
 
 	var event = {
 		cancelled: false,
@@ -1039,14 +1076,14 @@ In Burst fire, call sage_shoot for each burst shot.
 
 	if !event.cancelled {
 
-		if !fireEvent.cancelled {
+		if !shootEvent.cancelled {
 			mid_firing(event)
-			post_sage_shoot(fireEvent)
+			post_sage_shoot(shootEvent)
 		}
 
 	}
 
-	if event.cancelled trace("Fire Event was cancelled. Please make sure its working")
+	if event.cancelled {trace("Fire Event was cancelled. Please make sure its working")}
 
 
 
@@ -1076,6 +1113,45 @@ In Burst fire, call sage_shoot for each burst shot.
 #define post_firing(fireEvent)
 
 
+
+#define effects_call
+var effectsList = argument[0], script = argument[1];
+var args1 = argument_count > 2 ? argument[2] : undefined;
+var args2 = argument_count > 3 ? argument[3] : undefined;
+	mod_script_call_self("mod", effectMod, "effects_call", sage_spell_power, effectsList, script, args1, args2)
+	
+#define effects_call_reverse
+var effectsList = argument[0], script = argument[1];
+var args1 = argument_count > 2 ? argument[2] : undefined;
+var args2 = argument_count > 3 ? argument[3] : undefined;
+	mod_script_call_self("mod", effectMod, "effects_call_reverse", sage_spell_power, effectsList, script, args1, args2)
+	
+
+#define get_active_bullets()
+	return has_ultra_b ? spellBullets : array_length(spellBullets) > 0 ? [spellBullets[0]] : []
+
+//Call after making changes to bullets to revert current effects and apply new ones
+#define refresh_effects()
+
+	// trace("refreshing!")
+	//Deactivate old effects, called in reverse to resolve stacks properly
+	effects_call_reverse(activeEffects, "on_deactivate")
+	//Compile new effects from active bullets
+	activeEffects = bullets_compose(get_active_bullets())
+	//Activate new effects
+	effects_call(activeEffects, "on_activate")
+
+
+#define bullets_compose(bulletList)
+	var effectList = [], temp = [];
+	with bulletList {
+		array_push(temp, effects)
+	}
+	unpack(effectList, temp)
+	return mod_script_call("mod", effectMod, "effects_compose_all", effectList, sage_spell_power);
+
+
+//Deprecated
 #define stat_gain(spellbullet, inst)
 	with inst spell_call_self(spellbullet, "on_take");
 	if dev trace("STAT GAINED")
@@ -1087,36 +1163,33 @@ In Burst fire, call sage_shoot for each burst shot.
 		lasthit = [sprHealFX, "SPELL BULLET"];
 	}
 
+//Deprecated
 #define stat_lose(spellbullet, inst)
 	with inst spell_call_self(spellbullet, "on_lose");
 	if dev trace("STAT LOST")
 
 #define spellpower_change(inst, spellpower)
 	with inst {
-		
-		for (var i = 0, l = bulletLoopMax; i < l; i++) {
-		
-			stat_lose(spellBullets[i], inst);
-		}
+		effects_call_reverse(activeEffects, "on_deactivate")
 		sage_spell_power += spellpower;
-		for (var i = 0, l = bulletLoopMax; i < l; i++) {
-		
-			stat_gain(spellBullets[i], inst);
-		}
+		activeEffects = bullets_compose(get_active_bullets())
+		effects_call(activeEffects, "on_activate")
 	}
 	
 #define spell_init(_spell)
 	
 	if (is_object(_spell)) {
-		
 		return _spell;
 	}
 	
 	var spell = {
-		
-		type: _spell
-	}
+		type: _spell,
+		effects: []
+	};
+	
 	mod_script_call("mod", spell.type, "on_init", spell);
+	spell.effects = mod_script_call("mod", effectMod, "bullet_get_effects", spell);
+	mod_script_call("mod", spell.type, "post_init", spell);
 	return spell;
 	
 #define spell_give(_player, _spell)
@@ -1129,16 +1202,17 @@ In Burst fire, call sage_shoot for each burst shot.
 	if bulletCount == 0 { // Gain stats when you have no bullets:
 		
 		array_push(spellBullets, spell);		
-		stat_gain(spell, _player);
+		// stat_gain(spell, _player);
+		refresh_effects()
 		return undefined;
 	}
 	
-	if (bulletCount < max_spellbullets) {
+	if (bulletCount < max_spellbullets) { //If the player has space to hold it.
 		
-		if (!ultra_b) {
+		// if (!ultra_b) {
 		
-			stat_lose(spellBullets[0], _player);	
-		}
+		// 	stat_lose(spellBullets[0], _player);	
+		// }
 		
 		array_push(spellBullets, "a");
 		for(var i = bulletCount - 1; i >= 0; i--) {
@@ -1146,15 +1220,18 @@ In Burst fire, call sage_shoot for each burst shot.
 			spellBullets[i + 1] = spellBullets[i];
 		}
 		spellBullets[0] = spell;
-		stat_gain(spell, _player);
+		// stat_gain(spell, _player);
+		refresh_effects()
 		return undefined;
 	}
 	
+	//If the player must drop a bullet to hold this
 	var oldSpell = spellBullets[0];
 	
-	stat_lose(oldSpell, _player);
+	// stat_lose(oldSpell, _player);
 	spellBullets[0] = spell;
-	stat_gain(spellBullets[0], _player);
+	// stat_gain(spellBullets[0], _player);
+	refresh_effects()
 	
 	return oldSpell;
 
@@ -1268,9 +1345,9 @@ In Burst fire, call sage_shoot for each burst shot.
 
 		//if dev trace(type, bullets[? type])
 		spell = spell_init(spell);
-		my_prompt = prompt_create(spell_call_nc(spell, "bullet_name", spell));
-		sprite_index = spell_call_nc(spell, "bullet_sprite", 1);
-		image_index = ultra_get("sage", 1);
+		my_prompt = prompt_create(spell_call_nc(spell, "bullet_name", 0));
+		sprite_index = spell_call_nc(spell, "bullet_sprite", 0);
+		image_index = has_ultra_a;
 		
 		return self;
 	}
@@ -1613,3 +1690,117 @@ In Burst fire, call sage_shoot for each burst shot.
 
 #define angle_approach(a, b, n, dn)
 	return angle_difference(a, b) * (1 - power((n - 1)/n, dn))
+
+
+
+
+#define trace_obj_start(obj, fieldname, _x, _y)
+	try_trace_object(obj, fieldname, {x: _x, y: _y})
+
+
+#define get_structure_starter
+var obj = argument[0];
+var fieldName = argument_count > 1 ? argument[1] : "";
+	if (fieldName != "") {
+		return fieldName + " @s: " + get_object_bracket(obj) + "@w"
+	}
+	return get_object_bracket(obj)
+
+#define get_object_bracket(obj)
+	if is_object(obj) return "{"
+	if is_array(obj) return "["
+	if ds_map_valid(obj) return "{ ?"
+	if ds_list_valid(obj) return "[ |"
+	
+	
+#define try_trace_object(obj, fieldname, pos)
+
+	var passed = false;
+	if is_array(obj) {
+		passed = true
+		draw_line_pos(pos, get_structure_starter(obj, fieldname))
+		for (var i = 0, l = array_length(obj); i < l; i++) {
+			try_trace_indented(obj[i], "", pos)
+		}
+		draw_line_pos(pos, "@s]@w")
+	}
+	if is_object(obj) {
+		passed = true
+		draw_line_pos(pos, get_structure_starter(obj, fieldname))
+		for (var i = 0, l = lq_size(obj); i < l; i++) {
+			var value = lq_get_value(obj, i),
+				key =   lq_get_key(obj, i);
+				
+			try_trace_indented(value, key, pos);
+		}
+		
+		draw_line_pos(pos, "@s}@w")
+	}
+	if ds_map_valid(obj) {
+		passed = true
+		draw_line_pos(pos, get_structure_starter(obj, fieldname))
+		
+		var values = ds_map_values(obj),
+			keys = ds_map_keys(obj);
+		
+		for (var i = 0, l = array_length(values); i < l; i++) {
+			try_trace_indented(values[i], keys[i], pos)
+		}
+			
+		draw_line_pos(pos, "@s}@w")
+	}
+	if ds_list_valid(obj) {
+		passed = true
+		draw_line_pos(pos, get_structure_starter(obj, fieldname))
+		var values = ds_list_to_array(obj);
+		for (var i = 0, l = array_length(values); i < l; i++) {
+			try_trace_indented(values[i], "", pos)
+		}
+		draw_line_pos(pos, "@s]@w")
+	}
+	if is_string(obj) {
+		obj = `@(color:${merge_color(c_white, c_lime, .3)})"${obj}"@w`
+	}
+	
+	if (!passed) {
+		if (fieldname != "") {
+			draw_line_pos(pos, fieldname + " : " + string(obj))
+		}
+		else {
+			draw_line_pos(pos, string(obj))
+		}
+	}
+	
+#define try_trace_indented(obj, fieldname, pos)
+	pos.x += 6
+	try_trace_object(obj, fieldname, pos)
+	pos.x -= 6
+
+#define trace_lwo_start(lwo, _x, _y)
+	trace_lwo(lwo, {x: _x, y: _y})
+
+#define trace_lwo(lwo, pos)
+	for (var i = 0, l = lq_size(lwo); i < l; i++) {
+		var value = lq_get_value(lwo, i),
+			key =   lq_get_key(lwo, i) + " : ";
+		
+		if is_object(value) {
+			key += "{"
+		}
+		else {
+			key += string(value)
+		}
+		
+		draw_line_pos(pos, key)
+
+		if is_object(value) {
+			pos.x += 6
+			trace_lwo(value, pos)
+			pos.x -= 6
+			draw_line_pos(pos, "}")
+		}
+	}
+
+#define draw_line_pos(pos, text)
+	draw_text_nt(pos.x, pos.y, text)
+	pos.y += string_height(text) + 1

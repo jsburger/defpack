@@ -19,6 +19,16 @@
   var arr = [];
   wait file_find_all("bullets", arr);
   with(arr){
+    
+    //TEMPORARY DEBUG CODE
+    var allowed = ["Test", "Default", "Melee", "Gold", "Prec", "Infammo"], passed = false;
+    with (allowed) {
+        if string_count(self, other.path) {
+            passed = true
+            break
+        }
+    }
+    if !passed continue
 
     wait(mod_load(self.path));
 
@@ -42,11 +52,11 @@
       _defkeys = [],
       _defvalues = [],
       _defn = 0;
-  for var o = 0; o < lq_size(global.defaultitem); o++{
+  for (var o = 0; o < lq_size(global.defaultitem); o++) {
       array_push(_defkeys, lq_get_key(global.defaultitem, o))
       array_push(_defvalues, lq_get_value(global.defaultitem, o))
   }
-  for var i = 0; i < len; i++ {
+  for (var i = 0; i < len; i++) {
       _item = global.BulletDirectory[? keys[i]];
       _item.key = keys[i]
       _defn = 0

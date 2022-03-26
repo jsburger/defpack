@@ -2,6 +2,21 @@
   global.sprBullet = sprite_add("../../../sprites/sage/bullets/sprBulletGold.png", 2, 7, 11);
   global.sprFairy = sprite_add("../../../sprites/sage/bullet icons/sprFairyIconGold.png", 2, 5, 5);
 
+
+  global.effects = [
+        simple_stat_effect("reloadspeed", .15, .15),
+        simple_stat_effect("accuracy", .75, 1),
+        effect_instance_named("projectileSpeed", .15, .15),
+        simple_stat_effect("maxspeed", .5, 0)
+      ]
+
+
+#define simple_stat_effect(variableName, value, scaling)
+    return mod_script_call("mod", "sageeffects", "simple_stat_effect", variableName, value, scaling)
+
+#define effect_instance_named(effectName, value, scaling)
+    return mod_script_call("mod", "sageeffects", "effect_instance_create", value, scaling, effectName)
+
 #macro c mod_variable_get("race", "sage", "colormap");
 
 #define fairy_sprite
@@ -30,29 +45,32 @@
   sound_play_pitchvol(sndSwapShotgun, 1.2 * _p, .9);
   sound_play_pitchvol(sndCrossReload, 1.4 * _p, .9);
 
-#define bullet_description(power)
-  return `@(color:${c.neutral})+${reloadBoost(power) * 100}% @(color:${c.reload})RELOAD SPEED#@(color:${c.neutral})+${accuracyBoost(power) * 100}% @(color:${c.accuracy})ACCURACY#@(color:${c.neutral})+${projectileBoost(power) * 100}% @(color:${c.projectile_speed})PROJECTILE SPEED#@(color:${c.neutral})+${speedBoost} @(color:${c.speed})SPEED`;
+#define bullet_effects(bullet)
+    return global.effects
 
-#macro spellBoost (1 + spellPower)
-#define reloadBoost(spellPower)
-    return .15 * spellBoost
-#define projectileBoost(spellPower)
-    return .15 * spellBoost
-#define accuracyBoost(spellPower)
-    return .25 * spellBoost
-#macro speedBoost .5
+// #define bullet_description(power)
+//   return `@(color:${c.neutral})+${reloadBoost(power) * 100}% @(color:${c.reload})RELOAD SPEED#@(color:${c.neutral})+${accuracyBoost(power) * 100}% @(color:${c.accuracy})ACCURACY#@(color:${c.neutral})+${projectileBoost(power) * 100}% @(color:${c.projectile_speed})PROJECTILE SPEED#@(color:${c.neutral})+${speedBoost} @(color:${c.speed})SPEED`;
 
-#define on_take(power)
-  accuracy /= 1 + accuracyBoost(power)
-  reloadspeed += reloadBoost(power)
-  sage_projectile_speed += projectileBoost(power);
-  maxspeed += speedBoost;
+// #macro spellBoost (1 + spellPower)
+// #define reloadBoost(spellPower)
+//     return .15 * spellBoost
+// #define projectileBoost(spellPower)
+//     return .15 * spellBoost
+// #define accuracyBoost(spellPower)
+//     return .25 * spellBoost
+// #macro speedBoost .5
 
-#define on_lose(power)
-  accuracy *= 1 + accuracyBoost(power)
-  reloadspeed -= reloadBoost(power);
-  sage_projectile_speed -= projectileBoost(power);
-  maxspeed -= speedBoost;
+// #define on_take(power)
+//   accuracy /= 1 + accuracyBoost(power)
+//   reloadspeed += reloadBoost(power)
+//   sage_projectile_speed += projectileBoost(power);
+//   maxspeed += speedBoost;
+
+// #define on_lose(power)
+//   accuracy *= 1 + accuracyBoost(power)
+//   reloadspeed -= reloadBoost(power);
+//   sage_projectile_speed -= projectileBoost(power);
+//   maxspeed -= speedBoost;
   
 #define on_fire
     if(wep != wep_golden_crossbow) {

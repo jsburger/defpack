@@ -70,7 +70,7 @@
     }
 
 #define get_rad_ammo_cost(wep)
-    return min(sage_ammo_to_rads, 1) * (weapon_get_type(wep) == 1 ? 4 : 16) * ceil(1 + sage_ammo_cost) * weapon_get_cost(wep);
+    return min(sage_ammo_to_rads, 1) * (weapon_get_type(wep) == 1 ? 4 : 16) * weapon_get_cost(wep);
 
 #define disable_boost(spellPower)
     if sage_ultra_boosted {

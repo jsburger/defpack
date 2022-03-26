@@ -1,6 +1,9 @@
 #define init
 	global.bind_step = noone;
-
+	
+	global.lastProjectileId = 0;
+	global.normalStep = noone;
+	
 #macro player_firing
 
 	//thanks brokin
@@ -206,20 +209,44 @@
     }
 #define step
 	 // Bind Step:
+	 //what for tho. what is this?
 	if(!instance_exists(global.bind_step)){
 		global.bind_step = script_bind_step(hitbounce_step, 0);
 	}
-	with instances_matching(Player, "race", "sage") {
-	  with instances_matching(projectile, "creator", self) {
-		bounce(self);
-	  }
-
-	  if player_firing{
-	  	var event = mod_script_call_self("race", "sage", "before_sage_shoot");
-	  	script_bind_step(call_sage_shit_idc, 0, self, event)
-	  }
+	var sages = instances_matching(Player, "race", "sage");
+	 // Bind Another Step:
+	if array_length(sages) > 0 {
+		if(!instance_exists(global.normalStep)) {
+			global.normalStep = script_bind_step(normal_step, 0);
+		}
 	}
+	with sages {
+		//this code looks a little, sussy. i should replace this
+		with instances_matching(projectile, "creator", self) {
+			bounce(self);
+		}
 
+		if player_firing {
+			var event = mod_script_call_self("race", "sage", "before_sage_shoot");
+			script_bind_step(call_sage_shit_idc, 0, self, event)
+		}
+	}
+	
+
+#define normal_step
+	if !array_length(instances_matching(Player, "race", "sage")) {
+		instance_destroy()
+		exit
+	}
+	if (instance_exists(projectile) && projectile.id > global.lastProjectileId) {
+		var newProjectiles = instances_matching_gt(projectile, "id", global.lastProjectileId);
+		
+		with instances_matching(Player, "race", "sage") {
+			mod_script_call_self("race", race, "on_new_projectiles", newProjectiles)
+		}
+		//instances_matching sorts by descending id
+		global.lastProjectileId = newProjectiles[0]
+	} 
 
 #define call_sage_shit_idc(sage, event)
 	instance_destroy()
@@ -693,6 +720,7 @@
 	}
 	instance_delete(self);
 
+	//wtf is this why do we have this
 #define hitbounce_step
 	if(skill_get("hitbounce") && instance_exists(projectile) && instance_exists(hitme)){
 		var _inst = instances_matching_gt(projectile, "sage_bounce", 0);
