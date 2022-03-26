@@ -193,7 +193,7 @@ return "UNSEEN ALLIES";
 	var dn = z
 	z -= current_time_scale*zspd
 	if z <= 25 and z > -25{
-	    mask_index = sprFlak;
+	    mask_index = sprFlakBullet;
 	    depth = TopCont.depth+1
 	    if skill_get(mut_bolt_marrow){
 	        var q = mod_script_call_self("mod", "defpack tools", "instance_nearest_matching_ne", x, y, hitme, "team", team)

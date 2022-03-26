@@ -188,6 +188,7 @@
 		MegaDiscSplat[4] = sprite_add  (i + "sprMegaDiscSplat5.png", 1, 12, 12);
 		MegaDiscSplat[5] = sprite_add  (i + "sprMegaDiscSplat6.png", 1, 12, 12);
 		MegaDiscSplat[6] = sprite_add  (i + "sprMegaDiscSplat7.png", 1, 12, 12);
+		MegaDiscSplat[7] = sprite_add  (i + "sprMegaDiscSplat8.png", 1, 12, 12);
 
 
 		//Blades
@@ -4242,8 +4243,8 @@ move_bounce_solid(true)
 	    damage = 2
 	    maxspeed = speed
 		turn = random(100) <= 11 ? -1 : 1; // What direction to turn towards, reflects percentage of left-handed population
-		image_yscale *= turn * -1;        // so it always cuts properly
-		cansplat = true;                  // If a blood splat has been applied yet
+		image_yscale *= turn * -1;         // so it always cuts properly
+		kills = 0;                         // Kill tracker
 		hitid = [spr.MegaDiscHitId, name];
 
 	    on_step    = megadisc_step;
@@ -4257,6 +4258,15 @@ move_bounce_solid(true)
 
 #define megadisc_step
 	disc_step(1);
+
+	if kills > 0 && irandom(99) <= current_time_scale * kills * 3{
+	
+		repeat(1 + irandom(1)) with instance_create(x, y, AllyDamage){
+		
+			motion_add(random(360), 2 + irandom(1));
+			friction = .2;
+		}
+	}
 
 	image_angle += turn * (12 + speed) * current_time_scale;
 	
@@ -4309,21 +4319,37 @@ move_bounce_solid(true)
 		x -= hspeed / 2;
 	    y -= vspeed / 2;
 	    projectile_hit(other, damage, speed / 4, direction);
-	    if other.my_health <= 0 {
+	    if other.my_health <= 0 && !instance_is(other, prop){
 
 			sleep( 32 + 12 * clamp(other.size, 1, 3));
 			view_shake_at(x, y, 5 + 3 * clamp(other.size, 1, 3));
 			sound_play_pitch(sndDiscHit, .9);
-			if cansplat && !instance_is(other, prop) {
+			
+			kills += max(.5, other.size);
+			if instance_is(other, Player) kills += 999;
+			
+			for(var _i = 0, _ang = random(360), _amount = 3; _i < _amount; _i++){
+			
+				with instance_create(other.x, other.y, BloodStreak){
+				
+					image_angle = _ang;
+					motion_add(image_angle, 5);
+				}
+				_ang += 360/_amount;
+			}
+			
+			if (kills >= 12){spr_splat = spr.MegaDiscSplat[7]}
+			else if (kills >= 8){spr_splat = spr.MegaDiscSplat[5]}
+			else if (kills >= 5){spr_splat = spr.MegaDiscSplat[6]}
+			else if (kills >= 3){spr_splat = spr.MegaDiscSplat[choose(0, 1, 2)]}
+			else if (kills >= 2){spr_splat = spr.MegaDiscSplat[4]}
+			else if (kills > 0){spr_splat = spr.MegaDiscSplat[3]}
+			
+			for(var _i = 0, _a = 3, _d = random(360); _i < _a; _i++) {
 
-				cansplat = false;
-				spr_splat = spr.MegaDiscSplat[irandom(max(array_length(spr.MegaDiscSplat) - 1, 0))];
-				for(var _i = 0, _a = 3, _d = random(360); _i < _a; _i++) {
+				with instance_create(other.x, other.y, determine_gore(other)) {
 
-					with instance_create(other.x, other.y, determine_gore(other)) {
-
-						image_angle = _d + 360 / _a * _i;
-					}
+					image_angle = _d + 360 / _a * _i;
 				}
 			}
 	    }

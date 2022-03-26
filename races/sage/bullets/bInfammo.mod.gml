@@ -1,7 +1,7 @@
 #define init
   global.sprBullet = sprite_add("../../../sprites/sage/bullets/sprBulletInfammo.png", 2, 7, 11);
   global.sprFairy  = sprite_add("../../../sprites/sage/bullet icons/sprFairyIconInfammo.png", 2, 5, 5);
-  global.sprEffect = sprite_add("../../../sprites/sage/fx/sprBulletFXInfammoProc.png", 7, 5, 5);
+  global.sprEffect = sprite_add("../../../sprites/sage/fx/sprBulletFXInfammoProc.png", 8, 5, 5);
 
 #macro c mod_variable_get("race", "sage", "colormap");
 
@@ -57,10 +57,13 @@
             
             sprite_index = global.sprEffect;
             depth = other.depth -1
-            //image_speed += .15;
+            image_speed += .15;
             image_angle = random(360)
             x += random_range(-3, 3)
             y += random_range(-3, 3)
+            
+            motion_add(other.gunangle, 3 + irandom(3));
+            friction = .5;
         }
         var _p = random_range(.9, 1.1);
         sound_play_pitchvol(sndRecGlandProc, 1.4 * _p, 1.3);

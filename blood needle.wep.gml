@@ -13,9 +13,10 @@
 // V. 3: on kill -> create splinters on top of enemies (is aoe yes but splinters have trouble hitting)
 // V. 4: on kill -> create blood explo on top of enemies (covered by the bones)
 // V. 5: on kill -> +1 HP
+// V. 6: on kill -> 3 more kills
 
 #define weapon_name
-  return "NEEDLE";
+  return "CORPSE NEEDLE";
 
 #define weapon_type
   return 0;
@@ -53,7 +54,7 @@ return{
 }
 
 #define weapon_text
-  return "DRAW BLOOD";
+  return "WHERE DO THESE CORPSES COME FROM";
 
 #define weapon_fire
   var _offset = 12 + skill_get(mut_long_arms) * 8;
@@ -99,9 +100,19 @@ return{
   var _e = other,
       _c = creator;
   if projectile_canhit_melee(_e) = true{
-    repeat(3) with instance_create((other.x*other.size+x)/(other.size+1),(other.y*other.size+y)/(other.size+1),determine_gore(other)){image_angle = random(360)}
+    if !instance_is(_e, prop) repeat(3) with instance_create((other.x*other.size+x)/(other.size+1),(other.y*other.size+y)/(other.size+1),determine_gore(other)){image_angle = random(360)}
     projectile_hit(_e, damage, force, direction);
     if _e.my_health <= 0 && !instance_is(_e, prop){
+    	
+    	repeat(3){
+    		
+    		with instance_create(other.x, other.y, other.object_index){
+    			
+    			raddrop = 0;
+    			projectile_hit(self, maxhealth, 5 + irandom(5), random(360));
+    		}
+    	}
+    	
         view_shake_at(x, y, 16);
         sleep(10 + min(_e.size, 3) * 12);
 
@@ -111,7 +122,7 @@ return{
             sleep(10 + min(_e.size, 3) * 12);
 
 	    }
-            sound_play(sndBloodlustProc);
+            /*sound_play(sndBloodlustProc);
             with _c{
                var _a = my_health < maxhealth,
                    _d = "+1 HP";
@@ -124,7 +135,7 @@ return{
                     target = _c.index;
                     text   = _d;
                 }
-            }
+            }*/
         }
     }
 

@@ -14,10 +14,10 @@
   return global.sprBullet;
 
 #define bullet_name
-  return "LOVE";
+  return "PIZZA";
 
 #define bullet_ttip
-  return [`PIZZA LOVERS DELIGHT`, "EVERYONE LOVES PIZZA", "IN THE SHAPE OF LOVE"];
+  return [`PIZZA LOVERS DELIGHT`, "EVERYONE LOVES PIZZA"];
 
 #define bullet_area
   return -1;
@@ -30,7 +30,7 @@
 
 #define bullet_description(power)
     var _s = string(3 + ceil(2 * power));
-    return `@(color:${c.neutral})+WHEN @wHIT: @(color:${c.neutral})FIRE @w` + string(_s) + ` @y` + (_s == 1 ? `PIZZA` : `PIZZAS`);
+    return `@(color:${c.neutral})WHEN @wHIT: @(color:${c.neutral})FIRE ` + string(_s) + ` @y` + (_s == 1 ? `PIZZA` : `PIZZAS`);
 
 #define on_take(power)
     if("sage_pizza_power" not in self) {

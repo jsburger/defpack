@@ -67,20 +67,20 @@ NOTES FROM JSBURG:
 	global.spr_hurt[0] = sprite_add(_i + "sprGunHurt.png",	3, 12, 12);
 	global.spr_dead[0] = sprite_add(_i + "sprGunDie.png",  	6, 12, 12);
 	global.spr_sit1[0] = sprite_add(_i + "sprGunGoSit.png",	3, 12, 12);
-	global.spr_sit2[0] = sprite_add(_i + "sprGunSit.png",		1, 12, 12);
+	global.spr_sit2[0] = sprite_add(_i + "sprGunSit.png",	1, 12, 12);
 
 	 // B-Skin:
 	global.spr_idle[1] = sprite_add(_i + "sprGunIdle.png",	6, 12, 12);
 	global.spr_walk[1] = sprite_add(_i + "sprGunWalk.png",	6, 12, 12);
 	global.spr_hurt[1] = sprite_add(_i + "sprGunHurt.png",	3, 12, 12);
-	global.spr_dead[1] = sprite_add(_i + "sprGunDie.png",	  6, 12, 12);
+	global.spr_dead[1] = sprite_add(_i + "sprGunDie.png",	6, 12, 12);
 	global.spr_sit1[1] = sprite_add(_i + "sprGunGoSit.png",	3, 12, 12);
-	global.spr_sit2[1] = sprite_add(_i + "sprGunSit.png",		1, 12, 12);
+	global.spr_sit2[1] = sprite_add(_i + "sprGunSit.png",	1, 12, 12);
 
 	 // Character Selection / Loading Screen:
 	global.spr_slct = sprite_add(_i + "sprGunSlct.png", 1, 0,  0);
 	global.spr_port = sprite_add(_i + "sprGunPortrait.png",	1,	40, 243);
-	global.spr_skin = sprite_add(_i + "sprGunSkin.png",		race_skins(),	16, 16);
+	global.spr_skin = sprite_add(_i + "sprGunSkin.png",		race_skins(),	13, 13);
 	global.spr_icon = sprite_add(_i + "sprGunMapIcon.png",	race_skins(),	10, 10);
 
 	 // Ultras:
@@ -135,6 +135,7 @@ NOTES FROM JSBURG:
 		bounce:           $00ABFA,
 		reload:           $FFFFFF,
 		aqua:             c_aqua,
+		health:           c_red,
 		spell:            merge_color(make_color_rgb(28, 98, 85), c_white, .1),
 	}
 
@@ -582,7 +583,7 @@ NOTES FROM JSBURG:
  // Thanks Brokin
 
 #macro bullets mod_variable_get("mod", "SageBullets", "BulletDirectory")
-#macro max_spellbullets 2 + dev * 2// + skill_get(5)
+#macro max_spellbullets 2 + dev * 18// + skill_get(5)
 #macro fairy_swap_time 6
 #macro dev false
 #macro c global.colormap
@@ -606,7 +607,7 @@ NOTES FROM JSBURG:
 	spellBullets = [];
 
 	if dev {
-		/*spell_give(self, "bGold");
+		spell_give(self, "bGold");
 		spell_give(self, "bMelee");
 		spell_give(self, "bTurret");
 		spell_give(self, "bInfammo");
@@ -618,7 +619,12 @@ NOTES FROM JSBURG:
 		spell_give(self, "bUltra");
 		spell_give(self, "bRust");
 		spell_give(self, "bCursed");
-		spell_give(self, "bLove");*/
+		spell_give(self, "bLove");
+		spell_give(self, "bMaggot");
+		spell_give(self, "bQuartz");
+		spell_give(self, "bGadget");
+		spell_give(self, "bHeart");
+		spell_give(self, "bEcho");
 	}
 
 	fairy = {

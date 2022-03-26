@@ -69,7 +69,7 @@
                     bounces += _s.sage_bounce;
                 }
                 else if "wallbounce" in self {
-                    wallbounce += round(_s.sage_bounce)
+                    wallbounce += round(_s.sage_bounce * 1.7)
                 }
                 else {
                     sage_bounce = _s.sage_bounce

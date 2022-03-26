@@ -157,6 +157,115 @@ enum operators {
         add,
         multiply
     }
+#define personalities_init
+    enum personality {
+        aggressive, // All caps, replace . with !
+        chill,      // All lowercase, remove punctuation
+        normal      // Keep string unformatted
+    }
+    
+    global.quip_positive_pickup = [
+        "Hi.",
+        "Hiiii.",
+        "Hi hello hiii.",
+        "What's up?",
+        "Hello.",
+        "Nice to see you.",
+        "Well hello there.",
+        "Hi Friend :)",
+        "Let's go.",
+        "A new friend."
+    ];
+    global.quip_positive_hurt = [
+        "Don't give up!",
+        "Just a scratch."
+    ];
+    global.quip_positive_idle = [
+        "You got this.",
+        "You look nice today.",
+        "What a nice smile you have.",
+        "I like you.",
+        "We got this.",
+        "This is awesome.",
+        "I could stay with you here forever.",
+        "It's nice being around you.",
+        "You wanna hang later?",
+        "We make a great team."
+    ];
+    global.quip_positive_drop = [
+        "I'll miss you.",
+        "Bye.",
+        "Byeee~",
+        "Goodbye.",
+        "It was nice knowing you",
+        "Do well, my friend.",
+        "See you later.",
+        "Go chase your dreams.",
+        "Bye :("
+    ];
+    
+    global.quip_negative_pickup = [
+        "Oh.",
+        "Ugh...",
+        "Erm...",
+        "Hello i guess.",
+        "Do i have to?",
+        "Please leave me alone."
+    ];
+    global.quip_negative_hurt = [
+        "Wow, you suck.",
+        "Another one.",
+        "It can't be that hard",
+        "Skill issue.",
+        "Lmao.",
+        "Lol.",
+        "Wow amazing job.",
+        "How hard can it be?",
+        "Again?",
+        "You really like taking damage.",
+        "You suck.",
+        "Watch it buddy.",
+        "Are you blind?",
+        "What the hell are you doing?"
+    ];
+    global.quip_negative_idle = [
+        "Hey. Screw you.",
+        "God you're ugly.",
+        "I Can't stand you.",
+        "I don't like you.",
+        "Please leave me alone.",
+        "You smell awful.",
+        "Why me?",
+        "You're unbearable.",
+        "Please die faster.",
+        "How are you still alive?"
+    ];
+    global.quip_negative_drop = [
+        "God finally.",
+        "And don't come back!",
+        "See you in hell.",
+        "Some people man.",
+        "Eugh.",
+        "I won't miss you."
+    ];
+
+    ptype = choose(personality.aggressive, personality.chill, personality.normal); // Personality type
+    positive = irandom(1); // Bool, ositive or negatve quips
+    quip = ""; // What to say
+    
+    // Personality based string processing:
+    switch(ptype) {
+        case personality.aggressive:
+            string_replace_all(quip, ".", choose("!", "!", "!", "!", "!!", "!!", "!!!")); // Swap dots with exlamation marks
+            quip = string_upper(quip); // Turn string all uppercase
+            break;
+        case personality.chill:
+            quip = string_lower(string_lettersdigits(quip)); // Remove punctuation and turn it to all lowercase
+            break;
+        case personality.normal:
+            break; // Nothing to do here
+    }
+    
 #define names_init
     global.adjectives = [
         "DUBIOUS ",
