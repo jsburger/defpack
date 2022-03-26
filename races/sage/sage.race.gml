@@ -507,7 +507,7 @@ NOTES FROM JSBURG:
 	if instance_exists(_p) {
 		var d = mod_script_call("mod", effectMod, "effects_descriptions", _p.activeEffects, _p.sage_spell_power);
 		draw_set_font(fntSmall);
-		draw_text_nt(-13, 46, "Active Effects :#" + d)
+		draw_text_nt(-13, 46, "Active Effects:#" + d)
 		draw_set_font(fntM);
 	}
 
@@ -515,7 +515,7 @@ NOTES FROM JSBURG:
 
 		var d = mod_script_call("mod", effectMod, "effects_descriptions", _p.activeEffects, _p.sage_spell_power);
 		draw_set_font(fntSmall);
-		draw_text_nt(-13, 46, "Active Effects :#" + d)
+		draw_text_nt(-13, 46, "Active Effects:#" + d)
 		draw_set_font(fntM);
 	}
 
@@ -589,7 +589,7 @@ NOTES FROM JSBURG:
 #macro bullets mod_variable_get("mod", "SageBullets", "BulletDirectory")
 #macro max_spellbullets 2 + dev * 18// + skill_get(5)
 #macro fairy_swap_time 6
-#macro dev false
+#macro dev true
 #macro c global.colormap
 #macro c_fairy $AFA79A
 #macro c_darkteal c_purple
@@ -605,6 +605,7 @@ NOTES FROM JSBURG:
 #define create
 	uiroll = 0;
 
+	sage_ultra_boosted = false;
 	sage_projectile_speed = 1; // Projectile speed multiplier
 	sage_spell_power = 0;      // Sage spellpower multiplier
 	sage_ammo_cost = 0; 	   // ammo cost multiplier
@@ -620,19 +621,19 @@ NOTES FROM JSBURG:
 		spell_give(self, "bTurret");
 		spell_give(self, "bInfammo");
 		spell_give(self, "bPrecision");
-		spell_give(self, "bReflective");
+		spell_give(self, "bGadget");
+		spell_give(self, "bUltra");
+		/*spell_give(self, "bReflective");
 		spell_give(self, "bWarp");
 		spell_give(self, "bBurst");
 		spell_give(self, "bSplit");
-		spell_give(self, "bUltra");
 		spell_give(self, "bRust");
 		spell_give(self, "bCursed");
 		spell_give(self, "bLove");
 		spell_give(self, "bMaggot");
 		spell_give(self, "bQuartz");
-		spell_give(self, "bGadget");
 		spell_give(self, "bHeart");
-		spell_give(self, "bEcho");
+		spell_give(self, "bEcho");*/
 	}
 
 	fairy = {
@@ -731,10 +732,11 @@ NOTES FROM JSBURG:
 	friction = max(0, friction * sage_friction);
 
 	//Call bullet step events
-	for (var i = 0, l = bulletLoopMax; i < l; i++) {
+	/*for (var i = 0, l = bulletLoopMax; i < l; i++) {
 		
 		spell_call_self(spellBullets[i], "on_step");
-	}
+	}*/
+	effects_call(activeEffects, "on_step");
 
 
 	///  ACTIVE : Swap Spells  \\\
@@ -746,7 +748,7 @@ NOTES FROM JSBURG:
 		fairy.swapframes = 6;
 		sleep(5);
 		weapon_post(1, 4, 0);
-
+		
 		// This is only for playing the swap sound of the bullet youre swapping into
 		spell_call_self(spellBullets[1], "bullet_swap");
 

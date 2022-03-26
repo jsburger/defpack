@@ -1,4 +1,8 @@
 #define init
+    // Ultra fx:
+	global.sprUltraSpark = sprite_add("../../sprites/sage/fx/sprBulletFXUltraActivate.png", 5, 5, 5);
+    global.sprUltraSpark2 = sprite_add("../../sprites/sage/fx/sprBulletFXUltraNoRads.png", 5, 9, 9);
+
     #macro effectTypes global.effectTypes
     effectTypes = ds_map_create();
     
@@ -64,13 +68,35 @@ enum operators {
         on_new_projectiles = script_ref_create(projectile_speed_update)
     }
     
+    with effect_type_create("projectileDamage", `{} @rDAMAGE`, describe_percentage) {
+        on_new_projectiles = script_ref_create(projectile_damage_update)
+    }
+    
     //Uncommon effects
     //Size
-    with effect_type_create("size", `{} @rSIZE`, describe_size) {
+    with effect_type_create("size", `{} @wSIZE`, describe_size) {
         effect_type_make_multiplicative(self)
         on_activate = script_ref_create(size_activate)
         on_deactivate = script_ref_create(size_deactivate)
         scr_positivity = script_ref_create(positivity_compare, 1)
+    }
+    
+    //Auto fire
+    with effect_type_create("autoFire", `@(color:${c.neutral})+@wAUTOMATIC WEAPONS`, describe_nothing) {
+		on_step = script_ref_create(auto_step)
+    }
+    
+    //Ammo to rads
+    with effect_type_create("ammoToRads", `@(color:${c.neutral})+USE @gRADS @(color:${c.neutral})AS @(color:${c.ammo})AMMO`, describe_nothing) {
+		on_pre_shoot = script_ref_create(ultra_pre_shoot);
+		on_rads_use = script_ref_create(ultra_rads_use);
+		on_rads_out = script_ref_create(ultra_rads_out);
+    }
+    
+    //Reload speed on rad use
+    with effect_type_create("reloadspeedOnRadUse", `{} @wRELOAD SPEED @(color:${c.neutral})WHEN USING @gRADS`, describe_percentage) {
+		on_rads_powerup_activate = script_ref_create(ultra_rads_reloadspeed_powerup_activate);
+		on_rads_powerup_deactivate = script_ref_create(ultra_rads_reloadspeed_powerup_deactivate);
     }
     
 //Effects Core below
@@ -422,6 +448,15 @@ var describe_script = argument_count > 3 ? argument[3] : describe_pass;
         }
     }
 
+#define projectile_damage_update(value, effect, newProjectiles)
+	with newProjectiles {
+		
+		damage = ceil(damage * (1 + value));
+		if !instance_is(self, Lightning) && !instance_is(self, Laser) {
+			image_xscale *= 1 + clamp(value, -.5, .5);
+		}
+		image_yscale *= 1 +clamp(value, -.5, .5);
+	}
 
 #define size_activate(value, effect)
     image_xscale *= value
@@ -431,9 +466,65 @@ var describe_script = argument_count > 3 ? argument[3] : describe_pass;
     image_xscale /= value
     image_yscale /= value
 
+#define auto_step(value, effect)
+	if value > 0 clicked = (weapon_get_auto(wep) + 1) * button_check(index, "fire");
+
+#define ultra_pre_shoot(value, effect)
+if infammo == 0 {
+
+	var radCost = min(value, 1) * (weapon_get_type(wep) == 1 ? 4 : 16) * weapon_get_cost(wep);
+	if GameCont.rad > 0{
+	
+		GameCont.rad = max(GameCont.rad - radCost, 0);
+		ammo[weapon_get_type(wep)] += weapon_get_cost(wep)
+	}
+}
+
+#define ultra_rads_use(value, effect)
+	if !sage_ultra_boosted{
+		
+		sage_ultra_boosted = true;
+		effects_call(sage_spell_power, activeEffects, "on_rads_powerup_activate", 0, 0);
+	}
+	
+	with instances_matching(instances_matching(WepSwap, "creator", other), "sprite_index", global.sprUltraSpark) {
+        instance_destroy();
+    }
+
+    with instance_create(x, y, WepSwap) {
+        creator = other;
+        sprite_index = global.sprUltraSpark;
+    }
+    sound_play_pitchvol(sndUltraEmpty, .75 * random_range(.8, 1.2), .5);
+
+#define ultra_rads_out(value, effect)
+	if sage_ultra_boosted{
+		
+		sage_ultra_boosted = false;
+		effects_call(sage_spell_power, activeEffects, "on_rads_powerup_deactivate", 0, 0);
+	}
+	
+	with instance_create(x, y, WepSwap) {
+
+		with instances_matching(instances_matching(WepSwap, "creator", other), "sprite_index", global.sprUltraSpark) {
+	
+			instance_delete(self);
+		}
+		creator = other;
+	sprite_index = global.sprUltraSpark2;
+	}
+	sleep(10)
+	sound_play_pitchvol(sndUltraEmpty, 1 * random_range(.9, 1.1), .8);
+	sound_play_pitchvol(sndUltraGrenade, .7 * random_range(.9, 1.1), .5);
+	sound_play_pitchvol(sndEmpty, 1, .6);
+
+#define ultra_rads_reloadspeed_powerup_activate(value, effect)
+	reloadspeed += value;
+
+#define ultra_rads_reloadspeed_powerup_deactivate(value, effect)
+	reloadspeed -= value;
+
 //Utility scripts
-
-
 #define calculate_additive(effect, spellPower)
     return (effect.value + effect.spellpower_scaling * spellPower)
 

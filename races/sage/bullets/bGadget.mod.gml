@@ -2,8 +2,16 @@
   global.sprBullet = sprite_add("../../../sprites/sage/bullets/sprBulletGadget.png", 2, 7, 11);
   global.sprFairy = sprite_add("../../../sprites/sage/bullet icons/sprFairyIconGadget.png", 1, 5, 5);
 
+
+  global.effects = [
+        simple_stat_effect("maxhealth", 10, 5),
+        effect_instance_named("projectileDamage", .5, .5),
+        effect_instance_named("size", 2, 0),
+        simple_stat_effect("maxspeed", -1.5, 0),
+        effect_instance_named("projectileSpeed", -.15, 0)
+      ]
 #macro c mod_variable_get("race", "sage", "colormap");
-#macro sizeUp 1
+//#macro sizeUp 1
 
 #define fairy_sprite
   return global.sprFairy;
@@ -29,16 +37,18 @@
   sound_play_pitchvol(sndSwapShotgun, 1.2 * _p, .9);
   sound_play_pitchvol(sndCrossReload, 1.4 * _p, .9);
 
-#define damageBoost(spellpower)
-	return 1 + (spellpower * .5);
+//#define damageBoost(spellpower)
+//	return 1 + (spellpower * .5);
 	
-#define healthBoost(spellpower)
-	return 10 + (spellpower * 5);
+//#define healthBoost(spellpower)
+//	return 10 + (spellpower * 5);
 
-#define bullet_description(power)
-  return `@(color:${c.neutral})+50% @wSIZE#@(color:${c.neutral})+`+ string(damageBoost(power) * 100) +`% @rDAMAGE#@(color:${c.neutral})+`+ string(healthBoost(power)) + ` @(color:${c.health})MAX HP#@(color:${c.negative})-1.5 @(color:${c.speed})SPEED`;
+//#define bullet_description(power)
+//  return `@(color:${c.neutral})+50% @wSIZE#@(color:${c.neutral})+`+ string(damageBoost(power) * 100) +`% @rDAMAGE#@(color:${c.neutral})+`+ string(healthBoost(power)) + ` @(color:${c.health})MAX HP#@(color:${c.negative})-1.5 @(color:${c.speed})SPEED`;
 
-#define on_take(power)
+#define bullet_effects(bullet)
+    return global.effects
+/*#define on_take(power)
   image_xscale += sizeUp;
   image_yscale += sizeUp;
   maxhealth += healthBoost(power);
@@ -46,8 +56,8 @@
   maxspeed -= 1.5;
   sage_projectile_speed -= .15;
   if "sage_damage" not in self sage_damage = damageBoost(power) else sage_damage += damageBoost(power);
-
-#define on_lose(power)
+*/
+/*#define on_lose(power)
   image_xscale -= sizeUp;
   image_yscale -= sizeUp;
   my_health = max(my_health - healthBoost(power), 1);
@@ -55,11 +65,11 @@
   maxspeed += 1.5;
   sage_projectile_speed += .15;
   sage_damage -= damageBoost(power);
- 
-#define on_fire(power)
+ */
+/*#define on_fire(power)
 	view_shake_at(x, y, .5 * weapon_get_load(wep));
- 
-#define on_step
+*/
+/*#define on_step
 	var s = self;
 	with instances_matching_ne(instances_matching(projectile, "creator", other), "sage_damage_adjust", true){
 	
@@ -69,3 +79,7 @@
 		image_yscale *= 1.5;
 		sage_damage_adjust = true;
 	}
+*/
+
+#define simple_stat_effect(variableName, value, scaling) return mod_script_call("mod", "sageeffects", "simple_stat_effect", variableName, value, scaling)
+#define effect_instance_named(effectName, value, scaling) return mod_script_call("mod", "sageeffects", "effect_instance_create", value, scaling, effectName)

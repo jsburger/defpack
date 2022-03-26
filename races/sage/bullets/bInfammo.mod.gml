@@ -70,7 +70,7 @@
             shootEvent.infammo_restore_valid = true
         }
         infammo = -1
-        with instance_create(x + lengthdir_x(7, gunangle), y + lengthdir_y(7, gunangle), CaveSparkle) {
+        repeat(weapon_get_cost(wep)) with instance_create(x + lengthdir_x(7, gunangle), y + lengthdir_y(7, gunangle), CaveSparkle) {
             
             sprite_index = global.sprEffect;
             depth = other.depth -1

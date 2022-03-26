@@ -4,7 +4,15 @@
   global.sprFairy = sprite_add("../../../sprites/sage/bullet icons/sprFairyIconUltra.png", 0, 5, 5);
   global.sprUltraSpark = sprite_add("../../../sprites/sage/fx/sprBulletFXUltraActivate.png", 5, 5, 5);
   global.sprUltraSpark2 = sprite_add("../../../sprites/sage/fx/sprBulletFXUltraNoRads.png", 5, 9, 9);
-
+  
+  global.effects = [
+        effect_instance_named("ammoToRads", 1, 0),
+        effect_instance_named("reloadspeedOnRadUse", .35, .35)
+      ]
+      
+#define bullet_effects(bullet)
+    return global.effects
+    
 #macro c mod_variable_get("race", "sage", "colormap");
 
 #define fairy_sprite
@@ -36,28 +44,28 @@
   sound_play_pitchvol(sndSwapShotgun, 1.2 * _p, .9);
   sound_play_pitchvol(sndCrossReload, 1.4 * _p, .9);
 
-#define bullet_description(spellPower)
+/*#define bullet_description(spellPower)
   return `@(color:${c.neutral})+USE @gRADS @(color:${c.neutral})AS @(color:${c.ammo})AMMO#@(color:${c.neutral})+${get_reload_reduction(spellPower) * 100}% @wRELOAD SPEED @(color:${c.neutral})WHEN USING @gRADS`;
+*/
 
-
-#define get_reload_reduction(spellPower)
+/*#define get_reload_reduction(spellPower)
     return .35 * (1 + spellPower)
-
-#define on_take(power)
+*/
+/*#define on_take(power)
 
     if "sage_ultra_boosted" not in self sage_ultra_boosted = false
     // enable_boost(power)
     
     sage_ammo_to_rads++;
-
-#define on_lose(power)
+*/
+/*#define on_lose(power)
 //   sage_atr_reload_speed -= .5 + .5 * power;
 
     disable_boost(power)
     
     sage_ammo_to_rads--;
-
-#define on_pre_shoot(power)
+*/
+/*#define on_pre_shoot(power)
 
     if infammo == 0 {
     	  var radCost = get_rad_ammo_cost(wep);
@@ -68,23 +76,23 @@
     	  }
 
     }
-
+*/
 #define get_rad_ammo_cost(wep)
     return min(sage_ammo_to_rads, 1) * (weapon_get_type(wep) == 1 ? 4 : 16) * weapon_get_cost(wep);
 
-#define disable_boost(spellPower)
+/*#define disable_boost(spellPower)
     if sage_ultra_boosted {
         reloadspeed -= get_reload_reduction(spellPower)
         sage_ultra_boosted = false
     }
-    
-#define enable_boost(spellPower)
+  */  
+/*#define enable_boost(spellPower)
     if !sage_ultra_boosted {
         reloadspeed += get_reload_reduction(spellPower)
         sage_ultra_boosted = true
     }
-
-#define on_rads_use(spellPower)
+*/
+/*#define on_rads_use(spellPower)
 
     enable_boost(spellPower)
 
@@ -110,8 +118,8 @@
     //         trace("reload after:", reload)
     //     }
     // }
-
-#define on_rads_out(spellPower)
+*/
+/*#define on_rads_out(spellPower)
 
     disable_boost(spellPower)
     
@@ -128,3 +136,6 @@
   sound_play_pitchvol(sndUltraEmpty, 1 * random_range(.9, 1.1), .8);
   sound_play_pitchvol(sndUltraGrenade, .7 * random_range(.9, 1.1), .5);
   sound_play_pitchvol(sndEmpty, 1, .6);
+*/
+#define simple_stat_effect(variableName, value, scaling) return mod_script_call("mod", "sageeffects", "simple_stat_effect", variableName, value, scaling)
+#define effect_instance_named(effectName, value, scaling) return mod_script_call("mod", "sageeffects", "effect_instance_create", value, scaling, effectName)
