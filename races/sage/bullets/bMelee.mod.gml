@@ -2,6 +2,17 @@
   global.sprBullet = sprite_add("../../../sprites/sage/bullets/sprBulletMelee.png", 2, 7, 11);
   global.sprFairy = sprite_add("../../../sprites/sage/bullet icons/sprFairyIconMelee.png", 2, 5, 5);
 
+
+  global.effects = [
+        simple_stat_effect("reloadspeed", .25, .25),
+        simple_stat_effect("maxspeed", 1.5, 0),
+        simple_stat_effect("accuracy", 2.5, 0)
+      ]
+
+
+#define simple_stat_effect(variableName, value, scaling)
+    return mod_script_call("mod", "sageeffects", "simple_stat_effect", variableName, value, scaling)
+
 #macro c mod_variable_get("race", "sage", "colormap");
 
 #define fairy_sprite
@@ -28,15 +39,18 @@
   sound_play_pitchvol(sndSwapShotgun, 1.2 * _p, .9);
   sound_play_pitchvol(sndCrossReload, 1.4 * _p, .9);
 
-#define bullet_description(power)
-  return `@(color:${c.neutral})+` + string(round(25 + 25 * power)) + `% @(color:${c.reload})RELOAD SPEED#@(color:${c.neutral})+1.5 @(color:${c.speed})SPEED#@(color:${c.negative})-150% @(color:${c.accuracy})ACCURACY`;
+#define bullet_effects(bullet)
+    return global.effects
 
-#define on_take(power)
-  reloadspeed += .25 + .25 * power;
-  maxspeed += 1.5;
-  accuracy *= 2.5;
+// #define bullet_description(power)
+//   return `@(color:${c.neutral})+` + string(round(25 + 25 * power)) + `% @(color:${c.reload})RELOAD SPEED#@(color:${c.neutral})+1.5 @(color:${c.speed})SPEED#@(color:${c.negative})-150% @(color:${c.accuracy})ACCURACY`;
 
-#define on_lose(power)
-  reloadspeed -= .25 + .25 * power;
-  maxspeed -= 1.5;
-  accuracy /= 2.5;
+// #define on_take(power)
+//   reloadspeed += .25 + .25 * power;
+//   maxspeed += 1.5;
+//   accuracy *= 2.5;
+
+// #define on_lose(power)
+//   reloadspeed -= .25 + .25 * power;
+//   maxspeed -= 1.5;
+//   accuracy /= 2.5;
