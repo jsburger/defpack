@@ -67,7 +67,7 @@ return "POTENTIAL"
         typ = 1
         image_speed = 1
         super = false
-        if irandom(100000 - 1) == 0 {
+        if irandom(10000 / (1 + 9 * skill_get(mut_lucky_shot)) - 1) == 0 {
             damage = 999999999999999999
             speed *= 4
             bounce = 10
