@@ -1,10 +1,9 @@
 #define init
-    // Ultra fx:
-	global.sprUltraSpark = sprite_add("../../sprites/sage/fx/sprBulletFXUltraActivate.png", 5, 5, 5);
-    global.sprUltraSpark2 = sprite_add("../../sprites/sage/fx/sprBulletFXUltraNoRads.png", 5, 9, 9);
 
     #macro effectTypes global.effectTypes
     effectTypes = ds_map_create();
+    
+    global.projSpeedTracker = noone;
     
     #macro scr global.scr
     scr = {}
@@ -25,6 +24,9 @@ enum operators {
         add,
         multiply
     }
+
+#define cleanup
+	with global.projSpeedTracker instance_destroy()
 
 //So other mods can use the enum
 #define operator_get(operator_string)
@@ -67,7 +69,7 @@ enum operators {
     with effect_type_create("projectileSpeed", `{} @(color:${c.projectile_speed})PROJECTILE SPEED`, describe_percentage) {
         on_new_projectiles = script_ref_create(projectile_speed_update)
     }
-    
+    //Damage multiplier, also increases size
     with effect_type_create("projectileDamage", `{} @rDAMAGE`, describe_percentage) {
         on_new_projectiles = script_ref_create(projectile_damage_update)
     }
@@ -86,18 +88,7 @@ enum operators {
 		on_step = script_ref_create(auto_step)
     }
     
-    //Ammo to rads
-    with effect_type_create("ammoToRads", `@(color:${c.neutral})+USE @gRADS @(color:${c.neutral})AS @(color:${c.ammo})AMMO`, describe_nothing) {
-		on_pre_shoot = script_ref_create(ultra_pre_shoot);
-		on_rads_use = script_ref_create(ultra_rads_use);
-		on_rads_out = script_ref_create(ultra_rads_out);
-    }
-    
-    //Reload speed on rad use
-    with effect_type_create("reloadspeedOnRadUse", `{} @wRELOAD SPEED @(color:${c.neutral})WHEN USING @gRADS`, describe_percentage) {
-		on_rads_powerup_activate = script_ref_create(ultra_rads_reloadspeed_powerup_activate);
-		on_rads_powerup_deactivate = script_ref_create(ultra_rads_reloadspeed_powerup_deactivate);
-    }
+
     
 //Effects Core below
 
@@ -398,6 +389,7 @@ var describe_script = argument_count > 3 ? argument[3] : describe_pass;
 
 
 #define max_health_activate(value, effect)
+	value = ceil(abs(value)) * sign(value);
     maxhealth += value
     if (value > 0) {
         my_health += value
@@ -409,6 +401,7 @@ var describe_script = argument_count > 3 ? argument[3] : describe_pass;
     }
 
 #define max_health_deactivate(value, effect)
+	value = ceil(abs(value)) * sign(value);
     maxhealth -= value
     if (value > 0) {
         my_health = max(my_health - value, 1)
@@ -422,7 +415,7 @@ var describe_script = argument_count > 3 ? argument[3] : describe_pass;
     with newProjectiles {
         //Requires a permanent speed tracker
         if array_find_index(speed_boost_perma, object_index) >= 0 {
-            trace("you forgot to implement permanent speed boosts, dumbass")
+            track_speed_down(self, instance_is(self, Seeker) ? value / 1.5 : value)
         }
         //Normal Projectiles
         else {
@@ -448,6 +441,30 @@ var describe_script = argument_count > 3 ? argument[3] : describe_pass;
         }
     }
 
+#define track_speed_down(proj, modifier)
+	if !instance_exists(global.projSpeedTracker) {
+		with script_bind_step(apply_permanent_speed, 0) {
+			projectiles = []
+			global.projSpeedTracker = self
+		}
+	}
+	proj.sage_projectile_speed_modifier = modifier
+	array_push(global.projSpeedTracker.projectiles, proj)
+
+#define apply_permanent_speed
+	var proj = instances_matching_ne(projectiles, "id");
+	if array_length(proj) == 0 {
+		instance_destroy()
+		exit
+	}
+	else projectiles = proj
+	with proj {
+		x += lengthdir_x(speed_raw * sage_projectile_speed_modifier, direction)
+		y += lengthdir_y(speed_raw * sage_projectile_speed_modifier, direction)
+	}
+
+
+
 #define projectile_damage_update(value, effect, newProjectiles)
 	with newProjectiles {
 		
@@ -458,6 +475,7 @@ var describe_script = argument_count > 3 ? argument[3] : describe_pass;
 		image_yscale *= 1 +clamp(value, -.5, .5);
 	}
 
+
 #define size_activate(value, effect)
     image_xscale *= value
     image_yscale *= value
@@ -466,63 +484,15 @@ var describe_script = argument_count > 3 ? argument[3] : describe_pass;
     image_xscale /= value
     image_yscale /= value
 
+
 #define auto_step(value, effect)
-	if value > 0 clicked = (weapon_get_auto(wep) + 1) * button_check(index, "fire");
-
-#define ultra_pre_shoot(value, effect)
-if infammo == 0 {
-
-	var radCost = min(value, 1) * (weapon_get_type(wep) == 1 ? 4 : 16) * weapon_get_cost(wep);
-	if GameCont.rad > 0{
-	
-		GameCont.rad = max(GameCont.rad - radCost, 0);
-		ammo[weapon_get_type(wep)] += weapon_get_cost(wep)
-	}
-}
-
-#define ultra_rads_use(value, effect)
-	if !sage_ultra_boosted{
-		
-		sage_ultra_boosted = true;
-		effects_call(sage_spell_power, activeEffects, "on_rads_powerup_activate", 0, 0);
-	}
-	
-	with instances_matching(instances_matching(WepSwap, "creator", other), "sprite_index", global.sprUltraSpark) {
-        instance_destroy();
-    }
-
-    with instance_create(x, y, WepSwap) {
-        creator = other;
-        sprite_index = global.sprUltraSpark;
-    }
-    sound_play_pitchvol(sndUltraEmpty, .75 * random_range(.8, 1.2), .5);
-
-#define ultra_rads_out(value, effect)
-	if sage_ultra_boosted{
-		
-		sage_ultra_boosted = false;
-		effects_call(sage_spell_power, activeEffects, "on_rads_powerup_deactivate", 0, 0);
-	}
-	
-	with instance_create(x, y, WepSwap) {
-
-		with instances_matching(instances_matching(WepSwap, "creator", other), "sprite_index", global.sprUltraSpark) {
-	
-			instance_delete(self);
+	if (value > 0) {
+		//We do a little trolling
+		if (weapon_get_auto(wep) == 0 || wep == "infinipistol") {
+			clicked = button_check(index, "fire")
 		}
-		creator = other;
-	sprite_index = global.sprUltraSpark2;
 	}
-	sleep(10)
-	sound_play_pitchvol(sndUltraEmpty, 1 * random_range(.9, 1.1), .8);
-	sound_play_pitchvol(sndUltraGrenade, .7 * random_range(.9, 1.1), .5);
-	sound_play_pitchvol(sndEmpty, 1, .6);
 
-#define ultra_rads_reloadspeed_powerup_activate(value, effect)
-	reloadspeed += value;
-
-#define ultra_rads_reloadspeed_powerup_deactivate(value, effect)
-	reloadspeed -= value;
 
 //Utility scripts
 #define calculate_additive(effect, spellPower)
@@ -650,4 +620,18 @@ if infammo == 0 {
 
 #define sorting_map_destroy(map)
 	ds_map_destroy(map.map)
+	
+#define weapon_get(wep)
+	if is_object(wep) {
+		var innerWep = lq_defget(wep, "wep", wep_none);
+		if (is_real(innerWep)) return innerWep;
+		if (is_string(innerWep)) {
+			var rawCheck = mod_script_call("weapon", innerWep, "weapon_raw", wep);
+			if (rawCheck != undefined) {
+				return weapon_get(rawCheck)
+			}
+		}
+		return weapon_get(innerWep)
+	}
+	return wep
 

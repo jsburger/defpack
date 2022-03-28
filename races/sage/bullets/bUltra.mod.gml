@@ -5,15 +5,29 @@
   global.sprUltraSpark = sprite_add("../../../sprites/sage/fx/sprBulletFXUltraActivate.png", 5, 5, 5);
   global.sprUltraSpark2 = sprite_add("../../../sprites/sage/fx/sprBulletFXUltraNoRads.png", 5, 9, 9);
   
-  global.effects = [
+     //Ammo to rads
+    with effect_type_create("ammoToRads", `@(color:${c.neutral})+USE @gRADS @(color:${c.neutral})AS @(color:${c.ammo})AMMO`, scr.describe_nothing) {
+		on_pre_shoot = script_ref_create(ultra_pre_shoot);
+    }
+    
+    //Reload speed on rad use
+    with effect_type_create("reloadspeedOnRadUse", `{} @wRELOAD SPEED @(color:${c.neutral})WHEN USING @gRADS`, scr.describe_percentage) {
+        on_deactivate = script_ref_create(ultra_boost_deactivate);
+		on_rads_use = script_ref_create(ultra_boost_rads_use);
+		on_rads_out = script_ref_create(ultra_boost_rads_out);
+    }
+    
+    global.effects = [
         effect_instance_named("ammoToRads", 1, 0),
         effect_instance_named("reloadspeedOnRadUse", .35, .35)
-      ]
+    ]
       
+
 #define bullet_effects(bullet)
     return global.effects
     
 #macro c mod_variable_get("race", "sage", "colormap");
+#macro scr mod_variable_get("mod", "sageeffects", "scr")
 
 #define fairy_sprite
   return global.sprFairy;
@@ -22,18 +36,18 @@
   return $00EA81;
 
 #define bullet_sprite
-    if instance_exists(GameCont) && instance_is(self, Player) {
-        if (GameCont.rad <= get_rad_ammo_cost(wep)) {
-            return global.sprBulletOff;
-        }
-    }
+    // if instance_exists(GameCont) && instance_is(self, Player) {
+    //     if (GameCont.rad <= get_rad_ammo_cost(wep)) {
+    //         return global.sprBulletOff;
+    //     }
+    // }
     return global.sprBullet;
 
 #define bullet_name
   return "ULTRA";
 
 #define bullet_ttip
-  return ["@sFROM @gRADS @sTO @yAMMO", "INLINE PROTON ASSIMILATION SUCCESSFUL."];
+  return ["@sFROM @gRADS @sTO @yAMMO", "::INLINE PROTON ASSIMILATION EX-8809"];
 
 #define bullet_area
   return 20;
@@ -43,99 +57,63 @@
   sound_play_pitchvol(sndSwapHammer,   .6 * _p, .5);
   sound_play_pitchvol(sndSwapShotgun, 1.2 * _p, .9);
   sound_play_pitchvol(sndCrossReload, 1.4 * _p, .9);
+  
+  
+#define ultra_pre_shoot(value, effect)
+    if (infammo == 0) {
+    	if GameCont.rad > 0 {
+    	    var radCost = min(value, 1) * (weapon_get_type(wep) == 1 ? 4 : 16) * weapon_get_cost(wep);
+    	
+    		GameCont.rad = max(GameCont.rad - radCost, 0);
+            ammo[weapon_get_type(wep)] += weapon_get_cost(wep)
+            
+    		with instances_matching(instances_matching(WepSwap, "creator", self), "sprite_index", global.sprUltraSpark) {
+                instance_destroy();
+            }
+        
+            with instance_create(x, y, WepSwap) {
+                creator = other;
+                sprite_index = global.sprUltraSpark;
+            }
+            sound_play_pitchvol(sndUltraEmpty, .75 * random_range(.8, 1.2), .5);
 
-/*#define bullet_description(spellPower)
-  return `@(color:${c.neutral})+USE @gRADS @(color:${c.neutral})AS @(color:${c.ammo})AMMO#@(color:${c.neutral})+${get_reload_reduction(spellPower) * 100}% @wRELOAD SPEED @(color:${c.neutral})WHEN USING @gRADS`;
-*/
+    	}
+    }
 
-/*#define get_reload_reduction(spellPower)
-    return .35 * (1 + spellPower)
-*/
-/*#define on_take(power)
+#define set_ultra_boost(value)
+    if ("sage_ultra_boost" not in self) {
+        sage_ultra_boost = 0;
+    }
+    var diff = value - sage_ultra_boost;
+    reloadspeed += diff;
+    sage_ultra_boost = value;
 
-    if "sage_ultra_boosted" not in self sage_ultra_boosted = false
-    // enable_boost(power)
+#define ultra_boost_deactivate(value, effect)
+    //Disable boost (bullet is deactivated)
+    set_ultra_boost(0)
+
+#define ultra_boost_rads_use(value, effect)
+    //Enable boost
+    set_ultra_boost(value)
+
+#define ultra_boost_rads_out(value, effect)
+    //Disable boost (out of rads)
+    set_ultra_boost(0)
+
+	with instances_matching(instances_matching(WepSwap, "creator", other), "sprite_index", global.sprUltraSpark) {
+		instance_destroy();
+	}
     
-    sage_ammo_to_rads++;
-*/
-/*#define on_lose(power)
-//   sage_atr_reload_speed -= .5 + .5 * power;
+	with instance_create(x, y, WepSwap) {
+		creator = other;
+    	sprite_index = global.sprUltraSpark2;
+	}
+	sleep(10)
+	sound_play_pitchvol(sndUltraEmpty, 1 * random_range(.9, 1.1), .8);
+	sound_play_pitchvol(sndUltraGrenade, .7 * random_range(.9, 1.1), .5);
+	sound_play_pitchvol(sndEmpty, 1, .6);
 
-    disable_boost(power)
-    
-    sage_ammo_to_rads--;
-*/
-/*#define on_pre_shoot(power)
 
-    if infammo == 0 {
-    	  var radCost = get_rad_ammo_cost(wep);
-
-    	  if GameCont.rad >= radCost {
-    	      GameCont.rad -= radCost
-    	      ammo[weapon_get_type(wep)] += weapon_get_cost(wep)
-    	  }
-
-    }
-*/
-#define get_rad_ammo_cost(wep)
-    return min(sage_ammo_to_rads, 1) * (weapon_get_type(wep) == 1 ? 4 : 16) * weapon_get_cost(wep);
-
-/*#define disable_boost(spellPower)
-    if sage_ultra_boosted {
-        reloadspeed -= get_reload_reduction(spellPower)
-        sage_ultra_boosted = false
-    }
-  */  
-/*#define enable_boost(spellPower)
-    if !sage_ultra_boosted {
-        reloadspeed += get_reload_reduction(spellPower)
-        sage_ultra_boosted = true
-    }
-*/
-/*#define on_rads_use(spellPower)
-
-    enable_boost(spellPower)
-
-    with instances_matching(instances_matching(WepSwap, "creator", other), "sprite_index", global.sprUltraSpark) {
-        instance_destroy();
-    }
-
-    with instance_create(x, y, WepSwap) {
-        creator = other;
-        sprite_index = global.sprUltraSpark;
-    }
-    sound_play_pitchvol(sndUltraEmpty, .75 * random_range(.8, 1.2), .5);
-
-    if GameCont.rad > 0 && GameCont.rad < get_rad_ammo_cost(wep) {
-        on_rads_out(spellPower)
-    }
-
-    // if fork() {
-    //     // wait(1);
-    //     if instance_exists(self) {
-    //         trace("reload before: " + string(reload))
-    //         reload *= 1 / (1 + sage_atr_reload_speed);
-    //         trace("reload after:", reload)
-    //     }
-    // }
-*/
-/*#define on_rads_out(spellPower)
-
-    disable_boost(spellPower)
-    
-  with instance_create(x, y, WepSwap) {
-
-    with instances_matching(instances_matching(WepSwap, "creator", other), "sprite_index", global.sprUltraSpark) {
-
-      instance_delete(self);
-    }
-    creator = other;
-    sprite_index = global.sprUltraSpark2;
-  }
-  sleep(10)
-  sound_play_pitchvol(sndUltraEmpty, 1 * random_range(.9, 1.1), .8);
-  sound_play_pitchvol(sndUltraGrenade, .7 * random_range(.9, 1.1), .5);
-  sound_play_pitchvol(sndEmpty, 1, .6);
-*/
 #define simple_stat_effect(variableName, value, scaling) return mod_script_call("mod", "sageeffects", "simple_stat_effect", variableName, value, scaling)
 #define effect_instance_named(effectName, value, scaling) return mod_script_call("mod", "sageeffects", "effect_instance_create", value, scaling, effectName)
+#define effect_type_create(name, description, describe_script) return mod_script_call("mod", "sageeffects", "effect_type_create", name, description, describe_script)

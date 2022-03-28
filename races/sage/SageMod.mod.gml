@@ -208,13 +208,8 @@
         }
     }
 #define step
-	 // Bind Step:
-	 //what for tho. what is this?
-	if(!instance_exists(global.bind_step)){
-		global.bind_step = script_bind_step(hitbounce_step, 0);
-	}
 	var sages = instances_matching(Player, "race", "sage");
-	 // Bind Another Step:
+	 // Bind a step for getting new instances:
 	if array_length(sages) > 0 {
 		if(!instance_exists(global.normalStep)) {
 			global.normalStep = script_bind_step(normal_step, 0);
@@ -720,111 +715,6 @@
 	}
 	instance_delete(self);
 
-	//wtf is this why do we have this
-#define hitbounce_step
-	if(skill_get("hitbounce") && instance_exists(projectile) && instance_exists(hitme)){
-		var _inst = instances_matching_gt(projectile, "sage_bounce", 0);
-		if(array_length(_inst)){
-			var	_searchDis  = 16,
-				_bounceList = [];
-
-			with(_inst){
-				var _obj = hitbounce(self, _searchDis);
-				if(is_array(_obj)){
-					array_push(_bounceList, _obj);
-				}
-			}
-
-			 // Anti-Duplicate Insurance:
-			if(array_length(_bounceList)){
-				with(instance_create(0, 0, CustomObject)){
-					list        = _bounceList;
-					on_end_step = hitbounce_check_end_step;
-				}
-			}
-		}
-	}
-
-#define hitbounce(_proj, _searchDis)
-	var retVal = noone;
-	with(_proj){
-		if(distance_to_object(hitme) <= _searchDis + max(0, abs(speed_raw) - friction_raw) + abs(gravity_raw)){
-			motion_step(1);
-
-			if(distance_to_object(hitme) <= _searchDis){
-				var _instMeet = instance_rectangle_bbox(
-					bbox_left   - _searchDis,
-					bbox_top    - _searchDis,
-					bbox_right  + _searchDis,
-					bbox_bottom + _searchDis,
-					hitme
-				);
-				if(array_length(_instMeet)){
-					var _break = false;
-					with(_instMeet){
-						motion_step(1);
-
-						if(place_meeting(x, y, other)){
-							var	_x = x,
-								_y = y;
-
-							_break = true;
-
-							with(other){
-								with(instance_copy(false)){
-									 // Bounce:
-									direction   = point_direction(_x, _y, x, y);
-									image_angle = direction;
-									if(place_free(x + hspeed_raw, y + vspeed_raw)){
-										x += hspeed_raw;
-										y += vspeed_raw;
-									}
-									motion_step(-1);
-
-									 // Temporarily Deactivate:
-									retVal = [id, other, mask_index];
-									mask_index = mskNone;
-								}
-							}
-						}
-
-						motion_step(-1);
-
-						if(_break) break;
-					}
-				}
-			}
-
-			motion_step(-1);
-		}
-	}
-	return retVal;
-
-#define hitbounce_check_end_step
-	 // Delete/Activate Bounced Projectiles:
-	with(list){
-		if(!is_array(self)){continue;}
-		with(self[0]){
-			 // Delete:
-			if(instance_exists(other[1])){
-				instance_delete(id);
-			}
-
-			 // Activate:
-			else{
-				mask_index = other[2];
-
-				 // Sound:
-				sound_play_hit(sndShotgunHitWall, 0.2);
-
-				 // Reset Bonus:
-				bonus  = true;
-				alarm2 = 2;
-			}
-		}
-	}
-
-	instance_destroy();
 
 #define instance_rectangle_bbox(_x1, _y1, _x2, _y2, _obj)
 	/*

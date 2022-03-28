@@ -81,7 +81,7 @@ NOTES FROM JSBURG:
 	global.spr_slct = sprite_add(_i + "sprGunSlct.png", 1, 0,  0);
 	global.spr_port = sprite_add(_i + "sprGunPortrait.png",	1,	40, 243);
 	global.spr_skin = sprite_add(_i + "sprGunSkin.png",		race_skins(),	13, 13);
-	global.spr_icon = sprite_add(_i + "sprGunMapIcon.png",	race_skins(),	10, 10);
+	global.spr_icon = sprite_add(_i + "sprGunMapIcon.png",	race_skins(),	10, 8);
 
 	 // Ultras:
 	global.spr_ult_slct = sprite_add(_i + "sprGunUltras.png", ultra_count(mod_current), 12, 16);
@@ -121,6 +121,7 @@ NOTES FROM JSBURG:
 	global.carryOver = [];
 
 	global.bind_late_step = noone;
+	global.prompts = instances_matching(CustomObject, "name", "SagePrompt");
 
 	global.colormap = {
 		neutral: 		  $BAB0A9,
@@ -305,8 +306,21 @@ NOTES FROM JSBURG:
 		 // Play Ultra Sounds:
 		case 1:
 			sound_play(sndFishUltraA);
-			with instances_matching(Player, "race", "sage"){
-				if array_length(spellBullets) > 0 spellpower_change(self, ultra_a * 2 - 1);
+			with instances_matching(Player, "race", "sage") {
+				//Take is called on ultras changing, so if the player has it here, they just got it.
+				if has_ultra_a {
+					//Double current spellpower
+					sage_spell_power *= 2
+					//Add ultra A's one spellpower
+					sage_spell_power += 1
+				}
+				//Removing ultra a, reverse of above
+				else {
+					sage_spell_power -= 1
+					sage_spell_power /= 2
+				}
+				//Update effects with spellpower
+				refresh_effects()
 			}
 			break;
 		case 2:
@@ -317,6 +331,7 @@ NOTES FROM JSBURG:
 			break;
 		/// Add more cases if you have more ultras!
 	}
+
 
 
  // Ultra Button Portraits:
@@ -583,18 +598,12 @@ NOTES FROM JSBURG:
 		
 	}
 
- // On Character's Creation (Starting a run, getting revived in co-op, etc.):
- // Thanks Brokin
-
 #macro bullets mod_variable_get("mod", "SageBullets", "BulletDirectory")
 #macro max_spellbullets 2 + dev * 18// + skill_get(5)
 #macro fairy_swap_time 6
-#macro dev true
+#macro dev false
 #macro c global.colormap
 #macro c_fairy $AFA79A
-#macro c_darkteal c_purple
-#macro c_purblue c_purple
-#macro speed_boost_perma [Rocket, Nuke, PlasmaBall, PlasmaBig, PlasmaHuge, Seeker]
 #macro effectMod "sageeffects"
 
 #macro ultra_a ultra_get(mod_current, 1)
@@ -605,12 +614,7 @@ NOTES FROM JSBURG:
 #define create
 	uiroll = 0;
 
-	sage_ultra_boosted = false;
-	sage_projectile_speed = 1; // Projectile speed multiplier
 	sage_spell_power = 0;      // Sage spellpower multiplier
-	sage_ammo_cost = 0; 	   // ammo cost multiplier
-	sage_friction = 1;         // friction multiplier
-	sage_ammo_to_rads = 0;     // ammo to rad bool
 	sage_uitimer = 20; // how long to wait on mouse hover before the draw
 	spellBullets = [];
 	activeEffects = [];
@@ -728,14 +732,12 @@ NOTES FROM JSBURG:
 		global.bind_late_step = script_bind_step(late_step, 0);
 	}
 
-	// Friction:
-	friction = max(0, friction * sage_friction);
-
 	//Call bullet step events
-	/*for (var i = 0, l = bulletLoopMax; i < l; i++) {
-		
+	//Bullet steps are for like, particle effects
+	for (var i = 0, l = bulletLoopMax; i < l; i++) {
 		spell_call_self(spellBullets[i], "on_step");
-	}*/
+	}
+	//Effects do shit
 	effects_call(activeEffects, "on_step");
 
 
@@ -901,84 +903,6 @@ NOTES FROM JSBURG:
 		}
 	}
 
-	var sageEffectNum = (ultra_get("sage", 2) ? array_length(other.spellBullets) : 1);
-
-	with instances_matching(projectile, "creator", self) {
-
-		if "sage_speed" not in self {
-
-			sage_speed = creator.sage_projectile_speed;
-		}
-		var _s = self;
-		with speed_boost_perma {
-
-			if instance_is(_s, self) {
-
-				switch object_get_name(_s.object_index) {
-
-					case "Seeker":
-						var _n = _s.speed > .1 ? 1 : 0;
-						_s.x += lengthdir_x(speed * (_s.sage_speed - 1), direction) / 1.5 * _n;
-						_s.y += lengthdir_y(speed * (_s.sage_speed - 1), direction) / 1.5 * _n;
-						break;
-					default:
-						_s.x += lengthdir_x(speed * (_s.sage_speed - 1), direction);
-						_s.y += lengthdir_y(speed * (_s.sage_speed - 1), direction);
-						break;
-				}
-			}
-		}
-	}
-
-	with(instances_matching_ne(instances_matching(projectile, "creator", self), "sageCheck", sageEffectNum)) {
-		if("sageCheck" not in self){sageCheck = 0}
-
-		// Increase speed and maxspeed with projectile speed stat:
-		speed *= creator.sage_projectile_speed;
-
-		// two vars for better mod compat
-		if "maxspeed" in self{
-			maxspeed *= creator.sage_projectile_speed;
-		}
-		if "max_speed" in self{
-			max_speed *= creator.sage_projectile_speed;
-		}
-
-		// this makes shells not godawful with low projectile speed
-		if friction > 0{
-			friction *= power(creator.sage_projectile_speed, 1.25);
-		}
-
-		for(var i = sageCheck; i < sageEffectNum; i++){
-			if(!instance_exists(self)){break}
-
-			sageCheck = i + 1;
-
-			/*switch(other.spellBullets[i]){
-
-				case "precision":
-
-					/*if(skill_get(mut_throne_butt) && instance_exists(enemy)){
-						var _e = instance_nearest(x+lengthdir_x(5, direction), y+lengthdir_y(5, direction), enemy);
-						var _e2 = instance_nearest(x+lengthdir_x(15, direction), y+lengthdir_y(15, direction), enemy);
-						if(abs(angle_difference(point_direction(x,y,_e.x,_e.y), direction)) < 45){
-							direction = point_direction(x,y,_e.x,_e.y);
-							image_angle = direction;
-						}else if(abs(angle_difference(point_direction(x,y,_e2.x,_e2.y), direction)) < 45){
-							direction = point_direction(x,y,_e2.x,_e2.y);
-							image_angle = direction;
-						}else{
-							direction = other.gunangle + random(5)-2.5;
-							image_angle = direction;
-						}
-					}else{
-						direction = other.gunangle + random(5)-2.5;
-						image_angle = direction;
-					}
-					break;
-			}*/
-		}
-	}
 
 #define before_sage_shoot()
 
@@ -1009,7 +933,7 @@ NOTES FROM JSBURG:
 
 	
 	if (GameCont.rad < shootEvent.radPrevious) {
-		effects_call(activeEffects, "on_rads_use")
+		effects_call(activeEffects, "on_rads_use", shootEvent.radPrevious - GameCont.rad)
 		// for (var i = 0, l = bulletLoopMax; i < l; i++) {
 		// 	spell_call_self(spellBullets[i], "on_rads_use");
 		// }
@@ -1159,29 +1083,10 @@ var args2 = argument_count > 3 ? argument[3] : undefined;
 	return mod_script_call("mod", effectMod, "effects_compose_all", effectList, sage_spell_power);
 
 
-//Deprecated
-#define stat_gain(spellbullet, inst)
-	with inst spell_call_self(spellbullet, "on_take");
-	if dev trace("STAT GAINED")
-	
-	// Health check for cursed bullets:
-	if (my_health > maxhealth) {
-		
-		my_health = maxhealth;
-		lasthit = [sprHealFX, "SPELL BULLET"];
-	}
-
-//Deprecated
-#define stat_lose(spellbullet, inst)
-	with inst spell_call_self(spellbullet, "on_lose");
-	if dev trace("STAT LOST")
-
 #define spellpower_change(inst, spellpower)
 	with inst {
-		effects_call_reverse(activeEffects, "on_deactivate")
-		sage_spell_power += spellpower;
-		activeEffects = bullets_compose(get_active_bullets())
-		effects_call(activeEffects, "on_activate")
+		sage_spell_power += spellpower * (1 + ultra_a)
+		refresh_effects()
 	}
 	
 #define spell_init(_spell)
@@ -1353,7 +1258,7 @@ var args2 = argument_count > 3 ? argument[3] : undefined;
 
 		//if dev trace(type, bullets[? type])
 		spell = spell_init(spell);
-		my_prompt = prompt_create(spell_call_nc(spell, "bullet_name", 0));
+		my_prompt = prompt_create("");
 		sprite_index = spell_call_nc(spell, "bullet_sprite", 0);
 		image_index = has_ultra_a;
 		
@@ -1376,7 +1281,13 @@ var args2 = argument_count > 3 ? argument[3] : undefined;
 		}
 	}
 	return returnlist;
-
+	
+#define move_contact_solid_slide(dir, dist)
+	var _x = lengthdir_x(dist, dir),
+		_y = lengthdir_y(dist, dir);
+	move_contact_solid(_x > 0 ? 0 : 180, abs(_x))
+	move_contact_solid(_y > 0 ? 270 : 90, abs(_y))
+	
 #define spellbullet_step
 
 	shine -= current_time_scale;
@@ -1395,9 +1306,9 @@ var args2 = argument_count > 3 ? argument[3] : undefined;
 	if place_meeting(x, y, WepPickup) {
 		var n = instance_nearest(x, y, WepPickup),
 			d = point_direction(x, y, n.x, n.y) + 180;
-		move_contact_solid(d, 2 * current_time_scale)
+		move_contact_solid_slide(d, 2 * current_time_scale)
 		with n {
-			move_contact_solid(d + 180, 2 * current_time_scale)
+			move_contact_solid_slide(d + 180, 2 * current_time_scale)
 		}
 	}
 
@@ -1517,7 +1428,7 @@ var args2 = argument_count > 3 ? argument[3] : undefined;
 #define Prompt_create(_x, _y)
 	with(instance_create(_x, _y, CustomObject)){
 		 // Vars:
-		name	   = "Prompt"
+		name	   = "SagePrompt"
 		mask_index = mskWepPickup;
 		persistent = true;
 		creator    = noone;
@@ -1528,14 +1439,60 @@ var args2 = argument_count > 3 ? argument[3] : undefined;
 		yoff       = 0;
 
 		 // Events:
-		on_meet = null;
+		on_meet = script_ref_create(spellbullet_prompt_meet);
 
 		on_begin_step = Prompt_begin_step;
+		on_step = spellbullet_prompt_step
 		on_end_step = Prompt_end_step;
 		on_cleanup = Prompt_cleanup;
-
+	
+		array_push(global.prompts, self)
+	
 		return self;
 	}
+
+#define spellbullet_prompt_meet
+	//For on_meet: other = player, self = prompt, return if the player can interact;
+	if (other.race == mod_current) {
+		return true
+	}
+	return false
+
+#define spellbullet_prompt_step
+	//'pick' is set to the player that is activating the prompt 
+	if instance_exists(pick) {
+		if instance_exists(creator) {
+			if "on_pick" in creator {
+				with creator {
+					script_ref_call(on_pick, other.pick.index, self, other);
+				}
+			}
+		}
+	}
+
+#define draw_spellbullet_description(x, y, bullet, player)
+	instance_destroy()
+	
+	var halign = draw_get_halign(),
+		valign = draw_get_valign();
+		
+	var spellpower = "sage_spell_power" in player ? player.sage_spell_power : 0,
+		d = mod_script_call("mod", effectMod, "effects_descriptions", bullet.effects, spellpower),
+		name = spell_call_nc(bullet, "bullet_name", spellpower),
+		yoff = (6 * round(string_count("#", d) + 1)) + 15;
+		// yoff = string_height(d) + 26;
+		
+	draw_set_font(fntSmall);
+	draw_set_halign(1)
+	//fa_top
+	draw_set_valign(0)
+	draw_text_nt(x, y - yoff, d)
+	draw_set_font(fntM);
+	//fa_bottom
+	draw_set_valign(2)
+	draw_text_nt(x, y - yoff, name)
+	draw_set_halign(halign)
+	draw_set_valign(valign)
 
 #define Prompt_begin_step
 	with(nearwep){
@@ -1552,6 +1509,9 @@ var args2 = argument_count > 3 ? argument[3] : undefined;
 					y += other.creator.y - other.y;
 					visible = true;
 				}
+				if instance_exists(creator) && "spell" in creator {
+					script_bind_draw(draw_spellbullet_description, -20, creator.x, creator.y, creator.spell, instance_nearest(creator.x, creator.y, Player))
+				}
 			}
 			x = creator.x;
 			y = creator.y;
@@ -1566,9 +1526,18 @@ var args2 = argument_count > 3 ? argument[3] : undefined;
 
 #define late_step
 	 // Prompts:
-	//Note: This code IS basically just taken from TE, but it means that it works alongside TE prompts.
-	var _inst = instances_matching(CustomObject, "name", "Prompt");
-	if(array_length(_inst)){
+	 //This code was originally sourced from NTTE and has recieved some minor alterations.
+	 
+	if (array_length(global.prompts) == 0) exit;
+	
+	//Update prompt array
+	var _inst = instances_matching_ne(global.prompts, "id", undefined);
+	if (array_length(_inst) != array_length(global.prompts)) {
+		global.prompts = _inst
+	}
+	
+	//Normal code
+	if(array_length(_inst)) {
 		 // Reset:
 		var _instReset = instances_matching_ne(_inst, "pick", -1);
 		if(array_length(_instReset)){
@@ -1631,6 +1600,7 @@ var args2 = argument_count > 3 ? argument[3] : undefined;
 							}
 
 							 // Secret IceFlower:
+							//Run from Prompt
 							with(_nearest){
 								nearwep = instance_create(x + xoff, y + yoff, IceFlower);
 								with(nearwep){
@@ -1654,16 +1624,11 @@ var args2 = argument_count > 3 ? argument[3] : undefined;
 									my_health    = 99999;
 									nexthurt     = current_frame + 99999;
 								}
-								with(_id){
-									nearwep = _nearest.nearwep;
+								//Run from Player
+								with(other){
+									nearwep = other.nearwep;
 									if(button_pressed(index, "pick")){
-										_nearest.pick = index;
-										if(instance_exists(_nearest.creator) && "on_pick" in _nearest.creator){
-											with(_nearest.creator){
-												//if dev trace(spell) // too large cmon bro
-												script_ref_call(on_pick, _id.index, _nearest.creator, _nearest);
-											}
-										}
+										other.pick = index;
 									}
 								}
 							}
