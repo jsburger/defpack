@@ -1,11 +1,13 @@
 #define init
-global.sprBursterShotgun = sprShotgun//sprite_add_weapon("sprites/weapons/sprTempoGun.png",2,3);
+global.sprBursterShotgun = sprite_add_weapon("sprites/weapons/sprBursterShotgun.png",2,1);
+global.sprBursterShotgunHUD = sprite_add_weapon("sprites/weapons/sprBursterShotgun.png",2,3);
 
 // I took the tempo gun as a template thats why it looks like that
 #define weapon_name             return "BURSTER SHOTGUN";
 #define weapon_text             return ["BUBBLY @ySHELLS"];
 
 #define weapon_sprt             return global.sprBursterShotgun;
+#define weapon_sprt_hud         return global.sprBursterShotgunHUD;
 #define weapon_swap             return sndSwapShotgun;
 
 #define weapon_auto             return false;
@@ -27,17 +29,17 @@ global.sprBursterShotgun = sprShotgun//sprite_add_weapon("sprites/weapons/sprTem
     
     weapon_post(5, 8, 0);
 
-    repeat(9) {
+    repeat(8) {
         
         with mod_script_call("mod", "defpack tools", "create_burster", x, y) {
             
             team    = other.team;
             creator = other;
             
-            tar_x = mouse_x[creator.index];
-		    tar_y = mouse_y[creator.index];
+            tar_dir = other.gunangle;
+            tar_len = point_distance(x, y, mouse_x[other.index], mouse_y[other.index]);
 		    move_contact_solid(other.gunangle, 10);
-		    motion_add(other.gunangle + random_range(-40, 40) * other.accuracy, 10 * random_range(.8, 1.1));
+		    motion_add(other.gunangle + random_range(-40, 40) * other.accuracy, 9 * random_range(.8, 1.1));
 		    image_angle = direction;
         }
     }

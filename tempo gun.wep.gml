@@ -54,7 +54,7 @@ return{
                 team =      other.team;
 
                 direction = other.gunangle;
-                speed =     16;
+                speed =     17;
             }
         }
 
@@ -68,7 +68,7 @@ return{
                 team =      other.team;
 
                 direction = other.gunangle;
-                speed =     12;
+                speed =     14;
             }
         }
     }

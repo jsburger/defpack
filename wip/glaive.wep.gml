@@ -1,5 +1,5 @@
 #define init
-  global.sprGlaive = sprite_add_weapon("sprites/weapons/sprGlaive.png", 11, 11);
+  global.sprGlaive = sprite_add_weapon("../sprites/weapons/sprGlaive.png", 11, 11);
 
 #define weapon_name
   return "GLAIVE";

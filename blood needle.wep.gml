@@ -108,8 +108,9 @@ return{
     		
     		with instance_create(other.x, other.y, other.object_index){
     			
+    			kills = 0;
     			raddrop = 0;
-    			projectile_hit(self, maxhealth, 5 + irandom(5), random(360));
+    			projectile_hit(self, maxhealth, 5 + irandom(6), random(360));
     		}
     	}
     	

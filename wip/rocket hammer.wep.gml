@@ -1,5 +1,5 @@
 #define init
-global.sprTurboHammer = sprite_add_weapon("sprites/projectiles/sprTurboHammer.png", 3, 4);
+global.sprTurboHammer = sprite_add_weapon("../sprites/weapons/sprRocketHammer.png", 3, 12);
 
 #define weapon_name
 return "ROCKET HAMMER"
@@ -17,7 +17,7 @@ return -1;
 return 1;
 
 #define weapon_load
-return 12;
+return 28;
 
 #define weapon_swap
 return sndSwapHammer;
@@ -36,17 +36,18 @@ return "SPIN TO WIN";
 
 #define weapon_fire
 with instance_create(x, y, CustomObject) {
-  sound   = sndMeleeFlip;
+	sound   = sndGrenadeHitWall;
 	name    = "turbo hammer charge";
 	creator = other;
 	charge    = 0;
-  maxcharge = 25;
-    defcharge = {
-        style : 2,
-        width : 13,
-        charge : 0,
-        maxcharge : maxcharge
-    }
+	maxcharge = 25;
+	defcharge = {
+		
+		style : 2,
+		width : 13,
+		charge : 0,
+		maxcharge : maxcharge
+	}
 	charged = 0;
 	depth = TopCont.depth
 	index = creator.index
@@ -93,7 +94,7 @@ if !instance_exists(creator){instance_delete(self); exit}
 
           charge += mod_script_call_nc("mod", "defpack tools", "get_reloadspeed", creator) * timescale * 1.2;
           charged = 0;
-          sound_play_pitchvol(sound, sqr((charge / maxcharge) * 3.5) + 6, 1 - charge / maxcharge);
+          sound_play_pitchvol(sound, sqr((charge / maxcharge) * 2) * .4, 1 - charge / maxcharge);
       }else {
 
           if current_frame mod 6 < current_time_scale {
@@ -119,11 +120,29 @@ if !instance_exists(creator){instance_delete(self); exit}
   sound_stop(sound);
 
 #define th_destroy
-  th_cleanup();
+	th_cleanup();
 
+	if !charged {
 
-  if !charged {
+		with creator{
+			
+			wepangle = -wepangle;
+			weapon_post(-6, -12, 0);
+		}
+		
+		sound_play(sndHammer);
+		
+		with instance_create(x, y, Slash){
+			
+			sprite_index = sprHeavySlash;
+			damage = 16;
+			force = 12;
+			team = other.creator.team;
+			creator = other.creator;
+			
+			motion_add(creator.gunangle + random_range(-2, 2) * creator.accuracy, 4 + 4 * skill_get(mut_long_arms));
+			image_angle = direction;
+		}
+	}else {
 
-  }else {
-
-  }
+	}

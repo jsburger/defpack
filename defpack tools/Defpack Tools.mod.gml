@@ -1429,14 +1429,15 @@ if timer <= 0{
 		
 		sprite_index = spr.BursterBubble;
 		mask_index   = mskBigRad;
-		image_speed  = .5;
+		image_speed  = .45;
 		
 		wallbounce = skill_get(mut_shotgun_shoulders) * 2 + (skill_get("shotgunshouldersx10") * 20);
 		damage     = 2;
 		force      = 2;
 		friction   = .6;
-		tar_x = x;
-		tar_y = y;
+		tar_len = 24;
+		tar_dir = 0;
+		target = -4;
 		
 		defbloom = {
 		    xscale : 2,
@@ -1464,6 +1465,8 @@ if timer <= 0{
 	instance_create(x, y, Dust);
 
 #define burster_hit
+	
+	target = other;
 	do {
 		
 		x -= lengthdir_x(1, direction);
@@ -1481,8 +1484,11 @@ if timer <= 0{
 		team	= other.team;
 		creator = other.creator;
 		
-		motion_add(point_direction(x, y, other.tar_x, other.tar_y), 16);
+		var _xx = other.xstart + lengthdir_x(max(96, other.tar_len), other.tar_dir),
+		    _yy = other.ystart + lengthdir_y(max(96, other.tar_len), other.tar_dir);
+		motion_add(instance_exists(other.target) ? point_direction(x, y, other.target.x + other.target.hspeed_raw, other.target.y + other.target.vspeed_raw) : point_direction(x, y, _xx, _yy), 16);
 		image_angle = direction;
+		friction *= 1.6 * !skill_get(mut_shotgun_shoulders);
 	}
 	
 #define create_burster_shell(_x, _y)
@@ -3998,6 +4004,8 @@ instance_destroy()
 		with instance_create(x, y, DiscTrail) {
 	        sprite_index = other.spr_trail;
 	        depth = -1;
+	        image_xscale = other.image_xscale;
+	        image_yscale = other.image_yscale;
 	    }
 	}
 	

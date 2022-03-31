@@ -41,7 +41,7 @@ return 1
 	var _l = skill_get(mut_long_arms),
 		_c = instance_is(self, FireCont) ? creator : self;
 		
-	weapon_post(8, -8, 60)
+	weapon_post(8, -8, 24)
 	wepangle = -wepangle
 	
 	motion_add(other.gunangle, 5)
