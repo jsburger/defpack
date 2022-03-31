@@ -1,8 +1,18 @@
 #define init
-  global.sprBullet = sprite_add("../../../sprites/sage/bullets/sprBulletWarp.png", 2, 7, 11);
-  global.sprFairy = sprite_add("../../../sprites/sage/bullet icons/sprFairyIconWarp.png", 0, 4, 5);
+	global.sprBullet = sprite_add("../../../sprites/sage/bullets/sprBulletWarp.png", 2, 7, 11);
+	global.sprFairy = sprite_add("../../../sprites/sage/bullet icons/sprFairyIconWarp.png", 0, 4, 5);
+
+    with effect_type_create("projectileHyperSpeed", `{} @(color:${c.speed})TIME DILATION`, scr.describe_whole) {
+        on_new_projectiles = script_ref_create(warp_update)
+    }
+    
+    global.effects = [
+        effect_instance_named("projectileHyperSpeed", 2, 2),
+        simple_stat_effect("accuracy", .75, 0)
+    ]
 
 #macro c mod_variable_get("race", "sage", "colormap");
+#macro scr mod_variable_get("mod", "sageeffects", "scr")
 
 #define fairy_sprite
   return global.sprFairy;
@@ -17,7 +27,7 @@
   return "HYPER";
 
 #define bullet_ttip
-  return ["@yBULLETS @sRIPPLE IN AIR", "CAPTIVE SPACIAL CAVITIES EX-8826:#TEMPORAL STABILITY ACHIEVED."];
+  return ["@yBULLETS @sRIPPLE IN AIR", "::CAPTIVE SPACIAL CAVITIES EX-8826", "::TEMPORAL STABILITY ACHIEVED"];
 
 #define bullet_area
   return 1;
@@ -28,57 +38,69 @@
   sound_play_pitchvol(sndSwapShotgun, 1.2 * _p, .9);
   sound_play_pitchvol(sndCrossReload, 1.4 * _p, .9);
 
-#define bullet_description(power)
-  return `@(color:${c.neutral})+` + string(2 + ceil(3 * power)) + ` @(color:${c.speed})HYPERSPEED#@(color:${c.neutral})+25% @(color:${c.accuracy})ACCURACY`;
+#define bullet_effects
+	return global.effects
 
-#define on_take(power)
-  sage_projectile_speed *= 1 - .35; // this one is hidden pssst
-  if "sage_hitscan_strength" not in self {
-    sage_hitscan_strength = 2 + ceil(3 * power);
-  }else {
+// #define bullet_description(power)
+//   return `@(color:${c.neutral})+` + string(2 + ceil(3 * power)) + ` @(color:${c.speed})HYPERSPEED#@(color:${c.neutral})+25% @(color:${c.accuracy})ACCURACY`;
 
-    sage_hitscan_strength += 2 + ceil(3 * power);
-  }
-  accuracy *= .75;
+// #define on_take(power)
+//   sage_projectile_speed *= 1 - .35; // this one is hidden pssst
+//   if "sage_hitscan_strength" not in self {
+//     sage_hitscan_strength = 2 + ceil(3 * power);
+//   }else {
 
-#define on_lose(power)
-  sage_projectile_speed /= 1 - .35; // this one is hidden pssst
-  sage_hitscan_strength -= 2 + ceil(3 * power);
-  accuracy /= .75;
+//     sage_hitscan_strength += 2 + ceil(3 * power);
+//   }
+//   accuracy *= .75;
 
-#define on_step(spellPower)
-  with instances_matching_gt(instances_matching(Player, "race", "sage"), "sage_hitscan_strength", 0) {
+// #define on_lose(power)
+//   sage_projectile_speed /= 1 - .35; // this one is hidden pssst
+//   sage_hitscan_strength -= 2 + ceil(3 * power);
+//   accuracy /= .75;
 
-      var _s = id;
-	//trace(array_length(instances_matching_ne(instances_matching(projectile, "creator", _s), "sage_no_hitscan", 1)));
-      with instances_matching_ne(instances_matching(projectile, "creator", _s), "sage_no_hitscan", 1) {
+// #define on_step(spellPower)
+//   with instances_matching_gt(instances_matching(Player, "race", "sage"), "sage_hitscan_strength", 0) {
+
+//       var _s = id;
+// 	//trace(array_length(instances_matching_ne(instances_matching(projectile, "creator", _s), "sage_no_hitscan", 1)));
+//       with instances_matching_ne(instances_matching(projectile, "creator", _s), "sage_no_hitscan", 1) {
 
 
-        sage_check_hitscan = true;
+//         sage_check_hitscan = true;
 
-        // Flames are laggy if you hyperseed them so they get extra speed instead
-        if instance_is(self, Flame) {
+//         // Flames are laggy if you hyperseed them so they get extra speed instead
+//         if instance_is(self, Flame) {
 
-          if "sage_flame_epic" not in self {
+//           if "sage_flame_epic" not in self {
 
-            sage_flame_epic = true;
-            speed += 4 + 2 * spellPower;
-          }
-        }
+//             sage_flame_epic = true;
+//             speed += 4 + 2 * spellPower;
+//           }
+//         }
 
-        // define sage_no_hitscan to exclude this from running hitscan
-        else if !instance_is(self, Laser) && !instance_is(self, Lightning) {
-          sageHitscan = creator.sage_hitscan_strength;
-          run_hitscan(self, sageHitscan);
-        }
-      }
-  }
+//         // define sage_no_hitscan to exclude this from running hitscan
+//         else if !instance_is(self, Laser) && !instance_is(self, Lightning) {
+//           sageHitscan = creator.sage_hitscan_strength;
+//           run_hitscan(self, sageHitscan);
+//         }
+//       }
+//   }
+
+#define warp_update(value, effect, projectiles)
+	var hyperProjectiles = mod_variable_get("mod", "lightly modified megahyper", "hyperProjectiles");
+	with instances_matching_ne(projectiles, "sage_no_hitscan", true) {
+		sage_warp_strength = value
+		array_push(hyperProjectiles, self)
+	}
 
 #define on_fire
 	var _p = random_range(.8, 1.2);
 	var _s = sound_play_pitchvol(sndUltraCrossbow, 1.5 * _p, .5);
 	audio_sound_set_track_position(_s, .3);
 
+
+//old code LOL
 #define run_hitscan(_proj, _mod)
 	with(_proj){
 		var size = 0.8;
@@ -262,3 +284,8 @@
 	y = _ty;
 
 	return _inst;
+	
+    
+#define simple_stat_effect(variableName, value, scaling) return mod_script_call("mod", "sageeffects", "simple_stat_effect", variableName, value, scaling)
+#define effect_instance_named(effectName, value, scaling) return mod_script_call("mod", "sageeffects", "effect_instance_create", value, scaling, effectName)
+#define effect_type_create(name, description, describe_script) return mod_script_call("mod", "sageeffects", "effect_type_create", name, description, describe_script)

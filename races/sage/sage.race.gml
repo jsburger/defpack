@@ -122,6 +122,7 @@ NOTES FROM JSBURG:
 
 	global.bind_late_step = noone;
 	global.prompts = instances_matching(CustomObject, "name", "SagePrompt");
+	global.bulletObjects = instances_matching(CustomObject, "name", "spellbullet")
 
 	global.colormap = {
 		neutral: 		  $BAB0A9,
@@ -173,6 +174,9 @@ NOTES FROM JSBURG:
 		}
 		wait 1;
 	}
+
+#define cleanup
+	with global.bind_late_step instance_destroy()
 
  // On Level Start: (Custom Script, Look Above In #define init)
 #define level_start
@@ -961,6 +965,7 @@ NOTES FROM JSBURG:
 	}
 	return false
 
+//Called by SageMod
 #define on_new_projectiles(newProjectiles)
 	if sage_has_hook("on_new_projectiles") {
 		var myProjectiles = instances_matching(newProjectiles, "creator", self);
@@ -968,6 +973,33 @@ NOTES FROM JSBURG:
 			effects_call(activeEffects, "on_new_projectiles", myProjectiles)
 		}
 	}
+
+
+#define sage_fire(fireEvent, effectStack)
+
+	var shootEvent = before_sage_shoot();
+	
+	if (fireEvent.angle_offset != 0) {
+		mod_script_call_self("mod", "bSplit", "player_fire_at", undefined, undefined, undefined, fireEvent.angle_offset)
+	}
+	else {
+		player_fire()
+	}
+	call_fire_filtered(activeEffects, fireEvent, effectStack)
+	post_sage_shoot(shootEvent)
+
+	
+#define call_fire_filtered(effectList, fireEvent, effectStack)
+	for(var i = 0; i < array_length(effectList); i++) {
+		if (array_find_index(effectStack, effectList[i].type.name) >= 0) continue
+		
+		var ref = lq_get(effectList[i].type, "on_fire");
+		
+        if (ref != undefined) {
+            script_ref_call(ref, effectList[i].working_value, effectList[i], fireEvent, effectStack);
+        }
+    }
+
 
 #define sage_shoot(direction)
 
@@ -987,29 +1019,23 @@ NOTES FROM JSBURG:
 	}
 
 
-/*
-In split prefire, call mid_fire again before shooting the split fire
-In Burst fire, call sage_shoot for each burst shot.
-
-*/
-
 #define fire(shootEvent)
 
 	var event = {
 		cancelled: false,
 		angle_offset: 0
 	}
-
-
+	
+	//Used for things like firing sounds, specific to bullets, not effects
 	for (var i = 0, l = bulletLoopMax; i < l; i++) {
-		spell_call_self(spellBullets[i], "on_pre_fire", event);
+		spell_call_self(spellBullets[i], "on_fire", event)
 	}
 
 
 	if !event.cancelled {
 
 		if !shootEvent.cancelled {
-			mid_firing(event)
+			call_fire_filtered(activeEffects, event, [])
 			post_sage_shoot(shootEvent)
 		}
 
@@ -1031,32 +1057,17 @@ In Burst fire, call sage_shoot for each burst shot.
 
 #macro bulletLoopMax ultra_b ? array_length(spellBullets) : min(array_length(spellBullets), 1)
 
-#define mid_firing(fireEvent)
-
-	for (var i = 0, l = bulletLoopMax; i < l; i++) {
-		spell_call_self(spellBullets[i], "on_fire", fireEvent)
-	}
-
-	if !fireEvent.cancelled {
-		post_firing(fireEvent)
-	}
-
-
-#define post_firing(fireEvent)
-
-
-
 #define effects_call
 var effectsList = argument[0], script = argument[1];
 var args1 = argument_count > 2 ? argument[2] : undefined;
 var args2 = argument_count > 3 ? argument[3] : undefined;
-	mod_script_call_self("mod", effectMod, "effects_call", sage_spell_power, effectsList, script, args1, args2)
+	mod_script_call_self("mod", effectMod, "effects_call", effectsList, script, args1, args2)
 	
 #define effects_call_reverse
 var effectsList = argument[0], script = argument[1];
 var args1 = argument_count > 2 ? argument[2] : undefined;
 var args2 = argument_count > 3 ? argument[3] : undefined;
-	mod_script_call_self("mod", effectMod, "effects_call_reverse", sage_spell_power, effectsList, script, args1, args2)
+	mod_script_call_self("mod", effectMod, "effects_call_reverse", effectsList, script, args1, args2)
 	
 
 #define get_active_bullets()
@@ -1154,21 +1165,15 @@ var args2 = argument_count > 3 ? argument[3] : undefined;
 		script  = argument[1];
 	
 	switch (argument_count) {
-		
 		default:
-		
 			trace("too many arguments for spell_call_self. add a case with that many arguments");
 		case 1: case 2:
-		
 			return (mod_script_call_self("mod", spellIn.type, script, sage_spell_power, spellIn));
 		case 3:
-		
 			return (mod_script_call_self("mod", spellIn.type, script, sage_spell_power, spellIn, argument[2]));
 		case 4:
-		
 			return (mod_script_call_self("mod", spellIn.type, script, sage_spell_power, spellIn, argument[2], argument[3]));
 		case 5:
-		
 			return (mod_script_call_self("mod", spellIn.type, script, sage_spell_power, spellIn, argument[2], argument[3], argument[4]));
 	}
 
@@ -1178,21 +1183,15 @@ var args2 = argument_count > 3 ? argument[3] : undefined;
 		spellPower = argument[2];
 	
 	switch (argument_count) {
-		
 		default:
-		
 			trace("too many arguments for spell_call_nc. add a case with that many arguments");
 		case 2: case 3:
-		
 			return (mod_script_call_nc("mod", spellIn.type, script, spellPower, spellIn));
 		case 4:
-		
 			return (mod_script_call_nc("mod", spellIn.type, script, spellPower, spellIn, argument[3]));
 		case 5:
-		
 			return (mod_script_call_nc("mod", spellIn.type, script, spellPower, spellIn, argument[3], argument[4]));
 		case 6:
-		
 			return (mod_script_call_nc("mod", spellIn.type, script, spellPower, spellIn, argument[3], argument[4], argument[5]));
 	}
 
@@ -1210,6 +1209,7 @@ var args2 = argument_count > 3 ? argument[3] : undefined;
 		shine_index  = 0;
 		shine_speed  = 0;
 		name     = "spellbullet";
+		array_push(global.bulletObjects, self)
 		friction = 0.5;
 		shine = 45;
 
@@ -1230,11 +1230,8 @@ var args2 = argument_count > 3 ? argument[3] : undefined;
 				
 				var passed = true;
 				if (self != "bCursed") {
-					
 					with argument[3].spellBullets {
-					
 						if (self.type == other) {
-							
 							passed = false;
 							break;
 						}
@@ -1242,13 +1239,11 @@ var args2 = argument_count > 3 ? argument[3] : undefined;
 				}
 				
 				if (passed) {
-					
 					array_push(results, self);
 				}
 			}
 		
 			if (array_length(results) > 0) {
-				
 				spell = results[irandom(array_length(results) - 1)];
 			}
 		}
@@ -1309,6 +1304,17 @@ var args2 = argument_count > 3 ? argument[3] : undefined;
 		move_contact_solid_slide(d, 2 * current_time_scale)
 		with n {
 			move_contact_solid_slide(d + 180, 2 * current_time_scale)
+		}
+	}
+	
+	if place_meeting(x, y, CustomObject) {
+		global.bulletObjects = instances_matching_ne(global.bulletObjects, "id", null)
+		with instances_meeting(x, y, instances_matching_ne(global.bulletObjects, "id", self)) {
+			var d = point_direction(x, y, other.x, other.y);
+			move_contact_solid_slide(d + 180, 2 * current_time_scale)
+			with other {
+				move_contact_solid_slide(d, 2 * current_time_scale)
+			}
 		}
 	}
 
@@ -1479,7 +1485,7 @@ var args2 = argument_count > 3 ? argument[3] : undefined;
 	var spellpower = "sage_spell_power" in player ? player.sage_spell_power : 0,
 		d = mod_script_call("mod", effectMod, "effects_descriptions", bullet.effects, spellpower),
 		name = spell_call_nc(bullet, "bullet_name", spellpower),
-		yoff = (6 * round(string_count("#", d) + 1)) + 15;
+		yoff = (6 * round(string_count("#", d) + 1)) + 16;
 		// yoff = string_height(d) + 26;
 		
 	draw_set_font(fntSmall);
@@ -1490,7 +1496,7 @@ var args2 = argument_count > 3 ? argument[3] : undefined;
 	draw_set_font(fntM);
 	//fa_bottom
 	draw_set_valign(2)
-	draw_text_nt(x, y - yoff, name)
+	draw_text_nt(x, y - yoff - 1, name)
 	draw_set_halign(halign)
 	draw_set_valign(valign)
 

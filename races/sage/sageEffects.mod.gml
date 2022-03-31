@@ -125,7 +125,28 @@ var describe_script = argument_count > 2 ? argument[2] : describe_pass;
 //These are what bullets will use to declare their effects.
 //They are cloned after being returned in a bullet.
 #define effect_instance_create(base_value, scaling, typeNameOrObject)
-    return effect_instance_create_typed(base_value, scaling, is_object(typeNameOrObject) ? typeNameOrObject : effectTypes[? typeNameOrObject]);
+	if is_string(typeNameOrObject) {
+		var type = effectTypes[? typeNameOrObject],
+			effectInstance = effect_instance_create_typed(base_value, scaling, {});
+		if fork() {
+			var i = 0;
+			//Try to let other mods initialize types
+			while (type == undefined && i <= 15) {
+				i++
+				wait(1)
+				type = effectTypes[? typeNameOrObject]
+			}
+			//If no mod has made the type, report that
+			if (type == undefined) {
+				trace_color(`ERROR: Effect Type '${type}' does not exist.`, c_red)
+			}
+			//Update the returned instance's type
+			effectInstance.type = type
+			exit
+		}
+		return effectInstance;
+	}
+    return effect_instance_create_typed(base_value, scaling, typeNameOrObject);
 
 #define effect_instance_create_typed(base_value, scaling, effectType)
     return {
@@ -218,7 +239,7 @@ var describe_script = argument_count > 2 ? argument[2] : describe_pass;
     
 
 //Calls any script references in list of effects, passing standardized arguments.
-#define effects_call(spellPower, effectList, script, args1, args2)
+#define effects_call(effectList, script, args1, args2)
     for(var i = 0; i < array_length(effectList); i++) {
         var ref = lq_get(effectList[i].type, script);
         
@@ -228,12 +249,12 @@ var describe_script = argument_count > 2 ? argument[2] : describe_pass;
     }
     
 //Calls scripts in reverse. Specifically used for processes that are being reversed, ie: deactivation.
-#define effects_call_reverse(spellPower, effectList, script, args1, args2)
+#define effects_call_reverse(effectList, script, args1, args2)
     for(var i = array_length(effectList) - 1; i >= 0 ; i--) {
         var ref = lq_get(effectList[i].type, script);
         
         if (ref != undefined) {
-            script_ref_call(ref, effect_calculate_value(effectList[i], spellPower), effectList[i], args1, args2);
+            script_ref_call(ref, effectList[i].working_value, effectList[i], args1, args2);
         }
     }
     
@@ -334,32 +355,24 @@ var describe_script = argument_count > 3 ? argument[3] : describe_pass;
     return effectType;
     
 #define stat_effect_activate(variableName, operator, value, effect)
-    var currentValue = variable_instance_get(self, variableName);
+    var currentValue = variable_instance_get(self, variableName, 0);
         
-    if (currentValue == undefined) {
-        currentValue = 0;
-    }
-    
     if (operator == operators.add) {
         currentValue += value;
     }
-    if (operator == operators.multiply) {
+    else if (operator == operators.multiply) {
         currentValue *= value;
     }
     
     variable_instance_set(self, variableName, currentValue);
     
 #define stat_effect_deactivate(variableName, operator, value, effect)
-    var currentValue = variable_instance_get(self, variableName);
+    var currentValue = variable_instance_get(self, variableName, 0);
         
-    if (currentValue == undefined) {
-        currentValue = 0;
-    }
-    
     if (operator == operators.add) {
         currentValue -= value;
     }
-    if (operator == operators.multiply) {
+    else if (operator == operators.multiply) {
         currentValue /= value;
     }
     
