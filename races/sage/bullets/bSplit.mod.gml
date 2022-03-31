@@ -1,10 +1,23 @@
 #define init
-  global.sprBullet = sprite_add("../../../sprites/sage/bullets/sprBulletSplit.png", 2, 7, 11);
-  global.sprFairy = sprite_add("../../../sprites/sage/bullet icons/sprFairyIconSplit.png", 0, 5, 5);
+	global.sprBullet = sprite_add("../../../sprites/sage/bullets/sprBulletSplit.png", 2, 7, 11);
+	global.sprFairy = sprite_add("../../../sprites/sage/bullet icons/sprFairyIconSplit.png", 0, 5, 5);
+	
+	player_fire_at_init()
 
-  player_fire_at_init()
+	with effect_type_create("splitShot", `{} @(color:${c.projectile})SHOTS FIRED`, scr.describe_whole) {
+		on_activate = script_ref_create(split_activate)
+		on_deactivate = script_ref_create(split_deactivate)
+		on_step = script_ref_create(on_split_step)
+		on_fire = script_ref_create(split_fire)
+	}
+
+	global.effects = [
+		effect_instance_named("splitShot", 1, 1),
+		simple_stat_effect("reloadspeed", 1, 1)
+		]
 
 #macro c mod_variable_get("race", "sage", "colormap");
+#macro scr mod_variable_get("mod", "sageeffects", "scr")
 
 #define fairy_sprite
   return global.sprFairy;
@@ -19,7 +32,7 @@
   return "SPLIT";
 
 #define bullet_ttip
-  return ["DUPLICATION TECHNOLOGY", "BALLISTIC REFRACTION SUCCESSFUL.#CONSISTENT ACROSS ALL PLANES."];
+  return ["DUPLICATION TECHNOLOGY", "::BALLISTIC REFRACTION EX-8851", "::CONSISTENT ACROSS ALL PLANES."];
 
 #define bullet_area
   return 1;
@@ -30,133 +43,56 @@
   sound_play_pitchvol(sndSwapShotgun, 1.2 * _p, .9);
   sound_play_pitchvol(sndCrossReload, 1.4 * _p, .9);
 
-#define bullet_description(spellPower)
-  return `@(color:${c.neutral})+` + string(ceil(1 + 1 * spellPower)) + ` @(color:${c.projectile})PROJECTILE` + (ceil(1 + 1 * spellPower) = 1 ? "" : "S") + ` @(color:${c.neutral})fired#@(color:${c.negative})+` + string(round(100 + 100 * spellPower)) +  `% @(color:${c.ammo})AMMO COST`;
+#define bullet_effects
+	return global.effects
 
-#define on_take(spellPower)
-    if "sage_projectiles" not in self {
-        sage_projectiles = ceil(1 + 1 * spellPower);
-    }
-    else {
-        sage_projectiles += ceil(1 + 1 * spellPower);
-    }
-    sage_ammo_cost += ceil(1 + 1 * spellPower);
+#define split_activate(value, effect)
+	canaim = false
+#define split_deactivate(value, effect)
+	canaim = true
+	
+#define on_split_step(value, effect)
+    gunangle = point_direction(x, y, mouse_x[index], mouse_y[index]) - get_split_angle_range(accuracy, value)/2 + get_angle_offset(accuracy, value) * get_base_gun_index(value)
 
-    reloadspeed += get_split_shots(spellPower) - 1
-
-    canaim = false
-
-
-#define on_lose(spellPower)
-    canaim = true
-
-    reloadspeed -= get_split_shots(spellPower) - 1
-
-    sage_projectiles -= ceil(1 + 1 * spellPower);
-    sage_ammo_cost -= ceil(1 + 1 * spellPower);
-
-
-#define on_pre_fire(spellPower)
-
-	var base_gun = get_base_gun_index(spellPower),
-		offset = get_angle_offset(accuracy, spellPower),
-		shots = get_split_shots(spellPower),
+#define split_fire(value, effect, fireEvent, fireStack)
+	var base_gun = get_base_gun_index(value),
+		offset = get_angle_offset(accuracy, value),
+		shots = get_split_shots(value),
 		base_angle = gunangle - base_gun * offset;
+
+	//Notify other fire events split has been used, so they can have it in their stacks
+	array_push(fireStack, effect.type.name)
+	//Make a clone now so that any future additions to the stack dont show up in this split
+	var splitStack = array_clone(fireStack);
 
 	for (var i = 0; i < shots; i++) {
 		if i != base_gun {
 			var angoff = (i - base_gun) * offset;
-			var event = {
+			var	splitFireEvent = {
 				cancelled: false,
-				angle_offset: angoff
+				angle_offset: angoff + fireEvent.angle_offset
 			}
-			var shootEvent = mod_script_call_self("race", "sage", "before_sage_shoot");
-		    player_fire_at(undefined, undefined, undefined, event.angle_offset)
-		    mod_script_call_self("race", "sage", "mid_firing", event)
-		    mod_script_call_self("race", "sage", "post_sage_shoot", shootEvent)
+			//Once again clone the stack, so that the different split shots all have separate stacks
+			mod_script_call("race", "sage", "sage_fire", splitFireEvent, array_clone(splitStack))
 		}
 	}
 
+#define get_base_gun_index(value)
+	return floor(get_split_shots(value-1)/2);
 
-/*
-potential ammo cost system
+#define get_split_angle_range(acc, value)
+	return (get_split_shots(value) - 1 ) * get_angle_offset(acc, value)
 
-each bullet (that matters) has ammo_priority and ammo_multiplier
+#define get_angle_offset(acc, value)
+    return (20 - 3 * (value - 1)) * acc;
 
-when sage's fire script is called, make an array and iterate through all bullets.
-	push the priority of the bullet + the index of the bullet divided by 10000 to the array
-	sort the array
-	iterate through the array in order, using frac to get the indexes of the bullets (in spellBullets) back
-	push the bullets into an array in order using those indexes
-	iterate through now priority sorted array
-		multiply base cost of gun by results in order
-		each cost script can accept a bool for if its multipier applies during subtraction or only during calculation (ultra has 0 in the latter and one in the former)
-		if calculated cost passes, continue with fire script, else dont even call fire.
-*/
-
-#define get_base_gun_index(spellPower)
-	return floor(get_split_shots(spellPower-1)/2);
-
-#define get_split_angle_range(acc, spellPower)
-	return (get_split_shots(spellPower) - 1 ) * get_angle_offset(acc, spellPower)
-
-#define get_angle_offset(acc, spellPower)
-    return (20 - 3 * spellPower) * acc;
-
-#define get_split_shots(spellPower)
-	return ceil(2 + spellPower)
-
-#define on_step(spellPower)
-    gunangle = point_direction(x, y, mouse_x[index], mouse_y[index]) - get_split_angle_range(accuracy, spellPower)/2 + get_angle_offset(accuracy, spellPower) * get_base_gun_index(spellPower)
+#define get_split_shots(value)
+	return ceil(value + 1)
 
 
-#define balls
-
-  with instances_matching_ge(Player, "sage_projectiles", 1) {
-  var     a = sage_spell_power,
-      angle = (27 + 7 * a) * accuracy,
-     amount = ceil(2 + a);
-
-  for(var _i = 0; _i < amount; _i++) {
-
-    with instances_matching(instances_matching_ne(projectile, "sage_no_split", amount), "creator", self) {
-
-      if "sage_no_split" not in self {
-
-        sage_no_split = 1;
-      }else {
-
-        sage_no_split++;
-      }
-
-      // Special split case for lasers because they dont want to cooperate on their own:
-      if instance_is(self, Laser) {
-
-        with instance_create(xstart, ystart, Laser) {
-
-          alarm0 = 1;
-          team = other.team;
-          creator = other.creator;
-          image_angle = other.image_angle -angle + _i * angle + angle / 2 * (1 - a);
-          direction = image_angle;
-          sageCheck = other.sageCheck
-          sage_no_split = amount;
-        }
-      }else with(instance_copy(false)) {
-
-        sage_no_split = amount;
-        if !instance_is(self, Lightning) {
-
-          image_angle += -angle + _i * angle + angle / 2 * (1 - a);
-          direction   += -angle + _i * angle + angle / 2 * (1 - a);
-        }
-      }
-
-      if sage_no_split = amount instance_delete(self);
-    }
-  }
-}
-
+#define simple_stat_effect(variableName, value, scaling) return mod_script_call("mod", "sageeffects", "simple_stat_effect", variableName, value, scaling)
+#define effect_instance_named(effectName, value, scaling) return mod_script_call("mod", "sageeffects", "effect_instance_create", value, scaling, effectName)
+#define effect_type_create(name, description, describe_script) return mod_script_call("mod", "sageeffects", "effect_type_create", name, description, describe_script)
 
 
 
