@@ -7,6 +7,7 @@
     names_init();
 
 #macro c mod_variable_get("race", "sage", "colormap");
+#macro scr mod_variable_get("mod", "sageeffects", "scr")
 
 #define fairy_sprite
   return (random(59) < current_time_scale ? global.sprFairy2 :  global.sprFairy);
@@ -17,9 +18,8 @@
 #define bullet_sprite
   return global.sprBullet;
 
-#define bullet_name(bullet)
+#define bullet_name(spellPower, bullet)
     if (bullet != undefined) {
-        
         return bullet.name;
     }
     return "CURSED";
@@ -38,12 +38,7 @@
   sound_play_pitchvol(sndSwapShotgun, 1.2 * _p, .9);
   sound_play_pitchvol(sndCrossReload, 1.4 * _p, .9);
 
-#define bullet_description(power, bullet)
-    if (bullet != undefined) {
-        
-        return stat_effect_describe(power, bullet);
-    }
-    
+
 #define on_init(bullet)
     
     with bullet {
@@ -129,16 +124,22 @@
             name = "idk";
         }
         
+        var temp = []
+        unpack(temp, effects)
+        effects = temp
+        
         bullet_power = bulletPower;
         based = true;
     }
+    
+#define bullet_effects(bullet)
+    return bullet.effects
 
-#define on_take(power, bullet)
-    effects_call(power, bullet, "takescript");
-    
-#define on_lose(power, bullet)
-    effects_call(power, bullet, "losescript");
-    
+#define post_init(bullet)
+    with bullet.effects {
+        value *= bullet.bullet_power
+    }
+
 #define on_fire
     var _p = random_range(.9, 1.1);
     var _s = sound_play_pitchvol(sndCursedPickup, 1 * _p, 1);
@@ -150,13 +151,6 @@
         with instance_create(fairy.x + random_range(-sprite_get_width(fairy.sprite_back), sprite_get_width(fairy.sprite_back)) / 16 + fairy.creator.hspeed, fairy.y - sprite_get_height(fairy.sprite_back) / 32 * random_range(.8, 1), Curse) {depth = -12}
     }
     
-// Positive effect array negative effect array function that adds stat bonuses to both
-
-enum operators {
-            
-        add,
-        multiply
-    }
 #define personalities_init
     enum personality {
         aggressive, // All caps, replace . with !
@@ -327,314 +321,104 @@ enum operators {
         `@0(${global.sprEmote}:0)`,
         "" // also intentional
         ];
+
 #define effects_init
     global.positiveEffects = [];
     global.negativeEffects = [];
     
-    stat_effect_create({
-        
-        variable   : "maxhealth",
-        value      : 2,
-        descriptor : "@rMAX HP",
-        scr_value_descriptor : script_ref_create(describe_whole),
-        operator   : operators.add,
-        spellpower_scaling : 2,
-        scr_finalize : script_ref_create(finalize_ceil)
-    }, true);
+    add_positive(simple_stat_effect("maxhealth", 2, 2))
+    add_negative(simple_stat_effect("maxhealth", -2, 0))
     
-    stat_effect_create({
-        
-        variable   : "sage_projectile_speed",
-        value      : .25,
-        descriptor : `@(color:${c.projectile_speed})PROJECTILE SPEED`,
-        scr_value_descriptor : script_ref_create(describe_percentage),
-        operator   : operators.add,
-        spellpower_scaling : .25,
-        scr_finalize : script_ref_create(finalize_nothing)
-    }, true);
+    add_positive(simple_stat_effect("maxspeed", 1, 1))
+    add_negative(simple_stat_effect("maxspeed", -1, 0))
     
-    stat_effect_create({
-        
-        variable   : "reloadspeed",
-        value      : .2,
-        descriptor : `@(color:${c.reload})RELOAD SPEED`,
-        scr_value_descriptor : script_ref_create(describe_percentage),
-        operator   : operators.add,
-        spellpower_scaling : .2,
-        scr_finalize : script_ref_create(finalize_nothing)
-    }, true);
+    add_positive(simple_stat_effect("accuracy", .6, 0))
+    add_negative(simple_stat_effect("accuracy", 1.6, 0))
     
-    stat_effect_create({
-        
-        variable   : "maxspeed",
-        value      : 1,
-        descriptor : `@(color:${c.speed})SPEED`,
-        scr_value_descriptor : script_ref_create(describe_2a),
-        operator   : operators.add,
-        spellpower_scaling : 1,
-        scr_finalize : script_ref_create(finalize_nothing)
-    }, true);
-    
-    stat_effect_create({
-        
-        variable   : "sage_friction",
-        value      : .9,
-        descriptor : `@(color:${c.friction})TRACTION`,
-        scr_value_descriptor : script_ref_create(describe_percentage),
-        operator   : operators.add,
-        spellpower_scaling : .9,
-        scr_finalize : script_ref_create(finalize_nothing)
-    }, true);
-    
-    stat_effect_create({ // not implemented?
-      
-        variable   : "sage_auto",
-        value      : 1,
-        descriptor : "@wAUTOMATIC WEAPONS",
-        scr_value_descriptor : script_ref_create(describe_nothing),
-        operator   : operators.add,
-        spellpower_scaling : 0,
-        scr_finalize : script_ref_create(finalize_nothing)
-    }, false);    
-    
-    stat_effect_create({ // not implemented
-      
-        variable   : "sage_bounce",
-        value      : 1,
-        descriptor : `@(color:${c.bounce})BOUNCES`,
-        scr_value_descriptor : script_ref_create(describe_whole),
-        operator   : operators.add,
-        spellpower_scaling : 1,
-        scr_finalize : script_ref_create(finalize_ceil)
-    }, false);    
-    
-    stat_effect_create({ // not implemented
-      
-        variable   : "sage_hitscan_strength",
-        value      : 2,
-        descriptor : `@(color:${c.speed})HYPERSPEED`,
-        scr_value_descriptor : script_ref_create(describe_whole),
-        operator   : operators.add,
-        spellpower_scaling : 3,
-        scr_finalize : script_ref_create(finalize_ceil)
-    }, false);    
-    
-    stat_effect_create({
-      
-        variable   : "notoxic",
-        value      : 1,
-        descriptor : `@gTOXIC IMMUNITY`,
-        scr_value_descriptor : script_ref_create(describe_nothing),
-        operator   : operators.add,
-        spellpower_scaling : 0,
-        scr_finalize : script_ref_create(finalize_nothing)
-    }, false);  
-    
-    /*stat_effect_create({
-        
-        variable   : "accuracy",
-        value      : .6,
-        descriptor : `@(color:${c.accuracy})ACCURACY`,
-        scr_value_descriptor : script_ref_create(describe_percentage),
-        operator   : operators.multiply,
-        spellpower_scaling : .6,
-        scr_finalize : script_ref_create(finalize_nothing)
-    }, true);*/
-    
-    /*stat_effect_create({ // no dude
-        
-        variable   : "sage_spell_power",
-        value      : .5,
-        descriptor : `@(color:${c.spellpower})SPELLPOWER`,
-        scr_value_descriptor : script_ref_create(describe_percentage),
-        operator   : operators.add,
-        spellpower_scaling : 0,
-        scr_finalize : script_ref_create(finalize_nothing)
-    }, true);*/
+    add_positive(simple_stat_effect("reloadspeed", .15, .15))
+    add_negative(simple_stat_effect("reloadspeed", -.2, 0))
 
-#define effects_call(_spellpower, _spellbullet, _script)
-    for(var i = 0; i < array_length(_spellbullet.effects); i++) {
-        
-        script_ref_call(lq_get(_spellbullet.effects[i], _script), _spellbullet.effects[i], _spellpower, _spellbullet);
-    }
+    add_positive(effect_instance_named("projectileSpeed", .25, .25))
+    add_negative(effect_instance_named("projectileSpeed", -.25, 0))
+    //Fuck it. 50% projectile speed boost
+    add_positive(effect_instance_named("projectileSpeed", .5, 0))
+
+    //-10% damage to weed out the pansies
+    add_negative(effect_instance_named("projectileDamage", -.1, 0))
     
-#define stat_effect_describe(_spellpower, _spellbullet)
-    var     str = "",
-        effects = _spellbullet.effects,
-         recall = [],
-         recallval = [];
-        
-    // Combine duplicate effect descriptions:
-    for(var i = 0; i < array_length(effects); i++) {
-        
-        if (i == 0) {
-            
-            recall[0] = effects[i];
-            recallval[0] = effects[i].stateffect.value + max(sign(effects[i].stateffect.value) * effects[i].stateffect.spellpower_scaling * _spellpower, 0);
-        }
-        else {
-            
-            var j = 0;
-            var exists = 0;
-            with recall {
-                
-                // Entry exists already:
-                if (self.stateffect.descriptor == effects[i].stateffect.descriptor) {
-                    recallval[j] += effects[i].stateffect.value + max(sign(effects[i].stateffect.value) * effects[i].stateffect.spellpower_scaling * _spellpower, 0);
-                    exists = 1;
-                }
-                j++;
-            }
-            
-            if (!exists) {
-                
-                var length = array_length(recall);
-                recall[length] = effects[i];
-                recallval[length] = effects[i].stateffect.value + max(sign(effects[i].stateffect.value) * effects[i].stateffect.spellpower_scaling * _spellpower, 0);
-            }   
-        }
-    }
+    add_positive(effect_instance_named("sustainChance", .25, .1))
+    add_positive(effect_instance_named("autoFire", 1, 0))
+    add_positive(effect_instance_named("projectileBounces", 1, 1))
     
-    // Get all the text:
-    var i = 0;
-    with recall {
-        
-        if (recallval[i] != 0) {
-            // Add newline:
-            if (string_length(str) > 0) {
-                
-                str += "#";
-            }
-            
-            // Add the operator at the beginning:
-            if (recallval[i] < 0) {
-                    
-                str += `@(color:${c.negative})`;
-            }
-            else if (recallval[i] > 0){
-                    
-                str += `@(color:${c.neutral})+`;
-            }
-        
-            
-            // Add the value:
-            str += script_ref_call(self.stateffect.scr_value_descriptor, (recallval[i]) * _spellbullet.bullet_power) + (self.stateffect.scr_value_descriptor[2] == "describe_nothing" ? "" : " ");
-        
-            // Add the name of the stat changed:
-            str += recall[i].stateffect.descriptor;
-        }
-        i++;
-    }
+    //Uses an array to bundle the effects
+    add_positive([
+        effect_instance_named("splitShot", 1, 1),
+        //Reduced scaling, I want curse effects to be generally weaker than normal ones
+        simple_stat_effect("reloadspeed", .7, .7)
+    ])
+    //Lets get creative with this one; split shot with no reload speed boost.
+    add_negative(effect_instance_named("splitShot", 1, 1))
     
-    // Just in case you get nothing out of a bullet:
-    if (str == "") {
-        
-        str = `@(color:${c.neutral})DOES NOTHING`;
-    }
-    return(str);
+    //Weaker version of Burst
+    add_positive([
+        effect_instance_named("burstCount", 2, 1),
+        simple_stat_effect("reloadspeed", -.4, 0)
+    ])
     
-#define stat_effect_create(_stat_effect, _reversible)
-    var copy = lq_clone(_stat_effect);
-    var e = {
-        
-        takescript : script_ref_create(stat_effect_take),
-        losescript : script_ref_create(stat_effect_lose),
-        stateffect : _stat_effect
-    };
+    //I'm stupid
+    //Double damage, -90% projectile speed
+    add_negative([
+        effect_instance_named("projectileDamage", 1, 0),
+        effect_instance_named("projectileSpeed", -.9, 0)
+    ])
     
-    array_push(global.positiveEffects, e);
-    if (_reversible) {
-        
-        var f = {
-        
-            takescript : script_ref_create(stat_effect_take),
-            losescript : script_ref_create(stat_effect_lose),
-            stateffect : copy
-        };
-        
-        if (copy.operator == operators.add) {
-            
-            copy.value *= -1;
-            copy.spellpower_scaling *= 0;
-        }
-        if (copy.operator == operators.multiply) {
-            
-            copy.value = 1/copy.value;
-            copy.spellpower_scaling *= 0;
-        }
-        
-        array_push(global.negativeEffects, f);
-    }
+    //No scaling on this one. Don't feel like it.
+    add_positive(effect_instance_named("projectileHyperSpeed", 1, 0))
     
-#define stat_effect_take(_effect, _spellpower, _spellbullet)
-    var n = stat_effect_calculate(_effect.stateffect, _spellpower, _spellbullet),
-        value = variable_instance_get(self, _effect.stateffect.variable);
-        
-    if (value == undefined) {
-        
-        value = 0;
-    }
-    
-    if (_effect.stateffect.operator == operators.add) {
-        
-        value += n;
-    }
-    if (_effect.stateffect.operator == operators.multiply) {
-        
-        value *= n;
-    }
-    
-    variable_instance_set(self, _effect.stateffect.variable, value);
+    //Todo: Custom Type for notoxic
     
 
-#define stat_effect_lose(_effect, _spellpower, _spellbullet)
-    var n = stat_effect_calculate(_effect.stateffect, _spellpower, _spellbullet),
-        value = variable_instance_get(self, _effect.stateffect.variable);
-    
-    if (_effect.stateffect.operator == operators.add) {
-        
-        value -= n;
-    }
-    if (_effect.stateffect.operator == operators.multiply) {
-        
-        value /= n;
-    }
-    
-    variable_instance_set(self, _effect.stateffect.variable, value);
-    
-#define stat_effect_calculate(_effect, _spellpower, _spellbullet)
-    return script_ref_call(_effect.scr_finalize, (_effect.value + _effect.spellpower_scaling * _spellpower) * _spellbullet.bullet_power);
+//These aren't inlined so that changes can easily be made later
+#define add_positive(effectInstances)
+    array_push(global.positiveEffects, effectInstances)    
 
-#define finalize_ceil(_var)
-    var v = ceil(abs(_var)) * sign(_var);
-    return (v);
+#define add_negative(effectInstances)
+    array_push(global.negativeEffects, effectInstances)
 
-#define finalize_nothing(_var)
-    return (_var); // so cool
-    
-#define describe_whole(_var)
-    var v = ceil(abs(_var)) * sign(_var);
-    return string(v);
-    
-#define describe_percentage(_var)
-    var v = (round(abs(_var * 100)) * sign(_var));
-    return string(v) + "%";
-    
-#define describe_2a(_var) // 2a = accuracy of 2, 2 digits after the comma (1,xx)
-    var v = string(round(_var * 100) / 100);
-    
-    for(var i = string_length(v); i < (sign(_var) == -1 ? 5 : 4); i++){
-        
-        if (i == 1) {
-            
-            v += ".";
-        }
-        else {
-            
-            v += "0";
+#define get_random_positive
+    return global.positiveEffects[irandom(array_length(global.positiveEffects) - 1)]
+
+#define get_random_negative
+    return global.negativeEffects[irandom(array_length(global.negativeEffects) - 1)]
+
+
+#define get_effects(positiveCount, negativeCount)
+    var effects = [];
+    if (positiveCount > 0) {
+        repeat(positiveCount) {
+            //Uses unpack so that effects can be in 'sets' which are unpacked into the final array
+            unpack(effects, get_random_positive())
         }
     }
+    if (negativeCount > 0) {
+        repeat(negativeCount) {
+            unpack(effects, get_random_negative())
+        }
+    }
+    return effects;
 
-    return(v);
-#define describe_nothing
-    return "";
+//'Flattens' stuff (an array), taking any content (even in subarrays) and adding it to the 'box'
+#define unpack(box, stuff)
+	for (var i = 0; i < array_length(stuff); i++) {
+	    if is_array(stuff[i]){
+	        unpack(box, stuff[i])
+	    }
+	    else{
+	        array_push(box, stuff[i])
+	    }
+	}
+
+
+#define simple_stat_effect(variableName, value, scaling) return mod_script_call("mod", "sageeffects", "simple_stat_effect", variableName, value, scaling)
+#define effect_instance_named(effectName, value, scaling) return mod_script_call("mod", "sageeffects", "effect_instance_create", value, scaling, effectName)
+#define effect_type_create(name, description, describe_script) return mod_script_call("mod", "sageeffects", "effect_type_create", name, description, describe_script)

@@ -2,7 +2,7 @@
     global.sprBullet = sprite_add("../../../sprites/sage/bullets/sprBulletBurst.png", 2, 7, 11);
     global.sprFairy = sprite_add("../../../sprites/sage/bullet icons/sprFairyIconBurst.png", 1, 5, 5);
 
-    with effect_type_create("burstCount", `{} @(color:${c.ammo})BURST SIZE`, scr.describe_whole) {
+    with effect_type_create("burstCount", `{} @(color:${c.ammo})BURST SIZE`, scr.describe_floor) {
         on_fire = script_ref_create(burst_fire)
     }
 

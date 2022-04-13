@@ -33,7 +33,7 @@
   return ["@yREFLECT", "::ELECTROSTATIC ENCAPSULATION EX-8804", "::REPULSION SIGNIFICANTLY AFFECTING RELIABILITY"];
 
 #define bullet_area
-  return 1;
+  return 4;
 
 #define bullet_swap
   var _p = random_range(.9, 1.1);

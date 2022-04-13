@@ -1,2 +1,132 @@
 This file is a general purpose reference sheet for Sage's effects and the API behind them.
 
+TODO: bullet API, further effect type hooks and fields
+
+Effect API breakdown:
+    Effects are a generic term to describe the structures that run most of Sage's abilities.
+    An effect is composed of three different layers:
+        
+        Effect Type:
+            The base object that contains script references for a given Effect.
+            Has a name field which is used to uniquely identify it. It is assumed that if two Effect Types share the same name, they are the same.
+            These are responsible for determining how Effect Instances behave, such as stacking behavior and what code they can run.
+        
+        Effect Instance:
+            An object created to be used in Bullets.
+            Contains four fields:
+                type: A pointer back to the Effect Type this instance is using.
+                value: A number that signifies this Effect Instance's base value.
+                spellpower_scaling: A number that is used to calculate a change in value based on spellpower.
+                    *The exact way this is used depends on effect type. For example; an additive effect multiplies this by spellpower, and then adds it to value.
+                is_unique: Defaults to false. If true, this Effect Instance cannot be composed and will be treated as a Composite Effect. This allows storage of information on an Effect Instance basis.
+        
+        Composite Effect:
+            Also referred to as "Composed Effect" or "Composite"
+            These are made of one or more Effect Instances, and are the finalized versions of Effects.
+            Effects are composed whenever Sage refreshes his active effects, deleting all previous Composites and making new ones.
+            'Composing' a Composite means calculating the components' current values, combining them according to Effect Type, and placing it in a new object.
+            
+            All script hooks are performed using Composites, using their working_value.
+            
+            Contains one unique field:
+                working_value: The precomputed value passed into script hooks. Calculated according to Effect Type and values of the component Effect Instances.
+            
+            Contains the four fields from Effect Instances for compatibility, which goes unused, some minor differences:
+                value: Set to working_value.
+                spellpower_scaling: Set to 0.
+                type: Is set to a 'fresh' copy of the component Instances' type.
+                is_unique: Set to false.
+            
+            On unique Effect Instances:
+                If an Effect Instance is unique (is_unique = true), it has its working_value calculated and set whenever effects are composed.
+                Once that is done, it is simply passed into the Composite array.
+                No stacking occurs, and it is not cloned, meaning it will continue to exist once Effects are recomposed instead of being discarded.
+        
+        
+    This relatively complex structure is to ensure several things:
+        Reusability. Once an Effect Type is created, it can be reused across multiple Instances in multiple places.
+        Stacking/Combination. Composite Effects ensure that code is only run once, with scaled values. Effects do not need to be concerned with preventing double execution.
+        Isolation. Because Composite Effects are independent of bullet Effect Instances, changes can occur on one layer without having to concern the other.
+        Reversability. As in Isolation, Composites being independent means that even after changes occur, the Composite layer can be fully reversed without concern.
+        Identification. Effect Types are to declare what Effect Instances can combine. If the Effect Type is the same, that means the Effect Instances do the same actions, and can be combined without loss.
+        
+    
+Effect Type Hooks:
+    *All Hooks are called with the following arguments, in order:
+        The working_value of the Composite Effect,
+        The Composite Effect
+    *Any additional arguments listed (in parenthesis) come after those two.
+    
+    on_activate : Called when Effect is activated, ie when switched to, picked up, or when Effects are recomposed.
+    on_deactivate : As on_activate, but for deactivation. ie when dropped, swapped off of, or before Effects are recomposed.
+        *Called in reverse order to resolve stacks properly
+    on_new_projectiles (projectileArray) : Called whenever SageMod detects new projectiles that the current Sage has created, filtered to ignore projectiles tagged with sage_dni and ammo_type = -1.
+    on_pre_shoot (shootEvent) : Called before Sage shoots (See Shooting and Firing)
+    on_post_shoot (shootEvent) : Called after Sage shoots
+    on_rads_use (radsUsed) : Called whenever Sage uses rads while shooting.
+    on_rads_out : Called whenever Sage runs out of rads.
+    on_step : Called in Sage's step event.
+    on_fire (fireEvent, fireStack) : Called when Sage fires (See Shooting and Firing)
+
+
+
+Implemented Effect Types:
+    *(Name provided is used in a string to create effect instances)
+    *[Square brackets indicate the source of the effect if it is not in sageEffects]
+    Normal Effects:
+        projectileSpeed (Additive scaling, multiplies projectile speed by 1 + value)
+        size (Multiplicative scaling, multiplies Sage's image_xscale and image_yscale by value)
+        sustainChance (Additive, value represents a % chance to gain infammo before Shooting that is taken away) [Sustain Bullet]
+        ammoToRads (Additive, enables Sage to convert rads to ammo when Shooting, value is rad consumption multiplier. Only ever used as 1) [Ultra Bullet]
+        reloadspeedOnRadUse (Additive, grants bonus to reloadspeed equal to value when using rads. Disabled when rads run out or when disabled) [Ultra Bullet]
+        autoFire (Additive, but does not stack. If present, sets clicked to true in step while Sage is holding the fire button)
+        projectileDamage (Additive, multiplies projectile damage on creation by 1 + value (ceiled). Also changes size according to the multipler, up to +-50%)
+        projectileBounces (Additive, projectiles will bounce off of walls up to value times. Wraps custom projectile wall events) [Bounce Bullet]
+        projectileHyperSpeed (Additive, runs megahyper code on projectiles, with the maximum amount of bonus steps being equal to value.) [Warp Bullet]
+        projectileEcho (Additive, spawns damaging blasts when projectiles are destroyed. Damage is equal to floor(value), size is scaled by value and projectile damage) [Echo Bullet]
+        splitShot (Additive, causes Sage to fire multiple times at once) [Split Bullet]
+        burstCount (Additive, causes Sage to fire (value - 1) additional times with a short delay) [Burst Bullet]
+    
+    Stat Effects:
+        * Stat Effects are a subtype of effect types that were set up to do basic operations on stats. They are prefixed with statEffect_ before the variable name. See uses in bullets for examples.
+        
+        maxhealth (Additive, also changes current health when activated and deactivated)
+        reloadspeed (Additive)
+        maxspeed (Additive)
+        accuracy (Multiplicative)
+        
+
+
+Shooting and Firing:
+    Sage's complex behaviors required some convoluted systems. There are two processes that are highly connected but used differently, both related to using Weapons.
+    Shooting:
+        Sage is considered "Shooting" when the gun itself calls its fire script.
+        Ex: Sustain goes off before shooting, to give Sage infammo, preventing the gun from consuming ammo. This infammo is taken away in post_shoot
+        Pre_shoot is called before Sage fires the gun. Post is after.
+    Firing:
+        Sage is considered "Firing" when Sage is performing the act of firing the gun, ie when clicking.
+        Ex: Burst causes Sage to "Fire" his gun two additional times, with delay. This calls all shooting and firing scripts again.
+        Firing effects are called *after* Sage actually fires the gun, due to technical limitations.
+    
+    These two actions are rather similar, so here is how they are used:
+        Shooting has different capabilities than Firing, and is generally more convenient to work with.
+            If you do not need Sage to fire a weapon in your Effect, use Shoot hooks. They cover all cases without the added complexity of Firing hooks.
+        
+        Firing is a technical definition, because Split and Burst required a separate system that could work with stacking and repetition.
+            Firing has a 'stack' that is used to prevent Effects from reapplying after Sage fires a weapon due to the Effect.
+            Without the stack, Split's fire event would be called by Split's fire event, causing infinite recursion.
+            This stack is provided to ALL fire hooks, meaning that if Split fires a second shot, Burst can pick that up and make Sage fire twice more, and Split wont apply to those subsequent firings.
+    
+    Events:
+        Shoot hooks and Fire hooks pass around these 'Events'. These are simple LWOs used to pass information between Effects and Hooks.
+        See sustainChance for simple usage.
+    
+    Firing Stack:
+        This is used by Firing code to prevent stacking of Effects. It is an array of Effect Type names.
+        If a name is in the stack, any Effect Instances of that type will not have their Fire hooks called.
+        In Firing hooks, add the name of the Effect Type to the stack.
+        See Split and Burst for complete implementations.
+
+
+
+

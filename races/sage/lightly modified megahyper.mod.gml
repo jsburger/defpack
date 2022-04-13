@@ -145,7 +145,7 @@
 				if(!instance_exists(self)) break;
 				
 				 // Trail:
-				if(_trail > 0 && _tries > 0){
+				if(_trail > 0 /* && _tries > 0 */){
 					if((_frame % 1) < current_time_scale){
 						if(visible && sprite_index != mskNone){
 							var t = scrTrailLazy(xprevious, yprevious, _trail + 1);

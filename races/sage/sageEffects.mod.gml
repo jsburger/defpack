@@ -138,7 +138,7 @@ var describe_script = argument_count > 2 ? argument[2] : describe_pass;
 			}
 			//If no mod has made the type, report that
 			if (type == undefined) {
-				trace_color(`ERROR: Effect Type '${type}' does not exist.`, c_red)
+				trace_color(`ERROR: Effect Type '${typeNameOrObject}' does not exist.`, c_red)
 			}
 			//Update the returned instance's type
 			effectInstance.type = type
@@ -546,6 +546,11 @@ var describe_script = argument_count > 3 ? argument[3] : describe_pass;
     //.25 -> 1, -.25 -> -1, 1 -> 1
 #define describe_whole(_var)
     var v = ceil(abs(_var)) * sign(_var);
+    return string(v);
+    
+    //.25 -> 0, -.25 -> 0
+#define describe_floor(_var)
+    var v = floor(abs(_var)) * sign(_var);
     return string(v);
     
     //.25 -> 25%

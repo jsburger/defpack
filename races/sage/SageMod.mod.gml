@@ -1,7 +1,7 @@
 #define init
 	global.bind_step = noone;
 	
-	global.lastProjectileId = 0;
+	global.lastProjectileId = instance_create(0, 0, DramaCamera);
 	global.normalStep = noone;
 	
 #macro player_firing
@@ -229,13 +229,27 @@
 		exit
 	}
 	if (instance_exists(projectile) && projectile.id > global.lastProjectileId) {
-		var newProjectiles = instances_matching_gt(projectile, "id", global.lastProjectileId);
+		
+		//Gather new ids
+		var highest = projectile.id;
+		var temp = []
+		for (var i = global.lastProjectileId + 1; i <= highest; i++) {
+			if instance_exists(i) {
+				if instance_is(i, projectile) {
+					array_push(temp, i)
+				}
+			}
+		}
+		
+		// var newProjectiles = instances_matching_gt(temp, "id", global.lastProjectileId);
+		//Filter out projectiles with particular markings.
+		var sortedProjectiles = instances_matching_ne(instances_matching_ne(temp, "sage_dni", true), "ammo_type", -1);
 		
 		with instances_matching(Player, "race", "sage") {
-			mod_script_call_self("race", race, "on_new_projectiles", newProjectiles)
+			mod_script_call_self("race", race, "on_new_projectiles", sortedProjectiles)
 		}
 		//instances_matching sorts by descending id
-		global.lastProjectileId = newProjectiles[0]
+		global.lastProjectileId = highest
 	} 
 
 #define call_sage_shit_idc(sage, event)

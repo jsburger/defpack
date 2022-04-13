@@ -21,7 +21,7 @@
   with(arr){
     
     //TEMPORARY DEBUG CODE
-    var allowed = ["Test", "Default", "Melee", "Gold", "Prec", "Infammo", "Turret", "Gadget", "Ultra", "Reflect", "Warp", "Split", "Burst"], passed = false;
+    var allowed = ["Default", "Melee", "Gold", "Prec", "Infammo", "Turret", "Gadget", "Ultra", "Reflect", "Warp", "Split", "Burst", "Echo", "Cursed"], passed = false;
     with (allowed) {
         if string_count(self, other.path) {
             passed = true
@@ -32,10 +32,10 @@
 
     wait(mod_load(self.path));
 
-    wait(0);
+    //wait(0);
     var _i = string_replace(self.name, ".mod.gml", "");
     bullet[? _i] = {
-      name:        mod_script_call_nc("mod", _i, "bullet_name", undefined),
+      name:        mod_script_call_nc("mod", _i, "bullet_name", undefined, undefined),
       description: mod_script_call_nc("mod", _i, "bullet_description", 0, undefined),
       ttip:        mod_script_call_nc("mod", _i, "bullet_ttip"),
       area:        mod_script_call_nc("mod", _i, "bullet_area")

@@ -253,7 +253,7 @@ NOTES FROM JSBURG:
 
  // Throne Butt Description:
 #define race_tb_text
-	return "NYI"
+	return `SWAPPING @(color:${c.spell})SPELLS @sBOOSTS @wSPELLPOWER@s`
 
 
  // On Taking Throne Butt:
@@ -386,126 +386,126 @@ NOTES FROM JSBURG:
 	}
 	return "SAGE CAN DO COOL TRICKS"
 
-#define draw_begin
-	// Ternary operator is for drawing the fairy below the big spiral on level start
-	if !sign(fairy.y) script_bind_draw(fairy_draw, -11, self);
-
-#define draw
-	if sign(fairy.y)  script_bind_draw(fairy_draw, -11, self);
-
-#define fairy_draw(_player)
-	with _player if visible {
+#define fairy_draw(player)
+	with player if visible {
 
 		var h = fairy;
 		var a = .25;
 		var gsize = 1/64;
-		var w = sprite_get_width(h.sprite) + 12, l = sprite_get_height(h.sprite) + 16;
-		var u = ultra_get("sage", 2);
-		var s = max(0, -1 + u + (array_length(h.creator.spellBullets) > 1 && (h.creator.spellBullets[0] != h.creator.spellBullets[1])));
-		var b = bulletLoopMax;
 
-		var _h = 0,
-			_s = 0,
-			_v = 0,
-			_col = h.col;
+		var iconIndex = 0,
+			iconSprites = [],
+			drawColor = c_white,
+			outlineColor = c_white,
+			iconColor = c_white,
+			colHue,
+			colSat,
+			colVal,
+			maxBullets = bulletLoopMax;
+			
+		if array_length(spellBullets) == 0 {
+			drawColor = c_gray
+			iconSprites = [global.sprFairyIcon]
+		}
+		else {
+			for (var i = 0; i < maxBullets; i++) {
+				array_push(iconSprites, spell_call_self(spellBullets[i], "fairy_sprite"))
+				var fairyColor = spell_call_self(spellBullets[i], "fairy_color");
+				colHue += color_get_hue(fairyColor)
+				colSat += color_get_saturation(fairyColor)
+				colVal += color_get_value(fairyColor)
+			}
+			drawColor = make_color_hsv(colHue / max(1, i), colSat / max(1, i), colVal / max(1, i))
+		}
+		
+		var w = sprite_get_width(iconSprites[0]) + 12, l = sprite_get_height(iconSprites[0]) + 16;
+		
+		if (tbBoostTime > 0) {
+			var cooldownProgress = tbBoostTime/maxTBBoostTime;
+			drawColor = merge_color(drawColor, c_white, .6 * (cooldownProgress))
+		}
+		
+		outlineColor = make_colour_hsv(color_get_hue(drawColor), color_get_saturation(drawColor) / 1.2, 255);
+		iconColor = merge_color(merge_color(drawColor, c_black, .7), c_white, clamp(h.swap / fairy_swap_time, 0, 1))
+		drawColor = merge_color(drawColor, c_white, clamp(h.swap / fairy_swap_time, 0, 1))
 		
 		
-		// Ultra b merged drawing:
-		if(u) > 0 {
-			
-			if !b{// Draw this when no haves bullets:
-				// Back draw:
-				d3d_set_fog(1, merge_color(_col, c_white, clamp(h.swap / fairy_swap_time, 0, 1)), 1, 1)
-				h.swap = max(0, h.swap - current_time_scale * 1.2)
-				draw_sprite_ext(h.sprite_back, -1, h.x + 1, h.y + 1, w * gsize, l * gsize, 0, c_white, .4 * a);
-				draw_sprite_ext(h.sprite_back, -1, h.x + 1, h.y - 1, w * gsize, l * gsize, 0, c_white, .4 * a);
-				draw_sprite_ext(h.sprite_back, -1, h.x - 1, h.y + 1, w * gsize, l * gsize, 0, c_white, .4 * a);
-				draw_set_blend_mode(bm_add);
-				draw_sprite_ext(h.sprite_back, -1, h.x - 1, h.y - 1, w * gsize, l * gsize, 0, c_white, .4 * a);
-				draw_sprite_ext(h.sprite_back, -1, h.x, h.y, w * gsize, l * gsize, 0, c_white, 1 * a)
-				draw_set_blend_mode(bm_normal);
-				d3d_set_fog(0, 0, 0, 0)
+		//Thronebutt orbital when off cooldown
+		var drawOrbitalLater = false;
+		if (tbCooldown <= 0 && tbBoostTime <= 0 && has_thronebutt) {
+			var orbitalAngle = (instance_exists(GameCont) ? GameCont.timer : current_frame) * 3,
+				orbitalPoint = point_on_rotated_ellipse(8, 2, 45, orbitalAngle),
+				orbitalDepth = dsin(orbitalAngle),
+				orbitalScale = .8 + .2 * orbitalDepth,
+				orbitalAlpha = .6 + .2 * orbitalDepth;
 				
-				// Draw the fairy icon outline:
-				var _outlinecol = make_colour_hsv(color_get_hue(_col), color_get_saturation(_col) / 1.2, 255);
-					 
-				draw_sprite_ext(h.sprite, s, h.x - 1, h.y, 1, /*h.right*/ 1, /*h.angle*/ 0, _outlinecol, 1);
-				draw_sprite_ext(h.sprite, s, h.x + 1, h.y, 1, /*h.right*/ 1, /*h.angle*/ 0, _outlinecol, 1);
-				draw_sprite_ext(h.sprite, s, h.x, h.y + 1, 1, /*h.right*/ 1, /*h.angle*/ 0, _outlinecol, 1);
-				draw_sprite_ext(h.sprite, s, h.x, h.y - 1, 1, /*h.right*/ 1, /*h.angle*/ 0, _outlinecol, 1);
-				
-				draw_sprite_ext(h.sprite, s, h.x, h.y, 1, /*h.right*/ 1, /*h.angle*/ 0, merge_color(merge_colour(_col, c_black, .7), c_white, clamp(fairy.swap / fairy_swap_time, 0, 1)), 1);
+			if (sign(orbitalDepth)) < 0 {
+				draw_sprite_ext(sprCaveSparkle, 2, h.x + orbitalPoint.x, h.y + orbitalPoint.y - 1, orbitalScale, orbitalScale, -2 * orbitalAngle, c_white, orbitalAlpha)
 			}
-			else { // else:
-				for(var i = 0, _l = bulletLoopMax; i < _l; i++) {
-				
-					_h += color_get_hue(spell_call_self(spellBullets[i], "fairy_color"));
-					_s += color_get_saturation(spell_call_self(spellBullets[i], "fairy_color"));
-					_v += color_get_value(spell_call_self(spellBullets[i], "fairy_color"));
-				}
-				_col = (make_color_hsv(_h / max(1, i), _s / max(1, i), _v / max(1, i)));
-				
-				// Back draw:
-				d3d_set_fog(1, merge_color(_col, c_white, clamp(h.swap / fairy_swap_time, 0, 1)), 1, 1)
-				h.swap = max(0, h.swap - current_time_scale * 1.2)
-				draw_sprite_ext(h.sprite_back, -1, h.x + 1, h.y + 1, w * gsize, l * gsize, 0, c_white, .4 * a);
-				draw_sprite_ext(h.sprite_back, -1, h.x + 1, h.y - 1, w * gsize, l * gsize, 0, c_white, .4 * a);
-				draw_sprite_ext(h.sprite_back, -1, h.x - 1, h.y + 1, w * gsize, l * gsize, 0, c_white, .4 * a);
-				draw_set_blend_mode(bm_add);
-				draw_sprite_ext(h.sprite_back, -1, h.x - 1, h.y - 1, w * gsize, l * gsize, 0, c_white, .4 * a);
-				draw_sprite_ext(h.sprite_back, -1, h.x, h.y, w * gsize, l * gsize, 0, c_white, 1 * a)
-				draw_set_blend_mode(bm_normal);
-				d3d_set_fog(0, 0, 0, 0)
-				
-				// Draw the fairy icon outline:
-				var _outlinecol = make_colour_hsv(color_get_hue(_col), color_get_saturation(_col) / 1.2, 255);
-				for(var _i = 0; _i < b; _i++) {
-					 
-					_spr = spell_call_self(spellBullets[_i], "fairy_sprite");
-					draw_sprite_ext(_spr, s, h.x - 1, h.y, 1, /*h.right*/ 1, /*h.angle*/ 0, _outlinecol, 1);
-					draw_sprite_ext(_spr, s, h.x + 1, h.y, 1, /*h.right*/ 1, /*h.angle*/ 0, _outlinecol, 1);
-					draw_sprite_ext(_spr, s, h.x, h.y + 1, 1, /*h.right*/ 1, /*h.angle*/ 0, _outlinecol, 1);
-					draw_sprite_ext(_spr, s, h.x, h.y - 1, 1, /*h.right*/ 1, /*h.angle*/ 0, _outlinecol, 1);
-				}
-				
-				// Draw merged icons:
-				for(var _i = 0; _i < b; _i++) {
-				
-					_spr = array_length(spellBullets) > 0 ? spell_call_self(spellBullets[_i], "fairy_sprite") : h.sprite;
-					draw_sprite_ext(_spr, s, h.x, h.y, 1, /*h.right*/ 1, /*h.angle*/ 0, merge_color(merge_colour(_col, c_black, .7), c_white, clamp(fairy.swap / fairy_swap_time, 0, 1)), 1);
-				}
+			else {
+				drawOrbitalLater = true
 			}
 		}
-		else { // Normal drawing:
-			
-			// Back draw:
-			d3d_set_fog(1, merge_color(_col, c_white, clamp(h.swap / fairy_swap_time, 0, 1)), 1, 1)
-			h.swap = max(0, h.swap - current_time_scale * 1.2)
-			draw_sprite_ext(h.sprite_back, -1, h.x + 1, h.y + 1, w * gsize, l * gsize, 0, c_white, .4 * a);
-			draw_sprite_ext(h.sprite_back, -1, h.x + 1, h.y - 1, w * gsize, l * gsize, 0, c_white, .4 * a);
-			draw_sprite_ext(h.sprite_back, -1, h.x - 1, h.y + 1, w * gsize, l * gsize, 0, c_white, .4 * a);
-			draw_set_blend_mode(bm_add);
-			draw_sprite_ext(h.sprite_back, -1, h.x - 1, h.y - 1, w * gsize, l * gsize, 0, c_white, .4 * a);
-			draw_sprite_ext(h.sprite_back, -1, h.x, h.y, w * gsize, l * gsize, 0, c_white, 1 * a)
-			draw_set_blend_mode(bm_normal);
-			d3d_set_fog(0, 0, 0, 0)
-			
-			// Draw the fairy icon outline:
-			var _outlinecol = make_colour_hsv(color_get_hue(_col), color_get_saturation(_col) / 1.2, 255);
-				 
-			draw_sprite_ext(h.sprite, s, h.x - 1, h.y, 1, /*h.right*/ 1, /*h.angle*/ 0, _outlinecol, 1);
-			draw_sprite_ext(h.sprite, s, h.x + 1, h.y, 1, /*h.right*/ 1, /*h.angle*/ 0, _outlinecol, 1);
-			draw_sprite_ext(h.sprite, s, h.x, h.y + 1, 1, /*h.right*/ 1, /*h.angle*/ 0, _outlinecol, 1);
-			draw_sprite_ext(h.sprite, s, h.x, h.y - 1, 1, /*h.right*/ 1, /*h.angle*/ 0, _outlinecol, 1);
-			
-			// Draw the icon:
-			draw_sprite_ext(h.sprite, s, h.x, h.y, 1, /*h.right*/ 1, /*h.angle*/ 0, merge_color(merge_colour(_col, c_black, .7), c_white, clamp(fairy.swap / fairy_swap_time, 0, 1)), 1);
+		
+		// Back draw:
+		d3d_set_fog(1, drawColor, 1, 1)
+		h.swap = max(0, h.swap - current_time_scale * 1.2)
+		draw_sprite_ext(h.sprite_back, -1, h.x + 1, h.y + 1, w * gsize, l * gsize, 0, c_white, .4 * a);
+		draw_sprite_ext(h.sprite_back, -1, h.x + 1, h.y - 1, w * gsize, l * gsize, 0, c_white, .4 * a);
+		draw_sprite_ext(h.sprite_back, -1, h.x - 1, h.y + 1, w * gsize, l * gsize, 0, c_white, .4 * a);
+		draw_set_blend_mode(bm_add);
+		draw_sprite_ext(h.sprite_back, -1, h.x - 1, h.y - 1, w * gsize, l * gsize, 0, c_white, .4 * a);
+		draw_sprite_ext(h.sprite_back, -1, h.x, h.y, w * gsize, l * gsize, 0, c_white, 1 * a)
+		draw_set_blend_mode(bm_normal);
+		d3d_set_fog(0, c_black, 0, 0)
+		
+		//Thronebutt beam effect
+		if (tbBoostTime > 0) {
+			draw_set_blend_mode(bm_add)
+			var beamStrength = tbBoostTime/maxTBBoostTime,
+				beamWave = sin(sqrt(1 - beamStrength) * pi);
+			draw_line_width_color(h.x - 1, h.y, h.x - 1, h.y - 30 * beamWave, 2 + beamWave * 4, merge_color(drawColor, c_black, .6), c_black)
+			draw_line_width_color(h.x - 1, h.y, h.x - 1, h.y + 15 * beamWave, 2 + beamWave * 4, merge_color(drawColor, c_black, .6), c_black)
+			draw_set_blend_mode(bm_normal)
 		}
 
+		
+		// Draw the fairy icon outline:
+		for (var i = 0; i < array_length(iconSprites); i++) {
+			draw_sprite_ext(iconSprites[i], iconIndex, h.x - 1, h.y, 1, 1, 0, outlineColor, 1);
+			draw_sprite_ext(iconSprites[i], iconIndex, h.x + 1, h.y, 1, 1, 0, outlineColor, 1);
+			draw_sprite_ext(iconSprites[i], iconIndex, h.x, h.y + 1, 1, 1, 0, outlineColor, 1);
+			draw_sprite_ext(iconSprites[i], iconIndex, h.x, h.y - 1, 1, 1, 0, outlineColor, 1);
+		}
+		// Draw the icon:
+		for (var i = 0; i < array_length(iconSprites); i++) {
+			draw_sprite_ext(iconSprites[i], iconIndex, h.x, h.y, 1, 1, 0, iconColor, 1);
+		}
+		
+		if (drawOrbitalLater) {
+			draw_sprite_ext(sprCaveSparkle, 2, h.x + orbitalPoint.x, h.y + orbitalPoint.y - 1, orbitalScale, orbitalScale, -2 * orbitalAngle, c_white, orbitalAlpha)
+		}
+		
 		if h.swapframes > 0 draw_sprite(global.sprSwapFairy, (6 - h.swapframes), h.x, h.y);
 
 	}
-	instance_delete(self);
+	if !instance_exists(player) {
+		instance_destroy()
+	}
+
+
+#define point_on_rotated_ellipse(width, height, ellipseAngle, sampleAngle)
+	var cosTheta = dcos(ellipseAngle),
+		sinTheta = dsin(ellipseAngle),
+		cosT = dcos(sampleAngle),
+		sinT = dsin(sampleAngle),
+		a = width,
+		b = height;
+	
+	return {
+		x:   a * cosTheta * cosT - b * sinTheta * sinT,
+		y: -(a * sinTheta * cosT + b * cosTheta * sinT)
+	}
 
 #define player_hud(_playerindex, _hudIndex, _hudSide, _xOffset, _yOffset)
      // Spell Bullets:
@@ -605,15 +605,21 @@ NOTES FROM JSBURG:
 #macro bullets mod_variable_get("mod", "SageBullets", "BulletDirectory")
 #macro max_spellbullets 2 + dev * 18// + skill_get(5)
 #macro fairy_swap_time 6
-#macro dev true
+#macro dev false
 #macro c global.colormap
 #macro c_fairy $AFA79A
 #macro effectMod "sageeffects"
+
+#macro maxTBBoostTime 150
+#macro maxTBCooldown 90
+#macro TBBoostValue 1
 
 #macro ultra_a ultra_get(mod_current, 1)
 #macro ultra_b ultra_get(mod_current, 2)
 #macro has_ultra_a ultra_get(mod_current, 1) > 0
 #macro has_ultra_b ultra_get(mod_current, 2) > 0
+#macro thronebutt skill_get(mut_throne_butt)
+#macro has_thronebutt skill_get(mut_throne_butt) > 0
 
 #define create
 	uiroll = 0;
@@ -622,6 +628,10 @@ NOTES FROM JSBURG:
 	sage_uitimer = 20; // how long to wait on mouse hover before the draw
 	spellBullets = [];
 	activeEffects = [];
+	fairyDrawer = noone
+	
+	tbBoostTime = 0
+	tbCooldown = 0
 
 	if dev {
 		spell_give(self, "bGold");
@@ -689,16 +699,16 @@ NOTES FROM JSBURG:
 	}
 	
 	with fairy {
-		if resettime <= 0{
+		if resettime <= 0 {
 			x += approach(x, goalX, 4, current_time_scale)
 			y += approach(y, goalY, 4, current_time_scale)
 
 			right = -sign(x - other.x)
 			angle = 90 - (90 * right)
-
+			
 			//h.col = merge_colour(c_purblue, c_black, .7)
 
-			goalX = other.x + (xoff - 10) * right
+			goalX = other.x + xoff * 1.2
 			goalY = other.y + yoff - 16
 
 			if random(100) < 2 * current_time_scale{
@@ -714,8 +724,9 @@ NOTES FROM JSBURG:
 				yoff += lengthdir_y(spd * current_time_scale, dir)
 				dir += curve * current_time_scale
 				curve += sign(curve) * current_time_scale
-				if point_distance(xoff, yoff, 0, 0) > 10 {
+				if point_distance(xoff, yoff, 0, 0) > 11 {
 					dir -= angle_approach(dir, point_direction(xoff, yoff, 0, 0), 3, current_time_scale)
+					spd += current_time_scale/10
 				}
 			}
 			swapframes = max(0, swapframes - current_time_scale * .5);
@@ -725,15 +736,30 @@ NOTES FROM JSBURG:
 	}
 
 	if button_pressed(0, "horn"){
-		
 		with spellbullet_create(0.x, 0.y, "bCursed") {
-			
 			//lmao
+		}
+	}
+
+	if (tbCooldown > 0) {
+		tbCooldown -= current_time_scale
+	}
+	
+	if (tbBoostTime > 0) {
+		tbBoostTime -= current_time_scale
+		
+		if tbBoostTime <= 0 {
+			spellpower_change(self, -TBBoostValue)
+			tbCooldown = maxTBCooldown
 		}
 	}
 
 	if(!instance_exists(global.bind_late_step)) {
 		global.bind_late_step = script_bind_step(late_step, 0);
+	}
+	
+	if (!instance_exists(fairyDrawer)) {
+		fairyDrawer = script_bind_draw(fairy_draw, -11, self);
 	}
 
 	//Call bullet step events
@@ -759,40 +785,50 @@ NOTES FROM JSBURG:
 		spell_call_self(spellBullets[1], "bullet_swap");
 
 		var _temp = spellBullets[0];
-		// if !ultra_b {
-		// 	stat_lose(spellBullets[0], self);
-		// 	stat_gain(spellBullets[1], self);
-		// }
 		for(var i = 1; i < array_length(spellBullets); i++) {
 			spellBullets[i-1] = spellBullets[i];
 		}
 		spellBullets[array_length(spellBullets) - 1] = _temp;
 		
-		if !(has_ultra_b) {
+		//Don't refresh on swap if you have ultra B
+		var shouldRefresh = !(has_ultra_b);
+		
+		if (has_thronebutt) {
+			//Deactivate boost if active
+			if (tbBoostTime > 0) {
+				tbBoostTime = 0
+				tbCooldown = maxTBCooldown
+				spellpower_change_no_refresh(self, -TBBoostValue)
+				shouldRefresh = true
+			}
+			//Activate boost if possible
+			if (tbCooldown <= 0) {
+				tbBoostTime = maxTBBoostTime
+				spellpower_change_no_refresh(self, TBBoostValue)
+				shouldRefresh = true
+			}
+		}
+		
+		if (shouldRefresh) {
 			refresh_effects()
 		}
+		
 		uiroll = -1;
 	}
 
 	// Drop bullets when dead:
 	if(fork()){
-		
 		var _b = spellBullets,
 			_x = x,
 			_y = y;
-		
 		wait(0);
 		if !instance_exists(self) {
-			
 			with _b {
-				
 				with spellbullet_create(_x, _y, self) {
-					
 					motion_add(random(360), 5);
 				}
 			}
 		}
-		
 		exit;
 	}
 
@@ -929,25 +965,15 @@ NOTES FROM JSBURG:
 
 #define post_sage_shoot(shootEvent)
 
-	// for (var i = 0, l = bulletLoopMax; i < l; i++) {
-	// 	spell_call_self(spellBullets[i], "on_post_shoot", shootEvent)
-	// }
-	
 	effects_call(activeEffects, "on_post_shoot", shootEvent)
 
 	
 	if (GameCont.rad < shootEvent.radPrevious) {
 		effects_call(activeEffects, "on_rads_use", shootEvent.radPrevious - GameCont.rad)
-		// for (var i = 0, l = bulletLoopMax; i < l; i++) {
-		// 	spell_call_self(spellBullets[i], "on_rads_use");
-		// }
 	}
 
 	if (GameCont.rad <= 0 && shootEvent.radPrevious > 0) {
 		effects_call(activeEffects, "on_rads_out")
-		// for (var i = 0, l = bulletLoopMax; i < l; i++) {
-		// 	spell_call_self(spellBullets[i], "on_rads_out");
-		// }
 	}
 
 
@@ -1001,24 +1027,6 @@ NOTES FROM JSBURG:
     }
 
 
-#define sage_shoot(direction)
-
-	var event = before_sage_shoot();
-
-	if !event.cancelled {
-		player_fire(direction)
-		post_sage_shoot(event)
-	}
-
-#define sage_shoot_offset(direction, offset)
-	var event = before_sage_shoot();
-
-	if !event.cancelled {
-    	mod_script_call_self("mod", "bSplit", "player_fire_at", undefined, undefined, undefined, offset)
-		post_sage_shoot(event)
-	}
-
-
 #define fire(shootEvent)
 
 	var event = {
@@ -1043,17 +1051,6 @@ NOTES FROM JSBURG:
 
 	if event.cancelled {trace("Fire Event was cancelled. Please make sure its working")}
 
-
-
-	// Player doesnt have enough ammo:
-	/*if (weapon_get_cost(wep) * ceil(sage_ammo_cost + 1) * (_size) > ammo[weapon_get_type(wep)]){
-		weapon_post(-5, 0, 0);
-		sound_play(sndEmpty);
-		with instance_create(x, y, PopupText){
-			mytext = "NOT ENOUGH AMMO"
-		}
-	}else{
-	}*/
 
 #macro bulletLoopMax ultra_b ? array_length(spellBullets) : min(array_length(spellBullets), 1)
 
@@ -1099,6 +1096,9 @@ var args2 = argument_count > 3 ? argument[3] : undefined;
 		sage_spell_power += spellpower * (1 + ultra_a)
 		refresh_effects()
 	}
+
+#define spellpower_change_no_refresh(inst, spellpower)
+	inst.sage_spell_power += spellpower * (1 + ultra_a)
 	
 #define spell_init(_spell)
 	
@@ -1280,8 +1280,8 @@ var args2 = argument_count > 3 ? argument[3] : undefined;
 #define move_contact_solid_slide(dir, dist)
 	var _x = lengthdir_x(dist, dir),
 		_y = lengthdir_y(dist, dir);
-	move_contact_solid(_x > 0 ? 0 : 180, abs(_x))
-	move_contact_solid(_y > 0 ? 270 : 90, abs(_y))
+	if _x != 0 move_contact_solid(_x > 0 ? 0 : 180, abs(_x))
+	if _y != 0 move_contact_solid(_y > 0 ? 270 : 90, abs(_y))
 	
 #define spellbullet_step
 
@@ -1380,7 +1380,7 @@ var args2 = argument_count > 3 ? argument[3] : undefined;
 
 //'Flattens' stuff (an array), taking any content (even in subarrays) and adding it to the 'box'
 #define unpack(box, stuff)
-	for var i = 0; i < array_length(stuff); i++{
+	for (var i = 0; i < array_length(stuff); i++) {
 	    if is_array(stuff[i]){
 	        unpack(box, stuff[i])
 	    }
