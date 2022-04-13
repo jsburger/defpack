@@ -641,11 +641,11 @@ NOTES FROM JSBURG:
 		spell_give(self, "bPrecision");
 		spell_give(self, "bGadget");
 		spell_give(self, "bUltra");
-		/*spell_give(self, "bReflective");
-		spell_give(self, "bWarp");
 		spell_give(self, "bBurst");
 		spell_give(self, "bSplit");
-		spell_give(self, "bRust");
+		spell_give(self, "bReflective");
+		spell_give(self, "bWarp")
+		/*spell_give(self, "bRust");
 		spell_give(self, "bCursed");
 		spell_give(self, "bLove");
 		spell_give(self, "bMaggot");

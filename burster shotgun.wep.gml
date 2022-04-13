@@ -27,7 +27,7 @@ global.sprBursterShotgunHUD = sprite_add_weapon("sprites/weapons/sprBursterShotg
     sound_play_pitchvol(sndLilHunterSniper, 1.4 * _p, .4);
     sound_play_pitch(sndShotgun, 1.4 * _p);
     
-    weapon_post(5, 8, 0);
+    weapon_post(6, 12, 0);
 
     repeat(8) {
         

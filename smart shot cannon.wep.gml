@@ -1,11 +1,11 @@
 #define init
-global.sprShotCannon = sprite_add_weapon("../sprites/weapons/sprShotRifle.png", 4, 2);
+global.sprShotCannon = sprite_add_weapon("../sprites/weapons/sprSmartShotCannon.png", 7, 2);
 global.sprShotBullet = sprite_add("../sprites/projectiles/sprShot.png",3,12,12)
 global.sndShotHit = sound_add("../sounds/sndShotHit.ogg");
 sprite_collision_mask(global.sprShotBullet,1,1,0,0,0,0,0,0)
 
 #define weapon_name
-return "SHOT RIFLE";
+return "SMART SHOT CANNON";
 
 #define weapon_sprt
 return global.sprShotCannon;
@@ -26,19 +26,21 @@ return 4;
 return sndSwapShotgun;
 
 #define weapon_area
-return 12;
+return 8;
 
 #define weapon_text
-return "HIGH SCORE";
+return choose("CHAIN TARGETS", "HIGH SCORE");
 
 #macro maxspeed 15
 
 #define weapon_fire
 	weapon_post(7,43,0)
 	
-	sound_play_pitch(sndFlakCannon,1.2)
-	sound_play_pitchvol(sndFlakExplode,random_range(.4,.7),.8)
-	sound_play_pitch(sndDoubleShotgun,1.2)
+	var _p = random_range(.8, 1.2)
+	sound_play_pitch(sndFlakCannon,_p)
+	sound_play_pitchvol(sndFlakExplode,random_range(.6,.8) * _p,.8)
+	sound_play_pitchvol(sndDoubleShotgun,1.5 * _p, .8)
+	sound_play_pitch(sndSmartgun, .5 * _p)
 	
 	with instance_create(x + lengthdir_x(12, gunangle),y + lengthdir_y(12, gunangle), CustomProjectile) {
 		
@@ -58,7 +60,7 @@ return "HIGH SCORE";
 		accuracy   = other.accuracy;
 		wallbounce = 16 + skill_get(mut_shotgun_shoulders) * 20;
 		
-		ortimer = 22
+		ortimer = 18
 		hitammo = ortimer
 		ftimer = 1.5
 		time = ftimer
@@ -95,7 +97,7 @@ return "HIGH SCORE";
 #define cannon_fire()
 
 	dirfac += 21;
-	hitammo -= 2;
+	hitammo -= 1;
 	
 	sound_play_pitch(sndShotgun, 1 * random_range(1.2, .8));
 	sound_play_pitch(sndPopgun, .7 * random_range(1.2, .8));
