@@ -37,16 +37,7 @@ enum operators {
 
 
 #define effects_init
-    
-    with effect_type_create("testEffect", `{} @(color:${c.speed})EXAMPLE @wEFFECT`, describe_whole) {
-        on_activate = script_ref_create(test_script_1)
-        on_deactivate = script_ref_create(test_script_2)
-    }
-    
-    global.testEffect1 = effect_instance_create(1, .5, "testEffect")
-    global.testEffect2 = effect_instance_create(2,  1, "testEffect")
-    
-    
+
     //Common stats
     //Reload speed
     stat_effect_type_create("reloadspeed", operators.add, `{} @(color:${c.reload})RELOAD SPEED`, describe_percentage)
@@ -63,6 +54,8 @@ enum operators {
         on_activate = script_ref_create(max_health_activate)
         on_deactivate = script_ref_create(max_health_deactivate)
     }
+    //Toxic Immunity
+    stat_effect_type_create("notoxic", operators.add, `@gTOXIC IMMUNITY`, describe_pass)
     
     //Other common effects
     //Projectile Speed
@@ -220,8 +213,10 @@ var describe_script = argument_count > 2 ? argument[2] : describe_pass;
 			//In this case, use the pointer of the instance as its key, so that it won't stack with anything
 			sorting_map_add(types, self, self)
 		}
-		//Add effect instances to arrays in map, based on the name of their type
-		sorting_map_add(types, self.type.name, self)
+		else {
+			//Add effect instances to arrays in map, based on the name of their type
+			sorting_map_add(types, self.type.name, self)
+		}
 	}
 	
 	//Iterate through the now sorted values, combining any duplicate effects
@@ -276,6 +271,18 @@ var describe_script = argument_count > 2 ? argument[2] : describe_pass;
         return ret;
     }
     
+//Gets the positivity of an effect.
+#define effect_positivity(effect, spellPower)
+	var value;
+    //Check for being a composite effect and use its precalculated value.
+    if (lq_exists(effect, "working_value") && !effect.is_unique) {
+        value = effect.working_value
+    }
+    else {
+        value = effect_calculate_value(effect, spellPower)
+    }
+    return script_ref_call(effect.type.scr_positivity, value);
+
     
 //Generates the description for a single effect
 #define effect_get_description(effect, spellPower)
@@ -297,8 +304,10 @@ var describe_script = argument_count > 2 ? argument[2] : describe_pass;
     var positivity = script_ref_call(effect.type.scr_positivity, value);
     switch(positivity) {
         //Add +. No break so it also gets the neutral color
-        case 1: described = "+" + described
-        case 0: described = `@(color:${c.neutral})${described}`; break
+        case 1:
+        case 0: 
+        	described = "+" + described
+        	described = `@(color:${c.neutral})${described}`; break
         //Add negative color
         case -1: described = `@(color:${c.negative})${described}`; break
         //Yell at people who did it wrong
@@ -311,16 +320,37 @@ var describe_script = argument_count > 2 ? argument[2] : describe_pass;
 
 //Gets effect descriptions and stitches them together
 #define effects_descriptions(effectList, spellPower)
-    var description = "";
+    var description = "",
+    	positive = [],
+    	neutral = [],
+    	negative = [];
     for (var i = 0; i < array_length(effectList); i++) {
-        description += effect_get_description(effectList[i], spellPower)
-        description += "#"
+    	var positivity = effect_positivity(effectList[i], spellPower),
+    		effectDescription = effect_get_description(effectList[i], spellPower);
+    	switch(positivity) {
+    		case 1: array_push(positive, effectDescription) break
+    		case 0: array_push(neutral, effectDescription) break
+    		case -1: array_push(negative, effectDescription) break
+    	}
     }
+    if array_length(positive) > 0 {
+    	description += array_join(positive, "#")
+    }
+    // if array_length(neutral) > 0 {
+    // 	description += "#"
+    // 	description += array_join(neutral, "#")
+    // }
+    if array_length(negative) > 0 {
+    	description += "#"
+    	description += array_join(negative, "#")
+    }
+    description += "#"
+
     return description;
 
 //Gets the description of every effect in a bullet and combines them for drawing
 #define bullet_get_description(bullet, spellPower)
-    return effects_descriptions(bullet.effects, spellPower)
+    return effects_descriptions(effects_compose_all(bullet.effects, spellPower), spellPower)
 
 //Specific purpose stuff below
 
@@ -392,14 +422,6 @@ var describe_script = argument_count > 3 ? argument[3] : describe_pass;
     
 
 //Scripts for individual effects
-
-#define test_script_1(value, effect)
-    trace("gained", value)
-
-
-#define test_script_2(value, effect)
-    trace("lost", value)
-
 
 #define max_health_activate(value, effect)
 	value = ceil(abs(value)) * sign(value);
@@ -538,6 +560,12 @@ var describe_script = argument_count > 3 ? argument[3] : describe_pass;
 #define positivity_compare_inverted(comparison, value)
     return -1 * positivity_compare(comparison, value);
     
+#define positivity_always_positive(value)
+	return 1
+
+#define positivity_always_negative(value)
+	return -1
+
 
     //.25 -> .25
 #define describe_pass(_var)
@@ -586,6 +614,8 @@ var describe_script = argument_count > 3 ? argument[3] : describe_pass;
 
     //.25 -> 0.25, .025 -> 0.03
 #define describe_2a(_var) // 2a = accuracy of 2, 2 digits after the comma (1,xx)
+	return string_format(_var, 0, 2)
+
     var v = string(round(_var * 100) / 100);
     
     for(var i = string_length(v); i < (sign(_var) == -1 ? 5 : 4); i++){
@@ -651,5 +681,6 @@ var describe_script = argument_count > 3 ? argument[3] : describe_pass;
 		}
 		return weapon_get(innerWep)
 	}
+	if is_string(wep) return string_lower(wep)
 	return wep
 

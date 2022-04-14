@@ -2,12 +2,12 @@
     global.sprBullet = sprite_add("../../../sprites/sage/bullets/sprBulletBurst.png", 2, 7, 11);
     global.sprFairy = sprite_add("../../../sprites/sage/bullet icons/sprFairyIconBurst.png", 1, 5, 5);
 
-    with effect_type_create("burstCount", `{} @(color:${c.ammo})BURST SIZE`, scr.describe_floor) {
+    with effect_type_create("burstCount", `{} @(color:${c.ammo})BURST SIZE`, scr.describe_whole) {
         on_fire = script_ref_create(burst_fire)
     }
 
     global.effects = [
-        effect_instance_named("burstCount", 3, 2),
+        effect_instance_named("burstCount", 2, 2),
         simple_stat_effect("reloadspeed", -.6, 0)
     ]
 
@@ -60,16 +60,18 @@
 
 #define burst_fire(value, effect, fireEvent, fireStack)
 
+    value = ceil(value)
+    
     array_push(fireStack, effect.type.name)
     var burstStack = array_clone(fireStack);
     // array_push(burstStack, effect.type.name)
 
     if fork() {
         var w = wep;
-        for (var i = 1; i <= value; i++) {
+        for (var i = 0; i <= value; i++) {
             if(!instance_exists(self) or w != wep) exit;
             //Only need to fire after waiting, since sage will shoot normally otherwise
-            if (i != 1) {
+            if (i != 0) {
                 mod_script_call("race", "sage", "sage_fire", lq_clone(fireEvent), array_clone(burstStack))
             }
             if i != value {
@@ -79,19 +81,19 @@
                 wait(waitTime);
             }
         }
-        repeat(value - 1) {
+        repeat(value) {
             //Reduce reload time to what it would be had the player only fired once
             reload -= weapon_get_load(wep) - get_reloadspeed(self);
         }
         if reload > 0 {
             //Add back the reloading time from between shots now that overlapping has been taken care of
-            reload = max(frac(reload) - get_reloadspeed(self), reload - get_burst_delay(wep, value) * get_reloadspeed(self) * (value - 1))
+            reload = max(frac(reload) - get_reloadspeed(self), reload - get_burst_delay(wep, value) * get_reloadspeed(self) * value)
         }
         exit
     }
 
 #define get_burst_delay(wep, sage_burst_size)
-return max(2, (ceil(weapon_get_load(wep)) / (sage_burst_size * 3 - 2) + weapon_is_melee(wep) * 2))
+return max(2, (ceil(weapon_get_load(wep)) / ((sage_burst_size + 1) * 3 - 2) + weapon_is_melee(wep) * 2))
 
 
 #define get_reloadspeed(p)

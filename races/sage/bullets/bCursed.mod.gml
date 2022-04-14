@@ -3,6 +3,7 @@
     global.sprFairy  = sprite_add("../../../sprites/sage/bullet icons/sprFairyIconCursed.png", 1, 5, 5);
     global.sprFairy2 = sprite_add("../../../sprites/sage/bullet icons/sprFairyIconCurseBlink.png", 1, 5, 5);
     global.sprEmote  = sprite_add("../../../sprites/sage/sprBulletEmoji.png", 1, 6, 0);
+    effect_types_init()
     effects_init();
     names_init();
 
@@ -59,9 +60,11 @@
             case "GOATED ": // Increase bullet power by 20%:
                 bulletPower += .2;
                 break;
+                
             case "NORMAL ": // Remove random bullet power spread:
                 bulletPower = 1;
                 break;
+                
             case "SOMEONE'S ": // Every version of cursed bullets is personalized
                 var player = instance_nearest(1016, 1016, Player),
                     str_name = "SOMEONE";
@@ -83,17 +86,20 @@
                     adjective = str_name + "'S ";
                 }
                 break;
+                
             case "MANIFOLD ": // +1 up +1 down
                 effects[2] = global.positiveEffects[irandom(array_length(global.positiveEffects) - 1)];
                 effects[3] = global.negativeEffects[irandom(array_length(global.negativeEffects) - 1)];
                 effects[4] = global.negativeEffects[irandom(array_length(global.negativeEffects) - 1)];
                 break;
+                
             case "HORRENDOUS ": // Add 3 downsides:
                 repeat(3) {
                     
                     array_push(effects, global.negativeEffects[irandom(array_length(global.negativeEffects) - 1)]);
                 }
                 break;
+                
             case "THE WORST ": // Make this bullet contain all possible downsides and nothing else, then increase bullet power by 100%:
                 for(var i = 0; i < array_length(global.negativeEffects); i++) {
                     
@@ -101,6 +107,12 @@
                 }
                 bulletPower += 1;
                 break;
+                
+            case "SACRIFICIAL ": //Always has an hp down, alongside boosted power
+                array_push(effects, global.sacrificialHPDown)
+                bulletPower += 1
+                break
+                
             case "TEST ": // For testing
                 effects[0] = global.positiveEffects[1];
                 effects[1] = global.positiveEffects[1];
@@ -138,6 +150,7 @@
 #define post_init(bullet)
     with bullet.effects {
         value *= bullet.bullet_power
+        spellpower_scaling *= bullet.bullet_power
     }
 
 #define on_fire
@@ -295,7 +308,8 @@
         "HORRENDOUS ",
         "THE WORST ",
         `@0(${sprMaggotIdle}:-1) `,
-        "SOMEONE'S "
+        "SOMEONE'S ",
+        "SACRIFICIAL "
         ];
     global.nouns = [
         "ROUND",
@@ -303,6 +317,7 @@
         "CALIBER",
         "SPELL",
         "SHELL",
+        "SLUG",
         "FUEL",
         "POWDER",
         "BLANK",
@@ -328,6 +343,8 @@
     
     add_positive(simple_stat_effect("maxhealth", 2, 2))
     add_negative(simple_stat_effect("maxhealth", -2, 0))
+    //Used by sacrificial adjective, bullet power is always increased so its a low number
+    global.sacrificialHPDown = simple_stat_effect("maxhealth", -2, 0)
     
     add_positive(simple_stat_effect("maxspeed", 1, 1))
     add_negative(simple_stat_effect("maxspeed", -1, 0))
@@ -343,8 +360,8 @@
     //Fuck it. 50% projectile speed boost
     add_positive(effect_instance_named("projectileSpeed", .5, 0))
 
-    //-10% damage to weed out the pansies
-    add_negative(effect_instance_named("projectileDamage", -.1, 0))
+    //Small damage down to weed out the pansies
+    add_negative(effect_instance_named("projectileDamage", -.15, 0))
     
     add_positive(effect_instance_named("sustainChance", .25, .1))
     add_positive(effect_instance_named("autoFire", 1, 0))
@@ -359,26 +376,40 @@
     //Lets get creative with this one; split shot with no reload speed boost.
     add_negative(effect_instance_named("splitShot", 1, 1))
     
-    //Weaker version of Burst
+    //Weaker version of Burst, can have +1 or +2 shots
     add_positive([
-        effect_instance_named("burstCount", 2, 1),
-        simple_stat_effect("reloadspeed", -.4, 0)
+        effect_instance_named("burstCount", 1, 1),
+        simple_stat_effect("reloadspeed", -.6, 0)
     ])
     
     //I'm stupid
-    //Double damage, -90% projectile speed
+    //Huge damage, -80% projectile speed
     add_negative([
-        effect_instance_named("projectileDamage", 1, 0),
-        effect_instance_named("projectileSpeed", -.9, 0)
+        effect_instance_named("projectileDamage", .5, 0),
+        effect_instance_named("projectileSpeed", -.8, 0)
     ])
     
     //No scaling on this one. Don't feel like it.
     add_positive(effect_instance_named("projectileHyperSpeed", 1, 0))
     
-    //Todo: Custom Type for notoxic
+    //Unique effects, not found on other bullets
+      //HP change over time
+    with effect_instance_named("hpRegen", 6, -1) {
+        is_unique = true
+        add_positive(self)
+    }
+    with effect_instance_named("hpLoss", 6, 0) {
+        is_unique = true
+        add_negative(self)
+    }
+      //Player will always fire if they can
+    add_negative(effect_instance_named("forcedFiring", 1, 0))
+      //Player will be knocked back when shooting
+    add_negative(effect_instance_named("knockbackOnShoot", 4, 0))
     
-
-//These aren't inlined so that changes can easily be made later
+    
+    
+    //These aren't inlined so that changes can easily be made later
 #define add_positive(effectInstances)
     array_push(global.positiveEffects, effectInstances)    
 
@@ -417,6 +448,54 @@
 	        array_push(box, stuff[i])
 	    }
 	}
+
+//Effect types for curse bullet effects, unused elsewhere
+#define effect_types_init
+    with effect_type_create("hpRegen", `@rHEAL @wEVERY {} @wSECONDS`, scr.describe_2a) {
+        self.on_step = script_ref_create(bleed_step, 1)
+        scr_positivity = scr.positivity_always_positive
+    }
+    with effect_type_create("hpLoss", `@rBLEED @wEVERY {} @wSECONDS`, scr.describe_2a) {
+        self.on_step = script_ref_create(bleed_step, -1)
+        scr_positivity = scr.positivity_always_negative
+    }
+    with effect_type_create("forcedFiring", `@(color:${c.negative})FORCED TO SHOOT`, scr.describe_pass) {
+        self.on_step = script_ref_create(forced_firing_step)
+        scr_positivity = scr.positivity_always_negative
+    }
+    with effect_type_create("knockbackOnShoot", `@(color:${c.negative})EXTREME WEAPON KICK`, scr.describe_pass) {
+        on_post_shoot = script_ref_create(knockback_shoot)
+        scr_positivity = scr.positivity_always_negative
+    }
+
+#define bleed_step(hpChange, value, effect)
+    if (effect.is_unique) {
+        var time = lq_defget(effect, "bleed_time", value * 30);
+        time -= current_time_scale
+        if time <= 0 {
+            if (hpChange > 0) {
+                my_health += hpChange
+                instance_create(x, y, HealFX)
+                sound_play_pitchvol(sndHPPickup, 1.5, .6)
+                my_health = min(maxhealth, my_health)
+            }
+            else {
+                projectile_hit(self, -hpChange, 0, 0)
+                instance_create(x, y, HealFX).image_blend = c_black
+                sound_play_pitchvol(sndAllyDead, 1.5, .6)
+                lasthit = [global.sprBullet, "CURSED BULLET BLEED"]
+            }
+            time = 30 * value
+        }
+        effect.bleed_time = time
+    }
+    
+#define forced_firing_step(value, effect)
+    clicked = true
+    
+#define knockback_shoot(value, effect, shootEvent)
+    var angle = gunangle + lq_defget(shootEvent, "angle_offset", 0) + 180;
+    motion_add(angle, value)
 
 
 #define simple_stat_effect(variableName, value, scaling) return mod_script_call("mod", "sageeffects", "simple_stat_effect", variableName, value, scaling)
