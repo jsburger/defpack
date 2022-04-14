@@ -523,12 +523,12 @@ NOTES FROM JSBURG:
 		_playerNum += player_is_active(i);
 	}
 	
-	if instance_exists(_p) {
-		var d = mod_script_call("mod", effectMod, "effects_descriptions", _p.activeEffects, _p.sage_spell_power);
-		draw_set_font(fntSmall);
-		draw_text_nt(-13, 46, "Active Effects:#" + d)
-		draw_set_font(fntM);
-	}
+	// if instance_exists(_p) {
+	// 	var d = mod_script_call("mod", effectMod, "effects_descriptions", _p.activeEffects, _p.sage_spell_power);
+	// 	draw_set_font(fntSmall);
+	// 	draw_text_nt(-13, 46, "Active Effects:#" + d)
+	// 	draw_set_font(fntM);
+	// }
 
 	if dev && instance_exists(_p) {
 
@@ -735,11 +735,11 @@ NOTES FROM JSBURG:
 		else resettime -= current_time_scale;
 	}
 
-	if button_pressed(0, "horn"){
-		with spellbullet_create(0.x, 0.y, "bCursed") {
-			//lmao
-		}
-	}
+	// if button_pressed(0, "horn"){
+	// 	with spellbullet_create(0.x, 0.y, "bCursed") {
+	// 		//lmao
+	// 	}
+	// }
 
 	if (tbCooldown > 0) {
 		tbCooldown -= current_time_scale
@@ -1483,7 +1483,7 @@ var args2 = argument_count > 3 ? argument[3] : undefined;
 		valign = draw_get_valign();
 		
 	var spellpower = "sage_spell_power" in player ? player.sage_spell_power : 0,
-		d = mod_script_call("mod", effectMod, "effects_descriptions", bullet.effects, spellpower),
+		d = mod_script_call("mod", effectMod, "bullet_get_description", bullet, spellpower),
 		name = spell_call_nc(bullet, "bullet_name", spellpower),
 		yoff = (6 * round(string_count("#", d) + 1)) + 16;
 		// yoff = string_height(d) + 26;
