@@ -1,7 +1,7 @@
 #define init
-global.sprShotCannon = sprite_add_weapon("../sprites/weapons/sprSmartShotCannon.png", 7, 2);
-global.sprShotBullet = sprite_add("../sprites/projectiles/sprShot.png",3,12,12)
-global.sndShotHit = sound_add("../sounds/sndShotHit.ogg");
+global.sprShotCannon = sprite_add_weapon("sprites/weapons/sprSmartShotCannon.png", 7, 2);
+global.sprShotBullet = sprite_add("sprites/projectiles/sprShot.png",3,12,12)
+global.sndShotHit = sound_add("sounds/sndShotHit.ogg");
 sprite_collision_mask(global.sprShotBullet,1,1,0,0,0,0,0,0)
 
 #define weapon_name

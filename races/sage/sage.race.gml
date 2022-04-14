@@ -138,7 +138,7 @@ NOTES FROM JSBURG:
 		reload:           $FFFFFF,
 		aqua:             c_aqua,
 		health:           c_red,
-		spell:            merge_color(make_color_rgb(28, 98, 85), c_white, .1),
+		spell:            merge_color(make_color_rgb(28, 98, 85), c_white, .2),
 	}
 
 	// Holds all Players spell bullet inventories, spell power and ui roll:
@@ -393,7 +393,7 @@ NOTES FROM JSBURG:
 		var a = .25;
 		var gsize = 1/64;
 
-		var iconIndex = 0,
+		var iconIndex = clamp(ultra_get("sage", 2), 0, 1),
 			iconSprites = [],
 			drawColor = c_white,
 			outlineColor = c_white,
@@ -645,13 +645,13 @@ NOTES FROM JSBURG:
 		spell_give(self, "bSplit");
 		spell_give(self, "bReflective");
 		spell_give(self, "bWarp")
+		spell_give(self, "bEcho");
 		/*spell_give(self, "bRust");
 		spell_give(self, "bCursed");
 		spell_give(self, "bLove");
 		spell_give(self, "bMaggot");
 		spell_give(self, "bQuartz");
-		spell_give(self, "bHeart");
-		spell_give(self, "bEcho");*/
+		spell_give(self, "bHeart");*/
 	}
 
 	fairy = {
