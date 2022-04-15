@@ -13,7 +13,7 @@
 
 	global.effects = [
 		effect_instance_named("splitShot", 1, 1),
-		simple_stat_effect("reloadspeed", 1, 1)
+		simple_stat_effect("reloadspeed", .8, .8)
 		]
 
 #macro c mod_variable_get("race", "sage", "colormap");
@@ -52,9 +52,11 @@
 	canaim = true
 	
 #define on_split_step(value, effect)
+	value = ceil(value)
     gunangle = point_direction(x, y, mouse_x[index], mouse_y[index]) - get_split_angle_range(accuracy, value)/2 + get_angle_offset(accuracy, value) * get_base_gun_index(value)
 
 #define split_fire(value, effect, fireEvent, fireStack)
+	value = ceil(value)
 	var base_gun = get_base_gun_index(value),
 		offset = get_angle_offset(accuracy, value),
 		shots = get_split_shots(value),

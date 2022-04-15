@@ -302,14 +302,22 @@ var describe_script = argument_count > 2 ? argument[2] : describe_pass;
     }
     
     var positivity = script_ref_call(effect.type.scr_positivity, value);
+    
+	if (value >= 0 && string_pos("{", template) == 1 && !string_count("-", described)) described = "+" + described
+	
     switch(positivity) {
         //Add +. No break so it also gets the neutral color
         case 1:
         case 0: 
-        	described = "+" + described
-        	described = `@(color:${c.neutral})${described}`; break
+        	// described = "+" + described
+        	// if (value >= 0 && string_pos("{", template) == 1) described = "+" + described
+        	described = `@(color:${c.neutral})${described}`;
+        	break
         //Add negative color
-        case -1: described = `@(color:${c.negative})${described}`; break
+        case -1:
+        	// if (value >= 0 && string_pos("{", template) == 1 && !string_count("-", described)) described = "+" + described
+        	described = `@(color:${c.negative})${described}`;
+        	break
         //Yell at people who did it wrong
         default: trace("Effect type", effect.type.name, "has an improper output range on its positivity script. Should be [-1, 0, 1]. Got", positivity)
     }

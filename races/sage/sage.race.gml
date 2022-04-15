@@ -866,17 +866,17 @@ NOTES FROM JSBURG:
 			exit;
 		}
 	}
-	with(ProtoChest) {
-		if sprite_index == sprProtoChestOpen {
-			if "sage_ultra_bullet_drop" not in self {
-				with spellbullet_create(x, y, "bRust"){
+	// with(ProtoChest) {
+	// 	if sprite_index == sprProtoChestOpen {
+	// 		if "sage_ultra_bullet_drop" not in self {
+	// 			with spellbullet_create(x, y, "bRust"){
 					
-					motion_add(random(360), 5);
-				}
-				sage_ultra_bullet_drop = true
-			}
-		}
-	}
+	// 				motion_add(random(360), 5);
+	// 			}
+	// 			sage_ultra_bullet_drop = true
+	// 		}
+	// 	}
+	// }
 	with(BigWeaponChest){
 		if(fork()){
 			var _x = x;
@@ -999,6 +999,12 @@ NOTES FROM JSBURG:
 			effects_call(activeEffects, "on_new_projectiles", myProjectiles)
 		}
 	}
+	if sage_has_hook("on_enemy_projectiles") {
+		var enemyProjectiles = instances_matching_ne(newProjectiles, "team", team);
+		if (array_length(myProjectiles) > 0) {
+			effects_call(activeEffects, "on_enemy_projectiles", enemyProjectiles)
+		}
+	}
 
 
 #define sage_fire(fireEvent, effectStack)
@@ -1050,6 +1056,14 @@ NOTES FROM JSBURG:
 	}
 
 	if event.cancelled {trace("Fire Event was cancelled. Please make sure its working")}
+	
+#define sage_fire_default()
+	var fireEvent = {
+		cancelled: false,
+		angle_offset: 0
+	}
+	
+	sage_fire(fireEvent, [])
 
 
 #macro bulletLoopMax ultra_b ? array_length(spellBullets) : min(array_length(spellBullets), 1)

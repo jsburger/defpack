@@ -2,6 +2,17 @@
     global.sprBullet = sprite_add("../../../sprites/sage/bullets/sprBulletCursed.png", 2, 7, 11);
     global.sprFairy  = sprite_add("../../../sprites/sage/bullet icons/sprFairyIconCursed.png", 1, 5, 5);
     global.sprFairy2 = sprite_add("../../../sprites/sage/bullet icons/sprFairyIconCurseBlink.png", 1, 5, 5);
+    
+    global.fairySprites = [
+        global.sprFairy,
+        sprite_add("../../../sprites/sage/bullet icons/sprFairyIconCursedBubbles.png", 1, 5, 5),
+        sprite_add("../../../sprites/sage/bullet icons/sprFairyIconCursedCracked.png", 1, 5, 5),
+        sprite_add("../../../sprites/sage/bullet icons/sprFairyIconCursedGhost.png", 1, 5, 5),
+        sprite_add("../../../sprites/sage/bullet icons/sprFairyIconCursedNail.png", 1, 5, 5),
+        sprite_add("../../../sprites/sage/bullet icons/sprFairyIconCursedShards.png", 1, 5, 5),
+        sprite_add("../../../sprites/sage/bullet icons/sprFairyIconCursedStar.png", 1, 5, 5),
+    ]
+    
     global.sprEmote  = sprite_add("../../../sprites/sage/sprBulletEmoji.png", 1, 6, 0);
     effect_types_init()
     effects_init();
@@ -10,8 +21,15 @@
 #macro c mod_variable_get("race", "sage", "colormap");
 #macro scr mod_variable_get("mod", "sageeffects", "scr")
 
-#define fairy_sprite
-  return (random(59) < current_time_scale ? global.sprFairy2 :  global.sprFairy);
+#define fairy_sprite(spellPower, bullet)
+    if is_object(bullet) {
+        var sprite = lq_defget(bullet, "curseSprite", global.sprFairy);
+        if (sprite == global.sprFairy && random(59) < current_time_scale) {
+            return global.sprFairy2
+        }
+        return sprite
+    }
+    return (random(59) < current_time_scale ? global.sprFairy2 :  global.sprFairy);
 
 #define fairy_color
   return $FF3DAE;
@@ -43,6 +61,8 @@
 #define on_init(bullet)
     
     with bullet {
+        
+        curseSprite = global.fairySprites[irandom(array_length(global.fairySprites) - 1)]
         
         // Set effects and bullet power:
         var bulletPower = random_range(.8, 1.2);
@@ -341,19 +361,22 @@
     global.positiveEffects = [];
     global.negativeEffects = [];
     
-    add_positive(simple_stat_effect("maxhealth", 2, 2))
-    add_negative(simple_stat_effect("maxhealth", -2, 0))
+    add_positive(simple_stat_effect("maxhealth", 3, 2))
+    add_negative(simple_stat_effect("maxhealth", -3, 0))
     //Used by sacrificial adjective, bullet power is always increased so its a low number
     global.sacrificialHPDown = simple_stat_effect("maxhealth", -2, 0)
     
     add_positive(simple_stat_effect("maxspeed", 1, 1))
     add_negative(simple_stat_effect("maxspeed", -1, 0))
     
-    add_positive(simple_stat_effect("accuracy", .6, 0))
-    add_negative(simple_stat_effect("accuracy", 1.6, 0))
+    add_positive(effect_instance_named("size", .6, 1))
+    add_negative(effect_instance_named("size", 1.5, 0))
+    
+    add_positive(simple_stat_effect("accuracy", .5, 0))
+    add_negative(simple_stat_effect("accuracy", 1.8, 0))
     
     add_positive(simple_stat_effect("reloadspeed", .15, .15))
-    add_negative(simple_stat_effect("reloadspeed", -.2, 0))
+    add_negative(simple_stat_effect("reloadspeed", -.25, 0))
 
     add_positive(effect_instance_named("projectileSpeed", .25, .25))
     add_negative(effect_instance_named("projectileSpeed", -.25, 0))
@@ -363,7 +386,7 @@
     //Small damage down to weed out the pansies
     add_negative(effect_instance_named("projectileDamage", -.15, 0))
     
-    add_positive(effect_instance_named("sustainChance", .25, .1))
+    add_positive(effect_instance_named("sustainChance", .20, .1))
     add_positive(effect_instance_named("autoFire", 1, 0))
     add_positive(effect_instance_named("projectileBounces", 1, 1))
     
@@ -371,10 +394,10 @@
     add_positive([
         effect_instance_named("splitShot", 1, 1),
         //Reduced scaling, I want curse effects to be generally weaker than normal ones
-        simple_stat_effect("reloadspeed", .7, .7)
+        simple_stat_effect("reloadspeed", .6, .6)
     ])
     //Lets get creative with this one; split shot with no reload speed boost.
-    add_negative(effect_instance_named("splitShot", 1, 1))
+    add_negative(effect_instance_named("splitShot", .8, 0))
     
     //Weaker version of Burst, can have +1 or +2 shots
     add_positive([
@@ -385,7 +408,7 @@
     //I'm stupid
     //Huge damage, -80% projectile speed
     add_negative([
-        effect_instance_named("projectileDamage", .5, 0),
+        effect_instance_named("projectileDamage", .8, 0),
         effect_instance_named("projectileSpeed", -.8, 0)
     ])
     
@@ -394,7 +417,7 @@
     
     //Unique effects, not found on other bullets
       //HP change over time
-    with effect_instance_named("hpRegen", 6, -1) {
+    with effect_instance_named("hpRegen", 8, -1) {
         is_unique = true
         add_positive(self)
     }
@@ -406,6 +429,9 @@
     add_negative(effect_instance_named("forcedFiring", 1, 0))
       //Player will be knocked back when shooting
     add_negative(effect_instance_named("knockbackOnShoot", 4, 0))
+      //Enemy projectile speed changes
+    add_negative(effect_instance_named("enemyProjectileSpeed", .35, 0))
+    add_positive(effect_instance_named("enemyProjectileSpeed", -.2, 0))
     
     
     
@@ -467,6 +493,10 @@
         on_post_shoot = script_ref_create(knockback_shoot)
         scr_positivity = scr.positivity_always_negative
     }
+    with effect_type_create("enemyProjectileSpeed", `{} @rENEMY @(color:${c.projectile_speed})PROJECTILE SPEED`, scr.describe_percentage) {
+        on_enemy_projectiles = scr.projectile_speed_update
+        scr_positivity = ["mod", "sageeffects", "positivity_compare_inverted", 0]
+    }
 
 #define bleed_step(hpChange, value, effect)
     if (effect.is_unique) {
@@ -491,12 +521,28 @@
     }
     
 #define forced_firing_step(value, effect)
-    clicked = true
+    if (player_canshoot) {
+        mod_script_call_self("race", "sage", "sage_fire_default")
+    }
+    
+#macro player_canshoot
+    canfire
+    && can_shoot == true
+    && (ammo[weapon_get_type(wep)] >= weapon_get_cost(wep) || infammo != 0)
+    && (GameCont.rad >= weapon_get_rads(wep) || infammo != 0)
+    && visible
+    && !instance_exists(GenCont)
+    && !instance_exists(LevCont)
+    && !instance_exists(PlayerSit)
+    && !array_length(instances_matching(CrystalShield, "creator", self))
     
 #define knockback_shoot(value, effect, shootEvent)
-    var angle = gunangle + lq_defget(shootEvent, "angle_offset", 0) + 180;
+    var speedCap = max(speed, maxspeed),
+        angle = gunangle + lq_defget(shootEvent, "angle_offset", 0) + 180;
     motion_add(angle, value)
-
+    if (speed > speedCap) {
+        speed = speedCap
+    }
 
 #define simple_stat_effect(variableName, value, scaling) return mod_script_call("mod", "sageeffects", "simple_stat_effect", variableName, value, scaling)
 #define effect_instance_named(effectName, value, scaling) return mod_script_call("mod", "sageeffects", "effect_instance_create", value, scaling, effectName)
