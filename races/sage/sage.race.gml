@@ -644,12 +644,12 @@ NOTES FROM JSBURG:
 		spell_give(self, "bBurst");
 		spell_give(self, "bSplit");
 		spell_give(self, "bReflective");
-		spell_give(self, "bWarp")
+		spell_give(self, "bWarp");
 		spell_give(self, "bEcho");
+		spell_give(self, "bMaggot");
 		/*spell_give(self, "bRust");
 		spell_give(self, "bCursed");
 		spell_give(self, "bLove");
-		spell_give(self, "bMaggot");
 		spell_give(self, "bQuartz");
 		spell_give(self, "bHeart");*/
 	}
