@@ -1,25 +1,27 @@
 #define init
-global.lastAllyCacheTime = current_frame
-global.allyCache = []
-
-global.lastProjCacheTime = current_frame
-global.projCache = []
-
-global.spr = mod_variable_get("mod", "defpack tools", "spr")
-#macro spr global.spr
-
-global.scrTravel = script_ref_create(get_hitscan_target)
-global.scrGammaTravel = script_ref_create(get_gamma_target)
-global.scrGammaProjectile = ["mod", "defpack tools", "gamma_projectile"]
-#macro scrTravel global.scrTravel
-#macro scrGammaTravel global.scrGammaTravel
-#macro scrGammaProj global.scrGammaProjectile
-global.scrThunderHit = ["mod", "defpack tools", "new_thunder_hit"]
-global.scrFireDestroy= ["mod", "defpack tools", "fire_destroy"]
-
-vertex_format_begin()
-vertex_format_add_position()
-global.psyTrailFormat = vertex_format_end()
+	global.lastAllyCacheTime = current_frame
+	global.allyCache = []
+	
+	global.lastProjCacheTime = current_frame
+	global.projCache = []
+	
+	global.spr = mod_variable_get("mod", "defpack tools", "spr")
+	#macro spr global.spr
+	
+	global.scrTravel = script_ref_create(get_hitscan_target)
+	global.scrGammaTravel = script_ref_create(get_gamma_target)
+	global.scrGammaProjectile = ["mod", "defpack tools", "gamma_projectile"]
+	#macro scrTravel global.scrTravel
+	#macro scrGammaTravel global.scrGammaTravel
+	#macro scrGammaProj global.scrGammaProjectile
+	global.scrThunderHit = ["mod", "defpack tools", "new_thunder_hit"]
+	global.scrFireDestroy= ["mod", "defpack tools", "fire_destroy"]
+	
+	vertex_format_begin()
+	vertex_format_add_position()
+	global.psyTrailFormat = vertex_format_end()
+	
+	global.sprAltShellBonus = sprite_add("../sprites/other/sprAltshellBonusEffect.png", 3, 5, 5)
 
 
 #macro neurons skill_get("excitedneurons")
@@ -151,7 +153,7 @@ var dis = argument_count > 4 ? argument[4] : hitscan_dis;
 	lastteam = team
 	//This number works so well it should just be enforced
 	speed = 8
-	var endPoint = script_ref_call(targetScript, x, y, direction, team);
+	var endPoint = script_ref_call(targetScript, x, y, direction, team, hitscanLength);
 	with create_bullet_trail(lastx, lasty, endPoint[0], endPoint[1]) {
 		colors = other.trailcolor
 		width = other.trailsize
@@ -238,13 +240,13 @@ var dis = argument_count > 4 ? argument[4] : hitscan_dis;
 		recycle_amount = 1
 		recycle_chance = 60
 
-		wallcount = 0
 		hashitwall = false
 
 		targetScript = scrTravel
 		lastx = x
 		lasty = y
 		lastteam = 0
+		hitscanLength = hitscan_dis
 
     	sage_no_hitscan = true;
 
@@ -324,6 +326,7 @@ var dis = argument_count > 4 ? argument[4] : hitscan_dis;
 		lastx = x
 		lasty = y
 		lastteam = 0
+		hitscanLength = hitscan_dis
 
 		trailcolor = [merge_color(c_yellow, c_lime, .2), c_white, c_lime, c_orange]
 		trailsize = 1.4
@@ -467,6 +470,100 @@ if (instance_exists(other) && other.typ > 0) {
 	instance_create(x + random_range(-5, 5), y + random_range(-5, 5), LightningHit)
 	hitscan_destroy()
 
+
+//Novelty shell. Concepted for different project
+#define altshell_create(x, y)
+	with create_hitscan_bullet(x, y) {
+		name = "AltShell"
+		
+		trailsize *= .5
+		
+		damage = 2
+		hitscanLength = 40 + random(20)
+		range = 130 + random(30)
+		
+		recycle_amount = 0
+		bounce = 4 * skill_get(mut_shotgun_shoulders)
+		
+		on_wall = altshell_wall
+		on_hit = altshell_hit
+		on_step = altshell_step
+		
+		return self
+	}
+
+#define altshell_step
+	var _x = x, _y = y;
+	hitscanLength = min(range + 5, hitscanLength)
+	hitscan_travel()
+	range -= point_distance(_x, _y, x, y)
+	if (range <= 0) shouldDestroy = true
+	
+#define altshell_wall	
+	if !hashitwall {
+		hashitwall = true
+		mod_script_call("mod", "defpack tools", "audio_play_hit_pitch", sndShotgunHitWall, .5 + random(1.5))
+		if !irandom(1) instance_create(x, y, Dust)
+		move_bounce_solid(true)
+		direction += random_range(-5, 5)
+		image_angle = direction
+
+		if (bounce > 0) {
+			range += 5 * bounce
+			bounce -= .5
+			hitscanLength = min(max(60, hitscanLength + 5), range)
+		}
+		else {
+			range -= 10
+			hitscanLength -= 5
+			if range <= 0 shouldDestroy = true
+		}
+	}
+
+#define altshell_hit
+	if (other != lasthit) {
+		var bonus = 0;
+		if ("altshell_damage_bonus" in other) {
+			if abs(other.altshell_damage_time - current_frame) <= 2 {
+				bonus += other.altshell_damage_bonus
+			}
+		}
+		projectile_hit(other, damage + floor(bonus/2), force, direction)
+		
+		if (bonus > 1) {
+			sleep(bonus * 4)
+		}
+		if (bonus > 1) {
+			if fork() {
+				var _x = other.x, _y = other.y;
+				wait(irandom(min(6, bonus)))
+				var xoff = random_range(-24, 24),
+					yoff = random_range(-24, 24);
+				with instance_create(_x + xoff, _y + yoff, RecycleGland) {
+					sprite_index = global.sprAltShellBonus
+					image_xscale = sign(xoff)
+					image_yscale = -sign(yoff)
+				}
+				
+				exit
+			}
+		}
+		
+		other.altshell_damage_bonus = bonus + 1
+		other.altshell_damage_time = current_frame
+
+		if (pierce >= 0) {
+			lasthit = other
+			pierce -= 1
+			shouldDestroy = false
+		}
+		if (pierce < 0) {
+			instance_destroy()
+		}
+	}
+
+
+
 //alright now for the real shit
 //PSY
 #define create_psy_hitscan_bullet(x, y)
@@ -529,8 +626,8 @@ if (instance_exists(other) && other.typ > 0) {
 	}
 
 
-	x = results.x - hspeed
-	y = results.y - vspeed
+	x = results.x /*- hspeed*/
+	y = results.y /*- vspeed*/
 	direction = results.direction
 	lastx = x
 	lasty = y
@@ -871,7 +968,7 @@ var _dif = angle_difference(_bullet.dir, _dir),
 		with _walls {
 			if circle_in_bbox(_cx, _cy, _bullet.radius) {
 				var _x = clamp(_bullet.x, bbox_left, bbox_right),
-					_y = clamp(_bullet.y, bbox_top, bbox_bottom);
+					_y = clamp(_bullet.y, bbox_top, bbox_bottom),
 					_d = point_direction(_cx, _cy, _x, _y);
 				if (_d > min(_bullet.dir, _dir) && _d < max(_bullet.dir, _dir)) {
 					return {
