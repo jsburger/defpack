@@ -103,7 +103,7 @@ repeat(3)
 with instance_create(x,y,BulletHit){sprite_index = sprHeavySlugHit;image_angle = other.image_angle}
 
 #define dyn_step
-if current_frame mod 2 < current_time_scale with instances_matching_ne(hitme,"team",team)
+if current_frame mod 2 < current_time_scale with instances_matching_ne(enemy,"team",team)
 {
   if distance_to_object(other) <= 12
   {

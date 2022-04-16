@@ -5,7 +5,7 @@
     
     global.projBouncer = noone
     
-    with effect_type_create("projectileBounces", `{} PROJECTILE @(color:${c.bounce})BOUNCES`, scr.describe_whole) {
+    with effect_type_create("projectileBounces", `{} @(color:${c.bounce})BOUNCES`, scr.describe_whole) {
         on_new_projectiles = script_ref_create(bounce_update)
     }
     

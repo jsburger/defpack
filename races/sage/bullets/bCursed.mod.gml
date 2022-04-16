@@ -5,12 +5,12 @@
     
     global.fairySprites = [
         global.sprFairy,
-        sprite_add("../../../sprites/sage/bullet icons/sprFairyIconCursedBubbles.png", 1, 5, 5),
-        sprite_add("../../../sprites/sage/bullet icons/sprFairyIconCursedCracked.png", 1, 5, 5),
-        sprite_add("../../../sprites/sage/bullet icons/sprFairyIconCursedGhost.png", 1, 5, 5),
-        sprite_add("../../../sprites/sage/bullet icons/sprFairyIconCursedNail.png", 1, 5, 5),
-        sprite_add("../../../sprites/sage/bullet icons/sprFairyIconCursedShards.png", 1, 5, 5),
-        sprite_add("../../../sprites/sage/bullet icons/sprFairyIconCursedStar.png", 1, 5, 5),
+        sprite_add("../../../sprites/sage/bullet icons/sprFairyIconCursedBubbles.png", 2, 5, 5),
+        sprite_add("../../../sprites/sage/bullet icons/sprFairyIconCursedCracked.png", 2, 5, 5),
+        sprite_add("../../../sprites/sage/bullet icons/sprFairyIconCursedGhost.png", 2, 5, 5),
+        sprite_add("../../../sprites/sage/bullet icons/sprFairyIconCursedNail.png", 2, 5, 5),
+        sprite_add("../../../sprites/sage/bullet icons/sprFairyIconCursedShards.png", 2, 5, 5),
+        sprite_add("../../../sprites/sage/bullet icons/sprFairyIconCursedStar.png", 2, 5, 5),
     ]
     
     global.sprEmote  = sprite_add("../../../sprites/sage/sprBulletEmoji.png", 1, 6, 0);

@@ -605,7 +605,7 @@ NOTES FROM JSBURG:
 #macro bullets mod_variable_get("mod", "SageBullets", "BulletDirectory")
 #macro max_spellbullets 2 + dev * 18// + skill_get(5)
 #macro fairy_swap_time 6
-#macro dev false
+#macro dev true
 #macro c global.colormap
 #macro c_fairy $AFA79A
 #macro effectMod "sageeffects"
@@ -735,11 +735,11 @@ NOTES FROM JSBURG:
 		else resettime -= current_time_scale;
 	}
 
-	// if button_pressed(0, "horn"){
-	// 	with spellbullet_create(0.x, 0.y, "bCursed") {
-	// 		//lmao
-	// 	}
-	// }
+	 if dev && button_pressed(0, "horn"){
+	 	with spellbullet_create(0.x, 0.y, "bCursed") {
+			//lmao
+	 	}
+	 }
 
 	if (tbCooldown > 0) {
 		tbCooldown -= current_time_scale
