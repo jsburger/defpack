@@ -1,9 +1,21 @@
 #define init
   global.sprBullet = sprite_add("../../../sprites/sage/bullets/sprBulletLove.png", 2, 7, 11);
   global.sprFairy = sprite_add("../../../sprites/sage/bullet icons/sprFairyIconLove.png", 0, 5, 5);
+  
+  global.effects = [
+        effect_instance_named("pizzatime", 3, 2)
+      ]
+      
+  with effect_type_create(+"pizzatime", `@(color:${c.neutral})+FIRE {} @yPIZZAS @(color:${c.neutral})WHEN @wHIT`, scr.describe_whole) {
+		on_hurt = script_ref_create(pizza_hurt)
+    }
 
 #macro c mod_variable_get("race", "sage", "colormap");
+#macro scr mod_variable_get("mod", "sageeffects", "scr")
 
+#define bullet_effects(bullet)
+    return global.effects
+    
 #define fairy_sprite
   return global.sprFairy;
 
@@ -28,40 +40,20 @@
   sound_play_pitchvol(sndSwapShotgun, 1.2 * _p, .9);
   sound_play_pitchvol(sndCrossReload, 1.4 * _p, .9);
 
-#define bullet_description(power)
-    var _s = string(3 + ceil(2 * power));
-    return `@(color:${c.neutral})WHEN @wHIT: @(color:${c.neutral})FIRE ` + string(_s) + ` @y` + (_s == 1 ? `PIZZA` : `PIZZAS`);
-
-#define on_take(power)
-    if("sage_pizza_power" not in self) {
-        
-        sage_pizza_power = 3 + ceil(2 * power);
-    }
-    else {
-        
-        sage_pizza_power += 3 + ceil(2 * power);
-    }
-
-#define on_lose(power)
-    sage_pizza_power -= 3 + ceil(2 * power);
+#define pizza_hurt(value, effect)
+    var _i = random(360),
+        _a = value;
     
-#define on_step
-
-    if current_frame % 60 = true{
+    repeat(_a) {
+    
+        with create_pizzadisc(x, y) {
         
-        var _i = random(360),
-            _a = sage_pizza_power;
-        
-        repeat(_a) {
-            
-            with create_pizzadisc(x, y) {
-                
-                creator = other;
-                motion_add(_i, 5);
-            }
-            
-            _i += 360 / _a;
+            creator = other;
+            motion_add(_i, 5);
         }
-    }
     
+    _i += 360 / _a;
+        }
+#define effect_type_create(effectName, desc, desc_type) return mod_script_call("mod", "sageeffects", "effect_type_create", effectName, desc, desc_type);
 #define create_pizzadisc(_x, _y) return (mod_script_call("mod", "defpack tools", "create_pizzadisc", _x, _y))
+#define effect_instance_named(effectName, value, scaling) return mod_script_call("mod", "sageeffects", "effect_instance_create", value, scaling, effectName)

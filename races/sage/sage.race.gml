@@ -126,7 +126,7 @@ NOTES FROM JSBURG:
 
 	global.colormap = {
 		neutral: 		  $BAB0A9,
-		negative:         $444FED,
+		negative:         $474ed1,
 		speed:   		  $CE7314,
 		friction:   	  merge_color($CE7314, c_aqua, .3),
 		projectile_speed: $E5BC16,
@@ -622,6 +622,8 @@ NOTES FROM JSBURG:
 #macro has_thronebutt skill_get(mut_throne_butt) > 0
 
 #define create
+	hurted = false;
+	
 	uiroll = 0;
 
 	sage_spell_power = 0;      // Sage spellpower multiplier
@@ -647,9 +649,9 @@ NOTES FROM JSBURG:
 		spell_give(self, "bWarp");
 		spell_give(self, "bEcho");
 		spell_give(self, "bMaggot");
+		spell_give(self, "bLove");
 		/*spell_give(self, "bRust");
 		spell_give(self, "bCursed");
-		spell_give(self, "bLove");
 		spell_give(self, "bQuartz");
 		spell_give(self, "bHeart");*/
 	}
@@ -769,7 +771,14 @@ NOTES FROM JSBURG:
 	}
 	//Effects do shit
 	effects_call(activeEffects, "on_step");
-
+	
+	//Effects when taking damage:
+	if(my_health < lsthealth && hurted = false && sprite_index == spr_hurt){
+		
+			effects_call(activeEffects, "on_hurt");
+			hurted = true;
+	}
+	if my_health == lsthealth hurted = false;
 
 	///  ACTIVE : Swap Spells  \\\
 

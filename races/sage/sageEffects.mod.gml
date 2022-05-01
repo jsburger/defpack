@@ -55,7 +55,7 @@ enum operators {
         on_deactivate = script_ref_create(max_health_deactivate)
     }
     //Toxic Immunity
-    stat_effect_type_create("notoxic", operators.add, `@gTOXIC IMMUNITY`, describe_pass)
+    stat_effect_type_create("notoxic", operators.add, `@(color:${c.neutral})+@gTOXIC GAS @(color:${c.neutral})IMMUNITY`, describe_pass)
     
     //Other common effects
     //Projectile Speed
@@ -587,6 +587,10 @@ var describe_script = argument_count > 3 ? argument[3] : describe_pass;
     //.25 -> 0, -.25 -> 0
 #define describe_floor(_var)
     var v = floor(abs(_var)) * sign(_var);
+    return string(v);
+    
+#define describe_ceil(_var)
+    var v = ceil(abs(_var)) * sign(_var);
     return string(v);
     
     //.25 -> 25%
