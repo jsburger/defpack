@@ -605,7 +605,7 @@ NOTES FROM JSBURG:
 #macro bullets mod_variable_get("mod", "SageBullets", "BulletDirectory")
 #macro max_spellbullets 2 + dev * 18// + skill_get(5)
 #macro fairy_swap_time 6
-#macro dev true
+#macro dev false
 #macro c global.colormap
 #macro c_fairy $AFA79A
 #macro effectMod "sageeffects"

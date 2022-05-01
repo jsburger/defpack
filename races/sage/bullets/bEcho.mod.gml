@@ -6,12 +6,12 @@
     global.trackedProjectiles = ds_map_create()
     #macro tracked global.trackedProjectiles
     
-    with effect_type_create("projectileEcho", `@(color:${c.neutral})PROJECTILES @(color:${$FFD4AA})RUPTURE`, scr.describe_whole) {
+    with effect_type_create("projectileEcho", `@(color:${c.neutral})+PROJECTILES @(color:${$FFD4AA})RUPTURE @(color:${c.neutral})FOR {} @rDAMAGE`, scr.describe_whole) {
         on_new_projectiles = script_ref_create(echo_update)
     }
     
     global.effects = [
-        effect_instance_named("projectileEcho", 1, 1)
+        effect_instance_named("projectileEcho", 2, 2)
     ]
 
 #macro c mod_variable_get("race", "sage", "colormap");
@@ -36,7 +36,7 @@
     return "ECHO";
 
 #define bullet_ttip
-    return [`PROJECTILE @(color:${$FFD4AA})EXPLOSIONS @sSCALE IN SIZE#WITH PROJECTILE DAMAGE`, "::VORTEX IMPACT EX-8863", "::RUPTURE CASCADES ELIMINATED#::EFFECTIVENESS RETAINED"];
+    return [`@(color:${$FFD4AA})RUPTURES @sSCALE IN SIZE#WITH PROJECTILE DAMAGE`, "::VORTEX IMPACT EX-8863", "::RUPTURE CASCADES ELIMINATED#::EFFECTIVENESS RETAINED"];
 
 #define bullet_area
     return 1;
@@ -53,9 +53,9 @@
 #define create_echo_explosion(_x, _y, _damage, echoValue)
     with instance_create(_x, _y, CustomProjectile) {
         
-        damage = floor(echoValue);
+        damage = ceil(echoValue);
         force  = 2;
-        radius = floor(14 * sqrt(abs(_damage/3)) * echoValue);
+        radius = floor(14 * sqrt(abs(_damage/3)) * (echoValue/2));
         time = 1
         maxtime = 4
         

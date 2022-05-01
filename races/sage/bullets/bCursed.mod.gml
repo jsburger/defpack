@@ -462,7 +462,7 @@
       //Toxic gas immunity
     add_positive(simple_stat_effect("notoxic", 1, 0))
       //Explosion immunity
-    add_positive(effect_instance_named("noexplo", 1, 0));
+    //add_positive(effect_instance_named("noexplo", 1, 0));
       //Maggot
     global.Maggot = effect_instance_named("Maggot", 1, 0);
       //Shells on hurt

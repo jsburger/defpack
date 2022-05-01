@@ -7,7 +7,7 @@
     }
     
     global.effects = [
-        effect_instance_named("projectileHyperSpeed", 2, 2),
+        effect_instance_named("projectileHyperSpeed", 1, 2),
         simple_stat_effect("accuracy", .75, 0)
     ]
 
