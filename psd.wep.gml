@@ -179,6 +179,7 @@ return choose("PERSONAL" + choose("SECURITY", "SAFETY", "SHIELD") + "DEVICE", "A
 
           mask_index  = mskNone;
           image_speed = 0;
+          damage = 0;
 
           creator = other;
           team    = other.team;

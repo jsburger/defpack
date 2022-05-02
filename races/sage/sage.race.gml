@@ -136,6 +136,7 @@ NOTES FROM JSBURG:
 		ammo:             $00ABFA,
 		bounce:           $00ABFA,
 		reload:           $FFFFFF,
+		echo:			  $FFD4AA,
 		aqua:             c_aqua,
 		health:           c_red,
 		spell:            merge_color(make_color_rgb(28, 98, 85), c_white, .2),
@@ -225,14 +226,14 @@ NOTES FROM JSBURG:
 		}
 	}
 
-#define draw_outline(_sprIndex, _imgIndex, _x, _y)
+#define draw_outline(_sprIndex, _imgIndex, _x, _y, _scale)
 	d3d_set_fog(true, c_white, 0, 0);
-	draw_sprite(_sprIndex, _imgIndex, _x -1, _y);
-	draw_sprite(_sprIndex, _imgIndex, _x +1, _y);
-	draw_sprite(_sprIndex, _imgIndex, _x, _y -1);
-	draw_sprite(_sprIndex, _imgIndex, _x -1, _y +1);
-	draw_sprite(_sprIndex, _imgIndex, _x +1, _y +1);
-	draw_sprite(_sprIndex, _imgIndex, _x, _y +2);
+	draw_sprite_ext(_sprIndex, _imgIndex, _x -1, _y, _scale, _scale, 0, c_white, 1);
+	draw_sprite_ext(_sprIndex, _imgIndex, _x +1, _y, _scale, _scale, 0, c_white, 1);
+	draw_sprite_ext(_sprIndex, _imgIndex, _x, _y -1, _scale, _scale, 0, c_white, 1);
+	draw_sprite_ext(_sprIndex, _imgIndex, _x -1, _y +1, _scale, _scale, 0, c_white, 1);
+	draw_sprite_ext(_sprIndex, _imgIndex, _x +1, _y +1, _scale, _scale, 0, c_white, 1);
+	draw_sprite_ext(_sprIndex, _imgIndex, _x, _y +2, _scale, _scale, 0, c_white, 1);
 	d3d_set_fog(false, c_white, 0, 0);
 
 
@@ -556,7 +557,7 @@ NOTES FROM JSBURG:
 			//Draw Outline for bullets in active slots:
 			if (i == 0 || ultra_get("sage", 2)){
 
-				draw_outline(_sprt, _v, _x + _hudx, _y + _hudy)
+				draw_outline(_sprt, _v, _x + _hudx, _y + _hudy, 1)
 			}
 
 			//Draw Bullet:
@@ -605,7 +606,7 @@ NOTES FROM JSBURG:
 #macro bullets mod_variable_get("mod", "SageBullets", "BulletDirectory")
 #macro max_spellbullets 2 + dev * 18// + skill_get(5)
 #macro fairy_swap_time 6
-#macro dev false
+#macro dev true
 #macro c global.colormap
 #macro c_fairy $AFA79A
 #macro effectMod "sageeffects"
@@ -812,6 +813,9 @@ NOTES FROM JSBURG:
 			}
 			//Activate boost if possible
 			if (tbCooldown <= 0) {
+				
+				//sound_play_pitchvol();
+				
 				tbBoostTime = maxTBBoostTime
 				spellpower_change_no_refresh(self, TBBoostValue)
 				shouldRefresh = true
@@ -1275,6 +1279,7 @@ var args2 = argument_count > 3 ? argument[3] : undefined;
 		}
 
 		//if dev trace(type, bullets[? type])
+		spell_ref = spell;
 		spell = spell_init(spell);
 		my_prompt = prompt_create("");
 		sprite_index = spell_call_nc(spell, "bullet_sprite", 0);
@@ -1308,6 +1313,7 @@ var args2 = argument_count > 3 ? argument[3] : undefined;
 	
 #define spellbullet_step
 
+	if spell_ref == "bCursed" && !irandom(9) instance_create(x + random_range(-4, 4), y + random_range(-4, 4), Curse);
 	shine -= current_time_scale;
 	if (shine <= 0) {
 

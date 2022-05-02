@@ -631,6 +631,7 @@ with Player if visible{
 			depth = other.depth - 1;
 			canfix = false;
 			damage = 36;
+			sage_dni = true;
 			image_xscale = max(1, other.defspeed[0] / sprite_get_width(mask_index) * 2.5);
 			image_yscale = 1.3;
 			image_speed = .5;

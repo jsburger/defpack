@@ -6,7 +6,7 @@
     global.trackedProjectiles = ds_map_create()
     #macro tracked global.trackedProjectiles
     
-    with effect_type_create("projectileEcho", `@(color:${c.neutral})+PROJECTILES @(color:${$FFD4AA})RUPTURE @(color:${c.neutral})FOR {} @rDAMAGE`, scr.describe_whole) {
+    with effect_type_create("projectileEcho", `@(color:${c.neutral})+PROJECTILES @(color:${c.echo})RUPTURE @(color:${c.neutral})FOR {} @rDAMAGE`, scr.describe_whole) {
         on_new_projectiles = script_ref_create(echo_update)
     }
     
@@ -27,7 +27,7 @@
     return global.sprFairy;
 
 #define fairy_color
-    return $FFD4AA;
+    return c.echo;
 
 #define bullet_sprite
     return global.sprBullet;
@@ -36,7 +36,7 @@
     return "ECHO";
 
 #define bullet_ttip
-    return [`@(color:${$FFD4AA})RUPTURES @sSCALE IN SIZE#WITH PROJECTILE DAMAGE`, "::VORTEX IMPACT EX-8863", "::RUPTURE CASCADES ELIMINATED#::EFFECTIVENESS RETAINED"];
+    return [`@(color:${c.echo})RUPTURES @sSCALE IN SIZE#WITH PROJECTILE DAMAGE`, "::VORTEX IMPACT EX-8863", "::RUPTURE CASCADES ELIMINATED#::EFFECTIVENESS RETAINED"];
 
 #define bullet_area
     return 1;
@@ -55,7 +55,7 @@
         
         damage = ceil(echoValue);
         force  = 2;
-        radius = floor(14 * sqrt(abs(_damage/3)) * (echoValue/2));
+        radius = max(12, floor(14 * sqrt(abs(_damage/3)) * (echoValue/2)));
         time = 1
         maxtime = 4
         
@@ -84,9 +84,9 @@
     }
 
 #define echo_destroy
-    var q = instance_create(x, y, CaveSparkle);
+    /*var q = instance_create(x, y, CaveSparkle);
     q.depth -= 2
-    q.image_speed *= random_range(1.5, 2)
+    q.image_speed *= random_range(1.5, 2)*/
 
 #define echo_step
     time += current_time_scale
@@ -95,7 +95,19 @@
     }
 
 #define echo_draw
-    draw_circle(x, y, radius * sin(sqrt(time/maxtime) * pi), false)
+    //draw_circle(x, y, radius * sin(sqrt(time/maxtime) * pi), false)
+    var _s = surface_create(radius * 2, radius * 2),
+        _p = time/maxtime;
+	
+	surface_set_target(_s);
+    draw_circle(radius, radius, radius * .8 + radius * .2 * _p, false);
+	draw_set_blend_mode(bm_subtract);
+    draw_circle(radius, radius, radius * .2 + radius * .8 * _p, false);
+    draw_set_blend_mode(bm_normal);
+    surface_reset_target();
+    
+    draw_surface_ext(_s, x - radius, y - radius, 1, 1, 0, merge_color(c_white, c.echo, _p), .8 - .4 * _p * .7);
+    surface_free(_s);
 
 #define nothing
 #define echo_hit
@@ -135,7 +147,7 @@
         //If projectile doesn't exist anymore
         if !instance_exists(keys[i]) {
             
-            with create_echo_explosion(info.x, info.y, info.damage, info.value) {
+            if info.damage > 0 with create_echo_explosion(info.x, info.y, info.damage, info.value) {
                 team = info.team
                 creator = info.creator
             }
