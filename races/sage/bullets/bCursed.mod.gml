@@ -456,6 +456,8 @@
     add_negative(effect_instance_named("enemyProjectileSpeed", .35, 0))
     add_positive(effect_instance_named("enemyProjectileSpeed", -.2, 0))
       //Bullet talks nicely to you
+    add_negative(effect_instance_named("friction", -.5, 0))
+      //friction change
     add_positive(effect_instance_named("pepTalk", 1, 0))
       //Bullet tries to hurt your feelings
     add_negative(effect_instance_named("smackTalk", 1, 0))
@@ -469,6 +471,8 @@
     add_positive(effect_instance_named("hurtToShell", 8, 4));
       //Disc on hurt
     add_negative(effect_instance_named("hurtToDisc", 3, 2));
+      //Crit chance:
+    //add_positive(effect_instance_named("critChance", .1, .1));
     
     global.specialBulletHyperizer = [
     	effect_instance_named("projectileHyperSpeed", 10, 10),
@@ -541,6 +545,14 @@
 		self.on_deactivate = script_ref_create(explo_deactivate)
 		scr_positivity = scr.positivity_always_positive
 	}*/
+	/*with effect_type_create("critChance", `@(color:${c.neutral})+{}@(color:${c.crit})CRIT CHANCE`, scr.describe_percentage) {
+		self.on_hurt = script_ref_create(tp_hurt)
+		scr_positivity = scr.positivity_always_positive
+	}*/
+	with effect_type_create("friction", `{} @(color:${merge_color(c.speed, c.projectile_speed, .5)})FRICTION`, scr.describe_percentage) {
+		self.on_step = script_ref_create(friction_step)
+		scr_positivity = scr.positivity_always_negative
+	}
 	with effect_type_create("hurtToTeleport", `@(color:${c.neutral})+@(color:${merge_color(c.speed, c.projectile_speed, .5)})TELEPORT @(color:${c.neutral})WHEN @wHIT`, scr.describe_pass) {
 		self.on_hurt = script_ref_create(tp_hurt)
 		scr_positivity = scr.positivity_always_positive
@@ -592,6 +604,8 @@
         on_enemy_projectiles = scr.projectile_speed_update
         scr_positivity = ["mod", "sageeffects", "positivity_compare_inverted", 0]
     }
+#define friction_step(value, effect)
+	friction /= (1 + abs(value));
 #define tp_hurt(value, effect)
 	if my_health > 0 {
 		

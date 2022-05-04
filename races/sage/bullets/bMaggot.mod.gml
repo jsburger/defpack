@@ -2,7 +2,7 @@
   global.sprBullet = sprite_add("../../../sprites/sage/bullets/sprBulletMaggot.png", 2, 7, 11);
   global.sprFairy = sprite_add("../../../sprites/sage/bullet icons/sprFairyIconMaggot.png", 1, 5, 5);
   
-  with effect_type_create("MaggotEffect", `@(color:${c.neutral})Turns @wcorpses @(color:${c.neutral})into @yammo @(color:${c.neutral})and @rhealth#@(color:${c.neutral})so cute!`, scr.describe_whole) {
+  with effect_type_create("MaggotEffect", `@(color:${c.neutral})+Turns @wcorpses @(color:${c.neutral})into @yammo @(color:${c.neutral})and @rhealth# @(color:${c.neutral})so cute!`, scr.describe_whole) {
         on_step = script_ref_create(maggot_step)
     }
     

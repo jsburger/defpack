@@ -139,6 +139,7 @@ NOTES FROM JSBURG:
 		echo:			  $FFD4AA,
 		aqua:             c_aqua,
 		health:           c_red,
+		crit:             /*#*/0x91041e,
 		spell:            merge_color(make_color_rgb(28, 98, 85), c_white, .2),
 	}
 
@@ -637,7 +638,7 @@ NOTES FROM JSBURG:
 	tbCooldown = 0
 
 	if dev {
-		spell_give(self, "bGold");
+		/*spell_give(self, "bGold");
 		spell_give(self, "bMelee");
 		spell_give(self, "bTurret");
 		spell_give(self, "bInfammo");
@@ -651,10 +652,10 @@ NOTES FROM JSBURG:
 		spell_give(self, "bEcho");
 		spell_give(self, "bMaggot");
 		spell_give(self, "bLove");
-		/*spell_give(self, "bRust");
+		spell_give(self, "bRust");
 		spell_give(self, "bCursed");
-		spell_give(self, "bQuartz");
-		spell_give(self, "bHeart");*/
+		spell_give(self, "bQuartz");*/
+		spell_give(self, "bHeart");
 	}
 
 	fairy = {
@@ -779,6 +780,7 @@ NOTES FROM JSBURG:
 			effects_call(activeEffects, "on_hurt");
 			hurted = true;
 	}
+	
 	if my_health == lsthealth hurted = false;
 
 	///  ACTIVE : Swap Spells  \\\

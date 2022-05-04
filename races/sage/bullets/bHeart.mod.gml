@@ -9,9 +9,21 @@
   global.sprColorPickup[1] = sprite_add_weapon("../../../sprites/sage/fx/sprColorPickup2.png", 7, 7);
   global.sprColorPickup[2] = sprite_add_weapon("../../../sprites/sage/fx/sprColorPickup3.png", 7, 7);
   
+  with effect_type_create("heartEffect", `@(color:${c.neutral})+GATHER @(color:${c.spell})MAGIC @(color:${c.neutral})FROM @wENEMIES# @(color:${c.neutral})USE @(color:${c.spell})MAGIC @(color:${c.neutral})TO INCREASE @(color:${c.spell})SPELL POWER`, scr.describe_pass) {
+        on_activate = script_ref_create(heart_take);
+        on_step = script_ref_create(heart_step);
+        is_unique = true;
+    }
+    
+    global.effects = [
+        effect_instance_named("heartEffect", 1, 1)
+    ]
+#macro scr mod_variable_get("mod", "sageeffects", "scr")
 #macro c mod_variable_get("race", "sage", "colormap");
 #macro maxcolor 100
-
+#define bullet_effects
+	return global.effects;
+	
 #define fairy_sprite
   return global.sprFairy;
 
@@ -23,9 +35,6 @@
 
 #define bullet_name
   return "SPELL HEART";
-
-#define bullet_description
-  return `@(color:${c.neutral})GATHER @(color:${c.spell})COLOR @(color:${c.neutral})FROM @wENEMIES#@(color:${c.neutral})USE @(color:${c.spell})COLOR @(color:${c.neutral})TO INCREASE @(color:${c.spell})SPELL POWER`
 
 #define bullet_ttip
   return ["GATHER THE COLOR"];
@@ -39,11 +48,9 @@
   sound_play_pitchvol(sndSwapShotgun, 1.2 * _p, .9);
   sound_play_pitchvol(sndCrossReload, 1.4 * _p, .9);
 
-#define on_take(power)
+#define heart_take(value, effect)
 	if "sage_extra_spellpower" not in self sage_extra_spellpower = 0;
 	sage_spellheart_hud = 40 / current_time_scale;
-
-#define on_lose(power)
 
 #define color_pickup_create(_x, _y)
 	with instance_create(_x, _y, Pickup){
@@ -67,7 +74,7 @@
 	}
 
 
-#define on_step
+#define heart_step(value, effect)
 	// Create heart HUD if recently picked up color:
 	if sage_spellheart_hud-- > 0{
 	
@@ -233,7 +240,7 @@
 
 	draw_sprite_part(global.sHeartOutline, 0, 0, (1 - _p) * 26, 26, 26,creator.x + creator.hspeed_raw - 39 + 2, creator.y + creator.vspeed_raw - 13 + (1 - _p) * 26);
 	draw_sprite_part(global.sHeartTop,     0, 0, (1 - _p) * 24, 24, 24,creator.x + creator.hspeed_raw - 36, creator.y + creator.vspeed_raw - 12 + (1 - _p) * 24);
-	draw_set_alpha(.7);
+	draw_set_alpha((min(3, creator.sage_spellheart_hud) / 3)* .7);
 	draw_sprite_part(global.sHeartSurface, 0, 0, (1 - _p) * 24, 24, 1,creator.x + creator.hspeed_raw - 36, creator.y + creator.vspeed_raw - 12 + (1 - _p) * 24);
 	
 	draw_set_font(fntSmall);
@@ -244,3 +251,6 @@
 
 #define instances_in_bbox(left,top,right,bottom,obj) return instances_matching_gt(instances_matching_lt(instances_matching_gt(instances_matching_lt(obj,"bbox_top",bottom),"bbox_bottom",top),"bbox_left",right),"bbox_right",left)
 #define spell_call_nc(spell, script, spelll) return mod_script_call("race", "sage", "spell_call_nc", spell, script, spelll);
+#define simple_stat_effect(variableName, value, scaling) return mod_script_call("mod", "sageeffects", "simple_stat_effect", variableName, value, scaling)
+#define effect_instance_named(effectName, value, scaling) return mod_script_call("mod", "sageeffects", "effect_instance_create", value, scaling, effectName)
+#define effect_type_create(name, description, describe_script) return mod_script_call("mod", "sageeffects", "effect_type_create", name, description, describe_script)

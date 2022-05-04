@@ -14,7 +14,7 @@ return 1;
 return true;
 
 #define weapon_load
-return 2;
+return 1;
 
 #define weapon_cost
 return 1;

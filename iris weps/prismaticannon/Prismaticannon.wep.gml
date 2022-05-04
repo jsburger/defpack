@@ -2,13 +2,6 @@
 #define init
 //guns
 global.sprite = sprite_add_weapon("sprites/sprIrisWeapon.png",6,12)
-global.spriteBouncer = sprite_add_weapon("sprites/sprIrisWeaponBouncer.png",6,12)
-global.spriteFire = sprite_add_weapon("sprites/sprIrisWeaponFire.png",6,12)
-global.spritePest = sprite_add_weapon("sprites/sprIrisWeaponPest.png",6,12)
-global.spriteThunder = sprite_add_weapon("sprites/sprIrisWeaponThunder.png",6,12)
-global.spritePsy = sprite_add_weapon("sprites/sprIrisWeaponPsy.png",6,12)
-global.spriteGamma = sprite_add_weapon("sprites/sprIrisWeaponGamma.png",6,12)
-global.spriteRandom = sprite_add_weapon("sprites/sprIrisWeaponRandom.png",6,12)
 
 //muzzleflashes
 global.sprNormalFlash = sprite_add("sprites/sprNormalMuzzleflash.png", 1, 8, 8);
@@ -23,17 +16,8 @@ global.sprGammaFlash = sprite_add("sprites/sprGammaMuzzleflash.png", 1, 8, 8);
 return "PRISMATICANNON";
 
 #define weapon_sprt
-if !skill_get("prismaticiris"){return global.sprite}
-switch mod_variable_get("skill", "prismaticiris", "color"){
-  case "fantasticrefractions": return global.spriteRandom;
-  case "quiveringsight"      : return global.spriteBouncer;
-  case "blazingvisage"       : return global.spriteFire;
-  case "pestilentgaze"       : return global.spritePest;
-  case "cloudedstare"        : return global.spriteThunder;
-  case "allseeingeye"        : return global.spritePsy;
-  case "warpedperspective"   : return global.spriteGamma;
-  default: return global.sprite;
-}
+if (mod_exists("skill", "prismaticiris") && skill_get("prismaticiris") > 0) return mod_script_call("skill", mod_variable_get("skill", "prismaticiris", "color"), "skill_prismaticannon_sprite")
+return global.sprite
 
 #define weapon_type
 return 5;

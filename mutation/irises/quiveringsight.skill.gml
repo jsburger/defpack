@@ -2,6 +2,7 @@
 	global.button = sprite_add("../../sprites/mutation/sprMutPrismaticIris6.png", 1, 12, 16);
 	global.icon   = sprite_add("../../sprites/mutation/sprMutPrismaticIcon6.png", 1, 8, 7);
 	global.brush  = sprite_add_weapon("../../sprites/weapons/sprToothbrushYellow.png", 0, 0);
+	global.prism  = sprite_add_weapon("../../iris weps/prismaticannon/sprites/sprIrisWeaponBouncer.png",6,12);
 
 #define skill_name
 	return "QUIVERING SIGHT";
@@ -17,6 +18,9 @@
 	
 #define skill_toothbrush_sprite
 	return global.brush;
+
+#define skill_prismaticannon_sprite
+	return global.prism;
 	
 #define skill_button
 	sprite_index = global.button;

@@ -21,7 +21,7 @@
   with(arr){
     
     //TEMPORARY DEBUG CODE
-    var allowed = ["Default", "Melee", "Gold", "Prec", "Infammo", "Turret", "Gadget", "Ultra", "Reflect", "Warp", "Split", "Burst", "Echo", "Cursed", "Maggot", "Love"], passed = false;
+    var allowed = ["Default", "Melee", "Gold", "Prec", "Infammo", "Turret", "Gadget", "Ultra", "Reflect", "Warp", "Split", "Burst", "Echo", "Cursed", "Maggot", "Love", "Heart"], passed = false;
     with (allowed) {
         if string_count(self, other.path) {
             passed = true

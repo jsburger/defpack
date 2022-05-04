@@ -56,7 +56,6 @@ enum operators {
     }
     //Toxic Immunity
     stat_effect_type_create("notoxic", operators.add, `@(color:${c.neutral})+@gTOXIC GAS @(color:${c.neutral})IMMUNITY`, describe_pass)
-    
     //Other common effects
     //Projectile Speed
     with effect_type_create("projectileSpeed", `{} @(color:${c.projectile_speed})PROJECTILE SPEED`, describe_percentage) {
