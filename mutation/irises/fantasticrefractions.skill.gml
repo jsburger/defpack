@@ -3,6 +3,10 @@
 	global.icon   = sprite_add("../../sprites/mutation/sprMutPrismaticIcon7.png", 1, 8, 7);
 	global.brush  = sprite_add_weapon("../../sprites/weapons/sprToothbrushInvert.png", 0, 0);
 	global.prism  = sprite_add_weapon("../../iris weps/prismaticannon/sprites/sprIrisWeaponRandom.png",6,12);
+	global.colors = [];
+	
+#define add_color(STRING)
+	array_push(global.colors, STRING);
 	
 #define skill_name
 	return "FANTASTIC REFRACTIONS";
@@ -40,6 +44,12 @@ return "@yBULLETS @sBECOME " + `@(color:${make_colour_hsv(current_frame mod 255,
 
 #define skill_prismaticannon_sprite
 	return global.prism;
+
+#define skill_prismaticannon_text
+	return mod_script_call("skill", global.colors[irandom_range(0, array_length(global.colors) - 1)], "skill_prismaticannon_text");
+	
+#define skill_prismaticannon_fire
+	return mod_script_call("skill", global.colors[irandom_range(0, array_length(global.colors) - 1)], "skill_prismaticannon_fire");
 
 #define skill_button
 	sprite_index = global.button;

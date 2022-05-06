@@ -3,6 +3,8 @@
 	global.icon   = sprite_add("../../sprites/mutation/sprMutPrismaticIcon4.png", 1, 8, 7);
 	global.brush  = sprite_add_weapon("../../sprites/weapons/sprToothbrushBlue.png", 0, 0);
 	global.prism  = sprite_add_weapon("../../iris weps/prismaticannon/sprites/sprIrisWeaponThunder.png",6,12);
+	global.sprLightningFlash = sprite_add("../../iris weps/prismaticannon/sprites/sprLightningMuzzleflash.png", 1, 8, 8);
+	mod_script_call("skill", "fantasticrefractions", "add_color", mod_current);
 
 #define skill_name
 	return "CLOUDED STARE";
@@ -21,7 +23,21 @@
 
 #define skill_prismaticannon_sprite
 	return global.prism;
-	
+
+#define skill_prismaticannon_text
+	return "@bTHUNDERCLOUDS";
+
+#define skill_prismaticannon_fire
+	sound_play_pitchvol(sndPlasma,random_range(0.75,0.85),1);
+    sound_play_pitchvol(skill_get(mut_laser_brain) > 0 ? sndLightningPistolUpg : sndLightningPistol,random_range(0.7,0.8),0.8)
+
+    with mod_script_call("mod","PrismaticannonProjectiles","LightningBullet_Create",(x+lengthdir_x(13,gunangle)),y+lengthdir_y(13,gunangle)){
+    	creator = other
+    	team = other.team
+    	image_angle = direction
+    }
+    mod_script_call("wep", "Prismaticannon","muzzle_create", global.sprLightningFlash);
+
 #define skill_button
 	sprite_index = global.button;
 

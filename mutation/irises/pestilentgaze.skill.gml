@@ -3,6 +3,8 @@
 	global.icon   = sprite_add("../../sprites/mutation/sprMutPrismaticIcon1.png", 1, 8, 7);
 	global.brush  = sprite_add_weapon("../../sprites/weapons/sprToothbrushGreen.png", 0, 0);
 	global.prism  = sprite_add_weapon("../../iris weps/prismaticannon/sprites/sprIrisWeaponPest.png",6,12);
+	global.sprPestFlash = sprite_add("../../iris weps/prismaticannon/sprites/sprPestMuzzleflash.png", 1, 8, 8);
+	mod_script_call("skill", "fantasticrefractions", "add_color", mod_current);
 
 #define skill_name
 	return "PESTILENT GAZE";
@@ -21,6 +23,20 @@
 
 #define skill_prismaticannon_sprite
 	return global.prism;
+	
+#define skill_prismaticannon_text
+	return "@gTOXIC BUBBLES";
+	
+#define skill_prismaticannon_fire
+	sound_play_pitchvol(sndPlasma,random_range(0.75,0.85),1);
+    sound_play_pitchvol(sndToxicBoltGas,random_range(0.95,1),1);
+
+    with mod_script_call("mod","PrismaticannonProjectiles","PestBullet_Create",(x+lengthdir_x(13,gunangle)),y+lengthdir_y(13,gunangle)){
+    	creator = other
+    	team = other.team
+    	image_angle = direction
+    }
+    mod_script_call("wep", "Prismaticannon","muzzle_create", global.sprPestFlash);
 	
 #define skill_button
 	sprite_index = global.button;

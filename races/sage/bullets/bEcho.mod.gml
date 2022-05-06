@@ -57,7 +57,7 @@
         force  = 2;
         radius = max(12, floor(14 * sqrt(abs(_damage/3)) * (echoValue/2)));
         time = 1
-        maxtime = 4
+        maxtime = 6
         
         sprite_index = sprEnemyBullet1
         mask_index = sprEnemyBullet1

@@ -82,7 +82,7 @@ return random(100) <= percentage * current_time_scale
       sprite_index = global.sprPestBullet
       direction = other.gunangle + (random_range(4, -4) * other.accuracy);
         speed = 14 + irandom(2);
-        damage = 6;
+        damage = 4;
       image_speed = 0.4;
       image_angle = direction;
       typ = 0;
@@ -133,7 +133,7 @@ for (i = 0; i < 360; i += 180)
     {
   		sprite_index = global.sprPestPlasma;
   		mask_index = mskPlasma;
-      team = other.team;
+    	team = other.team;
    		damage = 3;
   		force = 6;
   		image_xscale = 1 + (skill_get(17) * 0.1);
@@ -191,7 +191,7 @@ repeat(1){
       sprite_index = global.sprFlameBullet
       direction = other.gunangle + (random_range(12, -12) * other.accuracy);
         speed = 14 + irandom(2);
-        damage = 6;
+        damage = 4;
       image_speed = 0.4;
       image_angle = direction;
       typ = 0;
@@ -311,7 +311,7 @@ for (i = 0; i < 360; i += 45) //fire go fwoosh
       sprite_index = global.sprPsyBullet
       direction = other.gunangle + (random_range(9, -9) * other.accuracy);
         speed = 14 + irandom(2);
-        damage = 6;
+        damage = 4;
       image_speed = 0.4;
       image_angle = direction;
       typ = 0;
@@ -441,7 +441,7 @@ for (i = 0; i < 360; i += 45) //fire go fwoosh
       sprite_index = global.sprBouncyBullet
       direction = other.gunangle + (random_range(6, -6) * other.accuracy);
         speed = 14 + irandom(2);
-        damage = 6;
+        damage = 4;
       image_speed = 0.4;
       image_angle = direction;
       typ = 0;
@@ -494,7 +494,7 @@ for (i = 0; i < 360; i += 180)
   		sprite_index = global.sprBouncyPlasma;
   		mask_index = mskPlasma;
       team = other.team;
-   		damage = 3;
+   		damage = 2;
   		force = 6;
   		image_xscale = 1 + (skill_get(17) * 0.1);
   		image_yscale = image_xscale;
@@ -512,7 +512,7 @@ for (i = 0; i < 360; i += 180)
       on_step = BouncyPlasma_Step;
       on_destroy = BouncyPlasma_Die;
     }
-for (i = 0; i < 360; i += 90) //boolet
+for (i = 0; i < 360; i += 120) //boolet
 {
  with instance_create(x,y,BouncerBullet)
   {
@@ -573,7 +573,7 @@ for (i = 0; i < 360; i += 180) //boolet
       sprite_index = global.sprLightningBullet
       direction = other.gunangle + (random_range(11, -11) * other.accuracy);
         speed = 14 + irandom(2);
-        damage = 6;
+        damage = 3;
       image_speed = 0.4;
       image_angle = direction;
       typ = 0;
@@ -680,7 +680,7 @@ quick_lightning(4)
       sprite_index = global.sprGammaBullet
       direction = other.gunangle + (random_range(6, -6) * other.accuracy);
         speed = 14 + irandom(2);
-        damage = 4;
+        damage = 3;
       image_speed = 0.4;
       image_angle = direction;
       typ = 0;
@@ -786,7 +786,7 @@ y -= lengthdir_y(speed * 1,direction);
       sprite_index = global.sprNormalBullet
       direction = other.gunangle + (random_range(6, -6) * other.accuracy);
         speed = 14 + irandom(2);
-        damage = 6;
+        damage = 5;
       image_speed = 0.4;
       image_angle = direction;
       typ = 0;
@@ -827,7 +827,9 @@ if skill_get(17){
 //Plasma
 for (i = 0; i < 360; i += 180)
     with instance_create(x,y,PlasmaBall){
-      direction = other.direction + other.i + random_range(-360,360);
+      direction = other.direction + other.i + random_range(-90,90);
+      image_xscale = .5;
+      image_yscale = .5
       team = other.team;
       creator = other;
       image_angle = direction;
@@ -838,8 +840,8 @@ for (i = 0; i < 360; i += 180)
 #define plasma_hit
 //makes plasma get smaller and slows down as it hits enemies
 projectile_hit(other,damage);
-image_xscale -= 0.15;
-image_yscale -= 0.15;
+image_xscale -= 0.3;
+image_yscale -= 0.3;
 x -= lengthdir_x(speed * 1,direction);
 y -= lengthdir_y(speed * 1,direction);
 
