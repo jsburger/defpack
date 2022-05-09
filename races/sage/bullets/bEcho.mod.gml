@@ -11,7 +11,7 @@
     }
     
     global.effects = [
-        effect_instance_named("projectileEcho", 2, 2)
+        effect_instance_named("projectileEcho", 1, 1)
     ]
 
 #macro c mod_variable_get("race", "sage", "colormap");
@@ -55,7 +55,8 @@
         
         damage = ceil(echoValue);
         force  = 2;
-        radius = max(12, floor(14 * sqrt(abs(_damage/3)) * (echoValue/2)));
+        //depth = -16;
+        radius = max(18, floor(14 * sqrt(abs(_damage/2.25)) * (echoValue/2)));
         time = 1
         maxtime = 6
         
@@ -106,7 +107,7 @@
     draw_set_blend_mode(bm_normal);
     surface_reset_target();
     
-    draw_surface_ext(_s, x - radius, y - radius, 1, 1, 0, merge_color(c_white, c.echo, _p), .8 - .4 * _p * .7);
+    draw_surface_ext(_s, x - radius, y - radius, 1, 1, 0, merge_color(c_white, c.echo, _p), 1 - .8 * _p);
     surface_free(_s);
 
 #define nothing
@@ -157,8 +158,8 @@
         //Update tracker values if projectile does exist
         else {
             var proj = keys[i]
-            info.x = proj.x + proj.hspeed_raw/1.5
-            info.y = proj.y + proj.vspeed_raw/1.5
+            info.x = proj.x + sign(proj.hspeed_raw) * 6
+            info.y = proj.y + sign(proj.vspeed_raw) * 6
             info.damage = proj.damage
             info.team = proj.team
         }

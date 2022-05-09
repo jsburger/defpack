@@ -392,17 +392,20 @@
             break
     }
 
-    //Sage compat:
-    var _sageactive = false;
-    for (var i = 0; i < maxp; i++){
-        if player_get_race(i) = "sage" _sageactive = true;
-    }
-    if _sageactive{
-        with mod_script_call("race", "sage", "spellbullet_create", x, y, curse == true ? "bCursed" : "", other){
-					
-			motion_add(random(360), 5);
+	//Sage compat:
+	var _close = -4;
+	for (var i = 0; i < maxp; i++){
+		if player_get_race(i) == "sage" && (_close = -4 || point_distance(player_find(i).x, player_find(i).y, x, y) < point_distance(_close.x, _close.y, x, y)){
+			
+			_close = player_find(i);
 		}
-    }
+		if _close != noone && _close.race == "sage"{
+		
+			with mod_script_call("race", "sage", "spellbullet_create", x, y, curse == true ? "bCursed" : "", _close){
+				
+				motion_add(random(360), 5);
+		}
+	}
 
     for (var i = array_length(finalWeps) - 1; i >= 0; i--) {
         with instance_create(x, y, WepPickup) {

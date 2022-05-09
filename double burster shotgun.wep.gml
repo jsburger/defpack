@@ -11,7 +11,7 @@ global.sprBursterShotgunHUD = sprite_add_weapon("sprites/weapons/sprDoubleBurste
 #define weapon_swap             return sndSwapShotgun;
 
 #define weapon_auto             return false;
-#define weapon_load             return 48;
+#define weapon_load             return 40;
 #define weapon_type             return 2;
 #define weapon_cost             return 2;
 #define weapon_rads             return 0;

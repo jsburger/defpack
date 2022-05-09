@@ -1241,6 +1241,7 @@ var args2 = argument_count > 3 ? argument[3] : undefined;
 		array_push(global.bulletObjects, self)
 		friction = 0.5;
 		shine = 45;
+		spell_ref = "";
 
 		direction = random(360);
 		image_angle = direction;
@@ -1315,7 +1316,7 @@ var args2 = argument_count > 3 ? argument[3] : undefined;
 	
 #define spellbullet_step
 
-	if spell_ref == "bCursed" && !irandom(9) instance_create(x + random_range(-4, 4), y + random_range(-4, 4), Curse);
+	if "spell_ref" in self && spell_ref == "bCursed" && !irandom(9) instance_create(x + random_range(-4, 4), y + random_range(-4, 4), Curse);
 	shine -= current_time_scale;
 	if (shine <= 0) {
 
