@@ -1,4 +1,6 @@
 #define init
+global.sprEvilDiscGun = sprite_add_weapon("sprites/weapons/sprEvilDiscGun.png", 0, 4);
+global.sprEvilDisc    = sprite_add("sprites/projectiles/sprEvilDisc.png", 4, 7, 7);
 
 #define weapon_name
 return "EVIL DISC GUN"
@@ -22,16 +24,22 @@ return sndSwapBow;
 return false;
 
 #define weapon_sprt
-return sprDiscGun;
+return global.sprEvilDiscGun;
 
 #define weapon_text
 return "POSSESSED BY GREATER EVILS#THAN YOU COULD KNOW";
 
 #define weapon_fire
 	var c = instance_is(self, FireCont) && "creator" in self ? creator : self;
-	sound_play_gun(sndDiscgun, .2, .8)
+	weapon_post(3, 8, 0);
+
+	var pitch = random_range(.8, 1.2);
+	sound_play_pitchvol(sndDiscgun, .7 * pitch, .8);
+	sound_play_pitchvol(sndSuperDiscGun, 2 * pitch, .4);
+	sound_play_pitchvol(sndRatKingDie, 2 * pitch, .4);
+
 	with evil_disc_create(x, y) {
-		motion_set(other.gunangle, 8)
+		motion_set(other.gunangle, random_range(6, 8))
 		image_angle = direction
 		projectile_init(other.team, c)
 	}
@@ -43,20 +51,19 @@ return "POSSESSED BY GREATER EVILS#THAN YOU COULD KNOW";
 		damage = 5;
 		force = 4;
 		image_speed = .4
-		sprite_index = sprDisc
-		image_blend = c_red
+		sprite_index = global.sprEvilDisc;
 		curve = irandom_range(1, 5) * choose(-1, 1)
 		lastBounce = 0
-		
+
 		mod_script_call("mod", "defpack tools", "disc_init")
-		
+
 		on_step = evil_step
 		on_hit = evil_hit
 		on_wall = evil_wall
-		
+
 		return id
 	}
-	
+
 #define evil_step
 	mod_script_call("mod", "defpack tools", "disc_step", 1)
 	if dist >= 200 {
@@ -69,7 +76,7 @@ return "POSSESSED BY GREATER EVILS#THAN YOU COULD KNOW";
 			//Ancient, forbidden, and incomprehesible homing technique
 			var	dir = point_direction(x, y, nearest.x, nearest.y),
 				diff = angle_difference(direction + curve/2 * current_time_scale, dir);
-			
+
 			curve -= clamp(abs(diff), 0, max(1, abs(curve)/3)) * sign(diff) * current_time_scale;
 		}
 	}
@@ -85,10 +92,10 @@ return "POSSESSED BY GREATER EVILS#THAN YOU COULD KNOW";
 #define evil_wall
 	if (lastBounce != current_frame) {
 		lastBounce = current_frame
-		
+
 		//0 top, 1 left, 2 bottom, 3 right
 		var deflectFace = (floor((point_direction(other.x + 8, other.y + 8, x, y) - 45)/90) + 4) mod 4;
-		
+
 		//Horizontal deflection
 		if (deflectFace mod 2 == 1) {
 			hspeed *= -1
@@ -104,8 +111,3 @@ return "POSSESSED BY GREATER EVILS#THAN YOU COULD KNOW";
 		move_outside_solid(direction, speed_raw)
 
 	}
-
-
-
-
-

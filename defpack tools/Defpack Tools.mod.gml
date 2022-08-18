@@ -257,12 +257,12 @@
 
 	if fork() {
 		mod_script_call("mod","defpermissions","permission_register","mod",mod_current,"AbrisCustomColor","Use Player colors for Abris weapons")
-	
+
 		mod_script_call_nc("mod", "defpermissions", "permission_register_options", "mod", mod_current, "chargeType", "Weapon Charge Indicators", ["Off", "Wep Specific", "Bar Only", "Arc Only"])
 		mod_script_call_nc("mod", "defpermissions", "permission_register_options", "mod", mod_current, "chargeLocation", "Charge Indicator Position", ["Around Cursor", "Around Player"])
 		exit
 	}
-	
+
 	global.sodaList = []
 	game_start()
 	//todo:
@@ -363,6 +363,10 @@
 	with instances_matching(CustomProjectile,"name","Lightning Bolt"){
 		draw_circle_color(x,y,550 + random(10), c_gray,c_gray,0)
 		draw_circle_color(x,y,250 + random(10), c_black,c_black,0)
+	}
+	with instances_matching(CustomObject,"name","teleport preview"){
+		draw_circle_color(x,y,32 + random(2), c_gray,c_gray,0)
+		draw_circle_color(x,y,24 + random(2), c_black,c_black,0)
 	}
 	with instances_matching(CustomObject,"name","Lightning Wheel"){
 		draw_circle_color(x,y,32 + random(4), c_gray,c_gray,0)
@@ -1425,13 +1429,13 @@ if timer <= 0{
 
 #define create_burster(_x, _y)
 	with instance_create(_x, _y, CustomProjectile) {
-		
+
 		name = "burster bubble";
-		
+
 		sprite_index = spr.BursterBubble;
 		mask_index   = mskBigRad;
 		image_speed  = .45;
-		
+
 		wallbounce = skill_get(mut_shotgun_shoulders) * 2 + (skill_get("shotgunshouldersx10") * 20);
 		damage     = 2;
 		force      = 2;
@@ -1439,24 +1443,24 @@ if timer <= 0{
 		tar_len = 24;
 		tar_dir = 0;
 		target = -4;
-		
+
 		defbloom = {
 		    xscale : 2,
 		    yscale : 2,
 		    alpha : .1
 		}
-		
+
 		on_hit     = burster_hit;
 		on_step    = burster_step;
 		on_wall    = burster_wall;
 		on_destroy = burster_destroy;
-		
+
 		return self;
 	}
 
 #define burster_step
 	if (speed <= friction) {
-		
+
 		instance_destroy();
 	}
 
@@ -1466,39 +1470,39 @@ if timer <= 0{
 	instance_create(x, y, Dust);
 
 #define burster_hit
-	
+
 	target = other;
 	do {
-		
+
 		x -= lengthdir_x(1, direction);
 		y -= lengthdir_y(1, direction);
 	}until(!place_meeting(x, y, other));
-	
+
 	direction -= 180 + random_range(-12, 12);
 	projectile_hit(other, damage, force, direction);
-	
+
 #define burster_destroy
 	sound_play_pitchvol(sndGuardianFire, 1.7 * random_range(.7, 1.2), .8);
 
 	with instance_create(x, y, Bullet2) {
-		
+
 		team	= other.team;
 		creator = other.creator;
-		
+
 		var _xx = other.xstart + lengthdir_x(max(96, other.tar_len), other.tar_dir),
 		    _yy = other.ystart + lengthdir_y(max(96, other.tar_len), other.tar_dir);
 		motion_add(instance_exists(other.target) ? point_direction(x, y, other.target.x + other.target.hspeed_raw, other.target.y + other.target.vspeed_raw) : point_direction(x, y, _xx, _yy), 16);
 		image_angle = direction;
 		friction *= 1.6 * !skill_get(mut_shotgun_shoulders);
 	}
-	
+
 #define create_burster_shell(_x, _y)
 	with instance_create(_x, _y, CustomProjectile) {
-		
+
 		sprite_index = sprBullet2;
 		image_speed  = 0;
 		wallbounce = skill_get(mut_shotgun_shoulders) * 5 + (skill_get("shotgunshouldersx10") * 50);
-		
+
 		return self;
 	}
 
@@ -2193,6 +2197,7 @@ if other != lasthit{
 		superfriction = 1
 		dontwait = false
 		play_sound = true
+		play_hitsound = true;
 		can_crown = true
 		canwallhit = true
 		synstep = (GameCont.area = 101) //oasis synergy
@@ -2299,8 +2304,10 @@ if other != lasthit{
 				}
 
 				// Sound fx:
-				sound_play_pitchvol(sndImpWristKill, .8, 1.4);
-				sound_play_pitchvol(sndSawedOffShotgun, .7, .6);
+				if (play_hitsound){
+					sound_play_pitchvol(sndImpWristKill, .8, 1.4);
+					sound_play_pitchvol(sndSawedOffShotgun, .7, .6);
+				}
 				instance_delete(self);
 				exit;
 			}
@@ -3770,18 +3777,18 @@ if speed < friction instance_destroy()
 	}
 
 #define quartz_step(_creator, _w)
-	
+
 	if (is_object(_w) && "is_quartz" in _w && _w.is_quartz = true) {
 		_w.prevhealth = _creator.my_health;
-	
+
 		if (_w.health < _w.maxhealth) {
-			
+
 			with AmmoPickup {
-				
+
 				var _chance = random(99) < (19 * (1 - _w.health/_w.maxhealth));
 				if ("quartz_check" not in self && _chance) {
 					quartz_pickup_create(x, y);
-					
+
 					instance_delete(self);
 					exit;
 				}
@@ -4009,13 +4016,13 @@ instance_destroy()
 	        image_yscale = other.image_yscale;
 	    }
 	}
-	
+
 	if instance_exists(creator) && !teamset && !place_meeting(x, y, creator) {
 	    lastteam = team
 	    team = -1;
 		teamset = true;
 	}
-	
+
 #define disc_homing(target, range, strength)
 	//Recreation of vanilla homing. Default values are unknown. Scales with timescale and Bolt Marrow automatically
 	range *= skill_get(mut_bolt_marrow)
@@ -4069,12 +4076,12 @@ instance_destroy()
 
 #define bouncerdisc_hit
 	projectile_hit(other, (other == creator) ? damage : damage + floor(speed / 2), force, direction)
-	
+
 	if other.my_health > 0 {
 	    direction = point_direction(other.x, other.y, x, y)
 	    if speed < 12 speed += .6
 	}
-	
+
 	sound_play_pitch(sndDiscBounce, random_range(.8, 1.2))
 	sound_play_pitch(sndBouncerBounce, random_range(1, 1))
 	image_angle = direction
@@ -4159,15 +4166,15 @@ move_bounce_solid(true)
 
 #define create_pizzadisc(_x, _y)
 	with instance_create(_x, _y, CustomProjectile){
-		
+
 		name = "pizza disc";
-		
+
 		image_speed = 0;
 		if(skill_get("crystallinegrowths") > 0) {
-			
+
 			sprite_index = spr.CrizzaDisc;
 		}else {
-			
+
 			sprite_index = spr.PizzaDisc;
 			image_index  = irandom(3);
 		}
@@ -4176,12 +4183,12 @@ move_bounce_solid(true)
 		damage = 1; // "damage", healing power would be more accurate
 		force  = 4;
 		maxspeed = 6;
-		
+
 		on_hit     = pizzadisc_hit;
 		on_step    = pizzadisc_step;
 		on_wall    = pizzadisc_wall;
 		on_destroy = pizzadisc_destroy;
-	
+
 		return(self);
 	}
 
@@ -4190,33 +4197,33 @@ move_bounce_solid(true)
 	image_angle += (10 + speed * 3) * current_time_scale;
 
 	disc_homing_alt(instance_nearest_matching_ne(x, y, hitme, "team", team), 40, .5, maxspeed)
-	
+
 
 #define pizzadisc_hit
 	if (projectile_canhit_melee(other)) {
-		
+
 		projectile_hit(other, 1, force, direction); // to set iframes properly;
 		var maxhp = other.maxhealth * (1 + !instance_is(other, Player)), //Non players can be overhealed
 			heal = 1 + max(1, ceil(damage * (1 + skill_get(mut_second_stomach)))) //Healing is doubled with second stomach
 		if (!instance_is(other, prop) && other.my_health < maxhp) {
-			
+
 			other.my_health = min(other.my_health + heal, maxhp)
-			
+
 			sound_play_pitch(!skill_get(mut_second_stomach) ? sndHPPickup : sndHPPickupBig, 1.4 * random_range(.9, 1.1));
-			
+
 			var _o = other;
 			with instance_create(other.x, other.y, HealFX) {
-				
+
 				sprite_index = !skill_get(mut_second_stomach) ? sprHealFX : sprHealBigFX;
 				depth = _o.depth - 1;
 			}
-			
+
 			if ("nexthurt" in other && skill_get("crystallinegrowths") > 0) {
-				
+
 				var _d = (25 * current_time_scale) * skill_get("crystallinegrowths")+ (10 * skill_get("tougherstuff"))
 				other.nexthurt = current_frame + _d;
 				with mod_script_call("mod", "metamorphosis", "obj_create", x, y, "CrystallineEffect"){
-					
+
 					creator = _o;
 					time	= _d;
 				}
@@ -4231,7 +4238,7 @@ move_bounce_solid(true)
 	move_bounce_solid(false);
 	instance_create(x, y, DiscBounce);
 	if (dist >= 120) {
-		
+
 		instance_destroy();
 	}
 
@@ -4269,18 +4276,18 @@ move_bounce_solid(true)
 	disc_step(1);
 
 	if kills > 0 && irandom(99) <= current_time_scale * kills * 3{
-	
+
 		repeat(1 + irandom(1)) with instance_create(x, y, AllyDamage){
-		
+
 			motion_add(random(360), 2 + irandom(1));
 			friction = .2;
 		}
 	}
 
 	image_angle += turn * (12 + speed) * current_time_scale;
-	
+
 	if skill_get(mut_bolt_marrow) > 0 {
-		
+
 		var target = instance_nearest_matching_ne(x, y, hitme, "team", team);
 		//If target is player, try to get a new one before homing
 		if instance_exists(target) && instance_is(target, Player) {
@@ -4333,27 +4340,27 @@ move_bounce_solid(true)
 			sleep( 32 + 12 * clamp(other.size, 1, 3));
 			view_shake_at(x, y, 5 + 3 * clamp(other.size, 1, 3));
 			sound_play_pitch(sndDiscHit, .9);
-			
+
 			kills += max(.5, other.size);
 			if instance_is(other, Player) kills += 999;
-			
+
 			for(var _i = 0, _ang = random(360), _amount = 3; _i < _amount; _i++){
-			
+
 				with instance_create(other.x, other.y, BloodStreak){
-				
+
 					image_angle = _ang;
 					motion_add(image_angle, 5);
 				}
 				_ang += 360/_amount;
 			}
-			
+
 			if (kills >= 12){spr_splat = spr.MegaDiscSplat[7]}
 			else if (kills >= 8){spr_splat = spr.MegaDiscSplat[5]}
 			else if (kills >= 5){spr_splat = spr.MegaDiscSplat[6]}
 			else if (kills >= 3){spr_splat = spr.MegaDiscSplat[choose(0, 1, 2)]}
 			else if (kills >= 2){spr_splat = spr.MegaDiscSplat[4]}
 			else if (kills > 0){spr_splat = spr.MegaDiscSplat[3]}
-			
+
 			for(var _i = 0, _a = 3, _d = random(360); _i < _a; _i++) {
 
 				with instance_create(other.x, other.y, determine_gore(other)) {
@@ -4369,7 +4376,7 @@ move_bounce_solid(true)
 #define megadisc_draw
 	draw_self();
 	draw_sprite_ext(spr_splat, image_index, x, y, image_xscale, image_yscale, image_angle, image_blend, image_alpha);
-	
+
 #define create_knife(x, y)
 with create_sword(x, y){
     name = "Knife"
@@ -4419,7 +4426,7 @@ with instance_create(x, y, melee ? CustomSlash : CustomProjectile){
 	trailPoints = 2
 	trailWidth = 1.5
 	trailScaling = .5
-	
+
     if melee{
         on_anim = nothing
         on_projectile = sword_proj
@@ -4571,31 +4578,31 @@ if d {
 		sprite_index = spr.Shuriken
 		defbloom.sprite = sprite_index
 		spr_dead = spr.ShurikenStick
-		
+
 		/*
 		Balancing notes:
 			Shurikens do a lot of raw damage for their ammo cost, but are very bad at applying it effectively.
 			For that reason, be very careful with changes, and be sure to test them against varied enemies.
 			The damage number allows tuning dps, but will also affect the amount of slashes it can output.
-		*/ 
+		*/
 		totaldamage = 25 //Total damage the shuriken can do via direct hit
 		damage = 1.5 //Damage dealt per frame of contact with the shuriken
 		force = 1
 		slashdamage = 2 //Damage dealt by the slashing effect
 		slashrange = 50
-		
+
 		bounce += 1 //Unsure on this. Important for loop viability but that could be achieved with a new gun.
-		
+
 		maxwhoosh = 3
 		length = 4
 		trailPoints = 4
 		trailWidth = 1
 		trailScaling = .75
 		anglespeed = 45
-		
-		
+
+
 		on_hit = shuriken_hit
-		
+
 		return self
 	}
 
@@ -4608,7 +4615,7 @@ if d {
 		var dmg = min(instance_is(other, Player) ? floor(damage) : damage, totaldamage);
 		projectile_hit(other, dmg, force, direction)
 		totaldamage -= dmg
-		
+
 		if other.my_health > 0 {
 			x -= hspeed
 			y -= vspeed
@@ -4623,7 +4630,7 @@ if d {
 			image_index = irandom(1)
 			depth = -3
 		}
-		
+
 		other.x += 10000
 		var targets = get_n_targets(x, y, hitme, "team", team, 4);
 		if array_length(targets) > 0 {
@@ -4638,9 +4645,9 @@ if d {
 				targets = instances_matching_ne(targets, "id", q)
 			}
 			if passed {
-				
+
 			    projectile_hit(q, slashdamage, force, point_direction(x, y, q.x, q.y))
-			    
+
 			    with instance_create(q.x, q.y, CustomObject){
 				    sound_play_hit_ext(sndChickenSword, 1.4*random_range(.9,1.2), .6)
 						sound_play_pitchvol(sndDiscDie, 1.5*random_range(.9,1.2), .6)
