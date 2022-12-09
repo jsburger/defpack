@@ -607,7 +607,7 @@ NOTES FROM JSBURG:
 #macro bullets mod_variable_get("mod", "SageBullets", "BulletDirectory")
 #macro max_spellbullets 2 + dev * 18// + skill_get(5)
 #macro fairy_swap_time 6
-#macro dev true
+#macro dev false
 #macro c global.colormap
 #macro c_fairy $AFA79A
 #macro effectMod "sageeffects"
@@ -1497,12 +1497,15 @@ var args2 = argument_count > 3 ? argument[3] : undefined;
 	return false
 
 #define spellbullet_prompt_step
-	//'pick' is set to the player that is activating the prompt 
-	if instance_exists(pick) {
-		if instance_exists(creator) {
-			if "on_pick" in creator {
-				with creator {
-					script_ref_call(on_pick, other.pick.index, self, other);
+	//'pick' is set to the player that is activating the prompt
+	if pick > -1 {
+		var p = player_find(pick)
+		if instance_exists(p) {
+			if instance_exists(creator) {
+				if "on_pick" in creator {
+					with creator {
+						script_ref_call(on_pick, other.pick, self, other);
+					}
 				}
 			}
 		}

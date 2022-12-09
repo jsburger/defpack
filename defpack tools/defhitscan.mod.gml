@@ -522,6 +522,8 @@ if (instance_exists(other) && other.typ > 0) {
 
 #define altshell_hit
 	if (other != lasthit) {
+		//Stacking damage bonus. Every 2 shell hits increases other shell damage by 1
+		//2 shell hits = 4 damage, 3 shells = 7, 4 shells = 10, 5 shells = 14, 6 shells = 18
 		var bonus = 0;
 		if ("altshell_damage_bonus" in other) {
 			if abs(other.altshell_damage_time - current_frame) <= 2 {
