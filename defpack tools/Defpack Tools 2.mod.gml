@@ -62,6 +62,7 @@
 	        yscale : 2,
 	        alpha : .1
 	    }
+		ammo_type = 1;
 	    mask_index = mskFlakBullet
 	    payload = Bullet1
 	    image_speed = 1
@@ -81,6 +82,7 @@
 	        yscale : 2,
 	        alpha : .1
 	    }
+		ammo_type = 2;
 	    mask_index = mskFlakBullet
 	    payload = Bullet2
 	    ammo = 12
@@ -307,6 +309,7 @@
 	var a = instance_create(_x,_y,CustomProjectile);
 	with(a){
 		name = "Split Flak"
+		ammo_type = 2;
 		sprite_index = global.sprSplitFlak
 		image_speed = .7
 		ammo = 1
@@ -380,6 +383,7 @@
 	var a = instance_create(_x,_y,CustomProjectile);
 	with(a){
 		name = "Recursive Flak"
+		ammo_type = 2;
 		sprite_index = sprFlakBullet
 		image_speed = .7
 		force = 5
