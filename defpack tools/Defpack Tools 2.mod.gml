@@ -57,6 +57,7 @@
 
 #define genbullak(_x,_y)
 	with instance_create(_x,_y,CustomProjectile){
+		ammo_type = 1
 	    defbloom = {
 	        xscale : 2,
 	        yscale : 2,
@@ -76,6 +77,7 @@
 
 #define genflak(_x,_y)
 	with instance_create(_x,_y,CustomProjectile){
+		ammo_type = 2
 	    defbloom = {
 	        xscale : 2,
 	        yscale : 2,
@@ -307,6 +309,7 @@
 	var a = instance_create(_x,_y,CustomProjectile);
 	with(a){
 		name = "Split Flak"
+		ammo_type = 2
 		sprite_index = global.sprSplitFlak
 		image_speed = .7
 		ammo = 1
@@ -380,6 +383,7 @@
 	var a = instance_create(_x,_y,CustomProjectile);
 	with(a){
 		name = "Recursive Flak"
+		ammo_type = 2
 		sprite_index = sprFlakBullet
 		image_speed = .7
 		force = 5
