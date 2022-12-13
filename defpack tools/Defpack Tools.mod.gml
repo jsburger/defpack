@@ -1517,6 +1517,7 @@ if timer <= 0{
 with instance_create(x, y, CustomProjectile){
 	name = "Psy Shell"
 	ammo_type = 2;
+	is_shell = true;
 	sprite_index = spr.PsyPellet
 	friction = 1;
 	image_angle = direction
@@ -1597,6 +1598,7 @@ var c = instance_create(_x, _y, CustomProjectile)
 with (c){
 	name = "Split Shell"
 	ammo_type = 2;
+	is_shell = true;
 	sprite_index = spr.SplitShell
 	friction = .55
 	mask_index = mskBullet2
@@ -2191,6 +2193,9 @@ if other != lasthit{
 #define create_sonic_explosion(_x,_y)
 	with instance_create(_x,_y,CustomSlash){
 		name = "Sonic Explosion"
+		
+		ammo_type = 4;
+		is_explosion = true;
 
 		sprite_index = spr.SonicExplosion
 		mask_index = msk.SonicExplosion
@@ -4601,6 +4606,8 @@ if d {
 #define create_shuriken(x, y)
 	with create_sword(x, y) {
 		name = "Shuriken"
+
+		ammo_type = 3;
 
 		mask_index = sprGrenade
 		sprite_index = spr.Shuriken
