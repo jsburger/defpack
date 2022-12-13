@@ -2953,7 +2953,6 @@ else{
         hitid = [sprLightningHit,"Lightning Bolt"]
         name = "Lightning Bolt"
 		ammo_type = 5;
-		is_lightning = true;
         time = skill_get(17) + 4
         timestart = time
         create_frame = current_frame
@@ -4428,6 +4427,7 @@ with create_sword(x, y){
 var melee = 1;
 with instance_create(x, y, melee ? CustomSlash : CustomProjectile){
     name = "Sword"
+	ammo_type = 3
     damage = 25
     force  = 6
     typ = 2
@@ -4458,7 +4458,6 @@ with instance_create(x, y, melee ? CustomSlash : CustomProjectile){
         on_anim = nothing
         on_projectile = sword_proj
         on_grenade = sword_proj
-		is_melee = true
     }
 
     on_wall = sword_wall
