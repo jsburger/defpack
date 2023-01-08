@@ -1,13 +1,10 @@
 #define init
 global.sprInfiniPistol = sprite_add_weapon("sprites/weapons/sprPelletPistol.png", -3, 2);
-global.sprHUD          = sprite_add("sprites/interface/sprPelletPistolHUD.png", 1, -3, 2);
-global.sprPellet       = mod_script_call("mod", "defpack tools", "sprite_add_p", "../sprites/projectiles/sprPellet.png", 2, 8, 8)
+//global.sprPellet       = mod_script_call("mod", "defpack tools", "sprite_add_p", "../sprites/projectiles/sprPellet.png", 2, 8, 8)
+global.sprPellet       = sprite_add("sprites/projectiles/sprPellet.png",2,8,8)
 global.sprPelletHit    = sprite_add("sprites/projectiles/sprPelletHit.png",4,8,8)
 #define weapon_name
 return "INFINIPISTOL";
-
-#define weapon_sprt_hud
-return global.sprHUD;
 
 #define weapon_sprt
 return global.sprInfiniPistol;
@@ -42,54 +39,6 @@ return{
 #define weapon_text
 return "POTENTIAL"
 
-#define weapon_fire
-    weapon_post(2, 0, 3)
-    motion_add(gunangle - 180, friction * 3)
-    var _p = random_range(.8, 1.2), _v = 1;
-    sound_play_pitchvol(sndRustyRevolver, 2 * _p, .6 * _v)
-    sound_set_track_position(sound_play_pitchvol(sndLaserCannonCharge, 3 * _p, .4 * _v), .2)
-    // sound_play_pitchvol(sndEnemyFire,     random_range(1, 2),  .8)
-    // sound_play_pitchvol(sndNothing2Ball,  random_range(2, 3), .2)
-    reload += mod_script_call("mod", "defpack tools", "get_reloadspeed", self);
-    with instance_create(x, y, CustomProjectile) {
-        name = "InfiniPellet"
-        sprite_index = global.sprPellet
-        mask_index   = global.sprPellet
-
-        move_contact_solid(other.gunangle, 6);
-        motion_add(other.gunangle + random_range(-7, 7) * other.accuracy, 5)
-        image_angle = direction
-        projectile_init(other.team, instance_is(other, FireCont) ? other.creator : other)
-
-        damage = 2
-        force = 12
-        bounce = 2
-        typ = 1
-        image_speed = 1
-        super = false
-        if irandom(10000 / (1 + 9 * skill_get(mut_lucky_shot)) - 1) == 0 {
-            damage = 999999999999999999
-            speed *= 4
-            bounce = 10
-            on_end_step = superpellet_step
-            super = true
-            sound_play_pitchvol(sndPlasmaHugeUpg, 3, .5)
-            with other {
-                motion_add(gunangle + 180, 8)
-                reload += 20
-            }
-        }
-
-        on_destroy = pellet_destroy
-        on_wall    = pellet_wall
-        on_anim    = pellet_anim
-        defbloom = {
-            xscale : 2,
-            yscale : 2,
-            alpha : .1
-        }
-    }
-
 #define pellet_wall
     sound_pitch(sound_play_hit(sndHitWall, .2), 1.2 + random(.4))
     var d = direction + 180, h = hspeed, v = vspeed;
@@ -118,6 +67,7 @@ return "POTENTIAL"
     with instance_create(x, y, BulletHit) {
         sprite_index = global.sprPelletHit
     }
+    
     if super{
         sound_play(sndExploGuardianDeadCharge)
         if fork() {
@@ -169,3 +119,56 @@ return "POTENTIAL"
         }
         i-=off
     }
+
+#define weapon_fire
+    
+    weapon_post(2, 0, 3) // shakes
+    motion_add(gunangle - 180, friction * 3)
+    var _p = random_range(.8, 1.2), _v = 1;
+    sound_play_pitchvol(sndRustyRevolver, 2 * _p, .6 * _v)
+    sound_set_track_position(sound_play_pitchvol(sndLaserCannonCharge, 3 * _p, .4 * _v), .2)
+    // sound_play_pitchvol(sndEnemyFire,     random_range(1, 2),  .8)
+    // sound_play_pitchvol(sndNothing2Ball,  random_range(2, 3), .2)
+    reload += "reloadspeed" in self ? reloadspeed : 1;
+    with instance_create(x, y, CustomProjectile) {
+        name = "InfiniPellet"
+        
+        sprite_index = global.sprPellet
+        mask_index   = global.sprPellet
+        
+        move_contact_solid(other.gunangle, 6);
+        motion_add(other.gunangle + random_range(-7, 7) * other.accuracy, 5)
+        image_angle = direction
+        projectile_init(other.team, instance_is(other, FireCont) ? other.creator : other)
+
+        damage = 2
+        force = 12
+        bounce = 2
+        typ = 1
+        image_speed = 1
+        super = false
+        
+        if irandom(100000 - 1) == 0 {
+            damage = 999999999999999999
+            speed *= 4
+            bounce = 10
+            on_end_step = superpellet_step
+            super = true
+            sound_play_pitchvol(sndPlasmaHugeUpg, 3, .5)
+            with other {
+                motion_add(gunangle + 180, 8)
+                reload += 20
+            }
+        }
+
+        on_destroy = pellet_destroy
+        on_wall    = pellet_wall
+        on_anim    = pellet_anim
+        defbloom = {
+            xscale : 2,
+            yscale : 2,
+            alpha : .1
+        }
+    }
+
+
