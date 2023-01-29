@@ -348,7 +348,7 @@ var describe_script = argument_count > 2 ? argument[2] : describe_pass;
     // 	description += array_join(neutral, "#")
     // }
     if array_length(negative) > 0 {
-    	description += "#"
+    	if array_length(positive) description += "#"
     	description += array_join(negative, "#")
     }
     description += "#"
