@@ -1143,6 +1143,9 @@ draw_line_width_color(x2 - 1, y3, x2 + w + 1, y3, 1, 0, 0)
     force = 8
     damage = 3
     typ = 1
+	
+	is_bullet = true;
+	ammo_type = 1;
 
     bounce = 0 + 4 * neurons
     bounce_color = c_orange
@@ -1432,6 +1435,8 @@ if timer <= 0{
 
 		name = "burster bubble";
 
+		ammo_type = 2;
+
 		sprite_index = spr.BursterBubble;
 		mask_index   = mskBigRad;
 		image_speed  = .45;
@@ -1499,6 +1504,8 @@ if timer <= 0{
 #define create_burster_shell(_x, _y)
 	with instance_create(_x, _y, CustomProjectile) {
 
+		ammo_type = 2;
+		
 		sprite_index = sprBullet2;
 		image_speed  = 0;
 		wallbounce = skill_get(mut_shotgun_shoulders) * 5 + (skill_get("shotgunshouldersx10") * 50);
@@ -1509,6 +1516,8 @@ if timer <= 0{
 #define create_psy_shell(x, y)
 with instance_create(x, y, CustomProjectile){
 	name = "Psy Shell"
+	ammo_type = 2;
+	is_shell = true;
 	sprite_index = spr.PsyPellet
 	friction = 1;
 	image_angle = direction
@@ -1588,6 +1597,8 @@ with create_split_shell(_x,_y){
 var c = instance_create(_x, _y, CustomProjectile)
 with (c){
 	name = "Split Shell"
+	ammo_type = 2;
+	is_shell = true;
 	sprite_index = spr.SplitShell
 	friction = .55
 	mask_index = mskBullet2
@@ -2182,6 +2193,9 @@ if other != lasthit{
 #define create_sonic_explosion(_x,_y)
 	with instance_create(_x,_y,CustomSlash){
 		name = "Sonic Explosion"
+		
+		ammo_type = 4;
+		is_explosion = true;
 
 		sprite_index = spr.SonicExplosion
 		mask_index = msk.SonicExplosion
@@ -2889,6 +2903,7 @@ else{
         lightning_refresh()
         hitid = [sprLightningHit,"Lightning Bolt"]
         name = "Lightning Bolt"
+		ammo_type = 5;
         time = skill_get(17) + 4
         timestart = time
         create_frame = current_frame
@@ -3028,6 +3043,7 @@ if time <= 0 instance_destroy()
 #define create_plasmite(_x,_y)
 with instance_create(_x, _y, CustomProjectile){
     name = "Plasmite"
+	ammo_type = 5;
     defbloom = {
         xscale : 2,
         yscale : 2,
@@ -3106,7 +3122,6 @@ with instance_create(_x, _y, PlasmaImpact){
 	damage = 4;
 	return self;
 }
-
 
 #define determine_gore(_id)
 	switch (_id.object_index){
@@ -3207,6 +3222,7 @@ if projectile_canhit_melee(other) == true{
 #define create_laser_flak(_x,_y)
 with instance_create(_x,_y,CustomProjectile) {
     name = "Laser Flak"
+	ammo_type = 5;
 	image_speed = 1
 	damage = 10
 	friction = .5
@@ -3559,6 +3575,8 @@ if speed < friction instance_destroy()
 #define create_miniexplosion(_x, _y)
 with instance_create(_x, _y, CustomProjectile){
     name = "Mini Explosion"
+	ammo_type = 4;
+	is_explosion = true;
     sprite_index = sprSmallExplosion
     mask_index   = mskSmallExplosion
     image_xscale = .5
@@ -3595,6 +3613,8 @@ instance_destroy()
 	spr_dead = sprDiscDisappear
 	hitid = [sprite_index, name]
 	on_destroy = disc_destroy
+	ammo_type = 3;
+	is_disc = true;
 
 #define disc_step(dis)
 	dist += dis * current_time_scale;
@@ -3648,6 +3668,8 @@ instance_destroy()
 	    force = 5
 	    image_speed = .5
 	    name = "Bouncer Disc"
+		ammo_type = 3;
+		is_disc = true;
 	    sprite_index = spr.BouncerDisc
 
 	    disc_init()
@@ -3697,6 +3719,8 @@ instance_destroy()
 	    damage = 4
 	    image_speed = .4
 	    name = "Sticky Disc"
+		ammo_type = 3;
+		is_disc = true;
 	    sprite_index = spr.StickyDisc
 
 	    disc_init()
@@ -3758,6 +3782,8 @@ move_bounce_solid(true)
 	with instance_create(_x, _y, CustomProjectile){
 
 		name = "pizza disc";
+		
+		is_disc = true;
 
 		image_speed = 0;
 		if(skill_get("crystallinegrowths") > 0) {
@@ -3838,6 +3864,8 @@ move_bounce_solid(true)
 #define create_megadisc(_x, _y)
 	with instance_create(_x, _y, CustomProjectile){
 		name = "Mega Disc";
+		ammo_type = 3;
+		is_disc = true;
 		disc_init();
 
 		sprite_index = spr.MegaDisc;
@@ -3991,6 +4019,7 @@ with create_sword(x, y){
 var melee = 1;
 with instance_create(x, y, melee ? CustomSlash : CustomProjectile){
     name = "Sword"
+	ammo_type = 3
     damage = 25
     force  = 6
     typ = 2
@@ -4163,6 +4192,8 @@ if d {
 #define create_shuriken(x, y)
 	with create_sword(x, y) {
 		name = "Shuriken"
+
+		ammo_type = 3;
 
 		mask_index = sprGrenade
 		sprite_index = spr.Shuriken
@@ -4508,6 +4539,8 @@ with instance_create(xx, yy, CustomProjectile){
 	x1 = xx
 	y1 = yy
     name = "Sniper Bullet"
+	ammo_type = 1;
+	is_bullet = true;
     on_wall = nothing
     on_hit = sniper_hit
     on_end_step = sniper_end_step
@@ -4755,6 +4788,7 @@ return spr
 #define create_vector(_x, _y)
 with instance_create(_x, _y, CustomProjectile) {
 	name = "Vector"
+	ammo_type = 5;
 
 	sprite_index = mskNone
 	mask_index = mskLaser
@@ -4881,6 +4915,7 @@ draw_sprite_ext(spr_head, 0, x, y, image_xscale, image_yscale, image_angle - 45,
 #define create_vector_trail(_x, _y)
 with instance_create(_x, _y, CustomProjectile) {
 	name = "VectorTrail"
+	ammo_type = 5;
 	sprite_index = other.spr_trail
 	mask_index = mskLaser
 	shrinkspeed = other.shrinkspeed
@@ -4940,6 +4975,7 @@ if current_frame_active {
 	}
 
 }
+
 #define defspeed_hit
 if !instance_exists(creator) {instance_delete(self); exit}
 if projectile_canhit_melee(other){
