@@ -99,7 +99,7 @@ with instance_create(x,y,CustomSlash)
 	image_yscale = _scl
 
 	var _me = noone;
-	with instances_matching_ne(hitme, "team", other.team){
+	with instances_matching_ne(hitme, "team", team){
 		if !instance_is(self, prop) && collision_line(x, y, other.x, other.y, Wall, 0, 0) < 0
 		{
 			if _me = noone {

@@ -404,6 +404,7 @@
 			with mod_script_call("race", "sage", "spellbullet_create", x, y, curse == true ? "bCursed" : "", _close){
 				
 				motion_add(random(360), 5);
+			}
 		}
 	}
 

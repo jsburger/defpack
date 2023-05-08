@@ -1024,7 +1024,7 @@ var _dx = _x - clamp(_x, _left, _right),
 	col = merge_color(col, background_color, 1-alp);
 
 	d3d_set_fog(1, col, 0, 0)
-	vertex_submit(vbuf, pr_trianglestrip)
+	vertex_submit(vbuf, pr_trianglestrip, -1)
 	d3d_set_fog(0, 0, 0, 0)
 
 #define psy_trail_destroy

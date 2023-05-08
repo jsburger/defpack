@@ -60,7 +60,7 @@
     load_all(defpackTools)
     
     //Subfolders. These just load their mains
-    var subfolders = ["chests", "mutation", "races/sage", "soda", "tank"]
+    var subfolders = ["chests", "mutation", "soda", "tank"]
     set_load_category("components", array_length(subfolders))
     with subfolders {
     	wait(mod_loadtext("../" + self + "/main.txt"))
