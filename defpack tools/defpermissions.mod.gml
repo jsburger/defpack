@@ -75,23 +75,25 @@ if fork(){
     if b wait(b)
     if !file_exists("data/defpermissions.mod/palettes.txt") string_save(json_encode(global.palettes),"palettes.txt")
     else global.palettes = json_decode(string_load("data/defpermissions.mod/palettes.txt"))
-    for var i = 1; i < array_length(global.palettes); i++{
+    for (var i = 1; i < array_length(global.palettes); i++){
         global.palettes[i] = palette_update(global.palettes[i])
     }
     exit
 }
 
-var t = file_load("data/defpermissions.mod/defconfig.txt")
-if t wait(t)
+wait(file_load("data/defpermissions.mod/defconfig.txt"))
 if !file_exists("data/defpermissions.mod/defconfig.txt"){
     string_save("[]","defconfig.txt")
     file_load("data/defpermissions.mod/defconfig.txt")
 }
-else global.stuff = json_decode(string_load("data/defpermissions.mod/defconfig.txt"))
+else {
+    global.stuff = json_decode(string_load("data/defpermissions.mod/defconfig.txt"))
+    trace("Loaded")
+}
 
 #define palette_update(pal)
 var e = lq_clone(global.editingpalette)
-for var i = 0; i < lq_size(e); i++{
+for (var i = 0; i < lq_size(e); i++){
     var k = lq_get_key(e, i)
     lq_set(e, k, lq_defget(pal, k, lq_get(e, k)))
 }
@@ -111,27 +113,30 @@ file_unload("data/defpermissions.mod/defconfig.txt")
 
 
 #define permission_register(type,name,variable,desc)
-while !file_exists("data/defpermissions.mod/defconfig.txt") {wait(0)}
-var arr = [type,name,variable,desc,mod_variable_get(type,name,variable),0];
-var count = 0;
-for var o = 0; o < array_length_1d(global.stuff); o++{
-    if name = global.stuff[o][1] && variable = global.stuff[o][2]{
-        count = 1
-        break
+if fork() {
+    while !file_exists("data/defpermissions.mod/defconfig.txt") {wait(0)}
+    var arr = [type,name,variable,desc,mod_variable_get(type,name,variable),0];
+    var count = 0;
+    for (var o = 0; o < array_length_1d(global.stuff); o++) {
+        if name = global.stuff[o][1] && variable = global.stuff[o][2]{
+            count = 1
+            break
+        }
     }
+    if count = 0 array_push(global.stuff,arr)
+    else{
+        mod_variable_set(global.stuff[o][0],global.stuff[o][1],global.stuff[o][2],global.stuff[o][4])
+        global.stuff[o,3] = desc
+    }
+    save()
+    exit
 }
-if count = 0 array_push(global.stuff,arr)
-else{
-    mod_variable_set(global.stuff[o][0],global.stuff[o][1],global.stuff[o][2],global.stuff[o][4])
-    global.stuff[o,3] = desc
-}
-save()
 
 #define permission_register_range(type,name,variable,desc,range,label)
 while !file_exists("data/defpermissions.mod/defconfig.txt") {wait(0)}
 var arr = [type,name,variable,desc,mod_variable_get(type,name,variable),1,range,label];
 var count = 0;
-for var o = 0; o < array_length_1d(global.stuff); o++{
+for (var o = 0; o < array_length_1d(global.stuff); o++) {
     if name = global.stuff[o][1] && variable = global.stuff[o][2]{
         count = 1
         break
@@ -151,7 +156,7 @@ while !file_exists("data/defpermissions.mod/defconfig.txt") {wait(0)}
 var l = array_length(options)
 var arr = [type, name, variable, desc, mod_variable_get(type,name,variable) mod l, 2, l, options];
 var count = 0;
-for var o = 0; o < array_length(global.stuff); o++{
+for (var o = 0; o < array_length(global.stuff); o++) {
     if name = global.stuff[o][1] && variable = global.stuff[o][2]{
         count = 1
         break
@@ -185,7 +190,7 @@ if cmd = "defconfig"{
 if cmd = "defclearcache"{
     clear_cache()
     trace_color("Variable cache cleared",c_gray)
-    return 1
+    return false
 }
 if cmd = "palette"{
     if global.palettes[0] < array_length_1d(global.palettes) {
@@ -221,10 +226,10 @@ if cmd = "pimport"{
 
 
 #define clear_cache()
-for var o = 0; o < array_length_1d(global.stuff); o++{
+for (var o = 0; o < array_length_1d(global.stuff); o++) {
     if !mod_exists(global.stuff[o][0],global.stuff[o][1]) || !mod_variable_exists(global.stuff[o][0],global.stuff[o][1],global.stuff[o][2]){
         var newarray = []
-        for var i = 0; i < array_length_1d(global.stuff); i++{
+        for (var i = 0; i < array_length_1d(global.stuff); i++) {
             if i != o array_push(newarray,global.stuff[i])
         }
         global.stuff = array_clone(newarray)
@@ -236,7 +241,7 @@ save()
 
 #define array_index_delete(array, index)
 var newarray = []
-for var o = 0; o < array_length_1d(array); o++{
+for (var o = 0; o < array_length_1d(array); o++) {
     if o != index{
         array_push(newarray,array[o])
     }
@@ -289,7 +294,7 @@ draw_set_valign(0)
 
 var sf = surface_create(w, h)
 surface_set_target(sf)
-draw_clear_alpha(0, 0)
+draw_clear_alpha(c_black, 0)
 
 if shadow draw_text_shadow(-view_xview_nonsync, -view_yview_nonsync, str)
 else draw_text(-view_xview_nonsync, -view_yview_nonsync, str)
@@ -432,22 +437,22 @@ for (var i = 0; i < maxp; i++) if player_is_active(i){
         }
         xx -= (1.5 * xw + 2) * global.buttonsopen[i]
 
-        //drawing palette button
-        if !found{
-            mouse = point_in_rectangle(mousex,mousey,xx-xw,xy,xx,xy+xw)
-            found = mouse
-        }
-        else mouse = 0
-        draw_sprite_ext(sprDailyArrowSplat,2,xx-xw/2,xy+5,1,1,180,c_black,1)
-        draw_sprite_ext(global.sprButtons,1,xx-1-xw/2,xy,1,1,0,mouse ? p.textcolor : c_ltgray,1)
-        if mouse draw_text_shadow(xx - 34, xy + 10, "Palette Menu")
-        if mouse && released{
-            global.paletteopen[i] = !global.paletteopen[i]
-            click(0)
-        }
+        // //drawing palette button
+        // if !found{
+        //     mouse = point_in_rectangle(mousex,mousey,xx-xw,xy,xx,xy+xw)
+        //     found = mouse
+        // }
+        // else mouse = 0
+        // draw_sprite_ext(sprDailyArrowSplat,2,xx-xw/2,xy+5,1,1,180,c_black,1)
+        // draw_sprite_ext(global.sprButtons,1,xx-1-xw/2,xy,1,1,0,mouse ? p.textcolor : c_ltgray,1)
+        // if mouse draw_text_shadow(xx - 34, xy + 10, "Palette Menu")
+        // if mouse && released{
+        //     global.paletteopen[i] = !global.paletteopen[i]
+        //     click(0)
+        // }
 
         //button wrapper
-        var bright = xx - xw*3/2, btop = xy - xw + 4.5
+        var bright = xx - xw*1/2, btop = xy - xw + 4.5
         draw_line_width_color(game_width - xw + 3, btop, bright, btop, 1, c_white, c_white)
         draw_line_width_color(bright, btop, bright - 3, btop + 3, 1, c_white, c_white)
         draw_line_width_color(bright - 3, btop + 3, bright - 3, xy + xw,1, c_white, c_white)
@@ -479,11 +484,11 @@ for (var i = 0; i < maxp; i++) if player_is_active(i){
             edit.color = make_color_hsv(edit.hue,edit.saturation,edit.value)
         }
 
-        draw_circle_color(cx,cy,radius+3,0,c_black,0)
+        draw_circle_color(cx, cy, radius + 3, c_black, c_black, false)
         draw_primitive_begin(pr_trianglefan)
         draw_vertex_color(cx + 1,cy +1,make_color_hsv(0,0,edit.value),1)
         //im running out of easy to use variables
-        for var e = 0; e <= sides; e++{
+        for (var e = 0; e <= sides; e++) {
             draw_vertex_color(cx + 1 + lengthdir_x(radius, inc * e), cy+ 1 + lengthdir_y(radius, inc * e), make_color_hsv(hueinc * e, 255, edit.value),1)
         }
         draw_primitive_end()
@@ -534,7 +539,7 @@ for (var i = 0; i < maxp; i++) if player_is_active(i){
         edit.hue = hu
         edit.value = value
 
-        draw_circle_color(cx + lengthdir_x(s/255 * radius, hu/255 * 360), cy + lengthdir_y(s/255 * radius, hu/255 * 360), 1.5, 0, 0 ,1)
+        draw_circle_color(cx + lengthdir_x(s/255 * radius, hu/255 * 360), cy + lengthdir_y(s/255 * radius, hu/255 * 360), 1.5, c_black, c_black, 1)
 
         draw_rectangle_c(pmx - pmw + 4 ,copyy + 1, pmx - pmw + 10,copyy + 2*copyh + 3, c_black)
         draw_rectangle_c(pmx - pmw + 3 ,copyy, pmx - pmw + 9,copyy + 2*copyh + 2, edit.color)
@@ -547,7 +552,7 @@ for (var i = 0; i < maxp; i++) if player_is_active(i){
         var moused = 0
         if mousex > tleft and mousex < tright moused = ceil((mousey - ttop + tgap)/(theight))
 
-        for var q = 1+edit.scroll; q < lq_size(p); q++{
+        for (var q = 1+edit.scroll; q < lq_size(p); q++) {
             var ty = ttop + theight*(q - 1);
 
             draw_rectangle_c(tleft - 8, ty, tright, ty + theight - tgap + 1, c_black)
@@ -565,7 +570,7 @@ for (var i = 0; i < maxp; i++) if player_is_active(i){
 
         var sleft = tleft - 34, sheight = 12, sgap = 4
 
-        for var u = 1; u <= array_length(global.palettes); u++{
+        for (var u = 1; u <= array_length(global.palettes); u++) {
             var sy = _y + (sheight + sgap) * (u - .5)
             if u < array_length (global.palettes){
                 if !found{

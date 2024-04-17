@@ -80,15 +80,15 @@
     set_load_category("iris variants", array_length(irisWeps))
     load_all(irisWeps)
 
-
-
     done = true
     
     wait(10)
+    mod_script_call_nc("mod", "defpermissions", "clear_cache")
     with (global.requests) {
         trace_color(str, col)
         global.requests = []
     }
+    
     
     while fade > 0 {
         fade -= current_time_scale/20
