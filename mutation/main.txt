@@ -16,5 +16,5 @@
 //loadskill irisslave5
 //loadskill irisslave6
 
-/load ../iris weps/prismaticannon
+//load ../iris weps/prismaticannon
 /loadmod vault
