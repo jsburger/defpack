@@ -30,9 +30,11 @@ return "WE ARE THE @rFire";
 #define weapon_fire
 
 weapon_post(4,-1,7)
-sound_play(sndTripleMachinegun)
-sound_play_pitchvol(sndSwapFlame,.9,.7)
-sound_play_pitchvol(sndIncinerator,1,.2)
+var pitch = random_range(.9, 1.1),
+	vol = .7;
+sound_play_pitchvol(sndTripleMachinegun, pitch, vol)
+sound_play_pitchvol(sndSwapFlame, .9 * pitch, .7 * vol)
+sound_play_pitchvol(sndIncinerator, 1 * pitch, .2 * vol)
 repeat(3)mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, 2+random(3), c_red)
 with mod_script_call("mod", "defpack tools", "create_fire_bullet",x,y){
 	creator = other

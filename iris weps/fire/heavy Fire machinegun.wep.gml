@@ -30,11 +30,12 @@ return "INTO THE FLAMES";
 #define weapon_fire
 
 weapon_post(4,-7,3)
-var p = random_range(.8,1.2)
-sound_play_pitchvol(sndHeavyMachinegun,1.4*p,.8)
-sound_play_pitchvol(sndSwapFlame,.8*p,.7)
-sound_play_pitchvol(sndIncinerator,p,.6)
-sound_play_pitchvol(sndFlameCannonEnd,.8*p,.4)
+var p = random_range(.8,1.2),
+	vol = .8; //I'm just assuming this gun is too loud by default. So only .8
+sound_play_pitchvol(sndHeavyMachinegun,1.4*p,.8 * vol)
+sound_play_pitchvol(sndSwapFlame,.8*p,.7 * vol)
+sound_play_pitchvol(sndIncinerator,p,.6 * vol)
+sound_play_pitchvol(sndFlameCannonEnd,.8*p,.4 * vol)
 sleep(20)
 mod_script_call("mod","defpack tools", "shell_yeah_heavy", 100, 25, 2+random(3), c_red)
 with mod_script_call("mod", "defpack tools", "create_heavy_fire_bullet",x,y){

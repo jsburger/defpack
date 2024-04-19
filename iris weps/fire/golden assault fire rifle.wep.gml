@@ -36,9 +36,11 @@ return "MOLTEN @yGOLD";
 repeat(3)
 {
 	weapon_post(2,-1,3)
-	sound_play(sndGoldMachinegun)
-	sound_play_pitch(sndSwapFlame,.7)
-	sound_play_pitch(sndIncinerator,.9)
+	var vol = .6,
+		pitch = random_range(.8, 1.2);
+	sound_play_pitchvol(sndGoldMachinegun, pitch, vol)
+	sound_play_pitchvol(sndSwapFlame, .7 * pitch, vol)
+	sound_play_pitchvol(sndIncinerator, .9 * pitch, vol)
 	mod_script_call("mod","defpack tools", "shell_yeah", 180, 25, 2+random(2), c_red)
 	with mod_script_call("mod", "defpack tools", "create_fire_bullet",x,y){
 		creator = other

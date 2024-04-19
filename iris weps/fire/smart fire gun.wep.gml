@@ -44,9 +44,10 @@ if fork(){
     aimDirection = ang;
     exit
 }
-sound_play_pitch(sndSmartgun,random_range(.6,1))
-sound_play_pitch(sndFireShotgun,random_range(1.4,1.6))
-weapon_post(5,-2,6)
+var vol = .6;
+sound_play_pitchvol(sndSmartgun, random_range(.6, 1), vol)
+sound_play_pitchvol(sndFireShotgun, random_range(1.4, 1.6), vol)
+weapon_post(5, -2, 6)
 mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, random_range(3,5), c_red)
 if fork(){
     var time = 8;

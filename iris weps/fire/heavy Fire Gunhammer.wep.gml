@@ -39,11 +39,12 @@ return "TAKE YOUR TORCH AND BURN IT";
 #define weapon_fire
 
 var r =  ammo[1] >= 2
-var p = random_range(.8,1.2)
-sound_play_pitchvol(sndHammer,p,.7)
-sound_play_pitch(sndShovel,.5*p)
-sound_play_pitch(sndHitMetal,.8*p)
-sound_play_pitch(sndAssassinAttack,1.2*p)
+var p = random_range(.8,1.2),
+	vol = .6;
+sound_play_pitchvol(sndHammer, p, .7 * vol)
+sound_play_pitchvol(sndShovel, .5 * p, vol)
+sound_play_pitchvol(sndHitMetal, .8 * p, vol)
+sound_play_pitchvol(sndAssassinAttack, 1.2 * p, vol)
 sleep(20)
 weapon_post(8,20,12	*(r*2+1))
 var l = 20* skill_get(mut_long_arms)
@@ -62,15 +63,15 @@ with instance_create(x + lengthdir_x(l, gunangle),y + lengthdir_y(l, gunangle),S
 		force = 15
 		image_xscale *= 1.3
 		image_yscale *= 1.3
-		sound_play_pitchvol(sndSawedOffShotgun,.7*p,.7)
-		sound_play_pitchvol(sndDoubleShotgun,.6*p,.7)
-		sound_play_pitchvol(sndQuadMachinegun,.7*p,.7)
-		sound_play_pitchvol(sndFlakExplode,.5*p,.4)
-		sound_play_pitchvol(sndFlameCannon,3.5*p,.4)
-		sound_play_pitchvol(sndIncinerator,.7*p,1)
-		sound_play_pitchvol(sndFlameCannonEnd,3.5*p,.4)
-		sound_play_pitch(sndHeavyRevoler,random_range(0.8,1.2))
-		sound_play_gun(sndClickBack,1,.3)
+		sound_play_pitchvol(sndSawedOffShotgun, .7 * p, .7 * vol)
+		sound_play_pitchvol(sndDoubleShotgun, .6 * p, .7 * vol)
+		sound_play_pitchvol(sndQuadMachinegun, .7 * p, .7 * vol)
+		sound_play_pitchvol(sndFlakExplode, .5 * p, .4 * vol)
+		sound_play_pitchvol(sndFlameCannon, 3.5 * p, .4 * vol)
+		sound_play_pitchvol(sndIncinerator, .7 * p, 1 * vol)
+		sound_play_pitchvol(sndFlameCannonEnd, 3.5 * p, .4 * vol)
+		sound_play_pitchvol(sndHeavyRevoler, random_range(0.8, 1.2), vol)
+		sound_play_gun(sndClickBack, 1, .3)
 		sound_stop(sndClickBack)
 		sprite_index = global.sprHeavyFireGunhammerSlash
 		var _i = 0;

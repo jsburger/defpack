@@ -35,9 +35,11 @@ return "FRESH OUT THE OVEN";
 #define weapon_fire
 
 weapon_post(4,-1,8)
-sound_play_pitch(sndMinigun,.8)
-sound_play_pitch(sndFiretrap,.8)
-sound_play_pitchvol(sndIncinerator,1,.7)
+var pitch = random_range(.8, 1.2),
+	vol = .6;
+sound_play_pitchvol(sndMinigun, .8 * pitch, vol)
+sound_play_pitchvol(sndFiretrap, .8 * pitch, vol)
+sound_play_pitchvol(sndIncinerator, 1 * pitch, .7 * vol)
 mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, 2+random(3), c_red)
 with mod_script_call("mod", "defpack tools", "create_fire_bullet",x,y){
 	projectile_init(other.team,other)

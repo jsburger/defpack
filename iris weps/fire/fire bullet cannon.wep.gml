@@ -31,11 +31,12 @@ return "GOUTS OF @rFLAME@d";
 #define weapon_fire
 
 weapon_post(9,-6,72)
-var _p = random_range(.8, 1.2);
-sound_play_pitch(sndHeavySlugger, 2 * _p)
-sound_play_pitch(sndDoubleFireShotgun, 2 * _p)
-sound_play_pitch(sndSawedOffShotgun, 1.8 * _p)
-sound_play_pitchvol(sndFlamerStop, .4 * _p, .6)
+var _p = random_range(.8, 1.2),
+    vol = .6;
+sound_play_pitchvol(sndHeavySlugger,      2 * _p, vol)
+sound_play_pitchvol(sndDoubleFireShotgun, 2 * _p, vol)
+sound_play_pitchvol(sndSawedOffShotgun, 1.8 * _p, vol)
+sound_play_pitchvol(sndFlamerStop,       .4 * _p, .6 * vol)
 repeat(8){
     mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, 2+random(3), c_red)
     with mod_script_call("mod", "defpack tools", "create_fire_bullet",x+lengthdir_x(random_range(-7,7)*accuracy,gunangle+90),y+lengthdir_y(random_range(-7,7)*accuracy,gunangle+90)){

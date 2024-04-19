@@ -45,15 +45,16 @@ if fork(){
     exit
 }
 sound_play_pitch(sndSmartgun,random_range(.6,.8))
-var _p = random_range(.8,1.2)
-sound_play_pitch(sndPistol,.7*p)
-sound_play_pitch(sndDoubleFireShotgun,.8*_p)
-sound_play_pitch(sndIncinerator,.8*_p)
-sound_play_pitchvol(sndHeavyMachinegun,.9*_p,.7)
-sound_play_pitchvol(sndHeavyNader,1*_p,.8)
-motion_add(ang+180,1)
-weapon_post(7,-9,24)
-mod_script_call("mod","defpack tools", "shell_yeah_heavy", 100, 25, random_range(3,10), c_red)
+var _p = random_range(.8,1.2),
+	vol = .6;
+sound_play_pitchvol(sndPistol, .7 * _p, vol)
+sound_play_pitchvol(sndDoubleFireShotgun, .8 * _p, vol)
+sound_play_pitchvol(sndIncinerator, .8 * _p, vol)
+sound_play_pitchvol(sndHeavyMachinegun, .9 * _p, .7 * vol)
+sound_play_pitchvol(sndHeavyNader ,1 * _p, .8 * vol)
+motion_add(ang + 180, 1)
+weapon_post(7, -9, 24)
+mod_script_call("mod", "defpack tools", "shell_yeah_heavy", 100, 25, random_range(3,10), c_red)
 if fork(){
     var time = 8;
     while time > 0 && instance_exists(self){

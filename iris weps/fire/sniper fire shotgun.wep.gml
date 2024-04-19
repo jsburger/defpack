@@ -75,17 +75,18 @@ with mod_script_call_self("mod", "defpack tools", "create_sniper_charge", x, y){
 }
 
 #define fire_shotgun_fire
-var _ptch = random_range(-.5,.5)
-sound_play_pitch(sndHeavySlugger,.55-_ptch/8)
-sound_play_pitch(sndHeavyNader,.4-_ptch/8)
-sound_play_pitch(sndExplosionL,1.5-_ptch/2)
-sound_play_pitch(sndNukeExplosion,7-_ptch*2)
-sound_play_pitch(sndSawedOffShotgun,1.8-_ptch)
-sound_play_pitch(sndSniperFire,random_range(.6,.8))
-sound_play_pitch(sndFlameCannonEnd,.7)
-sound_play_pitch(sndQuadMachinegun,.7)
-sound_play_pitch(sndIncinerator,.8)
-sound_play_pitch(sndDoubleFireShotgun,1.3)
+var _ptch = random_range(-.5,.5),
+	vol = .5;
+sound_play_pitchvol(sndHeavySlugger,.55-_ptch/8, vol)
+sound_play_pitchvol(sndHeavyNader,.4-_ptch/8, vol)
+sound_play_pitchvol(sndExplosionL,1.5-_ptch/2, vol)
+sound_play_pitchvol(sndNukeExplosion,7-_ptch*2, vol)
+sound_play_pitchvol(sndSawedOffShotgun,1.8-_ptch, vol)
+sound_play_pitchvol(sndSniperFire,random_range(.6,.8), vol)
+sound_play_pitchvol(sndFlameCannonEnd,.7, vol)
+sound_play_pitchvol(sndQuadMachinegun,.7, vol)
+sound_play_pitchvol(sndIncinerator,.8, vol)
+sound_play_pitchvol(sndDoubleFireShotgun,1.3, vol)
 var _c = charge, _cc = charge/maxcharge, _ccc = _cc = 1 ? 1 : 0;
 with creator{
 	weapon_post(15,40,210)

@@ -46,12 +46,13 @@ return "BRANDISH THE GIANTS"
 #define weapon_fire
 weapon_post(9,-40,30)
 motion_add(gunangle-180,3)
-var _p = random_range(.8,1.2)
+var _p = random_range(.8, 1.2),
+	vol = .6; //sorry karm
 mod_script_call("mod","defpack tools", "shell_yeah_big", 100, 12, 4+random(1), c_red)
-sound_play_pitch(sndDoubleFireShotgun,.7*_p)
-sound_play_pitch(sndIncinerator,.7*_p)
-sound_play_pitch(sndSawedOffShotgun,.5*_p)
-sound_play_pitch(sndHeavySlugger,.8*_p)
+sound_play_pitchvol(sndDoubleFireShotgun,.7*_p, vol)
+sound_play_pitchvol(sndIncinerator,.7*_p, vol)
+sound_play_pitchvol(sndSawedOffShotgun,.5*_p, vol)
+sound_play_pitchvol(sndHeavySlugger,.8*_p, vol)
 sound_play_gun(sndClickBack,1,0)
 sound_stop(sndClickBack)
 with instance_create(x,y,CustomProjectile)

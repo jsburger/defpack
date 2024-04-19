@@ -35,10 +35,11 @@ return "BOIL THEM ALIVE";
 #define weapon_fire
 
 weapon_post(5,-1,12)
-sound_play_pitch(sndMinigun,.8)
-sound_play_pitch(sndFiretrap,.5)
+var vol = .6;
+sound_play_pitchvol(sndMinigun, .8, vol)
+sound_play_pitchvol(sndFiretrap, .5, vol)
+sound_play_pitchvol(sndIncinerator, .8, .8 * vol)
 motion_add(gunangle,-1)
-sound_play_pitchvol(sndIncinerator,.8,.8)
 repeat(2)mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, 2+random(3), c_red)
 with mod_script_call("mod", "defpack tools", "create_fire_bullet",x,y){
 	projectile_init(other.team,other)

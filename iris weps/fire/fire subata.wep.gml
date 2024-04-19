@@ -21,11 +21,12 @@ return 0
 #define weapon_laser_sight
 return 0
 #define weapon_fire
-var _p = random_range(.8, 1.4);
-sound_play_pitchvol(sndQuadMachinegun, 1.6 * _p, .6)
-sound_play_pitchvol(sndDoubleMinigun, .4 * _p, .6)
-sound_play_pitch(sndFireShotgun, 2 * _p)
-sound_play(sndIncinerator)
+var _p = random_range(.8, 1.4),
+	vol = .7;
+sound_play_pitchvol(sndQuadMachinegun, 1.6 * _p, .6 * vol)
+sound_play_pitchvol(sndDoubleMinigun, .4 * _p, .6 * vol)
+sound_play_pitchvol(sndFireShotgun, 2 * _p, vol)
+sound_play_pitchvol(sndIncinerator, 1, vol)
 sound_play_gun(sndClickBack, 0, 1)
 sound_stop(sndClickBack)
 

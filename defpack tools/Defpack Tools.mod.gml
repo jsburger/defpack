@@ -1125,7 +1125,7 @@ draw_line_width_color(x2 - 1, y3, x2 + w + 1, y3, 1, 0, 0)
 #define bouncer_spin
 	image_angle += bouncer_turn_dir * bouncer_turn_speed * current_time_scale
 
-#define bullet_init()
+#define bullet_init
     name = "Bullet"
 
     sprite_index = sprBullet1

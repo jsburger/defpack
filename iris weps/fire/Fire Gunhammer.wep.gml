@@ -39,12 +39,13 @@ return "THE BURNING TORCH";
 #define weapon_fire
 
 var r = ammo[1] >= 1
-var p = random_range(.8,1.2)
-sound_play_pitchvol(sndHammer,p,.7)
-sound_play_pitch(sndShovel,.5*p)
-sound_play_pitch(sndHitMetal,.8*p)
-sound_play_pitch(sndAssassinAttack,1.2*p)
-sound_play_gun(sndClickBack,1,.6)
+var p = random_range(.8, 1.2),
+	vol = .6
+sound_play_pitchvol(sndHammer, p, .7 * vol)
+sound_play_pitchvol(sndShovel, .5 * p, vol)
+sound_play_pitchvol(sndHitMetal, .8 * p, vol)
+sound_play_pitchvol(sndAssassinAttack, 1.2 * p, vol)
+sound_play_gun(sndClickBack, 1, .6)
 sound_stop(sndClickBack)
 weapon_post(8,20,12	*(r*2+1))
 var l = 20* skill_get(mut_long_arms)
@@ -59,10 +60,10 @@ with instance_create(x + lengthdir_x(l, gunangle),y + lengthdir_y(l, gunangle),S
 	creator = other
 	right = other.right
 	if r {
-	    sound_play_pitchvol(sndSawedOffShotgun,.9*p,.7)
-		sound_play_pitchvol(sndDoubleFireShotgun,.8*p,.7)
-		sound_play_pitchvol(sndTripleMachinegun,.8*p,.7)
-		sound_play_pitchvol(sndFlameCannon,3.8*p,.7)
+	    sound_play_pitchvol(sndSawedOffShotgun,.9*p,.7 * vol)
+		sound_play_pitchvol(sndDoubleFireShotgun,.8*p,.7 * vol)
+		sound_play_pitchvol(sndTripleMachinegun,.8*p,.7 * vol)
+		sound_play_pitchvol(sndFlameCannon,3.8*p,.7 * vol)
 		sprite_index = global.sprFireGunhammerSlash
 		sound_play_gun(sndClickBack,1,.6)
 		sound_stop(sndClickBack)

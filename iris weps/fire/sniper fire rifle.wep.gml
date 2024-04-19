@@ -68,15 +68,16 @@ with mod_script_call_self("mod", "defpack tools", "create_sniper_charge", x, y){
 }
 
 #define fire_rifle_fire
-var _ptch = random_range(-.5,.5)
-sound_play_pitch(sndHeavyRevoler,.7-_ptch/3)
-sound_play_pitch(sndSawedOffShotgun,1.8-_ptch)
-sound_play_pitch(sndSniperFire,random_range(.6,.8))
-sound_play_pitch(sndHeavySlugger,1.3+_ptch/2)
-sound_play_pitch(sndFlareExplode,1.8)
-sound_play_pitch(sndFlameCannonEnd,.7)
-sound_play_pitch(sndQuadMachinegun,.7)
-sound_play_pitch(sndSniperFire,random_range(.6,.8))
+var _ptch = random_range(-.5,.5),
+	vol = .5;
+sound_play_pitchvol(sndHeavyRevoler,.7-_ptch/3, vol)
+sound_play_pitchvol(sndSawedOffShotgun,1.8-_ptch, vol)
+sound_play_pitchvol(sndSniperFire,random_range(.6,.8), vol)
+sound_play_pitchvol(sndHeavySlugger,1.3+_ptch/2, vol)
+sound_play_pitchvol(sndFlareExplode,1.8, vol)
+sound_play_pitchvol(sndFlameCannonEnd,.7, vol)
+sound_play_pitchvol(sndQuadMachinegun,.7, vol)
+sound_play_pitchvol(sndSniperFire,random_range(.6,.8), vol)
 var _c = charge, _cc = charge/maxcharge, _ccc = _cc = 1 ? 1 : 0;
 with creator{
 	weapon_post(12,2,158)
@@ -91,7 +92,7 @@ with creator{
 	    worth = 12
 	    with instance_create(x, y, BulletHit) sprite_index = global.spr.FireBulletHit
 	    var n = hyperspeed/(_cc + .2)
-	    for var i = 0; i < image_xscale; i += random(n){
+	    for (var i = 0; i < image_xscale; i += random(n)){
 	        with instance_create(xstart + lengthdir_x(2*i, direction), ystart + lengthdir_y(2*i, direction), Flame){
 	            motion_set(other.direction + 70 * choose(-1,1), random_range(1, 3) * _cc)
 	            motion_add(direction + random_range(-90, 90), 1 + _cc)

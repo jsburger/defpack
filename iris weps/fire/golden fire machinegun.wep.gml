@@ -33,9 +33,11 @@ return "FIERY GREED";
 #define weapon_fire
 
 weapon_post(2,-1,3)
-sound_play(sndGoldMachinegun)
-sound_play_pitchvol(sndSwapFlame,random_range(1.4,1.6),.7)
-sound_play_pitchvol(sndIncinerator,1,.2)
+var pitch = random_range(.8, 1.2),
+	vol = .8
+sound_play_pitchvol(sndGoldMachinegun, pitch, vol)
+sound_play_pitchvol(sndSwapFlame,random_range(1.4,1.6),.7 * vol)
+sound_play_pitchvol(sndIncinerator, pitch, .2 * vol)
 mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, 2+random(3), c_red)
 with mod_script_call("mod", "defpack tools", "create_fire_bullet",x,y){
 	creator = other
