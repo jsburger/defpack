@@ -289,11 +289,7 @@
 #macro charge_mouse 0
 #macro charge_player 1
 
-#macro default_bloom {
-        xscale : 2,
-        yscale : 2,
-        alpha : .1
-    };
+#macro default_bloom { xscale : 2, yscale : 2, alpha : .1 };
 
 //notes on excited neurons
 // bullets retain their damage
@@ -452,7 +448,7 @@ if global.chargeType with Player if player_is_local_nonsync(index){
         _arcMax = _chargeCounter[defcharge_arc], _barMax = _chargeCounter[defcharge_bar] + _chargeCounter[defcharge_lock];
         //smoothing
         var _scale = global.chargeSmooth, _l = array_length(_scale);
-        for var i = 0; i < _l; i++{
+        for (var i = 0; i < _l; i++) {
         	var total = (i == defcharge_bar) ? _chargeCounter[defcharge_bar] + _chargeCounter[defcharge_lock] : _chargeCounter[i];
             _scale[i] += approach(_scale[i], total, 3, 30/room_speed)
         }

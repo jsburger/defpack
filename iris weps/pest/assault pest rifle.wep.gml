@@ -33,10 +33,11 @@ return "TRIPLE CAPSULE TANK";
 repeat(3)
 {
   weapon_post(5,-3,6)
-  sound_play_pitch(sndMachinegun,random_range(1.2,1.5))
-  sound_play_pitch(sndMinigun,random_range(1.2,1.5))
-  sound_play_pitch(sndPistol,random_range(.6,.8))
-  sound_play_pitch(sndToxicBoltGas,random_range(3,3.8))
+  var vol = .6;
+  sound_play_pitchvol(sndMachinegun, random_range(1.2, 1.5), vol)
+  sound_play_pitchvol(sndMinigun, random_range(1.2, 1.5), vol)
+  sound_play_pitchvol(sndPistol, random_range(.6, .8), vol)
+  sound_play_pitchvol(sndToxicBoltGas, random_range(3, 3.8), vol)
   mod_script_call("mod","defpack tools", "shell_yeah", 180, 25, random_range(2,4), c_green)
   with mod_script_call("mod", "defpack tools", "create_toxic_bullet",x+lengthdir_x(8,gunangle),y+lengthdir_y(8,gunangle)){
       creator = other

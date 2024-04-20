@@ -39,11 +39,12 @@ return 1
 #define weapon_fire
 
 var r = ammo[1] >= 2
-var _p = random_range(.8,1.2)
-sound_play_pitchvol(sndHammer,_p,.7)
-sound_play_pitch(sndShovel,.5*_p)
-sound_play_pitch(sndHitMetal,.8*_p)
-sound_play_pitch(sndAssassinAttack,1.2*_p)
+var _p = random_range(.8,1.2),
+	vol = .6;
+sound_play_pitchvol(sndHammer,_p, .7 * vol)
+sound_play_pitchvol(sndShovel, .5 * _p, vol)
+sound_play_pitchvol(sndHitMetal, .8 * _p, vol)
+sound_play_pitchvol(sndAssassinAttack, 1.2 * _p, vol)
 sleep(20)
 weapon_post(8,20,12	*(r*2+1))
 var shell = 0;
@@ -61,11 +62,11 @@ with instance_create(x + lengthdir_x(l, gunangle),y + lengthdir_y(l, gunangle),S
 	if r {
 	    damage = 20
 		force = 15
-		sound_play_pitch(sndToxicBarrelGas,1.2*_p)
-		sound_play_pitchvol(sndToxicBoltGas,.8*_p,.6)
-		sound_play_pitchvol(sndSawedOffShotgun,.9*_p,.7)
-		sound_play_pitchvol(sndDoubleShotgun,.8*_p,.7)
-		sound_play_pitchvol(sndTripleMachinegun,.8*_p,.7)
+		sound_play_pitchvol(sndToxicBarrelGas, 1.2 * _p, vol)
+		sound_play_pitchvol(sndToxicBoltGas, .8 * _p, .6 * vol)
+		sound_play_pitchvol(sndSawedOffShotgun, .9 * _p, .7 * vol)
+		sound_play_pitchvol(sndDoubleShotgun, .8 * _p, .7 * vol)
+		sound_play_pitchvol(sndTripleMachinegun, .8 * _p, .7 * vol)
 		sound_play_gun(sndClickBack,1,.3)
 		sound_stop(sndClickBack)
 		sprite_index = global.slash

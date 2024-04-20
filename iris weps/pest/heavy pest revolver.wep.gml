@@ -31,12 +31,13 @@ return "OVERLOADED";
 #define weapon_fire
 
 weapon_post(3,-6,2)
-var _p = random_range(.8,1.2)
-sound_play_pitch(sndDoubleMinigun,1.3*_p)
-sound_play_pitch(sndPistol,.5*_p)
-sound_play_pitch(sndHeavyRevoler,1.2*_p)
-sound_play_pitch(sndToxicBarrelGas,1.2*_p)
-sound_play_pitchvol(sndToxicBoltGas,.8*_p,.6)
+var _p = random_range(.8,1.2),
+	vol = .6;
+sound_play_pitchvol(sndDoubleMinigun,1.3*_p, vol)
+sound_play_pitchvol(sndPistol,.5*_p, vol)
+sound_play_pitchvol(sndHeavyRevoler,1.2*_p, vol)
+sound_play_pitchvol(sndToxicBarrelGas,1.2*_p, vol)
+sound_play_pitchvol(sndToxicBoltGas,.8*_p,.6 * vol)
 mod_script_call("mod","defpack tools", "shell_yeah_heavy", 100, 25, random_range(3,5), c_green)
 with mod_script_call("mod", "defpack tools", "create_heavy_toxic_bullet",x+lengthdir_x(8,gunangle),y+lengthdir_y(8,gunangle)){
     creator = other

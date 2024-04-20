@@ -31,11 +31,12 @@ return choose("COUGH");
 #define weapon_fire
 var p = random_range(.8,1.2)
 weapon_post(4,-11,2)
-sound_play_pitchvol(sndTripleMachinegun,.7*p,.5)
-sound_play_pitchvol(sndQuadMachinegun,.7*p,.5)
-sound_play_pitch(sndToxicBoltGas,.7*p)
-sound_play_pitchvol(sndSwapFlame,.8*p,.7)
-sound_play_pitchvol(sndBouncerShotgun,.6*p,.4)
+var vol = .8
+sound_play_pitchvol(sndTripleMachinegun,.7*p,.5 * vol)
+sound_play_pitchvol(sndQuadMachinegun,.7*p,.5 * vol)
+sound_play_pitchvol(sndToxicBoltGas,.7*p, 1 * vol)
+sound_play_pitchvol(sndSwapFlame,.8*p,.7 * vol)
+sound_play_pitchvol(sndBouncerShotgun,.6*p,.4 * vol)
 mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, random_range(2,5), c_green)
 var h = 50
 var i = -h/2 -h/14

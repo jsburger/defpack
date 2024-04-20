@@ -31,12 +31,13 @@ return "DIRTY WARFARE";
 #define weapon_fire
 
 weapon_post(9,-6,52)
-var _ptch = random_range(-.4,.4);
-sound_play_pitch(sndHeavySlugger,2+_ptch)
-sound_play_pitch(sndDoubleShotgun,2)
-sound_play_pitch(sndSawedOffShotgun,1.8)
-sound_play_pitch(sndToxicBarrelGas,.6+_ptch/10)
-sound_play_pitch(sndToxicBoltGas,.6+_ptch/10)
+var _ptch = random_range(-.4,.4),
+    vol = .6;
+sound_play_pitchvol(sndHeavySlugger,2+_ptch, vol)
+sound_play_pitchvol(sndDoubleShotgun,2, vol)
+sound_play_pitchvol(sndSawedOffShotgun,1.8, vol)
+sound_play_pitchvol(sndToxicBarrelGas,.6+_ptch/10, vol)
+sound_play_pitchvol(sndToxicBoltGas,.6+_ptch/10, vol)
 repeat(8){
     mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, 2+random(3), c_green)
     with mod_script_call("mod", "defpack tools", "create_toxic_bullet",x+lengthdir_x(random_range(-7,7)*accuracy,gunangle+90),y+lengthdir_y(random_range(-7,7)*accuracy,gunangle+90)){

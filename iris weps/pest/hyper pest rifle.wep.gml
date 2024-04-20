@@ -33,9 +33,10 @@ return "KEEP THE CLOUDS AWAY";
 repeat(5)
 {
   weapon_post(5,-3,4)
-  sound_play_pitch(sndHyperRifle,random_range(1.2,1.5))
+  var vol = .8
+  sound_play_pitchvol(sndHyperRifle,random_range(1.2,1.5), vol)
   //sound_play_pitch(sndToxicLauncher,random_range(3,5)) smart gun sound yes?
-  sound_play_pitch(sndToxicBoltGas,random_range(3,3.8))
+  sound_play_pitchvol(sndToxicBoltGas,random_range(3,3.8), vol)
   mod_script_call("mod","defpack tools", "shell_yeah", 180, 20, random_range(1,4), c_green)
   with mod_script_call("mod", "defpack tools", "create_toxic_bullet",x+lengthdir_x(8,gunangle),y+lengthdir_y(8,gunangle)){
       creator = other

@@ -45,14 +45,15 @@ if fork(){
     exit
 }
 sound_play_pitch(sndSmartgun,random_range(.6,.8))
-var _p = random_range(.8,1.2)
-sound_play_pitch(sndPistol,.7*p)
-sound_play_pitch(sndDoubleMinigun,1.1*_p)
-sound_play_pitchvol(sndSewerPipeBreak,2*_p,.4)
-sound_play_pitchvol(sndToxicBoltGas,1.4*_p,.7)
+var _p = random_range(.8,1.2),
+	vol = .6;
+sound_play_pitchvol(sndPistol,.7*_p, vol)
+sound_play_pitchvol(sndDoubleMinigun,1.1*_p, vol)
+sound_play_pitchvol(sndSewerPipeBreak,2*_p,.4 * vol)
+sound_play_pitchvol(sndToxicBoltGas,1.4*_p,.7 * vol)
+sound_play_pitchvol(sndHeavyMachinegun,.9*_p,.7 * vol)
+sound_play_pitchvol(sndHeavyNader,1*_p,.8 * vol)
 motion_add(ang+180,1)
-sound_play_pitchvol(sndHeavyMachinegun,.9*_p,.7)
-sound_play_pitchvol(sndHeavyNader,1*_p,.8)
 weapon_post(7,-9,24)
 mod_script_call("mod","defpack tools", "shell_yeah_heavy", 100, 25, random_range(3,10), c_green)
 if fork(){

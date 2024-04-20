@@ -81,11 +81,13 @@ if lq_defget(w, "canbloom", 1){
     }
     w.canbloom = 0
     weapon_post(5+random_range(w.charge * .04,-w.charge * .04), (w.charge >= maxchrg) ? -3 - irandom(3): -3, 2 + w.charge/maxchrg/2)
-    sound_play_pitch(sndTripleMachinegun,(.7 + w.charge * .02)*random_range(.95,1.05))
-    sound_play_pitch(sndBurn,(.5 + w.charge * .015)*random_range(.95,1.05))
-    sound_play_pitch(sndDoubleMinigun,(.7 + w.charge * .02)*random_range(.95,1.05))
-    sound_play(sndMinigun)
-    sound_play_gun(sndClickBack, 0, 1 - (w.charge/(maxchrg*1.5)))
+    var pitch = random_range(.95, 1.05),
+    	vol = .6
+    sound_play_pitchvol(sndTripleMachinegun,(.7 + w.charge * .02) * pitch, vol)
+    sound_play_pitchvol(sndBurn,(.5 + w.charge * .015) * pitch, vol)
+    sound_play_pitchvol(sndDoubleMinigun,(.7 + w.charge * .02) * pitch, vol)
+    sound_play_pitchvol(sndMinigun, pitch, vol)
+    sound_play_gun(sndClickBack, 0, 1 - (w.charge/(maxchrg*2)))
     sound_stop(sndClickBack)
     
     if w.charge > maxchrg - 2 {

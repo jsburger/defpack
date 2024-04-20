@@ -44,9 +44,10 @@ if fork(){
     aimDirection = ang;
     exit
 }
-sound_play_pitch(sndSmartgun,random_range(.8,1.2))
-sound_play_pitch(sndDoubleMinigun,random_range(1.1,1.3))
-sound_play_pitchvol(sndSewerPipeBreak,random_range(1.8,2.2),.2)
+var vol = .6
+sound_play_pitchvol(sndSmartgun,random_range(.8,1.2), vol)
+sound_play_pitchvol(sndDoubleMinigun,random_range(1.1,1.3), vol)
+sound_play_pitchvol(sndSewerPipeBreak,random_range(1.8,2.2),.2 * vol)
 weapon_post(5,-2,3)
 mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, random_range(3,5), c_green)
 if fork(){
