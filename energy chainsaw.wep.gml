@@ -167,7 +167,7 @@ return{
 					_c = instance_exists(creator) ? creator.accuracy : 0;
 				
 				var _i = random(360)
-				repeat(5) {
+				/*repeat(5) {
 					
 				
 				repeat(6) with create_defball(creator.x + creator.hspeed, creator.y + creator.vspeed) {
@@ -181,7 +181,7 @@ return{
 		            accuracy = .3;
 		        }
 		        	_i = random(360)
-				}
+				}*/
 
 				/*repeat(_n){
 					

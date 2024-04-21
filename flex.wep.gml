@@ -61,7 +61,7 @@ with instance_create(x,y,CustomProjectile){
     //if irandom(19) = 0 charged = 1 else charged = 0
     mask_index   = mskBullet1
     sprite_index = _a ? global.sprBluellet2 : sprBullet2
-    motion_add(other.gunangle+random_range(-8,8)*other.accuracy,18)
+    motion_add(other.gunangle+random_range(-8,8)*other.accuracy * (_a + 1),18)
     projectile_init(other.team,other)
     name = "Flex Bullet" //not sponsored i swear
     image_angle = direction
@@ -77,7 +77,7 @@ with instance_create(x,y,CustomProjectile){
     }
     force  = 7
     wallbounce = 5 * skill_get(mut_shotgun_shoulders)
-    friction = 1 - _a * .3
+    friction = .7 + _a * .3
      _f = fallofftime >= current_frame
     on_hit     = b_hit
     on_step    = b_step
@@ -97,9 +97,9 @@ if instance_exists(other) && other.my_health <= 0{
     var o = other
     sleep(6)
     if instance_exists(creator){
-        var a = max(16*other.size,6)
+        var a = clamp(20*other.size, 10, 30)
         sleep(a*2)
-        with creator if infammo >= 0 infammo = min(infammo + a, 120)  //limit infammo gain to 120 frames
+        with creator if infammo >= 0 infammo = min(infammo + a, 100)  //limit infammo gain to 120 frames
     }
 }
 instance_destroy()

@@ -17,7 +17,7 @@ return false;
 return 30;
 
 #define weapon_cost
-return 2;
+return 3;
 
 #define weapon_swap
 return sndSwapEnergy;
