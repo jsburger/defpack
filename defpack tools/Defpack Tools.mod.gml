@@ -3105,7 +3105,7 @@ draw_self()
 image_xscale = _x;
 
 #define plasmite_destroy
-sound_play_hit_ext(sndPlasmaHit, random_range(1.45, 1.83), 1)
+sound_play_hit_ext(sndPlasmaHit, random_range(1.45, 1.83), .5)
 with create_plasma_impact_small(x + lengthdir_x(hspeed, direction), y + lengthdir_y(hspeed, direction)) {
 	team = other.team;
 }
