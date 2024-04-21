@@ -41,12 +41,12 @@ return false;
 #define weapon_load(wep)
   if is_object(wep){
     switch wep.health{
-      case 2: return 19;
-      case 1: return 16;
-      case 0: return 12;
+      case 2: return 17;
+      case 1: return 14;
+      case 0: return 10;
     }
   }
-  return 24;
+  return 20;
 
 #define weapon_cost
 return 0;

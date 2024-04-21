@@ -1255,7 +1255,7 @@ with create_slash_bullet(x, y){
 
 #define recycle_gland_roll
 /// recycle_gland_roll(_chance = 60)
-var _chance = argument_count > 0 ? argument[0] : 60;
+var _chance; if (argument_count > 0) _chance = argument[0]; else _chance = 60;
 
 	var _gland = skill_get(mut_recycle_gland) + (10 * skill_get("recycleglandx10"));
 	if recycle_amount != 0 {
@@ -2314,7 +2314,7 @@ if other != lasthit{
 				}
 
 				// Sound fx:
-				if (other.play_hitsound){
+				if ("play_hitsound" in other && other.play_hitsound){
 					sound_play_pitchvol(sndImpWristKill, .8, 1.4);
 					sound_play_pitchvol(sndSawedOffShotgun, .7, .6);
 				}
@@ -3202,7 +3202,12 @@ if projectile_canhit_melee(other) == true{
 	}
 	sleep(damage * 2)
 	if other.my_health > 0 {
-
+		
+		var _dir = point_direction(x, y, other.x, other.y),
+			_dis = min(4, point_distance(x, y, other.x, other.y));
+			
+		x += lengthdir_x(_dis, _dir);
+		y += lengthdir_y(_dis, _dir);
 		instance_destroy();
 	}else {
 

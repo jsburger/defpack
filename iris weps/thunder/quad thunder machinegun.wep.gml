@@ -16,7 +16,7 @@ return true;
 return 4;
 
 #define weapon_cost
-return 4;
+return 5;
 
 #define weapon_swap
 return sndSwapMachinegun;
@@ -38,7 +38,7 @@ repeat(n)mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, 2+random(
 
 if fork(){
     var flip = wepflip
-    for var i = -1.5; i <= 1.5; i += 1{
+    for var i = -2; i <= 2; i += 1{
         sound(1)
         with mod_script_call("mod", "defpack tools", "create_lightning_bullet",x,y){
     		move_contact_solid(other.gunangle,6)

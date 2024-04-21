@@ -14,6 +14,7 @@
 // V. 4: on kill -> create blood explo on top of enemies (covered by the bones)
 // V. 5: on kill -> +1 HP
 // V. 6: on kill -> 3 more kills
+// V, 7; on kill -> +1 HP
 
 #define weapon_name
   return "CORPSE NEEDLE";
@@ -54,7 +55,7 @@ return{
 }
 
 #define weapon_text
-  return "WHERE DO THESE CORPSES COME FROM";
+  return choose("MY BLOOD", "YOUR BLOOD", "KILL TO HEAL");
 
 #define weapon_fire
   var _offset = 12 + skill_get(mut_long_arms) * 8;
@@ -105,13 +106,17 @@ return{
     if _e.my_health <= 0 && !instance_is(_e, prop){
     	
     	repeat(3){
-    		
-    		with instance_create(other.x, other.y, other.object_index){
+    		with _e with instance_copy(true){
+    			kills = 0;
+    			 if irandom(2) raddrop = 0;
+    			projectile_hit(self, maxhealth, 5 + irandom(6), random(360));
+    		}
+    		/*with instance_create(other.x, other.y, other.object_index){
     			
     			kills = 0;
     			raddrop = 0;
     			projectile_hit(self, maxhealth, 5 + irandom(6), random(360));
-    		}
+    		}*/
     	}
     	
         view_shake_at(x, y, 16);
