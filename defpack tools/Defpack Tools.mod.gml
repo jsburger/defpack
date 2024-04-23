@@ -1255,7 +1255,7 @@ with create_slash_bullet(x, y){
 
 #define recycle_gland_roll
 /// recycle_gland_roll(_chance = 60)
-var _chance; if (argument_count > 0) _chance = argument[0]; else _chance = 60;
+var _chance = argument_count > 0 ? argument[0] : 60;
 
 	var _gland = skill_get(mut_recycle_gland) + (10 * skill_get("recycleglandx10"));
 	if recycle_amount != 0 {
@@ -4737,7 +4737,7 @@ if ammo[1] >= c or infammo != 0 {
 }
 
 if !p && race != "steroids" && breload > 0{
-    breload -= get_reloadspeed(self)
+    breload -= get_reloadspeed(self) * current_time_scale
 }
 
 #define smarter_gun_init(_wep)
