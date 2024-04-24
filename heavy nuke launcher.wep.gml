@@ -70,7 +70,10 @@ with instance_create(x+lengthdir_x(4,gunangle),y+lengthdir_y(4,gunangle)-1,Custo
 	on_draw = script_ref_create(nuke_draw)
 	repeat(12)
     	with instance_create(x+lengthdir_x(speed,direction),y+lengthdir_y(speed,direction),Smoke){
-    		motion_add(other.direction+random_range(-30,30)*other.creator.accuracy,2+random(2))
+    		motion_add(other.direction+random_range(-30,30)*other.creator.accuracy,2+random(1))
+        var _scale = .5;
+        image_xscale *= .33;
+        image_yscale *= .33;
     	}
 }
 sleep(70)

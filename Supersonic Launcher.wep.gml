@@ -53,7 +53,7 @@ with instance_create(x,y,CustomProjectile){
 	mask_index = sprNuke
 	index = other.index
 	team  = other.team
-	damage = 20
+	damage = 30
 	dir = 0
 	bounce = 0;
 	hasbounced = false;
