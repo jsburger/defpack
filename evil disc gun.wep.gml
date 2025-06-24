@@ -12,6 +12,7 @@ return 3;
 return 1;
 
 #define weapon_area
+if ((random_get_seed() mod 5) == 1) return 5;
 return -1;
 
 #define weapon_load

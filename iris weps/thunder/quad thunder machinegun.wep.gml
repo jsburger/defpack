@@ -29,7 +29,7 @@ return choose("WAVES OF POWER","QUADRUPOLE");
 
 #define sound(n)
 weapon_post(7,-5,5)
-sound_play_pitchvol(sndGammaGutsKill,1.4,.3+skill_get(17)*.2)
+sound_play_pitchvol(sndGammaGutsKill, 1.4, (.3 + .2 * skill_get(mut_laser_brain)) * vol)
 sound_play(sndQuadMachinegun)
 if !skill_get(17)sound_play_pitch(sndLightningRifle,random_range(1.3,1.5))else sound_play_pitch(sndLightningRifleUpg,random_range(1.3,1.5))
 repeat(n)mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, 2+random(4), c_navy)

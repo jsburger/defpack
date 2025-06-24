@@ -32,9 +32,11 @@ return "PERCUSSION BLAST";
 repeat(3)
 {
 	weapon_post(4,-3,7)
-	sound_play_pitchvol(sndGammaGutsKill,1.4,.3+skill_get(17)*.2)
+	var vol = .5;
+	sound_play_pitchvol(sndGammaGutsKill, 1.4, (.3 + .2 * skill_get(mut_laser_brain)) * vol)
 	sound_play(sndPistol)
-	if !skill_get(17)sound_play_pitch(sndLightningRifle,random_range(1.3,1.5))else sound_play_pitch(sndLightningRifleUpg,random_range(1.3,1.5))
+	if !skill_get(17) sound_play_pitchvol(sndLightningRifle,random_range(1.3,1.5), vol)
+	else sound_play_pitchvol(sndLightningRifleUpg,random_range(1.3, 1.5), vol)
 	mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, 2+random(3), c_navy)
 	with mod_script_call("mod", "defpack tools", "create_lightning_bullet",x,y){
 		move_contact_solid(other.gunangle,6)

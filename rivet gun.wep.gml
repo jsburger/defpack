@@ -34,7 +34,7 @@ return{
 }
 
 #define weapon_fire
-var _p = random_range(.8, 1.2), _v = .6
+var _p = random_range(.8, 1.2), _v = .4
 sound_play_pitchvol(sndHeavyCrossbow, .7 * _p, _v)
 sound_play_pitchvol(sndMachinegun, .7 * _p, _v)
 sound_play_pitchvol(sndSuperSplinterGun, 1.4 * _p, _v)

@@ -30,7 +30,7 @@ with instance_create(x+lengthdir_x(length,gunangle),y+lengthdir_y(length,gunangl
 	sprite_index = sprShank
 	image_alpha = 0
 	damage = 146
-	if skill_get(13) = true mask_index = global.mskBone else mask_index = global.sprBone
+	if skill_get(13) > 0 mask_index = global.mskBone else mask_index = global.sprBone
 	image_speed = .4
 	creator = other
 	team = other.team
@@ -85,10 +85,10 @@ instance_destroy()
 
 #define bone_hit
 hit = 1
-sound_play_pitchvol(sndHammerHeadEnd, random_range(1.33, 1.43), 20)
+sound_play_pitchvol(sndHammerHeadEnd, random_range(1.33, 1.43), 1)
 sound_play_pitch(sndGruntHurtF, .8)
 sound_play_pitch(sndBigDogHit, 2)
-sound_play_pitchvol(sndCursedPickup, 2, 20)
+sound_play_pitchvol(sndCursedPickup, 2, 1)
 
 projectile_hit(other, damage, 40, direction)
 view_shake_at(x,y,200)

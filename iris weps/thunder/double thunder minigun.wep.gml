@@ -32,9 +32,13 @@ motion_add(gunangle-180,2)
 repeat(3)
 {
 	weapon_post(7,-3,12)
-	sound_play_pitchvol(sndGammaGutsKill,1.7,.3+skill_get(17)*.2)
-	sound_play(sndDoubleMinigun)
-	if !skill_get(17)sound_play_pitch(sndLightningRifle,random_range(1.2,1.4))else sound_play_pitch(sndLightningRifleUpg,random_range(1.2,1.4))
+	var vol = .6;
+	sound_play_pitchvol(sndGammaGutsKill,1.7,(.3+skill_get(17)*.2) * vol)
+	sound_play_pitchvol(sndDoubleMinigun, 1, vol)
+	if !skill_get(17)
+		sound_play_pitchvol(sndLightningRifle, random_range(1.2, 1.4), vol)
+	else 
+		sound_play_pitchvol(sndLightningRifleUpg, random_range(1.2, 1.4), vol)
 	mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, 2+random(3), c_navy)
 	with mod_script_call("mod", "defpack tools", "create_lightning_bullet",x,y){
 		move_contact_solid(other.gunangle,8)

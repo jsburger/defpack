@@ -28,7 +28,7 @@ with instance_create(x+lengthdir_x(12+(20*skill_get(13)),gunangle),y+lengthdir_y
 	sprite_index = sprShank
 	image_alpha = 0
 	damage = 34
-	if skill_get(13) = true mask_index = global.mskBone mask_index = global.sprBone
+	mask_index = skill_get(mut_long_arms) > 0 ? global.mskBone : global.sprBone;
 	image_speed = .4
 	creator = other
 	team = other.team
@@ -80,9 +80,9 @@ repeat(3) with instance_create((other.x*other.size+x)/(other.size+1),(other.y*ot
 	    
 	    
 hit = 1
-sound_play_pitchvol(sndHammerHeadEnd,random_range(1.23,1.33),20)
-sound_play_pitch(sndGruntHurtF,.8)
-sound_play_pitchvol(sndCursedPickup,2,20)
+sound_play_pitchvol(sndHammerHeadEnd, random_range(1.23, 1.33), 1)
+sound_play_pitch(sndGruntHurtF, .8)
+sound_play_pitchvol(sndCursedPickup, 2, 1)
 projectile_hit(other,damage,12,direction)
 sleep(150)
 view_shake_at(x,y,150)

@@ -47,12 +47,16 @@ if fork(){
 
 repeat(2)
 {
-	var _p = random_range(.8,1.2)
-	sound_play_pitchvol(sndGammaGutsKill,1.4,.3+skill_get(17)*.2)
-	if !skill_get(17)sound_play_pitch(sndLightningRifle,1.2*_p)else sound_play_pitch(sndLightningRifleUpg,1.2*_p)
-	sound_play_pitch(sndSmartgun,random_range(.6,.8))
-	sound_play_pitch(sndPistol,.7*p)
-	sound_play_pitchvol(sndHeavyNader,1*_p,.8)
+	var _p = random_range(.8,1.2),
+		vol = .6;
+	sound_play_pitchvol(sndGammaGutsKill, 1.4, (.3 + .2 * skill_get(mut_laser_brain)) * vol)
+	if !skill_get(17)
+		sound_play_pitchvol(sndLightningRifle,1.2*_p, vol)
+	else
+		sound_play_pitchvol(sndLightningRifleUpg,1.2*_p, vol)
+	sound_play_pitchvol(sndSmartgun,random_range(.6,.8), vol)
+	sound_play_pitchvol(sndPistol,.7*_p, vol)
+	sound_play_pitchvol(sndHeavyNader,1*_p,.8 * vol)
 	motion_add(ang+180,1)
 	weapon_post(7,-9,24)
 	mod_script_call("mod","defpack tools", "shell_yeah_heavy", 100, 25, random_range(3,10), c_navy)

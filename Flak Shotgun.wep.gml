@@ -89,12 +89,13 @@ if fork(){
     exit
 }
 
-var _p = random_range(.9, 1.2);
-sound_play_pitch(sndMachinegun, _p)
-sound_play_pitch(sndCrossbow, _p)
-sound_play_pitch(sndShotgun, .7 * _p)
-sound_play_pitch(sndFlakCannon, 1.2 * _p)
-sound_play_pitch(sndSuperFlakCannon, .7 * _p)
+var _p = random_range(.9, 1.2),
+	vol = .6;
+sound_play_pitchvol(sndMachinegun, _p, vol);
+sound_play_pitchvol(sndCrossbow, _p, vol);
+sound_play_pitchvol(sndShotgun, .7 * _p, vol);
+sound_play_pitchvol(sndFlakCannon, 1.2 * _p, vol);
+sound_play_pitchvol(sndSuperFlakCannon, .7 * _p, vol);
 weapon_post(8,-90,46)
 repeat(5){
 	with instance_create(x,y,FlakBullet){

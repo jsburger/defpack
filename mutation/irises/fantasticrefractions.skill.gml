@@ -2,7 +2,7 @@
 	global.button = sprite_add("../../sprites/mutation/sprMutPrismaticIris7.png", 1, 12, 16);
 	global.icon   = sprite_add("../../sprites/mutation/sprMutPrismaticIcon7.png", 1, 8, 7);
 	global.brush  = sprite_add_weapon("../../sprites/weapons/sprToothbrushInvert.png", 0, 0);
-	global.prism  = sprite_add_weapon("../../iris weps/prismaticannon/sprites/sprIrisWeaponRandom.png",6,12);
+	// global.prism  = sprite_add_weapon("../../iris weps/prismaticannon/sprites/sprIrisWeaponRandom.png",6,12);
 	global.colors = [];
 	
 #define add_color(STRING)
@@ -42,8 +42,8 @@ return "@yBULLETS @sBECOME " + `@(color:${make_colour_hsv(current_frame mod 255,
 #define skill_toothbrush_sprite
 	return global.brush;
 
-#define skill_prismaticannon_sprite
-	return global.prism;
+// #define skill_prismaticannon_sprite
+// 	return global.prism;
 
 #define skill_prismaticannon_text
 	return mod_script_call("skill", global.colors[irandom_range(0, array_length(global.colors) - 1)], "skill_prismaticannon_text");

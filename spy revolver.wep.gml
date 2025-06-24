@@ -115,8 +115,8 @@ with instance_nearest(x,y,enemy) if distance_to_object(other) <= 64{
 				}
 				view_shake_max_at(x,y,200)
     		    sleep(30)
-    		    sound_play_pitchvol(sndHammerHeadEnd,random_range(1.23,1.33),20)
-    		    sound_play_pitchvol(sndBasicUltra,random_range(0.9,1.1),20)
+    		    sound_play_pitchvol(sndHammerHeadEnd,random_range(1.23,1.33),1)
+    		    sound_play_pitchvol(sndBasicUltra,random_range(0.9,1.1),1)
     		    sound_play_pitch(sndCoopUltraA,random_range(3.8,4.05))
 				with other projectile_hit(other, other.my_health);
 			}

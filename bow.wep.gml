@@ -30,7 +30,7 @@
 	return sndSwapHammer
 
 #define weapon_auto
-	return mod_script_call_nc("mod", "defpack tools", "abris_weapon_auto", "bow charge", self)
+	return false
 
 #define weapon_melee
 	return false
@@ -47,7 +47,7 @@
 	        with creator{
 	            var l = other.charge/other.maxcharge * 4 - 1
 	            if other.charged
-	                for var i = -2; i <= 1; i++{
+	                for (var i = -2; i <= 1; i++) {
 	                    draw_sprite_ext(other.spr_arrow, 0, x - lengthdir_x(l, gunangle), y - lengthdir_y(l, gunangle) + yoff, 1, 1, gunangle + 16*i + 16, c_white, 1)
 	                }
 	            else
@@ -145,7 +145,7 @@
 		    // Charge sound:
         	if(charge > maxcharge * .2) { 
         	
-        		sound_play_pitchvol(sound,4 + (charge/maxcharge) * 6, .7);
+        		sound_play_pitchvol(sound,4 + (charge/maxcharge) * 6, .4);
         	}	
 		}
     	else {
@@ -173,7 +173,10 @@
 	}else{instance_destroy(); exit}
 	
 	// Reduce speed just a bit for gamefeel when charged:
-	if(charged) {creator.speed *= .9}
+	if(charged) {
+		creator.speed *= .9;
+		instance_destroy()
+	}
 
 #define bow_cleanup
 	view_pan_factor[index] = undefined;
@@ -183,10 +186,11 @@
 	bow_cleanup();
 	
 	// Sound:
-	var _p = random_range(.8, 1.2);
-	sound_play_pitchvol(sndSwapGuitar, 4 * _p, .8);
-	sound_play_pitchvol(sndAssassinAttack ,2 * _p, .8);
-	sound_play_pitchvol(sndClusterOpen, 2 * _p, .2);
+	var _p = random_range(.8, 1.2),
+		vol = .8;
+	sound_play_pitchvol(sndSwapGuitar, 4 * _p, .8 * vol);
+	sound_play_pitchvol(sndAssassinAttack ,2 * _p, .8 * vol);
+	sound_play_pitchvol(sndClusterOpen, 2 * _p, .2 * vol);
 	
 	// Uncharged fire:
 	if(!charged) {
@@ -218,8 +222,8 @@
 				motion_add(random(360), choose(5, 6));
 			}
 		}
-		sound_play_pitchvol(sndShovel, 2, .8);
-		sound_play_pitchvol(sndUltraCrossbow, 3, .8);
+		sound_play_pitchvol(sndShovel, 2, .8 * vol);
+		sound_play_pitchvol(sndUltraCrossbow, 3, .8 * vol);
 		
 		var ang = creator.gunangle + random_range(-5, 5) * creator.accuracy,
 			  i = -24 * accuracy;
@@ -234,7 +238,7 @@
 				creator = other.creator;
 				team    = creator.team;
 				
-				damage = 4;
+				damage = 8;
 				move_contact_solid(creator.gunangle, 6);
 				motion_add(ang + i, 22);
 				image_angle = direction;

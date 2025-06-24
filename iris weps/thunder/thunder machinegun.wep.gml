@@ -32,7 +32,7 @@ return "COMES WITH A BUMP STOCK";
 repeat(2)
 {
 	weapon_post(4,-3,7)
-	sound_play_pitchvol(sndGammaGutsKill,1.4,.3+skill_get(17)*.2)
+	sound_play_pitchvol(sndGammaGutsKill, 1.4, (.3 + .2 * skill_get(mut_laser_brain)) * vol)
 	sound_play(sndMachinegun)
 	if !skill_get(17)sound_play_pitch(sndLightningRifle,random_range(1.3,1.5))else sound_play_pitch(sndLightningRifleUpg,random_range(1.3,1.5))
 	mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, 2+random(3), c_navy)

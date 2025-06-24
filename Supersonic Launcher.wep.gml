@@ -18,7 +18,7 @@ return true;
 return 48;
 
 #define weapon_cost
-return 3;
+return 4;
 
 #define weapon_swap
 return sndSwapExplosive;
@@ -36,11 +36,11 @@ return "DEAFENING";
 
 #define weapon_fire
 sleep(12)
-var p = random_range(.8,1.2)
+var p = random_range(.8,1.2), v = .6
 //sound_play_pitch(sndDiscgun,1.6) good pest sound
 //sound_play_pitch(sndPortalAppear,3) ancient gunnery
-sound_play_pitch(sndUltraShotgun,1.7*p)
-sound_play_pitch(sndHyperLauncher,.6*p)
+sound_play_pitchvol(sndUltraShotgun, 1.7 * p, v)
+sound_play_pitchvol(sndHyperLauncher, .6 * p, v)
 sound_play_gun(sndClickBack,1,.2)
 sound_stop(sndClickBack)
 weapon_post(12,-16,23)

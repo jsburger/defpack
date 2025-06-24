@@ -48,12 +48,13 @@ with instance_create(x, y, MeatExplosion){
 }
 
 weapon_post(8,-13,32)
-var _p = random_range(.8,1.2)
-sound_play_pitchvol(sndBloodCannon,1.3*_p,.7)
-sound_play_pitch(sndExplosionL,2*_p)
-sound_play_pitch(sndDoubleShotgun,.8*_p)
-sound_play_pitchvol(sndBloodCannonLoop,3*_p,.2)
-sound_play_pitch(sndBloodLauncherExplo,.5*_p);
+var _p = random_range(.8,1.2),
+    vol = .7;
+sound_play_pitchvol(sndBloodCannon,1.3*_p, .7 * vol)
+sound_play_pitchvol(sndExplosionL,2*_p, vol)
+sound_play_pitchvol(sndDoubleShotgun,.8*_p, vol)
+sound_play_pitchvol(sndBloodCannonLoop,3*_p,.2 * vol)
+sound_play_pitchvol(sndBloodLauncherExplo,.5*_p, vol)
 sound_play_gun(sndClickBack,1,.2)
 sound_stop(sndClickBack)
 sleep(120)
@@ -217,7 +218,7 @@ return found
     draw_set_blend_mode(bm_normal);
 
 #define lightning_hit
-   // if(projectile_canhit_melee(other)){
+    if frac(current_frame) < current_time_scale {
          // Hit:
         projectile_hit(other, damage, force, image_angle);
 
@@ -232,7 +233,7 @@ return found
             with instance_create(x,y,MeatExplosion) team = other.team
             explo = 0
         }
-    //}
+    }
 
 #define lightning_anim
     instance_destroy();

@@ -68,7 +68,7 @@ for (var i = 0, _l = array_length(_sounds); i < _l; i++){
 #define weapon_fire
 	weapon_post(7, 12, 7)
 	var _p = random_range(.8, 1.2);
-	sound_play_bulk(getsounds(), _p * .8, .6)
+	sound_play_bulk(getsounds(), _p * .8, .5)
 
 	var _c = instance_is(self, FireCont) && "creator" in self ? creator : self;
 	

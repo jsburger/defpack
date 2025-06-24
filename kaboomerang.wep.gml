@@ -26,7 +26,7 @@
   return sndSwapHammer;
 
 #define weapon_auto
-  return true;
+  return false;
 
 #define weapon_melee
   return true;

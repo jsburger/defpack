@@ -29,12 +29,12 @@ return 20;
 return choose("READY FOR ACTION","THE LAST STANCE","DELETE THEM");
 
 #define weapon_fire
-sound_play_pitch(sndHyperLauncher,random_range(.3,.38))
+sound_play_pitchvol(sndHyperLauncher,random_range(.3,.38), .7);
 
 repeat(2)
 {
-	sound_play_pitch(sndHyperSlugger,random_range(.7,.8))
-	sound_play_pitch(sndHeavySlugger,.8)
+	sound_play_pitchvol(sndHyperSlugger,random_range(.7,.8), .6)
+	sound_play_pitchvol(sndHeavySlugger,.8, .6)
 	mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, random_range(4,6), c_black)
 
 	with mod_script_call("mod", "defpack tools", "create_dark_bullet",x+lengthdir_x(2,gunangle),y+lengthdir_y(2,gunangle)){

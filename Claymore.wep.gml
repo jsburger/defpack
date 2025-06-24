@@ -5,13 +5,13 @@ global.sprLunatic 	 = sprite_add_weapon("sprites/weapons/sprLunatic.png", 1, 13)
 #define weapon_name
 if instance_is(self,Player)
 {
-	if string_upper(alias) = "SAIX"{return "LUNATIC"}
+	if string_upper(player_get_alias(index)) = "SAIX"{return "LUNATIC"}
 }
 return "CLAYMORE";
 
 #define weapon_sprt
 if instance_is(self,Player){
-	if string_upper(alias) = "SAIX"{
+	if string_upper(player_get_alias(index)) = "SAIX"{
 		return global.sprLunatic;
 	}
 }

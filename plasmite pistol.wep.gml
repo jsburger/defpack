@@ -28,10 +28,10 @@ return{
 var _flip = instance_is(self, Player) ? wepflip : choose(-1, 1)
 repeat(2 + skill_get(mut_laser_brain))
 {
-	weapon_post(5,0,4)
-	sound_pitch(
-		sound_play_gun(skill_get(17) > 0 ? sndPlasmaUpg : sndPlasma, 0, .7), 2 + random(.1)
-	)
+	weapon_post(5,0,4);
+	var s = sound_play_gun(skill_get(17) > 0 ? sndPlasmaUpg : sndPlasma, 0, .7);
+	sound_pitch(s, 2 + random_nonsync(.1));
+	sound_volume(s, .8);
 	with mod_script_call("mod", "defpack tools", "create_plasmite", x, y){
 		fric = random_range(.06,.08) + .12
 		motion_set(other.gunangle + random_range(8, 14) * other.accuracy * _flip, 16 * random_range(.9, 1.1))

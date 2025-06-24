@@ -357,6 +357,9 @@ if _e = true{
 #define draw_gui
 if instance_exists(CharSelect) draw_menu()
 
+#define approach(a, b, n, dn)
+return (b - a) * (1 - power((n - 1)/n, dn))
+
 #define draw_menu
 
 draw_set_font(fntChat)
@@ -399,9 +402,10 @@ for (var i = 0; i < maxp; i++) if player_is_active(i){
     var iw = 10, ih = 6;
 
 
-    if global.wantbutton[i] != 0{
-        global.buttonsopen[i] += global.wantbutton[i]
-        global.wantbutton[i] -= sign(global.wantbutton[i])/10
+    if global.wantbutton[i] != 0 {
+        global.buttonsopen[i] += approach(global.buttonsopen[i], global.wantbutton[i], 4, current_time_scale);
+        // global.buttonsopen[i] += global.wantbutton[i]
+        // global.wantbutton[i] -= sign(global.wantbutton[i])/10
     }
     //button center
     var xx = game_width , xy = 20;
@@ -417,8 +421,8 @@ for (var i = 0; i < maxp; i++) if player_is_active(i){
     draw_tri(game_width - xw/2 +.5, xy + 4, 3, 5, global.buttonsopen[i] > 0 ? 0 : 180, p.tabcolor)
     if mouse and released{
         click(.2)
-        global.wantbutton[i] = global.buttonsopen[i] > 0 ? -.4 : .4
-        global.buttonsopen[i] =  global.buttonsopen[i] > 0
+        global.wantbutton[i] = global.buttonsopen[i] > 0 ? -1 : 1;
+        global.buttonsopen[i] =  global.buttonsopen[i] > 0;
     }
     if global.buttonsopen[i] > 0{
         //drawing config button
@@ -437,22 +441,22 @@ for (var i = 0; i < maxp; i++) if player_is_active(i){
         }
         xx -= (1.5 * xw + 2) * global.buttonsopen[i]
 
-        // //drawing palette button
-        // if !found{
-        //     mouse = point_in_rectangle(mousex,mousey,xx-xw,xy,xx,xy+xw)
-        //     found = mouse
-        // }
-        // else mouse = 0
-        // draw_sprite_ext(sprDailyArrowSplat,2,xx-xw/2,xy+5,1,1,180,c_black,1)
-        // draw_sprite_ext(global.sprButtons,1,xx-1-xw/2,xy,1,1,0,mouse ? p.textcolor : c_ltgray,1)
-        // if mouse draw_text_shadow(xx - 34, xy + 10, "Palette Menu")
-        // if mouse && released{
-        //     global.paletteopen[i] = !global.paletteopen[i]
-        //     click(0)
-        // }
+        //drawing palette button
+        if !found{
+            mouse = point_in_rectangle(mousex,mousey,xx-xw,xy,xx,xy+xw)
+            found = mouse
+        }
+        else mouse = 0
+        draw_sprite_ext(sprDailyArrowSplat,2,xx-xw/2,xy+5,1,1,180,c_black,1)
+        draw_sprite_ext(global.sprButtons,1,xx-1-xw/2,xy,1,1,0,mouse ? p.textcolor : c_ltgray,1)
+        if mouse draw_text_shadow(xx - 34, xy + 10, "Palette Menu")
+        if mouse && released{
+            global.paletteopen[i] = !global.paletteopen[i]
+            click(0)
+        }
 
         //button wrapper
-        var bright = xx - xw*1/2, btop = xy - xw + 4.5
+        var bright = xx - xw*3/2, btop = xy - xw + 4.5
         draw_line_width_color(game_width - xw + 3, btop, bright, btop, 1, c_white, c_white)
         draw_line_width_color(bright, btop, bright - 3, btop + 3, 1, c_white, c_white)
         draw_line_width_color(bright - 3, btop + 3, bright - 3, xy + xw,1, c_white, c_white)
@@ -544,17 +548,35 @@ for (var i = 0; i < maxp; i++) if player_is_active(i){
         draw_rectangle_c(pmx - pmw + 4 ,copyy + 1, pmx - pmw + 10,copyy + 2*copyh + 3, c_black)
         draw_rectangle_c(pmx - pmw + 3 ,copyy, pmx - pmw + 9,copyy + 2*copyh + 2, edit.color)
 
-
-        var tleft = pmx - pmw*2 - 5, tright = pmx - pmw - 2
-        var theight = 8, tgap = 2, ttop = _y - (lq_size(p) - 23) * (theight+tgap)
-
+        
+        var name_index = 0;
+        for (var q = edit.scroll; q < lq_size(p); q++) {
+            if lq_get_key(p, q) == "name" {
+                name_index = q;
+            }
+        }
+        
+        var tleft = pmx - (pmw * 2) - 5,
+            tright = pmx - pmw - 2;
+        var theight = 8,
+            tgap = 2,
+            ttop = _y - (lq_size(p) - 23) * (theight+tgap);
 
         var moused = 0
         if mousex > tleft and mousex < tright moused = ceil((mousey - ttop + tgap)/(theight))
-
-        for (var q = 1+edit.scroll; q < lq_size(p); q++) {
-            var ty = ttop + theight*(q - 1);
-
+        if moused >= name_index {
+            moused += 1;
+        }
+        
+        var skipped_name = 0;
+        for (var q = edit.scroll; q < lq_size(p); q++) {
+            if q == name_index {
+                skipped_name = -1;
+                continue;
+            }
+            
+            var ty = ttop + theight*((q - 1) + skipped_name);
+            
             draw_rectangle_c(tleft - 8, ty, tright, ty + theight - tgap + 1, c_black)
             draw_rectangle_c(tright, ty, tleft-4, ty + theight - tgap, q = moused || edit.selected = q ? p.palettehighlight : p.palettebutton)
             draw_rectangle_c(tleft - 9, ty, tleft - 5, ty + theight - tgap, lq_get_value(p,q))

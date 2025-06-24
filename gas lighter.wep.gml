@@ -141,9 +141,9 @@ if !charged sound_stop(sound)
 		var _p = random_range(.8, 1.2);
 	}
 	with creator if _ch{
-		sound_play_pitch(sndFlamerStart, .7 * _p)
-		sound_play_pitch(sndDoubleFireShotgun, .8 * _p)
-		sound_play_pitch(sndSuperSlugger, .9 * _p)
+		sound_play_pitchvol(sndFlamerStart, .7 * _p, .6)
+		sound_play_pitchvol(sndDoubleFireShotgun, .8 * _p, .6)
+		sound_play_pitchvol(sndSuperSlugger, .9 * _p, .6)
 
 		repeat(24) with create_gas_fire(x + hspeed, y + vspeed){
 			move_contact_solid(other.gunangle, 12);
@@ -160,8 +160,8 @@ if !charged sound_stop(sound)
 			image_angle = direction + random_range(-12, 12);
 		}
 	}else{
-		sound_play_pitch(sndOasisExplosion, 2.5 * _p)
-		sound_play_pitch(sndToxicBarrelGas, .8 * _p)
+		sound_play_pitchvol(sndOasisExplosion, 2.5 * _p, .6);
+		sound_play_pitchvol(sndToxicBarrelGas, .8 * _p, .6);
 
 		repeat(42)with instance_create(x + hspeed, y + vspeed, ToxicGas){
       team = other.team

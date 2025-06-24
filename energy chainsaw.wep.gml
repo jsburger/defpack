@@ -87,7 +87,7 @@ return{
 			sprite_index = mskNone
 			canfix = false
 			force = 0
-			damage = choose(1, 1, 2)
+			damage = choose(2, 3)
 			if skill_get(13) = true mask_index = global.mskChainsaw else mask_index = global.sprChainsaw
 			image_xscale = 1.33
 			image_yscale = 1.25
@@ -194,15 +194,16 @@ return{
 						event_perform(ev_alarm,0)
 					}
 					_i += 360 / (_n * 2);
-
+				} */
+				repeat(_n) {
 					with mod_script_call("mod", "defpack tools", "create_plasmite", other.x, other.y){
 						team = other.team;
 						creator = other.creator;
-						motion_add(_i+ random_range(-6, 6) * _c, 12 + _n);
+						motion_add(_i + random_range(-12, 12) * _c, 12 + _n);
 						maxspeed = speed;
 					}
-					_i += 360 / (_n * 2);
-				}*/
+					_i += 360 / (_n);
+				}
 
 				with instance_create(other.x, other.y, PlasmaImpact){
 					team = other.team;

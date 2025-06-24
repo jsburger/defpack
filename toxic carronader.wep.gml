@@ -56,9 +56,9 @@ with instances_matching_ne(hitme,"team",team)
 		{
 			view_shake_max_at(x,y,200)
 			sleep(150)
-			sound_play_pitchvol(sndHammerHeadEnd,random_range(1.23,1.33),20)
-			sound_play_pitchvol(sndBasicUltra,random_range(0.9,1.1),20)
-			sound_play_pitch(sndCoopUltraA,random_range(3.8,4.05))
+			sound_play_pitchvol(sndHammerHeadEnd, random_range(1.23, 1.33), 1)
+			sound_play_pitchvol(sndBasicUltra, random_range(0.9, 1.1), 1)
+			sound_play_pitch(sndCoopUltraA, random_range(3.8, 4.05))
 			instance_destroy()
 			continue
 		}
@@ -66,10 +66,12 @@ with instances_matching_ne(hitme,"team",team)
 		{
 			view_shake_max_at(x,y,200)
 			sleep(150)
-			sound_play_pitchvol(sndHammerHeadEnd,random_range(1.23,1.33),20)
-			sound_play_pitchvol(sndBasicUltra,random_range(0.9,1.1),20)
-			sound_play_pitch(sndCoopUltraA,random_range(3.8,4.05))
-			if "my_health" in self my_health -= 25
+			sound_play_pitchvol(sndHammerHeadEnd, random_range(1.23,1.33), 1)
+			sound_play_pitchvol(sndBasicUltra, random_range(0.9,1.1), 1)
+			sound_play_pitch(sndCoopUltraA, random_range(3.8, 4.05))
+			if "my_health" in self {
+				my_health -= 25;
+			}
 		}
 		motion_add(-point_direction(x,y,other.x,other.y),speed*2)
 		with instance_create(x,y,CaveSparkle){image_xscale=2;image_yscale=2;image_angle=random(359);depth=-3}

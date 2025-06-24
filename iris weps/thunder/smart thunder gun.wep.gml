@@ -23,7 +23,7 @@ return 2;
 return sndSwapMachinegun;
 
 #define weapon_area
-return -1sound_play_pitchvol(sndGammaGutsKill,1.4,.3+skill_get(17)*.2)
+return -1sound_play_pitchvol(sndGammaGutsKill, 1.4, (.3 + .2 * skill_get(mut_laser_brain)) * vol)
 if !skill_get(17)sound_play_pitch(sndLightningRifle,random_range(1.3,1.5))else sound_play_pitch(sndLightningRifleUpg,random_range(1.3,1.5))
 
 #define weapon_text
@@ -55,7 +55,7 @@ repeat(2)
     }
 	sound_play_pitch(sndSmartgun,random_range(.8,1.2))
 	sound_play_pitchvol(sndGammaGutsKill,1.6,.3+skill_get(17)*.2)
-	if !skill_get(17)sound_play_pitch(sndLightningRifle,random_range(1.4,1.6))else sound_play_pitch(sndLightningRifleUpg,random_range(1.6,1.8))
+	if skill_get(mut_laser_brain) 		sound_play_pitchvol(sndLightningRifleUpg,random_range(1.6,1.8), vol) 	else  		sound_play_pitchvol(sndLightningRifle,random_range(1.4,1.6), vol)
 	weapon_post(5,-2,6)
 	mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, random_range(3,5), c_navy)
 	if fork(){

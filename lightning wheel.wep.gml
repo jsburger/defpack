@@ -39,13 +39,17 @@
   return false;
 
 #define weapon_fire
-  weapon_post(0, 12, 4);
-  var _pitch = random_range(.8, 1.2)
-  sound_play(sndChickenThrow);
-  sound_play_pitchvol(sndLightningShotgunUpg, 2 * _pitch, skill_get(mut_laser_brain) > 0)
-  sound_play_pitch(skill_get(mut_laser_brain) > 0 ? sndEnergyHammerUpg : sndEnergyHammer, 1.5 * _pitch)
-  sound_play_pitch(skill_get(mut_laser_brain) > 0 ? sndEnergyScrewdriverUpg : sndEnergyScrewdriver, 1.6 * _pitch)
-  sound_play_pitch(sndLightningReload, .7 * _pitch)
+    weapon_post(0, 12, 4);
+    var _pitch = random_range(.8, 1.2),
+        vol = .6;
+    sound_play_pitchvol(sndChickenThrow, 1, vol);
+    var brain = skill_get(mut_laser_brain) > 0;
+    if brain {
+        sound_play_pitchvol(sndLightningShotgunUpg, 2 * _pitch, vol);
+    }
+    sound_play_pitchvol(brain ? sndEnergyHammerUpg : sndEnergyHammer, 1.5 * _pitch, vol);
+    sound_play_pitchvol(brain ? sndEnergyScrewdriverUpg : sndEnergyScrewdriver, 1.6 * _pitch, vol);
+    sound_play_pitchvol(sndLightningReload, .7 * _pitch, vol);
 
     var _c = instance_is(self, FireCont) && "creator" in self ? creator : self;
 
@@ -207,8 +211,10 @@
 
     //Sound Effects
     whooshtime = (whooshtime + current_time_scale) mod (maxwhoosh + returning)
-    if whooshtime < current_time_scale audio_play_ext(sndMeleeFlip, x, y, 1.4 + random_range(-.1, .1) - returning * .4, 1, 0);
-
+    if whooshtime < current_time_scale {
+        var sound = sound_play_hit(sndMeleeFlip, 0);
+        audio_sound_pitch(sound, 1.4 + random_range(-.1, .1) - returning * .4);
+    }
     //Gather Pickups
     if instance_number(Pickup) > 0 {
         //Move existing Pickups out of the way, and update their positions to the wheel's
@@ -525,7 +531,7 @@
   if instance_exists(creator)
   {
       whooshtime = (whooshtime + current_time_scale) mod (maxwhoosh + phase)
-      if whooshtime < current_time_scale audio_play_ext(sndMeleeFlip, x, y, 2.4 - length/6 + random_range(-.1, .1) - phase * .4, length/6, 0);
+      if whooshtime < current_time_scale audio_play_ext(sndMeleeFlip, x, y, 2.4 - length/6 + random_range(-.1, .1) - phase * .4, min(1.2, length/6), 0);
   }
   with Pickup if !instance_is(self, WepPickup){
     if distance_to_object(other) <= 4 && ("rang" not in self || ("rang" in self && rang != other.id)){rang = other.id}

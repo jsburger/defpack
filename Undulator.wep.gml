@@ -48,10 +48,10 @@ with instance_create(x,y,CustomObject)
 }
 
 #define Undulator_step
-sound_play_pitch(sndUltraCrossbow,2.2)
-sound_play_pitch(sndHeavyRevoler,2)
-sound_play_pitch(sndIcicleBreak,2)
-sound_play_pitch(sndComputerBreak,random_range(.8,1.2))
+sound_play_pitchvol(sndUltraCrossbow,2.2, .6);
+sound_play_pitchvol(sndHeavyRevoler,2, .6);
+sound_play_pitchvol(sndIcicleBreak,2, .6);
+sound_play_pitchvol(sndComputerBreak, random_range(.8, 1.2), .6);
 if instance_exists(creator){
 	gunangle = creator.gunangle
 	accuracy = creator.accuracy

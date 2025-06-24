@@ -66,8 +66,15 @@ return "POTENTIAL"
         bounce = 2
         typ = 1
         image_speed = 1
-        super = false
-        if irandom(10000 / (1 + 9 * skill_get(mut_lucky_shot)) - 1) == 0 {
+        super = false;
+        var odds = 10000;
+        if skill_get(mut_lucky_shot) > 0 {
+            odds /= skill_get(mut_lucky_shot) * 10;
+        }
+        if crown_current == crwn_luck {
+            odds /= 10;
+        }
+        if random(odds) < 1 {
             damage = 999999999999999999
             speed *= 4
             bounce = 10

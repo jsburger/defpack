@@ -34,7 +34,7 @@ repeat(2)
 	weapon_post(2,-3,2)
 	sound_play_pitchvol(sndGammaGutsKill,1.6,.3+skill_get(17)*.2)
 	sound_play(sndPistol)
-	if !skill_get(17)sound_play_pitch(sndLightningRifle,random_range(1.4,1.6))else sound_play_pitch(sndLightningRifleUpg,random_range(1.6,1.8))
+	if skill_get(mut_laser_brain) 		sound_play_pitchvol(sndLightningRifleUpg,random_range(1.6,1.8), vol) 	else  		sound_play_pitchvol(sndLightningRifle,random_range(1.4,1.6), vol)
 	mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, 2+random(3), c_navy)
 	with mod_script_call("mod", "defpack tools", "create_lightning_bullet",x,y){
 		motion_add(other.gunangle+random_range(-4,4)*other.accuracy,10)

@@ -289,6 +289,10 @@
 #macro charge_mouse 0
 #macro charge_player 1
 
+#macro typ_ignore 0
+#macro typ_reflect 1
+#macro typ_destroy 2
+
 #macro default_bloom { xscale : 2, yscale : 2, alpha : .1 };
 
 //notes on excited neurons
@@ -992,16 +996,17 @@ return [_x, _y];
 
 #define audio_play_hit_pitch(snd, pitch)
 var p = get_coords_nonsync(),
-    q = audio_play_sound_at(snd, p[0] - x, 0, p[1] - y, 100, 300, 1, false, 1);
+    q = audio_play_sound_at(snd, p[0] - x, p[1] - y, 0, 100, 500, .5, false, 1);
 audio_sound_pitch(q, pitch);
 return q;
 
 #define audio_play_ext(snd, x, y, pitch, vol, stack)
 if !stack sound_stop(snd);
 var p = get_coords_nonsync()
-var q = audio_play_sound_at(snd, p[0] - x, 0, p[1] - y, 100, 300, 1, false, 1);
+var q = audio_play_sound_at(snd, p[0] - x, p[1] - y, 0, 100, 500, .5, false, 1);
 audio_sound_pitch(q, pitch);
 audio_sound_gain(q, vol, 0);
+
 return q;
 
  //very good and epic sound stuff
@@ -1295,7 +1300,7 @@ with create_bullet(x,y){
     spr_dead = spr.PsyBulletHit
     bounce_color = c_purple
 
-    damage = 4
+    damage = 3
     typ = 2
     force = -12
 
@@ -2058,7 +2063,7 @@ with create_slash_bullet(x, y) {
 	mask_index = msk.DarkBullet
 	spr_dead = spr.DarkBulletHit
 
-	typ = 2
+	typ = typ_reflect;
 	damage = 8
 	force = 7
 
@@ -3322,7 +3327,7 @@ if chance(66){
 if speed < friction instance_destroy()
 
 #define quartz_pickup_create(_x, _y)
-	_obj = instance_create(_x, _y, Pickup);
+	var _obj = instance_create(_x, _y, Pickup);
 	with _obj
 	{
 		name = "QuartzPickup";
@@ -3390,10 +3395,9 @@ if speed < friction instance_destroy()
 
 		if (_w.health < _w.maxhealth) {
 
-			with AmmoPickup {
+			with instances_matching_ne(AmmoPickup, "quartz_check", true) {
 
-				var _chance = random(99) < (19 * (1 - _w.health/_w.maxhealth));
-				if ("quartz_check" not in self && _chance) {
+				if (random(99) < (19 * (1 - _w.health/_w.maxhealth))) {
 					quartz_pickup_create(x, y);
 
 					instance_delete(self);
@@ -3402,7 +3406,6 @@ if speed < friction instance_destroy()
 				quartz_check = true;
 			}
 		}
-
 	}
 
 #define instances_meeting(_x, _y, _obj)
@@ -3507,11 +3510,11 @@ if speed < friction instance_destroy()
 	var _t = team;
 	view_shake_max_at(x, y, 90)
 	sleep(50)
-	sound_play_pitchvol(sndHammerHeadEnd,random_range(1.23,1.33),20)
-	sound_play_pitchvol(sndBasicUltra,random_range(0.9,1.1),20)
-	sound_play_pitch(sndCoopUltraA,random_range(3.8,4.05))
-	sound_play_pitch(sndBasicUltra,random_range(.6,.8))
-	sound_play_gun(sndClickBack,1,.5)
+	sound_play_pitchvol(sndHammerHeadEnd, random_range(1.23, 1.33), 1)
+	sound_play_pitchvol(sndBasicUltra, random_range(0.9, 1.1), 1)
+	sound_play_pitch(sndCoopUltraA, random_range(3.8, 4.05))
+	sound_play_pitch(sndBasicUltra, random_range(.6, .8))
+	sound_play_gun(sndClickBack, 1, .5)
 	sound_stop(sndClickBack)
 	with instance_create(other.x,other.y,CustomObject){
 	    with instance_create(x,y,CustomSlash){

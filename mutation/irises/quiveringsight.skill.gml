@@ -2,8 +2,8 @@
 	global.button = sprite_add("../../sprites/mutation/sprMutPrismaticIris6.png", 1, 12, 16);
 	global.icon   = sprite_add("../../sprites/mutation/sprMutPrismaticIcon6.png", 1, 8, 7);
 	global.brush  = sprite_add_weapon("../../sprites/weapons/sprToothbrushYellow.png", 0, 0);
-	global.prism  = sprite_add_weapon("../../iris weps/prismaticannon/sprites/sprIrisWeaponBouncer.png",6,12);
-	global.sprBouncyFlash = sprite_add("../../iris weps/prismaticannon/sprites/sprBouncyMuzzleflash.png", 1, 8, 8);
+	// global.prism  = sprite_add_weapon("../../iris weps/prismaticannon/sprites/sprIrisWeaponBouncer.png",6,12);
+	// global.sprBouncyFlash = sprite_add("../../iris weps/prismaticannon/sprites/sprBouncyMuzzleflash.png", 1, 8, 8);
 	mod_script_call("skill", "fantasticrefractions", "add_color", mod_current);
 
 #define skill_name
@@ -21,8 +21,8 @@
 #define skill_toothbrush_sprite
 	return global.brush;
 
-#define skill_prismaticannon_sprite
-	return global.prism;
+// #define skill_prismaticannon_sprite
+// 	return global.prism;
 	
 #define skill_prismaticannon_text
 	return "@yREFRACTIONS";
