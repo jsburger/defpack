@@ -31,7 +31,7 @@
 #define get_hitscan_target()
 /// get_hitscan_target(x1, y1, angle, team, dis = hitscan_dis)
 var x1 = argument[0], y1 = argument[1], angle = argument[2], team = argument[3];
-var dis = argument_count > 4 ? argument[4] : hitscan_dis;
+var dis; if (argument_count > 4) dis = argument[4]; else dis = hitscan_dis;
     var noteam = get_ally_list(team);
     var shields = instances_matching(PopoShield, "team", team);
     with lasthit x += 10000
@@ -338,7 +338,7 @@ var dis = argument_count > 4 ? argument[4] : hitscan_dis;
 		on_hit  = hitscan_hit
 		on_destroy = hitscan_destroy
 
-		on_projectile = gamma_projectile
+		on_projectile = nothing // gamma_projectile
 		on_grenade    = nothing
 		on_anim       = nothing
 
@@ -675,7 +675,7 @@ if (instance_exists(other) && other.typ > 0) {
 
 #define recycle_gland_roll_special_edition
 /// recycle_gland_roll_special_edition(_chance = 60)
-var _chance = argument_count > 0 ? argument[0] : 60;
+var _chance; if (argument_count > 0) _chance = argument[0]; else _chance = 60;
 
 	var _gland = skill_get(mut_recycle_gland) + (10 * skill_get("recycleglandx10"));
 	if chance_raw(_chance * _gland) {
@@ -1042,7 +1042,7 @@ var _dx = _x - clamp(_x, _left, _right),
 #define get_psy_hitscan_target()
 /// get_hitscan_target(x1, y1, angle, team, dis = hitscan_dis)
 var x1 = argument[0], y1 = argument[1], angle = argument[2], team = argument[3];
-var dis = argument_count > 4 ? argument[4] : hitscan_dis;
+var dis; if (argument_count > 4) dis = argument[4]; else dis = hitscan_dis;
     var noteam = get_ally_list(team);
     var shields = instances_matching(PopoShield, "team", team);
     with lasthit x += 10000

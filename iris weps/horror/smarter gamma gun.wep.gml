@@ -56,7 +56,7 @@ else {
 if _canshoot {
     
     var secondAngle = angle + random_range(-14, 14);
-    var projTargets = mod_script_call_nc("mod", "defpack tools", "get_n_targets", _tx, _ty, projectile, "team", team, 3);
+    var projTargets = [];//mod_script_call_nc("mod", "defpack tools", "get_n_targets", _tx, _ty, projectile, "team", team, 3);
     with projTargets {
         
         //i did some geometry to get this

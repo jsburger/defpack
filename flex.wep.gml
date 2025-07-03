@@ -98,7 +98,7 @@ if instance_exists(other) && other.my_health <= 0{
     sleep(6)
     if instance_exists(creator){
         var a = max(16*other.size,6)
-        sleep(a*2)
+        sleep(a * 1.5)
         with creator if infammo >= 0 infammo = min(infammo + a, 120)  //limit infammo gain to 120 frames
     }
 }

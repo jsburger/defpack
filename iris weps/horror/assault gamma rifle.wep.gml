@@ -33,7 +33,7 @@ return choose("IN AND OUT");
 repeat(3)
 {
     var _i = 3;
-	weapon_post(2,-8,2)
+	weapon_post(2,-6,2)
 	sound_play_pitchvol(sndRadPickup,1.2, 1.7)
 	sound_play_pitchvol(sndUltraPistol,3, .7)
 	sound_play_pitch(sndPistol,random_range(1.2,1.4))

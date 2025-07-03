@@ -89,11 +89,11 @@ repeat(2)with instance_create(x,y,CustomProjectile)
 }
 
 #define mega_step
-with instances_matching_ne(projectile, "team", team){
+/*with instances_matching_ne(projectile, "team", team){
 	if distance_to_object(other) <= 0{
 		instance_destroy()
 	}
-}
+}*/
 
 #define mega_hit
 if current_frame_active{

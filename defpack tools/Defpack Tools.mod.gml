@@ -1259,7 +1259,7 @@ with create_slash_bullet(x, y){
 
 #define recycle_gland_roll
 /// recycle_gland_roll(_chance = 60)
-var _chance = argument_count > 0 ? argument[0] : 60;
+var _chance; if (argument_count > 0) _chance = argument[0]; else _chance = 60;
 
 	var _gland = skill_get(mut_recycle_gland) + (10 * skill_get("recycleglandx10"));
 	if recycle_amount != 0 {
@@ -1734,7 +1734,7 @@ with create_slash_bullet(x, y) {
 	lasthit = -4
 
 	on_hit = script_ref_create(gamma_hit)
-	on_projectile = script_ref_create(gamma_projectile)
+	on_projectile = script_ref_create(nothing) // script_ref_create(gamma_projectile)
 	on_grenade    = script_ref_create(nothing)
 
 	return id
@@ -1744,7 +1744,7 @@ with create_slash_bullet(x, y) {
 #define gamma_projectile
 if (instance_exists(other) && other.typ > 0) {
 	with other instance_destroy()
-	// sleep(4)
+	 sleep(4)
 	pierce -= 2;
 	if (instance_exists(self) && pierce < 0) instance_destroy()
 }
