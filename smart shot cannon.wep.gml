@@ -58,7 +58,7 @@ return choose("CHAIN TARGETS", "HIGH SCORE");
 		damage     = 4;
 		force      = 3;
 		accuracy   = other.accuracy;
-		wallbounce = 12 + skill_get(mut_shotgun_shoulders) * 12;
+		wallbounce = 16 + skill_get(mut_shotgun_shoulders) * 20;
 		
 		ortimer = 18
 		hitammo = ortimer

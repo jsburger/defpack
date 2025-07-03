@@ -32,8 +32,8 @@ return "HOLD THE LINE";
 
 weapon_post(2,-6,2)
 sound_play_pitchvol(sndRadPickup,1.2, 1.7)
-sound_play_pitchvol(sndUltraPistol,3, .6)
-sound_play_pitchvol(sndMachinegun,random_range(1.2,1.4), .8)
+sound_play_pitchvol(sndUltraPistol,3, .7)
+sound_play_pitch(sndMachinegun,random_range(1.2,1.4))
 mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, random_range(3,5), c_lime)
 repeat(2) with mod_script_call("mod", "defpack tools", "create_gamma_bullet",x,y){
     creator = other
