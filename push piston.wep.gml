@@ -190,7 +190,7 @@ return "FAST TRAVEL";
 
 	with creator{
 		weapon_post(12 + _ch * 8, 24 + _ch * 16, 12 + _ch * 8);
-		sleep(30 * _ch);
+		sleep(7 * _ch);
 	}
 
 	with mod_script_call("mod","defpack tools","create_sonic_explosion",creator.x + lengthdir_x(18, creator.gunangle),creator.y + lengthdir_y(18, creator.gunangle)){
@@ -220,7 +220,7 @@ return "FAST TRAVEL";
 			if !_e.fx_check && distance_to_object(other) <= 0{
 				sound_play(snd_hurt);
 				sprite_index = spr_hurt;
-				sleep(100);
+				sleep(50);
 				_e.fx_check = true;
 			}
 		}

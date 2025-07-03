@@ -87,11 +87,11 @@ with creator{
 		    damage = 13 + round(13 * _cc)
 		    worth = 12
 		    with instance_create(x, y, BulletHit) sprite_index = global.sprGammaBulletHit
-		    with instances_matching_ne(projectile, "team", other.team){
+		    /*with instances_matching_ne(projectile, "team", other.team){
 		    	if distance_to_object(other) <= 0{
 		    		instance_destroy()
 		    	}
-		    }
+		    }*/
 		   mod_script_call_nc("mod", "defpack tools", "bolt_line_bulk", q, 2 * _cc, c_yellow, c_lime)
 		}
 	var q = mod_script_call_self("mod", "defpack tools", "sniper_fire", x + lengthdir_x(10, gunangle), y + lengthdir_y(10, gunangle), gunangle + random_range(-8, 8) * accuracy, team, 1 + _cc, _ccc)
@@ -102,11 +102,11 @@ with creator{
 		    damage = 13 + round(13 * _cc)
 		    worth = 12
 		    with instance_create(x, y, BulletHit) sprite_index = global.sprGammaBulletHit
-		    with instances_matching_ne(projectile, "team", other.team){
+		   /* with instances_matching_ne(projectile, "team", other.team){
 		    	if distance_to_object(other) <= 0{
 		    		instance_destroy()
 		    	}
-		    }
+		    }*/
 		   mod_script_call_nc("mod", "defpack tools", "bolt_line_bulk", q, 2 * _cc, c_yellow, c_lime)
 		}
 }
