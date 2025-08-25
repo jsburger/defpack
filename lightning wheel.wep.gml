@@ -129,6 +129,7 @@
     with instance_create(x, y, CustomObject) {
 
         name = "Lightning Wheel"
+        mod_script_call("mod", "defpack tools", "tag_object", self, "LightningWheel");
         defbloom = {
             xscale : 1.33,
             yscale : 1.33,

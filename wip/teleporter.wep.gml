@@ -106,6 +106,7 @@
       with instance_create(mouse_x[index], mouse_y[index], CustomObject){
 
         name = "teleport preview";
+        mod_script_call("mod", "defpack tools", "tag_object", self, "TeleporterPreview")
         creator = other;
         sprite_index = mskNone;
         mask_index   = other.mask_index;

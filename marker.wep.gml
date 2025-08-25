@@ -5,6 +5,8 @@ global.sprBoltStickGround     = sprite_add("sprites/projectiles/sprBoltStickGrou
 global.sprSmallSonicExplosion = sprite_add("sprites/projectiles/sprSonicExplosionSmall.png", 8, 20, 20);
 global.sprMarkerTrail         = sprite_add("sprites/other/sprMarkerTrail.png", 3, 4, 4);
 
+global.trail_stepper = noone;
+
 #macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)
 
 #define weapon_name
@@ -116,6 +118,27 @@ return "UNSEEN ALLIES";
 		}
 	}
 
+#define add_trail(trail)
+	if instance_exists(global.trail_stepper) {
+		array_push(global.trail_stepper.instances, trail);
+	}
+	else {
+		with script_bind_step(trail_step, 0) {
+			global.trail_stepper = self;
+			instances = [trail];
+		}
+	}
+
+#define trail_step
+	instances = instances_matching_gt(instances, "image_alpha", 0)
+	if array_length(instances) <= 0 {
+		instance_destroy();
+		exit;
+	}
+	with instances {
+		image_alpha -= .15 * current_time_scale;
+	}
+	
 #define volley_step
 	if instance_exists(target){
 		x = target.x
@@ -159,23 +182,8 @@ return "UNSEEN ALLIES";
 	if ammo <= 0 instance_destroy()
 
 #define rainarrow_wall
-	var wall = other
-	with instance_create(x,y-z-8,CustomObject){
-	    image_angle = 0
-	    sprite_index = global.sprBoltStickGround
-	    image_index = random(1)
-	    image_xscale = choose(-1,1)
-	    image_speed = .4
-	    depth = -10
-	    on_step = stickstep
-	    if fork(){
-	        repeat(60){
-	            wait(1)
-	            if !instance_exists(wall) break
-	        }
-	        if instance_exists(self) instance_destroy()
-	        exit
-	    }
+	with create_arrow_stick(x, y - z - 8, other) {
+		depth = -10;
 	}
 	with instance_create(x,y,Dust) depth = -10
 	sound_play_pitch(sndBoltHitWall,random_range(.8,1.2))
@@ -210,13 +218,7 @@ return "UNSEEN ALLIES";
 	    image_angle = point_direction(x,y,other.xprevious,other.yprevious - n - dn)
 	    image_xscale = point_distance(x,y,other.xprevious,other.yprevious - n - dn)
 	    depth = other.depth + 1
-	    if fork(){
-	        while instance_exists(self){
-	            image_alpha -= .15 * current_time_scale
-	            wait(0)
-	        }
-	        exit
-	    }
+	    add_trail(self);
 	}
 
 	if z < 0{
@@ -240,22 +242,10 @@ return "UNSEEN ALLIES";
   	            exit
   	        }
   	    }
-  	    with instance_create(x,y + yoff,CustomObject){
-  	        image_angle = 0
-  	        sprite_index = global.sprBoltStickGround
-  	        image_index = random(1)
-  	        image_xscale = choose(-1,1)
-  	        image_speed = .5
-  	        depth = dep
-  	        on_step = stickstep
-  	        if fork(){
-  	            repeat(60){
-  	                wait(1)
-  	            }
-  	            if instance_exists(self) instance_destroy()
-  	            exit
-  	        }
+  	    with create_arrow_stick(x, y + yoff, undefined) {
+  	    	depth = dep;
   	    }
+
   		instance_create(x,y-z,Dust)
   		sound_play_pitch(sndBoltHitWall,random_range(.8,1.2))
   		sound_play_pitch(sndHitWall,random_range(.8,1.2))
@@ -263,11 +253,37 @@ return "UNSEEN ALLIES";
   		instance_destroy()
   	}
 }
+
+#define create_arrow_stick(x, y, wall)
+	with instance_create(x, y, CustomObject) {
+		image_angle = 0
+		sprite_index = global.sprBoltStickGround
+		image_index = random(1)
+		image_xscale = choose(-1,1)
+		image_speed = .5
+		on_step = stickstep
+		self.wall = wall;
+		timer = 60;
+		
+		return self;
+	}
+
 #define rainarrow_draw
 	draw_sprite_ext(shd16, 0, x, y, .3, 1, 0, c_white, (1-z/zstart)*.4)
 	draw_sprite_ext(sprite_index,image_index,x,y-z,image_xscale,image_yscale,270,image_blend,image_index)
 
 #define stickstep
+	timer -= current_time_scale;
+	if timer <= 0 {
+		instance_destroy();
+		exit;
+	}
+	if wall != undefined {
+		if !instance_exists(wall) {
+			instance_destroy();
+			exit;
+		}
+	}
 	if image_index + image_speed * current_time_scale > image_number{
 	    if !irandom(1){
 	        image_speed = 0

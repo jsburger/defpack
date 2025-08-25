@@ -46,22 +46,14 @@ return{
 }
 
 #define weapon_fire
-if !skill_get(17){
-	sound_set_track_position(sndLaser,.09)
-	sound_play_pitch(sndLaser,.2*random_range(.8,1.2))
-}
-else{
-	sound_set_track_position(sndLaserUpg,.2)
-	sound_play_pitch(sndLaserUpg,.4*random_range(.8,1.2))
-}
 if !array_length(instances_matching(instances_matching(CustomProjectile, "name", "vector beam"), "creator", id)) sound_play_pitch(sndPlasmaRifle,.2*random_range(.8,1.2))
-with instance_create(x,y,CustomProjectile){
+with instance_create(x, y, CustomProjectile) {
     name = "vector beam"
+    mod_script_call("mod", "defpack tools", "tag_object", self, "VectorBeam")
     creator = other
     team = other.team
     direction = creator.gunangle
     image_angle = direction
-    created = false
 	sprite_index = global.sprWaterBeam
 	mask_index   = global.mskWaterBeam
 	spr_tail     = global.sprVectorBeamStart
@@ -72,6 +64,18 @@ with instance_create(x,y,CustomProjectile){
 	on_draw = beam_draw
 	on_hit  = beam_hit
 	on_cleanup = beam_cleanup
+	
+	sounds = []
+	array_push(sounds, sound_play_pitchvol(sndEnergyHammerUpg, .4 * random_range(.9, 1.1), .35));
+	if skill_get(mut_laser_brain) {
+		array_push(sounds, sound_play_pitch(sndLaserUpg, .4 * random_range(.8, 1.2)));
+	}
+	else {
+		array_push(sounds, sound_play_pitch(sndLaser, .2 * random_range(.8, 1.2)));
+	}
+	
+	damage = 1;
+	force = 1;
 
     time = weapon_load() + current_time_scale
     image_speed = 0
@@ -79,21 +83,11 @@ with instance_create(x,y,CustomProjectile){
 
 
 #define beam_cleanup
-sound_set_track_position(sndEnergyHammerUpg,0)
-sound_set_track_position(sndLaserUpg,0)
-sound_set_track_position(sndLaser,0)
 sound_stop(sndEnergyHammerUpg)
 
 #define beam_step
 if instance_exists(creator){
     with creator weapon_post(5,5*current_time_scale,0)
-	if created = false{
-		created = true
-		sound_set_track_position(sndEnergyHammerUpg,.3)
-		sound_pitch(sndEnergyHammerUpg,0)
-		sound_play_pitchvol(sndEnergyHammerUpg,.4 * random_range(.9, 1.1), .35)
-		sound_set_track_position(sndEnergyHammerUpg,0)
-	}
 
     time -= current_time_scale
     if time <= 0 {instance_destroy(); exit}
@@ -128,9 +122,9 @@ if instance_exists(creator){
         }
     }
     image_yscale = 1 * random_range(.9,1.1)
-    sound_set_track_position(sndEnergyHammerUpg,0)
-    sound_set_track_position(sndLaserUpg,0)
-    sound_set_track_position(sndLaser,0)
+    for (var i = 0; i < array_length(sounds); i++) {
+    	sound_set_track_position(sounds[i], 0);
+    }
 }
 else instance_destroy()
 
@@ -140,7 +134,7 @@ else instance_destroy()
 if current_frame_active{
     with other motion_set(other.direction,max((4+skill_get(17)*2-size/2),1))
     view_shake_max_at(other.x,other.y,min(other.size,4))
-    projectile_hit(other,1,1,direction)
+    projectile_hit(other, damage, force, direction)
     with other{
         if place_meeting(x+lengthdir_x(speed+1,other.direction)+hspeed,y+lengthdir_y(speed+1,other.direction)+vspeed,Wall){
     	    with other projectile_hit(other,other.speed ,1,direction)

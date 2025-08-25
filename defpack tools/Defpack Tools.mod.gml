@@ -227,6 +227,9 @@
 		CursorCentre = sprite_add("../sprites/interface/sprCursorCentre.png", 0, 1, 1);
 
 	}
+	
+	//Known projectiles that are iterated over
+	global.tags = {};
 
 	//Distribute sprites to other libraries (add mod name to list to expand)
 	with ["defhitscan"] {
@@ -360,21 +363,43 @@
 	        draw_circle_color(x, y, 70  + 20 * lv + random(5), c_black,c_black,0)
 	    }
 	}
-	with instances_matching(CustomProjectile,"name","Lightning Bolt"){
+	with tagged_objects("LightningBolts") {
 		draw_circle_color(x,y,550 + random(10), c_gray,c_gray,0)
 		draw_circle_color(x,y,250 + random(10), c_black,c_black,0)
 	}
-	with instances_matching(CustomObject,"name","teleport preview"){
+	with tagged_objects("TeleporterPreview") {
 		draw_circle_color(x,y,32 + random(2), c_gray,c_gray,0)
 		draw_circle_color(x,y,24 + random(2), c_black,c_black,0)
 	}
-	with instances_matching(CustomObject,"name","Lightning Wheel"){
+	with tagged_objects("LightningWheel") {
 		draw_circle_color(x,y,32 + random(4), c_gray,c_gray,0)
 		draw_circle_color(x,y,24 + random(4), c_black,c_black,0)
 	}
 	with instances_matching([Bolt,BoltStick],"name","marker bolt"){
 		draw_circle_color(x+lengthdir_x(sprite_width/2+2,direction),y+lengthdir_y(sprite_width/2+2,direction),35 + random(3), c_gray,c_gray,0)
 		draw_circle_color(x+lengthdir_x(sprite_width/2+2,direction),y+lengthdir_y(sprite_width/2+2,direction),20 + random(3), c_black,c_black,0)
+	}
+
+#define tag_object(proj, name)
+	var a = lq_get(global.tags, name);
+	if (a == undefined) {
+		lq_set(global.tags, name, [proj]);
+	}
+	else {
+		array_push(a, proj);
+	}
+
+#define tagged_objects(name)
+	var a = lq_get(global.tags, name);
+	if (a == undefined) {
+		return noone;
+	}
+	else {
+		if array_length(a) > 0 {
+			a = instances_matching_ne(a, "id", null);
+			lq_set(global.tags, name, a);
+		}
+		return a;
 	}
 
 #define request_hud_draw(scriptRef)
@@ -392,7 +417,7 @@
 	}
 
 	//Sniper charge stuff. Could be moved to hud requests
-	var q = instances_matching(CustomObject, "parent", "SniperCharge");
+	var q = tagged_objects("SniperCharge");
 	if (array_length(q) > 0) with instances_matching_gt(q, "index", -1) if player_is_local_nonsync(index) {
 
 		var _col = player_get_color(index),
@@ -552,7 +577,7 @@ with instances_matching_ne(CustomObject, "defbloom", undefined) {
         lq_defget(defbloom, "angle", image_angle), image_blend, defbloom.alpha * image_alpha
     )
 }
-with instances_matching(CustomProjectile,"name","vector beam"){
+with tagged_objects("VectorBeam") {
   draw_sprite_ext(sprite_index, image_index, xstart, ystart, image_xscale, 1.5*image_yscale, image_angle, image_blend, 0.15 + brain_active * .05);
 	if x != xstart draw_sprite_ext(spr_tail, 0, xstart, ystart, 1.5, image_yscale*1.5, image_angle, image_blend, .15 + brain_active * .05);
 	if x != xstart draw_sprite_ext(spr_head, 0, x, y, image_yscale*2.5, image_yscale*2.5, image_angle-45, image_blend, .15 + brain_active * .05);
@@ -585,7 +610,7 @@ with Player if visible{
 
 #define step
 	// Lazy gas fire implementation
-	with instances_matching(Flame, "can_ignite", true) {
+	with tagged_objects("CanIgnite") if can_ignite {
 
 		var _t = self.team;
 		if place_meeting(x, y, ToxicGas) {
@@ -712,25 +737,15 @@ with Player if visible{
 	    hitid = [sprite_index, string_replace(string_upper(object_get_name(object_index)), "EXPLOSION", " EXPLOSION")]
 	}
 
-	// Shot cannon epic troll transformation (why is it called flak canon?)
-	with instances_matching(WepPickup, "wep", "shot cannon"){
-		if "defcheck" not in self{
-			defcheck = true;
-			if curse && irandom(4) = 0{
-				wep = "flak canon";
-				curse = false;
-			}
-		}
-	}
-
 	// Donut Drops
 	if mod_exists("weapon", "donut box") {
-		with instances_matching_le(instances_matching_ne(instances_matching_ne(enemy, "freeze", null), "object_index", Grunt), "my_health", 0) {
+		with instances_matching_le(instances_matching_ne(instances_matching_ne(enemy, "freeze", null), "object_index", Grunt), "my_health", 0) if "donut_check" not in self {
 			if !irandom(97) {
 				with instance_create(x, y, WepPickup) {
 					wep = "donut box"
 				}
 			}
+			donut_check = true;
 		}
 	}
 
@@ -757,7 +772,7 @@ with Player if visible{
 		if (canspec && button_check(index, "spec")) {
 			var _vx = view_xview[index],
 				_vy = view_yview[index];
-			with instances_in_bbox(_vx, _vy, _vx + game_width, _vy + game_height, instances_matching(Pickup, "name", "QuartzPickup")) {
+			with instances_in_bbox(_vx, _vy, _vx + game_width, _vy + game_height, tagged_objects("QuartzPickup")) {
 				var l = (1 + skill_get(mut_throne_butt)) * current_time_scale,
 					d = point_direction(x, y, other.x, other.y),
 					_x = x + lengthdir_x(l, d),
@@ -770,7 +785,7 @@ with Player if visible{
 	}
 
 	// Pickup step
-	with instances_matching(Pickup, "name", "QuartzPickup"){
+	with tagged_objects("QuartzPickup") {
 		//Collision
 		if(mask_index == mskPickup && place_meeting(x, y, Pickup)) {
 			with(instances_meeting(x, y, instances_matching(Pickup, "mask_index", mskPickup))) {
@@ -1260,7 +1275,7 @@ with create_slash_bullet(x, y){
 
 #define recycle_gland_roll
 /// recycle_gland_roll(_chance = 60)
-var _chance; if (argument_count > 0) _chance = argument[0]; else _chance = 60;
+var _chance = argument_count > 0 ? argument[0] : 60;
 
 	var _gland = skill_get(mut_recycle_gland) + (10 * skill_get("recycleglandx10"));
 	if recycle_amount != 0 {
@@ -2904,6 +2919,7 @@ else{
         lightning_refresh()
         hitid = [sprLightningHit,"Lightning Bolt"]
         name = "Lightning Bolt"
+        tag_object(self, "LightningBolts")
 		ammo_type = 5;
         time = skill_get(17) + 4
         timestart = time
@@ -3331,6 +3347,7 @@ if speed < friction instance_destroy()
 	with _obj
 	{
 		name = "QuartzPickup";
+		tag_object(self, "QuartzPickup")
 		sprite_index = spr.QuartzPickup
 		mask_index   = mskPickup
 		image_speed  = 0
@@ -4306,6 +4323,7 @@ if d {
 with instance_create(x, y, Flame) {
 
 	damage += 1;
+	tag_object(self, "CanIgnite")
 	can_ignite = true;
 	sprite_index = spr.GasFire;
 	return self;
@@ -4364,6 +4382,7 @@ with instance_create(x, y, Flame) {
 with instance_create(x, y, CustomObject){
 	name    = "SniperCharge"
 	parent  = name
+	tag_object(self, "SniperCharge")
 	creator = -4
 	charge  = 0
 	acc     = .75
