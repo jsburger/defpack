@@ -43,12 +43,13 @@ return{
 return choose("END OF THE WORLD");
 
 #define weapon_fire
-sound_play_pitch(sndDevastatorUpg,1.4)
+var vol = .7, p = random_range(.9, 1.1);
+sound_play_pitchvol(sndDevastatorUpg, 1.4 * p, vol);
 if brain_active{
-        sound_play_pitch(sndLightningPistolUpg,.8)
-
-}else{
-    sound_play_pitch(sndLightningPistol,.8)
+    sound_play_pitchvol(sndLightningPistolUpg, .8 * p, vol);
+}
+else {
+    sound_play_pitchvol(sndLightningPistol, .8 * p, vol);
 }
 weapon_post(16,-190,125)
 sleep(45)
@@ -68,20 +69,20 @@ with instance_create(x,y,CustomProjectile)
 	motion_add(other.gunangle+random_range(-1,1)*other.accuracy,26)
 	projectile_init(other.team,other)
 	sprite_index = global.sprUmbrella
-  mask_index   = global.mskUmbrella
+	mask_index   = global.mskUmbrella
 
 	image_angle = direction
 	damage  = 20
 	friction = 0
-  force = 30
-  image_speed = 1
-
-  on_anim = stop_anim
-  on_wall = lightningcluster_wall
-  on_hit  = lightningcluster_hit
+	force = 30
+	image_speed = 1
+	
+	on_anim = stop_anim
+	on_wall = lightningcluster_wall
+	on_hit  = lightningcluster_hit
 	on_destroy = lightningcluster_destroy
 
-  if GameCont.area = 101 instance_destroy()
+	if GameCont.area = 101 instance_destroy()
 }
 
 #define lightningcluster_wall
@@ -158,16 +159,17 @@ for var i = 0; i< 3; i++
 }
 
 #define play_sound_lightning()
-var _pitch = random_range(.8,1.2)
-sound_play_pitch(sndExplosion,2*_pitch)
-sound_play_pitch(sndExplosionS,.7*_pitch)
-sound_play_pitchvol(sndExplosionL,.5*_pitch,.6)
-sound_set_track_position(sndExplosionL,.3*_pitch)
-sound_play_pitch(sndSuperBazooka,.5*_pitch)
+var _pitch = random_range(.8, 1.2),
+	v = .6;
+sound_play_pitchvol(sndExplosion, 2 * _pitch, v);
+sound_play_pitchvol(sndExplosionS, .7 * _pitch, v);
+var sound = sound_play_pitchvol(sndExplosionL, .5 * _pitch, .6 * v);
+sound_set_track_position(sound, .3 * _pitch)
+sound_play_pitchvol(sndSuperBazooka,.5*_pitch, v)
 if brain_active{
-	sound_play_pitchvol(sndLightningCannonEnd,.8*_pitch,.7)
-	sound_play_pitchvol(sndLightningRifleUpg,.7*_pitch,.6)
+	sound_play_pitchvol(sndLightningCannonEnd, .8 * _pitch,.7 * v)
+	sound_play_pitchvol(sndLightningRifleUpg, .7 * _pitch,.6 * v)
 }
 else{
-	sound_play_pitchvol(sndLightningRifle,.7*_pitch,.6)
+	sound_play_pitchvol(sndLightningRifle, .7 * _pitch, .6 * v)
 }

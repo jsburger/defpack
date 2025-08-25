@@ -2937,6 +2937,7 @@ else{
         on_cleanup = lightning_cleanup
         on_step    = lightning_step
         on_hit     = lightning_hit
+        buffer_exists = {value: true};
         depth = -8
 
         return id
@@ -3009,8 +3010,10 @@ for (var i = 1; i < array_length_1d(ypoints); i++){
 lightning_cleanup()
 
 #define lightning_cleanup
-vertex_delete_buffer(vbuf)
-sound_set_track_position(sndExplosionL,0)
+if buffer_exists.value {
+	buffer_exists.value = false;
+	vertex_delete_buffer(vbuf);
+}
 
 #define lightning_step
 view_shake_max_at(x,y,30)
