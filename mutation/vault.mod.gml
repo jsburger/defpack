@@ -77,11 +77,13 @@ with(instance_create(0, 0, CustomObject)){
 // area that the room should look like
 #macro ROOM_AREA area_vault
 
+#macro 
+
 #define game_start
 
 
 #define level_start
-if (!global.generated && !instance_exists(Menu) && variable_instance_get(GameCont, "area", ROOM_AREA) == 100) && skill_get("prismaticiris") > 0{
+if (!global.generated && !instance_exists(Menu) && variable_instance_get(GameCont, "area", ROOM_AREA) == "BlackMarket") && skill_get("prismaticiris") > 0{
 	global.generated = true;
 
 	var _x = 10016;

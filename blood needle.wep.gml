@@ -103,8 +103,9 @@ return{
   if projectile_canhit_melee(_e) = true{
     if !instance_is(_e, prop) repeat(3) with instance_create((other.x*other.size+x)/(other.size+1),(other.y*other.size+y)/(other.size+1),determine_gore(other)){image_angle = random(360)}
     projectile_hit(_e, damage, force, direction);
-    if _e.my_health <= 0 && !instance_is(_e, prop){
-    	
+    if (_e.my_health <= 0 && !instance_is(_e, prop) ) {
+    	//Disabled for now
+	/*
     	repeat(3){
     		with _e with instance_copy(true){
     			kills = 0;
@@ -117,7 +118,7 @@ return{
     			raddrop = 0;
     			projectile_hit(self, maxhealth, 5 + irandom(6), random(360));
     		}*/
-    	}
+    	}*/
     	
         view_shake_at(x, y, 16);
         sleep(10 + min(_e.size, 3) * 12);
