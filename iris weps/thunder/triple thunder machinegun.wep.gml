@@ -28,16 +28,23 @@ return -1;
 return "PRAISE THE @bTRAPEZOID";
 
 #define sound(n)
+var p = random_range(.9, 1.1),
+	vol = .7;
 weapon_post(6,-3,6)
-sound_play_pitchvol(sndGammaGutsKill, 1.4, (.3 + .2 * skill_get(mut_laser_brain)) * vol)
-sound_play(sndTripleMachinegun)
-if !skill_get(17)sound_play_pitch(sndLightningRifle,random_range(1.3,1.5))else sound_play_pitch(sndLightningRifleUpg,random_range(1.3,1.5))
+sound_play_pitchvol(sndGammaGutsKill, 1.4, (.3 + .2 * skill_get(mut_laser_brain)) * vol);
+sound_play_pitchvol(sndTripleMachinegun, p, vol);
+if !skill_get(17) {
+	sound_play_pitchvol(sndLightningRifle, 1.4 * p, vol);
+}
+else {
+	sound_play_pitchvol(sndLightningRifleUpg,1.4 * p, vol);
+}
 repeat(n)mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, 2+random(3), c_navy)
 
 
 #define weapon_fire
 sound(2)
-for var i = -1; i <= 1; i+= 2{
+for (var i = -1; i <= 1; i+= 2){
     with mod_script_call("mod", "defpack tools", "create_lightning_bullet",x,y){
     	move_contact_solid(other.gunangle,6)
     	motion_add(other.gunangle+7*i+random_range(-2,2)*other.accuracy,10)

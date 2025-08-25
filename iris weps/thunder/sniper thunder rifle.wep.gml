@@ -72,17 +72,18 @@ with mod_script_call_self("mod", "defpack tools", "create_sniper_charge", x, y){
 var _c = charge, _cc = charge/maxcharge, _ccc = _cc = 1 ? 1 : 0, cr = creator;
 var _s = skill_get(mut_laser_brain)
 repeat(1) {
-    var _ptch = random_range(-.5, .5)
-    sound_play_pitch(sndHeavyRevoler,.7-_ptch/3)
-  	sound_play_pitch(sndSawedOffShotgun,1.8-_ptch)
-  	sound_play_pitch(sndSniperFire,random_range(.6,.8))
-  	sound_play_pitch(sndHeavySlugger,1.3+_ptch/2)
-    if skill_get(mut_laser_brain) > 0{
-      sound_play_pitch(sndLightningCannon,.8*random_range(.8, 1.2))
-      sound_play_pitch(sndGammaGutsKill,.6*random_range(.8, 1.2))
+    var _ptch = random_range(-.5, .5),
+        vol = .5
+    sound_play_pitchvol(sndHeavyRevoler,.7-_ptch/3, vol);
+  	sound_play_pitchvol(sndSawedOffShotgun,1.8-_ptch, vol);
+  	sound_play_pitchvol(sndSniperFire,random_range(.6,.8), vol);
+  	sound_play_pitchvol(sndHeavySlugger,1.3+_ptch/2, vol);
+    if skill_get(mut_laser_brain) > 0 {
+      sound_play_pitchvol(sndLightningCannon,.8*random_range(.8, 1.2), vol);
+      sound_play_pitchvol(sndGammaGutsKill,.6*random_range(.8, 1.2), vol);
     }
-    sound_play_pitch(sndLightningRifleUpg,1.4*random_range(.8, 1.2))
-    sound_play_pitch(sndLightningReload,.8*random_range(.8, 1.2))
+    sound_play_pitchvol(sndLightningRifleUpg,1.4*random_range(.8, 1.2), vol);
+    sound_play_pitchvol(sndLightningReload,.8*random_range(.8, 1.2), vol);
     with cr {
     	weapon_post(12,2,158)
     	motion_add(gunangle -180,_c / 20)
@@ -96,7 +97,7 @@ repeat(1) {
         	    worth = 12
         	    with instance_create(x, y, BulletHit) sprite_index = global.sprLightningBulletHit
         	    var n = 3*hyperspeed/(_cc + .2)
-        	    for var i = 12; i < image_xscale; i += random(n){
+        	    for (var i = 12; i < image_xscale; i += random(n)) {
         	        with instance_create(xstart + lengthdir_x(2*i, direction), ystart + lengthdir_y(2*i, direction), Lightning){
         	            creator = cr
         	            team = cr.team

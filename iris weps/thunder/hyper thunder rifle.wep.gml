@@ -35,9 +35,15 @@ repeat (10)
 	if (!instance_exists(self)) break;
 	mod_script_call("mod","defpack tools", "shell_yeah", 180, 25, 2+random(3), c_navy)
 	weapon_post(5, -10, 4);
-	if !skill_get(17)sound_play_pitch(sndLightningRifle,random_range(1.3,1.5))else sound_play_pitch(sndLightningRifleUpg,random_range(1.3,1.5))
-	sound_play_pitch(sndHyperRifle,random_range(.7,.9))
-	sound_play_pitchvol(sndGammaGutsKill,1.4,.4+skill_get(17)*.1)
+	var vol = .6;
+	if !skill_get(17) {
+		sound_play_pitchvol(sndLightningRifle,random_range(1.3,1.5), vol);
+	}
+	else {
+		sound_play_pitchvol(sndLightningRifleUpg,random_range(1.3,1.5), vol);
+	}
+	sound_play_pitchvol(sndHyperRifle,random_range(.7,.9), vol)
+	sound_play_pitchvol(sndGammaGutsKill,1.4,(.4+skill_get(17)*.1) * vol);
 	with mod_script_call("mod", "defpack tools", "create_lightning_bullet",x,y){
 		move_contact_solid(other.gunangle,8)
 		motion_add(other.gunangle+random_range(-4,4)*other.accuracy,10)

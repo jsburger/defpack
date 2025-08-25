@@ -34,12 +34,18 @@ var i = -h/2 -h/14
 
 repeat(2)
 {
-	var _p = random_range(.8,1.2)
+	var _p = random_range(.8,1.2),
+		vol = .6;
 	weapon_post(4,-11,2)
-	sound_play_pitchvol(sndQuadMachinegun,.8*_p,.7)
-	sound_play_pitchvol(sndBouncerShotgun,.6*_p,.6)
-	sound_play_pitchvol(sndGammaGutsKill,1.2*_p,.3+skill_get(17)*.2)
-	if !skill_get(17)sound_play_pitch(sndLightningRifle,1.5*_p)else sound_play_pitch(sndLightningRifleUpg,1.5*_p)
+	sound_play_pitchvol(sndQuadMachinegun,.8*_p,.7 * vol)
+	sound_play_pitchvol(sndBouncerShotgun,.6*_p,.6 * vol)
+	sound_play_pitchvol(sndGammaGutsKill,1.2*_p,(.3+skill_get(17)*.2) * vol);
+	if !skill_get(17){ 
+		sound_play_pitchvol(sndLightningRifle,1.5*_p, vol)
+	}
+	else {
+		sound_play_pitchvol(sndLightningRifleUpg,1.5*_p, vol)
+	}
 	mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, random_range(2,5), c_navy)
 	repeat(7) {
 		i += h/7

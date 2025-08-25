@@ -79,19 +79,19 @@ with mod_script_call_self("mod", "defpack tools", "create_sniper_charge", x, y){
 
 #define thunder_shotgun_fire
     var _c = charge, _cc = charge/maxcharge, _ccc = _cc = 1 ? 1 : 0, cr = creator;
-    var _ptch = random_range(-.5, .5)
-    sound_play_pitch(sndHeavySlugger,.55-_ptch/8)
-  	sound_play_pitch(sndHeavyNader,.4-_ptch/8)
-  	sound_play_pitch(sndNukeExplosion,5-_ptch*2)
-  	sound_play_pitch(sndSawedOffShotgun,1.8-_ptch)
-  	sound_play_pitch(sndSniperFire,random_range(.6,.8))
+    var _ptch = random_range(-.5, .5), vol = .5;
+    sound_play_pitchvol(sndHeavySlugger,.55-_ptch/8, vol)
+  	sound_play_pitchvol(sndHeavyNader,.4-_ptch/8, vol)
+  	sound_play_pitchvol(sndNukeExplosion,5-_ptch*2, vol)
+  	sound_play_pitchvol(sndSawedOffShotgun,1.8-_ptch, vol)
+  	sound_play_pitchvol(sndSniperFire,random_range(.6,.8), vol)
     if skill_get(mut_laser_brain) > 0{
-      sound_play_pitch(sndLightningCannonEnd,.8*random_range(.8, 1.2))
-      sound_play_pitch(sndGammaGutsKill,.6*random_range(.8, 1.2))
+      sound_play_pitchvol(sndLightningCannonEnd,.8*random_range(.8, 1.2), vol)
+      sound_play_pitchvol(sndGammaGutsKill,.6*random_range(.8, 1.2), vol)
     }
-    sound_play_pitch(sndLightningRifleUpg,1.4*random_range(.8, 1.2))
-    sound_play_pitch(sndLaserUpg,.8*random_range(.8, 1.2))
-    sound_play_pitch(sndLightningReload,.8*random_range(.8, 1.2))
+    sound_play_pitchvol(sndLightningRifleUpg,1.4*random_range(.8, 1.2), vol)
+    sound_play_pitchvol(sndLaserUpg,.8*random_range(.8, 1.2), vol)
+    sound_play_pitchvol(sndLightningReload,.8*random_range(.8, 1.2), vol)
     with cr {
     	weapon_post(15,40,210)
 		motion_add(gunangle -180,_c / 5)
@@ -109,7 +109,7 @@ with mod_script_call_self("mod", "defpack tools", "create_sniper_charge", x, y){
         	    worth = 12
         	    with instance_create(x, y, BulletHit) sprite_index = global.sprLightningBulletHit
         	    var n = 3*hyperspeed/(_cc + .2)
-        	    for var i = 12; i < image_xscale; i += random(n){
+        	    for (var i = 12; i < image_xscale; i += random(n)) {
         	        with instance_create(xstart + lengthdir_x(2*i, direction), ystart + lengthdir_y(2*i, direction), Lightning){
         	            creator = cr
         	            team = cr.team
@@ -119,7 +119,7 @@ with mod_script_call_self("mod", "defpack tools", "create_sniper_charge", x, y){
         	            // with instance_create(x, y, LightningSpawn) image_angle = other.image_angle
         	        }
         	    }
-        	mod_script_call_nc("mod", "defpack tools", "bolt_line_bulk", q, 2 * _cc, c_blue, c_aqua)
+        		mod_script_call_nc("mod", "defpack tools", "bolt_line_bulk", q, 2 * _cc, c_blue, c_aqua)
         	}
         	_a += other.deviation /other.amount * 2;
         }

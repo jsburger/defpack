@@ -22,17 +22,18 @@ return 0
 return 0
 #define weapon_fire
 repeat(3){
-var _p = random_range(.8, 1.4);
-	sound_play_pitchvol(sndQuadMachinegun, 1.6 * _p, .6)
-	sound_play_pitchvol(sndDoubleMinigun, .4 * _p, .6)
-	sound_play_pitch(skill_get(mut_laser_brain) > 0 ? sndLightningShotgunUpg : sndLightningShotgun, 1.4 * _p)
-	sound_play(sndMinigun)
+	var _p = random_range(.8, 1.4),
+		vol = .8;
+	sound_play_pitchvol(sndQuadMachinegun, 1.6 * _p, .6 * vol)
+	sound_play_pitchvol(sndDoubleMinigun, .4 * _p, .6 * vol)
+	sound_play_pitchvol(skill_get(mut_laser_brain) > 0 ? sndLightningShotgunUpg : sndLightningShotgun, 1.4 * _p, vol);
+	sound_play_pitchvol(sndMinigun, 1, vol)
 	sound_play_gun(sndClickBack, 0, 1)
 	sound_stop(sndClickBack)
 
 	weapon_post(5, 10, 0)
 
-	with instance_create(x + lengthdir_x(16, gunangle) + hspeed, y + lengthdir_y(16, gunangle) + vspeed, CustomObject) {
+	with instance_create(x + lengthdir_x(16, gunangle), y + lengthdir_y(16, gunangle), CustomObject) {
 		depth = -1
 		sprite_index = global.sprBullet
 		image_speed = .9
@@ -45,7 +46,7 @@ var _p = random_range(.8, 1.4);
 
 	mod_script_call("mod", "defpack tools", "shell_yeah", 90, 40, 2 + random(2), c_navy);
 
-	with mod_script_call("mod", "defhitscan", "create_thunder_hitscan_bullet", x + lengthdir_x(12, gunangle) + hspeed, y + lengthdir_y(12, gunangle) + vspeed){
+	with mod_script_call("mod", "defhitscan", "create_thunder_hitscan_bullet", x + lengthdir_x(12, gunangle), y + lengthdir_y(12, gunangle)){
 		direction = other.gunangle + random_range(-5, 5) * other.accuracy;
 		image_angle = direction;
 		creator = other

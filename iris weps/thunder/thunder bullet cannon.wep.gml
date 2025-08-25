@@ -32,11 +32,16 @@ return "BOTTLED LIGHTNING";
 repeat(4)
 {
 	weapon_post(9,-6,42)
-	var _ptch = random_range(-.4,.4);
-	sound_play_pitch(sndPistol,.5)
-	sound_play_pitch(sndMachinegun,1.6+_ptch)
-	sound_play_pitchvol(sndSlugger,2+_ptch,.8)
-	if skill_get(17)=0{sound_play_pitchvol(sndLightningCannon,1.4,.7)}else{sound_play_pitchvol(sndLightningCannonUpg,1.4,.7)}
+	var _ptch = random_range(-.4,.4), vol = .8;
+	sound_play_pitchvol(sndPistol,.5, vol)
+	sound_play_pitchvol(sndMachinegun,1.6+_ptch, vol)
+	sound_play_pitchvol(sndSlugger,2+_ptch,.8 * vol)
+	if !skill_get(17){
+		sound_play_pitchvol(sndLightningCannon,1.4,.7 * vol)
+	}
+	else {
+		sound_play_pitchvol(sndLightningCannonUpg,1.4,.7 * vol)
+	}
 	repeat(3)
 	{
 		mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, 2+random(2), c_navy)

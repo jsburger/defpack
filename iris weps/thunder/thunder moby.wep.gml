@@ -99,16 +99,18 @@ if lq_defget(w, "canbloom", 1){
     }
     w.canbloom = 0
     weapon_post(5+random_range(w.charge * .04,-w.charge * .04), (w.charge >= maxchrg) ? -3 - irandom(3): -3, 2 + w.charge/maxchrg/2)
-    sound_play_pitch(sndTripleMachinegun,(.7 + w.charge * .02)*random_range(.95,1.05))
-    sound_play_pitch(sndLightningShotgun,(1.3 + w.charge * .02)*random_range(.95,1.05))
-    sound_play_pitch(sndLightningCannon,(.7 + w.charge * .02)*random_range(.95,1.05))
+    var vol = .6,
+    	p = random_range(.95, 1.05)
+    sound_play_pitchvol(sndTripleMachinegun,(.7 + w.charge * .02) * p, vol);
+    sound_play_pitchvol(sndLightningShotgun,(1.3 + w.charge * .02) * p, vol);
+    sound_play_pitchvol(sndLightningCannon,(.7 + w.charge * .02) * p, vol);
     if skill_get(mut_laser_brain) > 0{
-      sound_play_pitch(sndLightningPistolUpg,(.7 + w.charge * .02)*random_range(.95,1.05))
-      sound_play_pitch(sndGammaGutsKill,(1.2 + w.charge * .015)*random_range(.95,1.05))
+      sound_play_pitchvol(sndLightningPistolUpg,(.7 + w.charge * .02) * p, vol)
+      sound_play_pitchvol(sndGammaGutsKill,(1.2 + w.charge * .015) * p, vol)
     }else{
-      sound_play_pitch(sndLightningPistol,(.7 + w.charge * .02)*random_range(.95,1.05))
+      sound_play_pitchvol(sndLightningPistol,(.7 + w.charge * .02) * p, vol)
     }
-    sound_play(sndMinigun)
+    sound_play_pitchvol(sndMinigun, p, vol)
     sound_play_gun(sndClickBack, 0, 1 - (w.charge/(maxchrg*1.5)))
     sound_stop(sndClickBack)
     

@@ -53,11 +53,11 @@ if !inf and r != 0{
 	ammo[1] -= r
 }
 
-var p = random_range(.8,1.2)
-sound_play_pitchvol(sndHammer, p, .7)
-sound_play_pitch(sndShovel, .5 * p)
-sound_play_pitch(sndHitMetal, .8 * p)
-sound_play_pitch(sndAssassinAttack, 1.2 * p)
+var p = random_range(.8,1.2), vol = .7
+sound_play_pitchvol(sndHammer, p, .7 * vol)
+sound_play_pitchvol(sndShovel, .5 * p, vol)
+sound_play_pitchvol(sndHitMetal, .8 * p, vol)
+sound_play_pitchvol(sndAssassinAttack, 1.2 * p, vol)
 
 weapon_post(8, 20, 12 * ((r > 0) * 2 + 1))
 motion_add(gunangle, 4)
@@ -73,10 +73,10 @@ with instance_create(x + lengthdir_x(l, gunangle), y + lengthdir_y(l, gunangle),
 	force = 7
 	motion_set(other.gunangle, 2 + (skill_get(mut_long_arms) * 3))
 	if r {
-		sound_play_pitchvol(sndSawedOffShotgun, .9*p, .7)
-		sound_play_pitchvol(sndDoubleShotgun, .8*p, .7)
-		sound_play_pitchvol(sndTripleMachinegun, .8*p, .7)
-		sound_play_pitchvol(sndLightningHammer, .8*p, .7)
+		sound_play_pitchvol(sndSawedOffShotgun, .9*p, .7 * vol)
+		sound_play_pitchvol(sndDoubleShotgun, .8*p, .7 * vol)
+		sound_play_pitchvol(sndTripleMachinegun, .8*p, .7 * vol)
+		sound_play_pitchvol(sndLightningHammer, .8*p, .7 * vol)
 		sound_play_gun(sndClickBack, 1, .6)
 		sound_stop(sndClickBack)
 

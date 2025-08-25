@@ -53,9 +53,15 @@ repeat(2)
     	var mydude = instance_nearest(mouse_x[index],mouse_y[index],enemy);
     	ang = point_direction(x,y,mydude.x,mydude.y)
     }
-	sound_play_pitch(sndSmartgun,random_range(.8,1.2))
-	sound_play_pitchvol(sndGammaGutsKill,1.6,.3+skill_get(17)*.2)
-	if skill_get(mut_laser_brain) 		sound_play_pitchvol(sndLightningRifleUpg,random_range(1.6,1.8), vol) 	else  		sound_play_pitchvol(sndLightningRifle,random_range(1.4,1.6), vol)
+    var vol = .7;
+	sound_play_pitchvol(sndSmartgun,random_range(.8,1.2), vol)
+	sound_play_pitchvol(sndGammaGutsKill,1.6,(.3+skill_get(17)*.2) * vol);
+	if skill_get(mut_laser_brain) {
+		sound_play_pitchvol(sndLightningRifleUpg,random_range(1.6,1.8), vol)
+	}
+	else {
+		sound_play_pitchvol(sndLightningRifle,random_range(1.4,1.6), vol)
+	}
 	weapon_post(5,-2,6)
 	mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, random_range(3,5), c_navy)
 	if fork(){

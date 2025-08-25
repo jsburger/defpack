@@ -48,7 +48,7 @@ if !manual {
         }
     }
     if _canshoot{
-        for var i = 0; i < weapon_cost(); i++{
+        for (var i = 0; i < weapon_cost(); i++) {
             target = bursttargets[i mod array_length(bursttargets)]
             array_push(angles,point_direction(_tx, _ty, target.x + target.hspeed, target.y + target.vspeed))
         }
@@ -61,19 +61,19 @@ else {
 
 if _canshoot {
     if fork(){
-        for var i = 0; i < weapon_cost(); i++{
+        for (var i = 0; i < weapon_cost(); i++) {
             if instance_exists(self){
                 wep.kick = 2 * (i + 1)
                 angle = angles[i mod array_length(angles)]
                 wep.gunangle = angle
                 weapon_post(0,3,6)
-                var _r = random_range(.9, 1.1), _v = manual ? 1 : .8
+                var _r = random_range(.9, 1.1), _v = manual ? .8 : .6
 				sound_play_pitchvol(sndSmartgun, .8 * _r, .8 * _v)
 			    sound_play_pitchvol(sndGruntFire, 1.2 * _r, _v)
 			    sound_play_pitchvol(sndServerBreak, 1.4 * _r, _v * .5)
-				sound_play_pitchvol(sndGammaGutsKill,1.6*_r,.3+skill_get(17)*.2)
-				if !skill_get(17) sound_play_pitch(sndLightningRifle,1.5*_r)
-				else sound_play_pitch(sndLightningRifleUpg,1.7*_r)
+				sound_play_pitchvol(sndGammaGutsKill, 1.6*_r, (.3+skill_get(17)*.2) * _v)
+				if !skill_get(17) sound_play_pitchvol(sndLightningRifle,1.5*_r, _v)
+				else sound_play_pitchvol(sndLightningRifleUpg,1.7*_r, _v)
                 with mod_script_call_nc("mod", "defpack tools", "create_lightning_bullet", _tx,_ty){
                 	creator = other
                 	team = other.team

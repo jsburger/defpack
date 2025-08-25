@@ -31,14 +31,21 @@ return "CHAIN LIGHTNING";
 
 repeat(2)
 {
-	weapon_post(4,-8,3)
-	var _p = random_range(.8,1.2)
-	sound_play_pitchvol(sndGammaGutsKill,1.6*_p,.3+skill_get(17)*.2)
-	sound_play_pitchvol(sndLightningCannonLoop,15*_p,.3+skill_get(17)*.2)
-	sound_play_pitch(sndPistol,.8*_p)
-	sound_play_pitch(sndHeavyMachinegun,.8*_p)
-	if !skill_get(17)sound_play_pitch(sndLightningCannon,1.2*_p)else sound_play_pitch(sndLightningCannonUpg,1.2*_p)
-	if !skill_get(17)sound_play_pitchvol(sndLightningShotgun,.6*_p,.6)else sound_play_pitchvol(sndLightningShotgunUpg,.6*_p,.6)
+	weapon_post(4,-8,3);
+	var _p = random_range(.8, 1.2),
+		vol = .6;
+	sound_play_pitchvol(sndGammaGutsKill, 1.6 * _p, (.3+skill_get(17)*.2) * vol);
+	sound_play_pitchvol(sndLightningCannonLoop, 15 *_p, (.3+skill_get(17)*.2) * vol);
+	sound_play_pitchvol(sndPistol,.8*_p, vol)
+	sound_play_pitchvol(sndHeavyMachinegun,.8*_p, vol)
+	if skill_get(mut_laser_brain) {
+		sound_play_pitchvol(sndLightningCannonUpg, 1.2*_p, vol);
+		sound_play_pitchvol(sndLightningShotgunUpg, .6*_p, .6 * vol)
+	}
+	else {
+		sound_play_pitchvol(sndLightningCannon, 1.2 * _p, vol);
+		sound_play_pitchvol(sndLightningShotgun, .6 * _p, .6 * vol);
+	}
 	mod_script_call("mod","defpack tools", "shell_yeah_heavy", 100, 25, 2+random(3), c_navy)
 	with mod_script_call("mod", "defpack tools", "create_heavy_lightning_bullet",x,y){
 		motion_add(other.gunangle+random_range(-5,5)*other.accuracy,14)

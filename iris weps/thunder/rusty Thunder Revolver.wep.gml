@@ -32,9 +32,15 @@ return "LITTLE @bSPARKS";
 repeat(2)
 {
 	weapon_post(2,-3,2)
-	sound_play_pitchvol(sndGammaGutsKill,1.6,.3+skill_get(17)*.2)
-	sound_play(sndRustyRevolver)
-	if skill_get(mut_laser_brain) 		sound_play_pitchvol(sndLightningRifleUpg,random_range(1.6,1.8), vol) 	else  		sound_play_pitchvol(sndLightningRifle,random_range(1.4,1.6), vol)
+	var vol = .6;
+	sound_play_pitchvol(sndGammaGutsKill,1.6,(.3+skill_get(17)*.2) * vol)
+	sound_play_pitchvol(sndRustyRevolver, 1, vol);
+	if skill_get(mut_laser_brain) {
+		sound_play_pitchvol(sndLightningRifleUpg, random_range(1.6,1.8), vol);
+	}
+	else {
+		sound_play_pitchvol(sndLightningRifle,random_range(1.4,1.6), vol);
+	}
 	mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, 2+random(3), c_navy)
 	with mod_script_call("mod", "defpack tools", "create_lightning_bullet",x,y){
 		motion_add(other.gunangle,10)
@@ -42,6 +48,6 @@ repeat(2)
 		team = other.team
 		creator = other
 	}
-	wait 5
+	wait(5)
 	if !instance_exists(self)exit
 }

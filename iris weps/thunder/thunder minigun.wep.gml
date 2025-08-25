@@ -32,9 +32,15 @@ return "ELECTRIC ASSAULT";
 repeat(3)
 {
 	weapon_post(6,-3,12)
-	sound_play_pitchvol(sndGammaGutsKill,1.7,.3+skill_get(17)*.2)
-	sound_play(sndMinigun)
-	if !skill_get(17)sound_play_pitch(sndLightningRifle,random_range(1.2,1.4))else sound_play_pitch(sndLightningRifleUpg,random_range(1.2,1.4))
+	var vol = .7;
+	sound_play_pitchvol(sndGammaGutsKill,1.7,(.3+skill_get(17)*.2) * vol)
+	sound_play_pitchvol(sndMinigun, 1, vol)
+	if !skill_get(17) {
+		sound_play_pitchvol(sndLightningRifle,random_range(1.2, 1.4), vol);
+	}
+	else {
+		sound_play_pitchvol(sndLightningRifleUpg, random_range(1.2, 1.4), vol);
+	}
 	mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, 2+random(3), c_navy)
 	with mod_script_call("mod", "defpack tools", "create_lightning_bullet",x,y){
 		move_contact_solid(other.gunangle,8)
@@ -43,6 +49,6 @@ repeat(3)
 		team = other.team
 		creator = other
 	}
-	wait 3
+	wait(3)
 	if !instance_exists(self)exit
 }
