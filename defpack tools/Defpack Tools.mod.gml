@@ -1736,7 +1736,15 @@ with create_gamma_bullet(x, y) {
 }
 
 #define create_gamma_bullet(x, y)
-with create_slash_bullet(x, y) {
+var destroys_projectiles = false,
+	bullet = noone;
+if destroys_projectiles {
+	bullet = create_slash_bullet(x, y);
+}
+else {
+	bullet = create_bullet(x, y);
+}
+with bullet(x, y) {
 	name = "Gamma Bullet"
 
     sprite_index = (neurons > 0) ? spr.GammaBulletBounce : spr.GammaBullet
@@ -1750,8 +1758,10 @@ with create_slash_bullet(x, y) {
 	lasthit = -4
 
 	on_hit = script_ref_create(gamma_hit)
-	on_projectile = script_ref_create(nothing) // script_ref_create(gamma_projectile)
-	on_grenade    = script_ref_create(nothing)
+	if destroys_projectiles {
+		on_projectile = script_ref_create(gamma_projectile)
+		on_grenade    = script_ref_create(nothing)
+	}
 
 	return id
 }
