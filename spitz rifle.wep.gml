@@ -94,6 +94,7 @@ return{
 	}
 	else weapon_post(1, 10, 0)
 	
+	var angle = gunangle + random_range(-30, 30) * max(0, accuracy - 1);
 
 	with instance_create(x + lengthdir_x(16, gunangle), y + lengthdir_y(16, gunangle), CustomObject) {
 		depth = -1
@@ -108,7 +109,7 @@ return{
 
 	var c = instance_is(self, FireCont) ? creator : self;
 	with spitz_bullet_create(x + lengthdir_x(12, gunangle) + random_range(-2, 2), y + lengthdir_y(12, gunangle) + random_range(-2, 2)) {
-		direction = other.gunangle;
+		direction = angle;
 		image_angle = direction;
 		projectile_init(other.team, c)
 		damage = 4
