@@ -15,7 +15,7 @@ return 12
 #define weapon_swap
 return sndSwapHammer
 #define weapon_auto
-return 0
+return true;
 #define weapon_melee
 return 1
 #define weapon_laser_sight
@@ -46,7 +46,7 @@ with instance_create(x,y,CustomObject){
     counter = 0
     image_angle = other.gunangle + other.wepangle
 
-    length = sprite_width - sprite_xoffset + 20*skill_get(mut_long_arms)
+    length = sprite_width - sprite_xoffset + 20*skill_get(mut_long_arms) + 4
     trailx = x + lengthdir_x(length, image_angle)// + other.hspeed_raw
     traily = y + lengthdir_y(length, image_angle)// + other.vspeed_raw
 
@@ -66,11 +66,11 @@ with instance_create(x - lengthdir_x(12*skill_get(mut_long_arms), gunangle),y - 
     flip = -sign(other.wepangle)
     mask_index = mskSlash
     //sprite_index = mskSlash
-    image_xscale = .5
-    image_yscale = .7
+    image_xscale = .7
+    image_yscale = .9
     if skill_get(mut_long_arms){
-        image_xscale = 1.2
-        image_yscale = 1.4
+        image_xscale *= 2
+        image_yscale *= 2
     }
     image_angle = other.gunangle
 
