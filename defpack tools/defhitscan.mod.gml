@@ -236,7 +236,7 @@ var dis = argument_count > 4 ? argument[4] : hitscan_dis;
 		shouldDestroy = false
 		pierce = 0
 		bounce = 4 * neurons
-		lasthit = -4
+		lasthit = noone
 		recycle_amount = 1
 		recycle_chance = 60
 
