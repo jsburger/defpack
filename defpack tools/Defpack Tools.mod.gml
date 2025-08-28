@@ -1744,7 +1744,7 @@ if destroys_projectiles {
 else {
 	bullet = create_bullet(x, y);
 }
-with bullet(x, y) {
+with bullet {
 	name = "Gamma Bullet"
 
     sprite_index = (neurons > 0) ? spr.GammaBulletBounce : spr.GammaBullet
@@ -2947,8 +2947,11 @@ else{
         on_cleanup = lightning_cleanup
         on_step    = lightning_step
         on_hit     = lightning_hit
-        buffer_exists = {value: true};
-        depth = -8
+        
+        _buffer_exists = {
+        	yeah : true
+        };
+        depth = -8;
 
         return id
     }
@@ -3020,8 +3023,8 @@ for (var i = 1; i < array_length_1d(ypoints); i++){
 lightning_cleanup()
 
 #define lightning_cleanup
-if buffer_exists.value {
-	buffer_exists.value = false;
+if _buffer_exists.value {
+	_buffer_exists.value = false;
 	vertex_delete_buffer(vbuf);
 }
 
