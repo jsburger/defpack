@@ -42,7 +42,7 @@ return{
 	mod_script_call("mod", "defburst", "burst", 6, .5, self, script_ref_create(fire_burst))
 
 #define fire_burst(_burst)
-	if (_burst.fired_rounds == 0) {
+	if (_burst.shots_fired == 0) {
 		_burst.pitch = random_range(1, 1.4)
 	}
 	var _p = _burst.pitch * random_range(.9, 1.1),

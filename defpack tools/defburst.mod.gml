@@ -9,7 +9,7 @@
 		fire_script = _script
 		
 		reload = 0
-		fired_rounds = 0
+		shots_fired = 0
 		on_step = script_ref_create(burst_step)
 		
 		burst_step()
@@ -28,7 +28,7 @@
 			with creator {
 				mod_script_call(other.fire_script[0], other.fire_script[1], other.fire_script[2], other)
 			}
-			fired_rounds += 1
+			shots_fired += 1
 			if ammo <= 0 {
 				instance_destroy()
 				exit
