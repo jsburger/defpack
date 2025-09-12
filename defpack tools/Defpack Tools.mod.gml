@@ -2949,7 +2949,7 @@ else{
         on_hit     = lightning_hit
         
         _buffer_exists = {
-        	yeah : true
+        	value : true
         };
         depth = -8;
 
