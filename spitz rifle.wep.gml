@@ -38,44 +38,8 @@ return{
 	On hit, mark for piercing. All further bullets will pierce, for like 5 frames. Lower damage slightly.
 */
 
-#define burst_create(_x, _y, _rounds, _delay, _creator, _script)
-	with instance_create(_x, _y, CustomObject) {
-		ammo = _rounds
-		delay = _delay
-		creator = _creator
-		fire_script = _script
-		
-		reload = 0
-		fired_rounds = 0
-		on_step = script_ref_create(burst_step)
-		
-		burst_step()
-	}
-
-#define burst_step
-	if instance_exists(creator) {
-		if reload > 0 {
-			reload -= current_time_scale
-		}
-		else while reload <= 0 {
-			reload += delay
-			ammo -= 1;
-			with creator {
-				mod_script_call(other.fire_script[0], other.fire_script[1], other.fire_script[2], other)
-			}
-			fired_rounds += 1
-			if ammo <= 0 {
-				instance_destroy()
-				exit
-			}
-		}
-	}
-	else {
-		instance_destroy()
-	}
-
 #define weapon_fire
-	burst_create(x, y, 6, .5, self, script_ref_create(fire_burst))
+	mod_script_call("mod", "defburst", "burst", 6, .5, self, script_ref_create(fire_burst))
 
 #define fire_burst(_burst)
 	if (_burst.fired_rounds == 0) {

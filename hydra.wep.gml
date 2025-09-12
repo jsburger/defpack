@@ -60,8 +60,8 @@ return{
 return choose("THE FUTURE OF SNAKES", "ROCKLET EXPLOSIONS DEAL#LESS DAMAGE THAN MOST");
 
 #define weapon_fire
-    weapon_post(5,-7,4)
-    var volume = .8
+    weapon_post(5, -7, 4)
+    var volume = .6;
     //Karm these are just the rifle sounds feel free to adjust them
     sound_play_pitchvol(sndToxicBoltGas, .85, volume)
     sound_play_pitchvol(sndHeavySlugger, 1.5, volume)
@@ -93,7 +93,7 @@ return choose("THE FUTURE OF SNAKES", "ROCKLET EXPLOSIONS DEAL#LESS DAMAGE THAN 
     //Request set up for extra cursor drawing
     if _primary or race_id = char_steroids mod_script_call("mod", lib, "request_hud_draw", script_ref_create(draw_gui, self))
 
-#macro aimSpread 30
+#macro aimSpread 20
 #macro rocklet_max 4
 #macro rocklet_count (rocklet_max - (crown_current != crwn_death))
 

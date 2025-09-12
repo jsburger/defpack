@@ -32,21 +32,22 @@ return "TAC TAC TAC";
 return{
     "d": "An ex-tool repurposed for combat. #The label on the back says `KEEP AWAY FROM CHILDREN`. ",
 }
-#define weapon_fire
-repeat(2) {
-	
-	sound_play_pitchvol(sndSplinterGun,random_range(1.3,1.6),.4)
-	sound_play_pitchvol(sndRustyRevolver,random_range(1.5,1.8),.4)
-	sound_play_pitchvol(sndCrossbow,random_range(1.3,1.6),.7)
-	sound_play_pitchvol(sndPopgun,random_range(1.3,1.6),.7)
-	weapon_post(2,4,0)
 
-	with instance_create(x,y,Splinter)	{
-		
-		team = other.team
-		motion_add(other.gunangle+random_range(-7,7)*other.accuracy,16)
+#define weapon_fire
+	mod_script_call("mod", "defburst", "burst", 2, 2, self, script_ref_create(fire_burst))
+	
+#define fire_burst
+	
+	sound_play_pitchvol(sndSplinterGun, random_range(1.3, 1.6), .4)
+	sound_play_pitchvol(sndRustyRevolver, random_range(1.5, 1.8), .4)
+	sound_play_pitchvol(sndCrossbow, random_range(1.3,1.6), .7)
+	sound_play_pitchvol(sndPopgun, random_range(1.3, 1.6), .7)
+	weapon_post(2, 4, 0)
+
+	var c = instance_is(self, FireCont) ? creator : self;
+	with instance_create(x, y, Splinter) {
+		team = other.team;
+		motion_add(other.gunangle + random_range(-7, 7) * other.accuracy, 16)
 		image_angle = direction
-		creator = other
+		creator = c;
 	}
-	wait(2);
-}

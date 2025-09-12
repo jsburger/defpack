@@ -29,10 +29,13 @@ return 20;
 return choose("READY FOR ACTION","THE LAST STANCE","DELETE THEM");
 
 #define weapon_fire
-sound_play_pitchvol(sndHyperLauncher,random_range(.3,.38), .7);
+	mod_script_call("mod", "defburst", "burst", 2, 3, self, script_ref_create(fire_burst))
 
-repeat(2)
-{
+#define fire_burst(burst)
+	if burst.shots_fired == 0 {
+		sound_play_pitchvol(sndHyperLauncher,random_range(.3,.38), .7);
+	}
+	
 	sound_play_pitchvol(sndHyperSlugger,random_range(.7,.8), .6)
 	sound_play_pitchvol(sndHeavySlugger,.8, .6)
 	mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, random_range(4,6), c_black)
@@ -43,7 +46,4 @@ repeat(2)
 		motion_set(other.gunangle+random_range(-2,2)*other.accuracy,14)
 		image_angle = direction
 	}
-	weapon_post(5,-8,24)
-	wait(3)
-	if (!instance_exists(self)) break;
-}
+	weapon_post(5, -8, 24)

@@ -38,7 +38,7 @@ return{
     "d": "A beefed up Toxicthrower. #Cobras used to be a common - and deadly sight in the Desert. ",
 }
 #define weapon_fire
-//huge fuckin props to yokin for letting me use code from GunLocker for this
+//thank you yokin for letting me use code from GunLocker for this
 //thank you yokin!
 var _load = weapon_get_load(argument0);
 

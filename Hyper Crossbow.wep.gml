@@ -27,29 +27,28 @@ return sndSwapBow;
 return 14;
 
 #define weapon_text
-return choose("1 FAST BOLT PER SHOT","A CONTINUOUS STATE OF HYPE", "HYPER HYPER");
+return choose("1 FAST BOLT PER SHOT", "A CONTINUOUS STATE OF HYPE", "HYPER HYPER");
 
 #define nts_weapon_examine
 return{
     "d": "The limit of bolt-based rapid-fire weaponry. ",
 }
 
+
 #define weapon_fire
-repeat(5)
-{
-	sound_play_pitchvol(sndHeavyCrossbow,random_range(.8,1.5),.5)
-	sound_play_pitch(sndHyperLauncher,random_range(6,8))
-	sound_play_pitch(sndHyperRifle,random_range(.7,.9))
-	weapon_post(4,-20,4)
-	with instance_create(x+lengthdir_x(10,gunangle),y+lengthdir_y(10,gunangle),Bolt)
-	{
+	mod_script_call("mod", "defburst", "burst", 5, 3, self, script_ref_create(fire_burst))
+
+#define fire_burst
+	var vol = .7;
+	sound_play_pitchvol(sndHeavyCrossbow, random_range(.8, 1.5), .5 * vol);
+	sound_play_pitchvol(sndHyperLauncher, random_range(6, 8), vol);
+	sound_play_pitchvol(sndHyperRifle, random_range(.7, .9), vol);
+	weapon_post(4, -20, 4)
+	with instance_create(x + lengthdir_x(10, gunangle), y + lengthdir_y(10, gunangle), Bolt) {
 		team = other.team
-		creator = other
+		creator = instance_is(other, FireCont) ? other.creator : other;
 		sprite_index = global.sprHyperBolt
 		damage = 20
-		motion_add(other.gunangle+random_range(-1,1)*other.accuracy,25)
+		motion_add(other.gunangle + random_range(-1, 1) * other.accuracy, 25)
 		image_angle = direction
 	}
-	wait(3);
-	if !instance_exists(self) exit
-}
