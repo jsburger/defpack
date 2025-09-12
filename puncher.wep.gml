@@ -28,40 +28,54 @@ return "breaking through"
 return{
     "d": "A rocket launcher from a long-lost war. #Good at breaking through walls and frontlines alike. ",
 }
+
 #define weapon_fire
-var r = random_range(.8,1.2);
-if fork(){
-	for (var i = 0;i < 3; i++){
-		if instance_exists(self){
-			sleep(12);
-			sound_play_pitchvol(sndHeavySlugger,.75*r,1)
-			sound_play_pitchvol(sndSuperSlugger,.75*r,1)
-			sound_play_pitchvol(sndNukeFire,.8*r,1)
-			weapon_post(6,7,22)
-			with instance_create(x,y,CustomProjectile){
-				move_contact_solid(other.gunangle,8)
-				name = "Puncher Rocket"
-				sprite_index = global.sprPuncherRocket
-				team = other.team
-				immuneToDistortion = 1
-				maxspeed = 25
-				creator = other
-				damage = 15
-				motion_set(other.gunangle + random_range(-2-(i),2+(i)) * other.accuracy,1)
-				extradir = random_range(.10,.25) * -sign(other.gunangle - direction) * other.accuracy * i
-				repeat(2){with instance_create(x,y,Smoke){speed = random_range(3,5);direction = other.direction+random_range(-5,5)}}
-				image_angle = direction
-				on_destroy  = puncherdie
-				on_step 	= puncherstep
-				on_end_step = puncherendstep
-				on_draw 	= puncherdraw
+	mod_script_call("mod", "defburst", "burst", 3, 2, self, script_ref_create(fire_burst))
+
+#define fire_burst(_burst)
+
+	var r = random_range(.8, 1.2),
+		v = 1,
+		i = _burst.shots_fired,
+		c = instance_is(self, FireCont) ? creator : self;
+
+	sound_play_pitchvol(sndHeavySlugger,	.75 * r, v);
+	sound_play_pitchvol(sndSuperSlugger,	.75 * r, v);
+	sound_play_pitchvol(sndNukeFire,		.80 * r, v);
+	
+	weapon_post(6, 7, 22);
+	
+	with instance_create(x, y, CustomProjectile){
+		
+		name			= "Puncher Rocket";
+		team			= other.team;
+		creator			= c;
+		maxspeed		= 25
+		damage			= 15
+		sprite_index	= global.sprPuncherRocket;
+		
+		immuneToDistortion = 1; // Goodmod compat
+		
+		move_contact_solid(creator.gunangle, 8);
+		motion_set(creator.gunangle + random_range(-2 - i, 2 + i) * creator.accuracy, 1);
+		extradir = random_range(.10, .25) * -sign(creator.gunangle - direction) * creator.accuracy * i;
+		image_angle = direction;
+		
+		// Smoke particles:
+		repeat(2){
+			with instance_create(x,y,Smoke){
+				speed		= random_range(3, 5);
+				direction	= other.direction + random_range(-5, 5);
 			}
-			wait(3)
 		}
+		
+		on_destroy  = puncherdie;
+		on_step 	= puncherstep;
+		on_end_step = puncherendstep;
+		on_draw 	= puncherdraw;
 	}
-	sound_play(sndRocketFly)
-	exit
-}
+
+	sound_play(sndRocketFly);
 
 #define puncherdraw
 draw_self()
