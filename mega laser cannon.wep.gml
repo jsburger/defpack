@@ -326,6 +326,10 @@ sound_play_pitch(sndPlasmaRifle,.2*p)
 		on_end_step = beam_endstep
 		on_hit = beam_hit
 		
+		sage_no_hitscan = true;
+		sage_no_echo = true;
+		sage_no_bounce = true;
+		
 		return id
 	}
 	
