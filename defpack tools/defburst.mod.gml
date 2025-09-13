@@ -4,6 +4,7 @@
 #define burst_create(_rounds, _delay, _creator, _script)
 	with instance_create(0, 0, CustomObject) {
 		ammo = _rounds
+		base_ammo = _rounds
 		delay = _delay
 		creator = _creator
 		fire_script = _script
