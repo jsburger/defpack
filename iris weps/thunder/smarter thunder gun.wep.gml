@@ -60,7 +60,7 @@ else {
 }
 
 if _canshoot {
-	with mod_script_call("mod", "defburst", "burst", weapon_cost(), 1, script_ref_create(burst_fire)) {
+	with mod_script_call("mod", "defburst", "burst", weapon_cost(), 1, self, script_ref_create(burst_fire)) {
 		firing_angles = angles;
 		smarter_gun = wep;
 		manually_fired = manual;
