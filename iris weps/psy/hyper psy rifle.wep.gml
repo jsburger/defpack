@@ -29,20 +29,19 @@ return -1;
 return "no hope";
 
 #define weapon_fire
-
-repeat(5)
-{
+	mod_script_call("mod", "defburst", "burst", 5, 1, self, script_ref_create(fire_burst))
+	
+#define fire_burst
+	var c = instance_is(self, FireCont) ? creator : self;
+	
 	weapon_post(4,-7,2)
 	sound_play_pitch(sndSwapCursed,random_range(1.4,1.7))
 	sound_play_pitch(sndHyperRifle,.7)
 	mod_script_call("mod","defpack tools", "shell_yeah", 180, 15, random_range(3,5), c_purple)
 	with mod_script_call("mod", "defpack tools", "create_psy_bullet",x,y){
-	creator = other
-	move_contact_solid(other.gunangle,14)
-	team = other.team
-	motion_add(other.gunangle+random_range(-4,4)*other.accuracy,7)
-	image_angle = direction
-}
-wait(1)
-if !instance_exists(self) exit
-}
+		creator = c
+		move_contact_solid(other.gunangle,14)
+		team = c.team
+		motion_add(other.gunangle+random_range(-4,4)*other.accuracy,7)
+		image_angle = direction
+	}

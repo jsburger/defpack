@@ -28,9 +28,11 @@ return -1;
 return "COMES WITH A BUMP STOCK";
 
 #define weapon_fire
-
-repeat(2)
-{
+	mod_script_call("mod", "defburst", "burst", 2, 3, self, script_ref_create(fire_burst))
+	
+#define fire_burst(_burst)
+	var c = instance_is(self, FireCont) ? creator : self;
+	
 	weapon_post(4,-3,7)
 	var vol = .6;
 	sound_play_pitchvol(sndGammaGutsKill, 1.4, (.3 + .2 * skill_get(mut_laser_brain)) * vol)
@@ -49,6 +51,3 @@ repeat(2)
 		team = other.team
 		creator = other
 	}
-	wait 3
-	if !instance_exists(self)exit
-}

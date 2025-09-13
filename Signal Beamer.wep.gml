@@ -84,7 +84,7 @@ return{
 }
 
 #define weapon_fire
-	mod_script_call("mod", "defburst", "burst", 3, 1, self, script_ref_create(fire_burst));
+	mod_script_call("mod", "defburst", "burst", 3, 2, self, script_ref_create(fire_burst));
 
 #define fire_burst(_burst)
 	motion_add(gunangle + 180, 1);

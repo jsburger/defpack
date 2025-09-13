@@ -31,9 +31,11 @@ return -1;
 return "COMES WITH A BUMP STOCK";
 
 #define weapon_fire
-
-repeat(2)
-{
+	mod_script_call("mod", "defburst", "burst", 2, 3, self, script_ref_create(fire_burst))
+	
+#define fire_burst(_burst)
+	var c = instance_is(self, FireCont) ? creator : self;
+	
 	weapon_post(4,-3,7)
 	var vol = .6;
 	sound_play_pitchvol(sndGammaGutsKill, 1.4, (.3 + .2 * skill_get(mut_laser_brain)) * vol)
@@ -43,13 +45,11 @@ repeat(2)
 	else
 		sound_play_pitchvol(sndLightningRifleUpg,random_range(1.3,1.5), vol)
 	mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, 2+random(3), c_navy)
+	
 	with mod_script_call("mod", "defpack tools", "create_lightning_bullet",x,y){
 		move_contact_solid(other.gunangle,6)
 		motion_add(other.gunangle+random_range(-4,4)*other.accuracy,10)
 		image_angle = direction
-		team = other.team
-		creator = other
+		team = c.team
+		creator = c
 	}
-	wait 3
-	if !instance_exists(self)exit
-}

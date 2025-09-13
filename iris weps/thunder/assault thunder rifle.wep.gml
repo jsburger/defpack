@@ -29,8 +29,11 @@ return -1;
 return "FORKED LIGHTNING";
 
 #define weapon_fire
-
-repeat(4){
+	mod_script_call("mod", "defburst", "burst", 4, 2, self, script_ref_create(fire_burst))
+	
+#define fire_burst(_burst)
+	var c = instance_is(self, FireCont) ? creator : self;
+	
     mod_script_call("mod","defpack tools", "shell_yeah", 180, 25, 2+random(2), c_navy)
 	weapon_post(4, -6, 4);
 	var vol = .6;
@@ -43,9 +46,6 @@ repeat(4){
 	with mod_script_call("mod", "defpack tools", "create_lightning_bullet",x,y){
 		motion_add(other.gunangle+random_range(-4,4)*other.accuracy,10)
 		image_angle = direction
-		team = other.team
-		creator = other
+		team = c.team
+		creator = c
 	}
-    wait(2)
-    if !instance_exists(self)exit
-}

@@ -28,9 +28,11 @@ return -1;
 return "TAZER THEM";
 
 #define weapon_fire
-
-repeat(3)
-{
+	mod_script_call("mod", "defburst", "burst", 3, 2, self, script_ref_create(fire_burst))
+	
+#define fire_burst(_burst)
+	var c = instance_is(self, FireCont) ? creator : self;
+	
 	weapon_post(4,-8,3)
 	var vol = .7
 	sound_play_pitchvol(sndGammaGutsKill,1.6,(.3+skill_get(17)*.2) * vol)
@@ -45,9 +47,6 @@ repeat(3)
 	with mod_script_call("mod", "defpack tools", "create_lightning_bullet",x,y){
 		motion_add(other.gunangle+random_range(-7,7)*other.accuracy,10)
 		image_angle = direction
-		team = other.team
-		creator = other
+		team = c.team
+		creator = c
 	}
-	wait 2
-	if !instance_exists(self)exit
-}

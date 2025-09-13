@@ -28,9 +28,11 @@ return -1;
 return "LITTLE @bSPARKS";
 
 #define weapon_fire
-
-repeat(2)
-{
+	mod_script_call("mod", "defburst", "burst", 2, 5, self, script_ref_create(fire_burst))
+	
+#define fire_burst(_burst)
+	var c = instance_is(self, FireCont) ? creator : self;
+	
 	weapon_post(2,-3,2)
 	var vol = .6;
 	sound_play_pitchvol(sndGammaGutsKill,1.6,(.3+skill_get(17)*.2) * vol)
@@ -45,9 +47,6 @@ repeat(2)
 	with mod_script_call("mod", "defpack tools", "create_lightning_bullet",x,y){
 		motion_add(other.gunangle,10)
 		image_angle = direction
-		team = other.team
-		creator = other
+		team = c.team
+		creator = c
 	}
-	wait(5)
-	if !instance_exists(self)exit
-}

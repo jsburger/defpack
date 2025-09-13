@@ -29,9 +29,11 @@ return -1;
 return "HUNT THEM DOWN";
 
 #define weapon_fire
-
-repeat(3)
-{
+	mod_script_call("mod", "defburst", "burst", 3, 2, self, script_ref_create(fire_burst))
+	
+#define fire_burst
+	var c = instance_is(self, FireCont) ? creator : self;
+	
 	weapon_post(5,-11, 2)
 	var p = random_range(.8,1.2)
 	sound_play_pitch(sndPistol,.7*p)
@@ -40,13 +42,9 @@ repeat(3)
 	sound_play_pitchvol(sndHeavyRevoler,1.5*p,.8)
 	mod_script_call("mod","defpack tools", "shell_yeah_heavy", 180, 25, random_range(2,4), c_purple)
 	with mod_script_call("mod", "defpack tools", "create_heavy_psy_bullet",x,y){
-		creator = other
+		creator = c
 		move_contact_solid(other.gunangle,5)
-		team = other.team
+		team = c.team
 		motion_add(other.gunangle+random_range(-6,6)*other.accuracy,12)
 		image_angle = direction
 	}
-wait(2)
-if !instance_exists(self){exit}
-
-}

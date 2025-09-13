@@ -20,8 +20,13 @@ return 0
 return 0
 #define weapon_laser_sight
 return 0
+
 #define weapon_fire
-repeat(3){
+	mod_script_call("mod", "defburst", "burst", 3, 2, self, script_ref_create(fire_burst))
+	
+#define fire_burst(_burst)
+	var c = instance_is(self, FireCont) ? creator : self;
+	
 	var _p = random_range(.8, 1.4),
 		vol = .8;
 	sound_play_pitchvol(sndQuadMachinegun, 1.6 * _p, .6 * vol)
@@ -49,14 +54,12 @@ repeat(3){
 	with mod_script_call("mod", "defhitscan", "create_thunder_hitscan_bullet", x + lengthdir_x(12, gunangle), y + lengthdir_y(12, gunangle)){
 		direction = other.gunangle + random_range(-5, 5) * other.accuracy;
 		image_angle = direction;
-		creator = other
-		team = other.team
+		creator = c
+		team = c.team
 		force += 4;
 		damage += 1
 		trailsize += .35
 	}
-	wait(2)
-}
 #define weapon_sprt
 return global.sprThunderSubata
 #define weapon_text

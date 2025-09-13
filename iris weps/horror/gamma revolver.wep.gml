@@ -26,7 +26,7 @@ return sndSwapPistol;
 return -1;
 
 #define weapon_text
-return "@gGAMMA @sBULLETS DELETE @wENEMY PROJECTILES";
+return "@gGAMMA @sBULLETS PIERCE";
 
 #define weapon_fire
 

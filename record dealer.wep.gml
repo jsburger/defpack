@@ -69,7 +69,7 @@ return "WRITE A LOVE SONG";
 #define weapon_fire
     sound_play_pitchvol(sndDiscgun, 1.2, .7);
     weapon_post(12, 28, 6);
-	mod_script_call("mod", "defburst", "burst", 4, 2, self, script_ref_create(fire_burst))
+	mod_script_call("mod", "defburst", "burst", 4, 3, self, script_ref_create(fire_burst))
 	
 #define fire_burst(_burst)
 

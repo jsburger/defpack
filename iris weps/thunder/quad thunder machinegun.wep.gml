@@ -41,22 +41,32 @@ else {
 repeat(n) {
     mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, 2+random(4), c_navy)
 }
-
-#define weapon_fire
-
-if fork(){
-    var flip = wepflip
-    for (var i = -2; i <= 2; i += 1) {
-        sound(1)
-        with mod_script_call("mod", "defpack tools", "create_lightning_bullet",x,y){
-    		move_contact_solid(other.gunangle,6)
-    		motion_add(other.gunangle-(10*i*flip)+random_range(-2,2)*other.accuracy,10)
-    		image_angle = direction
-    		team = other.team
-    		creator = other
-    	}
-    	wait(1)
-    	if !instance_exists(self) exit
+#define weapon_fire(w)
+    if !is_object(w){
+        w = {
+            wep: w,
+            flip: choose(-1, 1),
+        }
+        wep = w;
     }
-    exit
-}
+     
+	trace("fire")
+	mod_script_call("mod", "defburst", "burst", 5, 1, self, script_ref_create(fire_burst))
+#define fire_burst(_burst)
+	var c = instance_is(self, FireCont) ? creator : self,
+	    flip = _burst.shots_fired <= 2 ? -c.wepflip : c.wepflip;
+    
+    if "max" not in _burst{
+        _burst.max = _burst.ammo div 2;
+    }
+    trace(wepflip, _burst.shots_fired)
+    
+    sound(1)
+       
+    with mod_script_call("mod", "defpack tools", "create_lightning_bullet",x,y){
+    	move_contact_solid(other.gunangle,6)
+    	motion_add(other.gunangle - (10 * (_burst.shots_fired - _burst.max div 2)) * flip + random_range(-2,2)*other.accuracy,10)
+    	image_angle = direction
+    	team = c.team
+    	creator = c
+    }

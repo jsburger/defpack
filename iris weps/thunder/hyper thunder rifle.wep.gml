@@ -29,10 +29,11 @@ return -1;
 return "ITS A LONG ONE";
 
 #define weapon_fire
-
-repeat (10)
-{
-	if (!instance_exists(self)) break;
+	mod_script_call("mod", "defburst", "burst", 10, 1, self, script_ref_create(fire_burst))
+	
+#define fire_burst(_burst)
+	var c = instance_is(self, FireCont) ? creator : self;
+	
 	mod_script_call("mod","defpack tools", "shell_yeah", 180, 25, 2+random(3), c_navy)
 	weapon_post(5, -10, 4);
 	var vol = .6;
@@ -48,9 +49,6 @@ repeat (10)
 		move_contact_solid(other.gunangle,8)
 		motion_add(other.gunangle+random_range(-4,4)*other.accuracy,10)
 		image_angle = direction
-		team = other.team
-		creator = other
+		team = c.team
+		creator = c
 	}
-	wait 1;
-	if !instance_exists(self)exit
-}

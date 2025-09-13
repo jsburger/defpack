@@ -3,7 +3,7 @@ global.sprEnergyDevice    = sprite_add("sprites/weapons/sprPSD.png", 7, 1, 2);
 global.sprSonicExplosion  = sprite_add("sprites/projectiles/sprESonicExplosion.png", 8, 59, 56);
 global.sprEnergyEffect    = sprite_add("sprites/projectiles/sprEnergyEffect.png", 6, 7, 7);
 
-#macro c_energy $23D900
+global.c_energy = $23D900
 #macro e_radius max(16, 24 + 4 * skill_get(mut_long_arms));
 
 #define weapon_name
@@ -219,7 +219,7 @@ return choose("PERSONAL" + choose("SECURITY", "SAFETY", "SHIELD") + "DEVICE", "A
       if irandom(3) = 0 with instance_create(x + random_range(-2, 2), y + random_range(-2, 2), PlasmaTrail){motion_add(other.direction - 180, .5)}
     }
   }
-  draw_circle_width_colour(16, radius + random(1 + _set), 1, (current_frame * (1 + _set * .2)) mod 360, x, y, merge_color(c_energy, c_yellow, .25 * _set), .5 + .5 * _set);
+  draw_circle_width_colour(16, radius + random(1 + _set), 1, (current_frame * (1 + _set * .2)) mod 360, x, y, merge_color(global.c_energy, c_yellow, .25 * _set), .5 + .5 * _set);
 
 #define nothing
 

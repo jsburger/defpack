@@ -29,11 +29,13 @@ return -1;
 return choose("SHOCKWAVE");
 
 #define weapon_fire
-var h = 10
-var i = -h/2 -h/14
-
-repeat(2)
-{
+	mod_script_call("mod", "defburst", "burst", 2, 4, self, script_ref_create(fire_burst))
+	
+#define fire_burst(_burst)
+	var c = instance_is(self, FireCont) ? creator : self,
+		h = !_burst.shots_fired ? 10 : 80,
+		i = -h/2 - h/14
+		
 	var _p = random_range(.8,1.2),
 		vol = .6;
 	weapon_post(4,-11,2)
@@ -50,15 +52,10 @@ repeat(2)
 	repeat(7) {
 		i += h/7
 		with mod_script_call("mod", "defpack tools", "create_lightning_bullet",x,y){
-			creator = other
+			creator = c
 			move_contact_solid(other.gunangle,5)
-			team = other.team
+			team = c.team
 			motion_add(other.gunangle+i*other.accuracy+random_range(-3,3),16)
 			image_angle = direction
 		}
 	}
-	wait 4
-	if !instance_exists(self) exit
-	h = 80
-	i = -h/2 -h/14
-}

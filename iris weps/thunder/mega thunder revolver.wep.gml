@@ -47,8 +47,11 @@ if !irandom(100) return "ITS BIG"
 return "A GLORIOUS THUNDER"
 
 #define weapon_fire
-repeat(2)
-{
+	mod_script_call("mod", "defburst", "burst", 2, 9, self, script_ref_create(fire_burst))
+	
+#define fire_burst(_burst)
+	var c = instance_is(self, FireCont) ? creator : self;
+	
   weapon_post(9,-40,30)
   motion_add(gunangle-180,3)
   var _p = random_range(.8,1.2)
@@ -63,8 +66,7 @@ repeat(2)
   sound_play_pitchvol(sndLightningReload,.6*_p*(1-_s), vol)
   sound_play_gun(sndClickBack,1,0)
   sound_stop(sndClickBack)
-  with instance_create(x,y,CustomProjectile)
-  {
+  with instance_create(x,y,CustomProjectile){
     name = "mega thunder bullet"
     typ = 1
     sprite_index = global.sprMegaThunderBullet
@@ -72,7 +74,7 @@ repeat(2)
     mask_index = mskHeavyBullet
     recycle_amount = 5
     damage = 4
-    team = other.team
+    team = c.team
     force = 18
     frames = 8
     defbloom = {
@@ -81,7 +83,7 @@ repeat(2)
         alpha : .1
     }
     image_speed = 1
-    creator = other
+    creator = c
     move_contact_solid(other.gunangle,12)
     motion_add(other.gunangle+random_range(-8,8)*other.accuracy,14)
     with instance_create(x,y,LightningSpawn){image_angle = other.direction}
@@ -97,9 +99,7 @@ repeat(2)
         image_yscale/=2
     }
   }
-  wait(9)
-  if !instance_exists(self) exit
-}
+  
 #define mega_hit
 if current_frame_active{
     frames--

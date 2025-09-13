@@ -29,7 +29,7 @@ return -1;
 return choose("TACTICAL ADVANTAGE");
 
 #define weapon_fire
-	mod_script_call("mod", "defburst", "burst", 2, 1, self, script_ref_create(fire_burst))
+	mod_script_call("mod", "defburst", "burst", 2, 2, self, script_ref_create(fire_burst))
 	
 #define fire_burst
 	var c = instance_is(self, FireCont) ? creator : self;

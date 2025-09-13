@@ -26,7 +26,7 @@ return sndSwapMachinegun;
 return -1;
 
 #define weapon_text
-return "CONSUME THEIR @wBULLETS";
+return "CONSUME THEM";
 
 #define weapon_fire
 motion_add(gunangle-180, 1)

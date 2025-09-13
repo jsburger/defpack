@@ -53,7 +53,7 @@ return -1;
 return -1;
 
 #define weapon_text
-return choose("AIM AT THE @wBULLETS");
+return choose("AIM AT THE ENEMY");
 
 #define weapon_fire
 with mod_script_call_self("mod", "defpack tools", "create_sniper_charge", x, y){

@@ -29,8 +29,11 @@ return -1;
 return "BOTTLED LIGHTNING";
 
 #define weapon_fire
-repeat(4)
-{
+	mod_script_call("mod", "defburst", "burst", 4, 2, self, script_ref_create(fire_burst))
+	
+#define fire_burst(_burst)
+	var c = instance_is(self, FireCont) ? creator : self;
+	
 	weapon_post(9,-6,42)
 	var _ptch = random_range(-.4,.4), vol = .8;
 	sound_play_pitchvol(sndPistol,.5, vol)
@@ -46,13 +49,10 @@ repeat(4)
 	{
 		mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, 2+random(2), c_navy)
 		with mod_script_call("mod", "defpack tools", "create_lightning_bullet",x+lengthdir_x(random_range(-7,7)*accuracy,gunangle+90),y+lengthdir_y(random_range(-7,7)*accuracy,gunangle+90)){
-			team = other.team
-			creator = other
+			team = c.team
+			creator = c
 			move_contact_solid(other.gunangle,5)
 			motion_add(other.gunangle+random_range(-10,10)*other.accuracy,10+random_range(-2,3)*other.accuracy)
 			image_angle = direction
 		}
 	}
-	wait(2)
-	if !instance_exists(self) exit
-}

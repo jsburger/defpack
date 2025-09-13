@@ -31,22 +31,21 @@ return -1;
 #define weapon_text
 return "NO REMORSE";
 
-#define weapon_fire
 
-repeat(3)
-{
+#define weapon_fire
+	mod_script_call("mod", "defburst", "burst", 3, 2, self, script_ref_create(fire_burst))
+	
+#define fire_burst
+	var c = instance_is(self, FireCont) ? creator : self;
+	
 	weapon_post(4,-4,0)
 	sound_play_pitch(sndSwapCursed,random_range(1.4,1.7))
 	sound_play(sndGoldMachinegun)
 	mod_script_call("mod","defpack tools", "shell_yeah", 180, 25, random_range(2,4), c_purple)
 	with mod_script_call("mod", "defpack tools", "create_psy_bullet",x,y){
-	creator = other
-	move_contact_solid(other.gunangle,10)
-	team = other.team
-	motion_add(other.gunangle+random_range(-5,5)*other.accuracy,8)
-	image_angle = direction
-}
-wait(3)
-if !instance_exists(self){exit}
-
-}
+		creator = c
+		move_contact_solid(other.gunangle,10)
+		team = c.team
+		motion_add(other.gunangle+random_range(-5,5)*other.accuracy,8)
+		image_angle = direction
+	}

@@ -28,7 +28,7 @@ return -1;
 return "OUT OF THE KETTLE";
 
 #define weapon_fire
-	mod_script_call("mod", "defburst", "burst", 2, .5, self, script_ref_create(fire_burst))
+	mod_script_call("mod", "defburst", "burst", 2, 2, self, script_ref_create(fire_burst))
 	
 #define fire_burst
 	var c = instance_is(self, FireCont) ? creator : self;

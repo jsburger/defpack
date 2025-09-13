@@ -28,9 +28,11 @@ return -1;
 return "PERCUSSION BLAST";
 
 #define weapon_fire
-
-repeat(3)
-{
+	mod_script_call("mod", "defburst", "burst", 3, 3, self, script_ref_create(fire_burst))
+	
+#define fire_burst(_burst)
+	var c = instance_is(self, FireCont) ? creator : self;
+	
 	weapon_post(4,-3,7)
 	var vol = .5;
 	sound_play_pitchvol(sndGammaGutsKill, 1.4, (.3 + .2 * skill_get(mut_laser_brain)) * vol)
@@ -42,9 +44,6 @@ repeat(3)
 		move_contact_solid(other.gunangle,6)
 		motion_add(other.gunangle+random_range(-13,13)*other.accuracy,10)
 		image_angle = direction
-		team = other.team
-		creator = other
+		team = c.team
+		creator = c
 	}
-	wait 3
-	if !instance_exists(self)exit
-}

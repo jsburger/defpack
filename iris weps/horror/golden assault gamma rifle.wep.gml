@@ -32,7 +32,7 @@ return "WE CALL THIS ONE#THE OL' @gSMACK-ASS";
 return -1;
 
 #define weapon_fire
-	mod_script_call("mod", "defburst", "burst", 3, 1, self, script_ref_create(fire_burst))
+	mod_script_call("mod", "defburst", "burst", 3, 2, self, script_ref_create(fire_burst))
 	
 #define fire_burst
 	var c = instance_is(self, FireCont) ? creator : self;

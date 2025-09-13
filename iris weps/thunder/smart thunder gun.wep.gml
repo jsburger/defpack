@@ -30,6 +30,11 @@ if !skill_get(17)sound_play_pitch(sndLightningRifle,random_range(1.3,1.5))else s
 return "ACTIVE NEURONS";
 
 #define weapon_fire
+	mod_script_call("mod", "defburst", "burst", 2, 3, self, script_ref_create(fire_burst))
+	
+#define fire_burst(_burst)
+	var c = instance_is(self, FireCont) ? creator : self;
+	
 var ang = point_direction(x,y,mouse_x[index],mouse_y[index]);
 if instance_exists(enemy)
 {
@@ -46,8 +51,6 @@ if fork(){
     aimDirection = ang;
     exit
 }
-repeat(2)
-{
     if instance_exists(enemy)
     {
     	var mydude = instance_nearest(mouse_x[index],mouse_y[index],enemy);
@@ -80,6 +83,3 @@ repeat(2)
 		projectile_init(other.team,other)
 		image_angle = direction
 	}
-	wait(3)
-	if !instance_exists(self)exit
-}

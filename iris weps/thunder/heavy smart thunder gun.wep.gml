@@ -29,24 +29,27 @@ return -1;
 return "JUDGEMENT OF ZEUS"
 
 #define weapon_fire
-var ang = point_direction(x,y,mouse_x[index],mouse_y[index]);
-if instance_exists(enemy)
-{
-	var mydude = instance_nearest(mouse_x[index],mouse_y[index],enemy);
-	ang = point_direction(x,y,mydude.x,mydude.y)
-}
-gunangle = ang;
-aimDirection = ang;
-if fork(){
-    wait(0)
-    if !instance_exists(self) exit
-    gunangle = ang;
-    aimDirection = ang;
-    exit
-}
+	mod_script_call("mod", "defburst", "burst", 2, 3, self, script_ref_create(fire_burst))
+	
+#define fire_burst(_burst)
+	var c = instance_is(self, FireCont) ? creator : self;
+	
+	var ang = point_direction(x,y,mouse_x[index],mouse_y[index]);
+	if instance_exists(enemy)
+	{
+		var mydude = instance_nearest(mouse_x[index],mouse_y[index],enemy);
+		ang = point_direction(x,y,mydude.x,mydude.y)
+	}
+	gunangle = ang;
+	aimDirection = ang;
+	if fork(){
+	    wait(0)
+	    if !instance_exists(self) exit
+	    gunangle = ang;
+	    aimDirection = ang;
+	    exit
+	}
 
-repeat(2)
-{
 	var _p = random_range(.8,1.2),
 		vol = .6;
 	sound_play_pitchvol(sndGammaGutsKill, 1.4, (.3 + .2 * skill_get(mut_laser_brain)) * vol)
@@ -73,7 +76,7 @@ repeat(2)
 
 	with mod_script_call("mod", "defpack tools", "create_heavy_lightning_bullet",x,y){
 		motion_set(ang+random_range(-7,7)*other.accuracy,10)
-		projectile_init(other.team,other)
+		projectile_init(c.team,c)
 		image_angle = direction
 		repeat(2) with instance_create(x+lengthdir_x(speed,direction),y+lengthdir_y(speed,direction),Dust)
 		{
@@ -84,6 +87,3 @@ repeat(2)
 			motion_set(other.direction+random_range(-44,44),2+random(2))
 		}
 	}
-	wait 3
-	if !instance_exists(self) exit
-}
