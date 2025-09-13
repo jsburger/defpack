@@ -29,19 +29,18 @@ return -1;
 return choose("TRIPLE BOUNCE");
 
 #define weapon_fire
-
-repeat(3)
-{
+	mod_script_call("mod", "defburst", "burst", 3, 1, self, script_ref_create(fire_burst))
+	
+#define fire_burst
+	var c = instance_is(self, FireCont) ? creator : self;
+	
 	with instance_create(x,y,Shell){motion_add(other.gunangle-180+random_range(-40,40),2+random(2))}
 	sound_play_pitch(sndBouncerSmg,random_range(1.1,1.2))
 	sound_play_pitch(sndMachinegun,random_range(.8,1.2))
 	weapon_post(4,0,5)
-	with instance_create(x,y,BouncerBullet)
-	{
-		team = other.team
-		creator = other
+	
+	with instance_create(x,y,BouncerBullet){
+		team = c.team
+		creator = c
 		motion_add(other.gunangle+random_range(-8,8)*other.accuracy,6)
 	}
-	wait(2)
-	if !instance_exists(self){exit}
-}

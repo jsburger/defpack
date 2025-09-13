@@ -28,11 +28,14 @@ return -1;
 return "MAKESHIFT FLAMETHROWER";
 
 #define weapon_fire
+	mod_script_call("mod", "defburst", "burst", 5, .5, self, script_ref_create(fire_burst))
+	
+#define fire_burst
+	var c = instance_is(self, FireCont) ? creator : self;
+	
+	var vol = .8,
+		pitch = random_range(.8, 1.2);
 
-var vol = .8,
-	pitch = random_range(.8, 1.2);
-repeat(5)
-{
 	weapon_post(4,-1,7)
 	sound_play_pitchvol(sndHyperRifle, pitch, vol)
 	sound_play_pitchvol(sndIncinerator, .4 * pitch, vol)
@@ -44,6 +47,3 @@ repeat(5)
 		motion_set(other.gunangle + random_range(-7,7) * other.accuracy,17)
 		image_angle = direction
 	}
-	wait(1)
-	if !instance_exists(self) exit
-}

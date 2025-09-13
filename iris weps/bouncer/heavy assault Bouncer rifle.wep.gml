@@ -29,20 +29,21 @@ return -1;
 return choose("DO YOU WONDER HOW#THESE BULLETS WORK");
 
 #define weapon_fire
-repeat(3)
-{
+	mod_script_call("mod", "defburst", "burst", 3, 1, self, script_ref_create(fire_burst))
+	
+#define fire_burst
+	var c = instance_is(self, FireCont) ? creator : self;
+
 	weapon_post(4,-7,3)
-	var _p = random_range(.8,1.2)
-	sound_play_pitch(sndBouncerSmg,.7*_p)
-	sound_play_pitch(sndHeavyRevoler,1.2*_p)
-	sound_play_pitch(sndBouncerShotgun,1.6*_p)
+	var _p = random_range(.8,1.2),
+		_vol = .65;
+	sound_play_pitchvol(sndBouncerSmg,		0.7 * _p, _vol);
+	sound_play_pitchvol(sndHeavyRevoler,	1.2 * _p, _vol);
+	sound_play_pitchvol(sndBouncerShotgun,	1.6 * _p, _vol);
 	mod_script_call("mod","defpack tools", "shell_yeah_heavy", 180, 25, 2+random(2), c_yellow)
 	with mod_script_call("mod", "defpack tools", "create_heavy_bouncer_bullet",x,y){
-		creator = other
-		team = other.team
+		creator = c
+		team = c.team
 		motion_set(other.gunangle + random_range(-3,3) * other.accuracy,8)
 		image_angle = direction
 	}
-	wait(2)
-	if !instance_exists(self) exit
-}

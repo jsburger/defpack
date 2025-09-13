@@ -28,9 +28,11 @@ return -1;
 return "MAN ITS A HOT ONE";
 
 #define weapon_fire
-
-repeat(3)
-{
+	mod_script_call("mod", "defburst", "burst", 3, 1, self, script_ref_create(fire_burst))
+	
+#define fire_burst
+	var c = instance_is(self, FireCont) ? creator : self;
+	
 	weapon_post(2,-1,3)
 	var vol = .6
 	sound_play_pitchvol(sndMachinegun, 1, vol)
@@ -38,11 +40,8 @@ repeat(3)
 	sound_play_pitchvol(sndIncinerator, .9, vol)
 	mod_script_call("mod","defpack tools", "shell_yeah", 180, 25, 2+random(2), c_red)
 	with mod_script_call("mod", "defpack tools", "create_fire_bullet",x,y){
-		creator = other
-		team = other.team
+		creator = c
+		team = c.team
 		motion_set(other.gunangle + random_range(-10,10) * other.accuracy,15)
 		image_angle = direction
 	}
-	wait(2)
-	if !instance_exists(self){exit}
-}

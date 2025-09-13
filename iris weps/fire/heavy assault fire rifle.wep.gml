@@ -28,9 +28,11 @@ return -1;
 return "THIS ONE'S HOT";
 
 #define weapon_fire
-
-repeat(3)
-{
+	mod_script_call("mod", "defburst", "burst", 3, 1, self, script_ref_create(fire_burst))
+	
+#define fire_burst
+	var c = instance_is(self, FireCont) ? creator : self;
+	
 	var p = random_range(.8,1.2),
 		vol = .9;
 	sound_play_pitchvol(sndHeavyRevoler,.9*p,.8 * vol)
@@ -40,11 +42,8 @@ repeat(3)
 	weapon_post(4,-7,3)
 	mod_script_call("mod","defpack tools", "shell_yeah_heavy", 180, 25, 2+random(2), c_red)
 	with mod_script_call("mod", "defpack tools", "create_heavy_fire_bullet",x,y){
-		creator = other
-		team = other.team
+		creator = c
+		team = c.team
 		motion_set(other.gunangle + random_range(-6,6) * other.accuracy,16)
 		image_angle = direction
 	}
-	wait(2)
-	if !instance_exists(self){exit}
-}

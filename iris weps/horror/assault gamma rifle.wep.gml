@@ -29,9 +29,11 @@ return -1;
 return choose("IN AND OUT");
 
 #define weapon_fire
-
-repeat(3)
-{
+	mod_script_call("mod", "defburst", "burst", 3, 1, self, script_ref_create(fire_burst))
+	
+#define fire_burst
+	var c = instance_is(self, FireCont) ? creator : self;
+	
     var _i = 3;
 	weapon_post(2,-6,2)
 	sound_play_pitchvol(sndRadPickup,1.2, 1.7)
@@ -39,12 +41,9 @@ repeat(3)
 	sound_play_pitch(sndPistol,random_range(1.2,1.4))
 	mod_script_call("mod","defpack tools", "shell_yeah", 180, 25, random_range(2,4), c_lime)
 	repeat(2) with mod_script_call("mod", "defpack tools", "create_gamma_bullet",x,y){
-    creator = other
-    team = other.team
-    motion_set(other.gunangle + random_range(-_i,_i) * other.accuracy,random_range(14,18))
-	image_angle = direction
-    _i = 14
-}
-	wait(2)
-	if !instance_exists(self){exit}
-}
+	    creator = c
+	    team = c.team
+	    motion_set(other.gunangle + random_range(-_i,_i) * other.accuracy,random_range(14,18))
+		image_angle = direction
+	    _i = 14
+	}

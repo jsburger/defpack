@@ -33,9 +33,11 @@ return -1;
 return "bizarre looking weaponry";
 
 #define weapon_fire
+	mod_script_call("mod", "defburst", "burst", 5, .5, self, script_ref_create(fire_burst))
+	
+#define fire_burst
+	var c = instance_is(self, FireCont) ? creator : self;
 
-repeat(5)
-{
 	weapon_post(3,0,7)
 	sound_play_pitch(sndHyperRifle,random_range(1.2,1.3))
 	sound_play_pitch(sndBouncerSmg,random_range(.6,.8))
@@ -43,11 +45,8 @@ repeat(5)
 	with instance_create(x,y,BouncerBullet)
 	{
 		move_contact_solid(other.gunangle,10)
-		team = other.team
-		creator = other
+		team = c.team
+		creator = c
 		motion_add(other.gunangle+random_range(-4,4)*other.accuracy,8)
 		image_angle = direction - 90
 	}
-	wait(1)
-	if !instance_exists(self) exit
-}
