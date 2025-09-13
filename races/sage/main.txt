@@ -1,6 +1,0 @@
-/loadrace sage
-/loadmod SageBullets
-/loadmod SageMod
-/loadmod sageeffects
-/loadmod lightly modified megahyper
-/loadtext allowmain
