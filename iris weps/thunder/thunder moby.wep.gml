@@ -70,21 +70,9 @@ else{
 }
 
 var flip = "wepflip" in self ? wepflip : choose(-1, 1)
-
-if fork() {
-    for (var i = -1; i <= 1; i+=1) {
-        mod_script_call("mod", "defpack tools", "shell_yeah", 100, 40, 3 + random(3), c_navy);
-        
-        with mod_script_call("mod", "defhitscan", "create_thunder_hitscan_bullet", x + lengthdir_x(8, gunangle), y + lengthdir_y(8, gunangle)) {
-            motion_set(other.gunangle + (((15 * (1 + w.charge/maxchrg)*.8)) * (i * flip) + random_range(-10, 10)) * other.accuracy * sqrt(w.charge)/6, 8)
-            image_angle = direction
-          	projectile_init(other.team, other)
-        }
-        wait(2 - i)
-        if !instance_exists(self) exit
-
-    }
-    exit
+with mod_script_call("mod", "defburst", "burst", 3, 2, self, script_ref_create(fire_burst)) {
+	burst_flip = flip;
+	moby = w;
 }
 
 if lq_defget(w, "canbloom", 1){
@@ -126,6 +114,21 @@ if lq_defget(w, "canbloom", 1){
     }
 
 }
+
+#define fire_burst(burst)
+	var charge = burst.moby.charge,
+		flip = burst.burst_flip,
+		i = burst.shots_fired - 1;
+    mod_script_call("mod", "defpack tools", "shell_yeah", 100, 40, 3 + random(3), c_navy);
+    
+    with mod_script_call("mod", "defhitscan", "create_thunder_hitscan_bullet", x + lengthdir_x(8, gunangle), y + lengthdir_y(8, gunangle)) {
+        motion_set(other.gunangle + (((15 * (1 + charge/maxchrg)*.8)) * (i * flip) + random_range(-10, 10)) * other.accuracy * sqrt(charge)/6, 8)
+        image_angle = direction
+      	projectile_init(other.team, instance_is(other, FireCont) ? other.creator : other);
+    }
+    
+    burst.reload -= burst.shots_fired;
+
 
 #define step(w)
 	mod_script_call_self("weapon", "moby", "step", w)
