@@ -32,7 +32,7 @@ return "RACING MIND"
 return "smarter x gun"
 
 #define weapon_fire
-shoot(wep, 1)
+shoot(wep, true);
 
 #define shoot(wep, manual)
 var _tx = wep.x, _ty = wep.y;
@@ -47,7 +47,7 @@ if !manual {
             if array_length(bursttargets) >= weapon_cost() break
         }
     }
-    if _canshoot{
+    if _canshoot {
         for (var i = 0; i < weapon_cost(); i++) {
             target = bursttargets[i mod array_length(bursttargets)]
             array_push(angles,point_direction(_tx, _ty, target.x + target.hspeed, target.y + target.vspeed))
@@ -60,33 +60,35 @@ else {
 }
 
 if _canshoot {
-    if fork(){
-        for (var i = 0; i < weapon_cost(); i++) {
-            if instance_exists(self){
-                wep.kick = 2 * (i + 1)
-                angle = angles[i mod array_length(angles)]
-                wep.gunangle = angle
-                weapon_post(0,3,6)
-                var _r = random_range(.9, 1.1), _v = manual ? .8 : .6
-				sound_play_pitchvol(sndSmartgun, .8 * _r, .8 * _v)
-			    sound_play_pitchvol(sndGruntFire, 1.2 * _r, _v)
-			    sound_play_pitchvol(sndServerBreak, 1.4 * _r, _v * .5)
-				sound_play_pitchvol(sndGammaGutsKill, 1.6*_r, (.3+skill_get(17)*.2) * _v)
-				if !skill_get(17) sound_play_pitchvol(sndLightningRifle,1.5*_r, _v)
-				else sound_play_pitchvol(sndLightningRifleUpg,1.7*_r, _v)
-                with mod_script_call_nc("mod", "defpack tools", "create_lightning_bullet", _tx,_ty){
-                	creator = other
-                	team = other.team
-                	motion_set(angle,16)
-                	image_angle = direction
-                }
-                wait(1)
-            }
-        }
-        exit
-    }
+	with mod_script_call("mod", "defburst", "burst", weapon_cost(), 1, script_ref_create(burst_fire)) {
+		firing_angles = angles;
+		smarter_gun = wep;
+		manually_fired = manual;
+	}
 }
 return _canshoot
+
+#define burst_fire(burst)
+	var wep = burst.smarter_gun,
+		angle = burst.firing_angles[burst.shots_fired mod array_length(burst.firing_angles)];
+	wep.kick = 2 * (burst.shots_fired + 1);
+	wep.gunangle = angle;
+	weapon_post(0, 3, 6)
+	var _r = random_range(.9, 1.1),
+		_v = burst.manually_fired ? .8 : .6;
+	sound_play_pitchvol(sndSmartgun, .8 * _r, .8 * _v)
+	sound_play_pitchvol(sndGruntFire, 1.2 * _r, _v)
+	sound_play_pitchvol(sndServerBreak, 1.4 * _r, _v * .5)
+	sound_play_pitchvol(sndGammaGutsKill, 1.6*_r, (.3+skill_get(17)*.2) * _v)
+	if !skill_get(17) sound_play_pitchvol(sndLightningRifle,1.5*_r, _v)
+	else sound_play_pitchvol(sndLightningRifleUpg,1.7*_r, _v)
+	
+	with mod_script_call_nc("mod", "defpack tools", "create_lightning_bullet", wep.x, wep.y) {
+		creator = instance_is(other, FireCont) ? other.creator : other;
+		team = other.team;
+		motion_set(angle, 16);
+		image_angle = direction;
+	}
 
 #define step(w)
 mod_script_call_self("mod", "defpack tools", "smarter_gun_step", w)
