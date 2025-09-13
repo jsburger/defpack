@@ -50,13 +50,13 @@ return "THUNDERSTORM";
 		move_contact_solid(other.gunangle,8)
 		motion_add(other.gunangle+8+random_range(-12,12)*other.accuracy,10)
 		image_angle = direction
-		team = c.team
+		team = other.team
 		creator = c
 	}
 	with mod_script_call("mod", "defpack tools", "create_lightning_bullet",x,y){
 		move_contact_solid(other.gunangle,8)
 		motion_add(other.gunangle-8+random_range(-12,12)*other.accuracy,10)
 		image_angle = direction
-		team = c.team
+		team = other.team
 		creator = c
 	}

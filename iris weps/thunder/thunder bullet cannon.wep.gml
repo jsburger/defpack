@@ -49,7 +49,7 @@ return "BOTTLED LIGHTNING";
 	{
 		mod_script_call("mod","defpack tools", "shell_yeah", 100, 25, 2+random(2), c_navy)
 		with mod_script_call("mod", "defpack tools", "create_lightning_bullet",x+lengthdir_x(random_range(-7,7)*accuracy,gunangle+90),y+lengthdir_y(random_range(-7,7)*accuracy,gunangle+90)){
-			team = c.team
+			team = other.team
 			creator = c
 			move_contact_solid(other.gunangle,5)
 			motion_add(other.gunangle+random_range(-10,10)*other.accuracy,10+random_range(-2,3)*other.accuracy)

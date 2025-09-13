@@ -74,7 +74,7 @@ return "A GLORIOUS THUNDER"
     mask_index = mskHeavyBullet
     recycle_amount = 5
     damage = 4
-    team = c.team
+    team = other.team
     force = 18
     frames = 8
     defbloom = {

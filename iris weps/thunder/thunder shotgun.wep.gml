@@ -54,7 +54,7 @@ return choose("SHOCKWAVE");
 		with mod_script_call("mod", "defpack tools", "create_lightning_bullet",x,y){
 			creator = c
 			move_contact_solid(other.gunangle,5)
-			team = c.team
+			team = other.team
 			motion_add(other.gunangle+i*other.accuracy+random_range(-3,3),16)
 			image_angle = direction
 		}

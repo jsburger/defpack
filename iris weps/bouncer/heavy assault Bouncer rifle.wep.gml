@@ -43,7 +43,7 @@ return choose("DO YOU WONDER HOW#THESE BULLETS WORK");
 	mod_script_call("mod","defpack tools", "shell_yeah_heavy", 180, 25, 2+random(2), c_yellow)
 	with mod_script_call("mod", "defpack tools", "create_heavy_bouncer_bullet",x,y){
 		creator = c
-		team = c.team
+		team = other.team
 		motion_set(other.gunangle + random_range(-3,3) * other.accuracy,8)
 		image_angle = direction
 	}

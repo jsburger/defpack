@@ -67,6 +67,6 @@ repeat(n) {
     	move_contact_solid(other.gunangle,6)
     	motion_add(other.gunangle - (10 * (_burst.shots_fired - _burst.max div 2)) * flip + random_range(-2,2)*other.accuracy,10)
     	image_angle = direction
-    	team = c.team
+    	team = other.team
     	creator = c
     }

@@ -47,6 +47,6 @@ return "TAZER THEM";
 	with mod_script_call("mod", "defpack tools", "create_lightning_bullet",x,y){
 		motion_add(other.gunangle+random_range(-7,7)*other.accuracy,10)
 		image_angle = direction
-		team = c.team
+		team = other.team
 		creator = c
 	}

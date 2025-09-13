@@ -44,7 +44,7 @@ return "HUNT THEM DOWN";
 	with mod_script_call("mod", "defpack tools", "create_heavy_psy_bullet",x,y){
 		creator = c
 		move_contact_solid(other.gunangle,5)
-		team = c.team
+		team = other.team
 		motion_add(other.gunangle+random_range(-6,6)*other.accuracy,12)
 		image_angle = direction
 	}

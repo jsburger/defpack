@@ -49,6 +49,6 @@ return "ITS A LONG ONE";
 		move_contact_solid(other.gunangle,8)
 		motion_add(other.gunangle+random_range(-4,4)*other.accuracy,10)
 		image_angle = direction
-		team = c.team
+		team = other.team
 		creator = c
 	}

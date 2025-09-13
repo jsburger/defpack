@@ -43,7 +43,7 @@ return "ALL GASSED UP";
     mod_script_call("mod","defpack tools", "shell_yeah", 180, 25, random_range(2,4), c_green)
     with mod_script_call("mod", "defpack tools", "create_toxic_bullet",x+lengthdir_x(8,gunangle),y+lengthdir_y(8,gunangle)){
         creator = c
-        team = c.team
+        team = other.team
         motion_set(other.gunangle + random_range(-4,4) * other.accuracy,16)
     	image_angle = direction
     }

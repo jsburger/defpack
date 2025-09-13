@@ -101,7 +101,7 @@ return{
 		mod_script_call("mod","defpack tools", "shell_yeah", 100, 35, random_range(3, 5), c_green);
 		
 		with mod_script_call("mod", "defpack tools", "create_toxic_bullet", x, y){
-			team = c.team;
+			team = other.team;
 			creator = c;
 			motion_set(creator.gunangle + random_range(-1, 1) * creator.accuracy, 16);
 			image_angle = direction;
@@ -114,7 +114,7 @@ return{
 			mod_script_call("mod","defpack tools", "shell_yeah", 100, 35, random_range(3, 5), c_yellow);
 		
 			with instance_create(x, y, Bullet1){
-				team = c.team;
+				team = other.team;
 				creator = c;
 				motion_set(creator.gunangle + random_range(-2, 2) * creator.accuracy, 18);
 				image_angle = direction;
@@ -125,7 +125,7 @@ return{
 			mod_script_call("mod","defpack tools", "shell_yeah", 100, 35, random_range(3, 5), c_red);
 			
 			with mod_script_call("mod", "defpack tools", "create_fire_bullet", x, y){
-				team = c.team;
+				team = other.team;
 				creator = c;
 				motion_set(creator.gunangle + random_range(-7, 7) * creator.accuracy, 20);
 				image_angle = direction;

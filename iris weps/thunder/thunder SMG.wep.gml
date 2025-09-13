@@ -44,6 +44,6 @@ return "PERCUSSION BLAST";
 		move_contact_solid(other.gunangle,6)
 		motion_add(other.gunangle+random_range(-13,13)*other.accuracy,10)
 		image_angle = direction
-		team = c.team
+		team = other.team
 		creator = c
 	}

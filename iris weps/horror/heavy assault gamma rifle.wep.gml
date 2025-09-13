@@ -42,7 +42,7 @@ return "HEAVY PROTECTION";
 	mod_script_call("mod","defpack tools", "shell_yeah_heavy", 180, 25, random_range(2,4), c_lime)
 	repeat(2) with mod_script_call("mod", "defpack tools", "create_heavy_gamma_bullet",x,y){
 	    creator = c
-	    team = c.team
+	    team = other.team
 	    motion_set(other.gunangle + random_range(-_i,_i) * other.accuracy,random_range(14,16))
 		image_angle = direction
         _i = 11;

@@ -42,7 +42,7 @@ return choose("IN AND OUT");
 	mod_script_call("mod","defpack tools", "shell_yeah", 180, 25, random_range(2,4), c_lime)
 	repeat(2) with mod_script_call("mod", "defpack tools", "create_gamma_bullet",x,y){
 	    creator = c
-	    team = c.team
+	    team = other.team
 	    motion_set(other.gunangle + random_range(-_i,_i) * other.accuracy,random_range(14,18))
 		image_angle = direction
 	    _i = 14

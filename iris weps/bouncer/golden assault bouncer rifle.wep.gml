@@ -42,7 +42,7 @@ return choose("TRIPLE BOUNCE @yDELUXE");
 	sound_play_pitch(sndGoldMachinegun,random_range(.8,1.2))
 	weapon_post(4,0,5)
 	with instance_create(x,y,BouncerBullet){
-		team = c.team
+		team = other.team
 		creator = c
 		motion_add(other.gunangle+random_range(-8,8)*other.accuracy,6)
 	}

@@ -45,7 +45,7 @@ return "bizarre looking weaponry";
 	with instance_create(x,y,BouncerBullet)
 	{
 		move_contact_solid(other.gunangle,10)
-		team = c.team
+		team = other.team
 		creator = c
 		motion_add(other.gunangle+random_range(-4,4)*other.accuracy,8)
 		image_angle = direction - 90

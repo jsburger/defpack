@@ -76,7 +76,7 @@ return "JUDGEMENT OF ZEUS"
 
 	with mod_script_call("mod", "defpack tools", "create_heavy_lightning_bullet",x,y){
 		motion_set(ang+random_range(-7,7)*other.accuracy,10)
-		projectile_init(c.team,c)
+		projectile_init(other.team,c)
 		image_angle = direction
 		repeat(2) with instance_create(x+lengthdir_x(speed,direction),y+lengthdir_y(speed,direction),Dust)
 		{

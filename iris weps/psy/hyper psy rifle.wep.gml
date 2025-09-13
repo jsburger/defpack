@@ -41,7 +41,7 @@ return "no hope";
 	with mod_script_call("mod", "defpack tools", "create_psy_bullet",x,y){
 		creator = c
 		move_contact_solid(other.gunangle,14)
-		team = c.team
+		team = other.team
 		motion_add(other.gunangle+random_range(-4,4)*other.accuracy,7)
 		image_angle = direction
 	}

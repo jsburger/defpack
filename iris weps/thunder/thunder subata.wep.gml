@@ -55,7 +55,7 @@ return 0
 		direction = other.gunangle + random_range(-5, 5) * other.accuracy;
 		image_angle = direction;
 		creator = c
-		team = c.team
+		team = other.team
 		force += 4;
 		damage += 1
 		trailsize += .35

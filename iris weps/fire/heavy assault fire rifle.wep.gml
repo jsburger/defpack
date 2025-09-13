@@ -43,7 +43,7 @@ return "THIS ONE'S HOT";
 	mod_script_call("mod","defpack tools", "shell_yeah_heavy", 180, 25, 2+random(2), c_red)
 	with mod_script_call("mod", "defpack tools", "create_heavy_fire_bullet",x,y){
 		creator = c
-		team = c.team
+		team = other.team
 		motion_set(other.gunangle + random_range(-6,6) * other.accuracy,16)
 		image_angle = direction
 	}

@@ -39,7 +39,7 @@ return choose("TACTICAL ADVANTAGE");
 	weapon_post(4,-7,3)
 	with instance_create(x,y,Shell){motion_add(other.gunangle+180+random(80)-40,2+random(2))}
 	with instance_create(x,y,BouncerBullet){
-		team = c.team
+		team = other.team
 		creator = c
 		motion_add(other.gunangle+(random_range(-8, 8))*other.accuracy,6)
 	}

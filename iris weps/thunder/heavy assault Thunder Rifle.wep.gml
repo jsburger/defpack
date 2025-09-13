@@ -55,6 +55,6 @@ return "STORM'S COMING";
 	with mod_script_call("mod", "defpack tools", "create_heavy_lightning_bullet",x,y){
 		motion_add(other.gunangle+random_range(-4,4)*other.accuracy,14)
 		image_angle = direction
-		team = c.team
+		team = other.team
 		creator = c
 	}

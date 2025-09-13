@@ -40,7 +40,7 @@ return "OUT OF THE KETTLE";
 	mod_script_call("mod","defpack tools", "shell_yeah", 180, 25, 2+random(2), c_red)
 	with mod_script_call("mod", "defpack tools", "create_fire_bullet",x,y){
 		creator = c
-		team = c.team
+		team = other.team
 		motion_set(other.gunangle + random_range(-15,15) * other.accuracy,15)
 		image_angle = direction
 	}
