@@ -12,7 +12,8 @@
 		shots_fired = 0
 		on_step = script_ref_create(burst_step)
 		
-		burst_step()
+		//Breaks Thunder Smarter Gun and Thunder Moby
+		//burst_step()
 		
 		return self;
 	}
