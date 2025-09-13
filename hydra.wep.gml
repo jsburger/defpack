@@ -1,6 +1,7 @@
 #define init
 //Karm replace this sprite
-global.sprRockletShotgun = sprite_add_weapon("sprites/weapons/sprRockletShotgun.png", 4, 1);
+//I DID IT
+global.sprRockletShotgun = sprite_add_weapon("sprites/weapons/sprRockletShotgun.png", 8, 4);
 global.sprExtraCursor = sprite_add("sprites/interface/sprExtraCursor.png", 1, 8, 8)
 
 //All of these variables are non-sync. Do not use them for logic
