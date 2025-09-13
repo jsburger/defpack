@@ -3549,8 +3549,8 @@ if speed < friction instance_destroy()
 	sound_play_pitch(sndBasicUltra, random_range(.6, .8))
 	sound_play_gun(sndClickBack, 1, .5)
 	sound_stop(sndClickBack)
-	with instance_create(other.x,other.y,CustomObject){
-	    with instance_create(x,y,CustomSlash){
+	with instance_create(x, y, CustomObject){
+	    with instance_create(x, y, CustomSlash){
 	        lifetime = 4
 	        team = _t
 	        image_xscale = 1
@@ -3571,7 +3571,7 @@ if speed < friction instance_destroy()
 	    image_speed = .7
 	    sprite_index = spr.KillslashL
 	    on_step = Killslash_step
-	    with instance_create(x,y,CustomObject){
+	    with instance_create(x, y, CustomObject){
 	        image_angle = other.image_angle - 90 + random_range(-8,8)
 	        depth = other.depth+1
 	        image_speed = .45

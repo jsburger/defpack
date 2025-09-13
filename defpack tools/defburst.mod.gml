@@ -4,6 +4,7 @@
 #define burst_create(_rounds, _delay, _creator, _script)
 	with instance_create(0, 0, CustomObject) {
 		ammo = _rounds
+		base_ammo = _rounds
 		delay = _delay
 		creator = _creator
 		fire_script = _script
@@ -12,7 +13,8 @@
 		shots_fired = 0
 		on_step = script_ref_create(burst_step)
 		
-		burst_step()
+		//Breaks Thunder Smarter Gun and Thunder Moby
+		//burst_step()
 		
 		return self;
 	}
