@@ -22,7 +22,7 @@
 		if reload > 0 {
 			reload -= current_time_scale
 		}
-		else while reload <= 0 {
+		while reload <= 0 {
 			reload += delay
 			ammo -= 1;
 			with creator {
