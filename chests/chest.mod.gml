@@ -392,19 +392,18 @@
             break
     }
 
-	//Sage compat:
-	var _close = -4;
+	//Sage compat (Spawn 2 bullets if theres any sage around):
+	var found = -4;
 	for (var i = 0; i < maxp; i++){
-		if player_get_race(i) == "sage" && (_close = -4 || point_distance(player_find(i).x, player_find(i).y, x, y) < point_distance(_close.x, _close.y, x, y)){
-			
-			_close = player_find(i);
-		}
-		if _close != noone && _close.race == "sage"{
 		
-			with mod_script_call("race", "sage", "spellbullet_create", x, y, curse == true ? "bRandom" : "", _close){
+		found = player_find(i);
+		if instance_exists(found) && player_get_race(i) == "sage"{
+			
+			repeat(2) with mod_script_call("race", "sage", "spellbullet_create", x, y, curse == true ? "bRandom" : "", found){
 				
 				motion_add(random(360), 5);
 			}
+			break;
 		}
 	}
 
