@@ -230,7 +230,11 @@
 	
 	//Known projectiles that are iterated over
 	global.tags = {};
-
+	with instances_matching(CustomObject, "name", "Defpack Tools Data") {
+		global.tags = tags;
+		instance_destroy();
+	}
+	
 	//Distribute sprites to other libraries (add mod name to list to expand)
 	with ["defhitscan"] {
 		if mod_exists("mod", self) {
@@ -311,6 +315,21 @@
 
 // laser brain effect is active (for toggles rather than scaling like bloom)
 #macro brain_active skill_get(mut_laser_brain) > 0
+
+#define cleanup
+	with instance_create(0, 0, CustomObject) {
+		name = "Defpack Tools Data";
+		tags = global.tags;
+		
+		time = 20;
+		on_step = data_step;
+	}
+
+#define data_step
+	time -= 1;
+	if time <= 0 {
+		instance_destroy();
+	}
 
 #define sprite_add_d(sprite, subimages, xoffset, yoffset)
 	var a = string_split(sprite, "/"),

@@ -9,11 +9,13 @@ global.cratedead = sprite_add("../sprites/tank/sprTankChestDestroy.png", 4, 16, 
 #macro tankscale 4
 #macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)
 
+#define tagged_objects(tag)
+	return mod_script_call("mod", "defpack tools", "tagged_objects", tag)
 #define draw_shadows
-with instances_matching(CustomProp, "name", "tank crate"){
+with tagged_objects("TankCrate") {
     draw_circle_color(x - 1,y + 2 + z,12 * (1 - z/zstart),c_white,c_white,0)
 }
-with instances_matching(CustomHitme, "name", "tank"){
+with tagged_objects("Tank") {
     for (var i = height; i < image_number; i++){
     	draw_sprite_ext(global.tank, i , x, y + spr_shadow_y, image_xscale, image_yscale, gunangle+180, image_blend, 1);
     }
@@ -54,7 +56,9 @@ with instance_create(_x, _y, CustomProp){
     on_hurt  = cratehurt
     //on_draw  = cratedraw
     on_death = cratedie
-
+	
+	mod_script_call("mod", "defpack tools", "tag_object", self, "TankCrate")
+	
     return id
 }
 
@@ -158,6 +162,7 @@ d3d_set_fog(0,0,0,0)
 var tank = instance_create(_x,_y,CustomHitme);
 with tank{
     name = "tank"
+	mod_script_call("mod", "defpack tools", "tag_object", self, "Tank")
 	sprite_index = global.tank
 	image_speed = 0
 	spr_shadow_y = 3
@@ -197,7 +202,7 @@ with tank{
 }
 return tank
 
-#define dismount
+#define dismount(tank)
 //mask_index = tankthings[0]
 image_alpha = tankthings[1]
 maxspeed = tankthings[2]
@@ -210,9 +215,11 @@ canswap = 1
 my_health = tankthings[4]
 canspec = 1
 candie = tankthings[7]
-other.driver = noone
 
-#define mount
+tank.driver = noone;
+tank.doortime = 5;
+
+#define mount(tank)
 tankthings = [mask_index = mskNone ? mskPlayer : mask_index,image_alpha,maxspeed,spr_shadow,my_health,wep,bwep,candie]
 image_alpha = 0
 wep = other.main_gun
@@ -224,17 +231,19 @@ canspec = 0
 candie = 0
 canswap = 0
 canwalk = 0
-other.driver = id
-other.team = team
+
+tank.driver = id;
+tank.team = team;
+tank.doortime = 5;
 
 
 #define step
 //LAST RESORT FOR RESETTING PLAYER STATS IF THERE ARE NO tankS
-with Player if "tankthings" in self && driving{
+with Player if "tankthings" in self && driving {
     if !array_length_1d(instances_matching(CustomHitme,"driver",id))
         with instance_create(x,y,CustomObject){
             with other
-                dismount()
+                dismount(other)
             instance_destroy()
         }
 }
@@ -260,11 +269,11 @@ instance_destroy()
 if doortime > 0 {doortime -=1}
 if !instance_exists(driver){
     with Player if distance_to_object(other) < 10{
-        script_bind_draw(draw_mount,-10,other.x,other.y-10)
+        script_bind_draw(draw_mount, -10, other.x, other.y - 10)
         if "driving" not in self driving = 0
     	//ENTERING tank AND SETTING STATS(i optimized this by just making it a function)
     	if button_pressed(index,"pick") && other.doortime = 0 && other.driver = noone && !driving{
-    		mount()
+    		mount(other);
     	}
     }
 }
@@ -352,10 +361,8 @@ if instance_exists(driver) && instance_is(driver,Player){
 	//LEAVING THE tank AND RESETTING STATS
 	if button_pressed(driver.index,"pick") && doortime = 0{
 		with driver{
-			dismount()
+			dismount(other)
 		}
-		doortime = 5
-		driver = noone
 	}
 }else{
 	//i dont know why i needed this
@@ -426,18 +433,20 @@ surface_destroy(sf)
 #define tankbreak
 tankcleanup()
 if driver != noone with driver{
-    dismount()
+    dismount(other)
 }
 with instance_create(x,y,Explosion) hitid = [sprite_index, "TANK EXPLOSION"]
 repeat(3) instance_create(x,y,SmallExplosion) hitid = [sprite_index, "TANK EXPLOSION"]
 sound_play(sndExplosionCar)
 
 #define tankdraw
-var yoff = random_range(-.5,.5) + 4;
-if driver = noone{yoff = 5}
-if nexthurt > current_frame + 4 d3d_set_fog(1,c_white,1,1)
+var yoff = random_range(-.5, .5) + 4;
+if driver = noone { 
+	yoff = 5
+}
+if nexthurt > current_frame + 4 d3d_set_fog(1, c_white, 1, 1)
 surface_set_target(sf)
-draw_clear_alpha(0,0)
+draw_clear_alpha(c_black, 0)
 for (var i = 0; i < height; i++){
 	draw_sprite_ext(global.tank, i , 50 * tankscale, (50 - i) * tankscale,image_xscale * tankscale, image_yscale * tankscale, image_angle, image_blend, 1);
 }
@@ -446,11 +455,11 @@ for (i = i; i < image_number; i++){
 	draw_sprite_ext(global.tank, i , 50 * tankscale, (50 - i) * tankscale,image_xscale * tankscale, image_yscale * tankscale, gunangle+180, image_blend, 1);
 }
 surface_reset_target()
-d3d_set_fog(1,0,0,0)
+d3d_set_fog(true, c_black, 0, 0)
 for (var o = 0; o <360; o+=90){
     draw_surface_ext(sf,x-50 +lengthdir_x(1,o),y-50 +lengthdir_y(1,o) + yoff, 1/tankscale, 1/tankscale, 0, c_white, 1)
 }
-d3d_set_fog(0,0,0,0)
+d3d_set_fog(false, c_black, 0, 0)
 draw_surface_ext(sf,x -50, y -50 + yoff, 1/tankscale, 1/tankscale, 0, c_white, 1)
 
 
