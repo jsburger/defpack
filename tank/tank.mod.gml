@@ -9,11 +9,13 @@ global.cratedead = sprite_add("../sprites/tank/sprTankChestDestroy.png", 4, 16, 
 #macro tankscale 4
 #macro current_frame_active (current_frame < floor(current_frame) + current_time_scale)
 
+#define tagged_objects(tag)
+	return mod_script_call("mod", "defpack tools", "tagged_objects", tag)
 #define draw_shadows
-with instances_matching(CustomProp, "name", "tank crate"){
+with tagged_objects("TankCrate") {
     draw_circle_color(x - 1,y + 2 + z,12 * (1 - z/zstart),c_white,c_white,0)
 }
-with instances_matching(CustomHitme, "name", "tank"){
+with tagged_objects("Tank") {
     for (var i = height; i < image_number; i++){
     	draw_sprite_ext(global.tank, i , x, y + spr_shadow_y, image_xscale, image_yscale, gunangle+180, image_blend, 1);
     }
@@ -54,7 +56,9 @@ with instance_create(_x, _y, CustomProp){
     on_hurt  = cratehurt
     //on_draw  = cratedraw
     on_death = cratedie
-
+	
+	mod_script_call("mod", "defpack tools", "tag_object", self, "TankCrate")
+	
     return id
 }
 
@@ -158,6 +162,7 @@ d3d_set_fog(0,0,0,0)
 var tank = instance_create(_x,_y,CustomHitme);
 with tank{
     name = "tank"
+	mod_script_call("mod", "defpack tools", "tag_object", self, "Tank")
 	sprite_index = global.tank
 	image_speed = 0
 	spr_shadow_y = 3
