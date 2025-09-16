@@ -60,15 +60,15 @@ return{
 			var _p = random_range(.8, 1.2);
 			sound_play_pitch(sndJackHammer, .3 * _p);
 			sound_play_pitchvol(sndSwapMotorized, 1,.2);
-			sound_play_pitchvol(sndEnergyHammerUpg, .4, .9);
+			sound_play_pitchvol(sndEnergyHammerUpg, .4, .7);
 			if skill_get(mut_laser_brain) > 0{
-				sound_play_pitchvol(sndEnergyScrewdriverUpg, .7, .7);
-				sound_play_pitchvol(sndEnergySwordUpg, .7 * _p, .7);
+				sound_play_pitchvol(sndEnergyScrewdriverUpg, .7, .6);
+				sound_play_pitchvol(sndEnergySwordUpg, .7 * _p, .6);
 			}else{
-				sound_play_pitchvol(sndEnergyScrewdriver, .7, .7);
-				sound_play_pitchvol(sndEnergySword, .7 * _p, .7);
+				sound_play_pitchvol(sndEnergyScrewdriver, .7, .6);
+				sound_play_pitchvol(sndEnergySword, .7 * _p, .6);
 			}
-			sound_play_gun(sndClickBack,1, .8);
+			sound_play_gun(sndClickBack,1, .7);
 			sound_stop(sndClickBack)
 
 			weapon_post(0,6,0)
@@ -87,10 +87,10 @@ return{
 			sprite_index = mskNone
 			canfix = false
 			force = 0
-			damage = choose(2, 3)
+			damage = !(other.ammo mod 2) ? 1 : 4;
 			if skill_get(13) = true mask_index = global.mskChainsaw else mask_index = global.sprChainsaw
 			image_xscale = 1.33
-			image_yscale = 1.25
+			image_yscale = 1.5
 			creator = other.creator
 			team = other.team
 			image_angle = other.creator.gunangle
@@ -113,7 +113,7 @@ return{
 	}
 
 #define chainsawshank_hit
-	if current_frame_active{
+	if current_frame_active && instance_exists(creator){
 		view_shake_max_at(x, y, 5)
 		sleep(20)
 
@@ -124,17 +124,23 @@ return{
 					
 			x = xprevious;
 			y = yprevious;
-			speed = 0;
 			
 			// Make enemy brain freeze:
-			if("alarm0" in self) {alarm0 = min(alarm0 + current_time_scale, 25)}
-			if("alarm1" in self) {alarm0 = min(alarm1 + current_time_scale, 25)}
+			if size <= 2{
+				if("alarm0" in self) {alarm0 = min(alarm0 + current_time_scale, 25)}
+				if("alarm1" in self) {alarm1 = min(alarm1 + current_time_scale, 25)}
+			}
 		}
 
 		_splat = determine_gore(other)
 	    with instance_create((other.x*other.size+x)/(other.size+1),(other.y*other.size+y)/(other.size+1),_splat){image_angle = random(360)}
-
-		projectile_hit(other, damage, force, image_angle);
+			
+		if damage > 0{
+			projectile_hit(other, damage, 0, direction);
+			with other if speed > 0{
+				speed = min(speed, size, 1);
+			}
+		}
 
 		if other.my_health <= 0 && "chainsawed" not in other{
 			other.chainsawed = true;
@@ -156,8 +162,6 @@ return{
 
 			sleep(90 + other.size * 30)
 			view_shake_max_at(x, y, 28 + other.size * 12)
-
-			projectile_hit(other, 0, 9, _o.image_angle);
 
 			var _c = crown_current
 			crown_current = crwn_haste

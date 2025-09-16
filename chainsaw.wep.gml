@@ -67,10 +67,10 @@ return{
 			sprite_index = mskNone
 			canfix = false
 			force = 0
-			damage = irandom_range(1, 2)
+			damage = !(other.ammo mod 2) ? 0 : 3;
 			if skill_get(13) = true mask_index = global.mskChainsaw else mask_index = global.sprChainsaw
 			image_xscale = 1.33
-			image_yscale = 1.25
+			image_yscale = 1.5
 			creator = other.creator
 			team = other.team
 			image_angle = other.creator.gunangle
@@ -99,11 +99,13 @@ return{
 			
 			x = xprevious;
 			y = yprevious;
-			speed = 0;
 		
 			// Make enemy brain freeze:
-			if("alarm0" in self) {alarm0 = min(alarm0 + current_time_scale, 25)}
-			if("alarm1" in self) {alarm0 = min(alarm1 + current_time_scale, 25)}
+			if size <= 2{
+				if("alarm0" in self) {alarm0 = min(alarm0 + current_time_scale, 25)}
+				if("alarm1" in self) {alarm1 = min(alarm1 + current_time_scale, 25)}
+			}
+				
 		}
 		
 		var _splat = -4,
@@ -111,8 +113,13 @@ return{
 
 		_splat = determine_gore(other)
 	    with instance_create((other.x*other.size+x)/(other.size+1),(other.y*other.size+y)/(other.size+1),_splat){image_angle = random(360)}
-
-		projectile_hit(other, damage, force, image_angle);
+		
+		if damage > 0{
+			projectile_hit(other, damage, force, image_angle);
+			with other if speed > 0{
+				speed = min(speed, size, 1);
+			}
+		}
 
 		if other.my_health <= 0 && "chainsawed" not in other{
 			other.chainsawed = true;

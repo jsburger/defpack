@@ -1294,7 +1294,7 @@ with create_slash_bullet(x, y){
 
 #define recycle_gland_roll
 /// recycle_gland_roll(_chance = 60)
-var _chance = argument_count > 0 ? argument[0] : 60;
+var _chance; if (argument_count > 0) _chance = argument[0]; else _chance = 60;
 
 	var _gland = skill_get(mut_recycle_gland) + (10 * skill_get("recycleglandx10"));
 	if recycle_amount != 0 {
@@ -1478,11 +1478,12 @@ if timer <= 0{
 
 		wallbounce = skill_get(mut_shotgun_shoulders) * 2 + (skill_get("shotgunshouldersx10") * 20);
 		damage     = 2;
-		force      = 2;
+		force      = 0;
 		friction   = .6;
 		tar_len = 24;
 		tar_dir = 0;
 		target = -4;
+		bounce_target_dist = 80;
 
 		defbloom = {
 		    xscale : 2,
@@ -1508,6 +1509,19 @@ if timer <= 0{
 	move_bounce_solid(false);
 	sound_play_pitch(sndHitWall, random_range(.8, 1.2));
 	instance_create(x, y, Dust);
+	
+	if !instance_exists(target){
+		var _a = [];
+		with instances_matching_ne(hitme, "team", team){
+			if point_distance(x, y, other.x, other.y) <= other.bounce_target_dist{
+				array_push(_a, self);
+			}
+		}
+		
+		if array_length_1d(_a){
+			target = _a[irandom(array_length_1d(_a) - 1)];
+		}
+	}
 
 #define burster_hit
 
@@ -1518,7 +1532,9 @@ if timer <= 0{
 		y -= lengthdir_y(1, direction);
 	}until(!place_meeting(x, y, other));
 
-	direction -= 180 + random_range(-12, 12);
+	direction -= 180 + random_range(-25, 25);
+	speed = max(6, speed * .7);
+	
 	projectile_hit(other, damage, force, direction);
 
 #define burster_destroy
