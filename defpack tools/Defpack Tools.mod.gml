@@ -160,8 +160,9 @@
 		VectorHead   		 = sprite_add(i + "sprVectorHead.png", 1, 8, 2);
 		Vector	     		 = sprite_add(i + "sprVector.png", 1, 0, 3);
 		VectorImpact 		 = sprite_add(i + "sprVectorImpact.png", 14, 20, 20);
-		msk.VectorImpact = sprite_add(i + "mskVectorImpact.png", 14, 20, 20);
+		msk.VectorImpact     = sprite_add(i + "mskVectorImpact.png", 14, 20, 20);
 		VectorEffect 		 = sprite_add(i + "sprVectorBeamEnd.png", 5, 5, 5);
+		VectorColor 		 = make_color_rgb(25, 255, 165);
 
 		//Spike Balls
 		MiniSpikeball      = sprite_add  (i + "sprMiniSpikeball.png", 0, 6, 5);
@@ -4859,7 +4860,7 @@ with instance_create(_x, _y, CustomProjectile) {
 	damage = 5 + 2 * skill_get(mut_laser_brain)
 	force = 8
 	shrinkspeed = .1 - (brain_active * .04)
-	basedir = undefined
+	basedir = undefined;
 	lasthit = -4
 
 	trail_x = x
@@ -4868,6 +4869,7 @@ with instance_create(_x, _y, CustomProjectile) {
 	homing_range = 120
 	homing_scope = 45
 	head_scale = 1
+	homing_snap = 0;
 
 	defbloom = {
 		sprite : spr_head,
@@ -4887,39 +4889,104 @@ with instance_create(_x, _y, CustomProjectile) {
 }
 
 #define vector_head_step
-var _r = 90 * choose(-1, 1)
-if !irandom((2 - brain_active) > 0) with instance_create(x-lengthdir_x(10,direction + _r)+random_range(-2,2),y-lengthdir_y(10,direction + _r)+random_range(-2,2),BulletHit)
-        {
-        	sprite_index = spr.VectorEffect
-        	image_angle = other.direction
-					image_speed = .4 - (brain_active ? .2 : 0);
-					friction = .2;
-        	motion_set(other.direction,choose(1,2))
-        }
-if basedir != undefined {
-	var _targ = instance_nearest_matching_ne(x, y, hitme, "team", team), _diff = angle_difference(direction, basedir);
-	if instance_exists(_targ) {
-		if distance_to_object(_targ) < homing_range and !collision_line(x, y, _targ.x, _targ.y, Wall, 0, 0) {
-			var _diff2 = angle_difference(basedir, point_direction(x, y, _targ.x, _targ.y));
-			if abs(_diff2) <= homing_scope {
-				_diff = angle_difference(direction, point_direction(x, y, _targ.x, _targ.y))
+	//Particle effect
+	if chance(brain_active ? 50 : 33) {
+		var _r = 90 * choose(-1, 1);
+		with vector_effect_create(x - lengthdir_x(10, direction + _r) + random_range(-2, 2), y - lengthdir_y(10, direction + _r) + random_range(-2, 2)) {
+			friction = .2;
+	    	direction = other.direction;
+	    	image_angle = direction;
+	    }
+	}
+	var snap = 0;
+	//Homing
+	if basedir != undefined {
+		// var _targ = instance_nearest_matching_ne(x, y, hitme, "team", team),
+		// 	_diff = angle_difference(direction, basedir);
+		// if instance_exists(_targ) {
+		// 	if distance_to_object(_targ) < homing_range and !collision_line(x, y, _targ.x, _targ.y, Wall, 0, 0) {
+		// 		var _diff2 = angle_difference(basedir, point_direction(x, y, _targ.x, _targ.y));
+		// 		if abs(_diff2) <= homing_scope {
+		// 			_diff = angle_difference(direction, point_direction(x, y, _targ.x, _targ.y))
+		// 		}
+		// 	}
+		// }
+		// direction -= clamp(_diff, -homing_scope * current_time_scale, homing_scope * current_time_scale)
+		
+		var target = instance_nearest_matching_ne(x, y, hitme, "team", team),
+			homing = false;
+		if instance_exists(target) {
+			if distance_to_object(target) < homing_range {
+				var dir = point_direction(x, y, target.x, target.y),
+					base_diff = angle_difference(basedir, dir);
+				if abs(base_diff) <= homing_scope {
+					var line_distance = distance_to_line({"x": x, "y": y, "direction": basedir}, target);
+					if line_distance > 5 {
+						var homing_dir = basedir + homing_scope * -sign(base_diff);
+						var nearest = point_intersect(
+							{"x": target.x, "y": target.y, "direction": basedir},
+							{"x": x, "y": y, "direction": homing_dir});
+						if !instance_exists(collision_line(nearest.x, nearest.y, target.x, target.y, Wall, false, false))
+						&& !instance_exists(collision_line(x, y, nearest.x, nearest.y, Wall, false, false)){
+							direction = homing_dir;
+							snap = sign(base_diff);
+							homing = true;
+						}
+					}
+				}
 			}
 		}
+		if homing == false {
+			direction = basedir;
+		}
 	}
-	direction -= clamp(_diff, -homing_scope * current_time_scale, homing_scope * current_time_scale)
-}
-image_angle = direction
-defbloom.angle = direction - 45
-var _dist = point_distance(x, y, trail_x, trail_y);
-if _dist > 12 {
-	with create_vector_trail(trail_x, trail_y) {
-		image_xscale = _dist/2
-		image_angle = point_direction(x, y, other.x, other.y)
-		direction = image_angle
+	image_angle = direction
+	defbloom.angle = direction - 45
+	//Trails
+	var _dist = point_distance(x, y, trail_x, trail_y);
+	if (_dist > trail_length || snap != homing_snap) {
+		with create_vector_trail(trail_x, trail_y) {
+			image_xscale = _dist/2
+			image_angle = point_direction(x, y, other.x, other.y)
+			direction = image_angle
+		}
+		trail_x = x
+		trail_y = y
+		homing_snap = snap;
 	}
-	trail_x = x
-	trail_y = y
-}
+	
+#define nearest_point_on_line(_line, _point)
+var _slope = dtan(-_line.direction),
+	_dx = _point.x - _line.x,
+	_dy = _point.y - _line.y,
+	_x = (_dx + _slope * _dy)/(sqr(_slope) + 1),
+	_y = -1/_slope * _x + _dx/_slope + _dy;
+	if (_slope == 0) _y = 0;
+	return {x: _line.x + _x, y: (_line.y + _y)}
+	
+#define distance_to_line(_line, _point)
+//_line is anything with the variables x, y, and dir, being world position and direction, origin is the lines coordinates
+//_point is anything with x and y, those being world position
+var _slope = dtan(-_line.direction),
+	_dx = _point.x - _line.x,
+	_dy = _point.y - _line.y,
+	_x = (_dx + _slope * _dy)/(sqr(_slope) + 1),
+	_y = -1/_slope * _x + _dx/_slope + _dy;
+	if (_slope == 0) _y = 0;
+	return point_distance(_point.x, _point.y, (_line.x + _x), (_line.y + _y))
+	// return {x: _line.x + _x, y: (_line.y + _y)}
+
+#define point_intersect(_line1, _line2)
+//Uses negative angle because of GML's y going 'down' as it increases, despite 90 degrees still being 'up'
+var _m1 = dtan(-_line1.direction),
+	_m2 = dtan(-_line2.direction),
+	_b1 = _line1.y,
+	_b2 = _line2.y,
+	_h1 = _line1.x,
+	_h2 = _line2.x,
+	_x  = (((-_m2 / _m1) * _h2) + ((_b2 - _b1)/_m1) + _h1)/(1 - (_m2/_m1)),
+	_y  = _m1 * (_x - _h1) + _b1;
+	return {x: _x, y: _y}
 
 #define vector_head_hit
 if other != lasthit {
@@ -4935,6 +5002,17 @@ if basedir == undefined {
 	basedir = direction
 }
 
+#define vector_effect_create(_x, _y)
+	with instance_create(_x, _y, BulletHit) {
+		sprite_index = spr.VectorEffect;
+		image_index = (brain_active ? 0 : irandom(1));
+		image_speed = .4 - (brain_active ? .2 : 0);
+		speed = choose(1, 2);
+		direction = random(360);
+		
+		return self;
+	}
+
 #define vector_head_destroy
 sound_play_hit_big(sndPlasmaHit, .2)
 
@@ -4948,17 +5026,10 @@ with instance_create(x, y, PlasmaImpact) {
 	mask_index   = msk.VectorImpact;
 
 	repeat(10) {
-
 		var _d = random(360);
-
-		with instance_create(x + lengthdir_x(28 + random_range(-2, 6), _d), y + lengthdir_y(28 + random_range(-2, 6), _d), BulletHit) {
-
-				sprite_index = spr.VectorEffect;
-				image_index  = (brain_active ? 0 : irandom(1));
-				image_speed  = .4 - (brain_active ? .2 : 0);
+		with vector_effect_create(x + lengthdir_x(random_range(26, 32), _d), y + lengthdir_y(random_range(26, 32), _d)) {
 				depth = other.depth - 1;
-
-				motion_set(_d - 180, choose(1, 2));
+				direction = _d - 180;
 				image_angle = direction;
 			}
 		}
@@ -4982,40 +5053,53 @@ with instance_create(_x, _y, CustomProjectile) {
 	defbloom.xscale = 1
 	image_yscale = other.image_yscale
 
-	creator = other.creator
-	team = other.team
-	damage = other.damage
-	force = other.force
+	if instance_exists(other) && instance_is(other, projectile) {
+		creator = other.creator
+		team = other.team
+		damage = other.damage
+		force = other.force
+	}
 	hit_list = []
 
 	on_step = vector_trail_step
 	on_hit  = vector_trail_hit
 	on_wall = nothing
+	on_draw = vector_trail_draw
 
 	return id
 }
+
+#define vector_trail_draw
+	draw_circle_color(x - 1, y - 1, 3 * image_yscale, spr.VectorColor, spr.VectorColor, false);
+	draw_circle_color(x - 1, y - 1, 1 * image_yscale, c_white, c_white, false);
+	draw_self();
 
 #define vector_trail_step
 with instances_in_bbox(bbox_left, bbox_top, bbox_right, bbox_bottom, hit_list) {
 	if place_meeting(x, y, other) {
 		motion_set(other.direction, vectorspeed)
 	}
-	with other{
-		if place_meeting(x + hspeed, y + vspeed, Wall){
-			x = xprevious
-			y = yprevious
-		}
-	}
+	// I assume this was supposed to prevent enemies from getting shoved into walls, but it runs on the trail and not the enemy...
+	// with other{
+	// 	if place_meeting(x + hspeed, y + vspeed, Wall){
+	// 		x = xprevious
+	// 		y = yprevious
+	// 	}
+	// }
 }
 image_yscale -= shrinkspeed * current_time_scale
 if image_yscale <= 0 instance_destroy()
 
+#define vector_can_push(inst)
+	return !(instance_is(inst, Nothing) || instance_is(inst, Nothing2) || instance_is(inst, Generator) || instance_is(inst, GeneratorInactive)) 
+		&& ("vector_immune" not in inst || inst.vector_immune == false)
+
 #define vector_trail_hit
-var _t = other;
-if projectile_canhit_melee(other) {
+//if projectile_canhit_melee(other) {
 	//projectile_hit(other, damage)
-}
-if current_frame_active {
+//}
+if current_frame_active && vector_can_push(other) {
+	var _t = other;
 	if "vectorspeed" not in other {
 		other.vectorspeed = 0
 	}

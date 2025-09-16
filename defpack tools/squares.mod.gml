@@ -359,7 +359,7 @@ return x < 0.5 ? 4 * x * x * x : 1 - power(-2 * x + 2, 3) / 2;
 				
 				case Laser:
 					//Split the laser into three
-					var onLaser = nearest_point_on_line({x: proj.xstart, y: proj.ystart, dir: proj.image_angle}, square);
+					var onLaser = nearest_point_on_line({x: proj.xstart, y: proj.ystart, direction: proj.image_angle}, square);
 					proj.image_yscale = max(proj.image_yscale, 1)
 					for (var i = -1; i <= 1; i+= 2) {
 						with instance_create(onLaser.x, onLaser.y, Laser) {
@@ -552,7 +552,7 @@ return x < 0.5 ? 4 * x * x * x : 1 - power(-2 * x + 2, 3) / 2;
 #define nearest_point_on_line(_line, _point)
 //_line is anything with the variables x, y, and dir, being world position and direction, origin is the lines coordinates
 //_point is anything with x and y, those being world position
-var _slope = dtan(-_line.dir),
+var _slope = dtan(-_line.direction),
 	_dx = _point.x - _line.x,
 	_dy = _point.y - _line.y,
 	_x = (_dx + _slope * _dy)/(sqr(_slope) + 1),
