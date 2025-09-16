@@ -215,9 +215,10 @@ return "FAST TRAVEL";
 		superdirection = creator.gunangle;
 		dontwait = true;
 		can_crown = false;
+		
 		var _e = self;
 		with instances_matching_ne(hitme, "team", other.creator.team){
-			if !_e.fx_check && distance_to_object(other) <= 0{
+			if !_e.fx_check && !collision_line(other.creator.x, other.creator.y, x, y, Wall, false, true) && distance_to_object(other) <= 0{
 				sound_play(snd_hurt);
 				sprite_index = spr_hurt;
 				sleep(50);

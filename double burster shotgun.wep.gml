@@ -24,12 +24,13 @@ global.sprBursterShotgunHUD = sprite_add_weapon("sprites/weapons/sprDoubleBurste
 #define weapon_fire
 
     var _p = random_range(.8, 1.2);
-    sound_play_pitchvol(sndLilHunterSniper, 1.4 * _p, .4);
+    sound_play_pitchvol(sndLilHunterSniper, 1.4 * _p, .6);
     sound_play_pitch(sndDoubleShotgun, 1.2 * _p);
+    sound_play_pitchvol(sndClusterOpen, 1.3 * _p, .3);
     
     weapon_post(10, 18, 0);
 
-    repeat(15) {
+    repeat(16) {
         
         with mod_script_call("mod", "defpack tools", "create_burster", x, y) {
             
@@ -39,7 +40,7 @@ global.sprBursterShotgunHUD = sprite_add_weapon("sprites/weapons/sprDoubleBurste
             tar_dir = other.gunangle;
             tar_len = point_distance(x, y, mouse_x[other.index], mouse_y[other.index]);
 		    move_contact_solid(other.gunangle, 10);
-		    motion_add(other.gunangle + random_range(-100, 100) * other.accuracy, 9 * random_range(.8, 1.1));
+		    motion_add(other.gunangle + random_range(-100, 100) * other.accuracy, 10 * random_range(.8, 1.1));
 		    image_angle = direction;
         }
     }
